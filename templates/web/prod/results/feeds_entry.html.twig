@@ -4,7 +4,7 @@
     <table class="head">
         <tr>
             <td>
-                <h1 class="title">
+                <h1 class="title {% if entry.feed.isOwner(app.getAuthenticator().user) or entry.isPublisher(app.getAuthenticator().user) %}with_btn {% endif %}">
                     {% if feed.aggregated %}
                         <img style="height:16px;" src="{% if entry.feed.iconUrl == false %} /assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ entry.feed.id }}.jpg{% endif %}"/>
                     {% endif %}
@@ -17,12 +17,14 @@
             </td>
             <td style="width:60px;text-align:right;">
                 {% if entry.feed.isOwner(app.getAuthenticator().user) or entry.isPublisher(app.getAuthenticator().user) %}
-                    <a class="tools options feed_edit" href="{{ path('prod_feeds_entry_edit', { 'id' : entry.id }) }}">
-                        <img src="/assets/common/images/icons/file-edit.png" title="{{ 'boutton::editer' | trans }}" width="16" height="16"/>
-                    </a>
-                    <a class="tools feed_delete"href="{{ path('prod_feeds_entry_delete', { 'id' : entry.id }) }}">
-                        <img src="/assets/common/images/icons/delete.png" title="{{ 'boutton::supprimer' | trans }}" width="16" height="16"/>
-                    </a>
+                    <div class="feed_btn_wrapper">
+                        <a class="options feed_edit feed_icon" title="{{ 'boutton::editer' | trans }}" href="{{ path('prod_feeds_entry_edit', { 'id' : entry.id }) }}">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="feed_delete feed_icon" title="{{ 'boutton::supprimer' | trans }}" href="{{ path('prod_feeds_entry_delete', { 'id' : entry.id }) }}">
+                            <i class="fa fa-times-circle"></i>
+                        </a>
+                    </div>
                 {% endif %}
             </td>
         </tr>
@@ -44,7 +46,7 @@
             <a class="ajax_answers" href="{{ path('prod_feeds_feed', { 'id' : entry.feed.id }) }}">
                 {% set feed_name = entry.feed.title %}
                 {% trans with {'%feed_name%' : feed_name} %}dans %feed_name%{% endtrans %}
-                <img style="height:16px;" src="{% if entry.feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ entry.feed.id }}.jpg{% endif %}"/>
+                <img style="height:18px;" src="{% if entry.feed.iconUrl == false %}/assets/common/images/icons/rss32.gif{% else %}/custom/feed_{{ entry.feed.id }}.jpg{% endif %}"/>
             </a>
         {% endif %}
     </div>

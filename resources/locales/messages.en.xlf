@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-05-08T14:17:32Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2020-05-15T10:03:18Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -106,7 +106,7 @@
         <source>%Total% results</source>
         <target state="translated">%Total% results</target>
         <jms:reference-file line="12">WorkZone/Browser/Results.html.twig</jms:reference-file>
-        <jms:reference-file line="95">WorkZone/Browser/Results.html.twig</jms:reference-file>
+        <jms:reference-file line="94">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="21a4ac34dfdf249b5e2e3b3fde7061b354080f4b" resname="%basket_length% documents" approved="yes">
         <source>%basket_length% documents</source>
@@ -404,7 +404,7 @@
         <source>1 result</source>
         <target state="translated">1 result</target>
         <jms:reference-file line="10">WorkZone/Browser/Results.html.twig</jms:reference-file>
-        <jms:reference-file line="93">WorkZone/Browser/Results.html.twig</jms:reference-file>
+        <jms:reference-file line="92">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fbe42fc27804535bb12503b7990343d52141318c" resname="10 tags maximum" approved="yes">
         <source>10 tags maximum</source>
@@ -1810,7 +1810,7 @@
         <source>Codec Audio</source>
         <target state="translated">Audio codec</target>
         <jms:reference-file line="140">web/common/technical_datas.html.twig</jms:reference-file>
-        <jms:reference-file line="96">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="102">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="672e654e54323537399e2353680dd144c0b9af32" resname="Codec Video" approved="yes">
         <source>Codec Video</source>
@@ -2439,7 +2439,7 @@
         <source>Derniere mise a jour le %updated_on%</source>
         <target state="translated">Last Update on %updated_on%</target>
         <jms:reference-file line="45">prod/results/entry.html.twig</jms:reference-file>
-        <jms:reference-file line="39">prod/results/feeds_entry.html.twig</jms:reference-file>
+        <jms:reference-file line="41">prod/results/feeds_entry.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dcce9368ad626fe4addfa719b7a16807d464aa9b" resname="Derniers envois" approved="yes">
         <source>Derniers envois</source>
@@ -2509,7 +2509,7 @@
       <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="yes">
         <source>Disable document type sharing</source>
         <target state="translated">Disable document type sharing</target>
-        <jms:reference-file line="221">actions/Tools/index.html.twig</jms:reference-file>
+        <jms:reference-file line="223">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4f4473df8cb59f0a369aebee3d1509adc0151c6" resname="Disabled" approved="yes">
         <source>Disabled</source>
@@ -2923,7 +2923,7 @@
       <trans-unit id="84aa616ef0b3e29513430631bf82c50c9cde7406" resname="Enable document type sharing" approved="yes">
         <source>Enable document type sharing</source>
         <target state="translated">Enable document type sharing</target>
-        <jms:reference-file line="223">actions/Tools/index.html.twig</jms:reference-file>
+        <jms:reference-file line="225">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af559a0c4023968d8723bcdfe3337ce72eca48eb" resname="Enable maintenance message broadcast" approved="yes">
         <source>Enable maintenance message broadcast</source>
@@ -3307,8 +3307,8 @@
       <trans-unit id="246a65679a39e030c98cad396903b0a3d8874dbc" resname="Fils disponibles" approved="yes">
         <source>Fils disponibles</source>
         <target state="translated">Available feed</target>
-        <jms:reference-file line="56">actions/publish/publish.html.twig</jms:reference-file>
-        <jms:reference-file line="41">actions/publish/publish_edit.html.twig</jms:reference-file>
+        <jms:reference-file line="58">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="43">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d7decf1aa22b02ae8abf9a96849ee423eee838e4" resname="Filter" approved="yes">
         <source>Filter</source>
@@ -3711,7 +3711,7 @@
         <source>Images par secondes</source>
         <target state="translated">Image per second</target>
         <jms:reference-file line="134">web/common/technical_datas.html.twig</jms:reference-file>
-        <jms:reference-file line="91">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="97">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d39de5885805135b502a3e8920ffb0b1921cb6f" resname="Imagette indisponible" approved="yes">
         <source>Imagette indisponible</source>
@@ -4538,7 +4538,7 @@
       <trans-unit id="8c123d8ad43d08cc48c3d6a7676e65f71eea59df" resname="No URL available" approved="yes">
         <source>No URL available</source>
         <target state="translated">No URL available</target>
-        <jms:reference-file line="141">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="145">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="486829367591dc8209f3fc6960814c0bdd8930d1" resname="No account yet?" approved="yes">
         <source>No account yet?</source>
@@ -4604,6 +4604,7 @@
         <source>No preview available</source>
         <target state="translated">No preview available</target>
         <jms:reference-file line="75">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="81">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="657c9f21a7a4da0e213e67dbee089b281dce3279" resname="No receivers specified" approved="yes">
         <source>No receivers specified</source>
@@ -4619,7 +4620,7 @@
         <source>No results</source>
         <target state="translated">No results</target>
         <jms:reference-file line="8">WorkZone/Browser/Results.html.twig</jms:reference-file>
-        <jms:reference-file line="91">WorkZone/Browser/Results.html.twig</jms:reference-file>
+        <jms:reference-file line="90">WorkZone/Browser/Results.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bfccc7c966ca427d629149d67548af04605eb746" resname="No thesaurus concept query" approved="yes">
         <source>No thesaurus concept query</source>
@@ -6214,7 +6215,7 @@
         <source>Size</source>
         <target state="translated">Size</target>
         <jms:reference-file line="37">web/common/technical_datas.html.twig</jms:reference-file>
-        <jms:reference-file line="99">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="105">actions/Tools/videoEditor.html.twig</jms:reference-file>
         <jms:reference-file line="40">actions/Download/prepare.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="000f280b111f7ab59b5f5f4462a40de0553664cc" resname="Slide show" approved="yes">
@@ -6460,7 +6461,7 @@
         <jms:reference-file line="667">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="700">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="808">Controller/Admin/CollectionController.php</jms:reference-file>
-        <jms:reference-file line="183">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="189">actions/Tools/videoEditor.html.twig</jms:reference-file>
         <jms:reference-file line="20">admin/collection/suggested_value.html.twig</jms:reference-file>
         <jms:reference-file line="18">admin/collection/collection.html.twig</jms:reference-file>
         <jms:reference-file line="10">web/admin/databases.html.twig</jms:reference-file>
@@ -6801,7 +6802,7 @@
       <trans-unit id="19a0de998e454fffb6e0636256a5bdcdccbb9033" resname="This feed is public" approved="yes">
         <source>This feed is public</source>
         <target state="translated">This feed is public</target>
-        <jms:reference-file line="63">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="65">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="89">admin/publications/list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dedbaded6d5a4ed17eefa2e4ee3eee026b7d1d11" resname="This field is required" approved="yes">
@@ -9093,8 +9094,8 @@
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert" approved="yes">
         <source>alert</source>
         <target state="translated">Warning</target>
-        <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
-        <jms:reference-file line="250">actions/Tools/index.html.twig</jms:reference-file>
+        <jms:reference-file line="185">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="252">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="edde11c24ed5e6df4e416143e77248e908567faa" resname="all caches services have been flushed" approved="yes">
         <source>all caches services have been flushed</source>
@@ -9266,7 +9267,7 @@
       <trans-unit id="d49d2b52ce2f1912f7ada4a3f57ab39fd2e9904e" resname="boutton::editer" approved="yes">
         <source>boutton::editer</source>
         <target state="translated">Edit</target>
-        <jms:reference-file line="27">prod/results/entry.html.twig</jms:reference-file>
+        <jms:reference-file line="26">prod/results/entry.html.twig</jms:reference-file>
         <jms:reference-file line="21">prod/results/feeds_entry.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b126c214de4c40550d9dc32b02766809b1cac1a" resname="boutton::enregistrer" approved="yes">
@@ -9430,7 +9431,7 @@
         <jms:reference-file line="26">actions/Bridge/disconnected.html.twig</jms:reference-file>
         <jms:reference-file line="21">Bridge/Youtube/actioncontainers.html.twig</jms:reference-file>
         <jms:reference-file line="35">Bridge/Youtube/actionelements.html.twig</jms:reference-file>
-        <jms:reference-file line="30">prod/results/entry.html.twig</jms:reference-file>
+        <jms:reference-file line="29">prod/results/entry.html.twig</jms:reference-file>
         <jms:reference-file line="24">prod/results/feeds_entry.html.twig</jms:reference-file>
         <jms:reference-file line="130">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="410">web/admin/subdefs.html.twig</jms:reference-file>
@@ -9645,7 +9646,7 @@
         <target state="translated">Copy to clipboard</target>
         <jms:reference-file line="52">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="62">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="78">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="82">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="18">prod/results/infos.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="751a7df4249ede5126600fd5e11560b3300c8dd5" resname="create_subdef_button_label" approved="yes">
@@ -9707,7 +9708,7 @@
         <source>dans %feed_name%</source>
         <target state="translated">in %feed_name%</target>
         <jms:reference-file line="52">prod/results/entry.html.twig</jms:reference-file>
-        <jms:reference-file line="46">prod/results/feeds_entry.html.twig</jms:reference-file>
+        <jms:reference-file line="48">prod/results/feeds_entry.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aab7fdd9c18941cbc8d78fa0c690361ffd8c50bf" resname="date dajout" approved="yes">
         <source>date dajout</source>
@@ -10354,8 +10355,8 @@
       <trans-unit id="6c632badea2664bc707979fac5e58072b6a2feba" resname="no image selected" approved="yes">
         <source>no image selected</source>
         <target state="translated">No Document selected</target>
-        <jms:reference-file line="180">actions/Tools/videoEditor.html.twig</jms:reference-file>
-        <jms:reference-file line="251">actions/Tools/index.html.twig</jms:reference-file>
+        <jms:reference-file line="186">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="253">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37031f99ac78580c9f82e04fa237d295ea10ca41" resname="non" approved="yes">
         <source>non</source>
@@ -11228,7 +11229,7 @@
         <target state="translated">Preview</target>
         <jms:reference-file line="51">prod/Share/record.html.twig</jms:reference-file>
         <jms:reference-file line="61">prod/Share/record.html.twig</jms:reference-file>
-        <jms:reference-file line="77">prod/Share/record.html.twig</jms:reference-file>
+        <jms:reference-file line="81">prod/Share/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="yes">
         <source>print:: basket feedback</source>
@@ -11375,8 +11376,8 @@
       <trans-unit id="6dd8429cc900b9460f1e9d4be6155a6ee1b6de42" resname="processing" approved="yes">
         <source>processing</source>
         <target state="translated">Processing...</target>
-        <jms:reference-file line="181">actions/Tools/videoEditor.html.twig</jms:reference-file>
-        <jms:reference-file line="252">actions/Tools/index.html.twig</jms:reference-file>
+        <jms:reference-file line="187">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="254">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f63658cad863dee4a5876278e836472380183ade" resname="prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble" approved="yes">
         <source>prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble</source>
@@ -11739,6 +11740,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="a4dc1d766c992fbd57317a321602272b20469a64" resname="prod::workzone:Actions" approved="yes">
         <source>prod::workzone:Actions</source>
         <target state="translated">Actions</target>
+        <jms:reference-file line="2">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="2">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
@@ -11851,20 +11853,44 @@ It is possible to place several search areas</target>
       <trans-unit id="9647ab4603346566d2218fda731606baafcbe408" resname="publication : autheur" approved="yes">
         <source>publication : autheur</source>
         <target state="translated">Author</target>
-        <jms:reference-file line="49">actions/publish/publish.html.twig</jms:reference-file>
-        <jms:reference-file line="34">actions/publish/publish_edit.html.twig</jms:reference-file>
+        <jms:reference-file line="51">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="36">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="12f6f5d3ef3c414e9819bcf0fbbdaf454ce0fd27" resname="publication : email autheur" approved="yes">
         <source>publication : email autheur</source>
         <target state="translated">Author's e-mail</target>
-        <jms:reference-file line="51">actions/publish/publish.html.twig</jms:reference-file>
-        <jms:reference-file line="36">actions/publish/publish_edit.html.twig</jms:reference-file>
+        <jms:reference-file line="53">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="38">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ccb2f7d7041e31cd822bd95ee74b5f9b38d9f7ac" resname="publication : sous titre" approved="yes">
         <source>publication : sous titre</source>
         <target state="translated">Sub Title</target>
+        <jms:reference-file line="48">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="33">actions/publish/publish_edit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e53680d42ba7c2071293a23790dfaef8d0761e60" resname="publication : subtitle alert">
+        <source>publication : subtitle alert</source>
+        <target state="new">publication : subtitle alert</target>
+        <jms:reference-file line="50">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="35">actions/publish/publish_edit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3cc295db2f960fa339ba3b57e33fe421923e3026" resname="publication : subtitle warning">
+        <source>publication : subtitle warning</source>
+        <target state="new">publication : subtitle warning</target>
+        <jms:reference-file line="48">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="33">actions/publish/publish_edit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af22a65a7f5adb86b9f18a891c7a895146af5f23" resname="publication : title alert">
+        <source>publication : title alert</source>
+        <target state="new">publication : title alert</target>
         <jms:reference-file line="47">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="32">actions/publish/publish_edit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="856fe6736a6901d5c5b1e079b82ce987dd06ff7b" resname="publication : title warning">
+        <source>publication : title warning</source>
+        <target state="new">publication : title warning</target>
+        <jms:reference-file line="45">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="30">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="be21ab93e45780fe4f40141bc3569f200fb4a028" resname="publication : titre" approved="yes">
         <source>publication : titre</source>
@@ -11894,12 +11920,13 @@ It is possible to place several search areas</target>
         <source>publications::copy</source>
         <target state="translated">Copy URL</target>
         <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="272">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">
         <source>publications::votre rss personnel</source>
         <target state="translated">Your own rss</target>
         <jms:reference-file line="248">Controller/Prod/FeedController.php</jms:reference-file>
-        <jms:reference-file line="272">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="273">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="70e2a7238a2b25916f8dda4ca72e2b8617edde67" resname="push::mail:: Rapport de validation de %user% pour %title%" approved="yes">
         <source>push::mail:: Rapport de validation de %user% pour %title%</source>
@@ -12557,7 +12584,7 @@ It is possible to place several search areas</target>
       <trans-unit id="584d9f9b8a0c51aa1805a1c0ed427c366d11ea5e" resname="screenshot video" approved="yes">
         <source>screenshot video</source>
         <target state="translated">Video screenshot</target>
-        <jms:reference-file line="112">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="118">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fe29f1a35e814c87a21282378424df4866529d1e" resname="select at least one user" approved="yes">
         <source>select at least one user</source>
@@ -13428,8 +13455,8 @@ It is possible to place several search areas</target>
       <trans-unit id="1118f7e206d8ec4d92392f3e8c2804b156b3a082" resname="thumbnail validation" approved="yes">
         <source>thumbnail validation</source>
         <target state="translated">Confirm thumbnail</target>
-        <jms:reference-file line="182">actions/Tools/videoEditor.html.twig</jms:reference-file>
-        <jms:reference-file line="253">actions/Tools/index.html.twig</jms:reference-file>
+        <jms:reference-file line="188">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="255">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7e96ed809b61066d6ea96ba9afc8747a042b361a" resname="tout le monde" approved="yes">
         <source>tout le monde</source>
@@ -13487,7 +13514,7 @@ It is possible to place several search areas</target>
       <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="yes">
         <source>validate</source>
         <target state="translated">Validate</target>
-        <jms:reference-file line="145">actions/Tools/videoEditor.html.twig</jms:reference-file>
+        <jms:reference-file line="151">actions/Tools/videoEditor.html.twig</jms:reference-file>
         <jms:reference-file line="88">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="116">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="156">actions/Tools/index.html.twig</jms:reference-file>
