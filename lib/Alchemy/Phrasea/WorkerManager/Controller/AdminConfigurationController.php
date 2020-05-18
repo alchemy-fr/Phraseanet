@@ -69,8 +69,11 @@ class AdminConfigurationController extends Controller
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
 
+        $reload = ($request->query->get('reload')) == 1 ? true : false ;
+
         return $this->render('admin/worker-manager/worker_info.html.twig', [
-            'workerRunningJob' => $repoWorker->findAll()
+            'workerRunningJob' => $repoWorker->findAll(),
+            'reload'           => $reload
         ]);
     }
 

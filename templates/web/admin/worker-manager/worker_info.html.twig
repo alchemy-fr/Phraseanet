@@ -1,3 +1,5 @@
+{% if not reload %}
+
 <h1> worker information</h1>
 
 <form action="{{ path("worker_admin_truncate") }}" method="POST">
@@ -32,7 +34,9 @@
         <th class="sortable">status</th>
     </tr>
     </thead>
-    <tbody>
+        <tbody class="work-list">
+{% endif %}
+
     {% for workerRow in workerRunningJob %}
     <tr>
         <td>{{ workerRow.databoxId }}</td>
@@ -45,5 +49,23 @@
 
     </tr>
     {% endfor %}
-    </tbody>
-</table>
+
+{% if not reload %}
+        </tbody>
+    </table>
+    <script>
+        setInterval(function () {
+                if ($('.worker-info').hasClass('active')) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/admin/worker-manager/info?reload=1",
+                        success: function (data) {
+                            $(".work-list").empty().html(data);
+                        }
+                    });
+                }
+            }, 5000
+        );
+    </script>
+{% endif %}
+
