@@ -368,6 +368,7 @@ class RootController extends Controller
             'collection',
             'user',
             'users',
+            'workermanager'
         ];
 
         $feature = 'connected';

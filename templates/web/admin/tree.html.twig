@@ -76,6 +76,15 @@
     </a>
   </li>
 
+  {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::TASKMANAGER')) %}
+    <li class="{% if feature == 'workermanager' %}selected{% endif %}">
+      <a target="right" href="{{ path('worker_admin') }}" class="ajax">
+        <img src="/assets/admin/images/TaskManager.png" />
+        <span>{{ 'Worker Manager' | trans }}</span>
+      </a>
+    </li>
+  {% endif %}
+
   <li class="open">
     <div class="{% if feature == 'bases' %}selected{% endif %}" style="padding:0 0 2px 0;">
       <a id="TREE_DATABASES" target="right" href="{{ path('admin_databases') }}" class="ajax">

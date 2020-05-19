@@ -1,0 +1,95 @@
+{% if not reload %}
+
+<h1> worker information</h1>
+
+<form action="{{ path("worker_admin_truncate") }}" method="POST">
+    <p class="alert alert-danger">
+        <strong>Warning!</strong>
+        {{ "It's delete all work information !" |trans }}
+    </p>
+    <button class="btn btn-primary">
+        {{ 'Erase all information' |trans }}
+    </button>
+</form>
+
+<form action="{{ path("worker_admin_delete_finished") }}" method="POST">
+    <p class="alert alert-danger">
+        <strong>Warning!</strong>
+        {{ "It's delete all finished works !"|trans }}
+    </p>
+    <button class="btn btn-primary">
+        {{ 'Erase all finished' | trans }}
+    </button>
+</form>
+
+    <button id="refresh-list" class="btn btn-success">
+        {{ 'Refresh list' |trans }}
+    </button>
+
+    <div class="controls">
+        <label class="checkbox inline">
+            <input class="running-work" type="checkbox"  value="1" checked> {{ 'Display running work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="finished-work" type="checkbox"  value="1" checked> {{ 'Display finished work' | trans }}
+        </label>
+    </div>
+
+<table class="admintable">
+    <thead>
+    <tr>
+        <th class="sortable">databox_id</th>
+        <th class="sortable">record_id</th>
+        <th class="sortable">work</th>
+        <th class="sortable">work_on</th>
+        <th class="sortable">created</th>
+        <th class="sortable">published</th>
+        <th class="sortable">status</th>
+    </tr>
+    </thead>
+        <tbody class="work-list">
+{% endif %}
+
+    {% for workerRow in workerRunningJob %}
+    <tr>
+        <td>{{ workerRow.databoxId }}</td>
+        <td>{{ workerRow.recordId }}</td>
+        <td>{{ workerRow.getWorkName }}</td>
+        <td>{{ workerRow.workOn }}</td>
+        <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
+        <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
+        <td>{{ workerRow.status }}</td>
+
+    </tr>
+    {% endfor %}
+
+{% if not reload %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        $("#refresh-list").on('click', function () {
+            console.log("ato");
+            var running  = 1;
+            var finished = 1;
+            if (!$(".running-work").is(":checked"))
+            {
+                running = 0;
+            }
+            if (!$(".finished-work").is(":checked"))
+            {
+                finished = 0;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished,
+                success: function (data) {
+                    $(".work-list").empty().html(data);
+                }
+            });
+        });
+    </script>
+{% endif %}
+
+
