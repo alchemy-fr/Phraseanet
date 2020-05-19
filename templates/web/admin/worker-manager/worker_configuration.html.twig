@@ -1,0 +1,55 @@
+<h3> Config Worker queue retry</h3>
+<p class="alert alert-danger">
+    <strong>Warning!</strong>
+    When applied, it's re-initialize and purge "retry" and "delayed" queue!
+</p>
+
+<p>Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)</p>
+{{ form_start(form, {'action': path('worker_admin_configuration')}) }}
+
+<div class="control-group">
+    {{ form_row(form.assetsIngest) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.createRecord) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.subdefCreation) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.writeMetadatas) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.webhook) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.exportMail) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.populateIndex) }}
+</div>
+
+<h3> Config Worker queue delayed</h3>
+<p>if not set ,default 5000 millisecond</p>
+
+<div class="control-group">
+    {{ form_row(form.delayedSubdef) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.delayedWriteMeta) }}
+</div>
+
+
+<div class="control-group">
+    <input type="submit" class="btn btn-primary" value={{ "Apply in queue"|trans }} />
+</div>
+
+
+{{ form_end(form) }}
