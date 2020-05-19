@@ -1,4 +1,3 @@
-import Alerts from "../../../../../../Phraseanet-production-client/src/components/utils/alert";
 
 var p4 = p4 || {};
 var datepickerLang = [];
