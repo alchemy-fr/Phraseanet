@@ -122,7 +122,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             return preg_replace(
                 "/(\\W|^)(https?:\/{2,4}[\\w:#%\/;$()~_?\/\-=\\\.&]+)/m"
                 ,
-                '$1$2 <a title="' . $app['translator']->trans('Open the URL in a new window') . '" class=" fa fa-external-link" href="$2" style="font-size:1.2em;display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;
+                '$1$2 <a title="' . $app['translator']->trans('Open the URL in a new window') . '" class=" fa fa-external-link" href="$2" style="font-size:1.2em;display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;'$1 $2 <a title="' . $app['translator']->trans('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
                 , $string
             );
         }, ['needs_environment' => true, 'is_safe' => ['html']]));
