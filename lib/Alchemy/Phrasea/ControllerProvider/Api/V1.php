@@ -285,7 +285,7 @@ class V1 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->before('controller.api.v1:ensureUserManagementRights');
 
         // the api route for the uploader service
-        $controllers->post('/upload/enqueue', 'controller.api.v1:sendAssetsInQueue');
+        $controllers->post('/upload/enqueue/', 'controller.api.v1:sendAssetsInQueue');
 
         return $controllers;
     }

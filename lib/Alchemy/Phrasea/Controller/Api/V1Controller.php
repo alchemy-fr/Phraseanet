@@ -236,7 +236,7 @@ class V1Controller extends Controller
             return Result::createError($request, 422, $errors[0])->createResponse();
         }
 
-        $this->dispatch(WorkerEvents::ASSETS_CREATE, new AssetsCreateEvent(json_decode($data)));
+        $this->dispatch(WorkerEvents::ASSETS_CREATE, new AssetsCreateEvent(json_decode($data, true)));
 
         return Result::create($request, [
             "data" => json_decode($data),
