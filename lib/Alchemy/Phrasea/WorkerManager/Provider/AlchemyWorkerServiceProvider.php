@@ -121,7 +121,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::PULL_ASSETS_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return new PullAssetsWorker($app['alchemy_worker.message.publisher']);
+            return new PullAssetsWorker($app['alchemy_worker.message.publisher'], $app['conf']);
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DELETE_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {

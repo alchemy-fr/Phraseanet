@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
-use Alchemy\Phrasea\WorkerManager\Configuration\Config;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\WorkerManager\Model\DBManipulator;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
@@ -10,18 +10,20 @@ use GuzzleHttp\Client;
 class PullAssetsWorker implements WorkerInterface
 {
     private $messagePublisher;
+    private $conf;
 
-    public function __construct(MessagePublisher $messagePublisher)
+    public function __construct(MessagePublisher $messagePublisher, PropertyAccess $conf)
     {
         $this->messagePublisher = $messagePublisher;
+        $this->conf             = $conf;
     }
 
     public function process(array $payload)
     {
-        $config = Config::getConfiguration();
+        $config = $this->conf->get(['workers']);
 
-        if (isset($config['worker_plugin']) && isset($config['worker_plugin']['pull_assets'])) {
-            $config = $config['worker_plugin']['pull_assets'];
+        if (isset($config['pull_assets'])) {
+            $config = $config['pull_assets'];
         } else {
             return;
         }
@@ -128,11 +130,8 @@ class PullAssetsWorker implements WorkerInterface
 
         $tokenBody = json_decode($tokenBody,true);
 
-        $config['assetToken'] = $tokenBody['access_token'];
+        $this->conf->set(['workers', 'pull_assets', 'assetToken'], $tokenBody['access_token']);
 
-        Config::setConfiguration(['pull_assets' => $config]);
-        $config = Config::getConfiguration();
-
-        return $config['worker_plugin']['pull_assets'];
+        return $this->conf->get(['workers', 'pull_assets']);
     }
 }
