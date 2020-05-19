@@ -10,7 +10,7 @@
                     {{ "Configuration" | trans }}
                 </a>
             </li>
-            <li class="worker-info" role="presentation">
+            <li class="worker-info active" role="presentation">
                 <a href="#worker-info" aria-controls="worker-info" role="tab" data-toggle="tab" data-url="/admin/worker-manager/info">
                     {{ "Working info" | trans }}
                 </a>
@@ -25,7 +25,7 @@
                     {{ "Pull Assets" | trans }}
                 </a>
             </li>
-            <li class="worker-subview active" role="presentation">
+            <li class="worker-subview" role="presentation">
                 <a href="#worker-subview" aria-controls="worker-subview" role="tab" data-toggle="tab" data-url="/admin/worker-manager/subview">
                     {{ "Subview" | trans }}
                 </a>
@@ -41,10 +41,12 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade" id="worker-configuration"></div>
-            <div role="tabpanel" class="tab-pane fade" id="worker-info"></div>
+            <div role="tabpanel" class="tab-pane fade in active" id="worker-info">
+                {% include "admin/worker-manager/worker_info.html.twig" %}
+            </div>
             <div role="tabpanel" class="tab-pane fade" id="worker-searchengine"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-pull-assets"></div>
-            <div role="tabpanel" class="tab-pane fade in active" id="worker-subview"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-subview"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-metadata"></div>
         </div>
     </div>
@@ -84,8 +86,6 @@
     </script>
 {% else %}
     <h1 class="alert alert-danger">
-        Error! Check rabbit config to use worker.
+        Error! can't load rabbit config. Check rabbit config to use worker.
     </h1>
 {% endif %}
-
-

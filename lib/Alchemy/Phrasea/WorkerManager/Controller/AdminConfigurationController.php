@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
@@ -25,8 +26,12 @@ class AdminConfigurationController extends Controller
         /** @var AMQPConnection $serverConnection */
         $serverConnection = $this->app['alchemy_worker.amqp.connection'];
 
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $app['repo.worker-running-job'];
+
         return $this->render('admin/worker-manager/index.html.twig', [
-            'isConnected' => ($serverConnection->getChannel() != null) ? true : false
+            'isConnected'       => ($serverConnection->getChannel() != null) ? true : false,
+            'workerRunningJob'  => $repoWorker->findAll(),
         ]);
     }
 
@@ -69,10 +74,20 @@ class AdminConfigurationController extends Controller
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
 
+        $workerRunningJob = [];
+
         $reload = ($request->query->get('reload')) == 1 ? true : false ;
 
+        if ($request->query->get('running') == 1 && $request->query->get('finished') == 1) {
+            $workerRunningJob = $repoWorker->findAll();
+        } elseif ($request->query->get('running') == 1) {
+            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::RUNNING]);
+        } elseif ($request->query->get('finished') == 1) {
+            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::FINISHED]);
+        }
+
         return $this->render('admin/worker-manager/worker_info.html.twig', [
-            'workerRunningJob' => $repoWorker->findAll(),
+            'workerRunningJob' => $workerRunningJob,
             'reload'           => $reload
         ]);
     }
