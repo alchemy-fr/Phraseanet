@@ -378,6 +378,9 @@
                        <i class="icomoon icon-round-list-24px white" ></i>
                   </span>
               {% endif %}
+                {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_type_display') == '1' %}
+                    <div class="basket_type"> {{ record_doctype_icon(record) }}</div>
+                {% endif %}
               <a
                 {% if wz_scope == 'groupings' %}
                   id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
