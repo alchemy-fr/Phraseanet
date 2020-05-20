@@ -50,7 +50,8 @@ class DisplaySettingService
         'bask_val_order'          => 'nat',
         'basket_caption_display'  => '0',
         'basket_status_display'   => '0',
-        'basket_title_display'    => '0'
+        'basket_title_display'    => '0',
+        'basket_type_display'     => '0'
     ];
 
     /**
