@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-05-21T10:16:45Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-05-21T10:25:18Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9300,10 +9300,45 @@
         <target state="new">admin::workermanager:tab:workerinfo: Warning! Erase all information</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created">
+        <source>admin::workermanager:tab:workerinfo: created</source>
+        <target state="new">admin::workermanager:tab:workerinfo: created</target>
+        <jms:reference-file line="49">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id">
+        <source>admin::workermanager:tab:workerinfo: databox_id</source>
+        <target state="new">admin::workermanager:tab:workerinfo: databox_id</target>
+        <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published">
+        <source>admin::workermanager:tab:workerinfo: published</source>
+        <target state="new">admin::workermanager:tab:workerinfo: published</target>
+        <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="feed33fba251da5c0451124020d85250982721d7" resname="admin::workermanager:tab:workerinfo: record_id">
+        <source>admin::workermanager:tab:workerinfo: record_id</source>
+        <target state="new">admin::workermanager:tab:workerinfo: record_id</target>
+        <jms:reference-file line="46">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status">
+        <source>admin::workermanager:tab:workerinfo: status</source>
+        <target state="new">admin::workermanager:tab:workerinfo: status</target>
+        <jms:reference-file line="51">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title">
         <source>admin::workermanager:tab:workerinfo: title</source>
         <target state="new">admin::workermanager:tab:workerinfo: title</target>
         <jms:reference-file line="3">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work">
+        <source>admin::workermanager:tab:workerinfo: work</source>
+        <target state="new">admin::workermanager:tab:workerinfo: work</target>
+        <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2764b360bd443b91d7b611bc181e33c30bbdce07" resname="admin::workermanager:tab:workerinfo: work_on">
+        <source>admin::workermanager:tab:workerinfo: work_on</source>
+        <target state="new">admin::workermanager:tab:workerinfo: work_on</target>
+        <jms:reference-file line="48">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error">
         <source>admin:worker Retrieve configuration error</source>
