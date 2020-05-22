@@ -1,4 +1,4 @@
-<h1>Pull Assets from uploader setting</h1>
+<h1>{{ 'admin::workermanager:tab:pullassets: description' |trans }}</h1>
 
 {{ form_start(form, {'action': path('worker_admin_pullAssets')}) }}
 
@@ -23,7 +23,7 @@
 </div>
 
 <div class="control-group">
-    <input type="submit" class="btn btn-primary" value={{ "Initialize pull assets"|trans }} />
+    <input type="submit" class="btn btn-primary" value={{ "admin::workermanager:tab:pullassets: Initialize pull assets"|trans }} />
 </div>
 
 {{ form_end(form) }}
