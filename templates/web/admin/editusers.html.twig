@@ -320,22 +320,26 @@
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_CHUPUB'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIF_TH'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MANAGE'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIFY_STRUCT'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:48px;"></td>
+                <td style="text-align:center;width:48px;">
+                  <span class="select-all-bdd-right btn btn-primary btn-small">
+                    {{ 'admin::users:edit:select all having rights' | trans }}
+                  </span>
+                </td>
               </tr>
               {% endif %}
-              <tr>
+              <tr class="right-items" style="line-height: 40px;">
                 <td style="overflow:hidden;white-space:nowrap;">
                   {{rights['base_id']|bas_labels(app)}}
                 </td>
@@ -424,7 +428,12 @@
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::COLL_MODIFY_STRUCT'), users, 'base')}}
                 </td>
                 <td colspan="5">
-
+                  <span class="select-all-bdd btn btn-success  btn-small">
+                    {{ 'admin::users:edit:select all ' | trans }}
+                  </span>
+                  <span class=" btn btn-danger  btn-small unselect-all-bdd hide">
+                    {{ 'admin::users:edit:unselect all ' | trans }}
+                  </span>
                 </td>
               </tr>
               {% endfor %}
@@ -1099,6 +1108,36 @@
         });
       }
     });
+
+    $('.select-all-bdd-right').click(function () {
+      $('.main-right-item > div').removeClass('unchecked').addClass('checked');
+      $('.main-right-item > div > input').val(1);
+    });
+
+    $('.select-all-bdd').click(function () {
+      $(this).closest('.right-items').find('div').show().removeClass('unchecked').addClass('checked');
+      $(this).closest('.right-items').find('input').val(1);
+      $(this).closest('.right-items').find('.unselect-all-bdd').removeClass('hide');
+      $(this).addClass('hide');
+    });
+    $('.unselect-all-bdd').click(function () {
+      $(this).closest('.right-items').find('div').hide().addClass('unchecked').remove('checked');
+      $(this).closest('.right-items').find('.case_right_access div').show();
+      $(this).closest('.right-items').find('input').val(0);
+      $(this).closest('.right-items').find('.select-all-bdd').removeClass('hide');
+      $(this).addClass('hide');
+    });
+
+   function countCheckedRight() {
+     $(".right-items" ).each(function() {
+       let count_checked = $( this ).find('input.checked').length;
+       if ( count_checked == 17) {
+         $(this).find('.select-all-bdd').addClass('hide');
+         $(this).find('.unselect-all-bdd').removeClass('hide');
+       }
+     });
+    };
+   countCheckedRight();
   });
 
   require([
