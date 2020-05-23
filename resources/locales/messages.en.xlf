@@ -9219,7 +9219,7 @@
       </trans-unit>
       <trans-unit id="8c41af96270369f510fd8400c78a0584738d3631" resname="admin::workermanager:tab:pullassets: title" approved="no">
         <source>admin::workermanager:tab:pullassets: title</source>
-        <target state="needs-translation">Pull assets setting</target>
+        <target state="needs-translation">Uploader</target>
         <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="no">
