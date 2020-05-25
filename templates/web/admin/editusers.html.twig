@@ -119,40 +119,20 @@
             </td>
           </tr>
         </table>
-        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="">
+        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:850px;height:67px;bottom:auto;top:50px;" class="">
           <thead>
             <tr>
-              <th style="width:122px;">
+              <th style="width:168px;">
 
               </th>
-              <th colspan="26">
-                <img src="/assets/common/images/lng/inclin-{{app['locale']}}.png" style="width:698px"/>
+              <th colspan="25">
+                <img src="/assets/common/images/lng/inclin-{{app['locale']}}.png" style="width:682px"/>
               </th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>
-
-              </td>
-              <td colspan="26">
-
-              </td>
-            </tr>
-          </tbody>
         </table>
-        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;max-height: 450px;">
-          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:820px;">
-      <!--      <thead>
-              <tr>
-                <th style="width:122px;">
-
-                </th>
-                <th colspan="26">
-                  <img src="/assets/common/images/lng/inclin-{{app['locale']}}.gif" >
-                </th>
-              </tr>
-            </thead>-->
+        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:870px;max-height: 450px;">
+          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:840px;">
             <tbody>
               {% set sbas = '' %}
               {% for rights in datas %}
@@ -165,9 +145,10 @@
               {% endif %}
 
               <tr>
-                <td style="width:122px;overflow:hidden;white-space:nowrap;">
+                <td style="width:140px;overflow:hidden;white-space:nowrap;">
                   {{rights['sbas_id']|sbas_labels(app)}}
                 </td>
+                <td style="width:25px"></td>
                 <td class="users_col options">
                   <div>
                     <i class="fa fa-caret-down fa-right"></i>
@@ -229,7 +210,7 @@
                 <td class="users_col">
 
                 </td>
-                <td>
+                <td width="97" style="width: 97px;">
 
                 </td>
                 <td class="users_col options">
@@ -318,9 +299,18 @@
                 </td>
               </tr>
               {% endif %}
-              <tr class="right-items" style="line-height: 40px;">
-                <td style="overflow:hidden;white-space:nowrap;" title="{{rights['base_id']|bas_labels(app)}}">
+              <tr class="right-items">
+                <td style="width: 140px;overflow:hidden;white-space:nowrap;" title="{{rights['base_id']|bas_labels(app)}}">
                   {{rights['base_id']|bas_labels(app)}}
+                </td>
+                <td class="select-all-line" title="{{'admin::users:edit: Manage inline selection' | trans }}" style="width: 25px">
+                  <div class="select-all-line-btn">
+                    <i class="fa fa-caret-right fa-right"></i>
+                  </div>
+                  <div class="users_check_line_wrap hide">
+                    <div class="checker check_left_right">{{'admin::users:edit: check read right' | trans }}</div>
+                    <div class="unchecker check-all_right">{{'admin::users:edit: check all right' | trans }}</div>
+                  </div>
                 </td>
                 <td class="users_col case_right_access left-right" title="{{ 'Access' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::ACCESS'), users, 'base')}}
@@ -374,7 +364,7 @@
                   </div>
                 </td>
 
-                <td style="text-align:center;width:100px;"></td>
+                <td style="text-align:center;width:97px;"></td>
 
                 <td class="users_col case_right_canaddrecord" title="{{ 'Allowed to add' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANADDRECORD'), users, 'base')}}
@@ -407,14 +397,7 @@
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::COLL_MODIFY_STRUCT'), users, 'base')}}
                 </td>
 
-                <td class="select-all-line" colspan="5" title="{{'admin::users:edit: Manage inline selection' | trans }}">
-                  <div class="select-all-line-btn">
-                    <i class="fa fa-caret-down fa-right"></i>
-                  </div>
-                  <div class="users_check_line_wrap hide">
-                    <div class="checker check_left_right">{{'admin::users:edit: check read right' | trans }}</div>
-                    <div class="unchecker check-all_right">{{'admin::users:edit: check all right' | trans }}</div>
-                  </div>
+                <td colspan="5">
                 </td>
               </tr>
               {% endfor %}
