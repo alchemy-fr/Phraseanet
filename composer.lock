@@ -7236,39 +7236,6 @@
             "time": "2016-11-25T06:54:22+00:00"
         },
         {
-            "name": "phpexiftool/exiftool",
-            "version": "10.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alchemy-fr/exiftool.git",
-                "reference": "0833cab894c890353192a83011428525a318bedf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/exiftool/zipball/0833cab894c890353192a83011428525a318bedf",
-                "reference": "0833cab894c890353192a83011428525a318bedf",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Perl Licensing"
-            ],
-            "authors": [
-                {
-                    "name": "Phil Harvey",
-                    "email": "phil@owl.phy.queensu.ca",
-                    "homepage": "http://www.sno.phy.queensu.ca/~phil/exiftool/"
-                }
-            ],
-            "description": "Exiftool is a library for reading, writing and editing meta information. This package is not PHP, but required for the main PHP driver : PHP Exiftool",
-            "keywords": [
-                "exiftool",
-                "metadatas"
-            ],
-            "time": "2016-01-25T11:10:14+00:00"
-        },
-        {
             "name": "phpspec/prophecy",
             "version": "v1.6.2",
             "source": {
