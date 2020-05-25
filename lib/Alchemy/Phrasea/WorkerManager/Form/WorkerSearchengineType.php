@@ -16,18 +16,18 @@ class WorkerSearchengineType extends AbstractType
 
         $builder
             ->add('host', 'text', [
-                'label' => 'Elasticsearch server host',
+                'label' => 'admin::workermanager:tab:searchengine: Elasticsearch server host',
                 'constraints' => new NotBlank(),
             ])
             ->add('port', 'integer', [
-                'label' => 'Elasticsearch service port',
+                'label' => 'admin::workermanager:tab:searchengine: Elasticsearch service port',
                 'constraints' => [
                     new Range(['min' => 1, 'max' => 65535]),
                     new NotBlank()
                 ]
             ])
             ->add('indexName', 'text', [
-                'label' => 'Elasticsearch index name',
+                'label' => 'admin::workermanager:tab:searchengine: Elasticsearch index name',
                 'constraints' => new NotBlank(),
                 'attr' =>['data-class'=>'inline']
             ])
