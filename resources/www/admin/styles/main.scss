@@ -937,6 +937,12 @@ span.simplecolorpicker.picker {
 .ui-dialog-titlebar-close {
   text-indent: -9999999px;
 }
+.worker-info-block {
+  .btn-primary {
+    min-width: 161px;
+    margin-right: 15px;
+  }
+}
 @import './databases';
 @import './fields';
 @import './tables';

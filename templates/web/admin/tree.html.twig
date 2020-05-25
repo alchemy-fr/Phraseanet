@@ -18,12 +18,13 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).is_admin() %}
   <li>
     <a target="right" href="{{ path('setup_display_globals') }}" class="ajax">
-      <img src="/assets/admin/images/Setup.png" />
+      <img width="16" src="/assets/admin/images/tools-solid.svg" />
       <span>{% trans %}Setup{% endtrans %}</span>
     </a>
   </li>
   <li>
     <a target="right" href="{{ path('admin_searchengine_form') }}">
+      <img width="16" src="/assets/admin/images/searchengin.svg" />
       <span>{{ 'SearchEngine settings' | trans }}</span>
     </a>
   </li>
@@ -79,7 +80,7 @@
   {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::TASKMANAGER')) %}
     <li class="{% if feature == 'workermanager' %}selected{% endif %}">
       <a target="right" href="{{ path('worker_admin') }}" class="ajax">
-        <img src="/assets/admin/images/TaskManager.png" />
+        <img width="16" src="/assets/admin/images/cogs-solid.svg" />
         <span>{{ 'Worker Manager' | trans }}</span>
       </a>
     </li>

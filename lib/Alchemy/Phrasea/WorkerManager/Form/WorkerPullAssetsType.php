@@ -13,19 +13,19 @@ class WorkerPullAssetsType extends AbstractType
 
         $builder
             ->add('endpointCommit', 'text', [
-                'label' => 'Endpoint get commit'
+                'label' => 'admin::workermanager:tab:pullassets: Endpoint get commit'
             ])
             ->add('endpointToken', 'text', [
-                'label' => 'Endpoint get token'
+                'label' => 'admin::workermanager:tab:pullassets: Endpoint get token'
             ])
             ->add('clientSecret', 'text', [
-                'label' => 'Client secret'
+                'label' => 'admin::workermanager:tab:pullassets: Client secret'
             ])
             ->add('clientId', 'text', [
-                'label' => 'Client ID'
+                'label' => 'admin::workermanager:tab:pullassets: Client ID'
             ])
             ->add('pullInterval', 'text', [
-                'label' => 'Fetching interval in second'
+                'label' => 'admin::workermanager:tab:pullassets: Fetching interval in second'
             ])
         ;
     }

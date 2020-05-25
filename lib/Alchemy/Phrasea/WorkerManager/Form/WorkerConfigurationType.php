@@ -14,31 +14,31 @@ class WorkerConfigurationType extends AbstractType
 
         $builder
             ->add(MessagePublisher::ASSETS_INGEST_TYPE, 'text', [
-                'label' => 'Ingest retry delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Ingest retry delay in ms'
             ])
             ->add(MessagePublisher::CREATE_RECORD_TYPE, 'text', [
-                'label' => 'Create record retry delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Create record retry delay in ms'
             ])
             ->add(MessagePublisher::SUBDEF_CREATION_TYPE, 'text', [
-                'label' => 'Subdefinition retry delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms'
             ])
             ->add(MessagePublisher::WRITE_METADATAS_TYPE, 'text', [
-                'label' => 'Metadatas retry delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Metadatas retry delay in ms'
             ])
             ->add(MessagePublisher::WEBHOOK_TYPE, 'text', [
-                'label' => 'Webhook retry delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Webhook retry delay in ms'
             ])
             ->add(MessagePublisher::EXPORT_MAIL_TYPE, 'text', [
-                'label' => 'Export mail retry delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Export mail retry delay in ms'
             ])
             ->add(MessagePublisher::POPULATE_INDEX_TYPE, 'text', [
-                'label' => 'Populate Index retry delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Populate Index retry delay in ms'
             ])
             ->add('delayedSubdef', 'text', [
-                'label' => 'Subdef delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Subdef delay in ms'
             ])
             ->add('delayedWriteMeta', 'text', [
-                'label' => 'Write meta delay in ms'
+                'label' => 'admin::workermanager:tab:workerconfig: Write meta delay in ms'
             ])
         ;
     }
