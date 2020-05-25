@@ -200,6 +200,7 @@ $mainMenuLinkBackgroundHoverColor: transparent;
     background-color: #cccccc;
     color: #000000;
     cursor: pointer;
+    line-height: 1.7;
 
     &:hover {
       padding: 5px 10px;
@@ -212,6 +213,9 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 .fa-right {
   color: #2475b5;
   font-size: 16px;
+  .select-all-line-btn & {
+    padding-left: 6px;
+  }
 }
 
 /******* EDIT USERS ***********************************************************/
