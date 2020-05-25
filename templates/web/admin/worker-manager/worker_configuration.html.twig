@@ -1,7 +1,6 @@
-<h3> Config Worker queue retry</h3>
+<h1>{{ 'admin::workermanager:tab:workerconfig: title' |trans }}</h1>
 <p class="alert alert-danger">
-    <strong>Warning!</strong>
-    When applied, it's re-initialize and purge "retry" and "delayed" queue!
+    {{ 'admin::workermanager:tab:workerconfig: warning' |trans }}
 </p>
 
 <p>Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)</p>
@@ -48,7 +47,7 @@
 
 
 <div class="control-group">
-    <input type="submit" class="btn btn-primary" value={{ "Apply in queue"|trans }} />
+    <input type="submit" class="btn btn-primary" value={{ "admin::workermanager:tab:workerconfig:Apply in queue"|trans }} />
 </div>
 
 

@@ -7,32 +7,32 @@
 
             <li class="worker-configuration" role="presentation">
                 <a href="#worker-configuration" aria-controls="worker-configuration" role="tab" data-toggle="tab" data-url="/admin/worker-manager/configuration">
-                    {{ "Configuration" | trans }}
+                    {{ "admin::workermanager:tab:configuration: title" | trans }}
                 </a>
             </li>
             <li class="worker-info active" role="presentation">
                 <a href="#worker-info" aria-controls="worker-info" role="tab" data-toggle="tab" data-url="/admin/worker-manager/info">
-                    {{ "Working info" | trans }}
+                    {{ 'admin::workermanager:tab:workerinfo: title' |trans }}
                 </a>
             </li>
             <li class="worker-searchengine" role="presentation">
                 <a href="#worker-searchengine" aria-controls="worker-searchengine" role="tab" data-toggle="tab" data-url="/admin/worker-manager/searchengine">
-                    {{ "Searchengine" | trans }}
+                    {{ 'admin::workermanager:tab:searchengine: title' |trans }}
                 </a>
             </li>
             <li class="worker-pull-assets" role="presentation">
                 <a href="#worker-pull-assets" aria-controls="worker-pull-assets" role="tab" data-toggle="tab" data-url="/admin/worker-manager/pull-assets">
-                    {{ "Pull Assets" | trans }}
+                    {{ 'admin::workermanager:tab:pullassets: title' |trans }}
                 </a>
             </li>
             <li class="worker-subview" role="presentation">
                 <a href="#worker-subview" aria-controls="worker-subview" role="tab" data-toggle="tab" data-url="/admin/worker-manager/subview">
-                    {{ "Subview" | trans }}
+                    {{ 'admin::workermanager:tab:subview: title' |trans }}
                 </a>
             </li>
             <li class="worker-metadata" role="presentation">
                 <a href="#worker-metadata" aria-controls="worker-metadata" role="tab" data-toggle="tab" data-url="/admin/worker-manager/metadata">
-                    {{ "Metadata" | trans }}
+                    {{ 'admin::workermanager:tab:metadata: title' |trans }}
                 </a>
             </li>
 
@@ -86,6 +86,6 @@
     </script>
 {% else %}
     <h1 class="alert alert-danger">
-        Error! can't load rabbit config. Check rabbit config to use worker.
+        {{ 'admin::workermanager: Rabbit config error' |trans }}
     </h1>
 {% endif %}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-05-20T15:14:15Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-05-22T12:07:33Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1146,11 +1146,6 @@
         <jms:reference-file line="49">actions/Property/type.html.twig</jms:reference-file>
         <jms:reference-file line="112">actions/Property/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f08525c2e74cb304eaecbc667af7b31b10a30856" resname="Apply in queue">
-        <source>Apply in queue</source>
-        <target state="new">Apply in queue</target>
-        <jms:reference-file line="51">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="0e585e139fb6fc86d30e02ba78bdbb4dff6ac6b9" resname="Apply status on story children." approved="yes">
         <source>Apply status on story children.</source>
         <target state="translated">Pas status aan op de onderliggende.</target>
@@ -1572,7 +1567,7 @@
       <trans-unit id="48bf97f55c15fa2acb0a283e3a7e3f4f738b781d" resname="CHAMPS" approved="yes">
         <source>CHAMPS</source>
         <target state="translated">VELDEN</target>
-        <jms:reference-file line="132">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="133">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="07d75a5073e3247c7ac54d3a797d3f777b421863" resname="Camera Model" approved="yes">
         <source>Camera Model</source>
@@ -1935,7 +1930,6 @@
         <source>Configuration</source>
         <target state="translated">Configuratie</target>
         <jms:reference-file line="731">web/prod/index.html.twig</jms:reference-file>
-        <jms:reference-file line="10">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37c3584d7b7d64dcff10d75caf719d4908e1f433" resname="Confirm new email address" approved="yes">
         <source>Confirm new email address</source>
@@ -2252,11 +2246,6 @@
         <target state="translated">Databox is niet bereikbaar</target>
         <jms:reference-file line="159">Phrasea/Controller/SetupController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e8030586e3316b19b95839ad97ebc59fb105fa54" resname="Databox to populate">
-        <source>Databox to populate</source>
-        <target state="new">Databox to populate</target>
-        <jms:reference-file line="18">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="43ea3aedb88bc50ad1a680a7fc50f09cd0a75800" resname="Databoxes store records, metadatas and their classifications" approved="yes">
         <source>Databoxes store records, metadatas and their classifications</source>
         <target state="translated">Databoxes bewaren records, metadatas en hun classificaties</target>
@@ -2561,16 +2550,6 @@
         <source><![CDATA[Display & action settings]]></source>
         <target state="translated"><![CDATA[Instellingen voor weergave & acties]]></target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="ce0cbd2ac90c3c3ad81848d0096a06b8f6c3ac38" resname="Display finished work">
-        <source>Display finished work</source>
-        <target state="new">Display finished work</target>
-        <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="ccbe3b80349a5bf8e277a68b937ae4f6a3862bbe" resname="Display running work">
-        <source>Display running work</source>
-        <target state="new">Display running work</target>
-        <jms:reference-file line="31">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d47165ea879fb259a5754e6c4052a1a4437dfda8" resname="Display technical data">
         <source>Display technical data</source>
@@ -3084,16 +3063,6 @@
         <source>Equals</source>
         <target state="new">Equals</target>
         <jms:reference-file line="494">web/prod/index.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="5a1b034ef9db439d68644ae68e14c27950194857" resname="Erase all finished">
-        <source>Erase all finished</source>
-        <target state="new">Erase all finished</target>
-        <jms:reference-file line="21">admin/worker-manager/worker_info.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="f1ea244b724bd66da1df7dc74add2054b3c8dd55" resname="Erase all information">
-        <source>Erase all information</source>
-        <target state="new">Erase all information</target>
-        <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab546c237a6685e5c75689266cfa715eeb21b7db" resname="Erreur" approved="yes">
         <source>Erreur</source>
@@ -3871,11 +3840,6 @@
         <target state="new">Ingest retry delay in ms</target>
         <jms:reference-file line="17">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8bf265ee470e7fc9307f9db361f13d7cf629dacc" resname="Initialize pull assets">
-        <source>Initialize pull assets</source>
-        <target state="new">Initialize pull assets</target>
-        <jms:reference-file line="26">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="9be51f96ff02e94d1a5108f14de0b373ef3dd675" resname="Inscription" approved="yes">
         <source>Inscription</source>
         <target state="translated">Inschrijving</target>
@@ -3963,16 +3927,6 @@
         <source>It stores users datas, rights, and references to DataBoxes where records are stored.</source>
         <target state="translated">Het bewaart gebruikers datas, rechten, en verwijzingen naar DataBoxes waar records bewaart worden.</target>
         <jms:reference-file line="607">web/setup/step2.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="657ed33f4bfc04cf4fdf38a82800e4c1d4c4c300" resname="It's delete all finished works !">
-        <source>It's delete all finished works !</source>
-        <target state="new">It's delete all finished works !</target>
-        <jms:reference-file line="18">admin/worker-manager/worker_info.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="83664aac1bcabba873276d4ad072fb0ab6a72a7a" resname="It's delete all work information !">
-        <source>It's delete all work information !</source>
-        <target state="new">It's delete all work information !</target>
-        <jms:reference-file line="8">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="30c8cb83b9acd93beaa32086336c36cb77c065d9" resname="Job" approved="yes">
         <source>Job</source>
@@ -4433,11 +4387,6 @@
         <source>Message automatique de Phraseanet</source>
         <target state="translated">Automatishe melding van Phraseanet</target>
         <jms:reference-file line="134">templates/web/email-template.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="251edc0eb5a820646bda4e103f0f007fd55321f3" resname="Metadata">
-        <source>Metadata</source>
-        <target state="new">Metadata</target>
-        <jms:reference-file line="35">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a666fe90de589fd85a051c101afea12d66f90675" resname="Metadatas retry delay in ms">
         <source>Metadatas retry delay in ms</source>
@@ -5253,11 +5202,6 @@
         <target state="translated">Gelieve te wachten tot uw documenten worden verzameld voor de download, dit kan enkele minuten duren</target>
         <jms:reference-file line="18">actions/Download/prepare.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4a8227177d3aeba652ecd28ed5cb2423de649c8d" resname="Populate">
-        <source>Populate</source>
-        <target state="new">Populate</target>
-        <jms:reference-file line="35">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="bf881de38d13b6900455faae1b27de2b5556b9b0" resname="Populate Index retry delay in ms">
         <source>Populate Index retry delay in ms</source>
         <target state="new">Populate Index retry delay in ms</target>
@@ -5365,7 +5309,7 @@
         <target state="translated">Publicaties</target>
         <jms:reference-file line="110">web/common/menubar.html.twig</jms:reference-file>
         <jms:reference-file line="849">web/prod/index.html.twig</jms:reference-file>
-        <jms:reference-file line="58">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="59">web/admin/tree.html.twig</jms:reference-file>
         <jms:reference-file line="2">admin/publications/wrapper.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="34e6b19e8980f86ac8f2a33377c8cd669b66ac9b" resname="Publier">
@@ -5383,11 +5327,6 @@
         <source>Publishers</source>
         <target state="translated">Uitgevers</target>
         <jms:reference-file line="48">Form/Configuration/ActionsFormType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="5e9a305dfd3719929335256061b1f1a67787b353" resname="Pull Assets">
-        <source>Pull Assets</source>
-        <target state="new">Pull Assets</target>
-        <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push">
         <source>Push</source>
@@ -5731,11 +5670,6 @@
         <target state="translated">Type van de records</target>
         <jms:reference-file line="20">actions/Property/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7fe6bbe7e67e49c425a94b0ba25b4517e8becc61" resname="Refresh list">
-        <source>Refresh list</source>
-        <target state="new">Refresh list</target>
-        <jms:reference-file line="26">admin/worker-manager/worker_info.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
         <source>Refus d'elements de commande</source>
         <target state="translated">Weigering van producten in bestelling</target>
@@ -6047,7 +5981,7 @@
       <trans-unit id="8f40d195970d52ea94bbf5b0aa1dbe9822f10dd5" resname="SUBDEFS" approved="yes">
         <source>SUBDEFS</source>
         <target state="translated">THUMBNAILS</target>
-        <jms:reference-file line="138">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="139">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="efc007a393f66cdb14d57d385822a3d9e36ef873" resname="Save" approved="yes">
         <source>Save</source>
@@ -6105,12 +6039,7 @@
         <source>SearchEngine settings</source>
         <target state="translated">Instellingen zoek motor</target>
         <jms:reference-file line="645">web/setup/step2.html.twig</jms:reference-file>
-        <jms:reference-file line="27">web/admin/tree.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="b06386b4e30974eced90aac0566cd2ea447b6713" resname="Searchengine">
-        <source>Searchengine</source>
-        <target state="new">Searchengine</target>
-        <jms:reference-file line="20">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="28">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f25ce1b8a399bd8621a57427a20039b4b13935db" resname="Security" approved="yes">
         <source>Security</source>
@@ -6583,11 +6512,6 @@
         <target state="translated">Vervanging is niet mogelijk voor dit soort van record</target>
         <jms:reference-file line="129">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6af79f7869351859ccc02b4f0b9368c8570f27ea" resname="Subview">
-        <source>Subview</source>
-        <target state="new">Subview</target>
-        <jms:reference-file line="30">admin/worker-manager/index.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="42a8f651d79fd005eeac0612df6442b983a01184" resname="Success" approved="yes">
         <source>Success</source>
         <target state="translated">Gelukt</target>
@@ -6766,7 +6690,7 @@
         <jms:reference-file line="72">Controller/Prod/TOUController.php</jms:reference-file>
         <jms:reference-file line="6">web/login/cgus.html.twig</jms:reference-file>
         <jms:reference-file line="75">login/layout/base-layout.html.twig</jms:reference-file>
-        <jms:reference-file line="150">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="151">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="903b3a1a72b51b7b51f85ec8c81def53ed9c9b0c" resname="The Phraseanet Web API allows other web application to rely on this instance">
         <source>The Phraseanet Web API allows other web application to rely on this instance</source>
@@ -7832,12 +7756,7 @@
       <trans-unit id="7a99334b41a96be8dc12ae95f5299e7e3577b9c0" resname="Worker Manager">
         <source>Worker Manager</source>
         <target state="new">Worker Manager</target>
-        <jms:reference-file line="83">web/admin/tree.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="d6af959d4ca45b19f620716601cf974957907942" resname="Working info">
-        <source>Working info</source>
-        <target state="new">Working info</target>
-        <jms:reference-file line="15">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="84">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ab73eb14420a56f4fe5227ee4d6dd0a43085b39" resname="Would you like to continue ?" approved="yes">
         <source>Would you like to continue ?</source>
@@ -8478,7 +8397,7 @@
       <trans-unit id="29b30e5308b1e0ac17c9aff0534cd26b64c1fb1f" resname="admin::base: preferences de collection" approved="yes">
         <source>admin::base: preferences de collection</source>
         <target state="translated">voorkeuren van de collectie</target>
-        <jms:reference-file line="201">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="202">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfda4331177b2262ae0caa1db98dc73518622706" resname="admin::base: structure" approved="yes">
         <source>admin::base: structure</source>
@@ -8654,7 +8573,7 @@
       <trans-unit id="856d86151d529e0634776a78bac913fcfc980f0d" resname="admin::collection: ordre des collections" approved="yes">
         <source>admin::collection: ordre des collections</source>
         <target state="translated">volgorde van de collecties</target>
-        <jms:reference-file line="156">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="157">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1c69aee7c5b7570777ac07f6e4099b2787fd4ed" resname="admin::collection:: Gestionnaires des commandes" approved="yes">
         <source>admin::collection:: Gestionnaires des commandes</source>
@@ -9097,7 +9016,7 @@
       <trans-unit id="3a257fdf8d79c8a90dcbddde3f07a3438eaeea5d" resname="admin::plugins: plugins">
         <source>admin::plugins: plugins</source>
         <target state="new">admin::plugins: plugins</target>
-        <jms:reference-file line="75">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="76">web/admin/tree.html.twig</jms:reference-file>
         <jms:reference-file line="6">admin/plugins/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f475cd4059ed9a97e54875b1dd6be5e671c67c0c" resname="admin::plugins: retrieveConfigurationError">
@@ -9178,7 +9097,7 @@
       <trans-unit id="2066e73d46ea21f5c27dec7518cc8ad59c87428a" resname="admin::status: reglage des status" approved="yes">
         <source>admin::status: reglage des status</source>
         <target state="translated">statusinstellingen</target>
-        <jms:reference-file line="144">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="145">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d800769b2db7cf80e5977f68628e6e0b5ffc516" resname="admin::status: texte a afficher" approved="yes">
         <source>admin::status: texte a afficher</source>
@@ -9195,7 +9114,7 @@
       <trans-unit id="085e5ff9eedf51e0c9ddf86917978119c72c8583" resname="admin::structure: reglage de la structure" approved="yes">
         <source>admin::structure: reglage de la structure</source>
         <target state="translated">structuurinstellingen</target>
-        <jms:reference-file line="126">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="127">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d0bd109153d05934d7d2b3a44ae4efc2a27862b5" resname="admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n'appliquez pas les changements avant.">
         <source>admin::sugval: Attention, passer en mode graphique implique la perte des modifications du xml si vous n'appliquez pas les changements avant.</source>
@@ -9250,30 +9169,195 @@
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
         <source>admin::utilisateurs: bases de donnees</source>
         <target state="translated">datables</target>
-        <jms:reference-file line="92">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="93">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="da7e8213d3fa3a9abf0dbffb84437503b993efd8" resname="admin::utilisateurs: demandes en cours" approved="yes">
         <source>admin::utilisateurs: demandes en cours</source>
         <target state="translated">aanvraag wordt verwerkt</target>
-        <jms:reference-file line="49">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="50">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fe545e11c7a9d78eb5771fc0b9f175b705206204" resname="admin::utilisateurs: gestionnaire de taches" approved="yes">
         <source>admin::utilisateurs: gestionnaire de taches</source>
         <target state="translated">taak beheerder</target>
-        <jms:reference-file line="67">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="68">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dd1476902f43d10a81d53fed937478f9ff55bdc9" resname="admin::utilisateurs: utilisateurs" approved="yes">
         <source>admin::utilisateurs: utilisateurs</source>
         <target state="translated">gebruikers</target>
-        <jms:reference-file line="43">web/admin/tree.html.twig</jms:reference-file>
-        <jms:reference-file line="173">web/admin/tree.html.twig</jms:reference-file>
-        <jms:reference-file line="210">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="44">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="174">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="211">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e3596c15b297d6a9f9a8cd8dd1d8fd43d919ce8" resname="admin::utilisateurs: utilisateurs connectes" approved="yes">
         <source>admin::utilisateurs: utilisateurs connectes</source>
         <target state="translated">geconnecteerde gebruikers</target>
-        <jms:reference-file line="35">web/admin/tree.html.twig</jms:reference-file>
+        <jms:reference-file line="36">web/admin/tree.html.twig</jms:reference-file>
         <jms:reference-file line="44">web/admin/connected-users.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error">
+        <source>admin::workermanager: Rabbit config error</source>
+        <target state="new">admin::workermanager: Rabbit config error</target>
+        <jms:reference-file line="89">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title">
+        <source>admin::workermanager:tab:configuration: title</source>
+        <target state="new">admin::workermanager:tab:configuration: title</target>
+        <jms:reference-file line="10">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a6e7083ac98423878bd52a1bc01b84904f13fb01" resname="admin::workermanager:tab:metadata: description">
+        <source>admin::workermanager:tab:metadata: description</source>
+        <target state="new">admin::workermanager:tab:metadata: description</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_metadata.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="335aaf2331865078d562586873c3c864cb70e023" resname="admin::workermanager:tab:metadata: title">
+        <source>admin::workermanager:tab:metadata: title</source>
+        <target state="new">admin::workermanager:tab:metadata: title</target>
+        <jms:reference-file line="35">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9db21fc54db3f6ccdd1874f586bd509e247d27cc" resname="admin::workermanager:tab:pullassets: Initialize pull assets">
+        <source>admin::workermanager:tab:pullassets: Initialize pull assets</source>
+        <target state="new">admin::workermanager:tab:pullassets: Initialize pull assets</target>
+        <jms:reference-file line="26">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description">
+        <source>admin::workermanager:tab:pullassets: description</source>
+        <target state="new">admin::workermanager:tab:pullassets: description</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8c41af96270369f510fd8400c78a0584738d3631" resname="admin::workermanager:tab:pullassets: title">
+        <source>admin::workermanager:tab:pullassets: title</source>
+        <target state="new">admin::workermanager:tab:pullassets: title</target>
+        <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate">
+        <source>admin::workermanager:tab:searchengine: Databox to populate</source>
+        <target state="new">admin::workermanager:tab:searchengine: Databox to populate</target>
+        <jms:reference-file line="18">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="efa86c50f13ab5fb26889c4e1c8762ca2def6ac0" resname="admin::workermanager:tab:searchengine: Populate">
+        <source>admin::workermanager:tab:searchengine: Populate</source>
+        <target state="new">admin::workermanager:tab:searchengine: Populate</target>
+        <jms:reference-file line="35">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c3e77fe723ba9d6b2bc3344154283c5394dfa917" resname="admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox">
+        <source>admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox</source>
+        <target state="new">admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox</target>
+        <jms:reference-file line="89">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="75bc52560478633af1d8a2ef17827c6d0fd9f6fc" resname="admin::workermanager:tab:searchengine: description">
+        <source>admin::workermanager:tab:searchengine: description</source>
+        <target state="new">admin::workermanager:tab:searchengine: description</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1ea949a6b9a4ed6302e78106dcc36c2391f13175" resname="admin::workermanager:tab:searchengine: title">
+        <source>admin::workermanager:tab:searchengine: title</source>
+        <target state="new">admin::workermanager:tab:searchengine: title</target>
+        <jms:reference-file line="20">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5cb527e34ef4d2cd86a24758b485dc84f1ae2e00" resname="admin::workermanager:tab:subview: description">
+        <source>admin::workermanager:tab:subview: description</source>
+        <target state="new">admin::workermanager:tab:subview: description</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_subview.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0eea783321bf62b3fcfa883de895edb22f19368a" resname="admin::workermanager:tab:subview: title">
+        <source>admin::workermanager:tab:subview: title</source>
+        <target state="new">admin::workermanager:tab:subview: title</target>
+        <jms:reference-file line="30">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title">
+        <source>admin::workermanager:tab:workerconfig: title</source>
+        <target state="new">admin::workermanager:tab:workerconfig: title</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning">
+        <source>admin::workermanager:tab:workerconfig: warning</source>
+        <target state="new">admin::workermanager:tab:workerconfig: warning</target>
+        <jms:reference-file line="3">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1bd245ee491c4fa77d7ede38c6ea4c36e00cbde4" resname="admin::workermanager:tab:workerconfig:Apply in queue">
+        <source>admin::workermanager:tab:workerconfig:Apply in queue</source>
+        <target state="new">admin::workermanager:tab:workerconfig:Apply in queue</target>
+        <jms:reference-file line="50">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work">
+        <source>admin::workermanager:tab:workerinfo: Display finished work</source>
+        <target state="new">admin::workermanager:tab:workerinfo: Display finished work</target>
+        <jms:reference-file line="37">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work">
+        <source>admin::workermanager:tab:workerinfo: Display running work</source>
+        <target state="new">admin::workermanager:tab:workerinfo: Display running work</target>
+        <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished">
+        <source>admin::workermanager:tab:workerinfo: Erase all finished</source>
+        <target state="new">admin::workermanager:tab:workerinfo: Erase all finished</target>
+        <jms:reference-file line="19">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8ffab13b85fb74cc4091eaeb7d5e21b31034b21a" resname="admin::workermanager:tab:workerinfo: Erase all information">
+        <source>admin::workermanager:tab:workerinfo: Erase all information</source>
+        <target state="new">admin::workermanager:tab:workerinfo: Erase all information</target>
+        <jms:reference-file line="8">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list">
+        <source>admin::workermanager:tab:workerinfo: Refresh list</source>
+        <target state="new">admin::workermanager:tab:workerinfo: Refresh list</target>
+        <jms:reference-file line="29">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4b11f0cdb860a576117268180cfc6900a9d533e3" resname="admin::workermanager:tab:workerinfo: Warning! Erase all finished">
+        <source>admin::workermanager:tab:workerinfo: Warning! Erase all finished</source>
+        <target state="new">admin::workermanager:tab:workerinfo: Warning! Erase all finished</target>
+        <jms:reference-file line="22">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9f27ba960967b509af00a86a0758e8091806d0f6" resname="admin::workermanager:tab:workerinfo: Warning! Erase all information">
+        <source>admin::workermanager:tab:workerinfo: Warning! Erase all information</source>
+        <target state="new">admin::workermanager:tab:workerinfo: Warning! Erase all information</target>
+        <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created">
+        <source>admin::workermanager:tab:workerinfo: created</source>
+        <target state="new">admin::workermanager:tab:workerinfo: created</target>
+        <jms:reference-file line="49">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id">
+        <source>admin::workermanager:tab:workerinfo: databox_id</source>
+        <target state="new">admin::workermanager:tab:workerinfo: databox_id</target>
+        <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description">
+        <source>admin::workermanager:tab:workerinfo: description</source>
+        <target state="new">admin::workermanager:tab:workerinfo: description</target>
+        <jms:reference-file line="3">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published">
+        <source>admin::workermanager:tab:workerinfo: published</source>
+        <target state="new">admin::workermanager:tab:workerinfo: published</target>
+        <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="feed33fba251da5c0451124020d85250982721d7" resname="admin::workermanager:tab:workerinfo: record_id">
+        <source>admin::workermanager:tab:workerinfo: record_id</source>
+        <target state="new">admin::workermanager:tab:workerinfo: record_id</target>
+        <jms:reference-file line="46">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status">
+        <source>admin::workermanager:tab:workerinfo: status</source>
+        <target state="new">admin::workermanager:tab:workerinfo: status</target>
+        <jms:reference-file line="51">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title">
+        <source>admin::workermanager:tab:workerinfo: title</source>
+        <target state="new">admin::workermanager:tab:workerinfo: title</target>
+        <jms:reference-file line="15">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work">
+        <source>admin::workermanager:tab:workerinfo: work</source>
+        <target state="new">admin::workermanager:tab:workerinfo: work</target>
+        <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2764b360bd443b91d7b611bc181e33c30bbdce07" resname="admin::workermanager:tab:workerinfo: work_on">
+        <source>admin::workermanager:tab:workerinfo: work_on</source>
+        <target state="new">admin::workermanager:tab:workerinfo: work_on</target>
+        <jms:reference-file line="48">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error">
         <source>admin:worker Retrieve configuration error</source>
