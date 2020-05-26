@@ -11,7 +11,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *          @ORM\index(name="host", columns={"host"}),
  *          @ORM\index(name="port", columns={"port"}),
  *          @ORM\index(name="index_name", columns={"index_name"}),
- *          @ORM\index(name="databox_id", columns={"databox_id"}),
  *      }
  * )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningPopulateRepository")
