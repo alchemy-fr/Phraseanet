@@ -218,6 +218,14 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   }
 }
 
+.without-border {
+  margin-left: 15px;
+  outline: none;
+  &:focus {
+    outline: none;
+  }
+}
+
 /******* EDIT USERS ***********************************************************/
 div.no_switch {
   width: 12px;
