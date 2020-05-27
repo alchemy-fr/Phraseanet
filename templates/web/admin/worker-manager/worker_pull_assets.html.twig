@@ -1,0 +1,29 @@
+<h1>{{ 'admin::workermanager:tab:pullassets: description' |trans }}</h1>
+
+{{ form_start(form, {'action': path('worker_admin_pullAssets')}) }}
+
+<div class="control-group">
+    {{ form_row(form.endpointCommit) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.endpointToken) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.clientSecret) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.clientId) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.pullInterval) }}
+</div>
+
+<div class="control-group">
+    <input type="submit" class="btn btn-primary" value={{ "admin::workermanager:tab:pullassets: Initialize pull assets"|trans }} />
+</div>
+
+{{ form_end(form) }}

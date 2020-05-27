@@ -189,6 +189,43 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   color: #ffffff;
 }
 
+.select-all-line {
+  color: #afafaf;
+  cursor: pointer;
+}
+.users_check_line_wrap {
+  position: absolute;
+  div {
+    padding: 5px 10px;
+    background-color: #cccccc;
+    color: #000000;
+    cursor: pointer;
+    line-height: 1.7;
+
+    &:hover {
+      padding: 5px 10px;
+      background-color: #4d4d4d;
+      color: #ffffff;
+    }
+  }
+}
+
+.fa-right {
+  color: #2475b5;
+  font-size: 16px;
+  .select-all-line-btn & {
+    padding-left: 6px;
+  }
+}
+
+.without-border {
+  margin-left: 15px;
+  outline: none;
+  &:focus {
+    outline: none;
+  }
+}
+
 /******* EDIT USERS ***********************************************************/
 div.no_switch {
   width: 12px;
@@ -211,7 +248,7 @@ div.switch_quota.mixed,
 div.switch_masks.mixed,
 div.switch_time.mixed,
 div.switch_right.mixed {
-  background-image: url('#{$iconsPath}ccoch2.gif');
+  background-image: url('#{$iconsPath}square-duotone.svg');
   background-repeat: no-repeat;
   background-position: center center;
 }
@@ -219,7 +256,7 @@ div.switch_quota.checked,
 div.switch_masks.checked,
 div.switch_time.checked,
 div.switch_right.checked {
-  background-image: url('#{$iconsPath}ccoch1.gif');
+  background-image: url('#{$iconsPath}check-square-regular.svg');
   background-repeat: no-repeat;
   background-position: center center;
 }
@@ -227,7 +264,7 @@ div.switch_quota.unchecked,
 div.switch_masks.unchecked,
 div.switch_time.unchecked,
 div.switch_right.unchecked {
-  background-image: url('#{$iconsPath}ccoch0.gif');
+  background-image: url('#{$iconsPath}square-regular.svg');
   background-repeat: no-repeat;
   background-position: center center;
 }
@@ -911,6 +948,12 @@ span.simplecolorpicker.picker {
 }
 .ui-dialog-titlebar-close {
   text-indent: -9999999px;
+}
+.worker-info-block {
+  .btn-primary {
+    min-width: 161px;
+    margin-right: 15px;
+  }
 }
 @import './databases';
 @import './fields';

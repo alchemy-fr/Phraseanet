@@ -48,7 +48,7 @@
                 {{ result_macro.thumbnail(record, settings.images_size, settings.images_size, extraclass) }}
 
                 {% if rollover %}
-                    {% set extraclass = 'rollover-gif-hover' %}
+                    {% set extraclass = 'rollover-gif-hover hide' %}
                     {{ result_macro.thumbnailgif(record, settings.images_size, settings.images_size, extraclass) }}
                 {% endif %}
             </div>

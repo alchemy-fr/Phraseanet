@@ -157,8 +157,8 @@ class databox_status
      * compute ((0 M s1) M s2) where M is the "mask" operator
      * nb : s1,s2 are binary mask strings as "01x0xx1xx0x", no other format (hex) supported
      *
-     * @param $stat1 a binary mask "010x1xx0.." STRING
-     * @param $stat2 a binary mask "x100x1..." STRING
+     * @param string $stat1 a binary mask "010x1xx0.."
+     * @param string $stat2 a binary mask "x100x1..."
      *
      * @return string
      */

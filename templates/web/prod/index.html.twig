@@ -989,6 +989,15 @@
                     {{ 'Afficher le titre' | trans }}
                 </label>
             </div>
+            <div>
+                {% set basket_type_display = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_type_display') %}
+                <label for="basket_type_display" class="checkbox">
+                    <input
+                            name="basket_type_display" type="checkbox" class="checkbox preferences-options-basket-type" value="1"
+                            id="basket_type_display" {% if basket_type_display == '1' %}checked="checked"{% endif %} />
+                    {{ 'Afficher le type' | trans }}
+                </label>
+            </div>
         </div>
     </div>
 

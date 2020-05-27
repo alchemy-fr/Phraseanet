@@ -87,6 +87,8 @@ use Alchemy\Phrasea\Media\MediaAccessorResolver;
 use Alchemy\Phrasea\Media\PermalinkMediaResolver;
 use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\WorkerManager\Provider\AlchemyWorkerServiceProvider;
+use Alchemy\Phrasea\WorkerManager\Provider\QueueWorkerServiceProvider;
 use Alchemy\QueueProvider\QueueServiceProvider;
 use Alchemy\WorkerProvider\WorkerServiceProvider;
 use Doctrine\DBAL\Event\ConnectionEventArgs;
@@ -267,6 +269,11 @@ class Application extends SilexApplication
 
         $this->register(new OrderServiceProvider());
         $this->register(new WebhookServiceProvider());
+
+        if ($this['configuration.store']->isSetup()) {
+            $this->register(new QueueWorkerServiceProvider());
+            $this->register(new AlchemyWorkerServiceProvider());
+        }
 
         $this['monolog'] = $this->share(
             $this->extend('monolog', function (LoggerInterface $logger, Application $app) {
