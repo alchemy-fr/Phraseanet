@@ -6,13 +6,13 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningPopulateRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
-use Alchemy\Phrasea\WorkerManager\Model\DBManipulator;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -147,7 +147,10 @@ class AdminConfigurationController extends Controller
     {
         $databoxIds = $request->get('sbasIds');
 
-        return DBManipulator::checkPopulateIndexStatusByDataboxId($databoxIds);
+        /** @var WorkerRunningPopulateRepository $repoWorkerPopulate */
+        $repoWorkerPopulate = $app['repo.worker-running-populate'];
+
+        return $repoWorkerPopulate->checkPopulateStatusByDataboxIds($databoxIds);
     }
 
     public function pullAssetsAction(PhraseaApplication $app, Request $request)

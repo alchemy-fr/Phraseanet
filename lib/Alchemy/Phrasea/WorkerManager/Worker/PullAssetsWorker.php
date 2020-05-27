@@ -3,7 +3,8 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\WorkerManager\Model\DBManipulator;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningUploader;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningUploaderRepository;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
 
@@ -12,10 +13,14 @@ class PullAssetsWorker implements WorkerInterface
     private $messagePublisher;
     private $conf;
 
-    public function __construct(MessagePublisher $messagePublisher, PropertyAccess $conf)
+    /** @var  WorkerRunningUploaderRepository $repoWorkerUploader */
+    private $repoWorkerUploader;
+
+    public function __construct(MessagePublisher $messagePublisher, PropertyAccess $conf, WorkerRunningUploaderRepository $repoWorkerUploader)
     {
-        $this->messagePublisher = $messagePublisher;
-        $this->conf             = $conf;
+        $this->messagePublisher     = $messagePublisher;
+        $this->conf                 = $conf;
+        $this->repoWorkerUploader   = $repoWorkerUploader;
     }
 
     public function process(array $payload)
@@ -62,9 +67,10 @@ class PullAssetsWorker implements WorkerInterface
 
         foreach ($commits as $commit) {
             //  send only payload in ingest-queue if the commit is ack false and it is not being creating
-            if (!$commit['acknowledged'] && !DBManipulator::isCommitToBeCreating($commit['id'])) {
+            if (!$commit['acknowledged'] && !$this->isCommitToBeCreating($commit['id'])) {
                 $this->messagePublisher->pushLog("A new commit found in the uploader ! commit_ID : ".$commit['id']);
 
+                // this is an uploader PULL mode
                 $payload = [
                     'message_type'  => MessagePublisher::ASSETS_INGEST_TYPE,
                     'payload'       => [
@@ -74,7 +80,8 @@ class PullAssetsWorker implements WorkerInterface
                         'publisher' => $commit['userId'],
                         'commit_id' => $commit['id'],
                         'token'     => $commit['token'],
-                        'base_url'  => $baseUrl
+                        'base_url'  => $baseUrl,
+                        'type'      => WorkerRunningUploader::TYPE_PULL
                     ]
                 ];
 
@@ -133,5 +140,16 @@ class PullAssetsWorker implements WorkerInterface
         $this->conf->set(['workers', 'pull_assets', 'assetToken'], $tokenBody['access_token']);
 
         return $this->conf->get(['workers', 'pull_assets']);
+    }
+
+    /**
+     * @param $commitId
+     * @return bool
+     */
+    private function isCommitToBeCreating($commitId)
+    {
+        $res = $this->repoWorkerUploader->findBy(['commitId' => $commitId]);
+
+        return count($res) != 0;
     }
 }

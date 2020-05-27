@@ -19,10 +19,11 @@ use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningUploader;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningUploaderRepository;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationRecordFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use Alchemy\Phrasea\WorkerManager\Model\DBManipulator;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -41,6 +42,9 @@ class CreateRecordWorker implements WorkerInterface
     /** @var MessagePublisher $messagePublisher */
     private $messagePublisher;
 
+    /** @var  WorkerRunningUploaderRepository $repoWorkerUploader */
+    private $repoWorkerUploader;
+
     public function __construct(PhraseaApplication $app)
     {
         $this->app              = $app;
@@ -50,6 +54,9 @@ class CreateRecordWorker implements WorkerInterface
 
     public function process(array $payload)
     {
+        $this->repoWorkerUploader = $this->getWorkerRunningUploaderRepository();
+        $em = $this->repoWorkerUploader->getEntityManager();
+
         $uploaderClient = new Client(['base_uri' => $payload['base_url']]);
 
         //get asset informations
@@ -62,6 +69,13 @@ class CreateRecordWorker implements WorkerInterface
         $body = json_decode($body,true);
 
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
+
+
+        /** @var WorkerRunningUploader $workerRunningUploader */
+        $workerRunningUploader =  $this->repoWorkerUploader->findOneBy([
+            'commitId' => $payload['commit_id'],
+            'assetId'  => $payload['asset']
+        ]);
 
         //download the asset
         try {
@@ -81,6 +95,9 @@ class CreateRecordWorker implements WorkerInterface
                 $count
             ));
 
+            $em->remove($workerRunningUploader);
+            $em->flush();
+
             return;
         }
 
@@ -98,13 +115,31 @@ class CreateRecordWorker implements WorkerInterface
                 $count
             ));
 
+            $em->remove($workerRunningUploader);
+            $em->flush();
+
             return;
         }
 
-        $remainingAssets = DBManipulator::updateRemainingAssetsListByCommit($payload['commit_id'], $payload['asset']);
+        if ($workerRunningUploader != null) {
+            $em->beginTransaction();
+            try {
+                $workerRunningUploader->setStatus(WorkerRunningUploader::DOWNLOADED);
+
+                $em->persist($workerRunningUploader);
+
+                $em->flush();
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
+
+        }
+
+        $canAck = $this->repoWorkerUploader->canAck($payload['commit_id']);
 
         //  if all assets in the commit are downloaded , send ack to the uploader
-        if ($remainingAssets == 0) {
+        if ($canAck) {
             //  post ack to the uploader
             $uploaderClient->post('/commits/' . $payload['commit_id'] . '/ack', [
                     'headers' => [
@@ -299,5 +334,13 @@ class CreateRecordWorker implements WorkerInterface
     private function getSubdefSubstituer()
     {
         return $this->app['subdef.substituer'];
+    }
+
+    /**
+     * @return WorkerRunningUploaderRepository
+     */
+    private function getWorkerRunningUploaderRepository()
+    {
+        return $this->app['repo.worker-running-uploader'];
     }
 }
