@@ -153,6 +153,22 @@ class patch_410alpha28a implements patchInterface
             $app['conf']->set(['main', 'binaries', 'exiftool_timeout'], 60);
         }
 
+        // custom-link section, remove default store
+        $app['conf']->remove(['registry', 'custom-links', 0]);
+        $app['conf']->remove(['registry', 'custom-links', 1]);
+
+        $customLinks = [
+            'linkName'      => 'Phraseanet store',
+            'linkLanguage'  => 'all',
+            'linkUrl'       => 'https://store.alchemy.fr',
+            'linkLocation'  => 'help-menu',
+            'linkOrder'     =>  1,
+            'linkBold'      =>  false,
+            'linkColor'     =>  ''
+        ];
+
+        $app['conf']->set(['registry', 'custom-links', 0], $customLinks);
+
         return true;
     }
 }
