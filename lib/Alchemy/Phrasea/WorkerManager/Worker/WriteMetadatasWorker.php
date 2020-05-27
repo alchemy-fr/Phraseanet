@@ -82,6 +82,7 @@ class WriteMetadatasWorker implements WorkerInterface
 
             // tell that a file is in used to create subdef
             $em = $this->getEntityManager();
+            $this->repoWorker->reconnect();
             $em->beginTransaction();
 
             try {
@@ -245,6 +246,7 @@ class WriteMetadatasWorker implements WorkerInterface
 
 
             // tell that we have finished to work on this file
+            $this->repoWorker->reconnect();
             $em->beginTransaction();
             try {
                 $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);

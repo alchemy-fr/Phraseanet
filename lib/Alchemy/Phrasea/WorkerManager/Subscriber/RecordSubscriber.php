@@ -101,6 +101,9 @@ class RecordSubscriber implements EventSubscriberInterface
 
         $repoWorker = $this->getRepoWorker();
         $em = $repoWorker->getEntityManager();
+        // check connection an re-connect if needed
+        $repoWorker->reconnect();
+
         $workerRunningJob = $repoWorker->findOneBy([
             'databoxId' => $event->getRecord()->getDataboxId(),
             'recordId'  => $event->getRecord()->getRecordId(),
@@ -108,13 +111,15 @@ class RecordSubscriber implements EventSubscriberInterface
             'workOn'    => $event->getSubdefName()
         ]);
 
-        $em->beginTransaction();
-        try {
-            $em->remove($workerRunningJob);
-            $em->flush();
-            $em->commit();
-        } catch (\Exception $e) {
-            $em->rollback();
+        if ($workerRunningJob) {
+            $em->beginTransaction();
+            try {
+                $em->remove($workerRunningJob);
+                $em->flush();
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
         }
 
         $this->messagePublisher->publishMessage(
@@ -223,6 +228,9 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $repoWorker = $this->getRepoWorker();
             $em = $repoWorker->getEntityManager();
+            // check connection an re-connect if needed
+            $repoWorker->reconnect();
+
             $workerRunningJob = $repoWorker->findOneBy([
                 'databoxId' => $event->getRecord()->getDataboxId(),
                 'recordId'  => $event->getRecord()->getRecordId(),
@@ -230,13 +238,15 @@ class RecordSubscriber implements EventSubscriberInterface
                 'workOn'    => $event->getSubdefName()
             ]);
 
-            $em->beginTransaction();
-            try {
-                $em->remove($workerRunningJob);
-                $em->flush();
-                $em->commit();
-            } catch (\Exception $e) {
-                $em->rollback();
+            if ($workerRunningJob) {
+                $em->beginTransaction();
+                try {
+                    $em->remove($workerRunningJob);
+                    $em->flush();
+                    $em->commit();
+                } catch (\Exception $e) {
+                    $em->rollback();
+                }
             }
 
             $this->messagePublisher->publishMessage(
