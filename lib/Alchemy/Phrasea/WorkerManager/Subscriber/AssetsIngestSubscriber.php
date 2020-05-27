@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
+use Alchemy\Phrasea\Model\Entities\WorkerRunningUploader;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreateEvent;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationRecordFailureEvent;
@@ -21,10 +22,12 @@ class AssetsIngestSubscriber implements EventSubscriberInterface
 
     public function onAssetsCreate(AssetsCreateEvent $event)
     {
+        // this is an uploader PUSH mode
         $payload = [
             'message_type'  => MessagePublisher::ASSETS_INGEST_TYPE,
-            'payload'       => $event->getData()
+            'payload'       => array_merge($event->getData(), ['type' => WorkerRunningUploader::TYPE_PUSH])
         ];
+
 
         $this->messagePublisher->publishMessage($payload, MessagePublisher::ASSETS_INGEST_QUEUE);
     }

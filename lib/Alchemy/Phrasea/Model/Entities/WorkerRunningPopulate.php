@@ -2,20 +2,20 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Core\PhraseaTokens;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="WorkerRunningJob",
+ * @ORM\Table(name="WorkerRunningPopulate",
  *      indexes={
- *          @ORM\index(name="databox_id", columns={"databox_id"}),
- *          @ORM\index(name="record_id", columns={"record_id"}),
+ *          @ORM\index(name="host", columns={"host"}),
+ *          @ORM\index(name="port", columns={"port"}),
+ *          @ORM\index(name="index_name", columns={"index_name"}),
  *      }
  * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningPopulateRepository")
  */
-class WorkerRunningJob
+class WorkerRunningPopulate
 {
     const FINISHED = 'finished';
     const RUNNING  = 'running';
@@ -25,28 +25,27 @@ class WorkerRunningJob
      * @ORM\Id
      * @ORM\GeneratedValue
      */
-
     private $id;
+
+    /**
+     * @ORM\Column(type="string", name="host")
+     */
+    private $host;
+
+    /**
+     * @ORM\Column(type="string", name="port")
+     */
+    private $port;
+
+    /**
+     * @ORM\Column(type="string", name="index_name")
+     */
+    private $indexName;
 
     /**
      * @ORM\Column(type="integer", name="databox_id")
      */
     private $databoxId;
-
-    /**
-     * @ORM\Column(type="integer", name="record_id")
-     */
-    private $recordId;
-
-    /**
-     * @ORM\Column(type="integer", name="work")
-     */
-    private $work;
-
-    /**
-     * @ORM\Column(type="string", name="work_on")
-     */
-    private $workOn;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -78,6 +77,63 @@ class WorkerRunningJob
     }
 
     /**
+     * @param $host
+     * @return $this
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param $port
+     * @return $this
+     */
+    public function setPort($port)
+    {
+        $this->port = $port;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * @param $indexName
+     * @return $this
+     */
+    public function setIndexName($indexName)
+    {
+        $this->indexName = $indexName;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIndexName()
+    {
+        return $this->indexName;
+    }
+
+    /**
      * @param $databoxId
      * @return $this
      */
@@ -94,67 +150,6 @@ class WorkerRunningJob
     public function getDataboxId()
     {
         return $this->databoxId;
-    }
-
-
-    /**
-     * @param $recordId
-     * @return $this
-     */
-    public function setRecordId($recordId)
-    {
-        $this->recordId = $recordId;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRecordId()
-    {
-        return $this->recordId;
-
-    }
-
-
-    /**
-     * @param $work
-     * @return $this
-     */
-    public function setWork($work)
-    {
-        $this->work = $work;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWork()
-    {
-        return $this->work;
-    }
-
-
-    /**
-     * @param $workOn
-     * @return $this
-     */
-    public function setWorkOn($workOn)
-    {
-        $this->workOn = $workOn;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWorkOn()
-    {
-        return $this->workOn;
     }
 
     /**
@@ -220,20 +215,5 @@ class WorkerRunningJob
     public function getStatus()
     {
         return $this->status;
-    }
-
-    public function getWorkName()
-    {
-        switch ($this->work) {
-            case PhraseaTokens::MAKE_SUBDEF:
-                return 'MAKE_SUBDEF';
-            case PhraseaTokens::WRITE_META_DOC:
-                return 'WRITE_META_DOC';
-            case PhraseaTokens::WRITE_META_SUBDEF:
-                return 'WRITE_META_SUBDEF';
-            default:
-                return $this->work;
-
-        }
     }
 }

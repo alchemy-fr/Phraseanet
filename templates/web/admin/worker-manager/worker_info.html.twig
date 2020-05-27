@@ -46,8 +46,9 @@
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: record_id' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work_on' | trans }}</th>
-        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: created' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: published' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: created' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: finished' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: status' | trans }}</th>
     </tr>
     </thead>
@@ -60,8 +61,16 @@
         <td>{{ workerRow.recordId }}</td>
         <td>{{ workerRow.getWorkName }}</td>
         <td>{{ workerRow.workOn }}</td>
-        <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
         <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
+        <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
+        <td>
+            {% if workerRow.finished %}
+                {{ workerRow.finished|date('Y-m-d H:i:s') }}
+            {% else %}
+                -
+            {% endif %}
+
+        </td>
         <td>{{ workerRow.status }}</td>
     </tr>
 {% endfor %}
@@ -72,7 +81,6 @@
 
     <script type="text/javascript">
         $("#refresh-list").on('click', function () {
-            console.log("ato");
             var running  = 1;
             var finished = 1;
             if (!$(".running-work").is(":checked"))

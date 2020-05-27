@@ -2,51 +2,47 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Core\PhraseaTokens;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="WorkerRunningJob",
+ * @ORM\Table(name="WorkerRunningUploader",
  *      indexes={
- *          @ORM\index(name="databox_id", columns={"databox_id"}),
- *          @ORM\index(name="record_id", columns={"record_id"}),
+ *          @ORM\index(name="commit_id", columns={"commit_id"}),
+ *          @ORM\index(name="asset_id", columns={"asset_id"}),
  *      }
  * )
- * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository")
+ * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningUploaderRepository")
  */
-class WorkerRunningJob
+class WorkerRunningUploader
 {
-    const FINISHED = 'finished';
-    const RUNNING  = 'running';
+    const DOWNLOADED    = 'downloaded';
+    const RUNNING       = 'running';
+
+    const TYPE_PULL     = 'pull';
+    const TYPE_PUSH     = 'push';
 
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
-
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="databox_id")
+     * @ORM\Column(type="string", name="commit_id")
      */
-    private $databoxId;
+    private $commitId;
 
     /**
-     * @ORM\Column(type="integer", name="record_id")
+     * @ORM\Column(type="string", name="asset_id")
      */
-    private $recordId;
+    private $assetId;
 
     /**
-     * @ORM\Column(type="integer", name="work")
+     * @ORM\Column(type="string", name="type")
      */
-    private $work;
-
-    /**
-     * @ORM\Column(type="string", name="work_on")
-     */
-    private $workOn;
+    private $type;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -69,6 +65,7 @@ class WorkerRunningJob
      */
     private $status;
 
+
     /**
      * @return integer
      */
@@ -78,12 +75,12 @@ class WorkerRunningJob
     }
 
     /**
-     * @param $databoxId
+     * @param $commitId
      * @return $this
      */
-    public function setDataboxId($databoxId)
+    public function setCommitId($commitId)
     {
-        $this->databoxId = $databoxId;
+        $this->commitId = $commitId;
 
         return $this;
     }
@@ -91,19 +88,18 @@ class WorkerRunningJob
     /**
      * @return mixed
      */
-    public function getDataboxId()
+    public function getCommitId()
     {
-        return $this->databoxId;
+        return $this->commitId;
     }
 
-
     /**
-     * @param $recordId
+     * @param $assetId
      * @return $this
      */
-    public function setRecordId($recordId)
+    public function setAssetId($assetId)
     {
-        $this->recordId = $recordId;
+        $this->assetId = $assetId;
 
         return $this;
     }
@@ -111,50 +107,9 @@ class WorkerRunningJob
     /**
      * @return mixed
      */
-    public function getRecordId()
+    public function getAssetId()
     {
-        return $this->recordId;
-
-    }
-
-
-    /**
-     * @param $work
-     * @return $this
-     */
-    public function setWork($work)
-    {
-        $this->work = $work;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWork()
-    {
-        return $this->work;
-    }
-
-
-    /**
-     * @param $workOn
-     * @return $this
-     */
-    public function setWorkOn($workOn)
-    {
-        $this->workOn = $workOn;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getWorkOn()
-    {
-        return $this->workOn;
+        return $this->assetId;
     }
 
     /**
@@ -222,18 +177,22 @@ class WorkerRunningJob
         return $this->status;
     }
 
-    public function getWorkName()
+    /**
+     * @param $type
+     * @return $this
+     */
+    public function setType($type)
     {
-        switch ($this->work) {
-            case PhraseaTokens::MAKE_SUBDEF:
-                return 'MAKE_SUBDEF';
-            case PhraseaTokens::WRITE_META_DOC:
-                return 'WRITE_META_DOC';
-            case PhraseaTokens::WRITE_META_SUBDEF:
-                return 'WRITE_META_SUBDEF';
-            default:
-                return $this->work;
+        $this->type = $type;
 
-        }
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }
