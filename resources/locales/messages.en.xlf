@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-05-27T06:39:51Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -790,9 +790,9 @@
         <target state="translated">Show Title</target>
         <jms:reference-file line="989">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ee793299aa2f135a4330889d59d362d1652fa577" resname="Afficher le type">
+      <trans-unit id="ee793299aa2f135a4330889d59d362d1652fa577" resname="Afficher le type" approved="no">
         <source>Afficher le type</source>
-        <target state="new">Afficher le type</target>
+        <target state="needs-translation">Display type</target>
         <jms:reference-file line="998">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7627cf7574df870b584ab3bd8a67d62d7ab4a18b" resname="Afficher les status" approved="yes">
@@ -9073,14 +9073,14 @@
         <target state="translated">Show guest user</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection">
+      <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="no">
         <source>admin::users:edit: Manage inline selection</source>
-        <target state="new">admin::users:edit: Manage inline selection</target>
+        <target state="needs-translation">select</target>
         <jms:reference-file line="306">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right">
+      <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right" approved="no">
         <source>admin::users:edit: check all right</source>
-        <target state="new">admin::users:edit: check all right</target>
+        <target state="needs-translation">Give All Rights on the collection</target>
         <jms:reference-file line="46">web/admin/index.html.twig</jms:reference-file>
         <jms:reference-file line="312">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
@@ -9089,19 +9089,19 @@
         <target state="new">admin::users:edit: check left right</target>
         <jms:reference-file line="45">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="622a6320218ce751b33cf90a1def6bfb5ac837e0" resname="admin::users:edit: check read right">
+      <trans-unit id="622a6320218ce751b33cf90a1def6bfb5ac837e0" resname="admin::users:edit: check read right" approved="no">
         <source>admin::users:edit: check read right</source>
-        <target state="new">admin::users:edit: check read right</target>
+        <target state="needs-translation">Give Read permission on the collection</target>
         <jms:reference-file line="311">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3633b8b0f40b33b71da34d2b7169b978731dbc5c" resname="admin::users:filter: content">
+      <trans-unit id="3633b8b0f40b33b71da34d2b7169b978731dbc5c" resname="admin::users:filter: content" approved="no">
         <source>admin::users:filter: content</source>
-        <target state="new">admin::users:filter: content</target>
+        <target state="needs-translation">contains</target>
         <jms:reference-file line="50">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="58f333882ef2f6c718c5b5b0c2660e81da62f08d" resname="admin::users:filter: start with">
+      <trans-unit id="58f333882ef2f6c718c5b5b0c2660e81da62f08d" resname="admin::users:filter: start with" approved="no">
         <source>admin::users:filter: start with</source>
-        <target state="new">admin::users:filter: start with</target>
+        <target state="needs-translation">starts with</target>
         <jms:reference-file line="51">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
@@ -9137,14 +9137,14 @@
         <target state="needs-translation">Message Queue configuration error</target>
         <jms:reference-file line="89">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title">
+      <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title" approved="no">
         <source>admin::workermanager:tab:configuration: title</source>
-        <target state="needs-translation">Setting</target>
+        <target state="needs-translation">General settings</target>
         <jms:reference-file line="10">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a6e7083ac98423878bd52a1bc01b84904f13fb01" resname="admin::workermanager:tab:metadata: description">
+      <trans-unit id="a6e7083ac98423878bd52a1bc01b84904f13fb01" resname="admin::workermanager:tab:metadata: description" approved="no">
         <source>admin::workermanager:tab:metadata: description</source>
-        <target state="needs-translation">Write Meta datas into assets</target>
+        <target state="needs-translation">Write Metadatas into assets</target>
         <jms:reference-file line="1">admin/worker-manager/worker_metadata.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="335aaf2331865078d562586873c3c864cb70e023" resname="admin::workermanager:tab:metadata: title">
@@ -9152,29 +9152,29 @@
         <target state="needs-translation">Metadata</target>
         <jms:reference-file line="35">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f3dd0c965b1c04116efbd7a5eb85615b35c20a09" resname="admin::workermanager:tab:pullassets: Client ID">
+      <trans-unit id="f3dd0c965b1c04116efbd7a5eb85615b35c20a09" resname="admin::workermanager:tab:pullassets: Client ID" approved="yes">
         <source>admin::workermanager:tab:pullassets: Client ID</source>
-        <target state="new">admin::workermanager:tab:pullassets: Client ID</target>
+        <target state="translated">Client ID</target>
         <jms:reference-file line="25">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a2cfc1080c9feff1c0de4f8aacc60dc8918a24fb" resname="admin::workermanager:tab:pullassets: Client secret">
+      <trans-unit id="a2cfc1080c9feff1c0de4f8aacc60dc8918a24fb" resname="admin::workermanager:tab:pullassets: Client secret" approved="yes">
         <source>admin::workermanager:tab:pullassets: Client secret</source>
-        <target state="new">admin::workermanager:tab:pullassets: Client secret</target>
+        <target state="translated">Client secret</target>
         <jms:reference-file line="22">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit">
+      <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit" approved="yes">
         <source>admin::workermanager:tab:pullassets: Endpoint get commit</source>
-        <target state="new">admin::workermanager:tab:pullassets: Endpoint get commit</target>
+        <target state="translated">Endpoint get commit</target>
         <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7a6df16c30b678f118cbde60abc6eccc0c84f58c" resname="admin::workermanager:tab:pullassets: Endpoint get token">
+      <trans-unit id="7a6df16c30b678f118cbde60abc6eccc0c84f58c" resname="admin::workermanager:tab:pullassets: Endpoint get token" approved="yes">
         <source>admin::workermanager:tab:pullassets: Endpoint get token</source>
-        <target state="new">admin::workermanager:tab:pullassets: Endpoint get token</target>
+        <target state="translated">Endpoint get token</target>
         <jms:reference-file line="19">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="020826ff58f6e456ee0cc1e3980c4c2fe6d91e4d" resname="admin::workermanager:tab:pullassets: Fetching interval in second">
+      <trans-unit id="020826ff58f6e456ee0cc1e3980c4c2fe6d91e4d" resname="admin::workermanager:tab:pullassets: Fetching interval in second" approved="yes">
         <source>admin::workermanager:tab:pullassets: Fetching interval in second</source>
-        <target state="new">admin::workermanager:tab:pullassets: Fetching interval in second</target>
+        <target state="translated">Fetching interval in second</target>
         <jms:reference-file line="28">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9db21fc54db3f6ccdd1874f586bd509e247d27cc" resname="admin::workermanager:tab:pullassets: Initialize pull assets">
@@ -9182,9 +9182,9 @@
         <target state="needs-translation">Launch pull assets</target>
         <jms:reference-file line="26">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description">
+      <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description" approved="no">
         <source>admin::workermanager:tab:pullassets: description</source>
-        <target state="needs-translation">Uploader Pull mode setting</target>
+        <target state="needs-translation">Uploader Pull mode settings</target>
         <jms:reference-file line="1">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8c41af96270369f510fd8400c78a0584738d3631" resname="admin::workermanager:tab:pullassets: title">
@@ -9192,24 +9192,24 @@
         <target state="needs-translation">Uploader</target>
         <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate">
+      <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="yes">
         <source>admin::workermanager:tab:searchengine: Databox to populate</source>
-        <target state="needs-translation">Databox to populate</target>
+        <target state="translated">Databox to populate</target>
         <jms:reference-file line="18">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e948590a23c114afd7da0c33ceedad6ea4c63407" resname="admin::workermanager:tab:searchengine: Elasticsearch index name">
+      <trans-unit id="e948590a23c114afd7da0c33ceedad6ea4c63407" resname="admin::workermanager:tab:searchengine: Elasticsearch index name" approved="yes">
         <source>admin::workermanager:tab:searchengine: Elasticsearch index name</source>
-        <target state="new">admin::workermanager:tab:searchengine: Elasticsearch index name</target>
+        <target state="translated">Elasticsearch index name</target>
         <jms:reference-file line="30">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d8bf5909677c8810b2014406b24c6e7951ca4cfa" resname="admin::workermanager:tab:searchengine: Elasticsearch server host">
+      <trans-unit id="d8bf5909677c8810b2014406b24c6e7951ca4cfa" resname="admin::workermanager:tab:searchengine: Elasticsearch server host" approved="yes">
         <source>admin::workermanager:tab:searchengine: Elasticsearch server host</source>
-        <target state="new">admin::workermanager:tab:searchengine: Elasticsearch server host</target>
+        <target state="translated">Elasticsearch server host</target>
         <jms:reference-file line="19">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="40ffed0a60a2e090a390677ce1580a3fbc1c474d" resname="admin::workermanager:tab:searchengine: Elasticsearch service port">
+      <trans-unit id="40ffed0a60a2e090a390677ce1580a3fbc1c474d" resname="admin::workermanager:tab:searchengine: Elasticsearch service port" approved="yes">
         <source>admin::workermanager:tab:searchengine: Elasticsearch service port</source>
-        <target state="new">admin::workermanager:tab:searchengine: Elasticsearch service port</target>
+        <target state="translated">Elasticsearch service port</target>
         <jms:reference-file line="23">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="efa86c50f13ab5fb26889c4e1c8762ca2def6ac0" resname="admin::workermanager:tab:searchengine: Populate">
@@ -9217,14 +9217,14 @@
         <target state="needs-translation">Indexing</target>
         <jms:reference-file line="35">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c3e77fe723ba9d6b2bc3344154283c5394dfa917" resname="admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox">
+      <trans-unit id="c3e77fe723ba9d6b2bc3344154283c5394dfa917" resname="admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox" approved="no">
         <source>admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox</source>
-        <target state="needs-translation">Warning! A indexing is in process on one of the selected Databox. You can't launch a second one until the first is not finish.</target>
+        <target state="needs-translation">Warning! Indexation is in process on one of the selected Databox. You can't launch a second one until the first is not finished.</target>
         <jms:reference-file line="89">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="75bc52560478633af1d8a2ef17827c6d0fd9f6fc" resname="admin::workermanager:tab:searchengine: description">
+      <trans-unit id="75bc52560478633af1d8a2ef17827c6d0fd9f6fc" resname="admin::workermanager:tab:searchengine: description" approved="no">
         <source>admin::workermanager:tab:searchengine: description</source>
-        <target state="needs-translation">Launch Manually indexing on Databox.</target>
+        <target state="needs-translation">Manual launching of indexing on Databox(s).</target>
         <jms:reference-file line="1">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1ea949a6b9a4ed6302e78106dcc36c2391f13175" resname="admin::workermanager:tab:searchengine: title">
@@ -9232,9 +9232,9 @@
         <target state="needs-translation">Indexing</target>
         <jms:reference-file line="20">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5cb527e34ef4d2cd86a24758b485dc84f1ae2e00" resname="admin::workermanager:tab:subview: description">
+      <trans-unit id="5cb527e34ef4d2cd86a24758b485dc84f1ae2e00" resname="admin::workermanager:tab:subview: description" approved="no">
         <source>admin::workermanager:tab:subview: description</source>
-        <target state="needs-translation">Sub definition Job</target>
+        <target state="needs-translation">Building Sub definition Job</target>
         <jms:reference-file line="1">admin/worker-manager/worker_subview.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0eea783321bf62b3fcfa883de895edb22f19368a" resname="admin::workermanager:tab:subview: title">
@@ -9242,59 +9242,59 @@
         <target state="needs-translation">Sub definition</target>
         <jms:reference-file line="30">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="35e859a404c0f84b72fc273c41659ae86d6fcf91" resname="admin::workermanager:tab:workerconfig: Create record retry delay in ms">
+      <trans-unit id="35e859a404c0f84b72fc273c41659ae86d6fcf91" resname="admin::workermanager:tab:workerconfig: Create record retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Create record retry delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Create record retry delay in ms</target>
+        <target state="needs-translation">Create record retry delay in ms</target>
         <jms:reference-file line="20">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51e2911f424ff1a3472baa486eb9fb4263dc1cf3" resname="admin::workermanager:tab:workerconfig: Export mail retry delay in ms">
+      <trans-unit id="51e2911f424ff1a3472baa486eb9fb4263dc1cf3" resname="admin::workermanager:tab:workerconfig: Export mail retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Export mail retry delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Export mail retry delay in ms</target>
+        <target state="needs-translation">Export mail retry delay in ms</target>
         <jms:reference-file line="32">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="03326b4399bdce5ed1e809c3845317e18b84f2e1" resname="admin::workermanager:tab:workerconfig: Ingest retry delay in ms">
+      <trans-unit id="03326b4399bdce5ed1e809c3845317e18b84f2e1" resname="admin::workermanager:tab:workerconfig: Ingest retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Ingest retry delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Ingest retry delay in ms</target>
+        <target state="needs-translation">Ingest retry delay in ms (default 30 sec)</target>
         <jms:reference-file line="17">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d9b268d7b1f09a04d29b1421118ab9915dfe8583" resname="admin::workermanager:tab:workerconfig: Metadatas retry delay in ms">
+      <trans-unit id="d9b268d7b1f09a04d29b1421118ab9915dfe8583" resname="admin::workermanager:tab:workerconfig: Metadatas retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Metadatas retry delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Metadatas retry delay in ms</target>
+        <target state="needs-translation">Metadatas write retry delay in ms (default 30 sec)</target>
         <jms:reference-file line="26">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e362643b539ba54c5e7885a31db20eae59a3fa88" resname="admin::workermanager:tab:workerconfig: Populate Index retry delay in ms">
+      <trans-unit id="e362643b539ba54c5e7885a31db20eae59a3fa88" resname="admin::workermanager:tab:workerconfig: Populate Index retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Populate Index retry delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Populate Index retry delay in ms</target>
+        <target state="needs-translation">Populate elasticsearch Index retry delay in ms (default 30 sec)</target>
         <jms:reference-file line="35">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms">
+      <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Subdef delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Subdef delay in ms</target>
+        <target state="needs-translation">Delay for sub definition Job in ms (default 20 sec), use when file is lock by a other process</target>
         <jms:reference-file line="38">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3f244e6e83373721615f3c7d2f43415ff6280596" resname="admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms">
+      <trans-unit id="3f244e6e83373721615f3c7d2f43415ff6280596" resname="admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms</target>
+        <target state="needs-translation">Sub definition building retry interval in ms (default 30 sec)</target>
         <jms:reference-file line="23">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f786b1c8e061a9c7cf2a35b136c53f027a42aca8" resname="admin::workermanager:tab:workerconfig: Webhook retry delay in ms">
+      <trans-unit id="f786b1c8e061a9c7cf2a35b136c53f027a42aca8" resname="admin::workermanager:tab:workerconfig: Webhook retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Webhook retry delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Webhook retry delay in ms</target>
+        <target state="needs-translation">Webhook retry delay in ms (default 30 sec)</target>
         <jms:reference-file line="29">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms">
+      <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Write meta delay in ms</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Write meta delay in ms</target>
+        <target state="needs-translation">Write meta delay in ms, when file is lock by a other process (default 20 sec)</target>
         <jms:reference-file line="41">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title">
+      <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title" approved="no">
         <source>admin::workermanager:tab:workerconfig: title</source>
-        <target state="needs-translation">Main setting</target>
+        <target state="needs-translation">Workers main settings</target>
         <jms:reference-file line="1">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning">
+      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="no">
         <source>admin::workermanager:tab:workerconfig: warning</source>
-        <target state="needs-translation">The queues need to be destroyed to take account of new time intervals</target>
+        <target state="needs-translation">Queues need to be destroyed to take into account new time intervals</target>
         <jms:reference-file line="3">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1bd245ee491c4fa77d7ede38c6ea4c36e00cbde4" resname="admin::workermanager:tab:workerconfig:Apply in queue" approved="yes">
@@ -9312,9 +9312,9 @@
         <target state="needs-translation">Display Running Job(s)</target>
         <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished">
+      <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished" approved="no">
         <source>admin::workermanager:tab:workerinfo: Erase all finished</source>
-        <target state="needs-translation">Clear Finished Job</target>
+        <target state="needs-translation">Clear Finished Job(s)</target>
         <jms:reference-file line="19">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8ffab13b85fb74cc4091eaeb7d5e21b31034b21a" resname="admin::workermanager:tab:workerinfo: Erase all information">
@@ -9327,24 +9327,24 @@
         <target state="needs-translation">Refresh list</target>
         <jms:reference-file line="29">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4b11f0cdb860a576117268180cfc6900a9d533e3" resname="admin::workermanager:tab:workerinfo: Warning! Erase all finished">
+      <trans-unit id="4b11f0cdb860a576117268180cfc6900a9d533e3" resname="admin::workermanager:tab:workerinfo: Warning! Erase all finished" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all finished</source>
-        <target state="needs-translation">Warning! Erase line about finished Job</target>
+        <target state="translated">Erase line about finished Job(s)</target>
         <jms:reference-file line="22">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9f27ba960967b509af00a86a0758e8091806d0f6" resname="admin::workermanager:tab:workerinfo: Warning! Erase all information">
+      <trans-unit id="9f27ba960967b509af00a86a0758e8091806d0f6" resname="admin::workermanager:tab:workerinfo: Warning! Erase all information" approved="no">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all information</source>
-        <target state="needs-translation">Warning! This is erased all jobs log include actual running job(s).</target>
+        <target state="needs-translation">Warning! This erase all jobs logs, including actual running job(s).</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created">
+      <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="no">
         <source>admin::workermanager:tab:workerinfo: created</source>
-        <target state="needs-translation">Job starting</target>
+        <target state="needs-translation">Started</target>
         <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id">
+      <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id" approved="no">
         <source>admin::workermanager:tab:workerinfo: databox_id</source>
-        <target state="needs-translation">Base ID</target>
+        <target state="needs-translation">Base</target>
         <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description">
@@ -9352,14 +9352,14 @@
         <target state="needs-translation">Job running informations</target>
         <jms:reference-file line="3">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7a47a4872345c5f33d3fa94838e52e8e3da538ad" resname="admin::workermanager:tab:workerinfo: finished">
+      <trans-unit id="7a47a4872345c5f33d3fa94838e52e8e3da538ad" resname="admin::workermanager:tab:workerinfo: finished" approved="no">
         <source>admin::workermanager:tab:workerinfo: finished</source>
-        <target state="new">admin::workermanager:tab:workerinfo: finished</target>
+        <target state="needs-translation">Finished</target>
         <jms:reference-file line="51">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published">
+      <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published" approved="no">
         <source>admin::workermanager:tab:workerinfo: published</source>
-        <target state="needs-translation">Publishing Date</target>
+        <target state="needs-translation">Created</target>
         <jms:reference-file line="49">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="feed33fba251da5c0451124020d85250982721d7" resname="admin::workermanager:tab:workerinfo: record_id">
@@ -9372,14 +9372,14 @@
         <target state="needs-translation">Status</target>
         <jms:reference-file line="52">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title">
+      <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title" approved="no">
         <source>admin::workermanager:tab:workerinfo: title</source>
-        <target state="needs-translation">Job Info</target>
+        <target state="needs-translation">Jobs</target>
         <jms:reference-file line="15">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work">
+      <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work" approved="no">
         <source>admin::workermanager:tab:workerinfo: work</source>
-        <target state="needs-translation">Job kind</target>
+        <target state="needs-translation">Job</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2764b360bd443b91d7b611bc181e33c30bbdce07" resname="admin::workermanager:tab:workerinfo: work_on">
