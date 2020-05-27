@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-05-27T06:41:25Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9073,35 +9073,35 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Filtrer les utilisateurs invités</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection">
+      <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="no">
         <source>admin::users:edit: Manage inline selection</source>
-        <target state="new">admin::users:edit: Manage inline selection</target>
+        <target state="needs-translation">sélectionner</target>
         <jms:reference-file line="306">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right">
+      <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right" approved="no">
         <source>admin::users:edit: check all right</source>
-        <target state="new">admin::users:edit: check all right</target>
+        <target state="needs-translation">Tout les droits sur la collection</target>
         <jms:reference-file line="46">web/admin/index.html.twig</jms:reference-file>
         <jms:reference-file line="312">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6823c682eebdbe63cfdcbc7e75d5331c200933b0" resname="admin::users:edit: check left right">
+      <trans-unit id="6823c682eebdbe63cfdcbc7e75d5331c200933b0" resname="admin::users:edit: check left right" approved="no">
         <source>admin::users:edit: check left right</source>
-        <target state="new">admin::users:edit: check left right</target>
+        <target state="needs-translation">admin::users:edit: check left right</target>
         <jms:reference-file line="45">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="622a6320218ce751b33cf90a1def6bfb5ac837e0" resname="admin::users:edit: check read right">
+      <trans-unit id="622a6320218ce751b33cf90a1def6bfb5ac837e0" resname="admin::users:edit: check read right" approved="no">
         <source>admin::users:edit: check read right</source>
-        <target state="new">admin::users:edit: check read right</target>
+        <target state="needs-translation">Droits de lecture sur la collection</target>
         <jms:reference-file line="311">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3633b8b0f40b33b71da34d2b7169b978731dbc5c" resname="admin::users:filter: content">
+      <trans-unit id="3633b8b0f40b33b71da34d2b7169b978731dbc5c" resname="admin::users:filter: content" approved="no">
         <source>admin::users:filter: content</source>
-        <target state="new">admin::users:filter: content</target>
+        <target state="needs-translation">Contient</target>
         <jms:reference-file line="50">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="58f333882ef2f6c718c5b5b0c2660e81da62f08d" resname="admin::users:filter: start with">
+      <trans-unit id="58f333882ef2f6c718c5b5b0c2660e81da62f08d" resname="admin::users:filter: start with" approved="no">
         <source>admin::users:filter: start with</source>
-        <target state="new">admin::users:filter: start with</target>
+        <target state="needs-translation">Commence par</target>
         <jms:reference-file line="51">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
