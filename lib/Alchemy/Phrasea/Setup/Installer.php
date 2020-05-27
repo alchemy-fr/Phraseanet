@@ -198,7 +198,7 @@ class Installer
         $config['main']['database']['driver'] = 'pdo_mysql';
         $config['main']['database']['charset'] = 'UTF8';
 
-        $config['main']['binaries'] = $binaryData;
+        $config['main']['binaries'] = array_merge($config['main']['binaries'], $binaryData);
 
         $config['servername'] = $serverName;
         $config['main']['key'] = $this->app['random.medium']->generateString(16);
