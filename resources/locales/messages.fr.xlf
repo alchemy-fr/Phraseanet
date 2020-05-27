@@ -9075,7 +9075,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="no">
         <source>admin::users:edit: Manage inline selection</source>
-        <target state="needs-translation">sélectionner</target>
+        <target state="needs-translation">Sélectionné une option</target>
         <jms:reference-file line="306">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right" approved="no">
@@ -9174,7 +9174,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="020826ff58f6e456ee0cc1e3980c4c2fe6d91e4d" resname="admin::workermanager:tab:pullassets: Fetching interval in second" approved="no">
         <source>admin::workermanager:tab:pullassets: Fetching interval in second</source>
-        <target state="needs-translation">Intervalle d'éxécution, en secondes</target>
+        <target state="needs-translation">Intervalle de récupération, en secondes</target>
         <jms:reference-file line="28">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9db21fc54db3f6ccdd1874f586bd509e247d27cc" resname="admin::workermanager:tab:pullassets: Initialize pull assets" approved="yes">
@@ -9219,7 +9219,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="c3e77fe723ba9d6b2bc3344154283c5394dfa917" resname="admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox" approved="no">
         <source>admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox</source>
-        <target state="needs-translation">Un processus d'indexation est en cours pour une des databoxs sélectionnées, vous ne pouvez pas en lancer un second tant que le premier n'est pas fini</target>
+        <target state="needs-translation">Un processus d'indexation est en cours pour une des databoxs sélectionnées, vous ne pouvez pas en lancer un second, tant que le premier n'est pas terminé.</target>
         <jms:reference-file line="89">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="75bc52560478633af1d8a2ef17827c6d0fd9f6fc" resname="admin::workermanager:tab:searchengine: description">
@@ -9279,7 +9279,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="f786b1c8e061a9c7cf2a35b136c53f027a42aca8" resname="admin::workermanager:tab:workerconfig: Webhook retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Webhook retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais pour un webhook, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais pour l'emission d'un webhook, en ms (valeur par défaut: 30 s)</target>
         <jms:reference-file line="29">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms" approved="no">
@@ -9334,7 +9334,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="9f27ba960967b509af00a86a0758e8091806d0f6" resname="admin::workermanager:tab:workerinfo: Warning! Erase all information" approved="no">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all information</source>
-        <target state="needs-translation">Attention ! Efface toutes les informations sur travaux finis et en cours.</target>
+        <target state="needs-translation">Attention ! Efface toutes les informations sur travaux terminer et en cours.</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created">
@@ -9382,14 +9382,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Type</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2764b360bd443b91d7b611bc181e33c30bbdce07" resname="admin::workermanager:tab:workerinfo: work_on">
+      <trans-unit id="2764b360bd443b91d7b611bc181e33c30bbdce07" resname="admin::workermanager:tab:workerinfo: work_on" approved="no">
         <source>admin::workermanager:tab:workerinfo: work_on</source>
-        <target state="needs-translation">Travail sur</target>
+        <target state="needs-translation">Objet</target>
         <jms:reference-file line="48">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error">
+      <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error" approved="no">
         <source>admin:worker Retrieve configuration error</source>
-        <target state="needs-translation">worker Retrieve configuration error</target>
+        <target state="needs-translation">Erreur lors de la récupération de la configuration des workers</target>
         <jms:reference-file line="82">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert" approved="yes">
