@@ -115,13 +115,13 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::POPULATE_INDEX_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new PopulateIndexWorker($app['alchemy_worker.message.publisher'], $app['elasticsearch.indexer']))
+            return (new PopulateIndexWorker($app['alchemy_worker.message.publisher'], $app['elasticsearch.indexer'], $app['repo.worker-running-populate']))
                 ->setApplicationBox($app['phraseanet.appbox'])
                 ->setDispatcher($app['dispatcher']);
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::PULL_ASSETS_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return new PullAssetsWorker($app['alchemy_worker.message.publisher'], $app['conf']);
+            return new PullAssetsWorker($app['alchemy_worker.message.publisher'], $app['conf'], $app['repo.worker-running-uploader']);
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DELETE_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {

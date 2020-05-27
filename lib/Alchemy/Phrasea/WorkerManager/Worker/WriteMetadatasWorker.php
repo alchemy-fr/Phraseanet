@@ -77,9 +77,6 @@ class WriteMetadatasWorker implements WorkerInterface
                 ];
                 $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_METADATAS_QUEUE);
 
-//                $message = MessagePublisher::WRITE_METADATAS_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
-//                $this->messagePublisher->pushLog($message);
-
                 return ;
             }
 
@@ -251,6 +248,7 @@ class WriteMetadatasWorker implements WorkerInterface
             $em->beginTransaction();
             try {
                 $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                $workerRunningJob->setFinished(new \DateTime('now'));
                 $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();

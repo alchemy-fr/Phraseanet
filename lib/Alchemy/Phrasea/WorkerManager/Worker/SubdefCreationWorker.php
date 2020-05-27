@@ -75,9 +75,6 @@ class SubdefCreationWorker implements WorkerInterface
                         'payload'       => $payload
                     ];
                     $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_SUBDEF_QUEUE);
-//
-//                    $message = MessagePublisher::SUBDEF_CREATION_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
-//                    $this->messagePublisher->pushLog($message);
 
                     return ;
                 }
@@ -176,6 +173,7 @@ class SubdefCreationWorker implements WorkerInterface
                 $em->beginTransaction();
                 try {
                     $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                    $workerRunningJob->setFinished(new \DateTime('now'));
                     $em->persist($workerRunningJob);
                     $em->flush();
                     $em->commit();
