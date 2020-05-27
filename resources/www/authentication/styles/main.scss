@@ -5,3 +5,20 @@
 @import '../../account/styles/skin';
 @import '../../../../node_modules/font-awesome/scss/font-awesome.scss';
 @import '../../../../node_modules/jquery-ui/themes/base/autocomplete'; // not extension for inline import
+
+
+.authentication-sidebar {
+  .alert {
+    .alert-block-logo {
+      vertical-align: middle;
+    }
+
+    .fa-2x {
+      font-size: 2em;
+      height: 28px;
+      margin: 0;
+      background: none;
+    }
+  }
+
+}
