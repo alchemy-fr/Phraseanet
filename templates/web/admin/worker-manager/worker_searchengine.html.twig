@@ -1,4 +1,4 @@
-<h1>Populate elasticsearch index</h1>
+<h1>{{ 'admin::workermanager:tab:searchengine: description' |trans }}</h1>
 
 {{ form_start(form, {'action': path('worker_admin_searchengine')}) }}
 
@@ -15,7 +15,7 @@
 </div>
 
 <div class="control-group">
-    <label class="control-label"> {{ 'Databox to populate' | trans }}</label>
+    <label class="control-label"> {{ 'admin::workermanager:tab:searchengine: Databox to populate' | trans }}</label>
     <div class="controls">
         <label class="checkbox inline">
             <input class="subdef_sbas" type="checkbox"  value="0"> {{ 'All' | trans }}
@@ -32,7 +32,7 @@
 
 <div class="control-group">
     <button type="submit" class="btn btn-primary btn-trigger " id="populateButton" form="worker_searchengine">
-        {{ "Populate" |trans }}
+        {{ "admin::workermanager:tab:searchengine: Populate" |trans }}
     </button>
 </div>
 
@@ -86,7 +86,7 @@
                             }
                         });
                     } else {
-                        alert("Worker is in process to indexing one of the selected databox!!");
+                        alert({{ "admin::workermanager:tab:searchengine: Warning Worker is in process to indexing one of the selected databox" |trans }});
                     }
                 }
             });

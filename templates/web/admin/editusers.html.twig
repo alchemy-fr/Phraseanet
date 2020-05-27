@@ -61,24 +61,6 @@
   div.no_switch{
     background-image:url(/assets/common/images/icons/ccoch5.gif);
   }
-  div.switch_quota.mixed,
-  div.switch_masks.mixed,
-  div.switch_time.mixed,
-  div.switch_right.mixed{
-    background-image:url(/assets/common/images/icons/ccoch2.gif);
-  }
-  div.switch_quota.checked,
-  div.switch_masks.checked,
-  div.switch_time.checked,
-  div.switch_right.checked{
-    background-image:url(/assets/common/images/icons/ccoch1.gif);
-  }
-  div.switch_quota.unchecked,
-  div.switch_masks.unchecked,
-  div.switch_time.unchecked,
-  div.switch_right.unchecked{
-    background-image:url(/assets/common/images/icons/ccoch0.gif);
-  }
   td.users_col{
     vertical-align:middle;
     text-align:center;
@@ -137,40 +119,20 @@
             </td>
           </tr>
         </table>
-        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="">
+        <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:850px;height:67px;bottom:auto;top:50px;" class="">
           <thead>
             <tr>
-              <th style="width:122px;">
+              <th style="width:168px;">
 
               </th>
-              <th colspan="26">
-                <img src="/assets/common/images/lng/inclin-{{app['locale']}}.png" style="width:698px"/>
+              <th colspan="25">
+                <img src="/assets/common/images/lng/inclin-{{app['locale']}}.png" style="width:682px"/>
               </th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>
-
-              </td>
-              <td colspan="26">
-
-              </td>
-            </tr>
-          </tbody>
         </table>
-        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;max-height: 450px;">
-          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:820px;">
-      <!--      <thead>
-              <tr>
-                <th style="width:122px;">
-
-                </th>
-                <th colspan="26">
-                  <img src="/assets/common/images/lng/inclin-{{app['locale']}}.gif" >
-                </th>
-              </tr>
-            </thead>-->
+        <div class="" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:870px;max-height: 450px;">
+          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:840px;">
             <tbody>
               {% set sbas = '' %}
               {% for rights in datas %}
@@ -183,54 +145,55 @@
               {% endif %}
 
               <tr>
-                <td style="width:122px;overflow:hidden;white-space:nowrap;">
+                <td style="width:140px;overflow:hidden;white-space:nowrap;">
                   {{rights['sbas_id']|sbas_labels(app)}}
                 </td>
+                <td style="width:25px"></td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_access"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_actif"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canputinalbum"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_candwnldpreview"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_nowatermark"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_candwnldhd"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_cancmd"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
@@ -247,117 +210,127 @@
                 <td class="users_col">
 
                 </td>
-                <td>
+                <td width="97" style="width: 97px;">
 
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canaddrecord"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canmodifrecord"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_chgstatus"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_candeleterecord"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_imgtools"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canadmin"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canreport"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_canpush"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_manage"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col options">
                   <div>
-                    &#x25bc;
+                    <i class="fa fa-caret-down fa-right"></i>
                     <input type="hidden" name="right" value="right_modify_struct"/>
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Allowed to publish' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_CHUPUB'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage Thesaurus' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIF_TH'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage Database' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MANAGE'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
+                <td class="main-right-item" style="text-align:center;width:19px;" title="{{ 'Manage DB fields' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::BAS_MODIFY_STRUCT'), users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:48px;"></td>
+                <td style="text-align:center;width:48px;">
+                </td>
               </tr>
               {% endif %}
-              <tr>
-                <td style="overflow:hidden;white-space:nowrap;">
+              <tr class="right-items">
+                <td style="width: 140px;overflow:hidden;white-space:nowrap;" title="{{rights['base_id']|bas_labels(app)}}">
                   {{rights['base_id']|bas_labels(app)}}
                 </td>
-                <td class="users_col case_right_access" title="{{ 'Access' | trans }}">
+                <td class="select-all-line" title="{{'admin::users:edit: Manage inline selection' | trans }}" style="width: 25px">
+                  <div class="select-all-line-btn">
+                    <i class="fa fa-caret-right fa-right"></i>
+                  </div>
+                  <div class="users_check_line_wrap hide">
+                    <div class="checker check_left_right">{{'admin::users:edit: check read right' | trans }}</div>
+                    <div class="unchecker check-all_right">{{'admin::users:edit: check all right' | trans }}</div>
+                  </div>
+                </td>
+                <td class="users_col case_right_access left-right" title="{{ 'Access' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::ACCESS'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_actif" title="{{ 'Active' | trans }}">
+                <td class="users_col case_right_actif left-right" title="{{ 'Active' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::ACTIF'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_canputinalbum" title="{{ 'Allowed to add in basket' | trans }}">
+                <td class="users_col case_right_canputinalbum left-right" title="{{ 'Allowed to add in basket' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANPUTINALBUM'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldpreview" title="{{ 'Access to preview' | trans }}">
+                <td class="users_col case_right_candwnldpreview left-right" title="{{ 'Access to preview' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDPREVIEW'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_nowatermark" title="{{ 'Remove watermark' | trans }}">
+                <td class="users_col case_right_nowatermark left-right" title="{{ 'Remove watermark' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::NOWATERMARK'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldhd" title="{{ 'Access to HD' | trans }}">
+                <td class="users_col case_right_candwnldhd left-right" title="{{ 'Access to HD' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANDWNLDHD'), users, 'base')}}
                 </td>
-                <td class="users_col case_right_cancmd" title="{{ 'Allowed to order' | trans }}">
+                <td class="users_col case_right_cancmd left-right" title="{{ 'Allowed to order' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANCMD'), users, 'base')}}
                 </td>
                 <td class="users_col case_right_quota" title="{{ 'Set download quotas' | trans }}">
@@ -391,7 +364,7 @@
                   </div>
                 </td>
 
-                <td style="text-align:center;width:100px;"></td>
+                <td style="text-align:center;width:97px;"></td>
 
                 <td class="users_col case_right_canaddrecord" title="{{ 'Allowed to add' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::CANADDRECORD'), users, 'base')}}
@@ -423,8 +396,8 @@
                 <td class="users_col case_right_modify" title="{{ 'Manage values lists' | trans }}">
                   {{_self.format_checkbox(app.getAuthenticatedUser(), rights, constant('\\ACL::COLL_MODIFY_STRUCT'), users, 'base')}}
                 </td>
-                <td colspan="5">
 
+                <td colspan="5">
                 </td>
               </tr>
               {% endfor %}
@@ -1099,6 +1072,31 @@
         });
       }
     });
+
+
+    $('body').click(function() {
+      $('.users_check_line_wrap').addClass('hide');
+    });
+    $('.select-all-line-btn').click(function (event) {
+      event.stopPropagation();
+      var top = $(this).offset().top - 50;
+      var left = $(this).offset().left + 60;
+      $('.users_check_line_wrap').addClass('hide');
+      $(this).closest('.select-all-line').find('.users_check_line_wrap').removeClass('hide').css('top', +top+'px');
+
+    });
+    $('.check_left_right').click(function () {
+      $(this).closest('.right-items').find('.left-right div').show().removeClass('unchecked').addClass('checked');
+      $(this).closest('.right-items').find('.left-right input').val(1);
+      $('.users_check_line_wrap').addClass('hide');
+    });
+
+    $('.check-all_right').click(function () {
+      $(this).closest('.right-items').find('div').show().removeClass('unchecked').addClass('checked');
+      $(this).closest('.right-items').find('input').val(1);
+      $('.users_check_line_wrap').addClass('hide');
+    });
+
   });
 
   require([
