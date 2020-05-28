@@ -159,7 +159,7 @@ border-manager:
             type: Checker\MediaType
             enabled: false
             options:
-                mediatypes: [Audio, Document, Flash, Image, Video]
+                mediatypes: [Audio, Document, Image, Video]
 user_account:
     deleting_policies:
         email_confirmation: true

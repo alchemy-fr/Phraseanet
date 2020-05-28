@@ -117,8 +117,30 @@
                 <fps>25</fps>
                 <GOPsize>25</GOPsize>
                 <vcodec>libvpx</vcodec>
-                <label lang="fr">Prévisualisation WebM</label>
-                <label lang="en">WebM Preview</label>
+            </subdef>
+            <subdef class="preview" name="audiovideowav" downloadable="true" orderable="true" presets="Wave Mono 8 kHz">
+                <path>{{datapathnoweb}}{{basename}}/subview</path>
+                <meta>no</meta>
+                <mediatype>audio</mediatype>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>8000</audiosamplerate>
+                <acodec>pcm_s16le</acodec>
+                <audiochannel>mono</audiochannel>
+                <devices>all</devices>
+                <label lang="fr">Audio WAVE 8 kHz</label>
+                <label lang="en">Audio WAVE 8 kHz</label>
+            </subdef>
+            <subdef class="preview" name="audiovideomp3" downloadable="true" orderable="true" presets="Normal MP3 128 kbit/s">
+                <path>{{datapathnoweb}}{{basename}}/subview</path>
+                <meta>no</meta>
+                <mediatype>audio</mediatype>
+                <audiobitrate>180</audiobitrate>
+                <audiosamplerate>44100</audiosamplerate>
+                <acodec>libmp3lame</acodec>
+                <audiochannel/>
+                <devices>all</devices>
+                <label lang="fr">Audio MP3 128 kbit/s</label>
+                <label lang="en">Audio MP3 128 kbit/s</label>
             </subdef>
         </subdefgroup>
         <subdefgroup name="audio">
