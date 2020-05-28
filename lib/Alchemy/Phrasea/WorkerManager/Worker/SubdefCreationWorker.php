@@ -117,6 +117,20 @@ class SubdefCreationWorker implements WorkerInterface
                         $em->commit();
                     } catch (\Exception $e) {
                     }
+                } catch (\Throwable $e) {
+                    $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+                    $workerMessage = "Exception throwable catched when create subdef for the recordID: " .$recordId;
+
+                    $this->logger->error($workerMessage);
+
+                    $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+                        $record,
+                        $payload['subdefName'],
+                        $workerMessage,
+                        $count
+                    ));
+
+                    return ;
                 }
 
                 // begin to check if the subdef is successfully generated
