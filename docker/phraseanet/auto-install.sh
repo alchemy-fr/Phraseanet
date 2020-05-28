@@ -37,9 +37,6 @@ bin/setup system:config set workers.queue.worker-queue.user $PHRASEANET_RABBITMQ
 bin/setup system:config set workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
 bin/setup system:config set workers.queue.worker-queue.vhost /
 
-/var/alchemy/Phraseanet/bin/console compile:configuration
-
-
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host elasticsearch
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore 2
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore 2
@@ -66,5 +63,6 @@ bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
 /var/alchemy/Phraseanet/bin/console searchengine:index -c
 
 # Create _TRASH_ collection on first databox
+/var/alchemy/Phraseanet/bin/console collection:create 1 Public -d 1
+/var/alchemy/Phraseanet/bin/console collection:create 1 Private -d 1
 /var/alchemy/Phraseanet/bin/console collection:create 1 _TRASH_ -d 1
-
