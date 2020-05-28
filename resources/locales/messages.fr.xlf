@@ -9075,12 +9075,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="no">
         <source>admin::users:edit: Manage inline selection</source>
-        <target state="needs-translation">Sélectionné une option</target>
+        <target state="needs-translation">Sélectionner une option</target>
         <jms:reference-file line="306">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right" approved="no">
         <source>admin::users:edit: check all right</source>
-        <target state="needs-translation">Tout les droits sur la collection</target>
+        <target state="needs-translation">Tous les droits sur la collection</target>
         <jms:reference-file line="46">web/admin/index.html.twig</jms:reference-file>
         <jms:reference-file line="312">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
@@ -9142,14 +9142,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Réglages généraux</target>
         <jms:reference-file line="10">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a6e7083ac98423878bd52a1bc01b84904f13fb01" resname="admin::workermanager:tab:metadata: description">
+      <trans-unit id="a6e7083ac98423878bd52a1bc01b84904f13fb01" resname="admin::workermanager:tab:metadata: description" approved="no">
         <source>admin::workermanager:tab:metadata: description</source>
-        <target state="needs-translation">Ecriture des méta-données</target>
+        <target state="needs-translation">Ecriture des métadonnées</target>
         <jms:reference-file line="1">admin/worker-manager/worker_metadata.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="335aaf2331865078d562586873c3c864cb70e023" resname="admin::workermanager:tab:metadata: title">
+      <trans-unit id="335aaf2331865078d562586873c3c864cb70e023" resname="admin::workermanager:tab:metadata: title" approved="yes">
         <source>admin::workermanager:tab:metadata: title</source>
-        <target state="needs-translation">Méta-données</target>
+        <target state="translated">Métadonnées</target>
         <jms:reference-file line="35">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3dd0c965b1c04116efbd7a5eb85615b35c20a09" resname="admin::workermanager:tab:pullassets: Client ID" approved="yes">
@@ -9164,7 +9164,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit" approved="no">
         <source>admin::workermanager:tab:pullassets: Endpoint get commit</source>
-        <target state="needs-translation">Point de terminaison pour les commit  (adresse de l'uploader)</target>
+        <target state="needs-translation">Point de terminaison pour les commits  (adresse de l'uploader)</target>
         <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a6df16c30b678f118cbde60abc6eccc0c84f58c" resname="admin::workermanager:tab:pullassets: Endpoint get token" approved="no">
@@ -9244,47 +9244,47 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="35e859a404c0f84b72fc273c41659ae86d6fcf91" resname="admin::workermanager:tab:workerconfig: Create record retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Create record retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais lors de la création d'un enregistrement, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais lors de la création d'un enregistrement, en ms (valeur par défaut: 30 sec)</target>
         <jms:reference-file line="20">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="51e2911f424ff1a3472baa486eb9fb4263dc1cf3" resname="admin::workermanager:tab:workerconfig: Export mail retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Export mail retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais lors de l'export d'un mail, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais lors de l'export d'un mail, en ms (valeur par défaut: 30 sec)</target>
         <jms:reference-file line="32">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="03326b4399bdce5ed1e809c3845317e18b84f2e1" resname="admin::workermanager:tab:workerconfig: Ingest retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Ingest retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais lors d'un upload, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais lors d'un upload, en ms (valeur par défaut: 30 sec)</target>
         <jms:reference-file line="17">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d9b268d7b1f09a04d29b1421118ab9915dfe8583" resname="admin::workermanager:tab:workerconfig: Metadatas retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Metadatas retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais lors de l'écriture de métadonnées, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais lors de l'écriture de métadonnées, en ms (valeur par défaut: 30 sec)</target>
         <jms:reference-file line="26">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e362643b539ba54c5e7885a31db20eae59a3fa88" resname="admin::workermanager:tab:workerconfig: Populate Index retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Populate Index retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais lors de l'indexation, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais lors de l'indexation, en ms (valeur par défaut: 30 sec)</target>
         <jms:reference-file line="35">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Subdef delay in ms</source>
-        <target state="needs-translation">Délai de fabrication de la sous-définition, en ms (valeur par défaut: 20 s)</target>
+        <target state="needs-translation">Délai de fabrication de la sous-définition, en ms (valeur par défaut: 20 sec), utiliser quand le fichier est bloqué par un autre processus</target>
         <jms:reference-file line="38">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f244e6e83373721615f3c7d2f43415ff6280596" resname="admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais lors de la fabrication de la sous définition, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais lors de la fabrication de la sous définition, en ms (valeur par défaut: 30 sec)</target>
         <jms:reference-file line="23">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f786b1c8e061a9c7cf2a35b136c53f027a42aca8" resname="admin::workermanager:tab:workerconfig: Webhook retry delay in ms" approved="no">
         <source>admin::workermanager:tab:workerconfig: Webhook retry delay in ms</source>
-        <target state="needs-translation">Intervalle entre deux essais pour l'emission d'un webhook, en ms (valeur par défaut: 30 s)</target>
+        <target state="needs-translation">Intervalle entre deux essais pour l'émission d'un webhook, en ms (valeur par défaut: 30 sec)</target>
         <jms:reference-file line="29">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms" approved="no">
+      <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Write meta delay in ms</source>
-        <target state="needs-translation">Délai d'écriture des métadonnées en ms (valeur par défaut: 20 s)</target>
+        <target state="translated">Délai d'écriture des métadonnées en ms (valeur par défaut: 20 sec)</target>
         <jms:reference-file line="41">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title" approved="no">
@@ -9309,12 +9309,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="no">
         <source>admin::workermanager:tab:workerinfo: Display running work</source>
-        <target state="needs-translation">Afficher les travaux en cours.</target>
+        <target state="needs-translation">Afficher les travaux en cours</target>
         <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished">
+      <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished" approved="no">
         <source>admin::workermanager:tab:workerinfo: Erase all finished</source>
-        <target state="needs-translation">Effacer les travaux terminés.</target>
+        <target state="needs-translation">Effacer les travaux terminés</target>
         <jms:reference-file line="19">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8ffab13b85fb74cc4091eaeb7d5e21b31034b21a" resname="admin::workermanager:tab:workerinfo: Erase all information" approved="no">
@@ -9329,17 +9329,17 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="4b11f0cdb860a576117268180cfc6900a9d533e3" resname="admin::workermanager:tab:workerinfo: Warning! Erase all finished" approved="no">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all finished</source>
-        <target state="needs-translation">Effacer tous les travaux terminés.</target>
+        <target state="needs-translation">Effacer tous les travaux terminés</target>
         <jms:reference-file line="22">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f27ba960967b509af00a86a0758e8091806d0f6" resname="admin::workermanager:tab:workerinfo: Warning! Erase all information" approved="no">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all information</source>
-        <target state="needs-translation">Attention ! Efface toutes les informations sur travaux terminer et en cours.</target>
+        <target state="needs-translation">Attention ! Efface toutes les informations sur les travaux terminés et en cours.</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created">
+      <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="no">
         <source>admin::workermanager:tab:workerinfo: created</source>
-        <target state="needs-translation">Démarrage</target>
+        <target state="needs-translation">Démarré</target>
         <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id">
@@ -9372,14 +9372,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Etat</target>
         <jms:reference-file line="52">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title">
+      <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title" approved="no">
         <source>admin::workermanager:tab:workerinfo: title</source>
-        <target state="needs-translation">Suivis</target>
+        <target state="needs-translation">Journal</target>
         <jms:reference-file line="15">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work">
+      <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work" approved="no">
         <source>admin::workermanager:tab:workerinfo: work</source>
-        <target state="needs-translation">Type</target>
+        <target state="needs-translation">Travaux</target>
         <jms:reference-file line="47">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2764b360bd443b91d7b611bc181e33c30bbdce07" resname="admin::workermanager:tab:workerinfo: work_on" approved="no">
