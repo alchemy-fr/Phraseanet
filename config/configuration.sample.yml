@@ -313,6 +313,7 @@ geocoding-providers:
             - '2.335062'
         default-zoom: 5
         marker-default-zoom: 9
+        position-fields: []
         geonames-field-mapping: true
         cityfields: City, Ville
         provincefields: Province
@@ -330,3 +331,5 @@ workers:
 user_account:
     deleting_policies:
         email_confirmation: true
+
+Console_logger_enabled_environments: [test]

@@ -140,12 +140,6 @@
                     </div>
 
                 </form>
-                <div>
-                    <select name="upload_type" id="upload_type" class="input-large" style="width: 200px; float:right">
-                        <option value="html" selected>{{ 'Use the HTML5 uploader' | trans }}</option>
-                        <option value="flash">{{ 'Use the Flash uploader' | trans }}</option>
-                    </select>
-                </div>
             {% else %}
                 {{ 'You can not upload files' | trans }}
             {% endif %}

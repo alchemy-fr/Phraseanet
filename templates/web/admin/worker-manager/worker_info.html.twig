@@ -1,0 +1,106 @@
+{% if not reload %}
+
+<h1>{{ 'admin::workermanager:tab:workerinfo: description' |trans }}</h1>
+<div class="worker-info-block">
+<form action="{{ path("worker_admin_truncate") }}" method="POST">
+    <p>
+        <button class="btn btn-primary">
+            {{ 'admin::workermanager:tab:workerinfo: Erase all information' |trans }}
+        </button>
+        <span class="alert alert-danger">
+            {{ "admin::workermanager:tab:workerinfo: Warning! Erase all information" |trans }}
+        </span>
+        </p>
+</form>
+
+<form action="{{ path("worker_admin_delete_finished") }}" method="POST">
+    <p>
+        <button class="btn btn-primary">
+            {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
+        </button>
+        <span class="alert alert-danger">
+            {{ "admin::workermanager:tab:workerinfo: Warning! Erase all finished"|trans }}
+        </span>
+
+    </p>
+</form>
+<br><br>
+    <button id="refresh-list" class="btn btn-success">
+        {{ 'admin::workermanager:tab:workerinfo: Refresh list' |trans }}
+    </button>
+
+    <div class="controls">
+        <label class="checkbox inline">
+            <input class="running-work" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display running work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="finished-work" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display finished work' | trans }}
+        </label>
+    </div>
+
+</div>
+<table class="admintable">
+    <thead>
+    <tr>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: databox_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: record_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work_on' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: published' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: created' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: finished' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: status' | trans }}</th>
+    </tr>
+    </thead>
+        <tbody class="work-list">
+{% endif %}
+
+{% for workerRow in workerRunningJob | sort | reverse %}
+    <tr>
+        <td>{{ workerRow.databoxId }}</td>
+        <td>{{ workerRow.recordId }}</td>
+        <td>{{ workerRow.getWorkName }}</td>
+        <td>{{ workerRow.workOn }}</td>
+        <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
+        <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
+        <td>
+            {% if workerRow.finished %}
+                {{ workerRow.finished|date('Y-m-d H:i:s') }}
+            {% else %}
+                -
+            {% endif %}
+
+        </td>
+        <td>{{ workerRow.status }}</td>
+    </tr>
+{% endfor %}
+
+{% if not reload %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        $("#refresh-list").on('click', function () {
+            var running  = 1;
+            var finished = 1;
+            if (!$(".running-work").is(":checked"))
+            {
+                running = 0;
+            }
+            if (!$(".finished-work").is(":checked"))
+            {
+                finished = 0;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished,
+                success: function (data) {
+                    $(".work-list").empty().html(data);
+                }
+            });
+        });
+    </script>
+{% endif %}
+
+
