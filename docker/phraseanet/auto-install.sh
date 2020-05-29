@@ -47,7 +47,7 @@ bin/setup system:config set workers.queue.worker-queue.vhost /
 ## Redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.host redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.port 6379
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $INSTALL_SERVER_NAME
+/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $PHRASEANET_SERVER_NAME
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.type redis
 
 ## enable API and disable ssl on it
