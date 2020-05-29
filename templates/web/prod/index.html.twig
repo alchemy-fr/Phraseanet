@@ -812,7 +812,7 @@
                 <div class="box">
                     <div class="" style="float:left; width:49%;">
                         <h1>{{ 'reponses:: images par pages :' | trans }}</h1>
-                        <div class="box">
+                        <div class="box" style="margin-top: -1px">
                             <div id="nperpage_slider" class="ui-corner-all" style="width:100px; display:inline-block;"></div>
                             <input type="text" readonly style="width:35px;" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'images_per_page')}}" id="nperpage_value"/>
                         </div>
@@ -820,8 +820,10 @@
                     <div style="float:right; width:49%;">
                         <h1>{{ 'reponses:: taille des images :' | trans }}</h1>
                         <div class="box">
+                            <i class="fa fa-image setting-zoom-icon zoom-menu-left" aria-hidden="true"></i>
                             <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
                             <input type="hidden" value="{{app['settings'].getUserSetting(app.getAuthenticatedUser(), 'images_size')}}" id="sizeAns_value"/>
+                            <i class="fa fa-image setting-zoom-icon zoom-menu-right" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
