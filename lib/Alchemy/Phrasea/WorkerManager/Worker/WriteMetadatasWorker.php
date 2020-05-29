@@ -77,14 +77,12 @@ class WriteMetadatasWorker implements WorkerInterface
                 ];
                 $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_METADATAS_QUEUE);
 
-//                $message = MessagePublisher::WRITE_METADATAS_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
-//                $this->messagePublisher->pushLog($message);
-
                 return ;
             }
 
             // tell that a file is in used to create subdef
             $em = $this->getEntityManager();
+            $this->repoWorker->reconnect();
             $em->beginTransaction();
 
             try {
@@ -109,7 +107,24 @@ class WriteMetadatasWorker implements WorkerInterface
 
             $record  = $databox->get_record($recordId);
 
-            $subdef = $record->get_subdef($payload['subdefName']);
+            try {
+                $subdef = $record->get_subdef($payload['subdefName']);
+            } catch (\Exception $e) {
+                $workerMessage = "Exception catched when try to get subdef " .$payload['subdefName']. " from DB for the recordID: " .$recordId;
+                $this->logger->error($workerMessage);
+
+                $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+                $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                    $record,
+                    $payload['subdefName'],
+                    SubdefinitionWritemetaEvent::FAILED,
+                    $workerMessage,
+                    $count
+                ));
+
+                return ;
+            }
 
             if ($subdef->is_physically_present()) {
                 $metadata = new MetadataBag();
@@ -248,9 +263,11 @@ class WriteMetadatasWorker implements WorkerInterface
 
 
             // tell that we have finished to work on this file
+            $this->repoWorker->reconnect();
             $em->beginTransaction();
             try {
                 $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                $workerRunningJob->setFinished(new \DateTime('now'));
                 $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();

@@ -5,10 +5,11 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningUploader;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningUploaderRepository;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use Alchemy\Phrasea\WorkerManager\Model\DBManipulator;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
 
@@ -21,6 +22,9 @@ class AssetsIngestWorker implements WorkerInterface
     /** @var MessagePublisher $messagePublisher */
     private $messagePublisher;
 
+    /** @var  WorkerRunningUploaderRepository $repoWorkerUploader */
+    private $repoWorkerUploader;
+
     public function __construct(PhraseaApplication $app)
     {
         $this->app              = $app;
@@ -30,8 +34,9 @@ class AssetsIngestWorker implements WorkerInterface
     public function process(array $payload)
     {
         $assets = $payload['assets'];
+        $this->repoWorkerUploader = $this->getWorkerRunningUploaderRepository();
 
-        DBManipulator::saveAssetsList($payload['commit_id'], $assets);
+        $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
         $uploaderClient = new Client(['base_uri' => $payload['base_url']]);
 
@@ -119,5 +124,43 @@ class AssetsIngestWorker implements WorkerInterface
     private function getUserRepository()
     {
         return $this->app['repo.users'];
+    }
+
+    /**
+     * @return WorkerRunningUploaderRepository
+     */
+    private function getWorkerRunningUploaderRepository()
+    {
+        return $this->app['repo.worker-running-uploader'];
+    }
+
+    private function saveAssetsList($commitId, $assetsId, $published, $type)
+    {
+        $em = $this->repoWorkerUploader->getEntityManager();
+        $em->beginTransaction();
+        $date = new \DateTime();
+
+        try {
+            foreach ($assetsId as $assetId) {
+                $workerRunningUploader = new WorkerRunningUploader();
+                $workerRunningUploader
+                    ->setCommitId($commitId)
+                    ->setAssetId($assetId)
+                    ->setPublished($date->setTimestamp($published))
+                    ->setStatus(WorkerRunningUploader::RUNNING)
+                    ->setType($type)
+                ;
+
+                $em->persist($workerRunningUploader);
+
+                unset($workerRunningUploader);
+            }
+
+            $em->flush();
+
+            $em->commit();
+        } catch(\Exception $e) {
+            $em->rollback();
+        }
     }
 }

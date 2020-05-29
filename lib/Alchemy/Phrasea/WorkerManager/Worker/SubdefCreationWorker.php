@@ -75,15 +75,13 @@ class SubdefCreationWorker implements WorkerInterface
                         'payload'       => $payload
                     ];
                     $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_SUBDEF_QUEUE);
-//
-//                    $message = MessagePublisher::SUBDEF_CREATION_TYPE.' to be re-published! >> Payload ::'. json_encode($payload);
-//                    $this->messagePublisher->pushLog($message);
 
                     return ;
                 }
 
                 // tell that a file is in used to create subdef
                 $em = $this->repoWorker->getEntityManager();
+                $this->repoWorker->reconnect();
                 $em->beginTransaction();
 
                 try {
@@ -111,14 +109,28 @@ class SubdefCreationWorker implements WorkerInterface
                 try {
                     $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
                 } catch (\Exception $e) {
-                    $em->beginTransaction();
                     try {
+                        $this->repoWorker->reconnect();
+                        $em->getConnection()->beginTransaction();
                         $em->remove($workerRunningJob);
                         $em->flush();
                         $em->commit();
                     } catch (\Exception $e) {
-                        $em->rollback();
                     }
+                } catch (\Throwable $e) {
+                    $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+                    $workerMessage = "Exception throwable catched when create subdef for the recordID: " .$recordId;
+
+                    $this->logger->error($workerMessage);
+
+                    $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+                        $record,
+                        $payload['subdefName'],
+                        $workerMessage,
+                        $count
+                    ));
+
+                    return ;
                 }
 
                 // begin to check if the subdef is successfully generated
@@ -173,14 +185,26 @@ class SubdefCreationWorker implements WorkerInterface
                 $this->indexer->flushQueue();
 
                 // tell that we have finished to work on this file
-                $em->beginTransaction();
+                $this->repoWorker->reconnect();
+                $em->getConnection()->beginTransaction();
                 try {
                     $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                    $workerRunningJob->setFinished(new \DateTime('now'));
                     $em->persist($workerRunningJob);
                     $em->flush();
                     $em->commit();
                 } catch (\Exception $e) {
-                    $em->rollback();
+                    try {
+                        $em->getConnection()->beginTransaction();
+                        $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+                        $em->persist($workerRunningJob);
+                        $em->flush();
+                        $em->commit();
+                    } catch (\Exception $e) {
+                        $this->messagePublisher->pushLog("rollback on recordID :" . $workerRunningJob->getRecordId());
+                        $em->rollback();
+                    }
+
                 }
             }
         }

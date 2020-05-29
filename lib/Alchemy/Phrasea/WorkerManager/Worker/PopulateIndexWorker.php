@@ -4,11 +4,12 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningPopulate;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningPopulateRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use Alchemy\Phrasea\WorkerManager\Model\DBManipulator;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 
 class PopulateIndexWorker implements WorkerInterface
@@ -22,15 +23,41 @@ class PopulateIndexWorker implements WorkerInterface
     /** @var Indexer $indexer */
     private $indexer;
 
-    public function __construct(MessagePublisher $messagePublisher, Indexer $indexer)
+    /** @var  WorkerRunningPopulateRepository  $repoWorkerPopulate*/
+    private $repoWorkerPopulate;
+
+    public function __construct(MessagePublisher $messagePublisher, Indexer $indexer, WorkerRunningPopulateRepository $repoWorkerPopulate)
     {
-        $this->indexer = $indexer;
-        $this->messagePublisher = $messagePublisher;
+        $this->indexer              = $indexer;
+        $this->messagePublisher     = $messagePublisher;
+        $this->repoWorkerPopulate   = $repoWorkerPopulate;
     }
 
     public function process(array $payload)
     {
-        DBManipulator::savePopulateStatus($payload);
+        $em = $this->repoWorkerPopulate->getEntityManager();
+        $em->beginTransaction();
+        $date = new \DateTime();
+
+        try {
+            $workerRunningPopulate = new WorkerRunningPopulate();
+            $workerRunningPopulate
+                ->setHost($payload['host'])
+                ->setPort($payload['port'])
+                ->setIndexName($payload['indexName'])
+                ->setDataboxId($payload['databoxId'])
+                ->setPublished($date->setTimestamp($payload['published']))
+                ->setStatus(WorkerRunningPopulate::RUNNING)
+            ;
+
+            $em->persist($workerRunningPopulate);
+
+            $em->flush();
+
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+        }
 
         /** @var ElasticsearchOptions $options */
         $options = $this->indexer->getIndex()->getOptions();
@@ -71,7 +98,12 @@ class PopulateIndexWorker implements WorkerInterface
                     $r['memory']/1048576
                 ));
             } catch(\Exception $e) {
-                DBManipulator::deletePopulateStatus($payload);
+                if ($workerRunningPopulate != null) {
+
+                    $em->remove($workerRunningPopulate);
+
+                    $em->flush();
+                }
 
                 $workerMessage = sprintf("Error on indexing : %s ", $e->getMessage());
                 $this->messagePublisher->pushLog($workerMessage);
@@ -90,8 +122,17 @@ class PopulateIndexWorker implements WorkerInterface
             }
         }
 
-        // delete entry in populate_running
-        DBManipulator::deletePopulateStatus($payload);
+        // tell that the populate is finished
+        if ($workerRunningPopulate != null) {
+            $workerRunningPopulate
+                ->setStatus(WorkerRunningPopulate::FINISHED)
+                ->setFinished(new \DateTime('now'))
+            ;
+
+            $em->persist($workerRunningPopulate);
+
+            $em->flush();
+        }
     }
 
 }

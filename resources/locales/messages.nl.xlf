@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-05-26T10:30:00Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-05-29T10:32:38Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -756,7 +756,7 @@
       <trans-unit id="448daefafefd62c772af36c0a22ac838d0feda30" resname="Adresse email du nouvel utilisateur" approved="yes">
         <source>Adresse email du nouvel utilisateur</source>
         <target state="translated">Email adres van de nieuwe gebruiker</target>
-        <jms:reference-file line="94">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="92">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f38d53519197909c91536558af4b561b0b38c32f" resname="Advanced Search" approved="yes">
         <source>Advanced Search</source>
@@ -851,7 +851,7 @@
       <trans-unit id="8d391a678bc6acf01f3f67c57b07853c5a588171" resname="Ajouter un nouvel utilisateur" approved="yes">
         <source>Ajouter un nouvel utilisateur</source>
         <target state="translated">Voeg een nieuwe gebruiker toe</target>
-        <jms:reference-file line="92">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="90">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="502a021ab817d7924d38b2fd998ad2d7bcfc3a77" resname="Ajouter un publisher" approved="yes">
         <source>Ajouter un publisher</source>
@@ -1154,7 +1154,7 @@
       <trans-unit id="01f240fd282242c9c32ecdaa4b503881a2e6a611" resname="Apply template" approved="yes">
         <source>Apply template</source>
         <target state="translated">Pas de template toe</target>
-        <jms:reference-file line="57">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="55">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2e503f11e38be4621905a6d79667af5c4a302d7b" resname="Apply to all selected documents" approved="yes">
         <source>Apply to all selected documents</source>
@@ -1197,7 +1197,7 @@
         <source>Attention</source>
         <target state="translated">Let op!</target>
         <jms:reference-file line="100">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="52">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="50">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e90e84223fc3bab6b936ce4506b3924b21f3d0be" resname="Attention !" approved="yes">
         <source>Attention !</source>
@@ -1929,7 +1929,7 @@
       <trans-unit id="15f217a259ee031d3ee19967da004804bb726307" resname="Confirm reset users rights before applying template" approved="yes">
         <source>Confirm reset users rights before applying template</source>
         <target state="translated">Bevestig reset van de gebruikersrechten alvorens de template toe te passen</target>
-        <jms:reference-file line="54">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="52">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b1f3b86f9ebe885dcf2acdfae26c37dd6da4de5" resname="Confirmation de votre mot de passe" approved="yes">
         <source>Confirmation de votre mot de passe</source>
@@ -2098,17 +2098,17 @@
       <trans-unit id="6a1b635fa4aa9a9112503eaefa9a531a7fbda278" resname="Creer un model" approved="yes">
         <source>Creer un model</source>
         <target state="translated">Maak een model</target>
-        <jms:reference-file line="47">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="45">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="260d628fef269001bb64d72a65871e50bcaca35f" resname="Creer un modele" approved="yes">
         <source>Creer un modele</source>
         <target state="translated">Maak een model</target>
-        <jms:reference-file line="107">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="105">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e47a3395e82f424af864e97275dbd31b4891955d" resname="Creer un utilisateur" approved="yes">
         <source>Creer un utilisateur</source>
         <target state="translated">Maak een gebruiker</target>
-        <jms:reference-file line="48">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="46">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4cef5366ffeea297fe6dbe75e32ec7dda68cbef6" resname="Creer une nouvelle applications" approved="yes">
         <source>Creer une nouvelle applications</source>
@@ -4663,7 +4663,7 @@
       <trans-unit id="9c2788209a60bf1ad55eb769fe0532798f2755db" resname="Nom du nouveau modele" approved="yes">
         <source>Nom du nouveau modele</source>
         <target state="translated">Naam van het nieuwe model</target>
-        <jms:reference-file line="109">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="107">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="22838b9a8bf000656dd4ff96d8ac904c8c33fade" resname="Nom du nouveau panier" approved="yes">
         <source>Nom du nouveau panier</source>
@@ -5733,7 +5733,7 @@
       <trans-unit id="8c91dfa0024a9c65cb1f4cba0f4744e66fbcccba" resname="Require email validation to activate the account" approved="yes">
         <source>Require email validation to activate the account</source>
         <target state="translated">Email validatie verwacht om de gebruiker te activeren</target>
-        <jms:reference-file line="102">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="100">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eed6bfb41051ed5b74447340f3c2e29d11e99a7c" resname="Required" approved="yes">
         <source>Required</source>
@@ -5753,12 +5753,12 @@
       <trans-unit id="d90349a2b304e9f78ef7edbf1a57d531af99cf63" resname="Reset and apply" approved="yes">
         <source>Reset and apply</source>
         <target state="translated">Reset en pas toe</target>
-        <jms:reference-file line="53">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="51">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ad9e89d7e8def62b4e6bc6b31bb2f4cc43ae066" resname="Reset and apply template" approved="yes">
         <source>Reset and apply template</source>
         <target state="translated">Reset en pas de template toe</target>
-        <jms:reference-file line="56">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="54">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a99b12995cce5031b4ec97597a303d7ac6cf3e70" resname="Reset cache">
         <source>Reset cache</source>
@@ -5768,7 +5768,7 @@
       <trans-unit id="da1cbf7d133c606ffdf7c1c5f929764ec22c3eb5" resname="Reset rights before applying template?" approved="yes">
         <source>Reset rights before applying template?</source>
         <target state="translated">De rechten resetten alvorens de template toe te passen?</target>
-        <jms:reference-file line="58">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="56">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="516aae52959dcf5398a9985414a78b8c24a4f0e5" resname="Resolution" approved="yes">
         <source>Resolution</source>
@@ -5855,7 +5855,7 @@
       <trans-unit id="0d53291b5375caffdd5ae37e198fef8464dc0cbc" resname="Rights will be erased before applying template, do you confirm?" approved="yes">
         <source>Rights will be erased before applying template, do you confirm?</source>
         <target state="translated">Rechten worden gewist voor het toe passen van de template, bent u zeker?</target>
-        <jms:reference-file line="55">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="53">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3f104d1365744b538bfde9f4adb6a6df4b80355" resname="Role" approved="yes">
         <source>Role</source>
@@ -6079,7 +6079,7 @@
       <trans-unit id="3b6564ae1423d96730d38a49a4c796ed79c6e0b1" resname="Send an email to the user to setup his password" approved="yes">
         <source>Send an email to the user to setup his password</source>
         <target state="translated">Stuur een email naar de gebruiker om zijn wachtwoord in te stellen</target>
-        <jms:reference-file line="98">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="96">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ff7a49e36b0e5c8302603f98e4eb1c7dec4a56e" resname="Send to Facebook" approved="yes">
         <source>Send to Facebook</source>
@@ -6445,7 +6445,7 @@
       <trans-unit id="5f7dcc16f00b622a8fb8bf4abf16dad52640a5fc" resname="Successful install" approved="yes">
         <source>Successful install</source>
         <target state="translated">Installatie geslaagd</target>
-        <jms:reference-file line="81">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="79">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4b7dae46777ddbfd995aab044d4a51239c1cb2ca" resname="Successful removal" approved="yes">
         <source>Successful removal</source>
@@ -6820,7 +6820,7 @@
       <trans-unit id="dedbaded6d5a4ed17eefa2e4ee3eee026b7d1d11" resname="This field is required" approved="yes">
         <source>This field is required</source>
         <target state="translated">Dit veld is verplicht</target>
-        <jms:reference-file line="51">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="49">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6d9fca5d83036912a667f02ac61f2aec19647a2" resname="This field represents the title of the document" approved="yes">
         <source>This field represents the title of the document</source>
@@ -6831,7 +6831,7 @@
         <source>This file is too big</source>
         <target state="translated">Deze file is te groot</target>
         <jms:reference-file line="95">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="50">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="48">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af03c24cd583cf93843e1876b15222bb3a60ba5a" resname="This is a template" approved="yes">
         <source>This is a template</source>
@@ -7242,13 +7242,11 @@
         <source>Use the Flash uploader</source>
         <target state="translated">Gebruik Flash uploader</target>
         <jms:reference-file line="53">prod/upload/upload.html.twig</jms:reference-file>
-        <jms:reference-file line="146">prod/upload/upload.html.twig</jms:reference-file>
         <jms:reference-file line="132">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9473cfd4d6d6383f40de2d9be11adcca7b76ab6" resname="Use the HTML5 uploader" approved="yes">
         <source>Use the HTML5 uploader</source>
         <target state="translated">Gebruik de HTML5 uploader</target>
-        <jms:reference-file line="145">prod/upload/upload.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/upload/upload-flash.html.twig</jms:reference-file>
         <jms:reference-file line="131">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
@@ -7690,8 +7688,8 @@
       <trans-unit id="1ed4ea66d26e0757b57b8c7af0813e42daa6c6a2" resname="Would you like to reset rights before applying the template?" approved="yes">
         <source>Would you like to reset rights before applying the template?</source>
         <target state="translated">Wilt u de rechten resetten alvorens de template toe te passen?</target>
-        <jms:reference-file line="59">web/admin/index.html.twig</jms:reference-file>
-        <jms:reference-file line="60">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="57">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="58">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e96594f04471c4da6c0cdc8ca87f85e6dcb3f2be" resname="Write Metas" approved="yes">
         <source>Write Metas</source>
@@ -7807,7 +7805,7 @@
       <trans-unit id="4a67615bcd64fcc9443c499676a462d835ad841e" resname="You can not upload files" approved="yes">
         <source>You can not upload files</source>
         <target state="translated">U kunt geen files uploaden</target>
-        <jms:reference-file line="150">prod/upload/upload.html.twig</jms:reference-file>
+        <jms:reference-file line="144">prod/upload/upload.html.twig</jms:reference-file>
         <jms:reference-file line="102">prod/upload/upload-flash.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4faca55769348dcbc9714b19438181057aa2510e" resname="You do not enough rights to update status" approved="yes">
@@ -9088,13 +9086,7 @@
       <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right">
         <source>admin::users:edit: check all right</source>
         <target state="new">admin::users:edit: check all right</target>
-        <jms:reference-file line="46">web/admin/index.html.twig</jms:reference-file>
         <jms:reference-file line="312">web/admin/editusers.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="6823c682eebdbe63cfdcbc7e75d5331c200933b0" resname="admin::users:edit: check left right">
-        <source>admin::users:edit: check left right</source>
-        <target state="new">admin::users:edit: check left right</target>
-        <jms:reference-file line="45">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="622a6320218ce751b33cf90a1def6bfb5ac837e0" resname="admin::users:edit: check read right">
         <source>admin::users:edit: check read right</source>
@@ -9249,6 +9241,11 @@
         <target state="new">admin::workermanager:tab:subview: title</target>
         <jms:reference-file line="30">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="777439dc521881595ca9123ff7cb56db26c2a1b8" resname="admin::workermanager:tab:workerconfig: Config Worker queue delayed">
+        <source>admin::workermanager:tab:workerconfig: Config Worker queue delayed</source>
+        <target state="new">admin::workermanager:tab:workerconfig: Config Worker queue delayed</target>
+        <jms:reference-file line="37">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="35e859a404c0f84b72fc273c41659ae86d6fcf91" resname="admin::workermanager:tab:workerconfig: Create record retry delay in ms">
         <source>admin::workermanager:tab:workerconfig: Create record retry delay in ms</source>
         <target state="new">admin::workermanager:tab:workerconfig: Create record retry delay in ms</target>
@@ -9274,6 +9271,11 @@
         <target state="new">admin::workermanager:tab:workerconfig: Populate Index retry delay in ms</target>
         <jms:reference-file line="35">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="37a3098343fa24f4c20b89a4b01febf29649eda2" resname="admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)">
+        <source>admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)</source>
+        <target state="new">admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)</target>
+        <jms:reference-file line="6">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms">
         <source>admin::workermanager:tab:workerconfig: Subdef delay in ms</source>
         <target state="new">admin::workermanager:tab:workerconfig: Subdef delay in ms</target>
@@ -9293,6 +9295,11 @@
         <source>admin::workermanager:tab:workerconfig: Write meta delay in ms</source>
         <target state="new">admin::workermanager:tab:workerconfig: Write meta delay in ms</target>
         <jms:reference-file line="41">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af7b7ed1fa5c279ad2ccdf6cd06a4c15a07c63a8" resname="admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond">
+        <source>admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond</source>
+        <target state="new">admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond</target>
+        <jms:reference-file line="38">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title">
         <source>admin::workermanager:tab:workerconfig: title</source>
@@ -9347,7 +9354,7 @@
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created">
         <source>admin::workermanager:tab:workerinfo: created</source>
         <target state="new">admin::workermanager:tab:workerinfo: created</target>
-        <jms:reference-file line="49">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id">
         <source>admin::workermanager:tab:workerinfo: databox_id</source>
@@ -9359,10 +9366,15 @@
         <target state="new">admin::workermanager:tab:workerinfo: description</target>
         <jms:reference-file line="3">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="7a47a4872345c5f33d3fa94838e52e8e3da538ad" resname="admin::workermanager:tab:workerinfo: finished">
+        <source>admin::workermanager:tab:workerinfo: finished</source>
+        <target state="new">admin::workermanager:tab:workerinfo: finished</target>
+        <jms:reference-file line="51">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published">
         <source>admin::workermanager:tab:workerinfo: published</source>
         <target state="new">admin::workermanager:tab:workerinfo: published</target>
-        <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="49">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="feed33fba251da5c0451124020d85250982721d7" resname="admin::workermanager:tab:workerinfo: record_id">
         <source>admin::workermanager:tab:workerinfo: record_id</source>
@@ -9372,7 +9384,7 @@
       <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status">
         <source>admin::workermanager:tab:workerinfo: status</source>
         <target state="new">admin::workermanager:tab:workerinfo: status</target>
-        <jms:reference-file line="51">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="52">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title">
         <source>admin::workermanager:tab:workerinfo: title</source>
@@ -9529,7 +9541,7 @@
         <jms:reference-file line="23">web/report/all_content.html.twig</jms:reference-file>
         <jms:reference-file line="47">admin/collection/create.html.twig</jms:reference-file>
         <jms:reference-file line="129">admin/publications/fiche.html.twig</jms:reference-file>
-        <jms:reference-file line="49">web/admin/index.html.twig</jms:reference-file>
+        <jms:reference-file line="47">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c6f716e883e5747e4bc8a8afc7a0ec1ccf44e0b5" resname="boutton::appliquer" approved="yes">
         <source>boutton::appliquer</source>
