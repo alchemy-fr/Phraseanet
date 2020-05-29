@@ -790,9 +790,9 @@
         <target state="translated">Show Title</target>
         <jms:reference-file line="989">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ee793299aa2f135a4330889d59d362d1652fa577" resname="Afficher le type">
+      <trans-unit id="ee793299aa2f135a4330889d59d362d1652fa577" resname="Afficher le type" approved="yes">
         <source>Afficher le type</source>
-        <target state="needs-translation">Display type</target>
+        <target state="translated">Display type</target>
         <jms:reference-file line="998">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7627cf7574df870b584ab3bd8a67d62d7ab4a18b" resname="Afficher les status" approved="yes">
@@ -9234,9 +9234,9 @@
         <target state="translated">Sub definition</target>
         <jms:reference-file line="30">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="777439dc521881595ca9123ff7cb56db26c2a1b8" resname="admin::workermanager:tab:workerconfig: Config Worker queue delayed" approved="no">
+      <trans-unit id="777439dc521881595ca9123ff7cb56db26c2a1b8" resname="admin::workermanager:tab:workerconfig: Config Worker queue delayed" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Config Worker queue delayed</source>
-        <target state="needs-translation">Configuration of delayed queue</target>
+        <target state="translated">Configuration of delay queue</target>
         <jms:reference-file line="37">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="35e859a404c0f84b72fc273c41659ae86d6fcf91" resname="admin::workermanager:tab:workerconfig: Create record retry delay in ms" approved="yes">
@@ -9244,14 +9244,14 @@
         <target state="translated">Create record, in ms (default: 30 sec)</target>
         <jms:reference-file line="20">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51e2911f424ff1a3472baa486eb9fb4263dc1cf3" resname="admin::workermanager:tab:workerconfig: Export mail retry delay in ms" approved="no">
+      <trans-unit id="51e2911f424ff1a3472baa486eb9fb4263dc1cf3" resname="admin::workermanager:tab:workerconfig: Export mail retry delay in ms" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Export mail retry delay in ms</source>
-        <target state="needs-translation">Export by email, in ms (default: 30 sec)</target>
+        <target state="translated">Export by email, in ms (default: 30 sec)</target>
         <jms:reference-file line="32">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="03326b4399bdce5ed1e809c3845317e18b84f2e1" resname="admin::workermanager:tab:workerconfig: Ingest retry delay in ms" approved="no">
+      <trans-unit id="03326b4399bdce5ed1e809c3845317e18b84f2e1" resname="admin::workermanager:tab:workerconfig: Ingest retry delay in ms" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Ingest retry delay in ms</source>
-        <target state="needs-translation">Ingest, in ms (default: 30 sec)</target>
+        <target state="translated">Ingest, in ms (default: 30 sec)</target>
         <jms:reference-file line="17">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d9b268d7b1f09a04d29b1421118ab9915dfe8583" resname="admin::workermanager:tab:workerconfig: Metadatas retry delay in ms" approved="yes">
@@ -9264,14 +9264,14 @@
         <target state="translated">Populate Elasticsearch Index, in ms (default: 30 sec)</target>
         <jms:reference-file line="35">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="37a3098343fa24f4c20b89a4b01febf29649eda2" resname="admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)" approved="no">
+      <trans-unit id="37a3098343fa24f4c20b89a4b01febf29649eda2" resname="admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)</source>
-        <target state="needs-translation">Set up the retry interval between two attempts, when job generate an error.</target>
+        <target state="translated">Retry interval between two attempts, when job generates an error</target>
         <jms:reference-file line="6">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms" approved="no">
+      <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Subdef delay in ms</source>
-        <target state="needs-translation">Sub definition, in ms (default: 20 sec).</target>
+        <target state="translated">Sub definition, in ms (default: 20 sec).</target>
         <jms:reference-file line="38">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f244e6e83373721615f3c7d2f43415ff6280596" resname="admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms" approved="yes">
@@ -9279,19 +9279,19 @@
         <target state="translated">Sub definition building, in ms (default: 30 sec)</target>
         <jms:reference-file line="23">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f786b1c8e061a9c7cf2a35b136c53f027a42aca8" resname="admin::workermanager:tab:workerconfig: Webhook retry delay in ms" approved="no">
+      <trans-unit id="f786b1c8e061a9c7cf2a35b136c53f027a42aca8" resname="admin::workermanager:tab:workerconfig: Webhook retry delay in ms" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Webhook retry delay in ms</source>
-        <target state="needs-translation">Emit Webhook, in ms (default: 30 sec)</target>
+        <target state="translated">Emit Webhook, in ms (default: 30 sec)</target>
         <jms:reference-file line="29">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms" approved="no">
+      <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Write meta delay in ms</source>
-        <target state="needs-translation">Write meta-datas, in ms, (default: 20 sec).</target>
+        <target state="translated">Write metadatas, in ms, (default: 20 sec).</target>
         <jms:reference-file line="41">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af7b7ed1fa5c279ad2ccdf6cd06a4c15a07c63a8" resname="admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond" approved="no">
+      <trans-unit id="af7b7ed1fa5c279ad2ccdf6cd06a4c15a07c63a8" resname="admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond" approved="yes">
         <source>admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond</source>
-        <target state="needs-translation">Use when file is locked by an other process</target>
+        <target state="translated">Retry interval when file is locked by an other process</target>
         <jms:reference-file line="38">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title" approved="yes">
@@ -9341,7 +9341,7 @@
       </trans-unit>
       <trans-unit id="9f27ba960967b509af00a86a0758e8091806d0f6" resname="admin::workermanager:tab:workerinfo: Warning! Erase all information" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all information</source>
-        <target state="translated">Warning! This erases all jobs logs, including actual running job(s).</target>
+        <target state="translated">Warning! This will delete all jobs logs, including running job(s)</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
@@ -9351,7 +9351,7 @@
       </trans-unit>
       <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id" approved="no">
         <source>admin::workermanager:tab:workerinfo: databox_id</source>
-        <target state="needs-translation">Base Id</target>
+        <target state="needs-translation">Database Id</target>
         <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description" approved="yes">
@@ -12024,9 +12024,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Metadata</target>
         <jms:reference-file line="8">actions/Tools/metadata.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2790a8c39d5d87a224d819b796f6501967f336e9" resname="prod::tool:recreatesubviews: warning for rebuild sub-definitions" approved="no">
+      <trans-unit id="2790a8c39d5d87a224d819b796f6501967f336e9" resname="prod::tool:recreatesubviews: warning for rebuild sub-definitions" approved="yes">
         <source>prod::tool:recreatesubviews: warning for rebuild sub-definitions</source>
-        <target state="needs-translation">Build sub-definition request is submit.</target>
+        <target state="translated">Subdefinition build request has been submitted</target>
         <jms:reference-file line="93">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c467e7605e648402bb5cda33089ad88c5ba3899b" resname="prod::tool:select subdef" approved="yes">
