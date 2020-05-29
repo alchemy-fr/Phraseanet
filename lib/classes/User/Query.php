@@ -36,11 +36,14 @@ class User_Query
     const LIKE_COUNTRY = 'country';
     const LIKE_MATCH_AND = 'AND';
     const LIKE_MATCH_OR = 'OR';
+    const LIKE_TYPE_START = 'like_start';
+    const LIKE_TYPE_CONTAINS = 'like_contains';
 
     protected $app;
     protected $results = [];
     protected $sort = [];
     protected $like_field = [];
+    protected $like_type = 'like_start';
     protected $have_rights = null;
     protected $have_not_rights = null;
     protected $like_match = 'OR';
@@ -400,12 +403,14 @@ class User_Query
      *
      * @param $like_field
      * @param $like_value
+     * @param $like_type
      *
      * @return $this
      */
-    public function like($like_field, $like_value)
+    public function like($like_field, $like_value, $like_type = self::LIKE_TYPE_START)
     {
         $this->like_field[trim($like_field)] = trim($like_value);
+        $this->like_type = $like_type;
         $this->total = $this->page = $this->total_page = null;
 
         return $this;
@@ -994,13 +999,24 @@ class User_Query
                         if (trim($like_val) === '')
                             continue;
 
-                        $queries[] = sprintf(
-                            ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
-                            , self::LIKE_FIRSTNAME
-                            , str_replace(['"', '%'], ['\"', '\%'], $like_val)
-                            , self::LIKE_LASTNAME
-                            , str_replace(['"', '%'], ['\"', '\%'], $like_val)
-                        );
+                        if ($this->like_type == self::LIKE_TYPE_CONTAINS) {
+                            $queries[] = sprintf(
+                                ' (Users.`%s` LIKE "%%%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%%%s%%"  COLLATE utf8_unicode_ci)  '
+                                , self::LIKE_FIRSTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                                , self::LIKE_LASTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            );
+                        } else {
+                            $queries[] = sprintf(
+                                ' (Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci OR Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
+                                , self::LIKE_FIRSTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                                , self::LIKE_LASTNAME
+                                , str_replace(['"', '%'], ['\"', '\%'], $like_val)
+                            );
+                        }
+
                     }
 
                     if (count($queries) > 0) {
@@ -1013,11 +1029,20 @@ class User_Query
                 case self::LIKE_EMAIL:
                 case self::LIKE_LOGIN:
                 case self::LIKE_COUNTRY:
-                    $sql_like[] = sprintf(
-                        ' Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
-                        , $like_field
-                        , str_replace(['"', '%'], ['\"', '\%'], $like_value)
-                    );
+                    if ($this->like_type == self::LIKE_TYPE_CONTAINS) {
+                        $sql_like[] = sprintf(
+                            ' Users.`%s` LIKE "%%%s%%"  COLLATE utf8_unicode_ci '
+                            , $like_field
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_value)
+                        );
+                    } else {
+                        $sql_like[] = sprintf(
+                            ' Users.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
+                            , $like_field
+                            , str_replace(['"', '%'], ['\"', '\%'], $like_value)
+                        );
+                    }
+
                     break;
                 default;
                     break;
