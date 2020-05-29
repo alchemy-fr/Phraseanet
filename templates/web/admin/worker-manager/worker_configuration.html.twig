@@ -3,7 +3,7 @@
     {{ 'admin::workermanager:tab:workerconfig: warning' |trans }}
 </p>
 
-<p>Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)</p>
+<p>{{ 'admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)' |trans }}</p>
 {{ form_start(form, {'action': path('worker_admin_configuration')}) }}
 
 <div class="control-group">
@@ -34,8 +34,8 @@
     {{ form_row(form.populateIndex) }}
 </div>
 
-<h3> Config Worker queue delayed</h3>
-<p>if not set ,default 5000 millisecond</p>
+<h3> {{ 'admin::workermanager:tab:workerconfig: Config Worker queue delayed' |trans }}</h3>
+<p> {{ 'admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond' |trans }}</p>
 
 <div class="control-group">
     {{ form_row(form.delayedSubdef) }}
