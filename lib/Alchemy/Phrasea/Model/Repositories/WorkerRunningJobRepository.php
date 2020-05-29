@@ -102,4 +102,12 @@ class WorkerRunningJobRepository extends EntityRepository
     {
         return parent::getEntityManager();
     }
+
+    public function reconnect()
+    {
+        if($this->_em->getConnection()->ping() === false) {
+            $this->_em->getConnection()->close();
+            $this->_em->getConnection()->connect();
+        }
+    }
 }

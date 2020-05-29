@@ -11,9 +11,9 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     volumes:
-    - data_vol:/var/alchemy/Phraseanet/datas:rw
-    - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
     depends_on:
     - phraseanet
     environment:
@@ -42,18 +42,27 @@ services:
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
-    - INSTALL_ACCOUNT_EMAIL
-    - INSTALL_ACCOUNT_PASSWORD
-    - INSTALL_DB_HOST
-    - INSTALL_DB_PORT
-    - INSTALL_DB_USER
-    - INSTALL_DB_PASSWORD
+    - PHRASEANET_ADMIN_ACCOUNT_EMAIL
+    - PHRASEANET_ADMIN_ACCOUNT_PASSWORD
+    - PHRASEANET_DB_HOST
+    - PHRASEANET_DB_PORT
+    - PHRASEANET_DB_USER
+    - PHRASEANET_DB_PASSWORD
     - INSTALL_DB_TEMPLATE
     - INSTALL_APPBOX
     - INSTALL_DATABOX
-    - INSTALL_SERVER_NAME
-    - INSTALL_RABBITMQ_USER=$RABBITMQ_DEFAULT_USER
-    - INSTALL_RABBITMQ_PASSWORD=$RABBITMQ_DEFAULT_PASS
+    - PHRASEANET_SERVER_NAME
+    - PHRASEANET_RABBITMQ_USER=$RABBITMQ_DEFAULT_USER
+    - PHRASEANET_RABBITMQ_PASSWORD=$RABBITMQ_DEFAULT_PASS
+    - PHRASEANET_EMITTER_EMAIL
+    - PHRASEANET_MAIL_OBJECT_PREFIX
+    - PHRASEANET_SMTP_ENABLED
+    - PHRASEANET_SMTP_HOST
+    - PHRASEANET_SMTP_PORT
+    - PHRASEANET_SMTP_AUTH_ENABLED
+    - PHRASEANET_SMTP_SECURE_MODE
+    - PHRASEANET_SMTP_USER
+    - PHRASEANET_SMTP_PASSWORD
     volumes:
     - config_vol:/var/alchemy/Phraseanet/config:rw
     - data_vol:/var/alchemy/Phraseanet/datas:rw
@@ -101,7 +110,7 @@ services:
     - MYSQL_ROOT_PASSWORD
     - MYSQL_MAX_ALLOWED_PACKET
     volumes:
-    - db_vol:/var/lib/mysql
+    - ${PHRASEANET_DB_DIR}:/var/lib/mysql
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -119,7 +128,13 @@ services:
     build: ./docker/elasticsearch
     restart: on-failure
     volumes:
-    - elasticsearch_vol:/usr/share/elasticsearch/data
+    - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+    - 1025:1025
+    - 8025:8025
 
 volumes:
   config_vol:
@@ -140,4 +155,6 @@ volumes:
     driver: local
   # to be replacer by stdout/stderr
   logs_vol:
+    driver: local
+  dev_vol:
     driver: local

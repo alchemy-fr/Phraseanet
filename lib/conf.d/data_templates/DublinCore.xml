@@ -8,7 +8,7 @@
                 <size>1024</size>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <strip>no</strip>
+                <strip>yes</strip>
                 <quality>75</quality>
                 <meta>yes</meta>
                 <devices>screen</devices>
@@ -90,6 +90,21 @@
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
             </subdef>
+            <subdef class="preview" name="poster" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>1</meta>
+                <size>1280</size>
+                <mediatype>image</mediatype>
+                <writeDatas>yes</writeDatas>
+                <devices>screen</devices>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <icodec>jpeg</icodec>
+                <label lang="fr">Poster video</label>
+                <label lang="en">Poster video</label>
+            </subdef>
             <subdef class="preview" name="preview_webm" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <size>748</size>
@@ -102,8 +117,30 @@
                 <fps>25</fps>
                 <GOPsize>25</GOPsize>
                 <vcodec>libvpx</vcodec>
-                <label lang="fr">Prévisualisation WebM</label>
-                <label lang="en">WebM Preview</label>
+            </subdef>
+            <subdef class="preview" name="audiovideowav" downloadable="true" orderable="true" presets="Wave Mono 8 kHz">
+                <path>{{datapathnoweb}}{{basename}}/subview</path>
+                <meta>no</meta>
+                <mediatype>audio</mediatype>
+                <audiobitrate>128</audiobitrate>
+                <audiosamplerate>8000</audiosamplerate>
+                <acodec>pcm_s16le</acodec>
+                <audiochannel>mono</audiochannel>
+                <devices>all</devices>
+                <label lang="fr">Audio WAVE 8 kHz</label>
+                <label lang="en">Audio WAVE 8 kHz</label>
+            </subdef>
+            <subdef class="preview" name="audiovideomp3" downloadable="true" orderable="true" presets="Normal MP3 128 kbit/s">
+                <path>{{datapathnoweb}}{{basename}}/subview</path>
+                <meta>no</meta>
+                <mediatype>audio</mediatype>
+                <audiobitrate>180</audiobitrate>
+                <audiosamplerate>44100</audiosamplerate>
+                <acodec>libmp3lame</acodec>
+                <audiochannel/>
+                <devices>all</devices>
+                <label lang="fr">Audio MP3 128 kbit/s</label>
+                <label lang="en">Audio MP3 128 kbit/s</label>
             </subdef>
         </subdefgroup>
         <subdefgroup name="audio">
@@ -155,30 +192,6 @@
                 <label lang="en">Preview</label>
             </subdef>
         </subdefgroup>
-        <subdefgroup name="flash">
-            <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>240</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Vignette</label>
-                <label lang="en">Thumbnail</label>
-            </subdef>
-            <subdef class="preview" name="preview" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>800</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Prévisualisation</label>
-                <label lang="en">Preview</label>
-            </subdef>
-        </subdefgroup>
     </subdefs>
 
     <description>
@@ -199,9 +212,13 @@
         <Rights src="XMP-dc:Rights" type="string" report="0" />
         <Comments src="" business="1" type="string" report="0" />
         <Filename src="Phraseanet:tf-basename" readonly="1" type="string" report="1"/>
-        <CameraDevice src="IFD0:Model" type="string" readonly="1" report="0" />
-        <Latitude src="GPS:GPSLatitude" type="number" readonly="1" report="0" />
-        <Longitude src="GPS:GPSLongitude"  type="number" readonly="1" report="0"/>
+        <Latitude src="Composite:GPSLatitude" type="number" readonly="1" report="0" />
+        <Longitude src="Composite:GPSLongitude"  type="number" readonly="1" report="0"/>
+        <StartOfMessage src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="number" gui_editable="1" gui_visible="1"/>
+        <VideoTextTrackChapters src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="0" gui_visible="0"/>
+        <VideoTextTrackFr src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
+        <VideoTextTrackEn src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
+        <VideoTextTrackDe src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
         <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
         <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
     </description>
