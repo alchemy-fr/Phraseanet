@@ -9196,7 +9196,7 @@
       </trans-unit>
       <trans-unit id="d8bf5909677c8810b2014406b24c6e7951ca4cfa" resname="admin::workermanager:tab:searchengine: Elasticsearch server host" approved="yes">
         <source>admin::workermanager:tab:searchengine: Elasticsearch server host</source>
-        <target state="translated">Elasticsearch server host</target>
+        <target state="translated">Elasticsearch server host (without http or https)</target>
         <jms:reference-file line="19">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="40ffed0a60a2e090a390677ce1580a3fbc1c474d" resname="admin::workermanager:tab:searchengine: Elasticsearch service port" approved="yes">
