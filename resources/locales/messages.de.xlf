@@ -9268,7 +9268,7 @@
       </trans-unit>
       <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms" approved="yes">
         <source>admin::workermanager:tab:workerconfig: Subdef delay in ms</source>
-        <target state="translated">Verzögerung für Auflösung Herstellung, in ms (Standardwert: 20 sek.); benutzen, wenn Datei von einem Prozess gesperrt wird</target>
+        <target state="translated">Auflösung Herstellung, in ms (Standardwert: 20 sek.)</target>
         <jms:reference-file line="38">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f244e6e83373721615f3c7d2f43415ff6280596" resname="admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms" approved="yes">
