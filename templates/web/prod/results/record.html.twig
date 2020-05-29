@@ -78,7 +78,7 @@
 
                         {% if settings.rollover_thumbnail == 'caption' %}
                             {% if record_subdef_url(record, 'preview') is not null and has_access_subdef(record, 'preview') %}
-                                <span class="fa-stack fa-lg previewTips" onclick="alert('test')"
+                                <span class="fa-stack fa-lg previewTips"
                                       tooltipsrc="{{ path('prod_tooltip_preview', { 'sbas_id' : record.databoxId, 'record_id' : record.recordId }) }}">
                                   <i class="icomoon icon-rectangular-curve  fa-stack-2x" aria-hidden="true"></i>
                                   <i class="icomoon icon-search white fa-stack-1x " aria-hidden="true"></i>
