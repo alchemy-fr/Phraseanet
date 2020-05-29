@@ -48,7 +48,7 @@ main:
                 _doctype:
                     limit: 10
                 _camera_model:
-                    limit: 0
+                    limit: 10
                 _iso:
                     limit: 0
                 _aperture:
@@ -159,7 +159,7 @@ border-manager:
             type: Checker\MediaType
             enabled: false
             options:
-                mediatypes: [Audio, Document, Flash, Image, Video]
+                mediatypes: [Audio, Document, Image, Video]
 user_account:
     deleting_policies:
         email_confirmation: true
@@ -244,7 +244,7 @@ embed_bundle:
     video:
         player: videojs
         autoplay: false
-        cover_subdef: thumbnail
+        cover_subdef: poster
         message_start: StartOfMessage
         available_speeds:
             - 1
