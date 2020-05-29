@@ -18,7 +18,7 @@
         <button class="btn btn-primary">
             {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
         </button>
-        <span class="alert alert-danger">
+        <span class="alert alert-info">
             {{ "admin::workermanager:tab:workerinfo: Warning! Erase all finished"|trans }}
         </span>
 
@@ -31,10 +31,10 @@
 
     <div class="controls">
         <label class="checkbox inline">
-            <input class="running-work" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display running work' | trans }}
+            <input class="running-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display running work' | trans }}
         </label>
         <label class="checkbox inline">
-            <input class="finished-work" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display finished work' | trans }}
+            <input class="finished-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display finished work' | trans }}
         </label>
     </div>
 
@@ -80,7 +80,7 @@
     </table>
 
     <script type="text/javascript">
-        $("#refresh-list").on('click', function () {
+        function refreshJobList () {
             var running  = 1;
             var finished = 1;
             if (!$(".running-work").is(":checked"))
@@ -99,6 +99,12 @@
                     $(".work-list").empty().html(data);
                 }
             });
+        }
+        $("#refresh-list").on('click', function () {
+            refreshJobList();
+        });
+        $(".refresh-list-checkbox").on('change', function () {
+            refreshJobList();
         });
     </script>
 {% endif %}
