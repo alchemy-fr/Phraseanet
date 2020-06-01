@@ -42,10 +42,10 @@
 </script>
 
 <script type="text/template" id="download_finish_tpl">
-<b><%= heading %></b>
+<b title="<% _.each(reasons, function(reason) { %>*<%= reason %><% }); %>"><%= heading %></b>
 <br />
 <% _.each(reasons, function(reason) { %>
-    <div>*<%= reason %></div>
+    <div class="hidden">*<%= reason %></div>
 <% }); %>
 </script>
 
