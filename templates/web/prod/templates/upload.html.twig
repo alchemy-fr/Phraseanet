@@ -42,10 +42,19 @@
 </script>
 
 <script type="text/template" id="download_finish_tpl">
-<b><%= heading %></b>
+<b class="show_more_message" ><%= heading %></b>
 <br />
 <% _.each(reasons, function(reason) { %>
-    <div>*<%= reason %></div>
+    <b class="hidden alert alert-error more-warning" role="alert" style="position: absolute">*<%= reason %></b>
 <% }); %>
+</script>
+<script>
+    $(document).on('mouseover','.show_more_message', function (e) {
+        $(this).parent().find('.more-warning').removeClass('hidden')
+    })
+    $(document).on('mouseout','.show_more_message',function (e) {
+        $(this).parent().find('.more-warning').addClass('hidden')
+    })
+
 </script>
 
