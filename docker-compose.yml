@@ -13,6 +13,7 @@ services:
     volumes:
     - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
     - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
     - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
     depends_on:
     - phraseanet
@@ -64,13 +65,13 @@ services:
     - PHRASEANET_SMTP_USER
     - PHRASEANET_SMTP_PASSWORD
     volumes:
-    - config_vol:/var/alchemy/Phraseanet/config:rw
-    - data_vol:/var/alchemy/Phraseanet/datas:rw
-    - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
-    - logs_vol:/var/alchemy/Phraseanet/logs:rw
-    - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
-    - cache_vol:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
 
   worker:
     build:
@@ -94,13 +95,13 @@ services:
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
     volumes:
-    - config_vol:/var/alchemy/Phraseanet/config:rw
-    - data_vol:/var/alchemy/Phraseanet/datas:rw
-    - tmp_vol:/var/alchemy/Phraseanet/tmp:rw
-    - logs_vol:/var/alchemy/Phraseanet/logs:rw
-    - thumbnails_vol:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - custom_vol:/var/alchemy/Phraseanet/www/custom:rw
-    - cache_vol:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
 
   db:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
