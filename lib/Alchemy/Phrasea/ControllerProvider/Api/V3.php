@@ -17,7 +17,8 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
     public function register(Application $app)
     {
         $app['controller.api.v3'] = $app->share(function (PhraseaApplication $app) {
-            return (new V3Controller($app));
+            return (new V3Controller($app))
+                ->setJsonBodyHelper($app['json.body_helper']);
         });
     }
 
@@ -42,6 +43,13 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->assert('record_id', '\d+');
 
         $controllers->match('/search/', 'controller.api.v3:searchAction');
+
+        $controllers->patch('/records/{databox_id}/{record_id}/setmetadatas/', 'controller.api.v3:setmetadatasAction')
+            ->before('controller.api.v1:ensureCanAccessToRecord')
+            ->before('controller.api.v1:ensureCanModifyRecord')
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+');
+        $controllers->match('/records/{any_id}/{anyother_id}/setmetadatas/', 'controller.api.v1:getBadRequestAction');
 
         return $controllers;
     }

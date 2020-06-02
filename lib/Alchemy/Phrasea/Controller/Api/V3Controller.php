@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Controller\Api;
 
+use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
@@ -36,8 +37,285 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use databox_field;
+
+
 class V3Controller extends Controller
 {
+    use JsonBodyAware;
+
+    /**
+     * Return detailed information about one story
+     *
+     * @param  Request $request
+     * @param  int     $databox_id
+     * @param  int     $record_id
+     *
+     * @return Response
+     */
+    public function setmetadatasAction(Request $request, $databox_id, $record_id)
+    {
+        $struct = $this->findDataboxById($databox_id)->get_meta_structure();
+        $record = $this->findDataboxById($databox_id)->get_record($record_id);
+
+        //$record->set_metadatas()
+
+        $structByKey = [];
+        $nameToStrucId = [];
+        foreach($struct as $f) {
+            $nameToStrucId[$f->get_name()] = $f->get_id();
+            $structByKey[$f->get_id()] = $f;
+            $structByKey[$f->get_name()] = &$structByKey[$f->get_id()];
+        }
+
+        try {
+            $b = $this->decodeJsonBody($request);
+        }
+        catch(\Exception $e) {
+            return $this->app['controller.api.v1']->getBadRequestAction($request, 'Bad JSON');
+        }
+
+        $metadatas_ops = [];
+        foreach ($b->metadatas as $_m) {
+            // sanity
+            if($_m->meta_struct_id && $_m->field_name) {
+                return $this->app['controller.api.v1']->getBadRequestAction(
+                    $request,
+                    "define meta_struct_id OR field_name, not both."
+                );
+            }
+            // select fields that match meta_struct_id or field_name (can be arrays)
+            $fields_list = null;    // to filter caption_fields from record, default all
+            $struct_fields = [];    // struct fields that match meta_struct_id or field_name
+            if(($field_keys = $_m->meta_struct_id ? $_m->meta_struct_id : $_m->field_name) !== null) {  // can be null if none defined (=match all)
+                if (!is_array($field_keys)) {
+                    $field_keys = [$field_keys];
+                }
+                $fields_list = [];
+                foreach ($field_keys as $k) {
+                    if(array_key_exists($k, $structByKey)) {
+                        $fields_list[] = $structByKey[$k]->get_name();
+                        $struct_fields[$structByKey[$k]->get_id()] = $structByKey[$k];
+                    }
+                }
+            }
+            $caption_fields = $record->get_caption()->get_fields($fields_list, true);
+
+            $meta_id = is_null($_m->meta_id) ? null : (int)($_m->meta_id);
+
+            if(!($match_method = (string)($_m->match_method))) {
+                $match_method = 'ignore_case';
+            }
+            if(!in_array($match_method, ['strict', 'ignore_case', 'regexp'])) {
+                return $this->app['controller.api.v1']->getBadRequestAction(
+                    $request,
+                    sprintf("bad match_method (%s).", $match_method)
+                );
+            }
+
+            $values = [];
+            if(is_array($_m->value)) {
+                foreach ($_m->value as $v) {
+                    $values[] = is_null($v) ? null : (string)$v;
+                }
+            }
+            else {
+                $values = is_null($_m->value) ? [] : [(string)($_m->value)];
+            }
+
+            if(!($action = (string)($_m->action))) {
+                $action = 'set';
+            }
+            switch($_m->action) {
+                case 'set':
+                    $metadatas_ops = array_merge(
+                        $metadatas_ops,
+                        $this->setmetadatasAction_set($struct_fields, $caption_fields, $meta_id, $values)
+                    );
+                    break;
+                case 'add':
+                    $metadatas_ops = array_merge(
+                        $metadatas_ops,
+                        $this->setmetadatasAction_add($struct_fields, $values)
+                    );
+                    break;
+                case 'delete':
+                    $metadatas_ops = array_merge(
+                        $metadatas_ops,
+                        $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, null)
+                    );
+                    break;
+                case 'replace':
+                    if(!is_string($_m->replace_with) && !is_null($_m->replace_with)) {
+                        return $this->app['controller.api.v1']->getBadRequestAction(
+                            $request,
+                            "bad \"replace_with\" for action \"replace\"."
+                        );
+                    }
+                    $metadatas_ops = array_merge(
+                        $metadatas_ops,
+                        $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, $_m->replace_with)
+                    );
+                    break;
+                default:
+                    return $this->app['controller.api.v1']->getBadRequestAction(
+                        $request,
+                        sprintf("bad action (%s).", $action)
+                    );
+            }
+        }
+
+        return Result::create($request, $metadatas_ops)->createResponse();
+    }
+
+    private function match($pattern, $method, $value)
+    {
+        switch ($method) {
+            case 'strict':
+                return $value === $pattern;
+            case 'ignore_case':
+                return strtolower($value) === strtolower($pattern);
+            case 'regexp':
+                return preg_match($pattern, $value) == 1;
+        }
+    }
+
+    /**
+     * @param databox_field[] $struct_fields    struct-fields (from struct) matching meta_struct_id or field_name
+     * @param \caption_field[] $caption_fields  caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
+     * @param int|null $meta_id
+     * @param string[] $values
+     *
+     * @return array                            ops to execute
+     */
+    private function setmetadatasAction_set($struct_fields, $caption_fields, $meta_id, $values)
+    {
+        $ops = [];
+
+        // if one field was multi-valued and no meta_id was set, we must delete all values
+        foreach ($caption_fields as $cf) {
+            if ($cf->is_multi() && is_null($meta_id)) {
+                foreach ($cf->get_values() as $field_value) {
+                    $a[] = [
+                        'meta_struct_id' => $cf->get_meta_struct_id(),
+                        'meta_id'        => $field_value->getId(),
+                        'value'          => null
+                    ];
+                }
+            }
+        }
+        // now set values to matching struct_fields
+        foreach ($struct_fields as $sf) {
+            if($sf->is_multi()) {
+                //  add the non-null value(s)
+                foreach ($values as $value) {
+                    if (!is_null($value)) {
+                        $ops[] = [
+                            'meta_struct_id' => $sf->get_id(),
+                            'meta_id'        => $meta_id,  // can be null
+                            'value'          => $value
+                        ];
+                    }
+                }
+            }
+            else {
+                // mono-valued
+                $ops[] = [
+                    'meta_struct_id' => $sf->get_id(),
+                    'meta_id'        => $meta_id,  // probably null,
+                    'value'          => $values[0]
+                ];
+            }
+        }
+
+        return $ops;
+    }
+
+    /**
+     * @param databox_field[] $struct_fields    struct-fields (from struct) matching meta_struct_id or field_name
+     * @param string[] $values
+     *
+     * @return array                            ops to execute
+     */
+    private function setmetadatasAction_add($struct_fields, $values)
+    {
+        $ops = [];
+
+        // now set values to matching struct_fields
+        foreach ($struct_fields as $sf) {
+            if(!$sf->is_multi()) {
+                // todo : return error "cant add to mono-valued"
+                continue;
+            }
+            //  add the non-null value(s)
+            foreach ($values as $value) {
+                if (!is_null($value)) {
+                    $ops[] = [
+                        'meta_struct_id' => $sf->get_id(),
+                        'meta_id'        => null,
+                        'value'          => $value
+                    ];
+                }
+            }
+        }
+
+        return $ops;
+    }
+
+    /**
+     * @param \caption_field[] $caption_fields  caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
+     * @param int|null $meta_id
+     * @param string $match_method              "strict" | "ignore_case" | "regexp"
+     * @param string[] $values
+     * @param string|null $replace_with
+     *
+     * @return array                            ops to execute
+     */
+    private function setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, $replace_with)
+    {
+        $ops = [];
+
+        foreach ($caption_fields as $cf) {
+            // match all ?
+            if(is_null($meta_id) && count($values) == 0) {
+                foreach ($cf->get_values() as $field_value) {
+                    $ops[] = [
+                        'meta_struct_id' => $cf->get_meta_struct_id(),
+                        'meta_id'        => $field_value->getId(),
+                        'value'          => $replace_with
+                    ];
+                }
+            }
+            // match by meta-id ?
+            if (!is_null($meta_id)) {
+                foreach ($cf->get_values() as $field_value) {
+                    if ($field_value->getId() === $meta_id) {
+                        $a[] = [
+                            'meta_struct_id' => $cf->get_meta_struct_id(),
+                            'meta_id'        => $field_value->getId(),
+                            'value'          => $replace_with
+                        ];
+                    }
+                }
+            }
+            // match by value(s) ?
+            foreach ($values as $value) {
+                foreach ($cf->get_values() as $field_value) {
+                    if ($this->match($value, $match_method, $field_value->getValue())) {
+                        $ops[] = [
+                            'meta_struct_id' => $cf->get_meta_struct_id(),
+                            'meta_id'        => $field_value->getId(),
+                            'value'          => $match_method=='regexp' ? preg_replace($value, $replace_with, $field_value->getValue()): $replace_with
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $ops;
+    }
+
+
     /**
      * Return detailed information about one story
      *
