@@ -47,65 +47,10 @@ class ExportSubscriber extends AbstractNotificationSubscriber
         $this->app['event-manager']->notify($params['usr_id'], 'eventsmanager_notify_downloadmailfail', $datas, $mailed);
     }
 
-    public function onCreateExportMail(ExportMailEvent $event)
-    {
-        $destMails = $event->getDestinationMails();
-
-        $params = $event->getParams();
-
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->app['repo.users'];
-
-        $user = $userRepository->find($event->getEmitterUserId());
-
-        /** @var TokenRepository $tokenRepository */
-        $tokenRepository = $this->app['repo.tokens'];
-
-        /** @var Token $token */
-        $token = $tokenRepository->findValidToken($event->getTokenValue());
-
-        $list = unserialize($token->getData());
-
-        //zip documents
-        \set_export::build_zip(
-            $this->app,
-            $token,
-            $list,
-            $this->app['tmp.download.path'].'/'. $token->getValue() . '.zip'
-        );
-
-        $remaingEmails = $destMails;
-
-        $emitter = new Emitter($user->getDisplayName(), $user->getEmail());
-
-        foreach ($destMails as $key => $mail) {
-            try {
-                $receiver = new Receiver(null, trim($mail));
-            } catch (InvalidArgumentException $e) {
-                continue;
-            }
-
-            $mail = MailRecordsExport::create($this->app, $receiver, $emitter, $params['textmail']);
-            $mail->setButtonUrl($params['url']);
-            $mail->setExpiration($token->getExpiration());
-
-            $this->deliver($mail, $params['reading_confirm']);
-            unset($remaingEmails[$key]);
-        }
-
-        //some mails failed
-        if (count($remaingEmails) > 0) {
-            foreach ($remaingEmails as $mail) {
-                $this->app['dispatcher']->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent($user, $params['ssttid'], $params['lst'], \eventsmanager_notify_downloadmailfail::MAIL_FAIL, $mail));
-            }
-        }
-    }
-
     public static function getSubscribedEvents()
     {
         return [
             PhraseaEvents::EXPORT_MAIL_FAILURE => 'onMailExportFailure',
-            PhraseaEvents::EXPORT_MAIL_CREATE  => 'onCreateExportMail',
         ];
     }
 }

@@ -147,6 +147,15 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.webhook-delivery'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WebhookEventDelivery');
         });
+        $app['repo.worker-running-job'] = $app->share(function (PhraseaApplication $app) {
+            return $app['orm.em']->getRepository('Phraseanet:WorkerRunningJob');
+        });
+        $app['repo.worker-running-populate'] = $app->share(function (PhraseaApplication $app) {
+            return $app['orm.em']->getRepository('Phraseanet:WorkerRunningPopulate');
+        });
+        $app['repo.worker-running-uploader'] = $app->share(function (PhraseaApplication $app) {
+            return $app['orm.em']->getRepository('Phraseanet:WorkerRunningUploader');
+        });
 
         $app['repo.databoxes'] = $app->share(function (PhraseaApplication $app) {
             $appbox = $app->getApplicationBox();

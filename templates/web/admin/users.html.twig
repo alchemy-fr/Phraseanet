@@ -46,7 +46,10 @@
                     <option {% if parm['like_field'] == "company" %}selected="selected"{% endif %} value="company">{{ 'Push::filter on companies' | trans }}</option>
                     <option {% if parm['like_field'] == "email" %}selected="selected"{% endif %} value="email">{{ 'Push::filter on emails' | trans }}</option>
                 </select>
-                <span>{{ 'Push::filter starts' | trans }}</span>
+                <select name="like_type" class="input-medium without-border">
+                    <option selected="selected" value="like_contains">{{ 'admin::users:filter: content' | trans }}</option>
+                    <option value="like_start">{{ 'admin::users:filter: start with' | trans }}</option>
+                </select>
                 <input type="text" value="{{parm['like_value']}}" name="like_value" class="input-medium">
                 <span>{{ 'Last applied template' | trans }}</span>
                 <select name="last_model" class="input-medium">

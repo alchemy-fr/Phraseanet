@@ -54,6 +54,7 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Admin\Setup::class => [],
             Admin\Subdefs::class => [],
             Admin\TaskManager::class => [],
+            \Alchemy\Phrasea\WorkerManager\Provider\ControllerServiceProvider::class => [],
             Admin\Users::class => [],
             Client\Root::class => [],
             Datafiles::class => [],

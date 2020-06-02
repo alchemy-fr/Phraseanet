@@ -87,6 +87,7 @@ class Manage extends Helper
         $this->query_parms = [
             'inactives' => $this->request->get('inactives'),
             'like_field' => $this->request->get('like_field'),
+            'like_type' => $this->request->get('like_type'),
             'like_value' => $this->request->get('like_value'),
             'sbas_id' => $this->request->get('sbas_id'),
             'base_id' => $this->request->get('base_id'),
@@ -98,6 +99,7 @@ class Manage extends Helper
             'offset_start' => $offset_start,
         ];
 
+        /** @var \User_Query $query */
         $query = $this->app['phraseanet.user-query'];
 
         if (is_array($this->query_parms['base_id']))
@@ -106,7 +108,7 @@ class Manage extends Helper
             $query->on_sbas_ids($this->query_parms['sbas_id']);
 
         $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
-            ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
+            ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)

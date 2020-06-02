@@ -181,19 +181,14 @@ class RegistryFormManipulator
             ],
             'custom-links' => [
                 [
-                    'linkName'     => 'Phraseanet store',
-                    'linkLanguage' => 'fr',
-                    'linkUrl'      => 'https://alchemy.odoo.com/shop',
-                    'linkLocation' => 'help-menu',
-                    'linkOrder'    => '1',
-                ],
-                [
-                    'linkName'     => 'Phraseanet store',
-                    'linkLanguage' => 'en',
-                    'linkUrl'      => 'https://alchemy.odoo.com/en_US/shop',
-                    'linkLocation' => 'help-menu',
-                    'linkOrder'    => '1',
-                ],
+                    'linkName'      => 'Phraseanet store',
+                    'linkLanguage'  => 'all',
+                    'linkUrl'       => 'https://store.alchemy.fr',
+                    'linkLocation'  => 'help-menu',
+                    'linkOrder'     =>  1,
+                    'linkBold'      =>  false,
+                    'linkColor'     =>  ''
+                ]
             ]
         ];
     }
