@@ -119,7 +119,7 @@
                 <vcodec>libvpx</vcodec>
             </subdef>
             <subdef class="preview" name="audiovideowav" downloadable="true" orderable="true" presets="Wave Mono 8 kHz">
-                <path>{{datapathnoweb}}{{basename}}/subview</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <meta>no</meta>
                 <mediatype>audio</mediatype>
                 <audiobitrate>128</audiobitrate>
@@ -131,7 +131,7 @@
                 <label lang="en">Audio WAVE 8 kHz</label>
             </subdef>
             <subdef class="preview" name="audiovideomp3" downloadable="true" orderable="true" presets="Normal MP3 128 kbit/s">
-                <path>{{datapathnoweb}}{{basename}}/subview</path>
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <meta>no</meta>
                 <mediatype>audio</mediatype>
                 <audiobitrate>180</audiobitrate>
