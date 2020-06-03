@@ -126,43 +126,36 @@ class V3Controller extends Controller
             if(!($action = (string)($_m->action))) {
                 $action = 'set';
             }
-            switch($_m->action) {
-                case 'set':
-                    $metadatas_ops = array_merge(
-                        $metadatas_ops,
-                        $this->setmetadatasAction_set($struct_fields, $caption_fields, $meta_id, $values)
-                    );
-                    break;
-                case 'add':
-                    $metadatas_ops = array_merge(
-                        $metadatas_ops,
-                        $this->setmetadatasAction_add($struct_fields, $values)
-                    );
-                    break;
-                case 'delete':
-                    $metadatas_ops = array_merge(
-                        $metadatas_ops,
-                        $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, null)
-                    );
-                    break;
-                case 'replace':
-                    if(!is_string($_m->replace_with) && !is_null($_m->replace_with)) {
-                        return $this->app['controller.api.v1']->getBadRequestAction(
-                            $request,
-                            "bad \"replace_with\" for action \"replace\"."
-                        );
-                    }
-                    $metadatas_ops = array_merge(
-                        $metadatas_ops,
-                        $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, $_m->replace_with)
-                    );
-                    break;
-                default:
-                    return $this->app['controller.api.v1']->getBadRequestAction(
-                        $request,
-                        sprintf("bad action (%s).", $action)
-                    );
+
+            try {
+                switch ($_m->action) {
+                    case 'set':
+                        $ops = $this->setmetadatasAction_set($struct_fields, $caption_fields, $meta_id, $values);
+                        break;
+                    case 'add':
+                        $ops = $this->setmetadatasAction_add($struct_fields, $values);
+                        break;
+                    case 'delete':
+                        $ops = $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, null);
+                        break;
+                    case 'replace':
+                        if (!is_string($_m->replace_with) && !is_null($_m->replace_with)) {
+                            throw new \Exception("bad \"replace_with\" for action \"replace\".");
+                        }
+                        $ops = $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, $_m->replace_with);
+                        break;
+                    default:
+                        throw new \Exception(sprintf("bad action (%s).", $action));
+                }
             }
+            catch (\Exception $e) {
+                return $this->app['controller.api.v1']->getBadRequestAction(
+                    $request,
+                    $e->getMessage()
+                );
+            }
+
+            $metadatas_ops = array_merge($metadatas_ops, $ops);
         }
 
         return Result::create($request, $metadatas_ops)->createResponse();
@@ -181,12 +174,13 @@ class V3Controller extends Controller
     }
 
     /**
-     * @param databox_field[] $struct_fields    struct-fields (from struct) matching meta_struct_id or field_name
-     * @param \caption_field[] $caption_fields  caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
+     * @param databox_field[] $struct_fields   struct-fields (from struct) matching meta_struct_id or field_name
+     * @param \caption_field[] $caption_fields caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
      * @param int|null $meta_id
      * @param string[] $values
      *
      * @return array                            ops to execute
+     * @throws \Exception
      */
     private function setmetadatasAction_set($struct_fields, $caption_fields, $meta_id, $values)
     {
@@ -196,7 +190,7 @@ class V3Controller extends Controller
         foreach ($caption_fields as $cf) {
             if ($cf->is_multi() && is_null($meta_id)) {
                 foreach ($cf->get_values() as $field_value) {
-                    $a[] = [
+                    $ops[] = [
                         'meta_struct_id' => $cf->get_meta_struct_id(),
                         'meta_id'        => $field_value->getId(),
                         'value'          => null
@@ -220,6 +214,9 @@ class V3Controller extends Controller
             }
             else {
                 // mono-valued
+                if(count($values) > 1) {
+                    throw new \Exception(sprintf("setting mono-valued (%s) requires only one value.", $sf->get_name()));
+                }
                 $ops[] = [
                     'meta_struct_id' => $sf->get_id(),
                     'meta_id'        => $meta_id,  // probably null,
@@ -232,10 +229,11 @@ class V3Controller extends Controller
     }
 
     /**
-     * @param databox_field[] $struct_fields    struct-fields (from struct) matching meta_struct_id or field_name
+     * @param databox_field[] $struct_fields struct-fields (from struct) matching meta_struct_id or field_name
      * @param string[] $values
      *
      * @return array                            ops to execute
+     * @throws \Exception
      */
     private function setmetadatasAction_add($struct_fields, $values)
     {
@@ -244,8 +242,7 @@ class V3Controller extends Controller
         // now set values to matching struct_fields
         foreach ($struct_fields as $sf) {
             if(!$sf->is_multi()) {
-                // todo : return error "cant add to mono-valued"
-                continue;
+                throw new \Exception(sprintf("can't \"add\" to mono-valued (%s).", $sf->get_name()));
             }
             //  add the non-null value(s)
             foreach ($values as $value) {
@@ -290,7 +287,7 @@ class V3Controller extends Controller
             if (!is_null($meta_id)) {
                 foreach ($cf->get_values() as $field_value) {
                     if ($field_value->getId() === $meta_id) {
-                        $a[] = [
+                        $ops[] = [
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
                             'value'          => $replace_with
@@ -301,11 +298,15 @@ class V3Controller extends Controller
             // match by value(s) ?
             foreach ($values as $value) {
                 foreach ($cf->get_values() as $field_value) {
+                    $rw = $replace_with;
+                    if($match_method=='regexp' && !is_null($replace_with)) {
+                        $rw = preg_replace($value, $replace_with, $field_value->getValue());
+                    }
                     if ($this->match($value, $match_method, $field_value->getValue())) {
                         $ops[] = [
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
-                            'value'          => $match_method=='regexp' ? preg_replace($value, $replace_with, $field_value->getValue()): $replace_with
+                            'value'          => $rw
                         ];
                     }
                 }
