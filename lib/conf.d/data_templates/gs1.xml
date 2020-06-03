@@ -198,8 +198,7 @@
         <FacingIndicator src="" index="1" />
         <FileType src="" index="1" />
         <Filename src="Phraseanet:tf-basename" index="1" readonly="1" thumbtitle="1"/>
-        <LegalOwner src="XMP-plus:CopyrightOwnerName" index="1" />
-        <ImageQADate src="" index="1" readonly="1"type="date" />
+        <ImageQADate src="" index="1" readonly="1" type="date" />
         <ClippingPathPresent src="" index="1" />
         <LegalOwner src="XMP-plus:CopyrightOwnerName" index="1" />
         <LegalOwnerContactInfo src="" index="1" />
@@ -225,7 +224,7 @@
         <label switch="on" code="en">Caption filled</label>
         <label switch="on" code="fr">Média renseigné</label>
       </bit>
-          <bit n="5" labelOn="Clipping_Path_Present" searchable="1" printable="0" labelOff="No_Clipping_Path">
+      <bit n="5" labelOn="Clipping_Path_Present" searchable="1" printable="0" labelOff="No_Clipping_Path">
         <label switch="off" code="en">No Clipping Path</label>
         <label switch="off" code="fr">Sans masque de détourage</label>
         <label switch="on" code="en">Clipping Path Present</label>
