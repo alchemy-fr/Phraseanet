@@ -54,7 +54,7 @@ class RecordSubscriber implements EventSubscriberInterface
         if (!$record->isStory()) {
             $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
-            if ($subdefs !==null) {
+            if ($subdefs !== null) {
                 foreach ($subdefs as $subdef) {
                     $payload = [
                         'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
