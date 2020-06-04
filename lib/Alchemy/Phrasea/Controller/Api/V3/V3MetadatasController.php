@@ -48,18 +48,18 @@ class V3MetadatasController extends Controller
             return $this->app['controller.api.v1']->getBadRequestAction($request, 'Bad JSON');
         }
 
-        $ret = [
+        $debug = [
             'metadatas_ops' => null,
             'sb_ops' => null,
         ];
         try {
             // do metadatas ops
             if (is_array($b->metadatas)) {
-                $ret['metadatas_ops'] = $this->do_metadatas($struct, $record, $b->metadatas);
+                $debug['metadatas_ops'] = $this->do_metadatas($struct, $record, $b->metadatas);
             }
             // do sb ops
             if (is_array($b->status)) {
-                $ret['sb_ops'] = $this->do_status($struct, $record, $b->status);
+                $debug['sb_ops'] = $this->do_status($struct, $record, $b->status);
             }
         }
         catch (Exception $e) {
@@ -68,6 +68,9 @@ class V3MetadatasController extends Controller
                 $e->getMessage()
             );
         }
+
+        // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
         $ret = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
 
@@ -92,10 +95,12 @@ class V3MetadatasController extends Controller
     {
         $structByKey = [];
         $nameToStrucId = [];
+        $allStructFields = [];
         foreach ($struct as $f) {
             $nameToStrucId[$f->get_name()] = $f->get_id();
-            $structByKey[$f->get_id()] = $f;
-            $structByKey[$f->get_name()] = &$structByKey[$f->get_id()];
+            $allStructFields[$f->get_id()] = $f;
+            $structByKey[$f->get_id()]   =  &$allStructFields[$f->get_id()];;
+            $structByKey[$f->get_name()] = &$allStructFields[$f->get_id()];
         }
 
         $metadatas_ops = [];
@@ -107,7 +112,8 @@ class V3MetadatasController extends Controller
             // select fields that match meta_struct_id or field_name (can be arrays)
             $fields_list = null;    // to filter caption_fields from record, default all
             $struct_fields = [];    // struct fields that match meta_struct_id or field_name
-            if(($field_keys = $_m->meta_struct_id ? $_m->meta_struct_id : $_m->field_name) !== null) {  // can be null if none defined (=match all)
+            $field_keys = $_m->meta_struct_id ? $_m->meta_struct_id : $_m->field_name;  // can be null if none defined (=match all)
+            if($field_keys !== null) {
                 if (!is_array($field_keys)) {
                     $field_keys = [$field_keys];
                 }
@@ -118,6 +124,10 @@ class V3MetadatasController extends Controller
                         $struct_fields[$structByKey[$k]->get_id()] = $structByKey[$k];
                     }
                 }
+            }
+            else {
+                // no meta_struct_id, no field_name --> match all struct fields !
+                $struct_fields = $allStructFields;
             }
             $caption_fields = $record->get_caption()->get_fields($fields_list, true);
 
@@ -133,11 +143,15 @@ class V3MetadatasController extends Controller
             $values = [];
             if(is_array($_m->value)) {
                 foreach ($_m->value as $v) {
-                    $values[] = is_null($v) ? null : (string)$v;
+                    if(($v = trim((string)$v)) !== '') {
+                        $values[] = $v;
+                    }
                 }
             }
             else {
-                $values = is_null($_m->value) ? [] : [(string)($_m->value)];
+                if(($v = trim((string)($_m->value))) !== '') {
+                    $values[] = $v;
+                }
             }
 
             if(!($action = (string)($_m->action))) {
@@ -167,7 +181,7 @@ class V3MetadatasController extends Controller
             $metadatas_ops = array_merge($metadatas_ops, $ops);
         }
 
-        // $record->set_metadatas($metadatas_ops, true);
+        $record->set_metadatas($metadatas_ops, true);
 
         return $metadatas_ops;
     }
@@ -197,9 +211,6 @@ class V3MetadatasController extends Controller
         }
 
         $record->setStatus(strrev($datas));
-
-        // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
 
         return ["status" => $this->getResultHelpers()->listRecordStatus($record)];
     }
@@ -232,12 +243,12 @@ class V3MetadatasController extends Controller
 
         // if one field was multi-valued and no meta_id was set, we must delete all values
         foreach ($caption_fields as $cf) {
-            if ($cf->is_multi() && is_null($meta_id)) {
-                foreach ($cf->get_values() as $field_value) {
+            foreach ($cf->get_values() as $field_value) {
+                if (is_null($meta_id) || $field_value->getId() === (int)$meta_id) {
                     $ops[] = [
                         'meta_struct_id' => $cf->get_meta_struct_id(),
                         'meta_id'        => $field_value->getId(),
-                        'value'          => null
+                        'value'          => ''
                     ];
                 }
             }
@@ -247,7 +258,7 @@ class V3MetadatasController extends Controller
             if($sf->is_multi()) {
                 //  add the non-null value(s)
                 foreach ($values as $value) {
-                    if (!is_null($value)) {
+                    if ($value) {
                         $ops[] = [
                             'meta_struct_id' => $sf->get_id(),
                             'meta_id'        => $meta_id,  // can be null
@@ -261,11 +272,13 @@ class V3MetadatasController extends Controller
                 if(count($values) > 1) {
                     throw new Exception(sprintf("setting mono-valued (%s) requires only one value.", $sf->get_name()));
                 }
-                $ops[] = [
-                    'meta_struct_id' => $sf->get_id(),
-                    'meta_id'        => $meta_id,  // probably null,
-                    'value'          => $values[0]
-                ];
+                if( ($value = $values[0]) ) {
+                    $ops[] = [
+                        'meta_struct_id' => $sf->get_id(),
+                        'meta_id'        => $meta_id,  // probably null,
+                        'value'          => $value
+                    ];
+                }
             }
         }
 
@@ -288,15 +301,12 @@ class V3MetadatasController extends Controller
             if(!$sf->is_multi()) {
                 throw new Exception(sprintf("can't \"add\" to mono-valued (%s).", $sf->get_name()));
             }
-            //  add the non-null value(s)
             foreach ($values as $value) {
-                if (!is_null($value)) {
-                    $ops[] = [
-                        'meta_struct_id' => $sf->get_id(),
-                        'meta_id'        => null,
-                        'value'          => $value
-                    ];
-                }
+                $ops[] = [
+                    'meta_struct_id' => $sf->get_id(),
+                    'meta_id'        => null,
+                    'value'          => $value
+                ];
             }
         }
 
@@ -315,6 +325,8 @@ class V3MetadatasController extends Controller
     private function metadata_replace($caption_fields, $meta_id, $match_method, $values, $replace_with)
     {
         $ops = [];
+
+        $replace_with = trim((string)$replace_with);
 
         foreach ($caption_fields as $cf) {
             // match all ?
@@ -343,8 +355,8 @@ class V3MetadatasController extends Controller
             foreach ($values as $value) {
                 foreach ($cf->get_values() as $field_value) {
                     $rw = $replace_with;
-                    if($match_method=='regexp' && !is_null($replace_with)) {
-                        $rw = preg_replace($value, $replace_with, $field_value->getValue());
+                    if($match_method=='regexp' && $rw != '') {
+                        $rw = preg_replace($value, $rw, $field_value->getValue());
                     }
                     if ($this->match($value, $match_method, $field_value->getValue())) {
                         $ops[] = [
@@ -366,17 +378,5 @@ class V3MetadatasController extends Controller
     private function getResultHelpers()
     {
         return $this->app['controller.api.v3.resulthelpers'];
-        /*
-        static $rh = null;
-
-        if(is_null($rh)) {
-            $rh = new V3ResultHelpers(
-                $this->getConf(),
-                $this->app['media_accessor.subdef_url_generator'],
-                $this->getAuthenticator()
-            );
-        }
-        return $rh;
-        */
     }
 }
