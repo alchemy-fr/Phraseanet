@@ -9,8 +9,10 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use caption_field;
 use databox_field;
 use Exception;
+use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,11 +55,11 @@ class V3MetadatasController extends Controller
         try {
             // do metadatas ops
             if (is_array($b->metadatas)) {
-                $ret['metadatas_ops'] = $this->setmetadatasAction_meta($struct, $record, $b->metadatas);
+                $ret['metadatas_ops'] = $this->do_metadatas($struct, $record, $b->metadatas);
             }
             // do sb ops
             if (is_array($b->status)) {
-                $ret['sb_ops'] = $this->setmetadatasAction_sb($struct, $record, $b->status);
+                $ret['sb_ops'] = $this->do_status($struct, $record, $b->status);
             }
         }
         catch (Exception $e) {
@@ -67,17 +69,26 @@ class V3MetadatasController extends Controller
             );
         }
 
+        $ret = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
+
         return Result::create($request, $ret)->createResponse();
     }
 
+
+    //////////////////////////////////
+    /// TODO : keep multi-values uniques !
+    /// it should be done in record_adapter
+    //////////////////////////////////
+
+
     /**
-     * @param $struct
-     * @param $record
+     * @param databox_field[] $struct
+     * @param record_adapter $record
      * @param $metadatas
      * @return array
      * @throws Exception
      */
-    private function setmetadatasAction_meta($struct, $record, $metadatas)
+    private function do_metadatas($struct, record_adapter $record, $metadatas)
     {
         $structByKey = [];
         $nameToStrucId = [];
@@ -135,19 +146,19 @@ class V3MetadatasController extends Controller
 
             switch ($_m->action) {
                 case 'set':
-                    $ops = $this->setmetadatasAction_set($struct_fields, $caption_fields, $meta_id, $values);
+                    $ops = $this->metadata_set($struct_fields, $caption_fields, $meta_id, $values);
                     break;
                 case 'add':
-                    $ops = $this->setmetadatasAction_add($struct_fields, $values);
+                    $ops = $this->metadata_add($struct_fields, $values);
                     break;
                 case 'delete':
-                    $ops = $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, null);
+                    $ops = $this->metadata_replace($caption_fields, $meta_id, $match_method, $values, null);
                     break;
                 case 'replace':
                     if (!is_string($_m->replace_with) && !is_null($_m->replace_with)) {
                         throw new Exception("bad \"replace_with\" for action \"replace\".");
                     }
-                    $ops = $this->setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, $_m->replace_with);
+                    $ops = $this->metadata_replace($caption_fields, $meta_id, $match_method, $values, $_m->replace_with);
                     break;
                 default:
                     throw new Exception(sprintf("bad action (%s).", $action));
@@ -155,6 +166,8 @@ class V3MetadatasController extends Controller
 
             $metadatas_ops = array_merge($metadatas_ops, $ops);
         }
+
+        // $record->set_metadatas($metadatas_ops, true);
 
         return $metadatas_ops;
     }
@@ -166,7 +179,7 @@ class V3MetadatasController extends Controller
      * @return array
      * @throws Exception
      */
-    private function setmetadatasAction_sb($struct, $record, $statuses)
+    private function do_status($struct, $record, $statuses)
     {
         $datas = strrev($record->getStatus());
 
@@ -183,7 +196,7 @@ class V3MetadatasController extends Controller
             $datas = substr($datas, 0, ($n)) . $value . substr($datas, ($n + 1));
         }
 
-        // $record->setStatus(strrev($datas));
+        $record->setStatus(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
@@ -204,21 +217,16 @@ class V3MetadatasController extends Controller
         return false;
     }
 
-    //////////////////////////////////
-    /// TODO : keep multi-values uniques !
-    /// it should be done in record_adapter
-    //////////////////////////////////
-
     /**
      * @param databox_field[] $struct_fields   struct-fields (from struct) matching meta_struct_id or field_name
-     * @param \caption_field[] $caption_fields caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
+     * @param caption_field[] $caption_fields caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
      * @param int|null $meta_id
      * @param string[] $values
      *
      * @return array                            ops to execute
      * @throws Exception
      */
-    private function setmetadatasAction_set($struct_fields, $caption_fields, $meta_id, $values)
+    private function metadata_set($struct_fields, $caption_fields, $meta_id, $values)
     {
         $ops = [];
 
@@ -271,7 +279,7 @@ class V3MetadatasController extends Controller
      * @return array                            ops to execute
      * @throws Exception
      */
-    private function setmetadatasAction_add($struct_fields, $values)
+    private function metadata_add($struct_fields, $values)
     {
         $ops = [];
 
@@ -296,7 +304,7 @@ class V3MetadatasController extends Controller
     }
 
     /**
-     * @param \caption_field[] $caption_fields  caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
+     * @param caption_field[] $caption_fields  caption-fields (from record) matching meta_struct_id or field_name (or all if not set)
      * @param int|null $meta_id
      * @param string $match_method              "strict" | "ignore_case" | "regexp"
      * @param string[] $values
@@ -304,7 +312,7 @@ class V3MetadatasController extends Controller
      *
      * @return array                            ops to execute
      */
-    private function setmetadatasAction_replace($caption_fields, $meta_id, $match_method, $values, $replace_with)
+    private function metadata_replace($caption_fields, $meta_id, $match_method, $values, $replace_with)
     {
         $ops = [];
 
@@ -357,15 +365,18 @@ class V3MetadatasController extends Controller
      */
     private function getResultHelpers()
     {
+        return $this->app['controller.api.v3.resulthelpers'];
+        /*
         static $rh = null;
 
         if(is_null($rh)) {
             $rh = new V3ResultHelpers(
-                $this,
                 $this->getConf(),
-                $this->app['media_accessor.subdef_url_generator']
+                $this->app['media_accessor.subdef_url_generator'],
+                $this->getAuthenticator()
             );
         }
         return $rh;
+        */
     }
 }
