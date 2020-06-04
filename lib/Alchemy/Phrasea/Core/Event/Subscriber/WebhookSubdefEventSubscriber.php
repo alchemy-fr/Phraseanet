@@ -30,7 +30,8 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
         $this->app['manipulator.webhook-event']->create(
             WebhookEvent::RECORD_SUBDEF_CREATED,
             WebhookEvent::RECORD_SUBDEF_TYPE,
-            $eventData
+            $eventData,
+            [$event->getRecord()->getBaseId()]
         );
     }
 
@@ -45,7 +46,8 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
         $this->app['manipulator.webhook-event']->create(
             WebhookEvent::RECORD_SUBDEF_FAILED,
             WebhookEvent::RECORD_SUBDEF_TYPE,
-            $eventData
+            $eventData,
+            [$event->getRecord()->getBaseId()]
         );
     }
 
@@ -60,7 +62,8 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
         $this->app['manipulator.webhook-event']->create(
             WebhookEvent::RECORD_SUBDEFS_CREATED,
             WebhookEvent::RECORD_SUBDEF_TYPE,
-            $eventData
+            $eventData,
+            [$event->getRecord()->getBaseId()]
         );
     }
 
