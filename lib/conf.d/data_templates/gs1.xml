@@ -8,7 +8,7 @@
                 <size>1024</size>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <strip>yes</strip>
+                <strip>no</strip>
                 <quality>75</quality>
                 <meta>yes</meta>
                 <devices>screen</devices>
@@ -79,7 +79,7 @@
                 <size>748</size>
                 <mediatype>video</mediatype>
                 <writeDatas>yes</writeDatas>
-                <acodec>libfdk_aac</acodec>
+                <acodec>libfaac</acodec>
                 <vcodec>libx264</vcodec>
                 <devices>screen</devices>
                 <bitrate>1000</bitrate>
@@ -89,21 +89,6 @@
                 <GOPsize>25</GOPsize>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
-            </subdef>
-            <subdef class="preview" name="poster" downloadable="true">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <meta>1</meta>
-                <size>1280</size>
-                <mediatype>image</mediatype>
-                <writeDatas>yes</writeDatas>
-                <devices>screen</devices>
-                <dpi>72</dpi>
-                <strip>yes</strip>
-                <flatten>yes</flatten>
-                <quality>75</quality>
-                <icodec>jpeg</icodec>
-                <label lang="fr">Poster video</label>
-                <label lang="en">Poster video</label>
             </subdef>
             <subdef class="preview" name="preview_webm" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -117,30 +102,8 @@
                 <fps>25</fps>
                 <GOPsize>25</GOPsize>
                 <vcodec>libvpx</vcodec>
-            </subdef>
-            <subdef class="preview" name="audiovideowav" downloadable="true" orderable="true" presets="Wave Mono 8 kHz">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <meta>no</meta>
-                <mediatype>audio</mediatype>
-                <audiobitrate>128</audiobitrate>
-                <audiosamplerate>8000</audiosamplerate>
-                <acodec>pcm_s16le</acodec>
-                <audiochannel>mono</audiochannel>
-                <devices>all</devices>
-                <label lang="fr">Audio WAVE 8 kHz</label>
-                <label lang="en">Audio WAVE 8 kHz</label>
-            </subdef>
-            <subdef class="preview" name="audiovideomp3" downloadable="true" orderable="true" presets="Normal MP3 128 kbit/s">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <meta>no</meta>
-                <mediatype>audio</mediatype>
-                <audiobitrate>180</audiobitrate>
-                <audiosamplerate>44100</audiosamplerate>
-                <acodec>libmp3lame</acodec>
-                <audiochannel/>
-                <devices>all</devices>
-                <label lang="fr">Audio MP3 128 kbit/s</label>
-                <label lang="en">Audio MP3 128 kbit/s</label>
+                <label lang="fr">Prévisualisation WebM</label>
+                <label lang="en">WebM Preview</label>
             </subdef>
         </subdefgroup>
         <subdefgroup name="audio">
@@ -185,8 +148,32 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>pdf</mediatype>
+                <mediatype>flexpaper</mediatype>
                 <writeDatas>no</writeDatas>
+                <devices>screen</devices>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="flash">
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>240</size>
+                <writeDatas>no</writeDatas>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <devices>screen</devices>
+                <label lang="fr">Vignette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+            <subdef class="preview" name="preview" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>800</size>
+                <writeDatas>no</writeDatas>
+                <method>resample</method>
+                <dpi>72</dpi>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
@@ -195,44 +182,53 @@
     </subdefs>
 
     <description>
-        <Title src="XMP-dc:Title" type="string" thumbtitle="1" report="1" />
-        <Creator src="XMP-dc:Creator" type="string" report="1" />
-        <Subject src="XMP-dc:Subject" type="string" multi="1"/>
-        <Description src="XMP-dc:Description" type="string" report="0" />
-        <Publisher src="XMP-dc:Publisher" type="date" report="0" />
-        <Contributor src="XMP-dc:Contributor" type="string" report="0"/>
-        <Date src="XMP-dc:Date" type="date" report="0" />
-        <Type src="XMP-dc:Type" type="string" report="1" />
-        <Format src="XMP-dc:Format" type="string" report="0" />
-        <Identifier src="XMP-dc:Identifier" type="string" report="1" />
-        <Source src="XMP-dc:Source" type="string" report="0" />
-        <Language src="XMP-dc:Language" type="string" report="0" />
-        <Relation src="XMP-dc:Relation" type="string" report="0" />
-        <Coverage src="XMP-dc:Coverage" type="string" report="1" />
-        <Rights src="XMP-dc:Rights" type="string" report="0" />
-        <Comments src="" business="1" type="string" report="0" />
-        <Filename src="Phraseanet:tf-basename" readonly="1" type="string" report="1"/>
-        <Latitude src="Composite:GPSLatitude" type="number" readonly="1" report="0" />
-        <Longitude src="Composite:GPSLongitude"  type="number" readonly="1" report="0"/>
-        <StartOfMessage src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="number" gui_editable="1" gui_visible="1"/>
-        <VideoTextTrackChapters src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="0" gui_visible="0"/>
-        <VideoTextTrackFr src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
-        <VideoTextTrackEn src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
-        <VideoTextTrackDe src="Phraseanet:no-source" readonly="0" required="0" multi="0" report="0" business="0" aggregable="0" type="string" gui_editable="1" gui_visible="0"/>
-        <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" report="0" />
-        <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" report="0" />
+        <GDTI src="" index="1" />
+        <BrandName src="" index="1" />
+        <ProductName src="XMP-dc:Title" index="1" />
+        <ValidFromDate src="" index="1" type="date" />
+        <GTIN14 src="" index="1" />
+        <AngleIndicator src="" index="1" />
+        <ArticleVariant src="" index="1" />
+        <ClippingPathName src="" index="1" />
+        <ColorMode src="" index="1" readonly="1" />
+        <Copyright src="" index="1" />
+        <CreateDate src="" index="1" readonly="1" type="date" />
+        <Description src="XMP-dc:Description" index="1" />
+        <ExpirationDate src="XMP-plus:LicenseEndDate" index="1" type="date" />
+        <FacingIndicator src="" index="1" />
+        <FileType src="" index="1" />
+        <Filename src="Phraseanet:tf-basename" index="1" readonly="1" thumbtitle="1"/>
+        <ImageQADate src="" index="1" readonly="1" type="date" />
+        <ClippingPathPresent src="" index="1" />
+        <LegalOwner src="XMP-plus:CopyrightOwnerName" index="1" />
+        <LegalOwnerContactInfo src="" index="1" />
+        <MaxAvailHeight src="Phraseanet:tf-height" index="1" readonly="1" type="number" />
+        <MaxAvailWidth src="Phraseanet:tf-width" index="1" readonly="1" type="number" />
+        <NumberOfTheImage src="" index="1" />
+        <PackagingType src="" index="1" />
+        <ProductNetContent src="" index="1" />
+        <ProductSupplier src="" index="1" />
+        <ProductURL src="" index="1" readonly="1" />
+        <RightOfUse src="XMP-xmpRights:UsageTerms" index="1" multi="1" separator=";" />
+        <SpecialRights src="" index="1" multi="1" separator=";" />
+        <VersionNumber src="" index="1" />
+        <InOutPackaging src="" index="1" />
+        <ArchiveDate src="Phraseanet:tf-archivedate" readonly="1" type="date" />
+        <LastEditDate src="Phraseanet:tf-editdate" readonly="1" type="date" />
     </description>
 
     <statbits>
-        <bit n="4" labelOn="Caption filled" searchable="0" printable="0" labelOff="Caption not filled">
-          <label switch="off" code="de">Nicht gefüllt</label>
-          <label switch="off" code="en">Caption not filled</label>
-          <label switch="off" code="fr">Média non renseigné</label>
-          <label switch="off" code="nl"/>
-          <label switch="on" code="de">Gefüllt</label>
-          <label switch="on" code="en">Caption filled</label>
-          <label switch="on" code="fr">Média renseigné</label>
-          <label switch="on" code="nl"/>
-        </bit>
+      <bit n="4" labelOn="Caption_filled" searchable="0" printable="0" labelOff="Unspecified_caption">
+        <label switch="off" code="en">Caption not filled</label>
+        <label switch="off" code="fr">Media non renseigne</label>
+        <label switch="on" code="en">Caption filled</label>
+        <label switch="on" code="fr">Média renseigné</label>
+      </bit>
+      <bit n="5" labelOn="Clipping_Path_Present" searchable="1" printable="0" labelOff="No_Clipping_Path">
+        <label switch="off" code="en">No Clipping Path</label>
+        <label switch="off" code="fr">Sans masque de détourage</label>
+        <label switch="on" code="en">Clipping Path Present</label>
+        <label switch="on" code="fr">Avec masque de détourage</label>
+      </bit>
     </statbits>
-</record>
+  </record>
