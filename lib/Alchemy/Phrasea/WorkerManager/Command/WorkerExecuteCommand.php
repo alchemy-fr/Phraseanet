@@ -23,9 +23,9 @@ class WorkerExecuteCommand extends Command
         $this->setDescription('Listen queues define on configuration, launch corresponding service for execution')
             ->addOption('preserve-payload', 'p', InputOption::VALUE_NONE, 'Preserve temporary payload file')
             ->addOption('queue-name', '', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'The name of queues to be consuming')
-            ->addOption('max-processes', 'm', InputOption::VALUE_REQUIRED, 'The max number of process allow to run (default 4) ')
-            ->addOption('MWG', '', InputOption::VALUE_NONE, 'Enable MWG metadata compatibility (use only for write metadata service)')
-            ->addOption('clear-metadatas', '', InputOption::VALUE_NONE, 'Delete metadatas from documents if not compliant with Database structure (use only for write metadata service)')
+            ->addOption('max-processes', 'm', InputOption::VALUE_REQUIRED, 'The max number of process allow to run (default 1) ')
+//            ->addOption('MWG', '', InputOption::VALUE_NONE, 'Enable MWG metadata compatibility (use only for write metadata service)')
+//            ->addOption('clear-metadatas', '', InputOption::VALUE_NONE, 'Remove metadatas from documents if not compliant with Database structure (use only for write metadata service)')
             ->setHelp('');
 
         return $this;
@@ -33,9 +33,6 @@ class WorkerExecuteCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $MWG            = false;
-        $clearMetadatas = false;
-
         $argQueueName = $input->getOption('queue-name');
         $maxProcesses = intval($input->getOption('max-processes'));
 
@@ -62,14 +59,6 @@ class WorkerExecuteCommand extends Command
             return;
         } elseif($maxProcesses) {
             $workerInvoker->setMaxProcessPoolValue($maxProcesses);
-        }
-
-        if ($input->getOption('MWG')) {
-            $MWG = true;
-        }
-
-        if ($input->getOption('clear-metadatas')) {
-            $clearMetadatas = true;
         }
 
         if ($input->getOption('preserve-payload')) {
