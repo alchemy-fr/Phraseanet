@@ -44,4 +44,13 @@ fi
 
 ./docker/phraseanet/plugins/console init
 
+chown -R app:app \
+    cache \
+    config \
+    datas \
+    tmp \
+    logs \
+    www/thumbnails \
+    www/custom
+
 bash -e docker-php-entrypoint $@
