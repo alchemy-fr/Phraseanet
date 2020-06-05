@@ -54,18 +54,20 @@ class RecordSubscriber implements EventSubscriberInterface
         if (!$record->isStory()) {
             $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
-            foreach ($subdefs as $subdef) {
-                $payload = [
-                    'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
-                    'payload' => [
-                        'recordId'      => $event->getRecord()->getRecordId(),
-                        'databoxId'     => $event->getRecord()->getDataboxId(),
-                        'subdefName'    => $subdef->get_name(),
-                        'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
-                    ]
-                ];
+            if ($subdefs !== null) {
+                foreach ($subdefs as $subdef) {
+                    $payload = [
+                        'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
+                        'payload' => [
+                            'recordId'      => $event->getRecord()->getRecordId(),
+                            'databoxId'     => $event->getRecord()->getDataboxId(),
+                            'subdefName'    => $subdef->get_name(),
+                            'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
+                        ]
+                    ];
 
-                $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_QUEUE);
+                    $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_QUEUE);
+                }
             }
         }
     }

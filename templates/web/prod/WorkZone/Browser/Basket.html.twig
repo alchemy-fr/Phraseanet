@@ -1,6 +1,6 @@
 <div class="PNB">
   <div class="PNB header" style="height:40px;bottom:auto;">
-    <table>
+    <table class="detailed_basket_browser">
       <tr>
         <td style="width:230px;">
           <a href="#" class="back">
@@ -23,9 +23,9 @@
               </span>
             </a>
             {% endif %}
-            <a class="basket_link" href="#">
-              {{ Basket.getName() }}
-            </a>
+            <span class="basket_link" title="{{ Basket.getName() }}">
+              {{ Basket.getName()|length > 55 ? Basket.getName()|slice(0, 52) ~ '...' : Basket.getName()  }}
+            </span>
           </h1>
         </td>
       </tr>

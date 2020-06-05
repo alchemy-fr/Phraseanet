@@ -40,8 +40,8 @@
                  &nbsp;
                 </a>
                 {% endif %}
-                <a class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
-                    <span>{{ Basket.getName() }}</span>
+                <a title="{{ Basket.getName()}}" class="basket_link" href="{{ path('prod_workzone_basket', { basket : Basket.getId() }) }}">
+                    <span> {{ Basket.getName()|length > 80 ? Basket.getName()|slice(0, 77) ~ '...' : Basket.getName()  }}</span>
                 <br><span class="basketCount">
                         {{ Basket.getElements().count() }} {{ ' records' }}
                   </span></a>
