@@ -9122,9 +9122,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="36">web/admin/tree.html.twig</jms:reference-file>
         <jms:reference-file line="44">web/admin/connected-users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error">
+      <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error" approved="yes">
         <source>admin::workermanager: Rabbit config error</source>
-        <target state="needs-translation">Erreur dans la configuration du gestionnaire de messages</target>
+        <target state="translated">Erreur dans la configuration du gestionnaire de messages</target>
         <jms:reference-file line="89">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title" approved="yes">
