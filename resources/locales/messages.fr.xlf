@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-05T14:11:52Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -9122,9 +9122,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="36">web/admin/tree.html.twig</jms:reference-file>
         <jms:reference-file line="44">web/admin/connected-users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error">
+      <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error" approved="yes">
         <source>admin::workermanager: Rabbit config error</source>
-        <target state="needs-translation">Erreur dans la configuration du gestionnaire de messages</target>
+        <target state="translated">Erreur dans la configuration du gestionnaire de messages</target>
         <jms:reference-file line="89">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title" approved="yes">
@@ -9152,9 +9152,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Client secret</target>
         <jms:reference-file line="22">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit">
+      <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit" approved="no">
         <source>admin::workermanager:tab:pullassets: Endpoint get commit</source>
-        <target state="needs-translation">Point de terminaison pour la récupération des fichiers (adresse de l'uploader)</target>
+        <target state="needs-translation">Point de terminaison (url)  pour la récupération des fichiers (adresse de l'uploader)</target>
         <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a6df16c30b678f118cbde60abc6eccc0c84f58c" resname="admin::workermanager:tab:pullassets: Endpoint get token" approved="yes">
@@ -9182,9 +9182,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Uploader</target>
         <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate">
+      <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="yes">
         <source>admin::workermanager:tab:searchengine: Databox to populate</source>
-        <target state="needs-translation">Sélectionner les databox(s) à indexer</target>
+        <target state="translated">Sélectionner les databox(s) à indexer</target>
         <jms:reference-file line="18">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e948590a23c114afd7da0c33ceedad6ea4c63407" resname="admin::workermanager:tab:searchengine: Elasticsearch index name" approved="yes">
@@ -11852,9 +11852,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Rechercher</target>
         <jms:reference-file line="298">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification">
+      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification" approved="yes">
         <source>prod::export: send mail notification</source>
-        <target state="new">prod::export: send mail notification</target>
+        <target state="translated">Demande d'envois d'email soumise</target>
         <jms:reference-file line="1018">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -12187,21 +12187,21 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="48">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="33">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e53680d42ba7c2071293a23790dfaef8d0761e60" resname="publication : subtitle alert">
+      <trans-unit id="e53680d42ba7c2071293a23790dfaef8d0761e60" resname="publication : subtitle alert" approved="yes">
         <source>publication : subtitle alert</source>
-        <target state="needs-translation">Nombre de caractères supérieur à 1024</target>
+        <target state="translated">Nombre de caractères supérieur à 1024</target>
         <jms:reference-file line="50">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="35">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3cc295db2f960fa339ba3b57e33fe421923e3026" resname="publication : subtitle warning">
+      <trans-unit id="3cc295db2f960fa339ba3b57e33fe421923e3026" resname="publication : subtitle warning" approved="yes">
         <source>publication : subtitle warning</source>
-        <target state="needs-translation">1024 Caractères Max</target>
+        <target state="translated">1024 Caractères Max</target>
         <jms:reference-file line="48">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="33">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af22a65a7f5adb86b9f18a891c7a895146af5f23" resname="publication : title alert">
+      <trans-unit id="af22a65a7f5adb86b9f18a891c7a895146af5f23" resname="publication : title alert" approved="yes">
         <source>publication : title alert</source>
-        <target state="needs-translation">Nombre de caractères supérieur à 128</target>
+        <target state="translated">Nombre de caractères supérieur à 128</target>
         <jms:reference-file line="47">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="32">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
