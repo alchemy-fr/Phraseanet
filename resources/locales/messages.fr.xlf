@@ -11782,9 +11782,11 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Valider ou annuler les modifications</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="yes">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="no">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="translated">Annulation : abandonner les modifications ?</target>
+        <target state="needs-translation">L'annulation de l'édition effacera toutes les modifications.
+- Annuler: pour revenir à l'édition
+- OK: pour fermer et perdre les modifications</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9999b27bac2f63123760f54d7312b7b7133930fc" resname="prod::editing::fields: status" approved="yes">
