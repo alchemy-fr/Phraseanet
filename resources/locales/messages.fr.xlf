@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-06-03T15:44:46Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2020-06-08T07:08:34Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1038,7 +1038,6 @@
         <jms:reference-file line="135">Controller/Admin/SearchEngineController.php</jms:reference-file>
         <jms:reference-file line="521">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="126">Controller/Admin/CollectionController.php</jms:reference-file>
-        <jms:reference-file line="59">Controller/Api/V3Controller.php</jms:reference-file>
         <jms:reference-file line="2076">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="2522">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="81">web/admin/statusbit.html.twig</jms:reference-file>
@@ -6364,7 +6363,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="315bc332aafca63cad8ac042c2e2f5111544fe9d" resname="Story Not Found" approved="yes">
         <source>Story Not Found</source>
         <target state="translated">Reportage inconnu</target>
-        <jms:reference-file line="57">Controller/Api/V3Controller.php</jms:reference-file>
         <jms:reference-file line="2520">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="94e347da85f4797810ed7987973c8ef79092057e" resname="Story created" approved="yes">
@@ -11860,6 +11858,11 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <source>prod::editing:replace: chaine a rechercher</source>
         <target state="translated">Rechercher</target>
         <jms:reference-file line="298">prod/actions/edit_default.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification">
+        <source>prod::export: send mail notification</source>
+        <target state="new">prod::export: send mail notification</target>
+        <jms:reference-file line="1018">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
         <source>prod::facet:base_label</source>
