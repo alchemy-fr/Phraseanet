@@ -156,6 +156,18 @@
                                             {% endif %}
                                         {% endif %}
 
+                                        {# video tools for type = video #}
+                                        {% if record.type == 'video' %}
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner video-tools-record-action" data-db="{{record.baseId}}" data-record-id="{{record.recordId}}" data-test="{{record.id}}" >
+                                                    <a title="{{ 'action:: video tools' | trans }}" href="#" class="TOOL_videoeditor_btn" >
+                                                        <img style="cursor:pointer;" src="/assets/common/images/icons/icon-video-editor.png" alt="{{ 'action:: video tools' | trans }}">
+                                                        <span>{{ 'action:: video tools' | trans }}</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
                                         {# add plugins entries #}
                                         {% for plugin in plugins.actionbar|default([]) %}
                                             {% set menu = plugin.ActionBar['_context_']|default([]) %}

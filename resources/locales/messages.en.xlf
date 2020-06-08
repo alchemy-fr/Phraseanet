@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-06-05T14:11:24Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2020-06-08T08:13:16Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -3215,7 +3215,7 @@
         <source>Feedback</source>
         <target state="translated">Feedback</target>
         <jms:reference-file line="111">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="107">web/prod/toolbar.html.twig</jms:reference-file>
+        <jms:reference-file line="103">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="51">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="54">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="19">prod/WorkZone/Macros.html.twig</jms:reference-file>
@@ -8023,7 +8023,7 @@
       <trans-unit id="3ffc763c6cf92695a7ce387f904bbe6e7a94bdbc" resname="action : collection" approved="yes">
         <source>action : collection</source>
         <target state="translated">Move</target>
-        <jms:reference-file line="91">web/prod/toolbar.html.twig</jms:reference-file>
+        <jms:reference-file line="87">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="35">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="38">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
@@ -8054,7 +8054,7 @@
       <trans-unit id="b0c9b7eb3d21f5a48ac5ecb0a0d969b8d3818e41" resname="action : outils" approved="yes">
         <source>action : outils</source>
         <target state="translated">Tools</target>
-        <jms:reference-file line="126">web/prod/toolbar.html.twig</jms:reference-file>
+        <jms:reference-file line="122">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="67">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="70">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
@@ -8072,7 +8072,7 @@
       <trans-unit id="d222a71a73f44cb6bdf237790f350f0b1fb9eb1f" resname="action : publier" approved="yes">
         <source>action : publier</source>
         <target state="translated">Publish</target>
-        <jms:reference-file line="115">web/prod/toolbar.html.twig</jms:reference-file>
+        <jms:reference-file line="111">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="60">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="63">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="1007">web/prod/index.html.twig</jms:reference-file>
@@ -8080,21 +8080,21 @@
       <trans-unit id="17948b21adfde1bf589b2a34a2c8253e2af91913" resname="action : push" approved="yes">
         <source>action : push</source>
         <target state="translated">Push</target>
-        <jms:reference-file line="103">web/prod/toolbar.html.twig</jms:reference-file>
+        <jms:reference-file line="99">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="44">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="47">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f22184cfa5be236b7193d80d5f8407a36b108b79" resname="action : status" approved="yes">
         <source>action : status</source>
         <target state="translated">Properties</target>
-        <jms:reference-file line="83">web/prod/toolbar.html.twig</jms:reference-file>
+        <jms:reference-file line="79">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="28">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="31">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="24ade348bc49c69cced4d173e31f7369aa466772" resname="action : supprimer" approved="yes">
         <source>action : supprimer</source>
         <target state="translated">Delete</target>
-        <jms:reference-file line="136">web/prod/toolbar.html.twig</jms:reference-file>
+        <jms:reference-file line="132">web/prod/toolbar.html.twig</jms:reference-file>
         <jms:reference-file line="235">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="236">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -8111,6 +8111,13 @@
         <jms:reference-file line="281">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="283">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="284">web/prod/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a1750389f4eb83def7118c916d93effda8798545" resname="action:: video tools">
+        <source>action:: video tools</source>
+        <target state="new">action:: video tools</target>
+        <jms:reference-file line="163">prod/results/record.html.twig</jms:reference-file>
+        <jms:reference-file line="164">prod/results/record.html.twig</jms:reference-file>
+        <jms:reference-file line="165">prod/results/record.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9cd95a80cd47133cb87c6b6a55015fa9e3566d60" resname="action::Valider" approved="yes">
         <source>action::Valider</source>
@@ -11782,7 +11789,7 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Valid changes or Cancel</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="no">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?">
         <source>prod::editing::annulation: abandonner les modification ?</source>
         <target state="needs-translation">Cancelling editing will lose all edits.
 - Cancel : to go back to editing
@@ -11854,7 +11861,7 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Find</target>
         <jms:reference-file line="298">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification" approved="no">
+      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification">
         <source>prod::export: send mail notification</source>
         <target state="needs-translation">Email sending request submitted</target>
         <jms:reference-file line="1018">web/prod/index.html.twig</jms:reference-file>
@@ -12038,11 +12045,6 @@ Warning: The current values will be overwritten by these new values</target>
         <source>prod::tool:select subdef</source>
         <target state="translated">Select a file</target>
         <jms:reference-file line="203">actions/Tools/index.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="556186e33fc15d5397f8b5f7a6855e822b354f9b" resname="prod::toolbar : video editor" approved="yes">
-        <source>prod::toolbar : video editor</source>
-        <target state="translated">video tools</target>
-        <jms:reference-file line="75">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ad73c8fd370f62ccd3bf50cd9cc3563aed5273c" resname="prod::tools: document" approved="yes">
         <source>prod::tools: document</source>
