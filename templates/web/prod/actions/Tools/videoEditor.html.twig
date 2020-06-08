@@ -29,6 +29,11 @@
                         {{ "video range extractor" | trans }}
                     </a>
                 </li>
+                <li>
+                    <a href="#subtitleEditor">
+                        {{ "prod:videoeditor:subtitletab:: title" | trans }}
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -157,6 +162,41 @@
                     </div>
                     <div id="rangeExtractor" class="">
                         <div class="video-range-editor-container"></div>
+                    </div>
+                    <div id="subtitleEditor" class="subtitleEditor video-subtitle-editor-container">
+                        <div class="video-subtitle-top">
+                            <form>
+                            <label>{{ "prod:videoeditor:subtitletab:: work on" | trans }}</label>
+                                <select name="subtitleLanguage" >
+                                    <option value="fr">Fr</option>
+                                    <option value="en">En</option>
+                                    <option value="de">De</option>
+                                </select>
+                                <input type="submit" class="btn btn-blue submit-language" value="{{ "prod:videoeditor:subtitletab:btn:: save language" | trans }}"/>
+                            </form>
+                        </div>
+                        <div class="video-subtitle-bottom">
+                            <div class="video-subtitle-left">
+                            <div class="video-subtitle-left-inner">
+                                <h3>{{ "prod:videoeditor:subtitletab:: left block title" | trans }}</h3>
+                                <div class="fields-wrapper">
+                                </div>
+                            </div>
+                                <button class="add-subtitle-vtt" tabindex="0" type="button" aria-label="Add VTT">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="video-subtitle-right">
+                                <div class="video-subtitle-wrapper">
+                                    <video  class="thumb_video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
+                                        {% for subdef in previewHtml5 %}
+                                            <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                        {% endfor %}
+                                        {{ 'No preview available' | trans }}
+                                    </video>
+                            </div>
+                            </div>
+                        </div>
                     </div>
                 {% endif %}
             {% endfor %}
