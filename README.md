@@ -32,7 +32,7 @@ And follow the install steps described at https://docs.phraseanet.com/4.0/en/Adm
 
 ## Prerequisites
 
-- docker-compose
+- docker-compose >=v
 - docker >=v18.01-ce
 
 ## Get started
@@ -100,6 +100,12 @@ https://hub.docker.com/r/alchemyfr/phraseanet-worker
 
 https://hub.docker.com/r/alchemyfr/phraseanet-nginx
 
+https://hub.docker.com/repository/docker/alchemyfr/phraseanet-db
+
+https://hub.docker.com/repository/docker/alchemyfr/phraseanet-elasticsearch
+
+
+
 To use them and not build the images locally, we advise to override the properties in file: env.local
 
 ```bash
@@ -108,6 +114,21 @@ PHRASEANET_DOCKER_REGISTRY=alchemyfr
 # Tag of the Docker images
 PHRASEANET_DOCKER_TAG=
 ```
+or 
+
+Pull images before launch docker-compose
+
+Tag organisation in docker hub 
+
+
+```latest``` : latest stable version
+
+```4.0``` : latest stable version in 4.0
+
+```4.1``` : latest stable version in 4.1
+
+```4.1.1``` : Phraseanet version 4.1.1
+
 
 ## Development mode
 
