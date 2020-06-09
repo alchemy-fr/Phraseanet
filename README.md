@@ -32,7 +32,7 @@ And follow the install steps described at https://docs.phraseanet.com/4.0/en/Adm
 
 ## Prerequisites
 
-- docker-compose >=v
+- docker-compose >=v1.25.4
 - docker >=v18.01-ce
 
 ## Get started
@@ -118,7 +118,7 @@ or
 
 Pull images before launch docker-compose
 
-Tag organisation in docker hub 
+#### Tag organisation on docker hub 
 
 
 ```latest``` : latest stable version
