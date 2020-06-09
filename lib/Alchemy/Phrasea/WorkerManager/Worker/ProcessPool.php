@@ -10,7 +10,7 @@ use Symfony\Component\Process\ProcessBuilder;
 
 class ProcessPool implements LoggerAwareInterface
 {
-    const MAX_PROCESSES = 4;
+    const MAX_PROCESSES = 1;
 
     /**
      * @var int
@@ -41,7 +41,7 @@ class ProcessPool implements LoggerAwareInterface
      * Sets a logger instance on the object
      *
      * @param LoggerInterface $logger
-     * @return null
+     * @return void
      */
     public function setLogger(LoggerInterface $logger)
     {
