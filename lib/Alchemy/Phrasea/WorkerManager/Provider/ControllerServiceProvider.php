@@ -84,6 +84,10 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET|POST')
             ->bind('worker_admin_pullAssets');
 
+        $controllers->match('/queue-monitor',  'controller.worker.admin.configuration:queueMonitorAction')
+            ->method('GET')
+            ->bind('worker_admin_queue_monitor');
+
         return $controllers;
     }
 

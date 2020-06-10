@@ -79,16 +79,32 @@ class AdminConfigurationController extends Controller
         $reload = ($request->query->get('reload')) == 1 ? true : false ;
 
         if ($request->query->get('running') == 1 && $request->query->get('finished') == 1) {
-            $workerRunningJob = $repoWorker->findAll();
+            $workerRunningJob = $repoWorker->findBy([], ['id' => 'DESC'], WorkerRunningJob::MAX_RESULT);
         } elseif ($request->query->get('running') == 1) {
-            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::RUNNING]);
+            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::RUNNING], ['id' => 'DESC'], WorkerRunningJob::MAX_RESULT);
         } elseif ($request->query->get('finished') == 1) {
-            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::FINISHED]);
+            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::FINISHED], ['id' => 'DESC'], WorkerRunningJob::MAX_RESULT);
         }
 
         return $this->render('admin/worker-manager/worker_info.html.twig', [
             'workerRunningJob' => $workerRunningJob,
             'reload'           => $reload
+        ]);
+    }
+
+    public function queueMonitorAction(PhraseaApplication $app, Request $request)
+    {
+        $reload = ($request->query->get('reload')) == 1 ? true : false ;
+
+        /** @var  AMQPConnection $serverConnection */
+        $serverConnection = $app['alchemy_worker.amqp.connection'];
+        $serverConnection->getChannel();
+        $serverConnection->declareExchange();
+        $queuesStatus = $serverConnection->getQueuesStatus();
+
+        return $this->render('admin/worker-manager/worker_queue_monitor.html.twig', [
+            'queuesStatus' => $queuesStatus,
+            'reload'       => $reload
         ]);
     }
 
