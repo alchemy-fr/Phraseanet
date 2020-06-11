@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-11T06:50:35Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9182,29 +9182,29 @@
         <target state="translated">Uploader</target>
         <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count">
+      <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count" approved="no">
         <source>admin::workermanager:tab:queueMonitor: Consumer count</source>
-        <target state="new">admin::workermanager:tab:queueMonitor: Consumer count</target>
+        <target state="needs-translation">Worker Number</target>
         <jms:reference-file line="13">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count">
+      <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="no">
         <source>admin::workermanager:tab:queueMonitor: Message count</source>
-        <target state="new">admin::workermanager:tab:queueMonitor: Message count</target>
+        <target state="needs-translation">Message count</target>
         <jms:reference-file line="12">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list">
+      <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list" approved="no">
         <source>admin::workermanager:tab:queueMonitor: Refresh list</source>
-        <target state="new">admin::workermanager:tab:queueMonitor: Refresh list</target>
+        <target state="needs-translation">Refresh</target>
         <jms:reference-file line="5">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description">
+      <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description" approved="no">
         <source>admin::workermanager:tab:queueMonitor: description</source>
-        <target state="new">admin::workermanager:tab:queueMonitor: description</target>
+        <target state="needs-translation">State of message queue</target>
         <jms:reference-file line="2">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title">
+      <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title" approved="no">
         <source>admin::workermanager:tab:queueMonitor: title</source>
-        <target state="new">admin::workermanager:tab:queueMonitor: title</target>
+        <target state="needs-translation">Queue</target>
         <jms:reference-file line="40">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="yes">
@@ -9372,9 +9372,9 @@
         <target state="translated">Started</target>
         <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name">
+      <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name" approved="no">
         <source>admin::workermanager:tab:workerinfo: databox_name</source>
-        <target state="new">admin::workermanager:tab:workerinfo: databox_name</target>
+        <target state="needs-translation">Databox</target>
         <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description" approved="yes">
@@ -11879,9 +11879,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Find</target>
         <jms:reference-file line="298">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification">
+      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification" approved="yes">
         <source>prod::export: send mail notification</source>
-        <target state="needs-translation">Email sending request submitted</target>
+        <target state="translated">Email sending request submitted</target>
         <jms:reference-file line="1018">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
