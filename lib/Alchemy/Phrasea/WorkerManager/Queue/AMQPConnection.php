@@ -213,6 +213,37 @@ class AMQPConnection
         }
     }
 
+    /**
+     * Get queueName, messageCount, consumerCount  of queues
+     * @return array
+     */
+    public function getQueuesStatus()
+    {
+        $queuesList = array_merge(
+            array_values(self::$defaultQueues),
+            array_values(self::$defaultDelayedQueues),
+            array_values(self::$defaultRetryQueues),
+            array_values(self::$defaultFailedQueues)
+        );
+
+        $this->getChannel();
+        $queuesStatus = [];
+
+        foreach ($queuesList as $queue) {
+            $this->setQueue($queue);
+            list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($queue, true);
+
+            $status['queueName']     = $queueName;
+            $status['messageCount']  = $messageCount;
+            $status['consumerCount'] = $consumerCount;
+
+            $queuesStatus[] = $status;
+            unset($status);
+        }
+
+        return $queuesStatus;
+    }
+
     public function connectionClose()
     {
         $this->channel->close();
