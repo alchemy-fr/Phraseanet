@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-06-10T16:17:40Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2020-06-11T06:48:11Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9369,9 +9369,9 @@
         <target state="translated">Begonnen</target>
         <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id" approved="yes">
-        <source>admin::workermanager:tab:workerinfo: databox_id</source>
-        <target state="translated">Databox ID</target>
+      <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name">
+        <source>admin::workermanager:tab:workerinfo: databox_name</source>
+        <target state="new">admin::workermanager:tab:workerinfo: databox_name</target>
         <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description" approved="yes">

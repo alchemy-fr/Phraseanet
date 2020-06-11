@@ -42,7 +42,7 @@
 <table class="admintable">
     <thead>
     <tr>
-        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: databox_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: databox_name' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: record_id' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work_on' | trans }}</th>
@@ -57,7 +57,7 @@
 
 {% for workerRow in workerRunningJob | sort | reverse %}
     <tr>
-        <td>{{ workerRow.databoxId }}</td>
+        <td>{{ workerRow.databoxId | sbas_labels(app) }}</td>
         <td>{{ workerRow.recordId }}</td>
         <td>{{ workerRow.getWorkName }}</td>
         <td>{{ workerRow.workOn }}</td>
