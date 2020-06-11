@@ -1,0 +1,42 @@
+{% if not reload %}
+    <h1>{{ 'admin::workermanager:tab:queueMonitor: description' |trans }}</h1>
+
+    <button id="refresh-monitor" class="btn btn-success">
+        {{ 'admin::workermanager:tab:queueMonitor: Refresh list' |trans }}
+    </button>
+
+    <table class="admintable">
+        <thead>
+            <tr>
+                <th></th>
+                <th>{{ 'admin::workermanager:tab:queueMonitor: Message count' |trans }}</th>
+                <th>{{ 'admin::workermanager:tab:queueMonitor: Consumer count' |trans }}</th>
+            </tr>
+        </thead>
+        <tbody class="queue-list">
+
+{% endif %}
+        {% for queueStatus in queuesStatus %}
+            <tr>
+                <th>{{ queueStatus.queueName }}</th>
+                <td>{{ queueStatus.messageCount }}</td>
+                <td>{{ queueStatus.consumerCount }}</td>
+            </tr>
+        {% endfor %}
+
+{% if not reload %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript">
+        $("#refresh-monitor").on('click', function () {
+            $.ajax({
+                type: "GET",
+                url: "/admin/worker-manager/queue-monitor?reload=1",
+                success: function (data) {
+                    $(".queue-list").empty().html(data);
+                }
+            });
+        });
+    </script>
+{% endif %}
