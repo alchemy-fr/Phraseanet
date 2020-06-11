@@ -9184,7 +9184,7 @@
       </trans-unit>
       <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count" approved="no">
         <source>admin::workermanager:tab:queueMonitor: Consumer count</source>
-        <target state="needs-translation">Worker Number</target>
+        <target state="needs-translation">Worker number</target>
         <jms:reference-file line="13">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="no">
@@ -11807,11 +11807,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Valid changes or Cancel</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="no">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="needs-translation">Cancelling editing will lose all edits.
-- Cancel : to go back to editing
-- OK : to close and loose edits</target>
+        <target state="needs-translation">Cancelling editing will lose all edits. - Cancel : to go back to editing - OK : to close and lose edits</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9999b27bac2f63123760f54d7312b7b7133930fc" resname="prod::editing::fields: status" approved="yes">
