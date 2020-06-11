@@ -31,7 +31,12 @@
                 </li>
                 <li>
                     <a href="#subtitleEditor">
-                        {{ "prod:videoeditor:subtitletab:: title" | trans }}
+                        {{ "prod:videoeditor:subtitleTab:: title" | trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="#subtitleRequest">
+                        {{ "prod:videoeditor:subtitleRequestTab:: title" | trans }}
                     </a>
                 </li>
             </ul>
@@ -164,27 +169,62 @@
                         <div class="video-range-editor-container"></div>
                     </div>
                     <div id="subtitleEditor" class="subtitleEditor video-subtitle-editor-container">
-                        <div class="video-subtitle-top">
-                            <form>
-                            <label>{{ "prod:videoeditor:subtitletab:: work on" | trans }}</label>
-                                <select name="subtitleLanguage" >
+                        <div id="default-item" class="default-item hide">
+                            <fieldset class='video-subtitle-item'><h4 class='number'>0</h4>
+                                <div class='item-field start-time' ><label>Start time</label><input class='time startTime' type='text' name='startTime' size='12' value="00:00:00.000"/></div>
+                                <div class='item-field end-time'><label>End time</label><input class='time endTime' type='text' name='endTime'  size='12'/></div>
+                                <div class='item-field show-for-time'><label>Show for</label><input class='showForTime' readonly type='text' size='12'/></div>
+                                <div class='item-field caption-text'><textarea name='captionText' placeholder='Caption' rows='2'></textarea></div>
+                                <div class='remove-item'><i class='fa fa-times-circle'></i></div>
+                            </fieldset>
+                        </div>
+                        <form name="video_subtitle_data" id="video-subtitle-data">
+                            <div class="video-subtitle-top">
+                                <label>{{ "prod:videoeditor:subtitletab:: work on" | trans }}</label>
+                                <select name="subtitle_language" id="subtitle-language-select">
                                     <option value="fr">Fr</option>
                                     <option value="en">En</option>
                                     <option value="de">De</option>
                                 </select>
-                                <input type="submit" class="btn btn-blue submit-language" value="{{ "prod:videoeditor:subtitletab:btn:: save language" | trans }}"/>
-                            </form>
-                        </div>
-                        <div class="video-subtitle-bottom">
-                            <div class="video-subtitle-left">
-                            <div class="video-subtitle-left-inner">
-                                <h3>{{ "prod:videoeditor:subtitletab:: left block title" | trans }}</h3>
-                                <div class="fields-wrapper">
+
+                            </div>
+                            <input type="hidden" value='{{ record.get_sbas_id() }}' name='record_sbas_id'>
+                            <input type="hidden" value='{{ record.get_record_id() }}' name='record_record_id'>
+                            <input type="hidden" id="record-vtt" name='record_vtt'>
+                        </form>
+                        <form name="video_subtitle_list" id="video-subtitle-list">
+                            <div class="video-subtitle-bottom">
+                                <div class="video-subtitle-left">
+                                    <div class="video-subtitle-left-inner">
+                                        <div class="fields-wrapper">
+                                        </div>
+                                    </div>
+                                    <div class="video-subtitle-left-button">
+                                        <button type="button" id="submit-subtitle" class="btn submit-subtitle btn-blue">Save</button>
+                                        <button class="add-subtitle-vtt" tabindex="0" type="button" aria-label="Add VTT">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="video-subtitle-right">
+                                    <div class="video-subtitle-wrapper">
+                                        <video  class="thumb_video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
+                                            {% for subdef in previewHtml5 %}
+                                                <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
+                                            {% endfor %}
+                                            {{ 'No preview available' | trans }}
+                                        </video>
+                                    </div>
                                 </div>
                             </div>
-                                <button class="add-subtitle-vtt" tabindex="0" type="button" aria-label="Add VTT">
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                        </form>
+                    </div>
+                    <div id ="subtitleRequest" class="subtitleRequest">
+                        <div class="video-subtitle-bottom">
+                            <div class="video-subtitle-left">
+                                <div class="video-subtitle-left-inner">
+                                    provider ....
+                                </div>
                             </div>
                             <div class="video-subtitle-right">
                                 <div class="video-subtitle-wrapper">
@@ -194,7 +234,7 @@
                                         {% endfor %}
                                         {{ 'No preview available' | trans }}
                                     </video>
-                            </div>
+                                </div>
                             </div>
                         </div>
                     </div>
