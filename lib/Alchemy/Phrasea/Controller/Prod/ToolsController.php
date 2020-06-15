@@ -456,6 +456,34 @@ class ToolsController extends Controller
         return $this->app->json(['success' => true, 'errorMessage' => '']);
     }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getVideoTextTrackField(Request $request)
+    {
+        $records = RecordsRequest::fromRequest($this->app, $request, false);
+        $videoTextTrackField = [];
+
+        if (count($records) == 1) {
+            /** @var \record_adapter $record */
+            $record = $records->first();
+            $databox = $record->getDatabox();
+
+
+            foreach ($databox->get_meta_structure() as $meta) {
+                if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2 ) {
+                    $field['label'] = $matches[1];
+                    $field['meta_struct_id'] = $meta->get_id();
+                    $videoTextTrackField[] = $field;
+                    unset($field);
+                }
+            }
+        }
+
+        return $this->app->json($videoTextTrackField);
+    }
+
     public function videoEditorAction(Request $request)
     {
         $records = RecordsRequest::fromRequest($this->app, $request, false);
