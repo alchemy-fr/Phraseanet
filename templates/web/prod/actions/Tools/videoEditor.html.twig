@@ -175,8 +175,8 @@
                             <fieldset class='video-subtitle-item'><h4 class='number'>0</h4>
                                 <div class='item-field start-time' ><label>Start time</label><input class='time startTime' type='text' name='startTime' size='12' value="00:00:00.000"/></div>
                                 <div class='item-field end-time'><label>End time</label><input class='time endTime' type='text' name='endTime'  size='12'value="00:00:02.000" /></div>
-                                <div class='item-field show-for-time'><label>Show for</label><input class='showForTime' readonly type='text' size='12'/></div>
-                                <div class='item-field caption-text'><textarea name='captionText' placeholder='Caption' rows='2'></textarea></div>
+                                <div class='item-field show-for-time'><label>Show for</label><input class='showForTime' readonly type='text' size='12' value="00:00:02.000"/></div>
+                                <div class='item-field caption-text'><textarea name='captionText' placeholder='Caption' rows='2' ></textarea></div>
                                 <div class='remove-item'><i class='fa fa-times-circle'></i></div>
                             </fieldset>
                         </div>
@@ -184,9 +184,6 @@
                             <div class="video-subtitle-top">
                                 <label>{{ "prod:videoeditor:subtitletab:: work on" | trans }}</label>
                                 <select name="subtitle_language" id="subtitle-language-select">
-                                    <option value="fr">Fr</option>
-                                    <option value="en">En</option>
-                                    <option value="de">De</option>
                                 </select>
 
                             </div>
@@ -230,20 +227,9 @@
                                     <form  id="video-subtitle-request" class="video-subtitle-request">
                                        <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Provider" | trans }}</label>
-                                            <select name="subtitle_provider" id="subtitle_provider">
-                                                <option value="fr">Fr</option>
-                                                <option value="en">En</option>
-                                                <option value="de">De</option>
+                                            <select name="subtitleProvider" id="subtitle_provider">
                                             </select>
                                        </p>
-                                        <p class="item">
-                                            <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Provider" | trans }}</label>
-                                            <select name="subtitle_provider" id="subtitle_provider">
-                                                <option value="fr">Fr</option>
-                                                <option value="en">En</option>
-                                                <option value="de">De</option>
-                                            </select>
-                                        </p>
                                         <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Kind" | trans }}</label>
                                             <select name="subtitle_kindr" id="subtitle_kindr">
