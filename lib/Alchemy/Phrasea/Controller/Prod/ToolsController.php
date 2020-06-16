@@ -456,34 +456,6 @@ class ToolsController extends Controller
         return $this->app->json(['success' => true, 'errorMessage' => '']);
     }
 
-    /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function getVideoTextTrackField(Request $request)
-    {
-        $records = RecordsRequest::fromRequest($this->app, $request, false);
-        $videoTextTrackField = [];
-
-        if (count($records) == 1) {
-            /** @var \record_adapter $record */
-            $record = $records->first();
-            $databox = $record->getDatabox();
-
-
-            foreach ($databox->get_meta_structure() as $meta) {
-                if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2 ) {
-                    $field['label'] = $matches[1];
-                    $field['meta_struct_id'] = $meta->get_id();
-                    $videoTextTrackField[] = $field;
-                    unset($field);
-                }
-            }
-        }
-
-        return $this->app->json($videoTextTrackField);
-    }
-
     public function videoEditorAction(Request $request)
     {
         $records = RecordsRequest::fromRequest($this->app, $request, false);
@@ -491,6 +463,7 @@ class ToolsController extends Controller
         $metadatas = false;
         $record = null;
         $JSFields = [];
+        $videoTextTrackFields = [];
 
         if (count($records) == 1) {
             /** @var \record_adapter $record */
@@ -508,6 +481,13 @@ class ToolsController extends Controller
                     'name'   => $meta->get_name(),
                     '_value' => $record->getCaption([$meta->get_name()]),
                 ];
+
+                if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2 ) {
+                    $field['label'] = $matches[1];
+                    $field['meta_struct_id'] = $meta->get_id();
+                    $videoTextTrackFields[] = $field;
+                    unset($field);
+                }
             }
 
             if (!$record->isStory()) {
@@ -517,11 +497,12 @@ class ToolsController extends Controller
         $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/videoEditor.html.twig', [
-            'records'           => $records,
-            'record'            => $record,
-            'videoEditorConfig' => $conf->get(['video-editor']),
-            'metadatas'         => $metadatas,
-            'JSonFields'        => json_encode($JSFields),
+            'records'               => $records,
+            'record'                => $record,
+            'videoEditorConfig'     => $conf->get(['video-editor']),
+            'metadatas'             => $metadatas,
+            'JSonFields'            => json_encode($JSFields),
+            'videoTextTrackFields'  => $videoTextTrackFields
         ]);
     }
 }

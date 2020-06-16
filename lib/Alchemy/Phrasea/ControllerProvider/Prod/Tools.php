@@ -73,7 +73,6 @@ class Tools implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('prod_tools_metadata_save');
 
         $controllers->get('/videoEditor', 'controller.prod.tools:videoEditorAction');
-        $controllers->get('/videoTextTrack/field', 'controller.prod.tools:getVideoTextTrackField');
 
         return $controllers;
     }
