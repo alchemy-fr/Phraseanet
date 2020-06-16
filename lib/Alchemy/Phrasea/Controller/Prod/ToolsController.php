@@ -485,6 +485,12 @@ class ToolsController extends Controller
                 if (preg_match('/^VideoTextTrack(.*)$/iu', $meta->get_name(), $matches) && !empty($matches[1]) && strlen($matches[1]) == 2 ) {
                     $field['label'] = $matches[1];
                     $field['meta_struct_id'] = $meta->get_id();
+                    $field['value'] = '';
+                    if ($record->get_caption()->has_field($meta->get_name())) {
+                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
+                        $fieldValue = array_pop($fieldValues);
+                        $field['value'] = $fieldValue->getValue();
+                    }
                     $videoTextTrackFields[] = $field;
                     unset($field);
                 }

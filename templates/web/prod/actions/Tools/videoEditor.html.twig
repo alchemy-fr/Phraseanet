@@ -176,7 +176,7 @@
                                 <div class='item-field start-time' ><label>Start time</label><input class='time startTime' type='text' name='startTime' size='12' value="00:00:00.000"/></div>
                                 <div class='item-field end-time'><label>End time</label><input class='time endTime' type='text' name='endTime'  size='12'value="00:00:02.000" /></div>
                                 <div class='item-field show-for-time'><label>Show for</label><input class='showForTime' readonly type='text' size='12' value="00:00:02.000"/></div>
-                                <div class='item-field caption-text'><textarea name='captionText' placeholder='Caption' rows='2' ></textarea></div>
+                                <div class='item-field caption-text'><textarea class="captionText" name='captionText' placeholder='Caption' rows='2' ></textarea></div>
                                 <div class='remove-item'><i class='fa fa-times-circle'></i></div>
                             </fieldset>
                         </div>
@@ -189,7 +189,11 @@
                                     {% endfor %}
                                 </select>
 
+                                {% for videoTextTrackField in videoTextTrackFields %}
+                                    <input type="hidden" id="caption_{{ videoTextTrackField.meta_struct_id}}" value='{{ videoTextTrackField.value}}' name='databox_id'>
+                                {% endfor %}
                             </div>
+
                             <input type="hidden" value='{{ record.get_sbas_id() }}' name='databox_id'>
                             <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
                         </form>
@@ -291,7 +295,12 @@
     >
     </iframe>
 </div>
-
+<style>
+    .editing>p {
+        color: #fff;
+        position: relative;
+    }
+</style>
 <script type="text/javascript">
     var toolsConfig = {
         selectionLength: {{ selectionLength }},
