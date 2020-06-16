@@ -183,7 +183,7 @@
                         <form name="video_subtitle_data" id="video-subtitle-data">
                             <div class="video-subtitle-top">
                                 <label>{{ "prod:videoeditor:subtitletab:: work on" | trans }}</label>
-                                <select name="meta_struct_id" id="subtitle-language-select">
+                                <select name="meta_struct_id" id="metaStructId">
                                     {% for videoTextTrackField in videoTextTrackFields %}
                                         <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
                                     {% endfor %}
@@ -192,7 +192,6 @@
                             </div>
                             <input type="hidden" value='{{ record.get_sbas_id() }}' name='databox_id'>
                             <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
-                            <input type="text" id="record-vtt" name='value'>
                         </form>
                         <form name="video_subtitle_list" id="video-subtitle-list">
                             <div class="video-subtitle-bottom">
