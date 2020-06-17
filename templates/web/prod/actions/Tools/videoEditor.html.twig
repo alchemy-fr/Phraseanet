@@ -172,11 +172,11 @@
                         <input type="hidden" id="defaultStartValue"  value="00:00:00.000">
                         <input type="hidden" id="defaultEndValue"  value="00:00:02.000">
                         <div id="default-item" class="default-item hide">
-                            <fieldset class='video-subtitle-item'><h4 class='number'>0</h4>
-                                <div class='item-field start-time' ><label>Start time</label><input class='time startTime' type='text' name='startTime' size='12' value="00:00:00.000"/></div>
-                                <div class='item-field end-time'><label>End time</label><input class='time endTime' type='text' name='endTime'  size='12'value="00:00:02.000" /></div>
-                                <div class='item-field show-for-time'><label>Show for</label><input class='showForTime' readonly type='text' size='12' value="00:00:02.000"/></div>
-                                <div class='item-field caption-text'><textarea class="captionText" name='captionText' placeholder='Caption' rows='2' ></textarea></div>
+                            <fieldset class='video-subtitle-item'><span class='number'>0</span>
+                                <div class='item-field start-time' ><label>{{ "prod:videoeditor:subtitletab:: Start time" | trans }}</label><input class='time startTime' type='text' name='startTime' size='12' value="00:00:00.000"/></div>
+                                <div class='item-field end-time'><label>{{ "prod:videoeditor:subtitletab:: End time" | trans }}</label><input class='time endTime' type='text' name='endTime'  size='12'value="00:00:02.000" /></div>
+                                <div class='item-field show-for-time'><label>{{ "prod:videoeditor:subtitletab:: Show for" | trans }}</label><input class='showForTime' readonly type='text' size='12' value="00:00:02.000"/></div>
+                                <div class='item-field caption-text'><textarea class="captionText" name='captionText' placeholder='{{ "prod:videoeditor:subtitletab:: Caption placeholder" | trans }}' rows='2' ></textarea></div>
                                 <div class='remove-item'><i class='fa fa-times-circle'></i></div>
                             </fieldset>
                         </div>
@@ -192,10 +192,11 @@
                                 {% for videoTextTrackField in videoTextTrackFields %}
                                     <input type="hidden" id="caption_{{ videoTextTrackField.meta_struct_id}}" value='{{ videoTextTrackField.value}}' name='databox_id'>
                                 {% endfor %}
+                                <input type="text" id="record-vtt">
+                                <input type="hidden" value='{{ record.get_sbas_id() }}' name='databox_id'>
+                                <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
+                                <input type="hidden" id="no_caption" value='{{ "prod:videoeditor:subtitletab:: No caption message" | trans }}'>
                             </div>
-
-                            <input type="hidden" value='{{ record.get_sbas_id() }}' name='databox_id'>
-                            <input type="hidden" value='{{ record.get_record_id() }}' name='record_id'>
                         </form>
                         <form name="video_subtitle_list" id="video-subtitle-list">
                             <div class="video-subtitle-bottom">
@@ -214,13 +215,6 @@
                                 </div>
                                 <div class="video-subtitle-right">
                                     <div class="video-subtitle-wrapper">
-                                        <video  class="thumb_video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
-                                            {% for subdef in previewHtml5 %}
-                                                <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
-                                            {% endfor %}
-                                            <track label="English" kind="subtitles" srclang="en" src="/assets/my_captions.vtt" default>
-                                            {{ 'No preview available' | trans }}
-                                        </video>
                                     </div>
                                 </div>
                             </div>
@@ -295,12 +289,6 @@
     >
     </iframe>
 </div>
-<style>
-    .editing>p {
-        color: #fff;
-        position: relative;
-    }
-</style>
 <script type="text/javascript">
     var toolsConfig = {
         selectionLength: {{ selectionLength }},
