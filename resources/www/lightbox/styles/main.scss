@@ -214,6 +214,31 @@ img {
   overflow: hidden;
   background-color: #1F1E1B;
   color: #BFBFBF;
+  .PNB.choices {
+    position: relative;
+  }
+  .comment_button {
+    text-align: center;
+    background: #353430;
+    margin: 0;
+    width: 118px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px;
+    font-size: 14px;
+    line-height: 14px;
+    border: 0;
+    bottom: 10px;
+    .fa-comment.icon-white {
+      font-size: 15px;
+      line-height: 18px;
+      margin-right: 10px;
+    }
+  }
+  .user_infos  .comment_button {
+    bottom: initial;
+  }
 }
 
 #basket_options {
@@ -230,6 +255,11 @@ img {
 #basket_infos .user_infos {
   height: 120px;
   top: auto;
+  bottom: 43px;
+}
+.lightbox-icon {
+  width: 10px;
+  padding-bottom: 1px;
 }
 
 #basket_infos {
@@ -284,7 +314,7 @@ img {
 }
 
 #right_column .right_column_wrapper {
-  //top: 30px;
+  top: 30px;
   bottom: 45px;
 }
 
@@ -296,6 +326,7 @@ img {
 #record_infos {
   overflow-x: hidden;
   overflow-y: auto;
+  margin-bottom: 80px;
 }
 
 #record_compare {
@@ -303,7 +334,10 @@ img {
   top: auto;
   left: auto;
 }
-
+.download-feed{
+  color: #fff;
+  font-size: 22px;
+}
 #record_compare .header, #record_compare .lightbox_container {
   left: 5px;
 }
@@ -562,6 +596,13 @@ hr {
 .report {
   margin: 0 10px;
   vertical-align: bottom;
+}.back-home {
+    margin: 0 10px;
+    vertical-align: bottom;
+   width: 20px;
+   background: #1F1E1B;
+   padding: 5px;
+   border-radius: 3px;
 }
 
 /*
