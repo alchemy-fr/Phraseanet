@@ -30,7 +30,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#subtitleEditor">
+                    <a href="#subtitleEditor" id="subtitleEditortoggle">
                         {{ "prod:videoeditor:subtitleTab:: title" | trans }}
                     </a>
                 </li>
@@ -332,6 +332,8 @@
                     {% for subdef in previewHtml5 %}
                     {
                         ratio: '{{ ratio }}',
+                        width: '{{ width }}',
+                        height: '{{ height }}',
                         framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
                         type: "{{ subdef.get_mime() }}",
                         src: "{{ subdef.get_url() }}"
@@ -346,6 +348,5 @@
         preferences: {
             overlapChapters: {% if overlapChapters != NULL %}{{ overlapChapters }}{% else %}1{% endif %},
         }
-
     };
 </script>
