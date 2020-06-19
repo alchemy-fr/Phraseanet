@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-17T17:34:33Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -9070,9 +9070,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Filtrer les utilisateurs invités</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection">
+      <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="yes">
         <source>admin::users:edit: Manage inline selection</source>
-        <target state="needs-translation">Sélectionner une option</target>
+        <target state="translated">Sélectionner une option</target>
         <jms:reference-file line="306">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right" approved="yes">
@@ -9153,9 +9153,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Client secret</target>
         <jms:reference-file line="22">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit">
+      <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit" approved="yes">
         <source>admin::workermanager:tab:pullassets: Endpoint get commit</source>
-        <target state="needs-translation">Point de terminaison pour la récupération des fichiers (adresse de l'uploader ex: https://uploader.phrasea.io)</target>
+        <target state="translated">Point de terminaison pour la récupération des fichiers (adresse de l'uploader ex: https://uploader.phrasea.io)</target>
         <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a6df16c30b678f118cbde60abc6eccc0c84f58c" resname="admin::workermanager:tab:pullassets: Endpoint get token" approved="yes">
@@ -9183,29 +9183,29 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Uploader</target>
         <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count">
+      <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Consumer count</source>
-        <target state="needs-translation">Nombre de worker</target>
+        <target state="translated">Nombre de worker</target>
         <jms:reference-file line="13">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count">
+      <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Message count</source>
-        <target state="needs-translation">Nombre de Message</target>
+        <target state="translated">Nombre de Message</target>
         <jms:reference-file line="12">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list">
+      <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Refresh list</source>
-        <target state="needs-translation">Actualiser</target>
+        <target state="translated">Actualiser</target>
         <jms:reference-file line="5">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description">
+      <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: description</source>
-        <target state="needs-translation">Etat des files de message</target>
+        <target state="translated">Etat des files de message</target>
         <jms:reference-file line="2">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title">
+      <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title" approved="no">
         <source>admin::workermanager:tab:queueMonitor: title</source>
-        <target state="needs-translation">Queue</target>
+        <target state="needs-translation">Files de message</target>
         <jms:reference-file line="40">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="yes">
@@ -9373,9 +9373,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Démarré</target>
         <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name">
+      <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name" approved="yes">
         <source>admin::workermanager:tab:workerinfo: databox_name</source>
-        <target state="needs-translation">Databox</target>
+        <target state="translated">Databox</target>
         <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description" approved="yes">
@@ -12158,39 +12158,39 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Supprimer la selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit">
+      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:: submit</source>
-        <target state="new">prod:videoeditor:subtitleRequestTab:: submit</target>
+        <target state="needs-translation">Sous-titrage automatique</target>
         <jms:reference-file line="258">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title">
+      <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:: title</source>
-        <target state="new">prod:videoeditor:subtitleRequestTab:: title</target>
+        <target state="needs-translation">Edition des sous-titres</target>
         <jms:reference-file line="39">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b945e053b5fd4a0f2664bafff257dbfd2fec386c" resname="prod:videoeditor:subtitleRequestTab:label:: Kind">
+      <trans-unit id="b945e053b5fd4a0f2664bafff257dbfd2fec386c" resname="prod:videoeditor:subtitleRequestTab:label:: Kind" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:label:: Kind</source>
-        <target state="new">prod:videoeditor:subtitleRequestTab:label:: Kind</target>
+        <target state="needs-translation">Type</target>
         <jms:reference-file line="234">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination">
+      <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:label:: Language destination</source>
-        <target state="new">prod:videoeditor:subtitleRequestTab:label:: Language destination</target>
+        <target state="needs-translation">Langue de destination</target>
         <jms:reference-file line="250">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f9d2cafba3e0955e48f598fac8a8b257b624977d" resname="prod:videoeditor:subtitleRequestTab:label:: Provider">
+      <trans-unit id="f9d2cafba3e0955e48f598fac8a8b257b624977d" resname="prod:videoeditor:subtitleRequestTab:label:: Provider" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:label:: Provider</source>
-        <target state="new">prod:videoeditor:subtitleRequestTab:label:: Provider</target>
+        <target state="needs-translation">Provider</target>
         <jms:reference-file line="229">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="92cdd8501cb193bf13ea2f4f58e331668fdc7cfe" resname="prod:videoeditor:subtitleRequestTab:label:: Source Audio language">
+      <trans-unit id="92cdd8501cb193bf13ea2f4f58e331668fdc7cfe" resname="prod:videoeditor:subtitleRequestTab:label:: Source Audio language" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:label:: Source Audio language</source>
-        <target state="new">prod:videoeditor:subtitleRequestTab:label:: Source Audio language</target>
+        <target state="needs-translation">Language de la source (audio)</target>
         <jms:reference-file line="242">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title">
+      <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title" approved="no">
         <source>prod:videoeditor:subtitleTab:: title</source>
-        <target state="new">prod:videoeditor:subtitleTab:: title</target>
+        <target state="needs-translation">Edition de sous-titres</target>
         <jms:reference-file line="34">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder">
@@ -12198,49 +12198,49 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="new">prod:videoeditor:subtitletab:: Caption placeholder</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time">
+      <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time" approved="no">
         <source>prod:videoeditor:subtitletab:: End time</source>
-        <target state="new">prod:videoeditor:subtitletab:: End time</target>
+        <target state="needs-translation">Fin</target>
         <jms:reference-file line="177">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b12193c53fdd26a57e157dc15823df75ad0756e3" resname="prod:videoeditor:subtitletab:: No caption message">
+      <trans-unit id="b12193c53fdd26a57e157dc15823df75ad0756e3" resname="prod:videoeditor:subtitletab:: No caption message" approved="no">
         <source>prod:videoeditor:subtitletab:: No caption message</source>
-        <target state="new">prod:videoeditor:subtitletab:: No caption message</target>
+        <target state="needs-translation">Pas de sous-titres définit pour cette Langue</target>
         <jms:reference-file line="198">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for">
+      <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for" approved="no">
         <source>prod:videoeditor:subtitletab:: Show for</source>
-        <target state="new">prod:videoeditor:subtitletab:: Show for</target>
+        <target state="needs-translation">Durée</target>
         <jms:reference-file line="178">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e79e454459e7dc39a4aad9eb7f65014fa6f0a001" resname="prod:videoeditor:subtitletab:: Start time">
+      <trans-unit id="e79e454459e7dc39a4aad9eb7f65014fa6f0a001" resname="prod:videoeditor:subtitletab:: Start time" approved="no">
         <source>prod:videoeditor:subtitletab:: Start time</source>
-        <target state="new">prod:videoeditor:subtitletab:: Start time</target>
+        <target state="needs-translation">Début</target>
         <jms:reference-file line="176">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption">
+      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption" approved="no">
         <source>prod:videoeditor:subtitletab:: add caption</source>
-        <target state="new">prod:videoeditor:subtitletab:: add caption</target>
+        <target state="needs-translation">Sous-titre</target>
         <jms:reference-file line="211">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5a9ed94e747e90542d014b7486ab3ea865c2861d" resname="prod:videoeditor:subtitletab:: copy to clipboard">
+      <trans-unit id="5a9ed94e747e90542d014b7486ab3ea865c2861d" resname="prod:videoeditor:subtitletab:: copy to clipboard" approved="no">
         <source>prod:videoeditor:subtitletab:: copy to clipboard</source>
-        <target state="new">prod:videoeditor:subtitletab:: copy to clipboard</target>
+        <target state="needs-translation">Copier dans le presse papier</target>
         <jms:reference-file line="210">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ba9c65917b3cc4daf4c8915a49baf5fbe37ae69" resname="prod:videoeditor:subtitletab:: save">
+      <trans-unit id="7ba9c65917b3cc4daf4c8915a49baf5fbe37ae69" resname="prod:videoeditor:subtitletab:: save" approved="no">
         <source>prod:videoeditor:subtitletab:: save</source>
-        <target state="new">prod:videoeditor:subtitletab:: save</target>
+        <target state="needs-translation">Sauvegarder</target>
         <jms:reference-file line="209">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2b6e3888c22d8146b4fe551a4b797ee52583f5c3" resname="prod:videoeditor:subtitletab:: work on">
+      <trans-unit id="2b6e3888c22d8146b4fe551a4b797ee52583f5c3" resname="prod:videoeditor:subtitletab:: work on" approved="no">
         <source>prod:videoeditor:subtitletab:: work on</source>
-        <target state="new">prod:videoeditor:subtitletab:: work on</target>
+        <target state="needs-translation">Choisir une langue</target>
         <jms:reference-file line="185">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfd4d0e35afc071271b2c1c0c8f1a782daff136b" resname="prod:videoeditor:subtitletab:messsage:: error">
+      <trans-unit id="cfd4d0e35afc071271b2c1c0c8f1a782daff136b" resname="prod:videoeditor:subtitletab:messsage:: error" approved="no">
         <source>prod:videoeditor:subtitletab:messsage:: error</source>
-        <target state="new">prod:videoeditor:subtitletab:messsage:: error</target>
+        <target state="needs-translation">Erreur</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0cc12b8810fbf8772f7b10d66f3b7bbd24b7a5a5" resname="prod:videoeditor:subtitletab:messsage:: success">
