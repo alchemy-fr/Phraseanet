@@ -99,7 +99,7 @@ img {
     overflow: scroll;
   }
   .display_id {
-    top: 5px;
+    top: 0;
     margin: 0 0 0 5px;
   }
 }
@@ -134,8 +134,8 @@ img {
     background-color: #212121;
   }
   .display_id {
-    top: 4px;
-    left: 8px;
+    top: 5px;
+    left: 5px;
   }
   .agreement {
     position: absolute;
@@ -173,7 +173,9 @@ img {
 
 .display_id {
   background-color: #FFFFFF;
-  padding: 3px 6px;
+  padding: 3.5px 6px;
+  min-width: 15px;
+  text-align: center;
   font-weight: bold;
   z-index: 99;
   color: #212121;
@@ -229,15 +231,12 @@ img {
     font-size: 14px;
     line-height: 14px;
     border: 0;
-    bottom: 10px;
+    bottom: -30px;
     .fa-comment.icon-white {
       font-size: 15px;
       line-height: 18px;
       margin-right: 10px;
     }
-  }
-  .user_infos  .comment_button {
-    bottom: initial;
   }
 }
 
@@ -580,10 +579,14 @@ table th i {
 }
 
 .basket_downloader {
-  background-color: #1F1E1B;
+  background-color: #ffffff;
   margin: 0 10px;
-  padding: 2px;
+  padding: 4px 0;
   border: 0;
+  transition: 0.3s all;
+  &:hover {
+    background-color: #e6e6e6;
+  }
 }
 
 hr {
