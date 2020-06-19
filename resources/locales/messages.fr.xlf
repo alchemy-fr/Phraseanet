@@ -12185,7 +12185,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="92cdd8501cb193bf13ea2f4f58e331668fdc7cfe" resname="prod:videoeditor:subtitleRequestTab:label:: Source Audio language" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:label:: Source Audio language</source>
-        <target state="needs-translation">Language de la source (audio)</target>
+        <target state="needs-translation">Langue de la source (audio)</target>
         <jms:reference-file line="242">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title" approved="no">
@@ -12193,9 +12193,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="needs-translation">Edition de sous-titres</target>
         <jms:reference-file line="34">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder">
+      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder" approved="no">
         <source>prod:videoeditor:subtitletab:: Caption placeholder</source>
-        <target state="new">prod:videoeditor:subtitletab:: Caption placeholder</target>
+        <target state="needs-translation">Description</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time" approved="no">
@@ -12205,7 +12205,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="b12193c53fdd26a57e157dc15823df75ad0756e3" resname="prod:videoeditor:subtitletab:: No caption message" approved="no">
         <source>prod:videoeditor:subtitletab:: No caption message</source>
-        <target state="needs-translation">Pas de sous-titres définit pour cette Langue</target>
+        <target state="needs-translation">Pas de sous-titres définis pour cette langue</target>
         <jms:reference-file line="198">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for" approved="no">
@@ -12243,9 +12243,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="needs-translation">Erreur</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cc12b8810fbf8772f7b10d66f3b7bbd24b7a5a5" resname="prod:videoeditor:subtitletab:messsage:: success">
+      <trans-unit id="0cc12b8810fbf8772f7b10d66f3b7bbd24b7a5a5" resname="prod:videoeditor:subtitletab:messsage:: success" approved="no">
         <source>prod:videoeditor:subtitletab:messsage:: success</source>
-        <target state="new">prod:videoeditor:subtitletab:messsage:: success</target>
+        <target state="needs-translation">Succès</target>
         <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
