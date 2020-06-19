@@ -12188,9 +12188,9 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Auto Subtitling request</target>
         <jms:reference-file line="34">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder">
+      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder" approved="no">
         <source>prod:videoeditor:subtitletab:: Caption placeholder</source>
-        <target state="new">prod:videoeditor:subtitletab:: Caption placeholder</target>
+        <target state="needs-translation">Caption placeholder</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time" approved="no">
@@ -12233,14 +12233,14 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Select subtitling language</target>
         <jms:reference-file line="185">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cfd4d0e35afc071271b2c1c0c8f1a782daff136b" resname="prod:videoeditor:subtitletab:messsage:: error">
+      <trans-unit id="cfd4d0e35afc071271b2c1c0c8f1a782daff136b" resname="prod:videoeditor:subtitletab:messsage:: error" approved="no">
         <source>prod:videoeditor:subtitletab:messsage:: error</source>
-        <target state="new">prod:videoeditor:subtitletab:messsage:: error</target>
+        <target state="needs-translation">Error</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cc12b8810fbf8772f7b10d66f3b7bbd24b7a5a5" resname="prod:videoeditor:subtitletab:messsage:: success">
+      <trans-unit id="0cc12b8810fbf8772f7b10d66f3b7bbd24b7a5a5" resname="prod:videoeditor:subtitletab:messsage:: success" approved="no">
         <source>prod:videoeditor:subtitletab:messsage:: success</source>
-        <target state="new">prod:videoeditor:subtitletab:messsage:: success</target>
+        <target state="needs-translation">Success</target>
         <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
