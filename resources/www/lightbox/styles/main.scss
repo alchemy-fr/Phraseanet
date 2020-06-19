@@ -99,7 +99,7 @@ img {
     overflow: scroll;
   }
   .display_id {
-    top: 5px;
+    top: 0;
     margin: 0 0 0 5px;
   }
 }
@@ -134,8 +134,8 @@ img {
     background-color: #212121;
   }
   .display_id {
-    top: 4px;
-    left: 8px;
+    top: 5px;
+    left: 5px;
   }
   .agreement {
     position: absolute;
@@ -173,7 +173,9 @@ img {
 
 .display_id {
   background-color: #FFFFFF;
-  padding: 3px 6px;
+  padding: 3.5px 6px;
+  min-width: 15px;
+  text-align: center;
   font-weight: bold;
   z-index: 99;
   color: #212121;
@@ -214,6 +216,28 @@ img {
   overflow: hidden;
   background-color: #1F1E1B;
   color: #BFBFBF;
+  .PNB.choices {
+    position: relative;
+  }
+  .comment_button {
+    text-align: center;
+    background: #353430;
+    margin: 0;
+    width: 118px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px;
+    font-size: 14px;
+    line-height: 14px;
+    border: 0;
+    bottom: -30px;
+    .fa-comment.icon-white {
+      font-size: 15px;
+      line-height: 18px;
+      margin-right: 10px;
+    }
+  }
 }
 
 #basket_options {
@@ -230,6 +254,11 @@ img {
 #basket_infos .user_infos {
   height: 120px;
   top: auto;
+  bottom: 43px;
+}
+.lightbox-icon {
+  width: 10px;
+  padding-bottom: 1px;
 }
 
 #basket_infos {
@@ -284,7 +313,7 @@ img {
 }
 
 #right_column .right_column_wrapper {
-  //top: 30px;
+  top: 30px;
   bottom: 45px;
 }
 
@@ -296,6 +325,7 @@ img {
 #record_infos {
   overflow-x: hidden;
   overflow-y: auto;
+  margin-bottom: 80px;
 }
 
 #record_compare {
@@ -303,7 +333,10 @@ img {
   top: auto;
   left: auto;
 }
-
+.download-feed{
+  color: #fff;
+  font-size: 22px;
+}
 #record_compare .header, #record_compare .lightbox_container {
   left: 5px;
 }
@@ -546,10 +579,14 @@ table th i {
 }
 
 .basket_downloader {
-  background-color: #1F1E1B;
+  background-color: #ffffff;
   margin: 0 10px;
-  padding: 2px;
+  padding: 4px 0;
   border: 0;
+  transition: 0.3s all;
+  &:hover {
+    background-color: #e6e6e6;
+  }
 }
 
 hr {
@@ -562,6 +599,13 @@ hr {
 .report {
   margin: 0 10px;
   vertical-align: bottom;
+}.back-home {
+    margin: 0 10px;
+    vertical-align: bottom;
+   width: 20px;
+   background: #1F1E1B;
+   padding: 5px;
+   border-radius: 3px;
 }
 
 /*

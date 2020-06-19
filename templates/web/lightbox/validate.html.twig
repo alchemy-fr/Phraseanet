@@ -155,11 +155,10 @@
                     <tr>
                         <td style="width:20px;">
                         </td>
-                        {% if basket.getValidation() %}
-                            <td style="width:50px;">
-                                <img title="{{ 'lightbox::recaptitulatif' | trans }}" class="report" src="/assets/lightbox/images/retour.png"/>
-                            </td>
-                        {% endif %}
+
+                        <td style="width:50px;">
+                            <a href="/lightbox"><img title="{{ 'lightbox::recaptitulatif' | trans }}" class="back-home" src="/assets/lightbox/images/home-solid.svg"/></a>
+                        </td>
                         <td style="width:220px;">
                             <select id="navigation" style='margin:0'>
                                 <optgroup label="{{ 'Validations' | trans }}">
@@ -182,7 +181,7 @@
                         </td>
                         <td style="width:50px;">
                             <button style='width:30px;margin:0;' class="ui-corner-all basket_downloader" title="{{ 'boutton::telecharger tous les documents' | trans }}">
-                               <img src="/assets/lightbox/images/save.png"/>
+                                <img width="15" src="/assets/lightbox/images/file-download-solid-blue.svg" >
                             </button>
                         </td>
                         <td>
