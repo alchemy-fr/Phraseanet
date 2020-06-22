@@ -213,7 +213,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="video-subtitle-right">
+                                <div class="video-subtitle-right" style="overflow: hidden;">
                                     <div class="video-subtitle-wrapper">
                                     </div>
                                 </div>
@@ -265,12 +265,6 @@
                             </div>
                             <div class="video-subtitle-right">
                                 <div class="video-subtitle-wrapper">
-                                    <video  class="thumb_video" controls="" preload="auto" data-ratio="{{ prevRatio }}">
-                                        {% for subdef in previewHtml5 %}
-                                            <source type="{{ subdef.get_mime() }}" src="{{ subdef.get_url() }}"/>
-                                        {% endfor %}
-                                        {{ 'No preview available' | trans }}
-                                    </video>
                                 </div>
                             </div>
                         </div>
