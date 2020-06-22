@@ -2093,7 +2093,7 @@ class V1Controller extends Controller
 
         try {
             $collection = \collection::getByBaseId($this->app, $request->get('base_id'));
-            $record->move_to_collection($collection, $this->getApplicationBox());
+            $record->move_to_collection($collection);
 
             return Result::create($request, ["record" => $this->listRecord($request, $record)])->createResponse();
         } catch (\Exception $e) {

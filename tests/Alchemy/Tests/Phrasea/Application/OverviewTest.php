@@ -118,7 +118,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
     public function testDatafilesRouteNotAuthenticatedIsOkInPublicFeed()
     {
         self::$DI['app']['phraseanet.SE'] = $this->createSearchEngineMock();
-        self::$DI['record_5']->move_to_collection(self::$DI['collection_no_access'], self::$DI['app']['phraseanet.appbox']);
+        self::$DI['record_5']->move_to_collection(self::$DI['collection_no_access']);
         $path = self::$DI['app']['url_generator']->generate('datafile', [
             'sbas_id' => self::$DI['record_5']->get_sbas_id(),
             'record_id' => self::$DI['record_5']->get_record_id(),
@@ -127,7 +127,7 @@ class OverviewTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('GET', $path);
         $this->assertTrue(self::$DI['client']->getResponse()->isOk());
-        self::$DI['record_5']->move_to_collection(self::$DI['collection'], self::$DI['app']['phraseanet.appbox']);
+        self::$DI['record_5']->move_to_collection(self::$DI['collection']);
     }
 
     public function testDatafilesRouteNotAuthenticatedUnknownSubdef()
