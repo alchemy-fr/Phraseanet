@@ -50,7 +50,7 @@
                 {% set branch = "<br/><b>" ~ fullBranch ~ "</b><br/>" %}
                 {% trans with {'%branch%' : branch} %}thesaurus:: Lier la branche de thesaurus au champ %branch%{% endtrans %}
 
-                <div style="width:70%; height:200px; overflow:scroll;" class="x3Dbox">
+                <div style="width:100%; height:270px; overflow:scroll;" class="x3Dbox">
                 {% for fieldname, checked in fieldnames %}
                     <input type="checkbox" name="field[]" value="{{ fieldname }}" {% if checked %}checked{% endif %} ck0="{% if checked %}1{% else %}0{% endif %}" onclick="return(ckField());">{{ fieldname }}<br/>
                 {% endfor %}

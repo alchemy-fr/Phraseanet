@@ -53,10 +53,12 @@
                 t = t.replace(/&/g, "&amp;");
                 t = t.replace(/</g, "&lt;");
                 t = t.replace(/>/g, "&gt;");
-                // t = escape(t);
-                w = window.open("about:blank", div+"wSRC", "left=2, top=2, directories=yes, width=1000, height=800, location=yes, menubar=yes, toolbar=yes, help=yes, status=yes, resizable=yes, scrollbars=yes", true);
-                w.document.write("<pre>"+t+"</pre>");
-                w.document.close();
+               // t = escape(t);
+               //  w = window.open("about:blank", div+"wSRC", "left=2, top=2, directories=yes, width=1000, height=800, location=yes, menubar=yes, toolbar=yes, help=yes, status=yes, resizable=yes, scrollbars=yes", true);
+               // w.document.write("<pre>"+t+"</pre>");
+               //w.document.close();
+               // w = loadDataAjax(url, 500 , 340);
+
             }
 
             var o_thbox_bck = null;
@@ -300,6 +302,12 @@
                 </div>
                 <!-- ------------------------- end "new term/synonym" dialog ---------------------- -->
 
+                <!-- ------------------------ the "new term/synonym" dialog ----------------------- -->
+                <div id="NEWSY_DLG_CONFIRM">
+                    <div class="inner"></div>
+                </div>
+                <!-- ------------------------- end "new term/synonym" dialog ---------------------- -->
+
             </div>
 
             <br/>
@@ -314,6 +322,29 @@
         <iframe src="about:blank" name="IFR0"    id="IFR0"    style="visibility:hidden; ; position:absolute; top:0px; left:400px; height:50px; width:50px; overflow:scroll"></iframe>
 
         <script type="text/javascript">
+
+            //Ajax function to get data
+            function loadDataAjax(urls, width, height) {
+                    $("#NEWSY_DLG_CONFIRM").dialog({
+                        title: '{{ 'thesaurus:dialog:: confirm'  | trans }}',
+                        width: width,
+                        height: height,
+                        create:function () {
+                            $(this).closest(".ui-dialog")
+                                .find(".ui-button:first") // the first button
+                                .addClass("close-dialog");
+                        }
+                    });
+                $.ajax({
+                    type: "GET",
+                    url: `${urls}`,
+                    success: function(data){
+                        $("#NEWSY_DLG_CONFIRM .inner").html('');
+                        $("#NEWSY_DLG_CONFIRM .inner").append(data);
+                    }
+                });
+            }
+
 
 
         document.body.oncontextmenu = function(){
@@ -581,7 +612,8 @@
                             url += "&id=" + o.id.substr(4);
                             url += "&typ=CT";
 
-                            w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                           // w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                            w = loadDataAjax(url, 500 , 340);
                             break;
                         case "kcterm_search":
                             $("#SEARCH_DLG").dialog("option", "buttons",
@@ -628,7 +660,8 @@
                             url += "&piv={{ piv }}";
                             url += "&id=" + o.id.substr(4);
                             url += "&typ=CT";
-                            w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                           // w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                            w = loadDataAjax(url, 700 , 340);
                             break;
                             break;
                         }
@@ -690,7 +723,8 @@
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=CT";
 
-                                        w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        //w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        w = loadDataAjax(url, 500 , 340);
                                     }
                                     break;
                                 }
@@ -926,7 +960,6 @@
                     {
                         if(tid=='')
                             tid='T';
-
                         return(reloadbranch(document.getElementById("THB_"+tid), tid, "TH"))
                     }
 
@@ -1009,7 +1042,6 @@
                                                             var lng = zdialog.find("[name=lng]:checked").val();
 
                                                             zdialog.dialog("close");
-
                                                             url  = "newterm.php";
                                                             url += "?bid={{ bid }}";
                                                             url += "&piv={{ piv }}";
@@ -1018,7 +1050,8 @@
                                                             url += "&typ=" + typ;
                                                             url += "&sylng=" + encodeURIComponent(lng);
 
-                                                            w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                                          //  w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                                            w = loadDataAjax(url,490, 290);
                                                         }
                                                     }
                                                 ]
@@ -1074,7 +1107,8 @@
                                         url +=  "?bid={{ bid }}";
                                         url +=  "&piv={{ piv }}";
                                         url += "&tid=" + o.id.substr(4);
-                                        w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                       // w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        w = loadDataAjax(url,700, 400);
                                         break;
                                     case "kterm_properties":
                                         var myObj = { "win":window };
@@ -1084,7 +1118,9 @@
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
 
-                                        w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        //w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                       w = loadDataAjax(url,700, 400);
+
                                         break;
                                     case "kterm_search":
                                         $("#SEARCH_DLG").dialog("option", "buttons",
@@ -1131,7 +1167,8 @@
                                         url += "&piv={{ piv }}";
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
-                                        w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        //w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        w = loadDataAjax(url, 700, 400);
                                         break;
                                     case "kterm_topics":
                                         var myObj = { "win":window };
@@ -1141,7 +1178,8 @@
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
                                         url += "&obr=" + list_opened_branches(o.parentNode);
-                                        w = window.open(url, "EXPORT", "directories=no, height=400, width=550, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        //w = window.open(url, "EXPORT", "directories=no, height=400, width=550, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        w = loadDataAjax(url, 700, 400);
                                         break;
                                     }
                                     break;
@@ -1245,7 +1283,8 @@
                                                 url += "&piv={{ piv }}";
                                                 url += "&id=" + o.id.substr(4);
                                                 url += "&typ=TH";
-                                                w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                //   w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                w = loadDataAjax(url, 500 , 340);
                                             }
                                         }
                                         break;
@@ -1318,7 +1357,8 @@
                                                 url += "&piv={{ piv }}";
                                                 url += "&src=" + eventObj.Src0.id.substr(4);
                                                 url += "&tgt=" + tgt0.id.substr(4);
-                                                w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                //w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                w = loadDataAjax(url, 500 , 340);
                                             }
                                         }
                                         break;
@@ -1372,7 +1412,8 @@
                                                     url += "?piv={{ piv }}";
                                                     url += "&bid={{ bid }}";
                                                     url += "&id=";
-                                                    w = window.open(url, "IMPORT", "directories=no, height=400, width=600, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                   // w = window.open(url, "IMPORT", "directories=no, height=400, width=600, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                    w = loadDataAjax(url, 600 , 400);
                                                     break;
                                                 }
                                                 break;

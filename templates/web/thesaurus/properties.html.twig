@@ -115,13 +115,15 @@
         </div>
     <center>
         <form onsubmit="return(false);">
-            <input style="position:relative; z-index:2" type="button" id="close_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+            <input style="position:relative; z-index:2" type="button" id="close_button" class="close_button" value="{{ 'boutton::fermer' | trans }}" >
         </form>
     </center>
     <script type="text/javascript">
+        $(".close_button").on("click", function(){
+            $('.close-dialog').trigger('click');
+        });
         // gui callback du menu des drapeaux
         var nsy = {{ synonyms | length }};
-
         function cbME_flags(action, cbParm, menuelem_id)
         {
             if(action != "SELECT" || !menuelem_id) {
@@ -148,12 +150,12 @@
                 switch(refresh.item(i).getAttribute("type"))
                 {
                     case "CT":
-                    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
-                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                    reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                    myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                     case "TH":
-                    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
-                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                    reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                    myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                 }
             }
@@ -224,12 +226,12 @@
                             switch(refresh.item(i).getAttribute("type"))
                             {
                                 case "CT":
-                                    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
-                                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                                    reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                    myGUI.select(document.getElementById("THE_{{ id }}"));
                                     break;
                                 case "TH":
-                                    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
-                                    {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                                    reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                    myGUI.select(document.getElementById("THE_{{ id }}"));
                                     break;
                             }
                         }
@@ -368,12 +370,12 @@
                 switch(refresh.item(i).getAttribute("type"))
                 {
                     case "CT":
-                        {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
-                        {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                        myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                     case "TH":
-                        {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
-                        {{ opener }}.myGUI.select({{ opener }}.document.getElementById("THE_{{ id }}"));
+                        reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                        myGUI.select(document.getElementById("THE_{{ id }}"));
                         break;
                 }
             }
