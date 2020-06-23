@@ -12240,9 +12240,9 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Error when saving subtitle</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success">
+      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success" approved="no">
         <source>prod:videoeditor:subtitletab:message:: success</source>
-        <target state="new">prod:videoeditor:subtitletab:message:: success</target>
+        <target state="needs-translation">Success</target>
         <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
