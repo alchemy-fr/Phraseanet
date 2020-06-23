@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class V3MetadatasController extends Controller
+class V3RecordController extends Controller
 {
     use JsonBodyAware;
     use DispatcherAware;
@@ -32,7 +32,7 @@ class V3MetadatasController extends Controller
      *
      * @return Response
      */
-    public function setmetadatasAction(Request $request, $databox_id, $record_id)
+    public function indexAction_patch(Request $request, $databox_id, $record_id)
     {
         $struct = $this->findDataboxById($databox_id)->get_meta_structure();
         $record = $this->findDataboxById($databox_id)->get_record($record_id);
@@ -59,7 +59,10 @@ class V3MetadatasController extends Controller
             }
             // do sb ops
             if (is_array($b->status)) {
-                $debug['sb_ops'] = $this->do_status($struct, $record, $b->status);
+                $debug['sb_ops'] = $this->do_status($record, $b->status);
+            }
+            if(!is_null($b->base_id)) {
+                $debug['coll_ops'] = $this->do_collection($record, $b->base_id);
             }
         }
         catch (Exception $e) {
@@ -77,12 +80,20 @@ class V3MetadatasController extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
+    /**
+     * @param record_adapter $record
+     * @param $base_id
+     */
+    private function do_collection(record_adapter $record, $base_id)
+    {
+        $record->move_to_collection($this->getApplicationBox()->get_collection($base_id));
+    }
+
 
     //////////////////////////////////
     /// TODO : keep multi-values uniques !
     /// it should be done in record_adapter
     //////////////////////////////////
-
 
     /**
      * @param databox_field[] $struct
@@ -94,12 +105,10 @@ class V3MetadatasController extends Controller
     private function do_metadatas($struct, record_adapter $record, $metadatas)
     {
         $structByKey = [];
-        $nameToStrucId = [];
         $allStructFields = [];
         foreach ($struct as $f) {
-            $nameToStrucId[$f->get_name()] = $f->get_id();
             $allStructFields[$f->get_id()] = $f;
-            $structByKey[$f->get_id()]   =  &$allStructFields[$f->get_id()];;
+            $structByKey[$f->get_id()]   =  &$allStructFields[$f->get_id()];
             $structByKey[$f->get_name()] = &$allStructFields[$f->get_id()];
         }
 
@@ -122,6 +131,9 @@ class V3MetadatasController extends Controller
                     if(array_key_exists($k, $structByKey)) {
                         $fields_list[] = $structByKey[$k]->get_name();
                         $struct_fields[$structByKey[$k]->get_id()] = $structByKey[$k];
+                    }
+                    else {
+                        throw new Exception(sprintf("unknown field (%s).", $k));
                     }
                 }
             }
@@ -187,13 +199,12 @@ class V3MetadatasController extends Controller
     }
 
     /**
-     * @param $struct
      * @param $record
      * @param $statuses
      * @return array
      * @throws Exception
      */
-    private function do_status($struct, $record, $statuses)
+    private function do_status(record_adapter $record, $statuses)
     {
         $datas = strrev($record->getStatus());
 
