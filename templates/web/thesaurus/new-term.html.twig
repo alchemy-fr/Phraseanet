@@ -56,7 +56,7 @@
             </form>
         </center>
         {% else %}
-                {% if nb_candidates_bad > 0 %}t
+                {% if nb_candidates_bad > 0 %}
                     {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
                 {% else %}
                     {% set prop_label = 'thesaurus:: n\'est pas present dans les candidats' | trans %}
@@ -112,17 +112,19 @@
                     switch(refresh.item(i).getAttribute("type"))
                     {
                         case "CT":
-    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                            reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                             break;
                         case "TH":
-    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                            reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
                             break;
                         }
                     }
-                    self.close();
+                    $("#NEWSY_DLG_CONFIRM").dialog('close');
+                    $("#NEWSY_DLG_CONFIRM").html('');
                     break;
                 case "cancel":
-                    self.close();
+                    $("#NEWSY_DLG_CONFIRM").dialog('close');
+                    $("#NEWSY_DLG_CONFIRM").html('');
                     break;
                 }
             }
@@ -168,6 +170,8 @@
                             break;
                         case "cancel":
                             $("#NEWSY_DLG_CONFIRM").dialog('close');
+                            $("#NEWSY_DLG_CONFIRM").html('');
+
                             break;
                         }
                     }

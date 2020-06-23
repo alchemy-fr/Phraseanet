@@ -12,10 +12,23 @@
                 switch(button)
                 {
                     case "submit":
-                        document.forms[0].submit();
+                        $('.link-field-2').submit(
+                            $.ajax({
+                                url     : 'linkfield3.php',
+                                type    : 'POST',
+                                data    : $('.link-field-2').serialize(),
+                                success : function( data ) {
+                                    $("#DLG_LINK_FIELD_1").html('');
+                                    $("#DLG_LINK_FIELD_1").append(data);
+                                },
+                                error   : function( xhr, err ) {
+                                    alert('Error');
+                                }
+                            })
+                        );
                         break;
                     case "cancel":
-                        self.close();
+                        $('.close-dialog').trigger('click');
                         break;
                 }
             }
@@ -23,11 +36,14 @@
             {
                 window.name="LINKFIELD";
             }
+            $( document ).ready(function() {
+                loaded();
+            });
         </script>
     </head>
-    <body onload="loaded();" class="dialog">
+    <body class="dialog">
     <center>
-        <form action="linkfield3.php" method="post" target="LINKFIELD">
+        <form  class="link-field-2" action="linkfield3.php" method="post" target="LINKFIELD">
             <input type="hidden" name="piv" value="{{ piv }}">
             <input type="hidden" name="bid" value="{{ bid }}">
             <input type="hidden" name="tid" value="{{ tid }}">

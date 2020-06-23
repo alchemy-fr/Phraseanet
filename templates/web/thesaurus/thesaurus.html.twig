@@ -84,7 +84,12 @@
                 $("#SEARCH_DLG").dialog({
                     modal: true,
                     title: "{{ 'Chercher' | trans }}",
-                    autoOpen:false
+                    autoOpen:false,
+                    open:function () {
+                        $(this).closest(".ui-dialog")
+                            .find(".ui-button:first") // the first button
+                            .addClass("close-dialog").hide();
+                    }
                 });
                 $("#NEWSY_DLG").dialog({
                     modal: true,
@@ -302,11 +307,20 @@
                 </div>
                 <!-- ------------------------- end "new term/synonym" dialog ---------------------- -->
 
-                <!-- ------------------------ the "new term/synonym" dialog ----------------------- -->
                 <div id="NEWSY_DLG_CONFIRM">
-                    <div class="inner"></div>
                 </div>
-                <!-- ------------------------- end "new term/synonym" dialog ---------------------- -->
+                <div id="DLG_EXPORT">
+                </div>
+                <div id="DLG_EXPORT_TOPICS">
+                </div>
+                <div id="DLG_PROPERTIES">
+                </div>
+                <div id="DLG_LINK_FIELD_1">
+                </div>
+                <div id="DLG_LINK_FIELD_2">
+                </div>
+                <div id="DLG_LINK_FIELD_3">
+                </div>
 
             </div>
 
@@ -324,23 +338,25 @@
         <script type="text/javascript">
 
             //Ajax function to get data
-            function loadDataAjax(urls, width, height) {
-                    $("#NEWSY_DLG_CONFIRM").dialog({
-                        title: '{{ 'thesaurus:dialog:: confirm'  | trans }}',
+            var title = '';
+            function loadDataAjax(urls, width, height, bloc, title) {
+                    $(bloc).dialog({
+                        title: title,
                         width: width,
                         height: height,
+                        modal: true,
                         create:function () {
                             $(this).closest(".ui-dialog")
                                 .find(".ui-button:first") // the first button
-                                .addClass("close-dialog");
+                                .addClass("close-dialog").hide();
                         }
                     });
                 $.ajax({
                     type: "GET",
                     url: `${urls}`,
                     success: function(data){
-                        $("#NEWSY_DLG_CONFIRM .inner").html('');
-                        $("#NEWSY_DLG_CONFIRM .inner").append(data);
+                        $(bloc).html('');
+                        $(bloc).append(data);
                     }
                 });
             }
@@ -613,7 +629,7 @@
                             url += "&typ=CT";
 
                            // w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                            w = loadDataAjax(url, 500 , 340);
+                            w = loadDataAjax(url, 500 , 340, '#DLG_PROPERTIES','{{ 'thesaurus:dialog:: properties'  | trans }}');
                             break;
                         case "kcterm_search":
                             $("#SEARCH_DLG").dialog("option", "buttons",
@@ -661,7 +677,7 @@
                             url += "&id=" + o.id.substr(4);
                             url += "&typ=CT";
                            // w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                            w = loadDataAjax(url, 700 , 340);
+                            w = loadDataAjax(url, 700 , 340,'#DLG_EXPORT', '{{ 'thesaurus:dialog:: export'  | trans }}');
                             break;
                             break;
                         }
@@ -724,7 +740,7 @@
                                         url += "&typ=CT";
 
                                         //w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                        w = loadDataAjax(url, 500 , 340);
+                                        w = loadDataAjax(url, 500 , 340,'#DLG_PROPERTIES', '{{ 'thesaurus:dialog:: properties'  | trans }}');
                                     }
                                     break;
                                 }
@@ -1051,11 +1067,20 @@
                                                             url += "&sylng=" + encodeURIComponent(lng);
 
                                                           //  w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                                            w = loadDataAjax(url,490, 290);
+                                                            w = loadDataAjax(url,490, 290,"#NEWSY_DLG_CONFIRM",'{{ 'thesaurus:dialog:: new term / synonym'  | trans }}');
                                                         }
                                                     }
-                                                ]
+                                                ],
+
                                         );
+
+                                        $("#NEWSY_DLG").dialog({
+                                            open:function () {
+                                                $(this).closest(".ui-dialog")
+                                                    .find(".ui-button:first") // the first button
+                                                    .addClass("close-dialog").hide();
+                                            }
+                                        });
                                         $("#NEWSY_DLG").dialog("open");
                                         break;
 
@@ -1108,7 +1133,7 @@
                                         url +=  "&piv={{ piv }}";
                                         url += "&tid=" + o.id.substr(4);
                                        // w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                        w = loadDataAjax(url,700, 400);
+                                        w = loadDataAjax(url,700, 400, "#DLG_LINK_FIELD_1", '{{ 'thesaurus:dialog:: linkfields'  | trans }}');
                                         break;
                                     case "kterm_properties":
                                         var myObj = { "win":window };
@@ -1118,8 +1143,8 @@
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
 
-                                        //w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                       w = loadDataAjax(url,700, 400);
+                                      //  w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                       w = loadDataAjax(url,700, 400, "#DLG_PROPERTIES", '{{ 'thesaurus:dialog:: properties'  | trans }}');
 
                                         break;
                                     case "kterm_search":
@@ -1158,6 +1183,13 @@
                                                 }
                                             ]
                                         );
+                                        $("#SEARCH_DLG").dialog({
+                                            open:function () {
+                                                $(this).closest(".ui-dialog")
+                                                    .find(".ui-button:first") // the first button
+                                                    .addClass("close-dialog").hide();
+                                            }
+                                        });
                                         $("#SEARCH_DLG").dialog("open");
                                         break;
                                     case "kterm_export":
@@ -1168,7 +1200,7 @@
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
                                         //w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                        w = loadDataAjax(url, 700, 400);
+                                        w = loadDataAjax(url, 700, 400, "#DLG_EXPORT", '{{ 'thesaurus:dialog:: export'  | trans }}');
                                         break;
                                     case "kterm_topics":
                                         var myObj = { "win":window };
@@ -1179,7 +1211,7 @@
                                         url += "&typ=TH";
                                         url += "&obr=" + list_opened_branches(o.parentNode);
                                         //w = window.open(url, "EXPORT", "directories=no, height=400, width=550, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                        w = loadDataAjax(url, 700, 400);
+                                        w = loadDataAjax(url, 700, 400, "#DLG_EXPORT_TOPICS", '{{ 'thesaurus:dialog:: export topics'  | trans }}');
                                         break;
                                     }
                                     break;
@@ -1284,7 +1316,7 @@
                                                 url += "&id=" + o.id.substr(4);
                                                 url += "&typ=TH";
                                                 //   w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                                w = loadDataAjax(url, 500 , 340);
+                                                w = loadDataAjax(url, 500 , 340, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:dialog:: confirm'  | trans }}');
                                             }
                                         }
                                         break;
@@ -1358,7 +1390,7 @@
                                                 url += "&src=" + eventObj.Src0.id.substr(4);
                                                 url += "&tgt=" + tgt0.id.substr(4);
                                                 //w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                                w = loadDataAjax(url, 500 , 340);
+                                                w = loadDataAjax(url, 500 , 340, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:dialog:: confirm'  | trans }}');
                                             }
                                         }
                                         break;
@@ -1413,7 +1445,7 @@
                                                     url += "&bid={{ bid }}";
                                                     url += "&id=";
                                                    // w = window.open(url, "IMPORT", "directories=no, height=400, width=600, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                                    w = loadDataAjax(url, 600 , 400);
+                                                    w = loadDataAjax(url, 600 , 400, "#NEWSY_DLG_CONFIRM", confirm);
                                                     break;
                                                 }
                                                 break;

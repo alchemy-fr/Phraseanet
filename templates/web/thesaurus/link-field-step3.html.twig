@@ -42,7 +42,7 @@
                 {% endif %}
             </div>
             <br/>
-            <input type="button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+            <input type="button" value="{{ 'boutton::fermer' | trans }}" onclick="$('.close-dialog').trigger('click');">
         </form>
     </center>
 </body>
