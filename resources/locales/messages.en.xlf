@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-22T10:48:37Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -9182,29 +9182,29 @@
         <target state="translated">Uploader</target>
         <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count">
+      <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Consumer count</source>
-        <target state="needs-translation">Number of worker(s)</target>
+        <target state="translated">Number of worker(s)</target>
         <jms:reference-file line="13">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count">
+      <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Message count</source>
-        <target state="needs-translation">Message count</target>
+        <target state="translated">Message count</target>
         <jms:reference-file line="12">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list">
+      <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Refresh list</source>
-        <target state="needs-translation">Refresh</target>
+        <target state="translated">Refresh</target>
         <jms:reference-file line="5">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description">
+      <trans-unit id="bc6fc4d9beb7d708cd9f1d4b078b64e8e2bf8d32" resname="admin::workermanager:tab:queueMonitor: description" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: description</source>
-        <target state="needs-translation">Message queues status</target>
+        <target state="translated">Message queues status</target>
         <jms:reference-file line="2">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title">
+      <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: title</source>
-        <target state="needs-translation">Queues</target>
+        <target state="translated">Queues</target>
         <jms:reference-file line="40">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="yes">
@@ -9372,9 +9372,9 @@
         <target state="translated">Started</target>
         <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name">
+      <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name" approved="yes">
         <source>admin::workermanager:tab:workerinfo: databox_name</source>
-        <target state="needs-translation">Databox</target>
+        <target state="translated">Databox</target>
         <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description" approved="yes">
@@ -11808,9 +11808,11 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Valid changes or Cancel</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="no">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="needs-translation">Cancelling editing will lose all edits. - Cancel : to go back to editing - OK : to close and lose edits</target>
+        <target state="needs-translation">Cancelling editing will lose all edits. 
+- Cancel : to go back to editing 
+- OK : to close and lose edits</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9999b27bac2f63123760f54d7312b7b7133930fc" resname="prod::editing::fields: status" approved="yes">
@@ -12153,9 +12155,9 @@ It is possible to place several search areas</target>
         <target state="translated">Delete Selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit">
+      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:: submit</source>
-        <target state="needs-translation">Submit</target>
+        <target state="needs-translation">Submit Subtitling Request</target>
         <jms:reference-file line="259">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title">
@@ -12168,29 +12170,29 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Kind</target>
         <jms:reference-file line="235">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination">
+      <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:label:: Language destination</source>
-        <target state="needs-translation">Destination Language</target>
+        <target state="needs-translation">Subtitles language destination</target>
         <jms:reference-file line="251">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f9d2cafba3e0955e48f598fac8a8b257b624977d" resname="prod:videoeditor:subtitleRequestTab:label:: Provider">
+      <trans-unit id="f9d2cafba3e0955e48f598fac8a8b257b624977d" resname="prod:videoeditor:subtitleRequestTab:label:: Provider" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Provider</source>
-        <target state="needs-translation">Provider</target>
+        <target state="translated">Provider</target>
         <jms:reference-file line="229">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="92cdd8501cb193bf13ea2f4f58e331668fdc7cfe" resname="prod:videoeditor:subtitleRequestTab:label:: Source Audio language">
+      <trans-unit id="92cdd8501cb193bf13ea2f4f58e331668fdc7cfe" resname="prod:videoeditor:subtitleRequestTab:label:: Source Audio language" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Source Audio language</source>
-        <target state="needs-translation">Audio language Source</target>
+        <target state="translated">Audio language Source</target>
         <jms:reference-file line="243">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title">
+      <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title" approved="no">
         <source>prod:videoeditor:subtitleTab:: title</source>
-        <target state="needs-translation">Auto Subtitling request</target>
+        <target state="needs-translation">Subtitle editing</target>
         <jms:reference-file line="34">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder">
+      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder" approved="no">
         <source>prod:videoeditor:subtitletab:: Caption placeholder</source>
-        <target state="needs-translation">Caption placeholder</target>
+        <target state="needs-translation">Type a subtitle</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time">
@@ -12213,9 +12215,9 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Start</target>
         <jms:reference-file line="176">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption">
+      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption" approved="no">
         <source>prod:videoeditor:subtitletab:: add caption</source>
-        <target state="needs-translation">Subtitle</target>
+        <target state="needs-translation">Add a Subtitle</target>
         <jms:reference-file line="211">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5a9ed94e747e90542d014b7486ab3ea865c2861d" resname="prod:videoeditor:subtitletab:: copy to clipboard">
@@ -12233,9 +12235,9 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Select subtitling language</target>
         <jms:reference-file line="185">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error">
+      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="no">
         <source>prod:videoeditor:subtitletab:message:: error</source>
-        <target state="new">prod:videoeditor:subtitletab:message:: error</target>
+        <target state="needs-translation">Error when saving subtitle</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success">
