@@ -13,6 +13,9 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\Thesaurus as ThesaurusEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\DBAL\Driver\Connection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -1220,6 +1223,26 @@ class ThesaurusController extends Controller
             'flags'   => $flags,
             'jsFlags' => $jsFlags,
         ]);
+    }
+
+    /**
+     * Order to populate databox
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function populate(Request $request)
+    {
+        $options = $this->getElasticsearchOptions();
+
+        $data['host'] = $options->getHost();
+        $data['port'] = $options->getPort();
+        $data['indexName'] = $options->getIndexName();
+        $data['databoxIds'] = [$request->get('databox_id')];
+
+        $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($data));
+
+        return $this->app->json($data);
     }
 
     /**
@@ -3030,5 +3053,13 @@ class ThesaurusController extends Controller
     private function getAvailableLocales()
     {
         return $this->app['locales.available'];
+    }
+
+    /**
+     * @return ElasticsearchOptions
+     */
+    private function getElasticsearchOptions()
+    {
+        return $this->app['elasticsearch.options'];
     }
 }
