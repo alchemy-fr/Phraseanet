@@ -218,6 +218,17 @@
             <br/>
             <br/>
             <div id="id_thbox_bck" class="thbox" style="position:absolute; top:28px; left:8px; right:8px; bottom:8px; background-color:#f4f4f4; xoverflow:hidden">
+                <div class="populate_btn_wrapper">
+                    <a class="populate_btn btn btn-primary" id="populate_btn">Populate</a>
+                </div>
+                <div style="display: none">
+                    <div id="confirm_populate">
+                        <p><span class="alert alert-message"> {{ 'thesaurus:: confirm populate' | trans }}</span></p>
+                        <p>  <input type="button" class="cancel_button" value="{{ 'boutton::annuler' | trans }}" >
+                            &nbsp;&nbsp;&nbsp;
+                            <input type="button" id="confirm_populate_button" value="{{ 'boutton::valider' | trans }}" ></p>
+                    </div>
+                </div>
 
                 <div class="onglet" style="background-color:#f0f0f0; border-bottom:1px solid #f4f4f4">
                     <span id="baseName">{{ 'phraseanet:: thesaurus' | trans }}</span>
@@ -1503,8 +1514,70 @@
                                         /*
                                          */
 
-        </script>
 
+                                        /**Populate btn action**/
+                                        $('#populate_btn').click(function (e) {
+                                            e.preventDefault();
+                                            $("#confirm_populate").dialog({
+                                                modal: true,
+                                                title: "{{ 'thesaurus: Populate title' | trans }}",
+                                                autoOpen:false,
+                                                open:function () {
+                                                    $(this).closest(".ui-dialog")
+                                                        .find(".ui-button:first") // the first button
+                                                        .addClass("close-dialog").hide();
+                                                    $('.cancel_button').click(function () {
+                                                        $('.close-dialog').trigger('click');
+                                                    });
+
+
+                                                }
+                                            });
+                                            $("#confirm_populate").dialog('open');
+                                            $('#confirm_populate_button').click(function () {
+                                                $.ajax({
+                                                    type: 'GET',
+                                                    url: '/admin/worker-manager/populate-status',
+                                                    data: {
+                                                        sbasIds: [{{ bid }}]
+                                                    },
+                                                    success: function (data) {
+                                                        if (data == 0) {
+                                                            $.ajax({
+                                                                url: '/thesaurus/populate',
+                                                                type: 'POST',
+                                                                data: {
+                                                                    databox_id: {{ bid }}
+                                                                },
+                                                                success: function (data) {
+                                                                    //humane.info('{{ "thesaurus::populate: success message" |trans }}');
+                                                                    $('.close-dialog').trigger('click');
+                                                                }
+                                                            });
+                                                        } else {
+                                                            alert('{{ "thesaurus::populate: Warning populate is in process to indexing databox" |trans }}');
+                                                        }
+                                                    }
+                                                });
+                                            })
+                                        });
+
+        </script>
+        <style>
+            .populate_btn {
+                position: absolute;
+                background: #2196f3;
+                z-index: 2;
+                right: 50px;
+                top: 50px;
+                font-size: 14px;
+                color: #fff;
+                padding: 7px;
+                font-weight: bold;
+                border: 1px solid  #d0d0d0;
+                cursor: pointer;
+            }
+        </style>
     </body>
 
 </html>
