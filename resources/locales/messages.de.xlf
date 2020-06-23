@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-22T10:48:13Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -12147,9 +12147,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Auswahl entfernen</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit">
+      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit" approved="no">
         <source>prod:videoeditor:subtitleRequestTab:: submit</source>
-        <target state="needs-translation">Einreichen</target>
+        <target state="needs-translation">Anfrage einreichen</target>
         <jms:reference-file line="259">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title">
@@ -12182,9 +12182,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="needs-translation">Automatische Untertitelung Anfrage</target>
         <jms:reference-file line="34">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder">
+      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder" approved="no">
         <source>prod:videoeditor:subtitletab:: Caption placeholder</source>
-        <target state="needs-translation">Beschriftung Platzhalter</target>
+        <target state="needs-translation">Geben Sie einen Untertitel ein</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time">
@@ -12207,9 +12207,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="needs-translation">Start</target>
         <jms:reference-file line="176">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption">
+      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption" approved="no">
         <source>prod:videoeditor:subtitletab:: add caption</source>
-        <target state="needs-translation">Untertitel</target>
+        <target state="needs-translation">Untertitel hinzufügen</target>
         <jms:reference-file line="211">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5a9ed94e747e90542d014b7486ab3ea865c2861d" resname="prod:videoeditor:subtitletab:: copy to clipboard">
@@ -12227,14 +12227,14 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="needs-translation">Untertitel Sprache auswählen</target>
         <jms:reference-file line="185">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error">
+      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="no">
         <source>prod:videoeditor:subtitletab:message:: error</source>
-        <target state="new">prod:videoeditor:subtitletab:message:: error</target>
+        <target state="needs-translation">Fehler beim speichern des Untertitels</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success">
+      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success" approved="no">
         <source>prod:videoeditor:subtitletab:message:: success</source>
-        <target state="new">prod:videoeditor:subtitletab:message:: success</target>
+        <target state="needs-translation">Erfolg</target>
         <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
