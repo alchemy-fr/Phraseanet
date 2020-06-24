@@ -252,11 +252,13 @@ DIV.menu {
 }
 
 DIV.menu IMG {
-  padding: 0px;
-  margin: 0px;
+  padding-right: 2px;
+  margin: 0;
   position: relative;
-  left: -10px;
-  top: 2px;
+}
+DIV.menu p {
+  padding: 2px;
+  position: relative;
 }
 
 DIV.menu A {
@@ -315,4 +317,18 @@ DIV.menu .line {
   padding: 0px;
   border-top: 1px solid #555555;
   border-bottom: 1px solid #ffffff;
+}
+
+#delete_sy {
+  background: #2196f3;
+  color: #fff;
+  font-weight: bold;
+  padding: 1px 10px;
+  margin-left: 12px;
+  &.disabled {
+    background: grey;
+  }
+}
+#DLG_PROPERTIES > #syMenu {
+  display: none;
 }
