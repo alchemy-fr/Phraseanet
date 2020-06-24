@@ -139,6 +139,7 @@
             parms += "&newlng=" + encodeURIComponent(lng);
 
             ret = loadXMLDoc(url, parms, true);
+            alert(ret);
             sy_list = ret.getElementsByTagName("sy_list").item(0);
 
             refresh_sy(sy_list);

@@ -15,13 +15,12 @@
             {
                 switch(button)
                 {
-                    case "submit":
-                        document.forms[0].target='IFRIM';
-                        document.forms[0].submit();
+                    case "submit":=
+                        $('.import-form').submit();
                         break;
                     case "cancel":
                             self.returnValue = null;
-                        self.close();
+                        $('.close-dialog').trigger('click');
                         break;
                 }
             }
@@ -32,8 +31,8 @@
             {
                 if(!err)
                 {
-                    {{ opener }}.reload();
-                    self.close();
+                    reload();
+                    $('.close-dialog').trigger('click');
                 }
                 else
                 {
@@ -44,7 +43,7 @@
     </head>
     <body onload="loaded();" class="dialog">
         <br/>
-        <form onsubmit="clkBut('submit');return(false);" action="import.php" enctype="multipart/form-data" method="post">
+        <form onsubmit="clkBut('submit');return(false);" action="import.php" enctype="multipart/form-data" method="post" class="import-form" target="IFRIM">
             <input type="hidden" name="bid" value="{{ bid }}" >
             <input type="hidden" name="piv" value="{{ piv }}" >
             <input type="hidden" name="id" value="{{ id }}" >
