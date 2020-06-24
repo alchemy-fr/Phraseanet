@@ -242,9 +242,9 @@
                                         <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Source Audio language" | trans }}</label>
                                             <select name="subtitle_language_source" id="subtitle_language_source">
-                                                <option value="fr">Fr</option>
-                                                <option value="en">En</option>
-                                                <option value="de">De</option>
+                                                {% for videoTextTrackField in videoTextTrackFields %}
+                                                    <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
+                                                {% endfor %}
                                             </select>
                                         </p>
                                         <p class="item">
@@ -352,4 +352,24 @@
             overlapChapters: {% if overlapChapters != NULL %}{{ overlapChapters }}{% else %}1{% endif %},
         }
     };
+
+    $('#submit-subtitle-request').on('click', function (e) {
+        e.preventDefault();
+        console.log("auto-subtitle process");
+        $.ajax({
+            type: 'POST',
+            url: '/prod/tools/auto-subtitle/',
+            dataType: 'json',
+            data: {
+                databox_id: {{ record.get_base_id }},
+                record_id: {{ record.get_record_id }},
+                meta_struct_id: $('#subtitle_language_source').val(),
+                subtitle_language_source: $('#subtitle_language_source option:selected').text()
+            },
+            success: function success(data) {
+                console.log(data);
+            }
+        });
+    });
+
 </script>

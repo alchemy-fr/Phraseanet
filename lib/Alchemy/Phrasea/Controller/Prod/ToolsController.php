@@ -22,13 +22,17 @@ use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
 use Alchemy\Phrasea\Record\RecordWasRotated;
 use DataURI\Parser;
+use GuzzleHttp\Client;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
-use PHPExiftool\Reader;
 use Symfony\Component\HttpFoundation\Request;
 
 class ToolsController extends Controller
 {
+    const GINGER_BASE_URL = "https://test.api.ginger.studio/recognition/speech";
+    const GINGER_TOKEN    = "39c6011d-3bbe-4f39-95d0-a327d320ded4";
+    const GINGER_TRANSCRIPT_FORMAT = "text/vtt";
+
     use DataboxLoggerAware;
     use DispatcherAware;
     use FilesystemAware;
@@ -45,7 +49,6 @@ class ToolsController extends Controller
         if (count($records) == 1) {
             /** @var \record_adapter $record */
             $record = $records->first();
-            $databox = $record->getDatabox();
 
             /**Array list of subdefs**/
             $listsubdef = array_keys($record-> get_subdefs());
@@ -88,14 +91,13 @@ class ToolsController extends Controller
                 $metadatas = true;
             }
         }
-        $conf = $this->getConf();
 
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'           => $records,
             'record'            => $record,
             'recordSubdefs'     => $recordAccessibleSubdefs,
             'metadatas'         => $metadatas,
-            'listsubdef'              => $listsubdef
+            'listsubdef'        => $listsubdef
         ]);
     }
 
@@ -118,6 +120,7 @@ class ToolsController extends Controller
         }
 
         foreach ($records as $record) {
+            /** @var  \media_subdef $subdef */
             foreach ($record->get_subdefs() as $subdef) {
                 if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
                     continue;
@@ -146,6 +149,7 @@ class ToolsController extends Controller
 
         foreach ($selection as $record) {
             $substituted = false;
+            /** @var  \media_subdef $subdef */
             foreach ($record->get_subdefs() as $subdef) {
                 if ($subdef->is_substituted()) {
                     $substituted = true;
@@ -363,14 +367,6 @@ class ToolsController extends Controller
     }
 
     /**
-     * @return Reader
-     */
-    private function getExifToolReader()
-    {
-        return $this->app['exiftool.reader'];
-    }
-
-    /**
      * @return Alchemyst
      */
     private function getMediaAlchemyst()
@@ -449,11 +445,128 @@ class ToolsController extends Controller
         try {
             $record->set_metadatas($metadatas);
         }
-        catch (Exception $e) {
+        catch (\Exception $e) {
             return $this->app->json(['success' => false, 'errorMessage' => $e->getMessage()]);
         }
 
         return $this->app->json(['success' => true, 'errorMessage' => '']);
+    }
+
+    public function autoSubtitleAction(Request $request)
+    {
+        $return = ['success' => false,  'errorMessage' => ''];
+        $record = new \record_adapter($this->app,
+            (int)$request->request->get("databox_id"),
+            (int)$request->request->get("record_id")
+        );
+
+        if ($record->has_preview() && ($previewLink = $record->get_preview()->get_permalink()) !== null && $request->request->get("meta_struct_id")) {
+            switch ($request->request->get("subtitle_language_source")) {
+                case 'En':
+                    $language = 'en-GB';
+                    break;
+                case 'De':
+                    $language = 'de-DE';
+                    break;
+                case 'Fr':
+                default:
+                    $language = 'fr-FR';
+                    break;
+            }
+
+            $permalinkUrl = $previewLink->get_url()->__toString();
+
+            $gingerClient = new Client();
+
+            try {
+                $response = $gingerClient->post(self::GINGER_BASE_URL.'/media/', [
+                    'headers' => [
+                        'Authorization' => 'token '.self::GINGER_TOKEN
+                    ],
+                    'json' => [
+                        'url'       => $permalinkUrl,
+                        'language'  => $language
+                    ]
+                ]);
+            } catch(\Exception $e) {
+                $return['errorMessage'] = $e->getMessage();
+
+                return $this->app->json($return);
+            }
+
+            if ($response->getStatusCode() !== 201) {
+                return $this->app->json($return);
+            }
+
+            $responseMediaBody = $response->getBody()->getContents();
+            $responseMediaBody = json_decode($responseMediaBody,true);
+
+            $checkStatus = null;
+            do {
+                // first wait 5 second before check subtitling status
+                sleep(5);
+
+                try {
+                    $response = $gingerClient->get(self::GINGER_BASE_URL.'/task/'.$responseMediaBody['task_id'].'/', [
+                        'headers' => [
+                            'Authorization' => 'token '.self::GINGER_TOKEN
+                        ]
+                    ]);
+                } catch (\Exception $e) {
+                    $checkStatus = false;
+                }
+
+                if ($response->getStatusCode() !== 200) {
+                    $checkStatus = false;
+                    break;
+                }
+
+                $responseTaskBody = $response->getBody()->getContents();
+                $responseTaskBody = json_decode($responseTaskBody,true);
+
+            } while($responseTaskBody['status'] != 'SUCCESS');
+
+            if (!$checkStatus) {
+                return $this->app->json($return);
+            }
+
+            try {
+                $response = $gingerClient->get(self::GINGER_BASE_URL.'/media/'.$responseMediaBody['media']['uuid'].'/', [
+                    'headers' => [
+                        'Authorization' => 'token '.self::GINGER_TOKEN,
+                        'ACCEPT'        => self::GINGER_TRANSCRIPT_FORMAT
+                    ],
+                    'query' => [
+                        'language'  => $language
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                return $this->app->json($return);
+            }
+            if ($response->getStatusCode() !== 201) {
+                return $this->app->json($return);
+            }
+
+            $transcriptContent = $response->getBody()->getContents();
+
+            $metadatas[0] = [
+                'meta_struct_id' => (int)$request->request->get("meta_struct_id"),
+                'meta_id'        => '',
+                'value'          => $transcriptContent
+            ];
+
+            try {
+                $record->set_metadatas($metadatas);
+            } catch (\Exception $e) {
+                $return['errorMessage'] = $e->getMessage();
+
+                return $this->app->json($return);
+            }
+
+            $return['success'] = true;
+        }
+
+        return $this->app->json($return);
     }
 
     public function videoEditorAction(Request $request)
@@ -491,7 +604,7 @@ class ToolsController extends Controller
                         $fieldValue = array_pop($fieldValues);
                         $field['value'] = $fieldValue->getValue();
                     }
-                    $videoTextTrackFields[] = $field;
+                    $videoTextTrackFields[$meta->get_id()] = $field;
                     unset($field);
                 }
             }
