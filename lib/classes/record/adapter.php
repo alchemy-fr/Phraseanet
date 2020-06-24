@@ -522,10 +522,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      *
      * @param  collection     $collection
-     * @param  appbox         $appbox
+     * @param  appbox         $appbox       WTF this parm is useless
      * @return record_adapter
+     *
      */
-    public function move_to_collection(collection $collection, appbox $appbox)
+    public function move_to_collection(collection $collection, appbox $appbox = null)
     {
         if ($this->getCollection()->get_base_id() === $collection->get_base_id()) {
             return $this;

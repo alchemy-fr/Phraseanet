@@ -115,13 +115,13 @@ class MoveCollectionController extends Controller
 
             foreach ($records as $record) {
                 $oldCollectionId = $record->getCollection()->get_coll_id();
-                $record->move_to_collection($collection, $this->getApplicationBox());
+                $record->move_to_collection($collection);
 
                 if ($request->request->get("chg_coll_son") == "1") {
                     /** @var \record_adapter $child */
                     foreach ($record->getChildren() as $child) {
                         if ($this->getAclForUser()->has_right_on_base($child->getBaseId(), \ACL::CANDELETERECORD)) {
-                            $child->move_to_collection($collection, $this->getApplicationBox());
+                            $child->move_to_collection($collection);
                         }
                     }
                 }
