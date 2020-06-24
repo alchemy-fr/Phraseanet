@@ -193,17 +193,20 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 Plugins can be installed during build if you set the `PHRASEANET_PLUGINS` env var as follows:
 
 ```bash
-PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git"
+PHRASEANET_PLUGINS="https://github.com/alchemy-fr/Phraseanet-plugin-expose.git"
 
 # You can optionally precise the branch to install
 # If not precised, the main branch will be pulled
 PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git(custom-branch)"
 
-# Plugins are separated by spaces
-PHRASEANET_PLUGINS="git@github.com:foo/bar.git(branch-1) git@github.com:baz/42.git"
+# Plugins are separated by semicolons
+PHRASEANET_PLUGINS="git@github.com:foo/bar.git(branch-1);git@github.com:baz/42.git"
 ```
 
+> Prefer the HTTPS URL for public repositories, you will not be required to provide your SSH key.
+
 If you install private plugins, make sure you export your SSH private key content in order to allow docker build to access the GIT repository:
+Also ensure you're using the SSH URL form (i.e: `git@github.com:alchemy-fr/repo.git`).
 ```bash
 export PHRASEANET_SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
 # or if your private key is protected by a passphrase:
