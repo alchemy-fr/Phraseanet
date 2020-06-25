@@ -22,11 +22,6 @@
         <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
         <script type="text/javascript">
-            function loaded()
-            {
-                window.name="ACCEPT";
-                self.focus();
-            }
             function ok()
             {
                 as = "";
@@ -96,9 +91,13 @@
                     $('.close-dialog').trigger('click');
                     }
                 }
+
+                function closeModal() {
+                    $('.close-dialog').trigger('click');
+                }
         </script>
     </head>
-    <body id="desktop" onload="loaded();" class="dialog">
+    <body id="desktop" class="dialog">
 
         {% if not cterm_found %}
             <center>
@@ -110,11 +109,9 @@
                 <br/>
                 {{ 'thesaurus:: refresh' | trans }}
                 <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+                <div class="thesaurus_confirm_bottom_block">
+                    <input  type="button" class="cancel_btn" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="closeModal();">
+                </div>
         {% else %}
             {% if not term_found %}
                 <center>
@@ -126,11 +123,9 @@
                     <br/>
                     {{ 'thesaurus:: refresh' | trans }}
                     <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+                    <div class="thesaurus_confirm_bottom_block">
+                        <input type="button" class="cancel_btn" id="cancel_button" value="{{ 'boutton::fermer' | trans }}" onclick="closeModal();">
+                    </div>
             {% else %}
                 {% if acceptable %}
                     <center>
@@ -158,11 +153,10 @@
                         <br/><br/><h4>{{ fullpath_tgt | raw }}</h4><br/><br/>
                         <input type='hidden' name='as' class="as_1" value='TS'>
                     {% endif %}
-                            <br/>
-                            <br/>
-                            <input style="position:relative; z-index:2; width:100px" type="button" id="ok_button" value="{{ 'boutton::valider' | trans }}" onclick="ok();">
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="self.close();">
+                           <div class="thesaurus_confirm_bottom_block">
+                              <input class="cancel_btn"  type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="closeModal();">
+                              <input class="validate_btn" type="button" id="ok_button" value="{{ 'boutton::valider' | trans }}" onclick="ok();">
+                           </div>
                         </form>
                     </center>
                 {% else %}
@@ -172,13 +166,9 @@
                         <br/>
                         {% trans with {'%cfield%' : cfield} %}thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte{% endtrans %}
                         <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <input style="position:relative; z-index:2; width:100px" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="self.close();">
+                        <div class="thesaurus_confirm_bottom_block">
+                            <input class="validate_btn" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="closeModal();">
+                        </div>
                 {% endif %}
             {% endif %}
         {% endif %}

@@ -93,9 +93,9 @@
                                 {% endif %}
                                 </td>
                                 {% if data['lng'] %}
-                                    <td id='FLG_{{ data['id'] }}'><img src='/assets/common/images/lng/{{ data['lng'] }}_flag_18.gif' /></td>
+                                    <td id='FLG_{{ data['id'] }}'>{{ data['lng'] }}</td>
                                 {% else %}
-                                    <td id='FLG_{{ data['id'] }}'><img src='/assets/thesaurus/images/noflag.gif' /></td>
+                                    <td id='FLG_{{ data['id'] }}'></td>
                                 {% endif %}
                                 <td>{{ data['t'] }}</td>
                                 <td>{{ data['hits'] }}</td>
@@ -110,7 +110,9 @@
         </div>
     <center>
         <form onsubmit="return(false);">
-            <input style="position:relative; z-index:2" type="button" id="close_button" class="close_button" value="{{ 'boutton::fermer' | trans }}" >
+            <div class="thesaurus_confirm_bottom_block">
+                <input type="button" id="close_button" class="close_button cancel_btn" value="{{ 'boutton::fermer' | trans }}" >
+            </div>
         </form>
     </center>
     <script type="text/javascript">
@@ -279,8 +281,8 @@
                 td = tr.appendChild(document.createElement("td"));
                 td.id = "FLG_"+(nsy+1);
                 // td.innerText = n.getAttribute("lng");
-                img = td.appendChild(document.createElement("img"));
-                img.setAttribute("src", "/assets/common/images/lng/"+n.getAttribute("lng")+"_flag_18.gif");
+                span = td.appendChild(document.createElement("span"));
+                span.innerHTML = n.getAttribute("lng");
 
                 td = tr.appendChild(document.createElement("td"));
                 // td.colSpan = "2";

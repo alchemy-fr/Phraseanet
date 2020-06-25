@@ -54,10 +54,9 @@
                 t = t.replace(/</g, "&lt;");
                 t = t.replace(/>/g, "&gt;");
                // t = escape(t);
-               //  w = window.open("about:blank", div+"wSRC", "left=2, top=2, directories=yes, width=1000, height=800, location=yes, menubar=yes, toolbar=yes, help=yes, status=yes, resizable=yes, scrollbars=yes", true);
-               // w.document.write("<pre>"+t+"</pre>");
-               //w.document.close();
-               // w = loadDataAjax(url, 500 , 340);
+                w = window.open("about:blank", div+"wSRC", "left=2, top=2, directories=yes, width=1000, height=800, location=yes, menubar=yes, toolbar=yes, help=yes, status=yes, resizable=yes, scrollbars=yes", true);
+                w.document.write("<pre>"+t+"</pre>");
+                w.document.close();
 
             }
 
@@ -163,13 +162,17 @@
 
     </head>
 
-    <body id="desktop" style="background-color:#808080; overflow:hidden" onload="loaded();" onscroll="evtScrollBody();" >
+    <body id="desktop" class="thesaurus-page" style="background-color:#808080; overflow:hidden" onload="loaded();" onscroll="evtScrollBody();" >
 
         <div class="menu" id="flagsMenu" style="z-index:999">
             {% for code, language in flags %}
                 <p><img id='flagMenu_{{ code }}' src='/assets/common/images/lng/{{ code }}_flag_18.gif' /> {{ language }}</p>
-            {% endfor %}
 
+            {% endfor %}
+   {#         {% for code, language in flags %}
+                <a id='flagMenu_{{ code }}' href='javascript:void(0)' class=''>
+                    <img src='/assets/common/images/lng/{{ code }}_flag_18.gif' />{{ language }}</a>
+            {% endfor %}#}
         </div>
         <div class="menu" id="kctermMenu" style="z-index:999; width:240px;">
             <a href="javascript:void(0)" class=""         id="kcterm_properties" style="font-weight:700">{{ 'thesaurus::menu: proprietes' | trans }}</a>
@@ -190,7 +193,7 @@
             <a href="javascript:void(0)" class="" id="kterm_properties" style="font-weight:700">{{ 'thesaurus::menu: proprietes' | trans }}</a>
             <a href="javascript:void(0)" class="" id="kterm_newts">{{ 'thesaurus::menu: Nouveau terme' | trans }}</a>
             <a href="javascript:void(0)" class="" id="kterm_newsy">{{ 'thesaurus::menu: Nouveau synonyme' | trans }}</a>
-            <a href="javascript:void(0)" class="" id="kterm_delete">{{ 'thesaurus::menu: supprimer' | trans }}</a>
+            <a href="javascript:void(0)" class="" id="kterm_delete">{{ 'thesaurus::menu:  Mettre dans le stock' | trans }}</a>
             <div class="line"></div>
             <a href="javascript:void(0)" class="" id="kterm_search">{{ 'thesaurus::menu: chercher' | trans }}</a>
             <a href="javascript:void(0)" class="" id="kterm_export">{{ 'thesaurus::menu: exporter' | trans }}</a>
@@ -225,9 +228,10 @@
                 <div style="display: none">
                     <div id="confirm_populate">
                         <p><span class="alert alert-message"> {{ 'thesaurus:: confirm populate' | trans }}</span></p>
-                        <p>  <input type="button" class="cancel_button" value="{{ 'boutton::annuler' | trans }}" >
-                            &nbsp;&nbsp;&nbsp;
-                            <input type="button" id="confirm_populate_button" value="{{ 'boutton::valider' | trans }}" ></p>
+                        <div class="thesaurus_confirm_bottom_block">
+                            <input type="button" class="cancel_button cancel_btn" value="{{ 'boutton::annuler' | trans }}" >
+                            <input type="button" id="confirm_populate_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" >
+                        </div>
                     </div>
                 </div>
 
@@ -297,11 +301,13 @@
                             <td><input type="text" style="width:250px;" name="term"
                                        onkeyup="inputChanged();return(false);"></td>
                         </tr>
+                        <tr><td colspan="3" style="height: 10px"></td></tr>
                         <tr>
                             <td style="text-align:right">{{ 'thesaurus:: contexte'  | trans }} : </td>
                             <td><b>(</b>&nbsp;</td>
                             <td><input type="text" style="width:250px;" name="context">&nbsp;<b>)</b></td>
                         </tr>
+                        <tr><td colspan="3" style="height: 10px"></td></tr>
                         <tr>
                             <td valign="bottom" style="text-align:right">{{ 'phraseanet:: language' | trans }} :&nbsp;</td>
                             <td></td>
@@ -328,6 +334,8 @@
                 <div id="DLG_PROPERTIES">
                 </div>
                 <div id="ACCEPT_DLG_CONFIRM">
+                </div>
+                <div id="DLG_LINK_FIELD_1">
                 </div>
 
             </div>
@@ -748,7 +756,7 @@
                                         url += "&typ=CT";
 
                                         //w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                        w = loadDataAjax(url, 500 , 340,'#DLG_PROPERTIES', '{{ 'thesaurus:dialog:: properties'  | trans }}');
+                                        w = loadDataAjax(url, 500 , 340,'#DLG_PROPERTIES', '{{ 'thesaurus:: Proprietes' | trans }}');
                                     }
                                     break;
                                 }
@@ -1075,7 +1083,7 @@
                                                             url += "&sylng=" + encodeURIComponent(lng);
 
                                                           //  w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                                            w = loadDataAjax(url,490, 290,"#NEWSY_DLG_CONFIRM",'{{ 'thesaurus:dialog:: new term / synonym'  | trans }}');
+                                                            w = loadDataAjax(url,490, 290,"#NEWSY_DLG_CONFIRM",'{% if typ == "TS" %}{{ 'thesaurus:: Nouveau terme specifique' | trans }}{% else %}{{ 'thesaurus:: Nouveau synonyme' | trans }}{% endif %}');
                                                         }
                                                     }
                                                 ],
@@ -1141,7 +1149,7 @@
                                         url +=  "&piv={{ piv }}";
                                         url += "&tid=" + o.id.substr(4);
                                        // w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                        w = loadDataAjax(url,700, 400, "#DLG_LINK_FIELD_1", '{{ 'thesaurus:dialog:: linkfields'  | trans }}');
+                                        w = loadDataAjax(url,700, 400, "#DLG_LINK_FIELD_1", '{{ 'thesaurus:: Lier la branche de thesaurus au champ' | trans }}');
                                         break;
                                     case "kterm_properties":
                                         var myObj = { "win":window };
@@ -1152,7 +1160,7 @@
                                         url += "&typ=TH";
 
                                       //  w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                       w = loadDataAjax(url,700, 400, "#DLG_PROPERTIES", '{{ 'thesaurus:dialog:: properties'  | trans }}');
+                                       w = loadDataAjax(url,700, 400, "#DLG_PROPERTIES", '{{ 'thesaurus:: Proprietes' | trans }}');
 
                                         break;
                                     case "kterm_search":
@@ -1208,7 +1216,7 @@
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
                                         //w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                        w = loadDataAjax(url, 700, 400, "#DLG_EXPORT", '{{ 'thesaurus:dialog:: export'  | trans }}');
+                                        w = loadDataAjax(url, 700, 400, "#DLG_EXPORT", '{{ 'thesaurus:: export au format texte' | trans }}');
                                         break;
                                     case "kterm_topics":
                                         var myObj = { "win":window };
@@ -1219,7 +1227,7 @@
                                         url += "&typ=TH";
                                         url += "&obr=" + list_opened_branches(o.parentNode);
                                         //w = window.open(url, "EXPORT", "directories=no, height=400, width=550, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                        w = loadDataAjax(url, 700, 400, "#DLG_EXPORT_TOPICS", '{{ 'thesaurus:dialog:: export topics'  | trans }}');
+                                        w = loadDataAjax(url, 700, 400, "#DLG_EXPORT_TOPICS", '{{ 'thesaurus:: export en topics' | trans }}');
                                         break;
                                     }
                                     break;
@@ -1324,7 +1332,7 @@
                                                 url += "&id=" + o.id.substr(4);
                                                 url += "&typ=TH";
                                                 //   w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                                w = loadDataAjax(url, 500 , 340, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:dialog:: confirm'  | trans }}');
+                                                w = loadDataAjax(url, 500 , 340, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:: Proprietes' | trans }}');
                                             }
                                         }
                                         break;
@@ -1398,7 +1406,7 @@
                                                 url += "&src=" + eventObj.Src0.id.substr(4);
                                                 url += "&tgt=" + tgt0.id.substr(4);
                                                 //w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                                w = loadDataAjax(url, 500 , 340, "#ACCEPT_DLG_CONFIRM", '{{ 'thesaurus:dialog:: confirm'  | trans }}');
+                                                w = loadDataAjax(url, 500 , 340, "#ACCEPT_DLG_CONFIRM", '{{ 'thesaurus:: accepter...' | trans }}');
                                             }
                                         }
                                         break;
@@ -1453,7 +1461,7 @@
                                                     url += "&bid={{ bid }}";
                                                     url += "&id=";
                                                    // w = window.open(url, "IMPORT", "directories=no, height=400, width=600, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                                    w = loadDataAjax(url, 600 , 400, "#NEWSY_DLG_CONFIRM", confirm);
+                                                    w = loadDataAjax(url, 600 , 400, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:: Importer' | trans }}');
                                                     break;
                                                 }
                                                 break;
@@ -1519,6 +1527,7 @@
                                                 modal: true,
                                                 title: "{{ 'thesaurus: Populate title' | trans }}",
                                                 autoOpen:false,
+                                                width: 400,
                                                 open:function () {
                                                     $(this).closest(".ui-dialog")
                                                         .find(".ui-button:first") // the first button
@@ -1560,21 +1569,6 @@
                                         });
 
         </script>
-        <style>
-            .populate_btn {
-                position: absolute;
-                background: #2196f3;
-                z-index: 2;
-                right: 50px;
-                top: 50px;
-                font-size: 14px;
-                color: #fff;
-                padding: 7px;
-                font-weight: bold;
-                border: 1px solid  #d0d0d0;
-                cursor: pointer;
-            }
-        </style>
     </body>
 
 </html>

@@ -31,7 +31,6 @@
             {
                 if(!err)
                 {
-                    reload();
                     $('.close-dialog').trigger('click');
                 }
                 else
@@ -56,7 +55,7 @@
             <input type="file" name="fil" /> (max 16Mo)
             <br/>
 
-            <div style="text-align:center">
+            <div class="text-center">
                 <table>
                     <tr>
                         <td style="text-align:left"><input type="checkbox" disabled="disabled" name="dlk" checked="checked">{{ 'thesaurus:: supprimer les liens des champs tbranch' | trans }}</td>
@@ -66,10 +65,11 @@
                     </tr>
                 </table>
                 <br/>
-                <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
-                &nbsp;&nbsp;&nbsp;
-                <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
-            </div>
+                <div class="thesaurus_confirm_bottom_block">
+                    <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" >
+                   <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
+                </div>
+            </divclass>
         </form>
         <iframe style="display:block; height:50px;" name="IFRIM"></iframe>
     </body>

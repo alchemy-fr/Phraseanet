@@ -8,6 +8,7 @@
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
     </head>
     <body onload="loaded();" class="dialog" style="text-align:center">
+    <div class="text-center">
         {% if dlg is not none %}
             {% set opener = 'window.dialogArguments.win' %}
         {% else %}
@@ -37,7 +38,8 @@
             <br/>
             {{ prop_label }}
             <br/>
-        <center>
+        </div>
+        <div class="text-center">
             <form onsubmit="return(false);" class="thesaurus_confirm_bottom_block">
                 <input type="hidden" name="bid" value="{{ bid }} ">
                 <input type="hidden" name="pid" value="{{ pid }}">
@@ -54,7 +56,7 @@
                 &nbsp;&nbsp;&nbsp;
                 <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
             </form>
-        </center>
+        </div>
         {% else %}
                 {% if nb_candidates_bad > 0 %}
                     {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
