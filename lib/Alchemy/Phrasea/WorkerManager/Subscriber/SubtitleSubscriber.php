@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SubtitlingSubscriber implements EventSubscriberInterface
+class SubtitleSubscriber implements EventSubscriberInterface
 {
     const GINGER_BASE_URL = "https://test.api.ginger.studio/recognition/speech";
     const GINGER_TOKEN    = "39c6011d-3bbe-4f39-95d0-a327d320ded4";
