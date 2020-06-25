@@ -23,6 +23,7 @@ use Alchemy\Phrasea\WorkerManager\Subscriber\AssetsIngestSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\ExportSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\SearchengineSubscriber;
+use Alchemy\Phrasea\WorkerManager\Subscriber\SubtitlingSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\WebhookSubscriber;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -68,6 +69,7 @@ class QueueWorkerServiceProvider implements PluginProviderInterface
                 $dispatcher->addSubscriber(new AssetsIngestSubscriber($app['alchemy_worker.message.publisher']));
                 $dispatcher->addSubscriber(new SearchengineSubscriber($app['alchemy_worker.message.publisher']));
                 $dispatcher->addSubscriber(new WebhookSubscriber($app['alchemy_worker.message.publisher']));
+                $dispatcher->addSubscriber(new SubtitlingSubscriber(new LazyLocator($app, 'phraseanet.appbox'), $app['monolog']));
 
                 return $dispatcher;
             })

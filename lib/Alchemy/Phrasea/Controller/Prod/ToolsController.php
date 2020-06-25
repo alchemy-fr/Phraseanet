@@ -15,24 +15,21 @@ use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\Record\RecordAutoSubtitleEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
 use Alchemy\Phrasea\Record\RecordWasRotated;
 use DataURI\Parser;
-use GuzzleHttp\Client;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
 use Symfony\Component\HttpFoundation\Request;
 
 class ToolsController extends Controller
 {
-    const GINGER_BASE_URL = "https://test.api.ginger.studio/recognition/speech";
-    const GINGER_TOKEN    = "39c6011d-3bbe-4f39-95d0-a327d320ded4";
-    const GINGER_TRANSCRIPT_FORMAT = "text/vtt";
-
     use DataboxLoggerAware;
     use DispatcherAware;
     use FilesystemAware;
@@ -454,119 +451,17 @@ class ToolsController extends Controller
 
     public function autoSubtitleAction(Request $request)
     {
-        $return = ['success' => false,  'errorMessage' => ''];
         $record = new \record_adapter($this->app,
             (int)$request->request->get("databox_id"),
             (int)$request->request->get("record_id")
         );
 
-        if ($record->has_preview() && ($previewLink = $record->get_preview()->get_permalink()) !== null && $request->request->get("meta_struct_id")) {
-            switch ($request->request->get("subtitle_language_source")) {
-                case 'En':
-                    $language = 'en-GB';
-                    break;
-                case 'De':
-                    $language = 'de-DE';
-                    break;
-                case 'Fr':
-                default:
-                    $language = 'fr-FR';
-                    break;
-            }
+        $this->dispatch(
+            PhraseaEvents::RECORD_AUTO_SUBTITLE,
+            new RecordAutoSubtitleEvent($record, $request->request->get("subtitle_language_source"), $request->request->get("meta_struct_id"))
+        );
 
-            $permalinkUrl = $previewLink->get_url()->__toString();
-
-            $gingerClient = new Client();
-
-            try {
-                $response = $gingerClient->post(self::GINGER_BASE_URL.'/media/', [
-                    'headers' => [
-                        'Authorization' => 'token '.self::GINGER_TOKEN
-                    ],
-                    'json' => [
-                        'url'       => $permalinkUrl,
-                        'language'  => $language
-                    ]
-                ]);
-            } catch(\Exception $e) {
-                $return['errorMessage'] = $e->getMessage();
-
-                return $this->app->json($return);
-            }
-
-            if ($response->getStatusCode() !== 201) {
-                return $this->app->json($return);
-            }
-
-            $responseMediaBody = $response->getBody()->getContents();
-            $responseMediaBody = json_decode($responseMediaBody,true);
-
-            $checkStatus = null;
-            do {
-                // first wait 5 second before check subtitling status
-                sleep(5);
-
-                try {
-                    $response = $gingerClient->get(self::GINGER_BASE_URL.'/task/'.$responseMediaBody['task_id'].'/', [
-                        'headers' => [
-                            'Authorization' => 'token '.self::GINGER_TOKEN
-                        ]
-                    ]);
-                } catch (\Exception $e) {
-                    $checkStatus = false;
-                }
-
-                if ($response->getStatusCode() !== 200) {
-                    $checkStatus = false;
-                    break;
-                }
-
-                $responseTaskBody = $response->getBody()->getContents();
-                $responseTaskBody = json_decode($responseTaskBody,true);
-
-            } while($responseTaskBody['status'] != 'SUCCESS');
-
-            if (!$checkStatus) {
-                return $this->app->json($return);
-            }
-
-            try {
-                $response = $gingerClient->get(self::GINGER_BASE_URL.'/media/'.$responseMediaBody['media']['uuid'].'/', [
-                    'headers' => [
-                        'Authorization' => 'token '.self::GINGER_TOKEN,
-                        'ACCEPT'        => self::GINGER_TRANSCRIPT_FORMAT
-                    ],
-                    'query' => [
-                        'language'  => $language
-                    ]
-                ]);
-            } catch (\Exception $e) {
-                return $this->app->json($return);
-            }
-            if ($response->getStatusCode() !== 201) {
-                return $this->app->json($return);
-            }
-
-            $transcriptContent = $response->getBody()->getContents();
-
-            $metadatas[0] = [
-                'meta_struct_id' => (int)$request->request->get("meta_struct_id"),
-                'meta_id'        => '',
-                'value'          => $transcriptContent
-            ];
-
-            try {
-                $record->set_metadatas($metadatas);
-            } catch (\Exception $e) {
-                $return['errorMessage'] = $e->getMessage();
-
-                return $this->app->json($return);
-            }
-
-            $return['success'] = true;
-        }
-
-        return $this->app->json($return);
+        return $this->app->json(["status" => "dispatch"]);
     }
 
     public function videoEditorAction(Request $request)
