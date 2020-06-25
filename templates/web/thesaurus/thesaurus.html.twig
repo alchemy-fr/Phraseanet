@@ -327,11 +327,7 @@
                 </div>
                 <div id="DLG_PROPERTIES">
                 </div>
-                <div id="DLG_LINK_FIELD_1">
-                </div>
-                <div id="DLG_LINK_FIELD_2">
-                </div>
-                <div id="DLG_LINK_FIELD_3">
+                <div id="ACCEPT_DLG_CONFIRM">
                 </div>
 
             </div>
@@ -1402,7 +1398,7 @@
                                                 url += "&src=" + eventObj.Src0.id.substr(4);
                                                 url += "&tgt=" + tgt0.id.substr(4);
                                                 //w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                                w = loadDataAjax(url, 500 , 340, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:dialog:: confirm'  | trans }}');
+                                                w = loadDataAjax(url, 500 , 340, "#ACCEPT_DLG_CONFIRM", '{{ 'thesaurus:dialog:: confirm'  | trans }}');
                                             }
                                         }
                                         break;
