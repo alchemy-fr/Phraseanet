@@ -55,7 +55,7 @@ chown -R app:app \
     datas \
     tmp \
     logs \
-    www/thumbnails \
-    www/custom
+    www \
+    plugins/
 
 bash -e docker-php-entrypoint $@

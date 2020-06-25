@@ -35,6 +35,10 @@ And follow the install steps described at https://docs.phraseanet.com/4.0/en/Adm
 - docker-compose >=v1.25.4
 - docker >=v18.01-ce
 
+Note about elasticsearch container 
+Check this link
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-prerequisites
+
 ## Get started
 
 You should review the default env variables defined in `.env` file.
@@ -84,8 +88,9 @@ docker-compose -f docker-compose.yml run --rm worker <command>
 ```
 
 Where `<command>` can be:
-- `bin/console task-manager:scheduler:run` (default)
-- `bin/console worker:execute -m 2`
+
+- `bin/console worker:execute -m 2` (default)
+- `bin/console task-manager:scheduler:run`
 - ...
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
