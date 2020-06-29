@@ -22,6 +22,7 @@
         <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
         <script type="text/javascript">
+            //$('.close-dialog').trigger('click');
             function ok()
             {
                 as = "";
@@ -30,13 +31,15 @@
                         if($(".as_1")[0].checked) {
                             as = $(".as_1").val();
                         }
-                        if($(".as_2")[0].checked) {
+                        if($(".as_2").length > 0 && $(".as_2")[0].checked) {
                             as = $(".as_2").val();
                         }
                 }
                 else
                 {
-                    as = $(".as_2").val();
+                    if($(".as_3").length > 0) {
+                        as = $(".as_3").val();
+                    }
                 }
                 if(as == "TS")
                 {
@@ -62,7 +65,6 @@
                             break;
                         }
                     }
-                    $('.close-dialog').trigger('click');
                 }
                 else if(as == "SY")
                 {
@@ -88,8 +90,8 @@
                                 break;
                             }
                         }
-                    $('.close-dialog').trigger('click');
                     }
+                $('.close-dialog').trigger('click');
                 }
 
                 function closeModal() {
@@ -151,7 +153,7 @@
                         {{ 'thesaurus:: Accepter la branche comme' | trans }}
                         &nbsp;{{ 'thesaurus:: comme terme specifique' | trans }}
                         <br/><br/><h4>{{ fullpath_tgt | raw }}</h4><br/><br/>
-                        <input type='hidden' name='as' class="as_1" value='TS'>
+                        <input type='hidden' name='as' class="as_3" value='TS'>
                     {% endif %}
                            <div class="thesaurus_confirm_bottom_block">
                               <input class="cancel_btn"  type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="closeModal();">
@@ -167,7 +169,7 @@
                         {% trans with {'%cfield%' : cfield} %}thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte{% endtrans %}
                         <br/>
                         <div class="thesaurus_confirm_bottom_block">
-                            <input class="validate_btn" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="closeModal();">
+                            <input class="cancel_btn" type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="closeModal();">
                         </div>
                 {% endif %}
             {% endif %}
