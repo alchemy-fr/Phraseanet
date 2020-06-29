@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-06-22T10:48:13Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2020-06-29T07:49:55Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -1741,7 +1741,7 @@
       <trans-unit id="dcaef5e63af73ecdc461619402f8d13754ec5718" resname="Chercher" approved="yes">
         <source>Chercher</source>
         <target state="translated">Suchen</target>
-        <jms:reference-file line="84">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="85">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b030d590c21c95efe2ba71da1d0f1198a7e655b4" resname="Choisir" approved="yes">
         <source>Choisir</source>
@@ -3225,7 +3225,7 @@
       <trans-unit id="210213755d79b16e6793a9f0ff9e829be4b2b56e" resname="Fichier ASCII tabule" approved="yes">
         <source>Fichier ASCII tabule</source>
         <target state="translated">tabellierte ASCII Datei</target>
-        <jms:reference-file line="56">web/thesaurus/import-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="54">web/thesaurus/import-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e67ac1aeecbfa32c57425761865c3dcd4e4e214b" resname="Fichiers envoyes" approved="yes">
         <source>Fichiers envoyes</source>
@@ -9475,12 +9475,12 @@
       <trans-unit id="ceedc2b216425b24e78f8e4bcdbdf0fefb998b89" resname="bad character at line %line%" approved="yes">
         <source>bad character at line %line%</source>
         <target state="translated">Falsches Zeichen in Zeile %line%</target>
-        <jms:reference-file line="593">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="596">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="042e048de86f35db6e198735c8a09391ac4574f1" resname="bad encoding at line %line%" approved="yes">
         <source>bad encoding at line %line%</source>
         <target state="translated">Falsche Codierung in Zeile %line%</target>
-        <jms:reference-file line="587">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="590">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="16c21b65c7e7a5319eaec567513b8468169882ea" resname="base:: re-indexer" approved="yes">
         <source>base:: re-indexer</source>
@@ -9526,18 +9526,19 @@
         <target state="translated">abbrechen</target>
         <jms:reference-file line="41">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="49">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="61">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
-        <jms:reference-file line="114">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
-        <jms:reference-file line="164">web/thesaurus/accept.html.twig</jms:reference-file>
-        <jms:reference-file line="180">web/thesaurus/accept.html.twig</jms:reference-file>
-        <jms:reference-file line="70">web/thesaurus/import-dialog.html.twig</jms:reference-file>
-        <jms:reference-file line="137">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
-        <jms:reference-file line="53">web/thesaurus/new-term.html.twig</jms:reference-file>
-        <jms:reference-file line="78">web/thesaurus/new-term.html.twig</jms:reference-file>
-        <jms:reference-file line="590">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="989">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="1093">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="74">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="73">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
+        <jms:reference-file line="119">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="159">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="172">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="69">web/thesaurus/import-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="142">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="55">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="73">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="232">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="654">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1054">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1170">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="90">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
         <jms:reference-file line="168">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="250">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="404">web/common/dialog_export.html.twig</jms:reference-file>
@@ -9564,8 +9565,8 @@
       <trans-unit id="eb7084f3be2ac7d8cf870a9bb83df976dc65ad5b" resname="boutton::chercher" approved="yes">
         <source>boutton::chercher</source>
         <target state="translated">suchen</target>
-        <jms:reference-file line="596">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="1099">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="660">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1176">web/thesaurus/thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="126">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="61">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
@@ -9623,10 +9624,10 @@
         <source>boutton::fermer</source>
         <target state="translated">schliessen</target>
         <jms:reference-file line="57">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="39">web/thesaurus/export-topics.html.twig</jms:reference-file>
-        <jms:reference-file line="116">web/thesaurus/accept.html.twig</jms:reference-file>
-        <jms:reference-file line="132">web/thesaurus/accept.html.twig</jms:reference-file>
-        <jms:reference-file line="118">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="36">web/thesaurus/export-topics.html.twig</jms:reference-file>
+        <jms:reference-file line="115">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="129">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="114">web/thesaurus/properties.html.twig</jms:reference-file>
         <jms:reference-file line="45">web/thesaurus/link-field-step3.html.twig</jms:reference-file>
         <jms:reference-file line="96">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="23">web/lightbox/sc_note.html.twig</jms:reference-file>
@@ -9797,16 +9798,17 @@
         <target state="translated">Bestätigen</target>
         <jms:reference-file line="48">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="34">mobile/lightbox/note_form.html.twig</jms:reference-file>
-        <jms:reference-file line="59">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
-        <jms:reference-file line="116">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
-        <jms:reference-file line="162">web/thesaurus/accept.html.twig</jms:reference-file>
-        <jms:reference-file line="72">web/thesaurus/import-dialog.html.twig</jms:reference-file>
-        <jms:reference-file line="139">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
-        <jms:reference-file line="55">web/thesaurus/new-term.html.twig</jms:reference-file>
-        <jms:reference-file line="80">web/thesaurus/new-term.html.twig</jms:reference-file>
-        <jms:reference-file line="995">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="74">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
+        <jms:reference-file line="120">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="160">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="70">web/thesaurus/import-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="143">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="57">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="75">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="233">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1060">web/thesaurus/thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="51">web/thesaurus/index.html.twig</jms:reference-file>
-        <jms:reference-file line="72">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="91">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
         <jms:reference-file line="75">web/account/access.html.twig</jms:reference-file>
         <jms:reference-file line="236">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="48">web/account/reset-email.html.twig</jms:reference-file>
@@ -10981,7 +10983,7 @@
       <trans-unit id="e1d52d21ab4f88f9da8b88e95bd05d8fb4df28c3" resname="over-indent at line %line%" approved="yes">
         <source>over-indent at line %line%</source>
         <target state="translated">Schlechte Einrückung Zeile %line%</target>
-        <jms:reference-file line="580">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="583">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d1af7e03f0dbeec721b0d8bb67274bb1ebd1704" resname="panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre" approved="yes">
         <source>panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre</source>
@@ -11174,7 +11176,7 @@
       <trans-unit id="de362d6b518d34baa286bc5d22db2a10a8840aaf" resname="phraseanet:: language" approved="yes">
         <source>phraseanet:: language</source>
         <target state="translated">Sprache</target>
-        <jms:reference-file line="287">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="312">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f4c97afac2cc8e650775d6ff33c03f291499af0" resname="phraseanet:: password" approved="yes">
         <source>phraseanet:: password</source>
@@ -11234,7 +11236,7 @@
         <jms:reference-file line="11">web/thesaurus/load-thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="12">web/thesaurus/load-thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="5">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="216">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="239">web/thesaurus/thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="5">web/thesaurus/index.html.twig</jms:reference-file>
         <jms:reference-file line="15">web/prod/tab_headers.html.twig</jms:reference-file>
         <jms:reference-file line="263">prod/actions/edit_default.html.twig</jms:reference-file>
@@ -11242,12 +11244,12 @@
       <trans-unit id="b6022bf4291f5e9d7d7051fe6c3d6a6abbd92c1a" resname="phraseanet:: tri" approved="yes">
         <source>phraseanet:: tri</source>
         <target state="translated">Sortierung</target>
-        <jms:reference-file line="86">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="90">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="771634fc3ec89c0a08c7666e776fc5db3072f318" resname="phraseanet:: tri par date" approved="yes">
         <source>phraseanet:: tri par date</source>
         <target state="translated">nach Datum sortieren</target>
-        <jms:reference-file line="89">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="93">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
         <jms:reference-file line="292">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="294">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="295">web/prod/index.html.twig</jms:reference-file>
@@ -11324,7 +11326,7 @@
         <source>phraseanet::chargement</source>
         <target state="translated">Bitte warten...</target>
         <jms:reference-file line="47">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="77">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="78">web/thesaurus/thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="276">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="34">admin/collection/suggested_value.html.twig</jms:reference-file>
       </trans-unit>
@@ -11344,7 +11346,7 @@
         <source>phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier</source>
         <target state="translated">Sie sind nun abgemeldet. Bitte loggen Sie sich wieder ein</target>
         <jms:reference-file line="37">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="144">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="150">web/thesaurus/thesaurus.html.twig</jms:reference-file>
         <jms:reference-file line="42">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="754677fa0aa06c7f10237a728e6f33eaea06d42b" resname="phraseanet::erreur: echec du serveur de mail" approved="yes">
@@ -11407,7 +11409,7 @@
       <trans-unit id="43ebe42cbe0f88fe6d6241750ee8e90b063e0a2c" resname="phraseanet::technique:: et" approved="yes">
         <source>phraseanet::technique:: et</source>
         <target state="translated">und</target>
-        <jms:reference-file line="495">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="498">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ed783308f09120432326bbe67088be585e3bd6e9" resname="phraseanet::temps:: a l'instant" approved="yes">
         <source>phraseanet::temps:: a l'instant</source>
@@ -12147,7 +12149,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Auswahl entfernen</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit" approved="no">
+      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit">
         <source>prod:videoeditor:subtitleRequestTab:: submit</source>
         <target state="needs-translation">Anfrage einreichen</target>
         <jms:reference-file line="259">actions/Tools/videoEditor.html.twig</jms:reference-file>
@@ -12182,7 +12184,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="needs-translation">Automatische Untertitelung Anfrage</target>
         <jms:reference-file line="34">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder" approved="no">
+      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder">
         <source>prod:videoeditor:subtitletab:: Caption placeholder</source>
         <target state="needs-translation">Geben Sie einen Untertitel ein</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
@@ -12207,7 +12209,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="needs-translation">Start</target>
         <jms:reference-file line="176">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption" approved="no">
+      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption">
         <source>prod:videoeditor:subtitletab:: add caption</source>
         <target state="needs-translation">Untertitel hinzufügen</target>
         <jms:reference-file line="211">actions/Tools/videoEditor.html.twig</jms:reference-file>
@@ -12227,12 +12229,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="needs-translation">Untertitel Sprache auswählen</target>
         <jms:reference-file line="185">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="no">
+      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error">
         <source>prod:videoeditor:subtitletab:message:: error</source>
         <target state="needs-translation">Fehler beim speichern des Untertitels</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success" approved="no">
+      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success">
         <source>prod:videoeditor:subtitletab:message:: success</source>
         <target state="needs-translation">Erfolg</target>
         <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -12483,7 +12485,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="e32952b1a087c6ba28e13097e0ebb5395c2f2105" resname="reponses::document sans titre" approved="yes">
         <source>reponses::document sans titre</source>
         <target state="translated">ohne Titel</target>
-        <jms:reference-file line="940">classes/record/adapter.php</jms:reference-file>
+        <jms:reference-file line="941">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)" approved="yes">
         <source>report:: (connexions)</source>
@@ -13383,35 +13385,40 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Thesaurus wurde aktualisiert</target>
         <jms:reference-file line="5">web/thesaurus/load-thesaurus.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title">
+        <source>thesaurus: Populate title</source>
+        <target state="new">thesaurus: Populate title</target>
+        <jms:reference-file line="1528">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="b9fa70f141f7d5f0b0534996dbc0a53650e2e242" resname="thesaurus:: %hits% reponses retournees" approved="yes">
         <source>thesaurus:: %hits% reponses retournees</source>
         <target state="translated">%hits%  Ergebnisse geliefert</target>
-        <jms:reference-file line="56">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="50">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ece0fffe35c0acde3f67ee4bc99a8f17d3d266ac" resname="thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte" approved="yes">
         <source>thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte</source>
         <target state="translated">Hier im Thesaurus, ein möglicher Begriff des Feldes %cfield% kann nicht angenommen werden</target>
-        <jms:reference-file line="172">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="169">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="35a1c95cf1047d93c29812cde3a161c8a7421d65" resname="thesaurus:: Accepter la branche comme" approved="yes">
         <source>thesaurus:: Accepter la branche comme</source>
         <target state="translated">Verzweigung akzeptieren als :</target>
-        <jms:reference-file line="155">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="153">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d1d2c5ce65ceafac6d80ca88fa1348fefec178e" resname="thesaurus:: Accepter le terme comme" approved="yes">
         <source>thesaurus:: Accepter le terme comme</source>
         <target state="translated">Begriff akzeptieren als :</target>
-        <jms:reference-file line="144">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="142">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="97b59723dc7ad155e3f36da086a162c4a716903e" resname="thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}" approved="yes">
         <source>thesaurus:: Ce champ a ete modifie ; ancienne branche : %old_branch% }}</source>
         <target state="translated">Dieses Feld wurde verändert. Alter Zweig : %old_branch%</target>
-        <jms:reference-file line="42">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="59">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8722fc011f51b468cf4205d8e3b8f8984f2de548" resname="thesaurus:: Confirmer la suppression du terme %s" approved="yes">
         <source>thesaurus:: Confirmer la suppression du terme %s</source>
         <target state="translated">Das Löschen des Begriffes "%s" bestätigen</target>
-        <jms:reference-file line="214">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="222">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d02ad78a59c7dc07363f5017d0adb96648880f77" resname="thesaurus:: Editer le thesaurus" approved="yes">
         <source>thesaurus:: Editer le thesaurus</source>
@@ -13422,6 +13429,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>thesaurus:: Importer</source>
         <target state="translated">Importieren</target>
         <jms:reference-file line="11">web/thesaurus/import-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="1464">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d5da9a8f62b8053385235889e7d7994ebfc1559" resname="thesaurus:: Lier la branche de thesaurus" approved="yes">
         <source>thesaurus:: Lier la branche de thesaurus</source>
@@ -13433,37 +13441,42 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>thesaurus:: Lier la branche de thesaurus au champ</source>
         <target state="translated">Die Verzweigung mit dem Feld %s verbinden</target>
         <jms:reference-file line="5">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
+        <jms:reference-file line="1152">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="213a599ea75e45b7e28a260a71b032b3e3601e2b" resname="thesaurus:: Lier la branche de thesaurus au champ %branch%" approved="yes">
         <source>thesaurus:: Lier la branche de thesaurus au champ %branch%</source>
         <target state="translated">Den Thesaurus-Sprung mit dem Feld %branch% verbinden</target>
-        <jms:reference-file line="51">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
+        <jms:reference-file line="65">web/thesaurus/link-field-step1.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="227338ab622537da92490cedc6709de0b9122e56" resname="thesaurus:: Nouveau synonyme" approved="yes">
         <source>thesaurus:: Nouveau synonyme</source>
         <target state="translated">Neuer Synonym</target>
         <jms:reference-file line="5">web/thesaurus/new-term.html.twig</jms:reference-file>
-        <jms:reference-file line="985">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1050">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1086">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d6bec8860c3453260869cea4fb043fac543cf724" resname="thesaurus:: Nouveau terme" approved="yes">
         <source>thesaurus:: Nouveau terme</source>
         <target state="translated">Neuer Begriff</target>
-        <jms:reference-file line="985">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1050">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0a054e6da228e6ad009d469c4bdf31b1de7999" resname="thesaurus:: Nouveau terme specifique" approved="yes">
         <source>thesaurus:: Nouveau terme specifique</source>
         <target state="translated">Neuer bestimmte Begriff</target>
         <jms:reference-file line="5">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="1086">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="261cd0e03ca27d32466be99d5cd9a0426d3a508c" resname="thesaurus:: Proprietes" approved="yes">
         <source>thesaurus:: Proprietes</source>
         <target state="translated">Eigenschaften</target>
-        <jms:reference-file line="10">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="759">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1163">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1335">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
         <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
-        <jms:reference-file line="482">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="545">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="660310a4372167fced06ac64d118d8019c456c02" resname="thesaurus:: Vous n'avez acces a aucune base" approved="yes">
         <source>thesaurus:: Vous n'avez acces a aucune base</source>
@@ -13474,59 +13487,65 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>thesaurus:: accepter...</source>
         <target state="translated">Annehmen</target>
         <jms:reference-file line="10">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="1409">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c56e1002fd59b3fed0108426b7926f3252d9fc8d" resname="thesaurus:: afficher les termes refuses" approved="yes">
         <source>thesaurus:: afficher les termes refuses</source>
         <target state="translated">Abgelehnte Begriffe anzeigen</target>
-        <jms:reference-file line="227">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="250">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="39efb34364d199cf2dac5051e15c13e771fda1dc" resname="thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est necessaire" approved="yes">
         <source>thesaurus:: ce champ doit etre lie au thesaurus. La reindexation de la base est necessaire</source>
         <target state="translated">Dieses Feld muss zum Thesaurus verknüpft werden. Wieder Indexierung der Datenbank erforderlich</target>
-        <jms:reference-file line="55">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="72">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2861bf18f57cd2c22c2ed1b442a10662b05a7ee9" resname="thesaurus:: ce champ n'est plus lie au thesaurus, les termes indexes et candidats seront supprimes" approved="yes">
         <source>thesaurus:: ce champ n'est plus lie au thesaurus, les termes indexes et candidats seront supprimes</source>
         <target state="translated">Dieses Feld wird nicht mehr zum Thesaurus verknüpft. Die mögliche und indexierte Begriffe werden gelöscht</target>
-        <jms:reference-file line="49">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="66">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fe23d2c7c27f7b1d574c7785a7cc4bd948a554c4" resname="thesaurus:: comme synonyme de %fullpath_tgt_raw%" approved="yes">
         <source>thesaurus:: comme synonyme de %fullpath_tgt_raw%</source>
         <target state="translated">als Synonym von %fullpath_tgt_raw%</target>
-        <jms:reference-file line="151">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="149">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="459affa0b443a9ba31aa55780885f62062817658" resname="thesaurus:: comme terme specifique" approved="yes">
         <source>thesaurus:: comme terme specifique</source>
         <target state="translated">als bestimmter Begriff</target>
-        <jms:reference-file line="147">web/thesaurus/accept.html.twig</jms:reference-file>
-        <jms:reference-file line="156">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="145">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="154">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae18b273dbf647d67c96552da366ddc065867a46" resname="thesaurus:: commence par" approved="yes">
         <source>thesaurus:: commence par</source>
         <target state="translated">beginnt mit</target>
-        <jms:reference-file line="259">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="282">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate">
+        <source>thesaurus:: confirm populate</source>
+        <target state="new">thesaurus:: confirm populate</target>
+        <jms:reference-file line="230">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a85aa8cf9c6c920e0d9853406c361da92ad7b6ba" resname="thesaurus:: contexte" approved="yes">
         <source>thesaurus:: contexte</source>
         <target state="translated">Kontext</target>
-        <jms:reference-file line="282">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="306">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4ad43383bb27b5ebb9b8769cca58b91397fbfa77" resname="thesaurus:: contient" approved="yes">
         <source>thesaurus:: contient</source>
         <target state="translated">beinhaltet</target>
-        <jms:reference-file line="263">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="286">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac2f261b9d9226594280e898802a6fdac51360d3" resname="thesaurus:: corbeille" approved="yes">
         <source>thesaurus:: corbeille</source>
         <target state="translated">Stock</target>
-        <jms:reference-file line="1677">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
-        <jms:reference-file line="1823">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
-        <jms:reference-file line="2916">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="1700">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="1846">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="2939">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="69ec558773af262994d835080fd77f22b284b64f" resname="thesaurus:: deplacer le terme dans la corbeille ?" approved="yes">
         <source>thesaurus:: deplacer le terme dans la corbeille ?</source>
         <target state="translated">Begriffe zum Stock verschieben</target>
-        <jms:reference-file line="1045">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1119">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33c36f4c7ae4c9ec55d1e58c0939946c8d894958" resname="thesaurus:: enregistrement de la liste modifiee des mots candidats." approved="yes">
         <source>thesaurus:: enregistrement de la liste modifiee des mots candidats.</source>
@@ -13536,110 +13555,112 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="05a2a26badaf67062813be3ad74a263a41b620ae" resname="thesaurus:: erreur lors de l'enregsitrement du fichier" approved="yes">
         <source>thesaurus:: erreur lors de l'enregsitrement du fichier</source>
         <target state="translated">Fehler beim Dateidatensatz</target>
-        <jms:reference-file line="384">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="387">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="26d802ba586901b90e3753c0e3c84325269ec00c" resname="thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus" approved="yes">
         <source>thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus</source>
         <target state="translated">ist ein möglicher Begriff aus Felder Ursprung, aber kann an dieser Stelle im Thesaurus nicht akzeptiert werden</target>
-        <jms:reference-file line="60">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="62">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b49a5f13bd34102af24078acee8f06a0ee5b8836" resname="thesaurus:: est deja candidat en provenance des champs acceptables :" approved="yes">
         <source>thesaurus:: est deja candidat en provenance des champs acceptables :</source>
         <target state="translated">ist schon ein möglicher Begriff und stammt aus zulässigen Feldern :</target>
-        <jms:reference-file line="31">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="32">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5f49fcfa6bbe85c8f3c37743638b4b5e594c4c5a" resname="thesaurus:: est deja candidat en provenance du champ acceptable :" approved="yes">
         <source>thesaurus:: est deja candidat en provenance du champ acceptable :</source>
         <target state="translated">ist schon ein möglicher Begriff und stammt aus dem zulässigen Feld :</target>
-        <jms:reference-file line="29">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="30">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ad27b4c77e544111b921db376cc43959c6a2ea98" resname="thesaurus:: est egal a " approved="yes">
         <source>thesaurus:: est egal a </source>
         <target state="translated">gleicht</target>
-        <jms:reference-file line="255">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="278">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f3eb6935355ad9ba531d6bddae4f2d19e0e4d70" resname="thesaurus:: example" approved="yes">
         <source>thesaurus:: example</source>
         <target state="translated">Beispiel</target>
-        <jms:reference-file line="73">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="77">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f5f4fc934457322bd3cbffd1c82d571de9576d3" resname="thesaurus:: export : inclure la langue" approved="yes">
         <source>thesaurus:: export : inclure la langue</source>
         <target state="translated">Die Sprache beinhalten</target>
-        <jms:reference-file line="98">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="102">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="259db39cb35d75bdd74fbd689c874b0b0892ac75" resname="thesaurus:: export : inclure les hits" approved="yes">
         <source>thesaurus:: export : inclure les hits</source>
         <target state="translated">Anzahl der Ergebnisse beinhalten</target>
-        <jms:reference-file line="102">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="106">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0493019aeb437cae09c27fc5bef0c537e026bc0e" resname="thesaurus:: export : numeroter les lignes" approved="yes">
         <source>thesaurus:: export : numeroter les lignes</source>
         <target state="translated">Zeilen nummern</target>
-        <jms:reference-file line="94">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="98">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5fbcdef1a0e5fb7cf0b19a61ff3a18ebe2a5bdbe" resname="thesaurus:: export au format texte" approved="yes">
         <source>thesaurus:: export au format texte</source>
         <target state="translated">Text</target>
         <jms:reference-file line="5">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
-        <jms:reference-file line="81">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="85">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
         <jms:reference-file line="5">web/thesaurus/export-text.html.twig</jms:reference-file>
+        <jms:reference-file line="1219">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8ec3584a75e01816472150b1c24268c9612dd51" resname="thesaurus:: export en topics" approved="yes">
         <source>thesaurus:: export en topics</source>
         <target state="translated">Themen</target>
         <jms:reference-file line="5">web/thesaurus/export-topics.html.twig</jms:reference-file>
         <jms:reference-file line="5">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="1230">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a09dafb2a5c9c7200a3125cca1148346e7bc1843" resname="thesaurus:: exporter" approved="yes">
         <source>thesaurus:: exporter</source>
         <target state="translated">Exportieren</target>
-        <jms:reference-file line="72">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="76">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b3d70dd18518b6e7f5556a15cb71d6a2f53985b4" resname="thesaurus:: exporter a l'ecran pour la langue %piv%" approved="yes">
         <source>thesaurus:: exporter a l'ecran pour la langue %piv%</source>
         <target state="translated">Export auf den Bildschirm für die Sprache %piv%</target>
-        <jms:reference-file line="79">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="83">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b01dd0b1828e78440671b4be78d9a913aedd71dc" resname="thesaurus:: exporter avec les synonymes sur la meme ligne" approved="yes">
         <source>thesaurus:: exporter avec les synonymes sur la meme ligne</source>
         <target state="translated">Synonyme(n) auf die selbe Zeile</target>
-        <jms:reference-file line="86">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="90">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c8c5c42c51f9c89719e0fbd82b39d8ff9826071" resname="thesaurus:: exporter avec une ligne par synonyme" approved="yes">
         <source>thesaurus:: exporter avec une ligne par synonyme</source>
         <target state="translated">Eine Zeile nach Synonym</target>
-        <jms:reference-file line="90">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="94">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef21c0bd9a972534f0b45d092fb687ee1883c8a5" resname="thesaurus:: exporter vers topics pour toutes les langues" approved="yes">
         <source>thesaurus:: exporter vers topics pour toutes les langues</source>
         <target state="translated">für alle Sprachen exportieren</target>
-        <jms:reference-file line="75">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="79">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c50ff0eefeb602b1ffa90df63dde715db856f0ef" resname="thesaurus:: fichier genere : %filename%" approved="yes">
         <source>thesaurus:: fichier genere : %filename%</source>
         <target state="translated">erzeugte Datei: %filename%</target>
-        <jms:reference-file line="382">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="385">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ea946fc27f82708da50b8c7860974830c7673cf1" resname="thesaurus:: fichier genere le %date%" approved="yes">
         <source>thesaurus:: fichier genere le %date%</source>
         <target state="translated">erzeugte Datei am %date%</target>
-        <jms:reference-file line="354">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
+        <jms:reference-file line="357">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9eea030ece6cc7f8d7bf5b6eda81a71e4a658fd2" resname="thesaurus:: hits" approved="yes">
         <source>thesaurus:: hits</source>
         <target state="translated">Ergebnisse</target>
-        <jms:reference-file line="74">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="68">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a28dd52290d73ad90e5291f2d23b2780ead3cfa" resname="thesaurus:: ids" approved="yes">
         <source>thesaurus:: ids</source>
         <target state="translated">Benutzernamen</target>
-        <jms:reference-file line="75">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="69">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c0f2a335de197ca806136680f016f57191f504e9" resname="thesaurus:: langue par default" approved="yes">
         <source>thesaurus:: langue par default</source>
         <target state="translated">Standardmässige Sprache</target>
-        <jms:reference-file line="53">web/thesaurus/import-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="51">web/thesaurus/import-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61b9fc26988ba3def78071418405745142e73db3" resname="thesaurus:: langue pivot" approved="yes">
         <source>thesaurus:: langue pivot</source>
@@ -13649,103 +13670,103 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="04f919243d075b5edb6de8f539af430dd7ee10ba" resname="thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la base est necessaire" approved="yes">
         <source>thesaurus:: le lien au thesaurus doit etre modifie, la reindexation de la base est necessaire</source>
         <target state="translated">Das Link mit dem Thesaurus soll verändert werden, die Wieder Indexierung ist erforderlich</target>
-        <jms:reference-file line="57">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="74">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2c98d76aa180b4204fbfdda5e7e236d9bb733b79" resname="thesaurus:: le terme" approved="yes">
         <source>thesaurus:: le terme</source>
         <target state="translated">Begriff</target>
-        <jms:reference-file line="254">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="277">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="41e67c79ee27b944cb97d8e8cfbdc574ea83fdab" resname="thesaurus:: le terme %term% avec contexte %context%" approved="yes">
         <source>thesaurus:: le terme %term% avec contexte %context%</source>
         <target state="translated">Der Begriff %term% mit  Kontext %context%</target>
-        <jms:reference-file line="19">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="20">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="222f5e44befb127755b0b6818c03814c3a396e0e" resname="thesaurus:: le terme %term% sans contexte" approved="yes">
         <source>thesaurus:: le terme %term% sans contexte</source>
         <target state="translated">Der Begriff %term% ohne Kontext</target>
-        <jms:reference-file line="23">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="24">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3cb6d68ff6a57951e703b5a3c42943e9ca05e313" resname="thesaurus:: n'est pas present dans les candidats" approved="yes">
         <source>thesaurus:: n'est pas present dans les candidats</source>
         <target state="translated">ist fehlend bei den möglichen Begriffen</target>
-        <jms:reference-file line="62">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="64">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="796d8e71054aefd390e46adc516e56a29447050f" resname="thesaurus:: nouvelle branche" approved="yes">
         <source>thesaurus:: nouvelle branche</source>
         <target state="translated">Neue Verzweigung</target>
-        <jms:reference-file line="45">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="62">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d53416d3345671c4f16e2812f8190f3ae6fa0d84" resname="thesaurus:: onglet stock" approved="yes">
         <source>thesaurus:: onglet stock</source>
         <target state="translated">Mögliche Begriffe</target>
-        <jms:reference-file line="224">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="247">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7b971e23c9ea5fc4863eea9a4f21f0f1f2daf3f8" resname="thesaurus:: onglet thesaurus" approved="yes">
         <source>thesaurus:: onglet thesaurus</source>
         <target state="translated">Thesaurus</target>
-        <jms:reference-file line="238">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="261">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d61f1b5b3fec7988c18ffff2e3c0454012479109" resname="thesaurus:: options d'export :" approved="yes">
         <source>thesaurus:: options d'export :</source>
         <target state="translated">Export</target>
-        <jms:reference-file line="72">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="76">web/thesaurus/export-text-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="02292899ca86495976615f8b0732c72654cbc096" resname="thesaurus:: pas de reindexation" approved="yes">
         <source>thesaurus:: pas de reindexation</source>
         <target state="translated">Keine Wieder Indexierung</target>
-        <jms:reference-file line="69">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="86">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a448f487b7feb813766fdba3b0713bd3c690c756" resname="thesaurus:: presentation" approved="yes">
         <source>thesaurus:: presentation</source>
         <target state="translated">Anzeigeoptionen</target>
-        <jms:reference-file line="114">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="118">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a0e6f1364cdb055e9ea839d879acfd42680d57c" resname="thesaurus:: presentation : branche ouvertes" approved="yes">
         <source>thesaurus:: presentation : branche ouvertes</source>
         <target state="translated">Aktuelle Ansicht wiedergeben (geöffnete Verzweigungen)</target>
-        <jms:reference-file line="121">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="125">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd08d37b9aefbf359f511f9f434c5f845635dc2c" resname="thesaurus:: presentation : branches refermables" approved="yes">
         <source>thesaurus:: presentation : branches refermables</source>
         <target state="translated">Aktuelle Ansicht wiedergeben (verschliessene Verzweigungen)</target>
-        <jms:reference-file line="117">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="121">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ed1fff4d3bb9bb01bbcf6ac307f68d8ca485fe9a" resname="thesaurus:: question complete (avec operateurs)" approved="yes">
         <source>thesaurus:: question complete (avec operateurs)</source>
         <target state="translated">Vollständige Anfrage (mit Operators)</target>
-        <jms:reference-file line="107">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="111">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="404c720977408cd5e650436f06bf33db8cd87639" resname="thesaurus:: recherche" approved="yes">
         <source>thesaurus:: recherche</source>
         <target state="translated">Suche</target>
-        <jms:reference-file line="96">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="100">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="35293d9ea116b255182832cb96026b58819e48fb" resname="thesaurus:: recherche fulltext" approved="yes">
         <source>thesaurus:: recherche fulltext</source>
         <target state="translated">Volltext Suche</target>
-        <jms:reference-file line="103">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="107">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c2e18dc86801eb9d226012069865ed2f230ab868" resname="thesaurus:: recherche thesaurus *:&quot;query&quot;" approved="yes">
         <source>thesaurus:: recherche thesaurus *:"query"</source>
         <target state="translated">Thesaurus *:"query"</target>
-        <jms:reference-file line="99">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="103">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d337dbb54de979f01957eae496c562e68b93ffec" resname="thesaurus:: refresh" approved="yes">
         <source>thesaurus:: refresh</source>
         <target state="translated">Aktualiseren</target>
-        <jms:reference-file line="110">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="112">web/thesaurus/accept.html.twig</jms:reference-file>
         <jms:reference-file line="126">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19d28a781effbaec13d1cea0845487040a60ca68" resname="thesaurus:: reindexation necessaire" approved="yes">
         <source>thesaurus:: reindexation necessaire</source>
         <target state="translated">Wieder Indexierung erforderlich</target>
-        <jms:reference-file line="67">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+        <jms:reference-file line="84">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="218a38b10b72d4941b78d9e203291b527be694a8" resname="thesaurus:: reindexer la base apres l'import" approved="yes">
         <source>thesaurus:: reindexer la base apres l'import</source>
         <target state="translated">Nach dem Import wieder indexieren</target>
-        <jms:reference-file line="66">web/thesaurus/import-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="64">web/thesaurus/import-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="448e11d3ba58d99d687819dbd6ea186a7a9417d0" resname="thesaurus:: reindexer tous les enregistrements" approved="yes">
         <source>thesaurus:: reindexer tous les enregistrements</source>
@@ -13760,12 +13781,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="dc86251647b05c28a44f834b166bd85582c529be" resname="thesaurus:: removed_src">
         <source>thesaurus:: removed_src</source>
         <target state="needs-translation">removed_src</target>
-        <jms:reference-file line="107">web/thesaurus/accept.html.twig</jms:reference-file>
+        <jms:reference-file line="109">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19a2b92ea9f5680b4d5ab69a91984da8301b66e2" resname="thesaurus:: selectionner la provenance a accepter" approved="yes">
         <source>thesaurus:: selectionner la provenance a accepter</source>
         <target state="translated">Ursprung zu akzeptieren markieren</target>
-        <jms:reference-file line="50">web/thesaurus/new-term.html.twig</jms:reference-file>
+        <jms:reference-file line="52">web/thesaurus/new-term.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f953e6960c74de3046e215c67412b3cff9aee919" resname="thesaurus:: suppression de la branche de mot candidats pour le champ %field%" approved="yes">
         <source>thesaurus:: suppression de la branche de mot candidats pour le champ %field%</source>
@@ -13786,97 +13807,121 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="1199bb342908134fb0eab1fa57e065d2fc664a07" resname="thesaurus:: supprimer les liens des champs tbranch" approved="yes">
         <source>thesaurus:: supprimer les liens des champs tbranch</source>
         <target state="translated">Die Verbindung(en) zwischen den Felder(n) und Verzweigung(en) löschen</target>
-        <jms:reference-file line="63">web/thesaurus/import-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="61">web/thesaurus/import-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1744e93c8cf4d32cb0c0418ae320f5d8438f6f76" resname="thesaurus:: synonyme" approved="yes">
         <source>thesaurus:: synonyme</source>
         <target state="translated">Synonym</target>
-        <jms:reference-file line="983">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1048">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b6cbc7152d76db92327425399da711a905e1d7b6" resname="thesaurus:: synonymes" approved="yes">
         <source>thesaurus:: synonymes</source>
         <target state="translated">Synonyme</target>
-        <jms:reference-file line="73">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="67">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8658e2ff0b9ff5e3492109790a09066c1467804f" resname="thesaurus:: terme" approved="yes">
         <source>thesaurus:: terme</source>
         <target state="translated">Begriff</target>
-        <jms:reference-file line="983">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1048">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2369cc70d9c4cca830a6fdd9f652c1703a2a0d3b" resname="thesaurus:: tout deployer - refermable" approved="yes">
         <source>thesaurus:: tout deployer - refermable</source>
         <target state="translated">Alle aufklappen (verschliessbar)</target>
-        <jms:reference-file line="125">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="129">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="276c9cc45a82c1d36300f68b22343f91f9b5ebfe" resname="thesaurus:: tout deployer - statique" approved="yes">
         <source>thesaurus:: tout deployer - statique</source>
         <target state="translated">Alle aufklappen (statisch)</target>
-        <jms:reference-file line="129">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="133">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="599e13a48633874cc9a5172c9da04587f9968088" resname="thesaurus:: tout fermer" approved="yes">
         <source>thesaurus:: tout fermer</source>
         <target state="translated">Alle zuklappen (mit Browsen)</target>
-        <jms:reference-file line="133">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+        <jms:reference-file line="137">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock">
+        <source>thesaurus::menu:  Mettre dans le stock</source>
+        <target state="new">thesaurus::menu:  Mettre dans le stock</target>
+        <jms:reference-file line="196">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="758b089c0ed0efc0a6b86e1b45b1526dca96bb34" resname="thesaurus::menu: Nouveau synonyme" approved="yes">
         <source>thesaurus::menu: Nouveau synonyme</source>
         <target state="translated">Neuer Synonym</target>
-        <jms:reference-file line="184">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="195">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="779be7c6b67a09e29605c2a3df1d8a1aef45c253" resname="thesaurus::menu: Nouveau terme" approved="yes">
         <source>thesaurus::menu: Nouveau terme</source>
         <target state="translated">Neuer Begriff</target>
-        <jms:reference-file line="183">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="194">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f229bdc38061f3fb7bd440bfd56e7a44be503cbf" resname="thesaurus::menu: accepter" approved="yes">
         <source>thesaurus::menu: accepter</source>
         <target state="translated">Annehmen</target>
-        <jms:reference-file line="169">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="180">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6fb183be173d3c7f6e3008cb8280874290495fb" resname="thesaurus::menu: chercher" approved="yes">
         <source>thesaurus::menu: chercher</source>
         <target state="translated">Suchen</target>
-        <jms:reference-file line="173">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="187">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="184">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="198">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="882a09533a5a5a9a72350afb49795d0eef88c57c" resname="thesaurus::menu: export topics" approved="yes">
         <source>thesaurus::menu: export topics</source>
         <target state="translated">Exportieren als Themen</target>
-        <jms:reference-file line="189">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="200">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="007f61c418c15b9646a11149a44972955274b8ca" resname="thesaurus::menu: exporter" approved="yes">
         <source>thesaurus::menu: exporter</source>
         <target state="translated">Exportieren</target>
-        <jms:reference-file line="174">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="188">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="185">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="199">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="92782692967ad7a4ce1c60662cc948609bc94b81" resname="thesaurus::menu: importer" approved="yes">
         <source>thesaurus::menu: importer</source>
         <target state="translated">Importieren</target>
-        <jms:reference-file line="178">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="189">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19e0827510c523dde831ead0be8821879f852393" resname="thesaurus::menu: lier au champ" approved="yes">
         <source>thesaurus::menu: lier au champ</source>
         <target state="translated">Mit dem Feld verbinden</target>
-        <jms:reference-file line="191">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="202">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b51f9cf78b6c0c37e6bfd32098b0b8f746c671e8" resname="thesaurus::menu: proprietes" approved="yes">
         <source>thesaurus::menu: proprietes</source>
         <target state="translated">Eigenschaften</target>
-        <jms:reference-file line="167">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="182">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="178">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="193">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a5e4267f7bcec79dc51abe46abe2b8b8acfa6595" resname="thesaurus::menu: refuser" approved="yes">
         <source>thesaurus::menu: refuser</source>
         <target state="translated">Ablehnen</target>
-        <jms:reference-file line="168">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="179">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d27cf73e79f4934ea12d54690ce62d72d142db48" resname="thesaurus::menu: supprimer" approved="yes">
         <source>thesaurus::menu: supprimer</source>
         <target state="translated">Löschen</target>
-        <jms:reference-file line="46">web/thesaurus/properties.html.twig</jms:reference-file>
-        <jms:reference-file line="171">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <jms:reference-file line="185">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="33">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="182">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
+        <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
+        <target state="new">thesaurus::populate: Warning populate is in process to indexing databox</target>
+        <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
+        <source>thesaurus::populate: success message</source>
+        <target state="new">thesaurus::populate: success message</target>
+        <jms:reference-file line="1559">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export">
+        <source>thesaurus:dialog:: export</source>
+        <target state="new">thesaurus:dialog:: export</target>
+        <jms:reference-file line="696">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties">
+        <source>thesaurus:dialog:: properties</source>
+        <target state="new">thesaurus:dialog:: properties</target>
+        <jms:reference-file line="648">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1118f7e206d8ec4d92392f3e8c2804b156b3a082" resname="thumbnail validation" approved="yes">
         <source>thumbnail validation</source>
