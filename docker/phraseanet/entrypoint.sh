@@ -12,8 +12,7 @@ chown -R app:app \
     datas \
     tmp \
     logs \
-    www/thumbnails \
-    www/custom
+    www
 
 FILE=config/configuration.yml
 
@@ -48,6 +47,7 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
 fi
 
 ./docker/phraseanet/plugins/console init
+rm -Rf cache/
 
 chown -R app:app \
     cache \
@@ -55,7 +55,10 @@ chown -R app:app \
     datas \
     tmp \
     logs \
-    www \
-    plugins/
+    www 
+
+if [ -d "plugins/" ];then
+chown -R app:app plugin;
+fi
 
 bash -e docker-php-entrypoint $@
