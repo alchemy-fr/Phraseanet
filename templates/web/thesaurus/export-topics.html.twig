@@ -32,12 +32,9 @@
             {% endfor %}
 
             {% if ofm == 'tofiles' %}
-                <center>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <input type="button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();" style="width:100px;">
-                </center>
+                <div class="thesaurus_confirm_bottom_block">
+                    <input type="button" class="cancel_btn" value="{{ 'boutton::fermer' | trans }}" onclick=" self.close();" style="width:120px;">
+                </div>
             {% endif %}
         </div>
     </body>
