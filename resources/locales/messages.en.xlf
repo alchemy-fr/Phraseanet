@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-29T07:50:20Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -12212,24 +12212,24 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Duration</target>
         <jms:reference-file line="178">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e79e454459e7dc39a4aad9eb7f65014fa6f0a001" resname="prod:videoeditor:subtitletab:: Start time">
+      <trans-unit id="e79e454459e7dc39a4aad9eb7f65014fa6f0a001" resname="prod:videoeditor:subtitletab:: Start time" approved="yes">
         <source>prod:videoeditor:subtitletab:: Start time</source>
-        <target state="needs-translation">Start</target>
+        <target state="translated">Start</target>
         <jms:reference-file line="176">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption">
+      <trans-unit id="a7529f01ece4055e3e4b1a64f8b18d8e595edc9f" resname="prod:videoeditor:subtitletab:: add caption" approved="yes">
         <source>prod:videoeditor:subtitletab:: add caption</source>
-        <target state="needs-translation">Add a Subtitle</target>
+        <target state="translated">Add a Subtitle</target>
         <jms:reference-file line="211">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5a9ed94e747e90542d014b7486ab3ea865c2861d" resname="prod:videoeditor:subtitletab:: copy to clipboard">
+      <trans-unit id="5a9ed94e747e90542d014b7486ab3ea865c2861d" resname="prod:videoeditor:subtitletab:: copy to clipboard" approved="yes">
         <source>prod:videoeditor:subtitletab:: copy to clipboard</source>
-        <target state="needs-translation">Copy to clipboard</target>
+        <target state="translated">Copy to clipboard</target>
         <jms:reference-file line="210">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ba9c65917b3cc4daf4c8915a49baf5fbe37ae69" resname="prod:videoeditor:subtitletab:: save">
+      <trans-unit id="7ba9c65917b3cc4daf4c8915a49baf5fbe37ae69" resname="prod:videoeditor:subtitletab:: save" approved="yes">
         <source>prod:videoeditor:subtitletab:: save</source>
-        <target state="needs-translation">Save</target>
+        <target state="translated">Save</target>
         <jms:reference-file line="209">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b6e3888c22d8146b4fe551a4b797ee52583f5c3" resname="prod:videoeditor:subtitletab:: work on">
@@ -12237,9 +12237,9 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Select subtitling language</target>
         <jms:reference-file line="185">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error">
+      <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="yes">
         <source>prod:videoeditor:subtitletab:message:: error</source>
-        <target state="needs-translation">Error when saving subtitle</target>
+        <target state="translated">Error when saving subtitle</target>
         <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success">
@@ -13393,9 +13393,9 @@ It is possible to place several search areas</target>
         <target state="translated">Thesaurus has been updated</target>
         <jms:reference-file line="5">web/thesaurus/load-thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title">
+      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title" approved="no">
         <source>thesaurus: Populate title</source>
-        <target state="new">thesaurus: Populate title</target>
+        <target state="needs-translation">Indexing</target>
         <jms:reference-file line="1528">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9fa70f141f7d5f0b0534996dbc0a53650e2e242" resname="thesaurus:: %hits% reponses retournees" approved="yes">
@@ -13528,9 +13528,9 @@ It is possible to place several search areas</target>
         <target state="translated">starts with</target>
         <jms:reference-file line="282">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate">
+      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate" approved="no">
         <source>thesaurus:: confirm populate</source>
-        <target state="new">thesaurus:: confirm populate</target>
+        <target state="needs-translation">Launch databases indexing</target>
         <jms:reference-file line="230">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a85aa8cf9c6c920e0d9853406c361da92ad7b6ba" resname="thesaurus:: contexte" approved="yes">
@@ -13847,9 +13847,9 @@ It is possible to place several search areas</target>
         <target state="translated">Close all (with navigation)</target>
         <jms:reference-file line="137">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock">
+      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="no">
         <source>thesaurus::menu:  Mettre dans le stock</source>
-        <target state="new">thesaurus::menu:  Mettre dans le stock</target>
+        <target state="needs-translation">Place in the stock</target>
         <jms:reference-file line="196">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="758b089c0ed0efc0a6b86e1b45b1526dca96bb34" resname="thesaurus::menu: Nouveau synonyme" approved="yes">
@@ -13911,9 +13911,10 @@ It is possible to place several search areas</target>
         <jms:reference-file line="33">web/thesaurus/properties.html.twig</jms:reference-file>
         <jms:reference-file line="182">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
+      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="no">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="new">thesaurus::populate: Warning populate is in process to indexing databox</target>
+        <target state="needs-translation">Warning populate is in process to indexing databox,
+Wait the end of this indexing, before launch a new one.</target>
         <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
@@ -13921,14 +13922,14 @@ It is possible to place several search areas</target>
         <target state="new">thesaurus::populate: success message</target>
         <jms:reference-file line="1559">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export">
+      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="no">
         <source>thesaurus:dialog:: export</source>
-        <target state="new">thesaurus:dialog:: export</target>
+        <target state="needs-translation">Candidats export</target>
         <jms:reference-file line="696">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties">
+      <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties" approved="no">
         <source>thesaurus:dialog:: properties</source>
-        <target state="new">thesaurus:dialog:: properties</target>
+        <target state="needs-translation">Properties</target>
         <jms:reference-file line="648">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1118f7e206d8ec4d92392f3e8c2804b156b3a082" resname="thumbnail validation" approved="yes">
