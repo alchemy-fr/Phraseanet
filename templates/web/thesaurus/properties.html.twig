@@ -65,9 +65,7 @@
                             <th>&nbsp;</th>
                             <th>&nbsp;</th>
                             <th>{{ 'thesaurus:: synonymes' | trans }}</th>
-                            <th>{{ 'thesaurus:: hits' | trans }}</th>
-                            <th>{{ 'thesaurus:: ids' | trans }}</th>
-                            <th></th>
+                            <th colspan="3">{{ 'thesaurus:termePorperties:termeId' | trans }}</th>
                         </tr>
                     </thead>
                 </table>
@@ -98,7 +96,6 @@
                                     <td id='FLG_{{ data['id'] }}'></td>
                                 {% endif %}
                                 <td>{{ data['t'] }}</td>
-                                <td>{{ data['hits'] }}</td>
                                 <td>{{ data['id'] }}</td>
                                 <td><span class="delete_term"></span></td>
                             </tr>
