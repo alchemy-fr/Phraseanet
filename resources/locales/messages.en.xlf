@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-06-29T07:50:20Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2020-06-30T14:45:51Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -9630,7 +9630,7 @@
         <jms:reference-file line="36">web/thesaurus/export-topics.html.twig</jms:reference-file>
         <jms:reference-file line="115">web/thesaurus/accept.html.twig</jms:reference-file>
         <jms:reference-file line="129">web/thesaurus/accept.html.twig</jms:reference-file>
-        <jms:reference-file line="114">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="111">web/thesaurus/properties.html.twig</jms:reference-file>
         <jms:reference-file line="45">web/thesaurus/link-field-step3.html.twig</jms:reference-file>
         <jms:reference-file line="96">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="23">web/lightbox/sc_note.html.twig</jms:reference-file>
@@ -13393,7 +13393,7 @@ It is possible to place several search areas</target>
         <target state="translated">Thesaurus has been updated</target>
         <jms:reference-file line="5">web/thesaurus/load-thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title" approved="no">
+      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title">
         <source>thesaurus: Populate title</source>
         <target state="needs-translation">Indexing</target>
         <jms:reference-file line="1528">web/thesaurus/thesaurus.html.twig</jms:reference-file>
@@ -13426,7 +13426,7 @@ It is possible to place several search areas</target>
       <trans-unit id="8722fc011f51b468cf4205d8e3b8f8984f2de548" resname="thesaurus:: Confirmer la suppression du terme %s" approved="yes">
         <source>thesaurus:: Confirmer la suppression du terme %s</source>
         <target state="translated">Confirm term "%s" delete</target>
-        <jms:reference-file line="222">web/thesaurus/properties.html.twig</jms:reference-file>
+        <jms:reference-file line="219">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d02ad78a59c7dc07363f5017d0adb96648880f77" resname="thesaurus:: Editer le thesaurus" approved="yes">
         <source>thesaurus:: Editer le thesaurus</source>
@@ -13528,7 +13528,7 @@ It is possible to place several search areas</target>
         <target state="translated">starts with</target>
         <jms:reference-file line="282">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate" approved="no">
+      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate">
         <source>thesaurus:: confirm populate</source>
         <target state="needs-translation">Launch databases indexing</target>
         <jms:reference-file line="230">web/thesaurus/thesaurus.html.twig</jms:reference-file>
@@ -13655,16 +13655,6 @@ It is possible to place several search areas</target>
         <target state="translated">Generated file on %date%</target>
         <jms:reference-file line="357">Controller/Thesaurus/ThesaurusController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9eea030ece6cc7f8d7bf5b6eda81a71e4a658fd2" resname="thesaurus:: hits" approved="yes">
-        <source>thesaurus:: hits</source>
-        <target state="translated">hits</target>
-        <jms:reference-file line="68">web/thesaurus/properties.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7a28dd52290d73ad90e5291f2d23b2780ead3cfa" resname="thesaurus:: ids" approved="yes">
-        <source>thesaurus:: ids</source>
-        <target state="translated">ids</target>
-        <jms:reference-file line="69">web/thesaurus/properties.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="c0f2a335de197ca806136680f016f57191f504e9" resname="thesaurus:: langue par default" approved="yes">
         <source>thesaurus:: langue par default</source>
         <target state="translated">Default language</target>
@@ -13724,6 +13714,11 @@ It is possible to place several search areas</target>
         <source>thesaurus:: pas de reindexation</source>
         <target state="translated">No re-index</target>
         <jms:reference-file line="86">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button">
+        <source>thesaurus:: populate button</source>
+        <target state="new">thesaurus:: populate button</target>
+        <jms:reference-file line="226">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a448f487b7feb813766fdba3b0713bd3c690c756" resname="thesaurus:: presentation" approved="yes">
         <source>thesaurus:: presentation</source>
@@ -13847,7 +13842,7 @@ It is possible to place several search areas</target>
         <target state="translated">Close all (with navigation)</target>
         <jms:reference-file line="137">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="no">
+      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock">
         <source>thesaurus::menu:  Mettre dans le stock</source>
         <target state="needs-translation">Place in the stock</target>
         <jms:reference-file line="196">web/thesaurus/thesaurus.html.twig</jms:reference-file>
@@ -13911,25 +13906,30 @@ It is possible to place several search areas</target>
         <jms:reference-file line="33">web/thesaurus/properties.html.twig</jms:reference-file>
         <jms:reference-file line="182">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="no">
+      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
         <target state="needs-translation">Warning populate is in process to indexing databox. Wait the end of this indexing, before launch a new one.</target>
-        <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1566">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
         <source>thesaurus::populate: success message</source>
         <target state="new">thesaurus::populate: success message</target>
-        <jms:reference-file line="1559">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+        <jms:reference-file line="1561">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="no">
+      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export">
         <source>thesaurus:dialog:: export</source>
         <target state="needs-translation">Candidats export</target>
         <jms:reference-file line="696">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties" approved="no">
+      <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties">
         <source>thesaurus:dialog:: properties</source>
         <target state="needs-translation">Properties</target>
         <jms:reference-file line="648">web/thesaurus/thesaurus.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId">
+        <source>thesaurus:termePorperties:termeId</source>
+        <target state="new">thesaurus:termePorperties:termeId</target>
+        <jms:reference-file line="68">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1118f7e206d8ec4d92392f3e8c2804b156b3a082" resname="thumbnail validation" approved="yes">
         <source>thumbnail validation</source>

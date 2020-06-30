@@ -223,7 +223,7 @@
             <br/>
             <div id="id_thbox_bck" class="thbox" style="position:absolute; top:28px; left:8px; right:8px; bottom:8px; background-color:#f4f4f4; xoverflow:hidden">
                 <div class="populate_btn_wrapper">
-                    <a class="populate_btn btn btn-primary" id="populate_btn">Populate</a>
+                    <a class="populate_btn btn btn-primary" id="populate_btn">{{ 'thesaurus:: populate button' | trans }}</a>
                 </div>
                 <div style="display: none">
                     <div id="confirm_populate">
@@ -1535,6 +1535,8 @@
                                                     $('.cancel_button').click(function () {
                                                         $('.close-dialog').trigger('click');
                                                     });
+                                                    $('#CTERMS').find('.OB').addClass('ob').removeClass('OB');
+                                                    $('#THP_C').html('+');
 
 
                                                 }
