@@ -13913,8 +13913,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="no">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Warning populate is in process to indexing databox,
-Wait the end of this indexing, before launch a new one.</target>
+        <target state="needs-translation">Warning populate is in process to indexing databox. Wait the end of this indexing, before launch a new one.</target>
         <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
