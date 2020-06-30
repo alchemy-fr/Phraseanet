@@ -1,6 +1,6 @@
 $blue-tsr: #2196f3;
 $grey-tsr: #aaa;
-
+$iconsPath: '../../../assets/thesaurus/images/';
 @mixin blue-btn {
   color: #fff;
   background: $blue-tsr;
@@ -275,17 +275,13 @@ H3, H4 {
 .menu {
   FONT-FAMILY: Arial, helvetica, sans-serif;
   font-size: 12px;
-  border-left: 1px solid #ffffff;
-  border-top: 1px solid #ffffff;
-  border-right: 2px solid #000000;
-  border-bottom: 2px solid #000000;
   padding: 0px;
   margin: 0px;
   visibility: hidden;
   position: absolute;
-  top: 0px;
-  left: 0px;
-  background-color: #d4d0c8;
+  top: 0;
+  left: 0;
+  background-color: #535353;
 }
 
 .menu IMG {
@@ -299,19 +295,19 @@ H3, H4 {
   position: relative;
 }
 
-.menu A {
+.menu a {
   font-size: 12px;
   display: block;
   position: relative;
   text-decoration: none;
-  color: #000000;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  padding-left: 13px;
-  padding-right: 3px;
-  overflow: hidden;
-  border: none 0px #FFFFFF;
-  white-space: nowrap;
+  color: #fff;
+  padding: 5px 6px 5px 16px;
+  background-image: url('#{$iconsPath}caret-right-solid.svg');
+  background-size: 5px;
+  background-position: 5px;
+  background-color: #535353;
+  background-repeat: no-repeat;
+
 }
 
 .menu A:hover {
@@ -320,7 +316,7 @@ H3, H4 {
   position: relative;
   text-decoration: none;
   color: #ffffff;
-  background-color: #000080;
+  background-color: #884c92;
 }
 
 .menu A.disabled {
@@ -328,12 +324,9 @@ H3, H4 {
   display: block;
   position: relative;
   text-decoration: none;
-  color: #A0A0A0;
-  padding-top: 1px;
-  padding-bottom: 1px;
-  padding-left: 13px;
-  padding-right: 3px;
+  color: lighten(#535353, 10%);
   overflow: hidden;
+  background-image: url('#{$iconsPath}caret-right-solid-grey.svg');
 }
 
 .menu A.disabled:hover {
@@ -341,8 +334,8 @@ H3, H4 {
   display: block;
   position: relative;
   text-decoration: none;
-  color: #A0A0A0;
-  background-color: #d4d0c8;
+  color: lighten(#535353, 5%);
+  background-color: #535353;
 }
 
 .menu .line {
@@ -398,15 +391,17 @@ H3, H4 {
     &:nth-child(1) {
       @include grey-btn
     }
-      &:nth-child(2) {
+    &:nth-child(2) {
       @include blue-btn
     }
   }
 }
+
 .text-center {
   text-align: center;
   padding-bottom: 10px;
 }
+
 .populate_btn {
   position: absolute;
   background: $blue-tsr;
@@ -417,10 +412,21 @@ H3, H4 {
   color: #fff;
   padding: 7px 10px;
   font-weight: bold;
-  border: 1px solid  #d0d0d0;
+  border: 1px solid #d0d0d0;
   cursor: pointer;
 
   &:hover {
     background: darken($blue-tsr, 20%);
+  }
+}
+
+.thesaurus-page {
+  .ui-widget-header {
+    border: 1px solid darken(#884c92, 20%);
+    background: #884c92;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
