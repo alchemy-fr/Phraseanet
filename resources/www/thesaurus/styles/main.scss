@@ -301,12 +301,8 @@ H3, H4 {
   position: relative;
   text-decoration: none;
   color: #fff;
-  padding: 5px 6px 5px 16px;
-  background-image: url('#{$iconsPath}caret-right-solid.svg');
-  background-size: 5px;
-  background-position: 5px;
+  padding: 5px 6px;
   background-color: #535353;
-  background-repeat: no-repeat;
 
 }
 
@@ -326,7 +322,6 @@ H3, H4 {
   text-decoration: none;
   color: lighten(#535353, 10%);
   overflow: hidden;
-  background-image: url('#{$iconsPath}caret-right-solid-grey.svg');
 }
 
 .menu A.disabled:hover {

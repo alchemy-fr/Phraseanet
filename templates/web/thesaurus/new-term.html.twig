@@ -52,9 +52,9 @@
                     {{ 'thesaurus:: selectionner la provenance a accepter' | trans }}
                 {% endif %}
                 <br/>
-                <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
+                <input type="button" id="cancel_button" class="cancel_btn" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" >
                 &nbsp;&nbsp;&nbsp;
-                <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
+                <input type="button" id="submit_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
             </form>
         </div>
         {% else %}
@@ -70,9 +70,9 @@
         {{ prop_label }}
         <br/>
         <form class="thesaurus_confirm_bottom_block">
-            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
+            <input type="button" id="cancel_button" class="cancel_btn" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" >
             &nbsp;&nbsp;&nbsp;
-            <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
+            <input type="button" id="submit_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" >
         </form>
         {% endif %}
 </body>

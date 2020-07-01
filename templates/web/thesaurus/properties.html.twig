@@ -30,7 +30,7 @@
             });
         </script>
 <div class="menu" id="syMenu" style="z-index:999">
-    <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus::menu:  Mettre dans le stock' | trans }}</a>
+    <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus:properties::  Mettre dans le stock' | trans }}</a>
 </div>
     <div id="desktop" class="dialog">
         <div class="menu" id="flagsMenu" style="z-index:999">
@@ -223,7 +223,7 @@
                         sy_list = ret.getElementsByTagName("sy_list").item(0);
                         //refresh_sy(sy_list);
 
-                      /*  refresh = ret.getElementsByTagName("refresh");
+                        refresh = ret.getElementsByTagName("refresh");
                         for(i=0; i<refresh.length; i++)
                         {
                             switch(refresh.item(i).getAttribute("type"))
@@ -237,7 +237,7 @@
                                     myGUI.select(document.getElementById("THE_{{ id }}"));
                                     break;
                             }
-                        }*/
+                        }
                         var new_url =  $('#url_properties').val();
                         $.ajax({
                             type: "GET",
@@ -358,9 +358,12 @@
                                 document.getElementById("flagsMenu").runAsMenu( evt, tr );
                                 break;
                             case "SYN_":    // le synonyme
-                                document.getElementById("syMenu").runAsMenu( evt, tr );
-                                $('.delete_term').html('');
-                                $('.delete_term', tr).append($('#syMenu').html());
+                                if (stock == false)
+                                    {
+                                        document.getElementById("syMenu").runAsMenu(evt, tr);
+                                        $('.delete_term').html('');
+                                        $('.delete_term', tr).append($('#syMenu').html());
+                                    }
                                 break;
                         }
                     }
