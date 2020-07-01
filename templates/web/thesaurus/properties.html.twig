@@ -30,7 +30,7 @@
             });
         </script>
 <div class="menu" id="syMenu" style="z-index:999">
-    <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus::menu: supprimer' | trans }}</a>
+    <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus:properties::  Mettre dans le stock' | trans }}</a>
 </div>
     <div id="desktop" class="dialog">
         <div class="menu" id="flagsMenu" style="z-index:999">
@@ -238,6 +238,15 @@
                                     break;
                             }
                         }
+                        var new_url =  $('#url_properties').val();
+                        $.ajax({
+                            type: "GET",
+                            url: `${new_url}`,
+                            success: function(data){
+                                $('#DLG_PROPERTIES').html('');
+                                $('#DLG_PROPERTIES').append(data);
+                            }
+                        });
                     }
                     break;
             }
@@ -313,7 +322,7 @@
                             ;
                         if(tr)
                             myGUI.select(tr);
-                        switch(o.id.substr(0, 4))
+                       /* switch(o.id.substr(0, 4))
                         {
                             case "FLG_":    // le drapeau
                                 document.getElementById("flagsMenu").runAsMenu( evt, tr );
@@ -323,7 +332,7 @@
                             $('.delete_term').html('');
                             $('.delete_term', tr).append($('#syMenu').html());
                                 break;
-                        }
+                        }*/
                     }
                     break;
                 case "MOUSEDOWN":
@@ -340,6 +349,21 @@
                                 break;
                             case "BTND_":
                                 syChgPos(-1);
+                                break;
+                        }
+
+                        switch(o.id.substr(0, 4))
+                        {
+                            case "FLG_":    // le drapeau
+                                document.getElementById("flagsMenu").runAsMenu( evt, tr );
+                                break;
+                            case "SYN_":    // le synonyme
+                                if (stock == false)
+                                    {
+                                        document.getElementById("syMenu").runAsMenu(evt, tr);
+                                        $('.delete_term').html('');
+                                        $('.delete_term', tr).append($('#syMenu').html());
+                                    }
                                 break;
                         }
                     }

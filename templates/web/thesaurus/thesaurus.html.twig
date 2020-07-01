@@ -343,7 +343,7 @@
             <br/>
 
         </form>
-
+        <input type="hidden" id="url_properties">
         <div id="clipboard" style="position:absolute; top:0px; left:0px; z-index:99">&nbsp;</div>
 
 
@@ -355,6 +355,7 @@
 
             //Ajax function to get data
             var title = '';
+            var stock = false;
             function loadDataAjax(urls, width, height, bloc, title) {
                     $(bloc).dialog({
                         title: title,
@@ -643,9 +644,11 @@
                             url += "&piv={{ piv }}";
                             url += "&id=" + o.id.substr(4);
                             url += "&typ=CT";
-
+                            $('#url_properties').val(url);
+                            stock = true;
                            // w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                             w = loadDataAjax(url, 500 , 340, '#DLG_PROPERTIES','{{ 'thesaurus:dialog:: properties'  | trans }}');
+
                             break;
                         case "kcterm_search":
                             $("#SEARCH_DLG").dialog("option", "buttons",
@@ -754,7 +757,8 @@
                                         url += "&piv={{ piv }}";
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=CT";
-
+                                        $('#url_properties').val(url);
+                                        stock = false;
                                         //w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                         w = loadDataAjax(url, 500 , 340,'#DLG_PROPERTIES', '{{ 'thesaurus:: Proprietes' | trans }}');
                                     }
@@ -1083,7 +1087,7 @@
                                                             url += "&sylng=" + encodeURIComponent(lng);
 
                                                           //  w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                                            w = loadDataAjax(url,490, 290,"#NEWSY_DLG_CONFIRM",'{% if typ == "TS" %}{{ 'thesaurus:: Nouveau terme specifique' | trans }}{% else %}{{ 'thesaurus:: Nouveau synonyme' | trans }}{% endif %}');
+                                                            w = loadDataAjax(url,490, 350,"#NEWSY_DLG_CONFIRM",'{% if typ == "TS" %}{{ 'thesaurus:: Nouveau terme specifique' | trans }}{% else %}{{ 'thesaurus:: Nouveau synonyme' | trans }}{% endif %}');
                                                         }
                                                     }
                                                 ],
@@ -1149,7 +1153,7 @@
                                         url +=  "&piv={{ piv }}";
                                         url += "&tid=" + o.id.substr(4);
                                        // w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
-                                        w = loadDataAjax(url,700, 400, "#DLG_LINK_FIELD_1", '{{ 'thesaurus:: Lier la branche de thesaurus au champ' | trans }}');
+                                        w = loadDataAjax(url,700, 430, "#DLG_LINK_FIELD_1", '{{ 'thesaurus:: Lier la branche de thesaurus au champ' | trans }}');
                                         break;
                                     case "kterm_properties":
                                         var myObj = { "win":window };
@@ -1158,7 +1162,8 @@
                                         url += "&piv={{ piv }}";
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
-
+                                        $('#url_properties').val(url);
+                                        stock = false;
                                       //  w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                        w = loadDataAjax(url,700, 400, "#DLG_PROPERTIES", '{{ 'thesaurus:: Proprietes' | trans }}');
 
