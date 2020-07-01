@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-30T14:46:16Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -13718,9 +13718,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Pas de ré-indexation</target>
         <jms:reference-file line="86">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button">
+      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button" approved="no">
         <source>thesaurus:: populate button</source>
-        <target state="new">thesaurus:: populate button</target>
+        <target state="needs-translation">Indexation</target>
         <jms:reference-file line="226">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a448f487b7feb813766fdba3b0713bd3c690c756" resname="thesaurus:: presentation" approved="yes">
@@ -13929,9 +13929,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="needs-translation">Propriétés</target>
         <jms:reference-file line="648">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId">
+      <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId" approved="no">
         <source>thesaurus:termePorperties:termeId</source>
-        <target state="new">thesaurus:termePorperties:termeId</target>
+        <target state="needs-translation">ID</target>
         <jms:reference-file line="68">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1118f7e206d8ec4d92392f3e8c2804b156b3a082" resname="thumbnail validation" approved="yes">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-06-30T14:45:51Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -12197,19 +12197,19 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Type a subtitle</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time">
+      <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time" approved="yes">
         <source>prod:videoeditor:subtitletab:: End time</source>
-        <target state="needs-translation">End</target>
+        <target state="translated">End</target>
         <jms:reference-file line="177">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b12193c53fdd26a57e157dc15823df75ad0756e3" resname="prod:videoeditor:subtitletab:: No caption message">
+      <trans-unit id="b12193c53fdd26a57e157dc15823df75ad0756e3" resname="prod:videoeditor:subtitletab:: No caption message" approved="yes">
         <source>prod:videoeditor:subtitletab:: No caption message</source>
-        <target state="needs-translation">No Subtitle set for this language</target>
+        <target state="translated">No Subtitle set for this language</target>
         <jms:reference-file line="198">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for">
+      <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for" approved="yes">
         <source>prod:videoeditor:subtitletab:: Show for</source>
-        <target state="needs-translation">Duration</target>
+        <target state="translated">Duration</target>
         <jms:reference-file line="178">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e79e454459e7dc39a4aad9eb7f65014fa6f0a001" resname="prod:videoeditor:subtitletab:: Start time" approved="yes">
@@ -13715,9 +13715,9 @@ It is possible to place several search areas</target>
         <target state="translated">No re-index</target>
         <jms:reference-file line="86">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button">
+      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button" approved="no">
         <source>thesaurus:: populate button</source>
-        <target state="new">thesaurus:: populate button</target>
+        <target state="needs-translation">Indexing</target>
         <jms:reference-file line="226">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a448f487b7feb813766fdba3b0713bd3c690c756" resname="thesaurus:: presentation" approved="yes">
@@ -13842,9 +13842,9 @@ It is possible to place several search areas</target>
         <target state="translated">Close all (with navigation)</target>
         <jms:reference-file line="137">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock">
+      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="no">
         <source>thesaurus::menu:  Mettre dans le stock</source>
-        <target state="needs-translation">Place in the stock</target>
+        <target state="needs-translation">Move to the stock</target>
         <jms:reference-file line="196">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="758b089c0ed0efc0a6b86e1b45b1526dca96bb34" resname="thesaurus::menu: Nouveau synonyme" approved="yes">
@@ -13916,9 +13916,9 @@ It is possible to place several search areas</target>
         <target state="new">thesaurus::populate: success message</target>
         <jms:reference-file line="1561">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export">
+      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="no">
         <source>thesaurus:dialog:: export</source>
-        <target state="needs-translation">Candidats export</target>
+        <target state="needs-translation">Export Candidats</target>
         <jms:reference-file line="696">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties">
@@ -13926,9 +13926,9 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Properties</target>
         <jms:reference-file line="648">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId">
+      <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId" approved="no">
         <source>thesaurus:termePorperties:termeId</source>
-        <target state="new">thesaurus:termePorperties:termeId</target>
+        <target state="needs-translation">Id</target>
         <jms:reference-file line="68">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1118f7e206d8ec4d92392f3e8c2804b156b3a082" resname="thumbnail validation" approved="yes">
