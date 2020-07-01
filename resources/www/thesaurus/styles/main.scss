@@ -351,7 +351,8 @@ H3, H4 {
 }
 
 #delete_sy {
-  background: $blue-tsr;
+  background: orange;
+  border: 1px solid darken(orange,20%);
   color: #fff;
   font-weight: bold;
   padding: 1px 10px;
@@ -404,7 +405,7 @@ H3, H4 {
 
 .populate_btn {
   position: absolute;
-  background: $blue-tsr;
+  background: #884c92;
   z-index: 2;
   right: 50px;
   top: 50px;
@@ -416,7 +417,7 @@ H3, H4 {
   cursor: pointer;
 
   &:hover {
-    background: darken($blue-tsr, 20%);
+    background: darken(#884c92, 20%);
   }
 }
 
@@ -429,4 +430,9 @@ H3, H4 {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
   }
+}
+
+#flagsMenu p {
+  color: #fff;
+  padding: 0 10px;
 }
