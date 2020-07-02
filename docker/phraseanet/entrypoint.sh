@@ -32,8 +32,8 @@ if [ -f "$FILE" ]; then
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
         bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
     fi
-    if [[ $PHRASEANET_ADMIN_ACCOUNT_PASSWORD ]]; then
-       bin/console user:password --user_id=1 --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
+    if [[ $PHRASEANET_ADMIN_ACCOUNT_ID && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
+       bin/console user:password --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
     fi
     
 else
