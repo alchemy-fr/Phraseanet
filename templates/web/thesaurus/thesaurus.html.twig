@@ -226,7 +226,7 @@
                         <p><span class="alert alert-message"> {{ 'thesaurus:: confirm populate' | trans }}</span></p>
                         <div class="thesaurus_confirm_bottom_block">
                             <input type="button" class="cancel_button cancel_btn" value="{{ 'boutton::annuler' | trans }}" >
-                            <input type="button" id="confirm_populate_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" >
+                            <input type="submit" id="confirm_populate_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" >
                         </div>
                     </div>
                 </div>
@@ -1521,55 +1521,58 @@
                                          */
 
 
-                                        /**Populate btn action**/
-                                        $('#populate_btn').click(function (e) {
-                                            e.preventDefault();
-                                            $("#confirm_populate").dialog({
-                                                modal: true,
-                                                title: "{{ 'thesaurus: Populate title' | trans }}",
-                                                autoOpen:false,
-                                                width: 400,
-                                                open:function () {
-                                                    $(this).closest(".ui-dialog")
-                                                        .find(".ui-button:first") // the first button
-                                                        .addClass("close-dialog").hide();
-                                                    $('.cancel_button').click(function () {
-                                                        $('.close-dialog').trigger('click');
-                                                    });
-                                                    $('#CTERMS').find('.OB').addClass('ob').removeClass('OB');
-                                                    $('#THP_C').html('+');
+                                      $(document).ready(function () {
+                                          /**Populate btn action**/
+                                          $('#populate_btn').bind('click', function (e) {
+                                              e.preventDefault();
+                                              $("#confirm_populate").dialog({
+                                                  modal: true,
+                                                  title: "{{ 'thesaurus: Populate title' | trans }}",
+                                                  autoOpen:false,
+                                                  width: 400,
+                                                  open:function () {
+                                                      $(this).closest(".ui-dialog")
+                                                          .find(".ui-button:first") // the first button
+                                                          .addClass("close-dialog").hide();
+                                                      $('.cancel_button').click(function () {
+                                                          $('.close-dialog').trigger('click');
+                                                      });
+                                                      $('#CTERMS').find('.OB').addClass('ob').removeClass('OB');
+                                                      $('#THP_C').html('+');
 
 
-                                                }
-                                            });
-                                            $("#confirm_populate").dialog('open');
-                                            $('#confirm_populate_button').click(function () {
-                                                $.ajax({
-                                                    type: 'GET',
-                                                    url: '/admin/worker-manager/populate-status',
-                                                    data: {
-                                                        sbasIds: [{{ bid }}]
-                                                    },
-                                                    success: function (data) {
-                                                        if (data == 0) {
-                                                            $.ajax({
-                                                                url: '/thesaurus/populate',
-                                                                type: 'POST',
-                                                                data: {
-                                                                    databox_id: {{ bid }}
-                                                                },
-                                                                success: function (data) {
-                                                                    //humane.info('{{ "thesaurus::populate: success message" |trans }}');
-                                                                    $('.close-dialog').trigger('click');
-                                                                }
-                                                            });
-                                                        } else {
-                                                            alert('{{ "thesaurus::populate: Warning populate is in process to indexing databox" |trans }}');
-                                                        }
-                                                    }
-                                                });
-                                            })
-                                        });
+                                                  }
+                                              });
+                                              $("#confirm_populate").dialog('open');
+                                              $('#confirm_populate_button').unbind('click').bind('click', function (e) {
+                                                  e.preventDefault();
+                                                  $.ajax({
+                                                      type: 'GET',
+                                                      url: '/admin/worker-manager/populate-status',
+                                                      data: {
+                                                          sbasIds: [{{ bid }}]
+                                                      },
+                                                      success: function (data) {
+                                                          if (data == 0) {
+                                                              $.ajax({
+                                                                  url: '/thesaurus/populate',
+                                                                  type: 'POST',
+                                                                  data: {
+                                                                      databox_id: {{ bid }}
+                                                                  },
+                                                                  success: function (data) {
+                                                                      //humane.info('{{ "thesaurus::populate: success message" |trans }}');
+                                                                      $('.close-dialog').trigger('click');
+                                                                  }
+                                                              });
+                                                          } else {
+                                                              alert('{{ "thesaurus::populate: Warning populate is in process to indexing databox" |trans }}');
+                                                          }
+                                                      }
+                                                  });
+                                              })
+                                          });
+                                      })
 
         </script>
     </body>
