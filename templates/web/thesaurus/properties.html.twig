@@ -33,13 +33,6 @@
     <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus:properties::  Mettre dans le stock' | trans }}</a>
 </div>
     <div id="desktop" class="dialog">
-        {#<div class="menu" id="flagsMenu" style="z-index:999">
-            {% for code, language in languages %}
-                <a id='flagMenu_{{ code }}' href='javascript:void(0)' class=''>
-                <img src='/assets/common/images/lng/{{ code }}_flag_18.gif' />{{ language }}</a>
-            {% endfor %}
-        </div>#}
-
 
         <H4>{{ fullpath | raw }}</H4>
         <div style='float:right'>
@@ -137,14 +130,6 @@
             sy_list = ret.getElementsByTagName("sy_list").item(0);
 
             refresh_sy(sy_list);
-           /* $.ajax({
-                type: "GET",
-                url: `${url}?${parms}`,
-                success: function(data){
-                    $('#DLG_PROPERTIES').html('');
-                    $('#DLG_PROPERTIES').append(data);
-                }
-            });*/
 
             refresh = ret.getElementsByTagName("refresh");
 
