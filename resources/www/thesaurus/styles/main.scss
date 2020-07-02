@@ -301,12 +301,8 @@ H3, H4 {
   position: relative;
   text-decoration: none;
   color: #fff;
-  padding: 5px 6px 5px 16px;
-  background-image: url('#{$iconsPath}caret-right-solid.svg');
-  background-size: 5px;
-  background-position: 5px;
+  padding: 5px 6px;
   background-color: #535353;
-  background-repeat: no-repeat;
 
 }
 
@@ -326,7 +322,6 @@ H3, H4 {
   text-decoration: none;
   color: lighten(#535353, 10%);
   overflow: hidden;
-  background-image: url('#{$iconsPath}caret-right-solid-grey.svg');
 }
 
 .menu A.disabled:hover {
@@ -351,7 +346,8 @@ H3, H4 {
 }
 
 #delete_sy {
-  background: $blue-tsr;
+  background: orange;
+  border: 1px solid darken(orange,20%);
   color: #fff;
   font-weight: bold;
   padding: 1px 10px;
@@ -404,7 +400,7 @@ H3, H4 {
 
 .populate_btn {
   position: absolute;
-  background: $blue-tsr;
+  background: #884c92;
   z-index: 2;
   right: 50px;
   top: 50px;
@@ -416,7 +412,7 @@ H3, H4 {
   cursor: pointer;
 
   &:hover {
-    background: darken($blue-tsr, 20%);
+    background: darken(#884c92, 20%);
   }
 }
 
@@ -429,4 +425,9 @@ H3, H4 {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
   }
+}
+
+#flagsMenu p {
+  color: #fff;
+  padding: 0 10px;
 }

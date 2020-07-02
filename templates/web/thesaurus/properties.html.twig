@@ -30,26 +30,20 @@
             });
         </script>
 <div class="menu" id="syMenu" style="z-index:999">
-    <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus::menu: supprimer' | trans }}</a>
+    <a href="javascript:void(0)" id="delete_sy">{{ 'thesaurus:properties::  Mettre dans le stock' | trans }}</a>
 </div>
     <div id="desktop" class="dialog">
-        <div class="menu" id="flagsMenu" style="z-index:999">
-            {% for code, language in languages %}
-                <a id='flagMenu_{{ code }}' href='javascript:void(0)' class=''>
-                <img src='/assets/common/images/lng/{{ code }}_flag_18.gif' />{{ language }}</a>
-            {% endfor %}
-        </div>
 
-        <div style='text-align:right'>
+        <H4>{{ fullpath | raw }}</H4>
+        <div style='float:right'>
             <b>id:</b>&nbsp;{{ id }}
         </div>
-        <H4>{{ fullpath | raw }}</H4><br/>
         {% if typ == "CT" %}
             <br/>
-        {% elseif typ == "TH" %}
+        {#{% elseif typ == "TH" %}
             {% trans with {'%hits%' : hits} %}thesaurus:: %hits% reponses retournees{% endtrans %}
             <br/>
-            <br/>
+            <br/>#}
         {% endif %}
         <div id="TSY" class="tableContainer" style="margin:10px; position:relative; top:0px; left:0px">
             <div>
@@ -238,6 +232,15 @@
                                     break;
                             }
                         }
+                        var new_url =  $('#url_properties').val();
+                        $.ajax({
+                            type: "GET",
+                            url: `${new_url}`,
+                            success: function(data){
+                                $('#DLG_PROPERTIES').html('');
+                                $('#DLG_PROPERTIES').append(data);
+                            }
+                        });
                     }
                     break;
             }
@@ -286,8 +289,8 @@
                 // td.setAttribute("colSpan", "3");          // attention au 'S' majuscule !!!
                 td.innerHTML = n.getAttribute("t");
 
-                td = tr.appendChild(document.createElement("td"));
-                td.innerHTML = n.getAttribute("hits");
+                /*td = tr.appendChild(document.createElement("td"));
+                td.innerHTML = n.getAttribute("hits");*/
 
                 td = tr.appendChild(document.createElement("td"));
                 td.innerHTML = n.getAttribute("id");
@@ -313,17 +316,6 @@
                             ;
                         if(tr)
                             myGUI.select(tr);
-                        switch(o.id.substr(0, 4))
-                        {
-                            case "FLG_":    // le drapeau
-                                document.getElementById("flagsMenu").runAsMenu( evt, tr );
-                                break;
-                            case "SYN_":    // le synonyme
-                                document.getElementById("syMenu").runAsMenu( evt, tr );
-                            $('.delete_term').html('');
-                            $('.delete_term', tr).append($('#syMenu').html());
-                                break;
-                        }
                     }
                     break;
                 case "MOUSEDOWN":
@@ -340,6 +332,21 @@
                                 break;
                             case "BTND_":
                                 syChgPos(-1);
+                                break;
+                        }
+
+                        switch(o.id.substr(0, 4))
+                        {
+                            case "FLG_":    // le drapeau
+                                document.getElementById("flagsMenu").runAsMenu( evt, tr );
+                                break;
+                            case "SYN_":    // le synonyme
+                                if (stock == false)
+                                    {
+                                        document.getElementById("syMenu").runAsMenu(evt, tr);
+                                        $('.delete_term').html('');
+                                        $('.delete_term', tr).append($('#syMenu').html());
+                                    }
                                 break;
                         }
                     }
