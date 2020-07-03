@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
-use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Core\Event\Record\RecordAutoSubtitleEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\WorkerJob;
@@ -17,14 +16,19 @@ class SubtitleSubscriber implements EventSubscriberInterface
     /** @var WorkerJobRepository  $repoWorkerJob*/
     private $repoWorkerJob;
 
-    public function __construct(WorkerJobRepository $repoWorkerJob, MessagePublisher $messagePublisher)
+    /** @var callable  */
+    private $repoWorkerJobLocator;
+
+    public function __construct(callable $repoWorkerJobLocator, MessagePublisher $messagePublisher)
     {
-        $this->repoWorkerJob    = $repoWorkerJob;
-        $this->messagePublisher = $messagePublisher;
+        $this->repoWorkerJobLocator     = $repoWorkerJobLocator;
+        $this->messagePublisher         = $messagePublisher;
     }
 
     public function onRecordAutoSubtitle(RecordAutoSubtitleEvent $event)
     {
+        $this->repoWorkerJob = $this->getRepoWorkerJob();
+
         $em = $this->repoWorkerJob->getEntityManager();
 
         $data = [
@@ -72,4 +76,13 @@ class SubtitleSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @return WorkerJobRepository
+     */
+    private function getRepoWorkerJob()
+    {
+        $callable = $this->repoWorkerJobLocator;
+
+        return $callable();
+    }
 }

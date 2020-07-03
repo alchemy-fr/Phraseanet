@@ -69,7 +69,7 @@ class QueueWorkerServiceProvider implements PluginProviderInterface
                 $dispatcher->addSubscriber(new AssetsIngestSubscriber($app['alchemy_worker.message.publisher']));
                 $dispatcher->addSubscriber(new SearchengineSubscriber($app['alchemy_worker.message.publisher']));
                 $dispatcher->addSubscriber(new WebhookSubscriber($app['alchemy_worker.message.publisher']));
-                $dispatcher->addSubscriber(new SubtitleSubscriber($app['repo.worker-job'], $app['alchemy_worker.message.publisher']));
+                $dispatcher->addSubscriber(new SubtitleSubscriber(new LazyLocator($app, 'repo.worker-job'), $app['alchemy_worker.message.publisher']));
 
                 return $dispatcher;
             })
