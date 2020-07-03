@@ -50,7 +50,7 @@ class SubtitleWorker implements WorkerInterface
 
         $record = $this->getApplicationBox()->get_databox($payload['databoxId'])->get_record($payload['recordId']);
 
-        if ($record->has_preview() && ($previewLink = $record->get_preview()->get_permalink()) !== null && $payload['metaStructureId']) {
+        if ($payload['permalinkUrl'] != '' && $payload['metaStructureId']) {
             switch ($payload['langageSource']) {
                 case 'En':
                     $language = 'en-GB';
@@ -64,8 +64,6 @@ class SubtitleWorker implements WorkerInterface
                     break;
             }
 
-            $permalinkUrl = $previewLink->get_url()->__toString();
-
             $gingerClient = new Client();
 
             try {
@@ -74,7 +72,7 @@ class SubtitleWorker implements WorkerInterface
                         'Authorization' => 'token '.self::GINGER_TOKEN
                     ],
                     'json' => [
-                        'url'       => $permalinkUrl,
+                        'url'       => $payload['permalinkUrl'],
                         'language'  => $language
                     ]
                 ]);

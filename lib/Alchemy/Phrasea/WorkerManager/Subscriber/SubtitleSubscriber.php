@@ -30,6 +30,7 @@ class SubtitleSubscriber implements EventSubscriberInterface
         $data = [
             "databoxId"         => $event->getRecord()->getDataboxId(),
             "recordId"          => $event->getRecord()->getRecordId(),
+            "permalinkUrl"      => $event->getPermalinkUrl(),
             "langageSource"     => $event->getLanguageSource(),
             "metaStructureId"   => $event->getMetaStructId()
         ];

@@ -456,9 +456,14 @@ class ToolsController extends Controller
             (int)$request->request->get("record_id")
         );
 
+        $permalinkUrl = '';
+        if ($record->has_preview() && ($previewLink = $record->get_preview()->get_permalink()) != null) {
+            $permalinkUrl = $previewLink->get_url()->__toString();
+        }
+
         $this->dispatch(
             PhraseaEvents::RECORD_AUTO_SUBTITLE,
-            new RecordAutoSubtitleEvent($record, $request->request->get("subtitle_language_source"), $request->request->get("meta_struct_id"))
+            new RecordAutoSubtitleEvent($record, $permalinkUrl, $request->request->get("subtitle_language_source"), $request->request->get("meta_struct_id"))
         );
 
         return $this->app->json(["status" => "dispatch"]);
