@@ -84,7 +84,7 @@ class SubtitleWorker implements WorkerInterface
             }
 
             if ($response->getStatusCode() !== 201) {
-                $this->logger->error("response status : ". $response->getStatusCode());
+                $this->logger->error("response status /media/ : ". $response->getStatusCode());
                 $this->jobFinished($workerJob);
 
                 return 0;
@@ -97,7 +97,7 @@ class SubtitleWorker implements WorkerInterface
             do {
                 // first wait 5 second before check subtitling status
                 sleep(5);
-
+                $this->logger->info("bigin to check status");
                 try {
                     $response = $gingerClient->get(self::GINGER_BASE_URL.'/task/'.$responseMediaBody['task_id'].'/', [
                         'headers' => [
@@ -106,10 +106,13 @@ class SubtitleWorker implements WorkerInterface
                     ]);
                 } catch (\Exception $e) {
                     $checkStatus = false;
+
+                    break;
                 }
 
                 if ($response->getStatusCode() !== 200) {
                     $checkStatus = false;
+
                     break;
                 }
 
@@ -142,8 +145,8 @@ class SubtitleWorker implements WorkerInterface
                 return 0;
             }
 
-            if ($response->getStatusCode() !== 201) {
-                $this->logger->error("response status : ". $response->getStatusCode());
+            if ($response->getStatusCode() !== 200) {
+                $this->logger->error("response status /media/uuid : ". $response->getStatusCode());
                 $this->jobFinished($workerJob);
 
                 return 0;
