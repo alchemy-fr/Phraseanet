@@ -27,7 +27,6 @@ use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\WebhookUserEventSubscriber;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\HttpStackMetaProvider;
 use Alchemy\Phrasea\Core\MetaProvider\MediaUtilitiesMetaServiceProvider;
@@ -90,10 +89,8 @@ use Alchemy\Phrasea\Media\TechnicalDataServiceProvider;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\WorkerManager\Provider\AlchemyWorkerServiceProvider;
 use Alchemy\Phrasea\WorkerManager\Provider\QueueWorkerServiceProvider;
-use Alchemy\Phrasea\WorkerManager\Subscriber\SubtitleSubscriber;
 use Alchemy\QueueProvider\QueueServiceProvider;
 use Alchemy\WorkerProvider\WorkerServiceProvider;
-use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Monolog\Handler\ErrorLogHandler;
@@ -751,7 +748,6 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
                 $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
-                $dispatcher->addSubscriber(new SubtitleSubscriber(new LazyLocator($app, 'phraseanet.appbox'), $app['monolog']));
 
                 return $dispatcher;
             })
