@@ -169,7 +169,7 @@ class SubtitleWorker implements WorkerInterface
                 return 0;
             }
 
-            $this->logger->error("Auto subtitle SUCCESS");
+            $this->logger->info("Auto subtitle SUCCESS");
         }
 
         $this->jobFinished($workerJob);
