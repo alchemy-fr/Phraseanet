@@ -1242,7 +1242,7 @@ class ThesaurusController extends Controller
 
         $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($data));
 
-        return $this->app->json($data);
+        return $this->app->json(["status" => "success"]);
     }
 
     /**
