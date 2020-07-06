@@ -328,6 +328,12 @@ workers:
       password: guest
       vhost: /
 
+externalservice:
+    ginga:
+        service_base_url: https://base.uri
+        token: 39c6011d
+        transcript_format: text/vtt
+
 user_account:
     deleting_policies:
         email_confirmation: true

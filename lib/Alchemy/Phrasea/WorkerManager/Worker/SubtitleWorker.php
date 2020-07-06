@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
 use GuzzleHttp\Client;
@@ -9,29 +10,37 @@ use Psr\Log\LoggerInterface;
 
 class SubtitleWorker implements WorkerInterface
 {
-    const GINGER_BASE_URL = "https://test.api.ginger.studio/recognition/speech";
-    const GINGER_TOKEN    = "39c6011d-3bbe-4f39-95d0-a327d320ded4";
-    const GINGER_TRANSCRIPT_FORMAT = "text/vtt";
-
     /**
      * @var callable
      */
     private $appboxLocator;
 
     private $logger;
+    private $conf;
 
     /** @var WorkerJobRepository  $repoWorkerJob*/
     private $repoWorkerJob;
 
-    public function __construct(WorkerJobRepository $repoWorkerJob, callable $appboxLocator, LoggerInterface $logger)
+    public function __construct(WorkerJobRepository $repoWorkerJob, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger)
     {
         $this->repoWorkerJob = $repoWorkerJob;
+        $this->conf          = $conf;
         $this->appboxLocator = $appboxLocator;
         $this->logger        = $logger;
     }
 
     public function process(array $payload)
     {
+        $gingaBaseurl           = $this->conf->get(['externalservice', 'ginga', 'service_base_url']);
+        $gingaToken             = $this->conf->get(['externalservice', 'ginga', 'token']);
+        $gingaTranscriptFormat  = $this->conf->get(['externalservice', 'ginga', 'transcript_format']);
+
+        if (!$gingaBaseurl || !$gingaToken || !$gingaTranscriptFormat) {
+            $this->logger->error("External service Ginga not set correctly in configuration.yml");
+
+            return 0;
+        }
+
         /** @var WorkerJob $workerJob */
         $workerJob = $this->repoWorkerJob->find($payload['workerId']);
         if ($workerJob == null) {
@@ -67,9 +76,9 @@ class SubtitleWorker implements WorkerInterface
             $gingerClient = new Client();
 
             try {
-                $response = $gingerClient->post(self::GINGER_BASE_URL.'/media/', [
+                $response = $gingerClient->post($gingaBaseurl.'/media/', [
                     'headers' => [
-                        'Authorization' => 'token '.self::GINGER_TOKEN
+                        'Authorization' => 'token '.$gingaToken
                     ],
                     'json' => [
                         'url'       => $payload['permalinkUrl'],
@@ -99,9 +108,9 @@ class SubtitleWorker implements WorkerInterface
                 sleep(5);
                 $this->logger->info("bigin to check status");
                 try {
-                    $response = $gingerClient->get(self::GINGER_BASE_URL.'/task/'.$responseMediaBody['task_id'].'/', [
+                    $response = $gingerClient->get($gingaBaseurl.'/task/'.$responseMediaBody['task_id'].'/', [
                         'headers' => [
-                            'Authorization' => 'token '.self::GINGER_TOKEN
+                            'Authorization' => 'token '.$gingaToken
                         ]
                     ]);
                 } catch (\Exception $e) {
@@ -129,10 +138,10 @@ class SubtitleWorker implements WorkerInterface
             }
 
             try {
-                $response = $gingerClient->get(self::GINGER_BASE_URL.'/media/'.$responseMediaBody['media']['uuid'].'/', [
+                $response = $gingerClient->get($gingaBaseurl.'/media/'.$responseMediaBody['media']['uuid'].'/', [
                     'headers' => [
-                        'Authorization' => 'token '.self::GINGER_TOKEN,
-                        'ACCEPT'        => self::GINGER_TRANSCRIPT_FORMAT
+                        'Authorization' => 'token '.$gingaToken,
+                        'ACCEPT'        => $gingaTranscriptFormat
                     ],
                     'query' => [
                         'language'  => $language
