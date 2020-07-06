@@ -58,7 +58,7 @@ chown -R app:app \
     www 
 
 if [ -d "plugins/" ];then
-chown -R app:app plugin;
+chown -R app:app plugins;
 fi
 
 bash -e docker-php-entrypoint $@
