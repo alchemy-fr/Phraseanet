@@ -1,3 +1,4 @@
+send_timeout $GATEWAY_SEND_TIMEOUT;
 upstream backend {
     server phraseanet:9000;
 }
