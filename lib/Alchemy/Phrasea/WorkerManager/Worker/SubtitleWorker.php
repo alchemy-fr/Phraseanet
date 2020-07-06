@@ -31,9 +31,9 @@ class SubtitleWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        $gingaBaseurl           = $this->conf->get(['externalservice', 'ginga', 'service_base_url']);
-        $gingaToken             = $this->conf->get(['externalservice', 'ginga', 'token']);
-        $gingaTranscriptFormat  = $this->conf->get(['externalservice', 'ginga', 'transcript_format']);
+        $gingaBaseurl           = $this->conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'service_base_url']);
+        $gingaToken             = $this->conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'token']);
+        $gingaTranscriptFormat  = $this->conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'transcript_format']);
 
         if (!$gingaBaseurl || !$gingaToken || !$gingaTranscriptFormat) {
             $this->logger->error("External service Ginga not set correctly in configuration.yml");

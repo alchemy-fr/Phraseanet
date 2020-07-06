@@ -457,7 +457,12 @@ class ToolsController extends Controller
         );
 
         $permalinkUrl = '';
-        if ($record->has_preview() && ($previewLink = $record->get_preview()->get_permalink()) != null) {
+        $conf = $this->getConf();
+
+        // if subdef_source not set, by default use the preview permalink
+        $subdefSource = $conf->get(['externalservice', 'ginger', 'AutoSubtitling', 'subdef_source']) ?: 'preview';
+
+        if ($this->isPhysicallyPresent($record, $subdefSource) && ($previewLink = $record->get_subdef($subdefSource)->get_permalink()) != null) {
             $permalinkUrl = $previewLink->get_url()->__toString();
         }
 
@@ -523,5 +528,16 @@ class ToolsController extends Controller
             'JSonFields'            => json_encode($JSFields),
             'videoTextTrackFields'  => $videoTextTrackFields
         ]);
+    }
+
+    private function isPhysicallyPresent(\record_adapter $record, $subdefName)
+    {
+        try {
+            return $record->get_subdef($subdefName)->is_physically_present();
+        } catch (\Exception $e) {
+            unset($e);
+        }
+
+        return false;
     }
 }
