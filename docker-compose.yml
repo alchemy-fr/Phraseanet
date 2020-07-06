@@ -19,6 +19,7 @@ services:
     - phraseanet
     environment:
     - MAX_BODY_SIZE
+    - GATEWAY_SEND_TIMEOUT
     ports:
       - ${PHRASEANET_APP_PORT}:80
 
