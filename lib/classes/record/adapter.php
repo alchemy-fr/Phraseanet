@@ -36,6 +36,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\GpsPosition;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
@@ -257,7 +258,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param  string $type
      * @return $this
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      * @deprecated use {@link self::setType} instead.
      */
     public function set_type($type)
@@ -269,7 +270,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @param string $type
      * @return $this
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function setType($type)
     {
@@ -417,7 +418,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Return record collection
      *
-     * @return \collection
+     * @return collection
      * @deprecated use {@link self::getCollection} instead.
      */
     public function get_collection()
@@ -428,11 +429,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * Return collection to which the record belongs to.
      *
-     * @return \collection
+     * @return collection
      */
     public function getCollection()
     {
-        return \collection::getByCollectionId($this->app, $this->getDatabox(), $this->collection_id);
+        return collection::getByCollectionId($this->app, $this->getDatabox(), $this->collection_id);
     }
 
     /**
@@ -1190,11 +1191,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      *
      * @param Application $app
-     * @param \collection $collection
+     * @param collection $collection
      *
-     * @return \record_adapter
+     * @return record_adapter
      */
-    public static function createStory(Application $app, \collection $collection)
+    public static function createStory(Application $app, collection $collection)
     {
         $connection = $collection->get_databox()->get_connection();
 
@@ -1241,14 +1242,67 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
-     * @param File        $file
+     * @param File $file
      * @param Application $app
      *
-     * @return \record_adapter
+     * @return record_adapter|null
+     * @throws DBALException
      */
     public static function createFromFile(File $file, Application $app)
     {
-        $databox = $file->getCollection()->get_databox();
+        $collection = $file->getCollection();
+
+        $record = self::_create($collection, $app);
+        if($record) {
+            $databox = $record->getDatabox();
+
+            $filesystem = self::getFilesystem($app);
+
+            $pathhd = $filesystem->generateDataboxDocumentBasePath($databox);
+            $newname = $filesystem->generateDocumentFilename($record, $file->getFile());
+
+            $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
+
+            $media = $app->getMediaFromUri($pathhd . $newname);
+            media_subdef::create($app, $record, 'document', $media);
+
+            $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
+
+            $record->insertTechnicalDatas($app['mediavorus']);
+
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+        }
+
+        return $record;
+    }
+
+    /**
+     * @param collection $collection
+     * @param Application $app
+     *
+     * @return record_adapter|null
+     * @throws DBALException
+     */
+    public static function create(collection $collection, Application $app)
+    {
+        $record = self::_create($collection, $app);
+        if($record) {
+            $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+        }
+
+        return $record;
+    }
+
+    /**
+     * @param collection $collection
+     * @param Application $app
+     *
+     * @return record_adapter|null
+     * @throws DBALException
+     */
+    private static function _create(collection $collection, Application $app)
+    {
+        $databox = $collection->get_databox();
 
         $sql = "INSERT INTO record"
             . " (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)"
@@ -1258,13 +1312,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt = $connection->prepare($sql);
 
         $stmt->execute([
-            ':coll_id'          => $file->getCollection()->get_coll_id(),
+            ':coll_id'          => $collection->get_coll_id(),
             ':parent_record_id' => 0,
-            ':type'             => $file->getType() ? $file->getType()->getType() : 'unknown',
-            ':sha256'           => $file->getMedia()->getHash('sha256'),
-            ':uuid'             => $file->getUUID(true),
-            ':originalname'     => $file->getOriginalName(),
-            ':mime'             => $file->getFile()->getMimeType(),
+            ':type'             => 'unknown',
+            ':sha256'           => null,
+            ':uuid'             => null,
+            ':originalname'     => null,
+            ':mime'             => null,
         ]);
         $stmt->closeCursor();
 
@@ -1282,29 +1336,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $stmt->execute([
                 ':log_id'    => $log_id,
                 ':record_id' => $record_id,
-                ':coll_id'   => $file->getCollection()->get_coll_id(),
-                ':final'     => $file->getCollection()->get_coll_id(),
+                ':coll_id'   => $collection->get_coll_id(),
+                ':final'     => $collection->get_coll_id(),
             ]);
             $stmt->closeCursor();
-        } catch (\Exception $e) {
-            unset($e);
         }
-
-        $filesystem = self::getFilesystem($app);
-
-        $pathhd = $filesystem->generateDataboxDocumentBasePath($databox);
-        $newname = $filesystem->generateDocumentFilename($record, $file->getFile());
-
-        $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
-
-        $media = $app->getMediaFromUri($pathhd . $newname);
-        media_subdef::create($app, $record, 'document', $media);
-
-        $record->delete_data_from_cache(\record_adapter::CACHE_SUBDEFS);
-
-        $record->insertTechnicalDatas($app['mediavorus']);
-
-        $record->dispatch(RecordEvents::CREATED, new CreatedEvent($record));
+        catch (\Exception $e) {
+            $record = null;
+        }
 
         return $record;
     }
@@ -1722,7 +1761,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @return set_selection|record_adapter[]
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      * @deprecated use {@link self::getChildren} instead.
      */
     public function get_children()
@@ -1736,7 +1775,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      *
      * @return set_selection|record_adapter[]
      * @throws Exception
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getChildren($offset = 1, $max_items = null)
     {
@@ -1763,12 +1802,12 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return reset($selections);
     }
 
-    public function hasChild(\record_adapter $record)
+    public function hasChild(record_adapter $record)
     {
         return $this->getChildren()->offsetExists($record->getId());
     }
 
-    public function appendChild(\record_adapter $record)
+    public function appendChild(record_adapter $record)
     {
         if (!$this->isStory()) {
             throw new \Exception('Only stories can append children');
@@ -1811,7 +1850,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
-    public function removeChild(\record_adapter $record)
+    public function removeChild(record_adapter $record)
     {
         if (!$this->isStory()) {
             throw new \Exception('Only stories can append children');

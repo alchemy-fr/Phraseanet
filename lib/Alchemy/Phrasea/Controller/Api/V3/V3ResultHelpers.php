@@ -7,12 +7,12 @@ use ACL;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
-use caption_field;
 use databox_status;
 use media_Permalink_Adapter;
 use media_subdef;
 use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 
 class V3ResultHelpers
@@ -21,17 +21,21 @@ class V3ResultHelpers
     private $conf;
 
     /** @var MediaSubDefinitionUrlGenerator */
-    private $urlgenerator;
+    private $mediaUrlGenerator;
 
     /** @var Authenticator */
     private $authenticator;
 
+    /** @var UrlGenerator */
+    private $urlGenerator;
 
-    public function __construct($conf, $urlgenerator, Authenticator $authenticator)
+
+    public function __construct($conf, $mediaUrlGenerator, Authenticator $authenticator, UrlGenerator $urlGenerator)
     {
-        $this->urlgenerator = $urlgenerator;
+        $this->mediaUrlGenerator = $mediaUrlGenerator;
         $this->conf = $conf;
         $this->authenticator = $authenticator;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -100,7 +104,7 @@ class V3ResultHelpers
             'substituted' => $media->is_substituted(),
             'created_on'  => $media->get_creation_date()->format(DATE_ATOM),
             'updated_on'  => $media->get_modification_date()->format(DATE_ATOM),
-            'url' => $this->urlgenerator->generate($issuer, $media, $urlTTL),
+            'url' => $this->mediaUrlGenerator->generate($issuer, $media, $urlTTL),
             'url_ttl' => $urlTTL,
         ];
     }
@@ -162,12 +166,14 @@ class V3ResultHelpers
         ];
 
         if ($request->attributes->get('_extended', false)) {
-            $data = array_merge($data, [
-                'subdefs' => $this->listRecordEmbeddableMedias($request, $record, $aclforuser),
-                'metadata' => $this->listRecordMetadata($record, $aclforuser),
-                'status' => $this->listRecordStatus($record),
-                'caption' => $this->listRecordCaption($record, $aclforuser),
-            ]);
+
+            $data['subdefs'] = $this->listRecordEmbeddableMedias($request, $record, $aclforuser);
+            $data['status'] = $this->listRecordStatus($record);
+
+            $data = array_merge(
+                $data,
+                $this->listRecordMetadataAndDCES($record, $aclforuser)  // ['metadata'=>... , 'dces'=>...]
+            );
         }
 
         return $data;
@@ -198,68 +204,55 @@ class V3ResultHelpers
      * @param ACL $acl
      * @return array
      */
-    private function listRecordMetadata(record_adapter $record, ACL $acl)
+    private function listRecordMetadataAndDCES(record_adapter $record, ACL $acl)
     {
+        $ret = [
+            'metadata' => [],
+            'dces' =>[]
+        ];
+
         $includeBusiness = $acl->can_see_business_fields($record->getDatabox());
 
-        return $this->listRecordCaptionFields($record->get_caption()->get_fields(null, $includeBusiness));
-    }
-
-    /**
-     * @param caption_field[] $fields
-     * @return array
-     */
-    private function listRecordCaptionFields($fields)
-    {
-        $ret = [];
+        $fields = $record->get_caption()->get_fields(null, $includeBusiness);
 
         foreach ($fields as $field) {
             $databox_field = $field->get_databox_field();
 
+            $value = [];
+            foreach ($field->get_values() as $v) {
+                $value[] = [
+                    'meta_id' => $v->getId(),
+                    'value'   => $v->getValue(),
+                ];
+            }
+            if(!$databox_field->is_multi()) {
+                $value = array_shift($value);
+            }
+
             $fieldData = [
-                'meta_structure_id' => $field->get_meta_struct_id(),
-                'name' => $field->get_name(),
+                'meta_structure_id' => $databox_field->get_id(),
+                'name' => $databox_field->get_name(),
                 'labels' => [
                     'fr' => $databox_field->get_label('fr'),
                     'en' => $databox_field->get_label('en'),
                     'de' => $databox_field->get_label('de'),
                     'nl' => $databox_field->get_label('nl'),
                 ],
+                'value' => $value
             ];
 
-            foreach ($field->get_values() as $value) {
-                $data = [
-                    'meta_id' => $value->getId(),
-                    'value' => $value->getValue(),
-                ];
+            $ret['metadata'][] = $fieldData;
 
-                $ret[] = $fieldData + $data;
+            if(!is_null($dces = $databox_field->get_dces_element())) {
+                $k = $dces->get_label();
+                if(!array_key_exists($k, $ret['dces'])) {
+                    $ret['dces'][$k] = '';
+                }
+                $ret['dces'][$k] .= ($ret['dces'][$k] !== '' ?  ' ; ' : '') . $field->get_serialized_values();
             }
         }
 
         return $ret;
-    }
-
-    /**
-     * @param record_adapter $record
-     * @param ACL $acl
-     * @return array
-     */
-    private function listRecordCaption(record_adapter $record, ACL $acl)
-    {
-        $includeBusiness = $acl->can_see_business_fields($record->getDatabox());
-
-        $caption = [];
-
-        foreach ($record->get_caption()->get_fields(null, $includeBusiness) as $field) {
-            $caption[] = [
-                'meta_structure_id' => $field->get_meta_struct_id(),
-                'name' => $field->get_name(),
-                'value' => $field->get_serialized_values(';'),
-            ];
-        }
-
-        return $caption;
     }
 
 
