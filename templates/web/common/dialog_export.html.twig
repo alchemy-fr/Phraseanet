@@ -152,9 +152,8 @@
                             </div>
                         {% endif %}
                         {{ _self.choose_title('download', choose_export_title, default_export_title) }}
-
                         {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
-                            <div class="well-small">
+                            <div class="well-small acceptDl-info">
                                 <label for="TOU_acceptDL" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
