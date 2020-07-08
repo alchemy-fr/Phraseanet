@@ -37,7 +37,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         swftools \
         unoconv \
         unzip \
-        xpdf \
+        poppler-utils \
         libreoffice-base-core \
         libreoffice-impress \
         libreoffice-calc \
