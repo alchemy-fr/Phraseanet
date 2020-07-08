@@ -713,3 +713,21 @@ a.btn-info {
 }
 
 /** End Lightbox summary modal**/
+
+.humane{
+  position: fixed;
+  z-index: 100000;
+  font-family: Ubuntu, Arial, sans-serif;
+  text-align: center;
+  font-size: 15px;
+  top: 100px;
+  right: 70px;
+  width: 400px;
+  background: #2d2d72;
+  color: rgb(255, 255, 255);
+  box-shadow: rgb(0, 0, 0) 0px 4px 4px -4px;
+  transform: translateY(-40px);
+  transition: all 0.3s ease-out 0s;
+  padding: 10px;
+  border-radius: 5px;
+}
