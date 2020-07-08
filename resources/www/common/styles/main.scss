@@ -164,3 +164,20 @@ $mainMenuLinkBackgroundHoverColor: transparent;
 
 }
 
+.acceptDl-info {
+  background-color: #d9edf7;
+  border: 1px solid #bce8f1;
+  border-radius: 3px;
+  color: #3a87ad;
+  display: inline-block;
+  padding: 9px 24px 5px 9px;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 0 rgba(255,255,255,.5);
+  a, label {
+    color: #3a87ad!important;
+  }
+  a {
+    text-decoration: underline;
+  }
+}
+
