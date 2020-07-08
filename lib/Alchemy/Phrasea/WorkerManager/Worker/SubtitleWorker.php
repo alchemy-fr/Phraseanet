@@ -163,6 +163,8 @@ class SubtitleWorker implements WorkerInterface
 
             $transcriptContent = $response->getBody()->getContents();
 
+            $transcriptContent = preg_replace('WEBVTT', 'WEBVTT - with cue identifier', $transcriptContent, 1);
+
             $metadatas[0] = [
                 'meta_struct_id' => (int)$payload['metaStructureId'],
                 'meta_id'        => '',
