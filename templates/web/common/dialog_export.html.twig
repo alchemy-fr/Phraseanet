@@ -152,9 +152,8 @@
                             </div>
                         {% endif %}
                         {{ _self.choose_title('download', choose_export_title, default_export_title) }}
-
                         {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
-                            <div class="well-small">
+                            <div class="well-small acceptDl-info">
                                 <label for="TOU_acceptDL" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
@@ -177,21 +176,27 @@
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <div>
-                            {{ 'export::mail: destinataire' | trans }}
+                            <span style="min-width: 21px;display: inline-block; ">
+                                {{ 'export::mail: destinataire' | trans }}</span>
                             <input type="text" value="" name="destmail" class="required span4">
+                            <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px;">
+                            <span style="font-style: italic">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
+                            </div>
                             {% set my_email = app.getAuthenticatedUser().getEmail() %}
-                            {% if my_email != '' %}
-                                <label class="checkbox">
-                                    <input type="checkbox" name="reading_confirm" value="1" />
-                                    {% trans with {'%my_email%' : my_email} %}Recevoir un accuse de reception a %my_email%{% endtrans %}
-                                </label>
-                            {% else %}
-                                <label class="checkbox">
-                                    {{ 'Accuse de reception indisponible, vous n\'avez pas declare d\'adresse email' | trans }}
-                                    <input type="checkbox" name="reading_confirm" value="1" readonly />
-                                </label>
-                            {% endif %}
-                            <span style="font-style: italic; color: #999999;">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
+                            <div class="acceptDl-info">
+                                {% if my_email != '' %}
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="reading_confirm" value="1" />
+                                            {% trans with {'%my_email%' : my_email} %}Recevoir un accuse de reception a %my_email%{% endtrans %}
+                                        </label>
+                                {% else %}
+                                    <label class="checkbox">
+                                        {{ 'Accuse de reception indisponible, vous n\'avez pas declare d\'adresse email' | trans }}
+                                        <input type="checkbox" name="reading_confirm" value="1" readonly />
+                                    </label>
+                                {% endif %}
+                                <span style="font-style: italic; color: #999999;">{{ 'export:email:: acknowledgement info' | trans }}</span>
+                            </div>
                         </div>
                         <div>
                             <p>{{ 'export::mail: contenu du mail' | trans }}</p>
@@ -235,7 +240,7 @@
                         {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
 
                         {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
-                            <div class="well-small">
+                            <div class="well-small acceptDl-info">
                                 <label for="TOU_acceptMail" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
@@ -388,7 +393,7 @@
                     </div>
 
                     {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
-                        <div class="well-small">
+                        <div class="well-small acceptDl-info">
                             <label for="TOU_acceptOrder" class="checkbox">
                                 <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
                                 {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
@@ -469,7 +474,7 @@
                         {% endif %}
 
                         {% if app['conf'].get(['registry', 'actions', 'tou-validation-required-for-export']) == true %}
-                            <div class="well-small">
+                            <div class="well-small acceptDl-info">
                                 <label for="TOU_acceptFTP" class="checkbox">
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}

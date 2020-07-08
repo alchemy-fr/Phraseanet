@@ -617,7 +617,7 @@ class Application extends SilexApplication
         );
 
         $this['tmp.lazaret.path'] = $factory->createDefinition(
-            ['main', 'storage', 'quarantine'],
+            ['main', 'storage', 'lazaret'],
             function (Application $app) {
                 return $app['tmp.path'].'/lazaret';
             }
