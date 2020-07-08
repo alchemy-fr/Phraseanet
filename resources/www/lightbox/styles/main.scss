@@ -731,3 +731,7 @@ a.btn-info {
   padding: 10px;
   border-radius: 5px;
 }
+
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+  padding: 0!important;
+}

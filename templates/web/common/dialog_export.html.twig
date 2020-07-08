@@ -176,8 +176,12 @@
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
                         <div>
-                            {{ 'export::mail: destinataire' | trans }}
+                            <span style="min-width: 21px;display: inline-block; ">
+                                {{ 'export::mail: destinataire' | trans }}</span>
                             <input type="text" value="" name="destmail" class="required span4">
+                            <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px;">
+                            <span style="font-style: italic">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
+                            </div>
                             {% set my_email = app.getAuthenticatedUser().getEmail() %}
                             <div class="acceptDl-info">
                                 {% if my_email != '' %}
@@ -191,7 +195,7 @@
                                         <input type="checkbox" name="reading_confirm" value="1" readonly />
                                     </label>
                                 {% endif %}
-                                <span style="font-style: italic; color: #999999;">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
+                                <span style="font-style: italic; color: #999999;">{{ 'export:email:: acknowledgement info' | trans }}</span>
                             </div>
                         </div>
                         <div>
