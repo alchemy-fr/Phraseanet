@@ -15,6 +15,7 @@
 {% block content %}
     {% set basket_element = basket.getElements().first() %}
     <div class="PNB10">
+        <input type="hidden" id="export-send-mail-notif" value="{{ 'prod::export: send mail notification' | trans }} ">
         <div class="PNB" id="top_container">
             <div id="record_wrapper" class="PNB single" style="right:250px;">
                 <div id="record_main" class="PNB record_display_box" style="bottom:auto;right:auto;">
