@@ -363,8 +363,8 @@
             url: '/prod/tools/auto-subtitle/',
             dataType: 'json',
             data: {
-                databox_id: {{ record.get_base_id }},
-                record_id: {{ record.get_record_id }},
+                databox_id: {{ record.getDataboxId }},
+                record_id: {{ record.getRecordId }},
                 meta_struct_id: $('#subtitle_language_source').val(),
                 subtitle_language_source: $('#subtitle_language_source option:selected').text()
             },
