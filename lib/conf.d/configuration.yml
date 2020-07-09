@@ -319,5 +319,15 @@ workers:
             user: ''
             password: ''
             vhost: /
+
+externalservice:
+    ginger:
+        AutoSubtitling:
+            service_base_url: https://base.uri
+            token: 39c6011d
+            transcript_format: text/vtt
+            subdef_source: preview
+
+
 Console_logger_enabled_environments: [test]
 
