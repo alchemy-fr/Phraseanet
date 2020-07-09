@@ -178,7 +178,8 @@
                         <div>
                             <span style="min-width: 21px;display: inline-block; ">
                                 {{ 'export::mail: destinataire' | trans }}</span>
-                            <input type="text" value="" name="destmail" class="required span4">
+                            <input type="text" value="" class="span4 tagsinput" data-role="tagsinput" >
+                            <input type="hidden" value="" name="destmail" class="required span4 destmail" >
                             <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px;">
                             <span style="font-style: italic">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
                             </div>
@@ -518,6 +519,11 @@
                 email: '{{app.getAuthenticatedUser().getEmail() | e('js')}}'
             }
         };
+
+        $(document).find(".tagsinput").tagsinput('items');
+        $(".tagsinput").on('change', function (event) {
+            $('.destmail').val($(this).val().replace(",", ";"));
+        })
     </script>
 {% endif %}
 
