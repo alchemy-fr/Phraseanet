@@ -328,6 +328,14 @@ workers:
       password: guest
       vhost: /
 
+externalservice:
+    ginger:
+        AutoSubtitling:
+            service_base_url: https://base.uri
+            token: 39c6011d
+            transcript_format: text/vtt
+            subdef_source: preview
+
 user_account:
     deleting_policies:
         email_confirmation: true

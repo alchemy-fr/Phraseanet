@@ -91,7 +91,6 @@ use Alchemy\Phrasea\WorkerManager\Provider\AlchemyWorkerServiceProvider;
 use Alchemy\Phrasea\WorkerManager\Provider\QueueWorkerServiceProvider;
 use Alchemy\QueueProvider\QueueServiceProvider;
 use Alchemy\WorkerProvider\WorkerServiceProvider;
-use Doctrine\DBAL\Event\ConnectionEventArgs;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
 use Monolog\Handler\ErrorLogHandler;
