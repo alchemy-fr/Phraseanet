@@ -150,6 +150,9 @@ class RepositoriesServiceProvider implements ServiceProviderInterface
         $app['repo.worker-running-job'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WorkerRunningJob');
         });
+        $app['repo.worker-job'] = $app->share(function (PhraseaApplication $app) {
+            return $app['orm.em']->getRepository('Phraseanet:WorkerJob');
+        });
         $app['repo.worker-running-populate'] = $app->share(function (PhraseaApplication $app) {
             return $app['orm.em']->getRepository('Phraseanet:WorkerRunningPopulate');
         });
