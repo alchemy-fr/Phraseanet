@@ -4,7 +4,10 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Model\Entities\WorkerJob;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningPopulate;
+use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningPopulateRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
@@ -89,6 +92,82 @@ class AdminConfigurationController extends Controller
         return $this->render('admin/worker-manager/worker_info.html.twig', [
             'workerRunningJob' => $workerRunningJob,
             'reload'           => $reload
+        ]);
+    }
+
+    public function infoSubtitleAction(PhraseaApplication $app)
+    {
+        /** @var WorkerJobRepository $repoWorkerPopulate */
+        $repoWorkerJob = $app['repo.worker-job'];
+
+        $workerSubtitleRunning  = $repoWorkerJob->findBy(['type' => MessagePublisher::SUBTITLE_TYPE, 'status' => WorkerJob::RUNNING]);
+        $workerSubtitleFinished = $repoWorkerJob->findBy(['type' => MessagePublisher::SUBTITLE_TYPE, 'status' => WorkerJob::FINISHED]);
+
+        $subtitlesRunning = [];
+        $subtitlesFinished = [];
+
+        /** @var WorkerJob $running */
+        foreach ($workerSubtitleRunning as $running) {
+            $data = $running->getData();
+            $data['status']   = $running->getStatus();
+            $data['created']  = $running->getCreated();
+            $data['started']  = $running->getStarted();
+            $data['finished'] = $running->getFinished();
+
+            $subtitlesRunning[] = $data;
+        }
+
+        /** @var WorkerJob $finished */
+        foreach ($workerSubtitleFinished as $finished) {
+            $data = $finished->getData();
+            $data['status']   = $finished->getStatus();
+            $data['created']  = $finished->getCreated();
+            $data['started']  = $finished->getStarted();
+            $data['finished'] = $finished->getFinished();
+
+            $subtitlesFinished[] = $data;
+        }
+
+        return $this->app->json([
+            'subtitlesRunning'  => $subtitlesRunning,
+            'subtitlesFinished' => $subtitlesFinished
+        ]);
+    }
+
+    public function infoPopulateAction(PhraseaApplication $app)
+    {
+        /** @var WorkerRunningPopulateRepository $repoWorkerPopulate */
+        $repoWorkerPopulate = $app['repo.worker-running-populate'];
+
+        $workerPopulateRunning  = $repoWorkerPopulate->findBy(['status' => WorkerRunningPopulate::RUNNING]);
+        $workerPopulateFinished = $repoWorkerPopulate->findBy(['status' => WorkerRunningPopulate::FINISHED]);
+
+        $populateRunning = [];
+        $populateFinished = [];
+
+        /** @var WorkerRunningPopulate $running */
+        foreach ($workerPopulateRunning as $running) {
+            $data['databox_id'] = $running->getDataboxId();
+            $data['status']     = $running->getStatus();
+            $data['published']  = $running->getPublished();
+            $data['created']    = $running->getCreated();
+            $data['finished']   = $running->getFinished();
+            $populateRunning[]  = $data;
+        }
+
+        /** @var WorkerRunningPopulate $finished */
+        foreach ($workerPopulateFinished as $finished) {
+            $data['databox_id'] = $finished->getDataboxId();
+            $data['status']     = $finished->getStatus();
+            $data['published']  = $finished->getPublished();
+            $data['created']    = $finished->getCreated();
+            $data['finished']   = $finished->getFinished();
+            $populateFinished[]  = $data;
+        }
+
+        return $this->app->json([
+            'populateRunning'  => $populateRunning,
+            'populateFinished' => $populateFinished
         ]);
     }
 

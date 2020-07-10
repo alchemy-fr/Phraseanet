@@ -57,6 +57,14 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET')
             ->bind('worker_admin_info');
 
+        $controllers->match('/info-subtitle',  'controller.worker.admin.configuration:infoSubtitleAction')
+            ->method('GET')
+            ->bind('worker_admin_info_subtitle');
+
+        $controllers->match('/info-populate',  'controller.worker.admin.configuration:infoPopulateAction')
+            ->method('GET')
+            ->bind('worker_admin_info_populate');
+
         $controllers->match('/truncate',  'controller.worker.admin.configuration:truncateTableAction')
             ->method('POST')
             ->bind('worker_admin_truncate');
