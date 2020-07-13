@@ -56,7 +56,7 @@
     </div>
 </div>
 
-<table class="admintable populate-list">
+<table class="admintable">
     <thead>
     <tr>
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: databox_id' | trans }}</th>
@@ -66,7 +66,7 @@
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: status' | trans }}</th>
     </tr>
     </thead>
-    <tbody class="serchengine-work-list">
+    <tbody class="populate-list">
 
     <tr>
         <td>{{ workerRow.databoxId }}</td>
@@ -91,11 +91,10 @@
     </div>
 </div>
 
-<table class="admintable subtitle-list">
+<table class="admintable ">
     <thead>
     <tr>
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: databox_id' | trans }}</th>
-        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: record_id' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: record_id' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: permalinkUrl' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: langageSource' | trans }}</th>
@@ -103,9 +102,11 @@
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: status' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: created' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:searchengine: started' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: finished' | trans }}</th>
+
     </tr>
     </thead>
-    <tbody class="serchengine-work-list">
+    <tbody class="subtitle-list">
 
     <tr>
         <td>{{ workerRow.databoxId }}</td>
@@ -175,6 +176,7 @@
 
     /**Populate list**/
     function refreshPopulateList() {
+
         var running = 1;
         var finished = 1;
         if (!$(".running-work").is(":checked")) {
@@ -188,27 +190,24 @@
             type: "GET",
             url: "/admin/worker-manager/info-populate?running=" + running + "&finished=" + finished,
             success: function (data) {
-
-                console.log(data);
-                var itemTable = '';
-
-                function getItem(item) {
-                    $(".populate-list").empty();
-                    itemTable += '<tr>';
+                $(".populate-list").empty();
+                
+                function getSubtitleItem(item) {
+                    var itemTable = '<tr>';
                     itemTable += '<td>' + item.databox_id + '</td>';
                     itemTable += '<td>' + item.created.date + '</td>';
                     itemTable += '<td>' + item.published.date + '</td>';
-                    itemTable += '<td>' + item.finished.date + '</td>';
+                    itemTable += '<td>' + item.finished && item.finished != null ? item.finished.date : +'' + '</td>';
                     itemTable += '<td>' + item.status + '</td>';
                     itemTable += '</tr>';
                     $(".populate-list").append(itemTable);
                 }
 
                 if (data.populateRunning.length > 0) {
-                    itemTable = data.populateFinished.map(getItem);
+                    itemTable = data.populateRunning.map(getSubtitleItem);
                 }
                 if (data.populateFinished.length > 0) {
-                    itemTable = data.populateFinished.map(getItem);
+                    itemTable = data.populateFinished.map(getSubtitleItem);
                 }
             }
         });
@@ -216,7 +215,6 @@
     $("#refresh-populate-list").on('click', function () {
         refreshPopulateList();
     });
-
 
 
     /**Subtitle list**/
@@ -234,14 +232,11 @@
             type: "GET",
             url: " /admin/worker-manager/info-subtitle?running=" + running + "&finished=" + finished,
             success: function (data) {
-
-                console.log(data);
-                var itemTable = '';
+                $(".subtitle-list").empty();
 
                 function getItem(item) {
-                    $(".populate-list").empty();
-                    itemTable += '<tr>';
-                    itemTable += '<td>' + item.databox_id + '</td>';
+                    var itemTable = '<tr>';
+                    itemTable += '<td>' + item.databoxId + '</td>';
                     itemTable += '<td>' + item.recordId + '</td>';
                     itemTable += '<td>' + item.permalinkUrl + '</td>';
                     itemTable += '<td>' + item.langageSource + '</td>';
@@ -249,9 +244,9 @@
                     itemTable += '<td>' + item.status + '</td>';
                     itemTable += '<td>' + item.created.date + '</td>';
                     itemTable += '<td>' + item.started.date + '</td>';
-                    itemTable += '<td>' + item.finished && item.finished != null ? item.finished.date : '' + '</td>';
+                    itemTable += '<td>' + item.finished && item.finished != null ? item.finished.date : +'' + '</td>';
                     itemTable += '</tr>';
-                    $(".populate-list").append(itemTable);
+                    $(".subtitle-list").append(itemTable);
                 }
 
                 if (data.subtitlesRunning.length > 0) {
