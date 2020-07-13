@@ -54,6 +54,8 @@ final class PhraseaEvents
     const RECORD_EDIT = 'record.edit';
     const RECORD_UPLOAD = 'record.upload';
 
+    const RECORD_AUTO_SUBTITLE = 'record.auto-subtitle';
+
     const THESAURUS_IMPORTED = 'thesaurus.imported';
     const THESAURUS_FIELD_LINKED = 'thesaurus.field-linked';
     const THESAURUS_CANDIDATE_ACCEPTED_AS_CONCEPT = 'thesaurus.candidate-accepted-as-concept';

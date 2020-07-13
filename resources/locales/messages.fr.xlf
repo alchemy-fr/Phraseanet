@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-07-08T13:06:42Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -10214,9 +10214,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Titre</target>
         <jms:reference-file line="71">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info">
+      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="no">
         <source>export:email:: acknowledgement info</source>
-        <target state="new">export:email:: acknowledgement info</target>
+        <target state="needs-translation">Les accusé reception fonctionne que si le serveur du destinataire a activé cette fonction.</target>
         <jms:reference-file line="198">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
@@ -13929,9 +13929,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="needs-translation">Propriétés</target>
         <jms:reference-file line="646">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7a4dc241a74580954559e8c74f390dc508004ed9" resname="thesaurus:properties::  Mettre dans le stock">
+      <trans-unit id="7a4dc241a74580954559e8c74f390dc508004ed9" resname="thesaurus:properties::  Mettre dans le stock" approved="no">
         <source>thesaurus:properties::  Mettre dans le stock</source>
-        <target state="new">thesaurus:properties::  Mettre dans le stock</target>
+        <target state="needs-translation">-&gt; Stock</target>
         <jms:reference-file line="33">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId">

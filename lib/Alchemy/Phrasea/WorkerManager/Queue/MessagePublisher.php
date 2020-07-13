@@ -18,6 +18,12 @@ class MessagePublisher
     const WEBHOOK_TYPE         = 'webhook';
     const POPULATE_INDEX_TYPE  = 'populateIndex';
     const PULL_ASSETS_TYPE     = 'pullAssets';
+    const SUBTITLE_TYPE        = 'subtitle';
+    const MAIN_QUEUE_TYPE      = 'mainQueue';
+
+
+    const MAIN_QUEUE           = 'main-queue';
+    const SUBTITLE_QUEUE       = 'subtitle-queue';
 
     // worker queue  to be consumed, when no ack , it is requeued to the retry queue
     const EXPORT_QUEUE         = 'export-queue';
