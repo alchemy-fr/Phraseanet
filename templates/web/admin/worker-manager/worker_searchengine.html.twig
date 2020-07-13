@@ -18,12 +18,13 @@
     <label class="control-label"> {{ 'admin::workermanager:tab:searchengine: Databox to populate' | trans }}</label>
     <div class="controls">
         <label class="checkbox inline">
-            <input class="subdef_sbas" type="checkbox"  value="0"> {{ 'All' | trans }}
+            <input class="subdef_sbas" type="checkbox" value="0"> {{ 'All' | trans }}
         </label>
 
         {% for databox in app.getApplicationBox().get_databoxes() %}
             <label class="checkbox inline">
-                <input class="subdef_sbas" type="checkbox" name="worker_searchengine[sbas][]" value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
+                <input class="subdef_sbas" type="checkbox" name="worker_searchengine[sbas][]"
+                       value="{{ databox.get_sbas_id() }}"> {{ databox.get_viewname() }}
                 ({{ databox.get_sbas_id() }})
             </label>
         {% endfor %}
@@ -37,6 +38,81 @@
 </div>
 
 {{ form_end(form) }}
+
+<div class="searchengine-wrapper">
+    <h2>{{ 'admin::workermanager:tab:workerinfo: Info populate' | trans }}</h2>
+    <button id="refresh-populate-list" class="btn btn-success">
+        {{ 'admin::workermanager:tab:searchengine: Refresh info populate' |trans }}
+    </button>
+    <div class="controls">
+        <label class="checkbox inline">
+            <input class="running-work refresh-list-checkbox" type="checkbox" value="1"
+                   checked> {{ 'admin::workermanager:tab:searchengine: Display running work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="finished-work refresh-list-checkbox" type="checkbox" value="1"
+                   checked> {{ 'admin::workermanager:tab:searchengine: Display finished work' | trans }}
+        </label>
+    </div>
+</div>
+
+<table class="admintable populate-list">
+    <thead>
+    <tr>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: databox_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: created' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: published' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: finished' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: status' | trans }}</th>
+    </tr>
+    </thead>
+    <tbody class="serchengine-work-list">
+
+    <tr>
+        <td>{{ workerRow.databoxId }}</td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<div class="searchengine-wrapper">
+    <h2>{{ 'admin::workermanager:tab:workerinfo: Info subtitle' | trans }}</h2>
+    <button id="refresh-subtitle-list" class="btn btn-success">
+        {{ 'admin::workermanager:tab:searchengine: Refresh info subtitle' |trans }}
+    </button>
+    <div class="controls">
+        <label class="checkbox inline">
+            <input class="running-work refresh-list-checkbox" type="checkbox" value="1"
+                   checked> {{ 'admin::workermanager:tab:searchengine: Display running work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="finished-work refresh-list-checkbox" type="checkbox" value="1"
+                   checked> {{ 'admin::workermanager:tab:searchengine: Display finished work' | trans }}
+        </label>
+    </div>
+</div>
+
+<table class="admintable subtitle-list">
+    <thead>
+    <tr>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: databox_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: record_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: record_id' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: permalinkUrl' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: langageSource' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: metaStructureId' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: status' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: created' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:searchengine: started' | trans }}</th>
+    </tr>
+    </thead>
+    <tbody class="serchengine-work-list">
+
+    <tr>
+        <td>{{ workerRow.databoxId }}</td>
+    </tr>
+    </tbody>
+</table>
+
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -52,7 +128,7 @@
         $('#populateButton').on('click', function () {
             checked = $('input[name="worker_searchengine[sbas][]"]:checked').length;
 
-            if(!checked) {
+            if (!checked) {
                 alert("You must check at least one databox to populate.");
 
                 return false;
@@ -64,7 +140,7 @@
         $("form[name='worker_searchengine']").on('submit', function () {
             var form = $(this);
             var sbasIds = [];
-            $.each($('input[name="worker_searchengine[sbas][]"]:checked'), function() {
+            $.each($('input[name="worker_searchengine[sbas][]"]:checked'), function () {
                 sbasIds.push($(this).val());
             });
 
@@ -93,6 +169,102 @@
 
             return false;
         });
-
+        refreshPopulateList();
+        refreshSubtitleList();
     });
+
+    /**Populate list**/
+    function refreshPopulateList() {
+        var running = 1;
+        var finished = 1;
+        if (!$(".running-work").is(":checked")) {
+            running = 0;
+        }
+        if (!$(".finished-work").is(":checked")) {
+            finished = 0;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "/admin/worker-manager/info-populate?running=" + running + "&finished=" + finished,
+            success: function (data) {
+
+                console.log(data);
+                var itemTable = '';
+
+                function getItem(item) {
+                    $(".populate-list").empty();
+                    itemTable += '<tr>';
+                    itemTable += '<td>' + item.databox_id + '</td>';
+                    itemTable += '<td>' + item.created.date + '</td>';
+                    itemTable += '<td>' + item.published.date + '</td>';
+                    itemTable += '<td>' + item.finished.date + '</td>';
+                    itemTable += '<td>' + item.status + '</td>';
+                    itemTable += '</tr>';
+                    $(".populate-list").append(itemTable);
+                }
+
+                if (data.populateRunning.length > 0) {
+                    itemTable = data.populateFinished.map(getItem);
+                }
+                if (data.populateFinished.length > 0) {
+                    itemTable = data.populateFinished.map(getItem);
+                }
+            }
+        });
+    }
+    $("#refresh-populate-list").on('click', function () {
+        refreshPopulateList();
+    });
+
+
+
+    /**Subtitle list**/
+    function refreshSubtitleList() {
+        var running = 1;
+        var finished = 1;
+        if (!$(".running-work").is(":checked")) {
+            running = 0;
+        }
+        if (!$(".finished-work").is(":checked")) {
+            finished = 0;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: " /admin/worker-manager/info-subtitle?running=" + running + "&finished=" + finished,
+            success: function (data) {
+
+                console.log(data);
+                var itemTable = '';
+
+                function getItem(item) {
+                    $(".populate-list").empty();
+                    itemTable += '<tr>';
+                    itemTable += '<td>' + item.databox_id + '</td>';
+                    itemTable += '<td>' + item.recordId + '</td>';
+                    itemTable += '<td>' + item.permalinkUrl + '</td>';
+                    itemTable += '<td>' + item.langageSource + '</td>';
+                    itemTable += '<td>' + item.metaStructureId + '</td>';
+                    itemTable += '<td>' + item.status + '</td>';
+                    itemTable += '<td>' + item.created.date + '</td>';
+                    itemTable += '<td>' + item.started.date + '</td>';
+                    itemTable += '<td>' + item.finished && item.finished != null ? item.finished.date : '' + '</td>';
+                    itemTable += '</tr>';
+                    $(".populate-list").append(itemTable);
+                }
+
+                if (data.subtitlesRunning.length > 0) {
+                    itemTable = data.subtitlesRunning.map(getItem);
+                }
+                if (data.subtitlesFinished.length > 0) {
+                    itemTable = data.subtitlesFinished.map(getItem);
+                }
+            }
+        });
+    }
+    $("#refresh-subtitle-list").on('click', function () {
+        refreshSubtitleList();
+    });
+
 </script>
