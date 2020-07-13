@@ -31,11 +31,14 @@ if [ -f "$FILE" ]; then
         bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
         bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
+        if [[ -n $PHRASEANET_TRUSTED_PROXY ]]; then
+            bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXY
+        fi
     fi
     if [[ -n ${PHRASEANET_ADMIN_ACCOUNT_ID} && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
        bin/console user:password --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
     fi
-    
+
 else
     echo "$FILE doesn't exist, entering setup..."
     runuser app -c docker/phraseanet/auto-install.sh
@@ -55,7 +58,7 @@ chown -R app:app \
     datas \
     tmp \
     logs \
-    www 
+    www
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins;

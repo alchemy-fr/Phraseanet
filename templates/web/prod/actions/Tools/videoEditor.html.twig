@@ -236,9 +236,7 @@
                                         <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Kind" | trans }}</label>
                                             <select name="subtitle_kindr" id="subtitle_kindr">
-                                                <option value="fr">Fr</option>
-                                                <option value="en">En</option>
-                                                <option value="de">De</option>
+                                                <option value="autosubtitling">{{ "prod:videoeditor:subtitleRequestTab:: Autosubtitling" | trans }}</option>
                                             </select>
                                         </p>
                                         <p class="item">
@@ -252,9 +250,9 @@
                                         <p class="item">
                                             <label>{{ "prod:videoeditor:subtitleRequestTab:label:: Language destination" | trans }}</label>
                                             <select name="subtitle_language_destination" id="subtitle_language_destination">
-                                                <option value="fr">Fr</option>
-                                                <option value="en">En</option>
-                                                <option value="de">De</option>
+                                                {% for videoTextTrackField in videoTextTrackFields %}
+                                                    <option value="{{ videoTextTrackField.meta_struct_id}}">{{ videoTextTrackField.label}}</option>
+                                                {% endfor %}
                                             </select>
                                         </p>
                                         <div class="video-subtitle-center-button">
@@ -262,6 +260,9 @@
                                         </div>
                                         <input type="hidden" value='{{ record.get_sbas_id() }}' name='record_sbas_id'>
                                         <input type="hidden" value='{{ record.get_record_id() }}' name='record_record_id'>
+                                       <p class="text-center alert-wrapper hide" id="request-status">
+                                            <span class="alert alert-info">{{ "prod:videoeditor:subtitleRequestTab:: Request in process" | trans }}</span>
+                                        </p>
                                     </form>
                                 </div>
                             </div>
@@ -370,6 +371,7 @@
             },
             success: function success(data) {
                 console.log(data);
+                $('#request-status').removeClass('hide');
             }
         });
     });
