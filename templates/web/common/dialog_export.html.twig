@@ -181,7 +181,7 @@
                             <input type="text" value="" class="span4 tagsinput" data-role="tagsinput" >
                             <input type="hidden" value="" name="destmail" class="required span4 destmail" >
                             <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px;">
-                            <span style="font-style: italic">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
+                            <span style="font-style: italic">{{ 'export:email:info:: email addresses separated by commas' | trans }}</span>
                             </div>
                             {% set my_email = app.getAuthenticatedUser().getEmail() %}
                             <div class="acceptDl-info">
