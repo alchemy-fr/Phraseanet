@@ -32,11 +32,13 @@ class SubtitleSubscriber implements EventSubscriberInterface
         $em = $this->repoWorkerJob->getEntityManager();
 
         $data = [
-            "databoxId"         => $event->getRecord()->getDataboxId(),
-            "recordId"          => $event->getRecord()->getRecordId(),
-            "permalinkUrl"      => $event->getPermalinkUrl(),
-            "langageSource"     => $event->getLanguageSource(),
-            "metaStructureId"   => $event->getMetaStructId()
+            "databoxId"                     => $event->getRecord()->getDataboxId(),
+            "recordId"                      => $event->getRecord()->getRecordId(),
+            "permalinkUrl"                  => $event->getPermalinkUrl(),
+            "languageSource"                => $event->getLanguageSource(),
+            "metaStructureIdSource"         => $event->getMetaStructureIdSource(),
+            "languageDestination"           => $event->getLanguageDestination(),
+            "metaStructureIdDestination"    => $event->getMetaStructureIdDestination()
         ];
 
         $this->repoWorkerJob->reconnect();
