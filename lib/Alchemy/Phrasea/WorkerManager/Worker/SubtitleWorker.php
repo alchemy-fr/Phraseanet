@@ -80,7 +80,7 @@ class SubtitleWorker implements WorkerInterface
         $languageDestination    = $this->getLanguageFormat($payload['languageDestination']);
 
         $record = $this->getApplicationBox()->get_databox($payload['databoxId'])->get_record($payload['recordId']);
-        $languageSourceFieldName = $record->getDatabox()->get_meta_structure()->get_element($payload['meta_struct_id_source'])->get_name();
+        $languageSourceFieldName = $record->getDatabox()->get_meta_structure()->get_element($payload['metaStructureIdSource'])->get_name();
 
         $subtitleSourceTemporaryFile = $this->getTemporaryFilesystem()->createTemporaryFile("subtitle", null, $extension);
         $gingerClient = new Client();
