@@ -173,11 +173,11 @@ class ExportController extends Controller
 
         $separator = '/\ |\;|\,/';
         // add PREG_SPLIT_NO_EMPTY to only return non-empty values
-        $list['email'] = implode(';', preg_split($separator, $request->request->get("destmail", ""), -1, PREG_SPLIT_NO_EMPTY));
+        $list['email'] = implode(',', preg_split($separator, $request->request->get("destmail", ""), -1, PREG_SPLIT_NO_EMPTY));
 
         $destMails = [];
         //get destination mails
-        foreach (explode(";", $list['email']) as $mail) {
+        foreach (explode(",", $list['email']) as $mail) {
             if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
                 $destMails[] = $mail;
             } else {
