@@ -1,0 +1,172 @@
+RecordPatch_metadata:
+    type: object
+    properties:
+        field_name:
+            type: string
+        meta_struct_id:
+            $ref: '#/ID'
+        action:
+            type: string
+            enum:
+                - set
+                - add
+                - delete
+                - replace
+        value:
+            # todo : change to string, int, number, array
+            type: string
+RecordPatch_status:
+    type: object
+    required:
+        - bit
+        - state
+    properties:
+        bit:
+            type: integer
+            minimum: 4
+            maximum: 31
+        state:
+            type: boolean
+RecordPatch:
+    description: 'Metadata, status, collection, etc to be set for a record'
+    type: object
+    properties:
+        metadatas:
+            type: array
+            items:
+                $ref: '#/RecordPatch_metadata'
+        status:
+            type: array
+            items:
+                $ref: '#/RecordPatch_status'
+ApiResponse_meta:
+    type: object
+    properties:
+        api_version:
+            type: string
+        request:
+            type: string
+        response_time:
+            type: string
+            format: date-time
+        http_code:
+            type: integer
+            format: int32
+        error_type:
+            type: string
+        error_message:
+            type: string
+ApiResponse_record:
+    type: object
+    properties:
+        meta:
+            $ref: '#/ApiResponse_meta'
+        response:
+            $ref: '#/Record'
+ID:
+    type: integer
+Permalink:
+    type: object
+    properties:
+        created_on:
+            type: string
+            format: date-time
+        id:
+            $ref: '#/ID'
+        is_activated:
+            type: boolean
+        label:
+            type: string
+        updated_on:
+            type: string
+            format: date-time
+        page_url:
+            type: string
+        download_url:
+            type: string
+        url:
+            type: string
+Subdef:
+    type: object
+    properties:
+        name:
+            type: string
+        permalink:
+            $ref: '#/Permalink'
+        height:
+            type: integer
+        width:
+            type: integer
+        filesize:
+            type: integer
+        devices:
+            type: array
+            items:
+                type: string
+                enum:
+                    - screen
+                    - printer ?
+        player_type:
+            type: string
+            enum:
+                - IMAGE
+        mime_type:
+            type: string
+        substituted:
+            type: boolean
+        created_on:
+            type: string
+            format: date-time
+        updated_on:
+            type: string
+            format: date-time
+        url:
+            type: string
+        url_ttl:
+            type: integer
+TechnicalInformation:
+    type: object
+    properties:
+        name:
+            type: string
+        value:
+            type: string
+Record:
+    type: object
+    properties:
+        databox_id:
+            $ref: '#/ID'
+        record_id:
+            $ref: '#/ID'
+        mime_type:
+            type: string
+        title:
+            type: string
+        original_name:
+            type: string
+        updated_on:
+            type: string
+            format: date-time
+        created_on:
+            type: string
+            format: date-time
+        collection_id:
+            $ref: '#/ID'
+        base_id:
+            $ref: '#/ID'
+        sha256:
+            type: string
+        thumbnail:
+            $ref: '#/Subdef'
+        technical_informations:
+            type: array
+            items:
+                $ref: '#/TechnicalInformation'
+        phrasea_type:
+            type: string
+            enum:
+                - image
+                - video
+        uuid:
+            type: string
+

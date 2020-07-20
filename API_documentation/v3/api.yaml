@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+    description: >
+        This is a demonstration of Phraseanet API (v3)
+        [https://alpha.preprod.alchemyasp.com/api/v3](https://alpha.preprod.alchemyasp.com/api/v3).
+    version: "1.0.0-oas3"
+    title: Phraseanet API
+    # todo : fix url
+    termsOfService: 'http://phraseanet.com/terms/'
+    contact:
+        email: support@alchemy.fr
+    license:
+        name: GNU GPL V3
+        url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+servers:
+    - url: https://alpha.preprod.alchemyasp.com/api/v3
+      description: Phraseanet alpha (dev)
+    - url: https://beta.preprod.alchemyasp.com/api/v3
+      description: Phraseanet beta
+security:
+    - api_key: []
+    - oAuth2Password: []
+components:
+    securitySchemes:
+        api_key:
+            type: apiKey
+            name: oauth_token
+            in: query
+        oAuth2Password:
+            type: oauth2
+            description: This API uses OAuth 2 with the password grant flow. [More info](https://api.example.com/docs/auth)
+            flows:
+                password:   # <-- OAuth flow(authorizationCode, implicit, password or clientCredentials)
+                    tokenUrl: azea
+paths:
+    '/me':
+        get:
+            description: 'blabla'
+            servers:
+                - url: 'https://alpha.preprod.alchemyasp.com/api/v1'
+            responses:
+                '200':
+                    description: successful operation
+                '400':
+                    description: Any other error
+                '404':
+                    description: Record not found
+
+    '/records/{base_id}':
+        post:
+            tags:
+                - record
+            summary: Creates a record
+            description: 'Creates a single record, including document and/or data.'
+            operationId: createRecord
+            parameters:
+                - name: base_id
+                  in: path
+                  description: ID of the base
+                  required: true
+                  schema:
+                      $ref: schemas.yaml#/ID
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            description: 'to create a record with a file (document)'
+                            type: object
+                            properties:
+                                body:
+                                    $ref: schemas.yaml#/RecordPatch
+                                file:
+                                    description : 'uploaded file'
+                                    type: string
+                                    format: binary
+                    application/json:
+                        schema:
+                            description: 'to create a record without file (document)'
+                            allOf:
+                                - $ref: schemas.yaml#/RecordPatch
+            responses:
+                default:
+                    $ref: responses.yaml#/record_response
+            security:
+                - api_key: []
+    '/records/{sbas_id}/{record_id}':
+        get:
+            tags:
+                - record
+            summary: Find record by sbas_id and record_id
+            description: Returns a single record
+            operationId: getRecordById
+            parameters:
+                - name: sbas_id
+                  in: path
+                  description: ID of the databox
+                  required: true
+                  schema:
+                      $ref: schemas.yaml#/ID
+                - name: record_id
+                  in: path
+                  description: ID of the record
+                  required: true
+                  schema:
+                      $ref: schemas.yaml#/ID
+            responses:
+                default:
+                    $ref: responses.yaml#/record_response
