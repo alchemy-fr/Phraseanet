@@ -1241,6 +1241,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $story;
     }
 
+
     /**
      * @param File $file
      * @param Application $app
@@ -1252,7 +1253,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $collection = $file->getCollection();
 
-        $record = self::_create($collection, $app);
+        $record = self::_create(
+            $collection,
+            $app,
+            $file
+        );
         if($record) {
             $databox = $record->getDatabox();
 
@@ -1277,6 +1282,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * create a record without document
+     *
      * @param collection $collection
      * @param Application $app
      *
@@ -1296,11 +1303,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @param collection $collection
      * @param Application $app
-     *
+     * @param File|null $file
      * @return record_adapter|null
      * @throws DBALException
      */
-    private static function _create(collection $collection, Application $app)
+    private static function _create(collection $collection, Application $app, File $file=null)
     {
         $databox = $collection->get_databox();
 
@@ -1314,11 +1321,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([
             ':coll_id'          => $collection->get_coll_id(),
             ':parent_record_id' => 0,
-            ':type'             => 'unknown',
-            ':sha256'           => null,
-            ':uuid'             => null,
-            ':originalname'     => null,
-            ':mime'             => null,
+            ':type'             => $file ? ($file->getType() ? $file->getType()->getType() : 'unknown') : null,
+            ':sha256'           => $file ? $file->getMedia()->getHash('sha256') : null,
+            ':uuid'             => $file ? $file->getUUID(true) : null,
+            ':originalname'     => $file ? $file->getOriginalName() : null,
+            ':mime'             => $file ? $file->getFile()->getMimeType() : null,
         ]);
         $stmt->closeCursor();
 
