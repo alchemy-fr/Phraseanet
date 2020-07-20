@@ -178,8 +178,7 @@
                         <div>
                             <span style="min-width: 21px;display: inline-block; ">
                                 {{ 'export::mail: destinataire' | trans }}</span>
-                            <input type="text" value="" class="span4 tagsinput" data-role="tagsinput" >
-                            <input type="hidden" value="" name="destmail" class="required span4 destmail" >
+                            <input type="text" value="" class="span4 tagsinput" name="destmail" data-role="tagsinput" >
                             <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px;">
                             <span style="font-style: italic">{{ 'export:email:info:: email addresses separated by commas' | trans }}</span>
                             </div>
@@ -521,9 +520,6 @@
         };
 
         $(document).find(".tagsinput").tagsinput('items');
-        $(".tagsinput").on('change', function (event) {
-            $('.destmail').val($(this).val().replace(",", ";"));
-        })
     </script>
 {% endif %}
 
