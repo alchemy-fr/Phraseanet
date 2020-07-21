@@ -57,9 +57,13 @@
 
 {% for workerRow in workerRunningJob | sort | reverse %}
     <tr>
-        <td>{{ workerRow.databoxId | sbas_labels(app) }}</td>
+        <td>
+            {% if workerRow.databoxId %}
+                {{ workerRow.databoxId | sbas_labels(app) }}
+            {% endif %}
+        </td>
         <td>{{ workerRow.recordId }}</td>
-        <td>{{ workerRow.getWorkName }}</td>
+        <td>{{ workerRow.work }}</td>
         <td>{{ workerRow.workOn }}</td>
         <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
         <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
