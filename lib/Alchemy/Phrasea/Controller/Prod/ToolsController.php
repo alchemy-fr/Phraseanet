@@ -468,7 +468,14 @@ class ToolsController extends Controller
 
         $this->dispatch(
             PhraseaEvents::RECORD_AUTO_SUBTITLE,
-            new RecordAutoSubtitleEvent($record, $permalinkUrl, $request->request->get("subtitle_language_source"), $request->request->get("meta_struct_id"))
+            new RecordAutoSubtitleEvent(
+                $record,
+                $permalinkUrl,
+                $request->request->get("subtitle_language_source"),
+                $request->request->get("meta_struct_id_source"),
+                $request->request->get("subtitle_language_destination"),
+                $request->request->get("meta_struct_id_destination")
+            )
         );
 
         return $this->app->json(["status" => "dispatch"]);
