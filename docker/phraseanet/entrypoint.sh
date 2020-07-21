@@ -32,7 +32,7 @@ if [ -f "$FILE" ]; then
     bin/setup system:config set main.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
     bin/setup system:config set main.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
 
-    if [[  $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED=true ]]; then
+    if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
         bin/setup system:config set registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
         bin/setup system:config set registry.email.smtp-auth-secure-mode $PHRASEANET_SMTP_SECURE_MODE
