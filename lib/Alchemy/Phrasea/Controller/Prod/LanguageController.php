@@ -155,6 +155,8 @@ class LanguageController
             'description notice'  => $translator->trans('prod:mapboxgl: description notice'),
             'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),
             'create new user'     => $translator->trans('prod:push: create new user'),
+            'prod:videoeditor:subtitletab:message:: error'     => $translator->trans('prod:videoeditor:subtitletab:message:: error'),
+            'prod:videoeditor:subtitletab:message:: success'     => $translator->trans('prod:videoeditor:subtitletab:message:: success'),
         ]);
     }
 }

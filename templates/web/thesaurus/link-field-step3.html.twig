@@ -41,8 +41,9 @@
                     <br/>
                 {% endif %}
             </div>
-            <br/>
-            <input type="button" value="{{ 'boutton::fermer' | trans }}" onclick="self.close();">
+            <div class="thesaurus_confirm_bottom_block">
+                <input type="button" value="{{ 'boutton::fermer' | trans }}"  class="cancel_btn" onclick="$('.close-dialog').trigger('click');">
+            </div>
         </form>
     </center>
 </body>

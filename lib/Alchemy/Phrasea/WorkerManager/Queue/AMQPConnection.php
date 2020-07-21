@@ -29,7 +29,9 @@ class AMQPConnection
         MessagePublisher::CREATE_RECORD_TYPE    => MessagePublisher::CREATE_RECORD_QUEUE,
         MessagePublisher::PULL_QUEUE            => MessagePublisher::PULL_QUEUE,
         MessagePublisher::POPULATE_INDEX_TYPE   => MessagePublisher::POPULATE_INDEX_QUEUE,
-        MessagePublisher::DELETE_RECORD_TYPE    => MessagePublisher::DELETE_RECORD_QUEUE
+        MessagePublisher::DELETE_RECORD_TYPE    => MessagePublisher::DELETE_RECORD_QUEUE,
+        MessagePublisher::MAIN_QUEUE_TYPE       => MessagePublisher::MAIN_QUEUE,
+        MessagePublisher::SUBTITLE_TYPE         => MessagePublisher::SUBTITLE_QUEUE
     ];
 
     //  the corresponding worker queues and retry queues, loop queue
@@ -44,7 +46,6 @@ class AMQPConnection
         MessagePublisher::PULL_QUEUE            => MessagePublisher::LOOP_PULL_QUEUE
     ];
 
-    // default message TTL in retry queue in millisecond
     public static $defaultFailedQueues = [
         MessagePublisher::WRITE_METADATAS_TYPE  => MessagePublisher::FAILED_METADATAS_QUEUE,
         MessagePublisher::SUBDEF_CREATION_TYPE  => MessagePublisher::FAILED_SUBDEF_QUEUE,
@@ -211,6 +212,37 @@ class AMQPConnection
 
             $this->setQueue($queuName);
         }
+    }
+
+    /**
+     * Get queueName, messageCount, consumerCount  of queues
+     * @return array
+     */
+    public function getQueuesStatus()
+    {
+        $queuesList = array_merge(
+            array_values(self::$defaultQueues),
+            array_values(self::$defaultDelayedQueues),
+            array_values(self::$defaultRetryQueues),
+            array_values(self::$defaultFailedQueues)
+        );
+
+        $this->getChannel();
+        $queuesStatus = [];
+
+        foreach ($queuesList as $queue) {
+            $this->setQueue($queue);
+            list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($queue, true);
+
+            $status['queueName']     = $queueName;
+            $status['messageCount']  = $messageCount;
+            $status['consumerCount'] = $consumerCount;
+
+            $queuesStatus[] = $status;
+            unset($status);
+        }
+
+        return $queuesStatus;
     }
 
     public function connectionClose()

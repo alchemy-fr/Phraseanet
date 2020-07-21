@@ -20,6 +20,8 @@ class WorkerRunningJob
     const FINISHED = 'finished';
     const RUNNING  = 'running';
 
+    const MAX_RESULT = 500;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

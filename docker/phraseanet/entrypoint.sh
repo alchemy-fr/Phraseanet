@@ -12,26 +12,33 @@ chown -R app:app \
     datas \
     tmp \
     logs \
-    www/thumbnails \
-    www/custom
+    www
 
 FILE=config/configuration.yml
 
 if [ -f "$FILE" ]; then
     echo "$FILE exists, skip setup."
-    bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
-    if [[ $PHRASEANET_SMTP_ENABLED=true ]]; then
+    if [[ $PHRASEANET_PROJECT_NAME ]]; then
+        bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
+    fi
+    if [[  $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED=true ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
         bin/setup system:config set registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
         bin/setup system:config set registry.email.smtp-auth-secure-mode $PHRASEANET_SMTP_SECURE_MODE
-        bin/setup system:config set registry.email.smtp-auth-host $PHRASEANET_SMTP_HOST
-        bin/setup system:config set registry.email.smtp-auth-port $PHRASEANET_SMTP_PORT
+        bin/setup system:config set registry.email.smtp-host $PHRASEANET_SMTP_HOST
+        bin/setup system:config set registry.email.smtp-port $PHRASEANET_SMTP_PORT
         bin/setup system:config set registry.email.smtp-user $PHRASEANET_SMTP_USER
         bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
         bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
+        if [[ -n $PHRASEANET_TRUSTED_PROXY ]]; then
+            bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXY
+        fi
     fi
-    bin/console user:password --user_id=1 --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
+    if [[ -n ${PHRASEANET_ADMIN_ACCOUNT_ID} && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
+       bin/console user:password --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
+    fi
+
 else
     echo "$FILE doesn't exist, entering setup..."
     runuser app -c docker/phraseanet/auto-install.sh
@@ -43,5 +50,18 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
 fi
 
 ./docker/phraseanet/plugins/console init
+#rm -Rf cache/
+
+chown -R app:app \
+    cache \
+    config \
+    datas \
+    tmp \
+    logs \
+    www
+
+if [ -d "plugins/" ];then
+chown -R app:app plugins;
+fi
 
 bash -e docker-php-entrypoint $@

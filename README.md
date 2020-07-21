@@ -32,8 +32,12 @@ And follow the install steps described at https://docs.phraseanet.com/4.0/en/Adm
 
 ## Prerequisites
 
-- docker-compose
+- docker-compose >=v1.25.4
 - docker >=v18.01-ce
+
+Note about elasticsearch container 
+Check this link
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-prerequisites
 
 ## Get started
 
@@ -84,8 +88,9 @@ docker-compose -f docker-compose.yml run --rm worker <command>
 ```
 
 Where `<command>` can be:
-- `bin/console task-manager:scheduler:run` (default)
-- `bin/console worker:execute -m 2`
+
+- `bin/console worker:execute -m 2` (default)
+- `bin/console task-manager:scheduler:run`
 - ...
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
@@ -100,6 +105,12 @@ https://hub.docker.com/r/alchemyfr/phraseanet-worker
 
 https://hub.docker.com/r/alchemyfr/phraseanet-nginx
 
+https://hub.docker.com/repository/docker/alchemyfr/phraseanet-db
+
+https://hub.docker.com/repository/docker/alchemyfr/phraseanet-elasticsearch
+
+
+
 To use them and not build the images locally, we advise to override the properties in file: env.local
 
 ```bash
@@ -108,6 +119,21 @@ PHRASEANET_DOCKER_REGISTRY=alchemyfr
 # Tag of the Docker images
 PHRASEANET_DOCKER_TAG=
 ```
+or 
+
+Pull images before launch docker-compose
+
+#### Tag organisation on docker hub 
+
+
+```latest``` : latest stable version
+
+```4.0``` : latest stable version in 4.0
+
+```4.1``` : latest stable version in 4.1
+
+```4.1.1``` : Phraseanet version 4.1.1
+
 
 ## Development mode
 
@@ -172,17 +198,20 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 Plugins can be installed during build if you set the `PHRASEANET_PLUGINS` env var as follows:
 
 ```bash
-PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git"
+PHRASEANET_PLUGINS="https://github.com/alchemy-fr/Phraseanet-plugin-expose.git"
 
 # You can optionally precise the branch to install
 # If not precised, the main branch will be pulled
 PHRASEANET_PLUGINS="git@github.com:alchemy-fr/Phraseanet-plugin-webgallery.git(custom-branch)"
 
-# Plugins are separated by spaces
-PHRASEANET_PLUGINS="git@github.com:foo/bar.git(branch-1) git@github.com:baz/42.git"
+# Plugins are separated by semicolons
+PHRASEANET_PLUGINS="git@github.com:foo/bar.git(branch-1);git@github.com:baz/42.git"
 ```
 
+> Prefer the HTTPS URL for public repositories, you will not be required to provide your SSH key.
+
 If you install private plugins, make sure you export your SSH private key content in order to allow docker build to access the GIT repository:
+Also ensure you're using the SSH URL form (i.e: `git@github.com:alchemy-fr/repo.git`).
 ```bash
 export PHRASEANET_SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
 # or if your private key is protected by a passphrase:

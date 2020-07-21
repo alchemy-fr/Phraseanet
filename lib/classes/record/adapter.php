@@ -522,10 +522,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      *
      * @param  collection     $collection
-     * @param  appbox         $appbox
+     * @param  appbox         $appbox       WTF this parm is useless
      * @return record_adapter
+     *
      */
-    public function move_to_collection(collection $collection, appbox $appbox)
+    public function move_to_collection(collection $collection, appbox $appbox = null)
     {
         if ($this->getCollection()->get_base_id() === $collection->get_base_id()) {
             return $this;
@@ -1054,10 +1055,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
         }
 
-        if (trim($params['meta_id']) !== '') {
-            $tmp_val = trim($params['value']);
+        $tmp_val = trim($params['value']);
 
-            $caption_field_value = $caption_field->get_value($params['meta_id']);
+        if (trim($params['meta_id']) !== '') {
+
+            if(is_null($caption_field_value = $caption_field->get_value($params['meta_id']))) {
+                return $this;
+            }
 
             if ($tmp_val === '') {
                 $caption_field_value->delete();
@@ -1068,8 +1072,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     $caption_field_value->setVocab($vocab, $vocab_id);
                 }
             }
-        } else {
-            $caption_field_value = caption_Field_Value::create($this->app, $databox_field, $this, $params['value'], $vocab, $vocab_id);
+        }
+        else {
+            if($tmp_val !== '') {
+                caption_Field_Value::create($this->app, $databox_field, $this, $params['value'], $vocab, $vocab_id);
+            }
         }
 
         return $this;

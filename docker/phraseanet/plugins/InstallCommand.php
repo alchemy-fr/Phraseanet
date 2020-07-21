@@ -29,7 +29,7 @@ class InstallCommand extends Command
             mkdir($pluginsDir);
         }
 
-        foreach (explode(' ', $plugins) as $key => $plugin) {
+        foreach (explode(';', $plugins) as $key => $plugin) {
             $plugin = trim($plugin);
             $repo = $plugin;
             $branch = 'master';
