@@ -21,6 +21,17 @@ if [ -f "$FILE" ]; then
     if [[ $PHRASEANET_PROJECT_NAME ]]; then
         bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
     fi
+    if [[ -n $PHRASEANET_TRUSTED_PROXY ]]; then
+        bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXY
+    fi
+        bin/setup system:config set registry.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
+        bin/setup system:config set registry.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
+        bin/setup system:config set registry.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
+        bin/setup system:config set registry.binaries.mp4box_timeout $PHRASEANET_MP4BOX_TIMEOUT
+        bin/setup system:config set registry.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
+        bin/setup system:config set registry.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
+        bin/setup system:config set registry.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
+
     if [[  $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED=true ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
         bin/setup system:config set registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
@@ -31,17 +42,6 @@ if [ -f "$FILE" ]; then
         bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
         bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
-        bin/setup system:config set registry.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
-        bin/setup system:config set registry.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
-        bin/setup system:config set registry.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
-        bin/setup system:config set registry.binaries.mp4box_timeout $PHRASEANET_MP4BOX_TIMEOUT
-        bin/setup system:config set registry.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
-        bin/setup system:config set registry.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
-        bin/setup system:config set registry.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
-
-        if [[ -n $PHRASEANET_TRUSTED_PROXY ]]; then
-            bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXY
-        fi
     fi
     if [[ -n ${PHRASEANET_ADMIN_ACCOUNT_ID} && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
        bin/console user:password --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
