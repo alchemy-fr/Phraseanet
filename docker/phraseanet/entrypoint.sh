@@ -31,6 +31,14 @@ if [ -f "$FILE" ]; then
         bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
         bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
+        bin/setup system:config set registry.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
+        bin/setup system:config set registry.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
+        bin/setup system:config set registry.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
+        bin/setup system:config set registry.binaries.mp4box_timeout $PHRASEANET_MP4BOX_TIMEOUT
+        bin/setup system:config set registry.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
+        bin/setup system:config set registry.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
+        bin/setup system:config set registry.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
+
         if [[ -n $PHRASEANET_TRUSTED_PROXY ]]; then
             bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXY
         fi
