@@ -366,8 +366,10 @@
             data: {
                 databox_id: {{ record.getDataboxId }},
                 record_id: {{ record.getRecordId }},
-                meta_struct_id: $('#subtitle_language_source').val(),
-                subtitle_language_source: $('#subtitle_language_source option:selected').text()
+                subtitle_language_source: $('#subtitle_language_source option:selected').text(),
+                meta_struct_id_source: $('#subtitle_language_source').val(),
+                subtitle_language_destination: $('#subtitle_language_destination option:selected').text(),
+                meta_struct_id_destination: $('#subtitle_language_destination').val()
             },
             success: function success(data) {
                 console.log(data);
