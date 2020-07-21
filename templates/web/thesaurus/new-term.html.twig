@@ -8,6 +8,7 @@
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
     </head>
     <body onload="loaded();" class="dialog" style="text-align:center">
+    <div class="text-center">
         {% if dlg is not none %}
             {% set opener = 'window.dialogArguments.win' %}
         {% else %}
@@ -37,8 +38,9 @@
             <br/>
             {{ prop_label }}
             <br/>
-        <center>
-            <form onsubmit="return(false);">
+        </div>
+        <div class="text-center">
+            <form onsubmit="return(false);" class="thesaurus_confirm_bottom_block">
                 <input type="hidden" name="bid" value="{{ bid }} ">
                 <input type="hidden" name="pid" value="{{ pid }}">
                 <div class='x3Dbox' style='margin:15px; height:100px; overflow:auto;'>
@@ -50,34 +52,27 @@
                     {{ 'thesaurus:: selectionner la provenance a accepter' | trans }}
                 {% endif %}
                 <br/>
-                <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
+                <input type="button" id="cancel_button" class="cancel_btn" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" >
                 &nbsp;&nbsp;&nbsp;
-                <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
+                <input type="button" id="submit_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
             </form>
-        </center>
+        </div>
         {% else %}
                 {% if nb_candidates_bad > 0 %}
                     {% set prop_label = 'thesaurus:: est candidat en provenance des champs mais ne peut etre accepte a cet emplacement du thesaurus' | trans %}
                 {% else %}
                     {% set prop_label = 'thesaurus:: n\'est pas present dans les candidats' | trans %}
                 {% endif %}
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+
         <br/>
         {{ zterm }}
         <br/>
-        <br/>
         {{ prop_label }}
         <br/>
-        <br/>
-        <br/>
-        <br/>
-        <form>
-            <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
+        <form class="thesaurus_confirm_bottom_block">
+            <input type="button" id="cancel_button" class="cancel_btn" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" >
             &nbsp;&nbsp;&nbsp;
-            <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
+            <input type="button" id="submit_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" >
         </form>
         {% endif %}
 </body>
@@ -119,17 +114,19 @@
                     switch(refresh.item(i).getAttribute("type"))
                     {
                         case "CT":
-    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                            reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                             break;
                         case "TH":
-    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                            reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
                             break;
                         }
                     }
-                    self.close();
+                    $("#NEWSY_DLG_CONFIRM").dialog('close');
+                    $("#NEWSY_DLG_CONFIRM").html('');
                     break;
                 case "cancel":
-                    self.close();
+                    $("#NEWSY_DLG_CONFIRM").dialog('close');
+                    $("#NEWSY_DLG_CONFIRM").html('');
                     break;
                 }
             }
@@ -141,18 +138,18 @@
                 switch(button)
                 {
                     case "submit":
-    {% if typ == "TS" %}
-                                    url = "xmlhttp/newts.x.php";
-    {% else %}
-                                    url = "xmlhttp/newsy.x.php";
-    {% endif %}
+                        {% if typ == "TS" %}
+                            url = "xmlhttp/newts.x.php";
+                        {% else %}
+                             url = "xmlhttp/newsy.x.php";
+                        {% endif %}
                         parms  = "bid={{ bid }}";
                         parms += "&piv={{ piv }}";
                         parms += "&pid={{ pid }}";
                         parms += "&t={{ term | url_encode }}";
-    {% if context is not none %}
-                                    parms += "&k={{ context | url_encode }}";
-    {% endif %}
+                        {% if context is not none %}
+                            parms += "&k={{ context | url_encode }}";
+                        {% endif %}
                         parms += "&sylng={{ sylng }}";
                         parms += "&reindex=0";
 
@@ -163,17 +160,20 @@
                             switch(refresh.item(i).getAttribute("type"))
                             {
                                 case "CT":
-    {{ opener }}.reloadCtermsBranch(refresh.item(i).getAttribute("id"));
+                                    $("#NEWSY_DLG_CONFIRM").dialog('close');
+                                    reloadCtermsBranch(refresh.item(i).getAttribute("id"));
                                     break;
                                 case "TH":
-    {{ opener }}.reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
+                                    $("#NEWSY_DLG_CONFIRM").dialog('close');
+                                    reloadThesaurusBranch(refresh.item(i).getAttribute("id"));
                                     break;
                                 }
                             }
-                            self.close();
                             break;
                         case "cancel":
-                            self.close();
+                            $("#NEWSY_DLG_CONFIRM").dialog('close');
+                            $("#NEWSY_DLG_CONFIRM").html('');
+
                             break;
                         }
                     }

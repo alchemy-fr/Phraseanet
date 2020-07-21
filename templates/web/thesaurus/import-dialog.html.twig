@@ -15,13 +15,12 @@
             {
                 switch(button)
                 {
-                    case "submit":
-                        document.forms[0].target='IFRIM';
-                        document.forms[0].submit();
+                    case "submit":=
+                        $('.import-form').submit();
                         break;
                     case "cancel":
                             self.returnValue = null;
-                        self.close();
+                        $('.close-dialog').trigger('click');
                         break;
                 }
             }
@@ -32,8 +31,7 @@
             {
                 if(!err)
                 {
-                    {{ opener }}.reload();
-                    self.close();
+                    $('.close-dialog').trigger('click');
                 }
                 else
                 {
@@ -44,7 +42,7 @@
     </head>
     <body onload="loaded();" class="dialog">
         <br/>
-        <form onsubmit="clkBut('submit');return(false);" action="import.php" enctype="multipart/form-data" method="post">
+        <form onsubmit="clkBut('submit');return(false);" action="import.php" enctype="multipart/form-data" method="post" class="import-form" target="IFRIM">
             <input type="hidden" name="bid" value="{{ bid }}" >
             <input type="hidden" name="piv" value="{{ piv }}" >
             <input type="hidden" name="id" value="{{ id }}" >
@@ -57,7 +55,7 @@
             <input type="file" name="fil" /> (max 16Mo)
             <br/>
 
-            <div style="text-align:center">
+            <div class="text-center">
                 <table>
                     <tr>
                         <td style="text-align:left"><input type="checkbox" disabled="disabled" name="dlk" checked="checked">{{ 'thesaurus:: supprimer les liens des champs tbranch' | trans }}</td>
@@ -67,10 +65,11 @@
                     </tr>
                 </table>
                 <br/>
-                <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" style="width:100px;">
-                &nbsp;&nbsp;&nbsp;
-                <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');" style="width:100px;">
-            </div>
+                <div class="thesaurus_confirm_bottom_block">
+                    <input type="button" id="cancel_button" value="{{ 'boutton::annuler' | trans }}" onclick="clkBut('cancel');" >
+                   <input type="button" id="submit_button" value="{{ 'boutton::valider' | trans }}" onclick="clkBut('submit');">
+                </div>
+            </divclass>
         </form>
         <iframe style="display:block; height:50px;" name="IFRIM"></iframe>
     </body>

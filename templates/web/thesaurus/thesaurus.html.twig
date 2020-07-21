@@ -53,10 +53,11 @@
                 t = t.replace(/&/g, "&amp;");
                 t = t.replace(/</g, "&lt;");
                 t = t.replace(/>/g, "&gt;");
-                // t = escape(t);
+               // t = escape(t);
                 w = window.open("about:blank", div+"wSRC", "left=2, top=2, directories=yes, width=1000, height=800, location=yes, menubar=yes, toolbar=yes, help=yes, status=yes, resizable=yes, scrollbars=yes", true);
                 w.document.write("<pre>"+t+"</pre>");
                 w.document.close();
+
             }
 
             var o_thbox_bck = null;
@@ -82,7 +83,12 @@
                 $("#SEARCH_DLG").dialog({
                     modal: true,
                     title: "{{ 'Chercher' | trans }}",
-                    autoOpen:false
+                    autoOpen:false,
+                    open:function () {
+                        $(this).closest(".ui-dialog")
+                            .find(".ui-button:first") // the first button
+                            .addClass("close-dialog").hide();
+                    }
                 });
                 $("#NEWSY_DLG").dialog({
                     modal: true,
@@ -156,14 +162,15 @@
 
     </head>
 
-    <body id="desktop" style="background-color:#808080; overflow:hidden" onload="loaded();" onscroll="evtScrollBody();" >
+    <body id="desktop" class="thesaurus-page" style="background-color:#808080; overflow:hidden" onload="loaded();" onscroll="evtScrollBody();" >
 
-        <div class="menu" id="flagsMenu" style="z-index:50">
+        <div class="menu" id="flagsMenu" style="z-index:999">
             {% for code, language in flags %}
-                <img id='flagMenu_{{ code }}' src='/assets/common/images/lng/{{ code }}_flag_18.gif' />
+                <p><img id='flagMenu_{{ code }}' src='/assets/common/images/lng/{{ code }}_flag_18.gif' /> {{ language }}</p>
+
             {% endfor %}
         </div>
-        <div class="menu" id="kctermMenu" style="z-index:50; width:240px;">
+        <div class="menu" id="kctermMenu" style="z-index:999; width:240px;">
             <a href="javascript:void(0)" class=""         id="kcterm_properties" style="font-weight:700">{{ 'thesaurus::menu: proprietes' | trans }}</a>
             <a href="javascript:void(0)" class=""         id="kcterm_reject">{{ 'thesaurus::menu: refuser' | trans }}</a>
             <a href="javascript:void(0)" class="disabled" id="kcterm_accept">{{ 'thesaurus::menu: accepter' | trans }}</a>
@@ -174,15 +181,15 @@
             <a href="javascript:void(0)" class=""         id="kcterm_export">{{ 'thesaurus::menu: exporter' | trans }}</a>
         </div>
 
-        <div class="menu" id="kThMenu" style="z-index:50; width:200px;">
+        <div class="menu" id="kThMenu" style="z-index:999; width:200px;">
             <a href="javascript:void(0)" class="" id="kth_import">{{ 'thesaurus::menu: importer' | trans }}</a>
         </div>
 
-        <div class="menu" id="ktermMenu" style="z-index:50; width:200px;">
+        <div class="menu" id="ktermMenu" style="z-index:999; width:200px;">
             <a href="javascript:void(0)" class="" id="kterm_properties" style="font-weight:700">{{ 'thesaurus::menu: proprietes' | trans }}</a>
             <a href="javascript:void(0)" class="" id="kterm_newts">{{ 'thesaurus::menu: Nouveau terme' | trans }}</a>
             <a href="javascript:void(0)" class="" id="kterm_newsy">{{ 'thesaurus::menu: Nouveau synonyme' | trans }}</a>
-            <a href="javascript:void(0)" class="" id="kterm_delete">{{ 'thesaurus::menu: supprimer' | trans }}</a>
+            <a href="javascript:void(0)" class="" id="kterm_delete">{{ 'thesaurus::menu:  Mettre dans le stock' | trans }}</a>
             <div class="line"></div>
             <a href="javascript:void(0)" class="" id="kterm_search">{{ 'thesaurus::menu: chercher' | trans }}</a>
             <a href="javascript:void(0)" class="" id="kterm_export">{{ 'thesaurus::menu: exporter' | trans }}</a>
@@ -211,6 +218,18 @@
             <br/>
             <br/>
             <div id="id_thbox_bck" class="thbox" style="position:absolute; top:28px; left:8px; right:8px; bottom:8px; background-color:#f4f4f4; xoverflow:hidden">
+                <div class="populate_btn_wrapper">
+                    <a class="populate_btn btn btn-primary" id="populate_btn">{{ 'thesaurus:: populate button' | trans }}</a>
+                </div>
+                <div style="display: none">
+                    <div id="confirm_populate">
+                        <p><span class="alert alert-message"> {{ 'thesaurus:: confirm populate' | trans }}</span></p>
+                        <div class="thesaurus_confirm_bottom_block">
+                            <input type="button" class="cancel_button cancel_btn" value="{{ 'boutton::annuler' | trans }}" >
+                            <input type="button" id="confirm_populate_button" class="validate_btn" value="{{ 'boutton::valider' | trans }}" >
+                        </div>
+                    </div>
+                </div>
 
                 <div class="onglet" style="background-color:#f0f0f0; border-bottom:1px solid #f4f4f4">
                     <span id="baseName">{{ 'phraseanet:: thesaurus' | trans }}</span>
@@ -278,11 +297,13 @@
                             <td><input type="text" style="width:250px;" name="term"
                                        onkeyup="inputChanged();return(false);"></td>
                         </tr>
+                        <tr><td colspan="3" style="height: 10px"></td></tr>
                         <tr>
                             <td style="text-align:right">{{ 'thesaurus:: contexte'  | trans }} : </td>
                             <td><b>(</b>&nbsp;</td>
                             <td><input type="text" style="width:250px;" name="context">&nbsp;<b>)</b></td>
                         </tr>
+                        <tr><td colspan="3" style="height: 10px"></td></tr>
                         <tr>
                             <td valign="bottom" style="text-align:right">{{ 'phraseanet:: language' | trans }} :&nbsp;</td>
                             <td></td>
@@ -300,12 +321,25 @@
                 </div>
                 <!-- ------------------------- end "new term/synonym" dialog ---------------------- -->
 
+                <div id="NEWSY_DLG_CONFIRM">
+                </div>
+                <div id="DLG_EXPORT">
+                </div>
+                <div id="DLG_EXPORT_TOPICS">
+                </div>
+                <div id="DLG_PROPERTIES">
+                </div>
+                <div id="ACCEPT_DLG_CONFIRM">
+                </div>
+                <div id="DLG_LINK_FIELD_1">
+                </div>
+
             </div>
 
             <br/>
 
         </form>
-
+        <input type="hidden" id="url_properties">
         <div id="clipboard" style="position:absolute; top:0px; left:0px; z-index:99">&nbsp;</div>
 
 
@@ -314,6 +348,32 @@
         <iframe src="about:blank" name="IFR0"    id="IFR0"    style="visibility:hidden; ; position:absolute; top:0px; left:400px; height:50px; width:50px; overflow:scroll"></iframe>
 
         <script type="text/javascript">
+
+            //Ajax function to get data
+            var title = '';
+            var stock = false;
+            function loadDataAjax(urls, width, height, bloc, title) {
+                    $(bloc).dialog({
+                        title: title,
+                        width: width,
+                        height: height,
+                        modal: true,
+                        create:function () {
+                            $(this).closest(".ui-dialog")
+                                .find(".ui-button:first") // the first button
+                                .addClass("close-dialog").hide();
+                        }
+                    });
+                $.ajax({
+                    type: "GET",
+                    url: `${urls}`,
+                    success: function(data){
+                        $(bloc).html('');
+                        $(bloc).append(data);
+                    }
+                });
+            }
+
 
 
         document.body.oncontextmenu = function(){
@@ -580,8 +640,11 @@
                             url += "&piv={{ piv }}";
                             url += "&id=" + o.id.substr(4);
                             url += "&typ=CT";
+                            $('#url_properties').val(url);
+                            stock = true;
+                           // w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                            w = loadDataAjax(url, 500 , 340, '#DLG_PROPERTIES','{{ 'thesaurus:dialog:: properties'  | trans }}');
 
-                            w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                             break;
                         case "kcterm_search":
                             $("#SEARCH_DLG").dialog("option", "buttons",
@@ -628,7 +691,8 @@
                             url += "&piv={{ piv }}";
                             url += "&id=" + o.id.substr(4);
                             url += "&typ=CT";
-                            w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                           // w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                            w = loadDataAjax(url, 700 , 340,'#DLG_EXPORT', '{{ 'thesaurus:dialog:: export'  | trans }}');
                             break;
                             break;
                         }
@@ -689,8 +753,10 @@
                                         url += "&piv={{ piv }}";
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=CT";
-
-                                        w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        $('#url_properties').val(url);
+                                        stock = false;
+                                        //w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        w = loadDataAjax(url, 500 , 340,'#DLG_PROPERTIES', '{{ 'thesaurus:: Proprietes' | trans }}');
                                     }
                                     break;
                                 }
@@ -926,7 +992,6 @@
                     {
                         if(tid=='')
                             tid='T';
-
                         return(reloadbranch(document.getElementById("THB_"+tid), tid, "TH"))
                     }
 
@@ -1009,7 +1074,6 @@
                                                             var lng = zdialog.find("[name=lng]:checked").val();
 
                                                             zdialog.dialog("close");
-
                                                             url  = "newterm.php";
                                                             url += "?bid={{ bid }}";
                                                             url += "&piv={{ piv }}";
@@ -1018,11 +1082,21 @@
                                                             url += "&typ=" + typ;
                                                             url += "&sylng=" + encodeURIComponent(lng);
 
-                                                            w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                                          //  w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                                            w = loadDataAjax(url,490, 350,"#NEWSY_DLG_CONFIRM",'{% if typ == "TS" %}{{ 'thesaurus:: Nouveau terme specifique' | trans }}{% else %}{{ 'thesaurus:: Nouveau synonyme' | trans }}{% endif %}');
                                                         }
                                                     }
-                                                ]
+                                                ],
+
                                         );
+
+                                        $("#NEWSY_DLG").dialog({
+                                            open:function () {
+                                                $(this).closest(".ui-dialog")
+                                                    .find(".ui-button:first") // the first button
+                                                    .addClass("close-dialog").hide();
+                                            }
+                                        });
                                         $("#NEWSY_DLG").dialog("open");
                                         break;
 
@@ -1074,7 +1148,8 @@
                                         url +=  "?bid={{ bid }}";
                                         url +=  "&piv={{ piv }}";
                                         url += "&tid=" + o.id.substr(4);
-                                        w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                       // w = window.open(url, "LINK", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                        w = loadDataAjax(url,700, 430, "#DLG_LINK_FIELD_1", '{{ 'thesaurus:: Lier la branche de thesaurus au champ' | trans }}');
                                         break;
                                     case "kterm_properties":
                                         var myObj = { "win":window };
@@ -1083,8 +1158,11 @@
                                         url += "&piv={{ piv }}";
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
+                                        $('#url_properties').val(url);
+                                        stock = false;
+                                      //  w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                       w = loadDataAjax(url,700, 400, "#DLG_PROPERTIES", '{{ 'thesaurus:: Proprietes' | trans }}');
 
-                                        w = window.open(url, "PROPERTIES", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
                                         break;
                                     case "kterm_search":
                                         $("#SEARCH_DLG").dialog("option", "buttons",
@@ -1122,6 +1200,13 @@
                                                 }
                                             ]
                                         );
+                                        $("#SEARCH_DLG").dialog({
+                                            open:function () {
+                                                $(this).closest(".ui-dialog")
+                                                    .find(".ui-button:first") // the first button
+                                                    .addClass("close-dialog").hide();
+                                            }
+                                        });
                                         $("#SEARCH_DLG").dialog("open");
                                         break;
                                     case "kterm_export":
@@ -1131,7 +1216,8 @@
                                         url += "&piv={{ piv }}";
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
-                                        w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        //w = window.open(url, "EXPORT", "directories=no, height=300, width=700, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        w = loadDataAjax(url, 700, 400, "#DLG_EXPORT", '{{ 'thesaurus:: export au format texte' | trans }}');
                                         break;
                                     case "kterm_topics":
                                         var myObj = { "win":window };
@@ -1141,7 +1227,8 @@
                                         url += "&id=" + o.id.substr(4);
                                         url += "&typ=TH";
                                         url += "&obr=" + list_opened_branches(o.parentNode);
-                                        w = window.open(url, "EXPORT", "directories=no, height=400, width=550, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        //w = window.open(url, "EXPORT", "directories=no, height=400, width=550, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
+                                        w = loadDataAjax(url, 700, 450, "#DLG_EXPORT_TOPICS", '{{ 'thesaurus:: export en topics' | trans }}');
                                         break;
                                     }
                                     break;
@@ -1245,7 +1332,8 @@
                                                 url += "&piv={{ piv }}";
                                                 url += "&id=" + o.id.substr(4);
                                                 url += "&typ=TH";
-                                                w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                //   w = window.open(url, "PROPERTIES", "directories=no, height=340, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                w = loadDataAjax(url, 500 , 340, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:: Proprietes' | trans }}');
                                             }
                                         }
                                         break;
@@ -1318,7 +1406,8 @@
                                                 url += "&piv={{ piv }}";
                                                 url += "&src=" + eventObj.Src0.id.substr(4);
                                                 url += "&tgt=" + tgt0.id.substr(4);
-                                                w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                //w = window.open(url, "ACCEPT", "directories=no, height=300, width=500, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                w = loadDataAjax(url, 500 , 340, "#ACCEPT_DLG_CONFIRM", '{{ 'thesaurus:: accepter...' | trans }}');
                                             }
                                         }
                                         break;
@@ -1372,7 +1461,8 @@
                                                     url += "?piv={{ piv }}";
                                                     url += "&bid={{ bid }}";
                                                     url += "&id=";
-                                                    w = window.open(url, "IMPORT", "directories=no, height=400, width=600, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                   // w = window.open(url, "IMPORT", "directories=no, height=400, width=600, location=no, menubar=no, resizable=yes, scrollbars=no, status=no, toolbar=no");
+                                                    w = loadDataAjax(url, 600 , 400, "#NEWSY_DLG_CONFIRM", '{{ 'thesaurus:: Importer' | trans }}');
                                                     break;
                                                 }
                                                 break;
@@ -1430,8 +1520,61 @@
                                         /*
                                          */
 
-        </script>
 
+                                      $(document).ready(function () {
+                                          /**Populate btn action**/
+                                          $('#populate_btn').bind('click', function (e) {
+                                              e.preventDefault();
+                                              $("#confirm_populate").dialog({
+                                                  modal: true,
+                                                  title: "{{ 'thesaurus: Populate title' | trans }}",
+                                                  autoOpen:false,
+                                                  width: 400,
+                                                  open:function () {
+                                                      $(this).closest(".ui-dialog")
+                                                          .find(".ui-button:first") // the first button
+                                                          .addClass("close-dialog").hide();
+                                                      $('.cancel_button').click(function () {
+                                                          $('.close-dialog').trigger('click');
+                                                      });
+                                                      $('#CTERMS').find('.OB').addClass('ob').removeClass('OB');
+                                                      $('#THP_C').html('+');
+
+
+                                                  }
+                                              });
+                                              $("#confirm_populate").dialog('open');
+                                              $('#confirm_populate_button').unbind('click').bind('click', function (e) {
+                                                  e.preventDefault();
+                                                  $.ajax({
+                                                      type: 'GET',
+                                                      url: '/admin/worker-manager/populate-status',
+                                                      data: {
+                                                          sbasIds: [{{ bid }}]
+                                                      },
+                                                      success: function (data) {
+                                                          if (data == 0) {
+                                                              $.ajax({
+                                                                  url: '/thesaurus/populate',
+                                                                  type: 'POST',
+                                                                  data: {
+                                                                      databox_id: {{ bid }}
+                                                                  },
+                                                                  success: function (data) {
+                                                                      //humane.info('{{ "thesaurus::populate: success message" |trans }}');
+                                                                      $('.close-dialog').trigger('click');
+                                                                  }
+                                                              });
+                                                          } else {
+                                                              alert('{{ "thesaurus::populate: Warning populate is in process to indexing databox" |trans }}');
+                                                          }
+                                                      }
+                                                  });
+                                              })
+                                          });
+                                      })
+
+        </script>
     </body>
 
 </html>

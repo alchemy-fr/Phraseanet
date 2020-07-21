@@ -11,13 +11,10 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 use appbox;
 use DateTime;
-use igorw;
+use Exception;
+
 
 class RecordHelper
 {
@@ -100,31 +97,31 @@ class RecordHelper
             $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
             switch (count($a)) {
                 case 1:     // yyyy
-                    $date = new \DateTime($a[0] . '-01-01');    // will throw if date is not valid
+                    $date = new DateTime($a[0] . '-01-01');    // will throw if date is not valid
                     $v_fix = $date->format('Y');
                     break;
                 case 2:     // yyyy;mm
-                    $date = new \DateTime( $a[0] . '-' . $a[1] . '-01');
+                    $date = new DateTime( $a[0] . '-' . $a[1] . '-01');
                     $v_fix = $date->format('Y-m');
                     break;
                 case 3:     // yyyy;mm;dd
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
                     $v_fix = $date->format('Y-m-d');
                     break;
                 case 4:
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00');
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00');
                     $v_fix = $date->format('Y-m-d H:i:s');
                     break;
                 case 5:
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00');
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00');
                     $v_fix = $date->format('Y-m-d H:i:s');
                     break;
                 case 6:
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
                     $v_fix = $date->format('Y-m-d H:i:s');
                     break;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // no-op, v_fix = null
         }
 
@@ -151,8 +148,16 @@ class RecordHelper
                 return (bool) $value;
 
             case FieldMapping::TYPE_STRING:
-                $value = substr($value, 0, 32766);      // for lucene limit, before a better solution
-                return str_replace("\0", '', $value);
+                $value = str_replace("\0", '', $value); // no null char for lucene !
+                if( strlen($value) > 32766) {      // for lucene limit, before a better solution
+                    for($l=32766; $l > 0; $l--) {
+                        if(ord(substr($value, $l-1, 1)) < 128) {
+                            break;
+                        }
+                    }
+                    $value = substr($value, 0, $l);
+                }
+                return $value;
 
             default:
                 return $value;

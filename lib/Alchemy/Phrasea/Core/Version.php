@@ -16,8 +16,7 @@ class Version
     /**
      * @var string
      */
-  
-    private $number = '4.1.0-alpha.29a';
+    private $number = '4.1.1';
 
     /**
      * @var string

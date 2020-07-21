@@ -13,10 +13,6 @@ services:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
-    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
-    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
-    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
 
   builder:
     build:
@@ -50,25 +46,12 @@ services:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
-    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
-    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
-    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
-    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
-    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
-    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
 
   worker:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
-    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
-    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
-    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
-    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
-    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
-    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+
 
   rabbitmq:
     ports:

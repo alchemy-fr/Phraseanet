@@ -242,7 +242,7 @@ class RecordController extends Controller
                         $this->getEventDispatcher()->dispatch(RecordEvents::DELETE, new DeleteEvent($record));
                     } else {
                         // move to trash collection
-                        $record->move_to_collection($trashCollectionsBySbasId[$sbasId], $this->getApplicationBox());
+                        $record->move_to_collection($trashCollectionsBySbasId[$sbasId]);
                         // disable permalinks
                         foreach($record->get_subdefs() as $subdef) {
                             if( ($pl = $subdef->get_permalink()) ) {
