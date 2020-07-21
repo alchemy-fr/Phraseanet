@@ -59,13 +59,24 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
         $controllers->before(new OAuthListener());
 
         /**
-         * @uses V3StoriesController::getStoryAction()
+         * @uses V3StoriesController::childrenAction_GET()
          * @uses V1Controller::ensureCanAccessToRecord()
          */
-        $controllers->get('/stories/{databox_id}/{record_id}/', 'controller.api.v3.stories:getStoryAction')
+        $controllers->get('/stories/{databox_id}/{record_id}/children/', 'controller.api.v3.stories:childrenAction_GET')
             ->before('controller.api.v1:ensureCanAccessToRecord')
             ->assert('databox_id', '\d+')
             ->assert('record_id', '\d+');
+
+        /**
+         * nb : uses the record controller to get a story
+         * @uses V3RecordController::indexAction_GET()
+         * @uses V1Controller::ensureCanAccessToRecord()
+         */
+        $controllers->get('/stories/{databox_id}/{record_id}/', 'controller.api.v3.records:indexAction_GET')
+            ->before('controller.api.v1:ensureCanAccessToRecord')
+            ->assert('databox_id', '\d+')
+            ->assert('record_id', '\d+')
+            ->value('must_be_story', true);
 
         /**
          * @uses V3SearchController::searchAction()

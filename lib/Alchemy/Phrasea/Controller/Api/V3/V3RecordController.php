@@ -19,6 +19,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use caption_field;
 use databox_field;
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Guzzle\Http\Client as Guzzle;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
@@ -39,22 +40,27 @@ class V3RecordController extends Controller
     /**
      * GET record
      *
-     * @param  Request $request
-     * @param  int     $databox_id
-     * @param  int     $record_id
+     * @param Request $request
+     * @param int $databox_id
+     * @param int $record_id
+     * @param bool $must_be_story
      *
      * @return Response
      */
-    public function indexAction_GET(Request $request, $databox_id, $record_id)
+    public function indexAction_GET(Request $request, $databox_id, $record_id, $must_be_story = false)
     {
         try {
             $record = $this->findDataboxById($databox_id)->get_record($record_id);
+            if ($must_be_story && !$record->isStory()) {
+                throw new NotFoundHttpException();
+            }
+
             $r = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
 
             return Result::create($request, $r)->createResponse();
         }
         catch (NotFoundHttpException $e) {
-            return Result::createError($request, 404, 'record Not Found')->createResponse();
+            return Result::createError($request, 404, 'record not found')->createResponse();
         }
         catch (Exception $e) {
             return Result::createBadRequest($request, $e->getMessage());
@@ -64,10 +70,11 @@ class V3RecordController extends Controller
     /**
      * POST record
      *
-     * @param  Request $request
-     * @param  int     $base_id
+     * @param Request $request
+     * @param int $base_id
      *
      * @return Response
+     * @throws DBALException
      */
     public function indexAction_POST(Request $request, $base_id)
     {
@@ -75,6 +82,7 @@ class V3RecordController extends Controller
 
         $collection = \collection::getByBaseId($this->app, $base_id);
 
+        /* @noinspection PhpDocMissingThrowsInspection */
         if (!$this->getAclForUser()->has_right_on_base($base_id, \ACL::CANADDRECORD)) {
             return Result::createError($request, 403, sprintf(
                 'You do not have access to collection %s', $collection->get_label($this->app['locale'])
@@ -595,7 +603,7 @@ class V3RecordController extends Controller
     /**
      * @return V3ResultHelpers
      */
-    private function getResultHelpers()
+    protected function getResultHelpers()
     {
         return $this->app['controller.api.v3.resulthelpers'];
     }

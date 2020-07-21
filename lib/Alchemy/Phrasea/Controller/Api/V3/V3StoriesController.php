@@ -19,13 +19,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
 
-class V3StoriesController extends Controller
+class V3StoriesController extends V3RecordController
 {
     use JsonBodyAware;
     use DispatcherAware;
 
     /**
-     * Return detailed information about one story
+     * Return children of a story
      *
      * @param  Request $request
      * @param  int     $databox_id
@@ -33,7 +33,7 @@ class V3StoriesController extends Controller
      *
      * @return Response
      */
-    public function getStoryAction(Request $request, $databox_id, $record_id)
+    public function childrenAction_GET(Request $request, $databox_id, $record_id)
     {
         try {
             $story = $this->findDataboxById($databox_id)->get_record($record_id);
@@ -41,7 +41,12 @@ class V3StoriesController extends Controller
                 throw new NotFoundHttpException();
             }
 
-            return Result::create($request, $this->listStory($request, $story))->createResponse();
+            $per_page = (int)$request->get('per_page')?:10;
+            $page = (int)$request->get('page')?:1;
+            $offset = ($per_page * ($page - 1)) + 1;
+
+            $ret = $this->listRecords($request, array_values($story->getChildren($offset, $per_page)->get_elements()));
+            return Result::create($request, $ret)->createResponse();
         }
         catch (NotFoundHttpException $e) {
             return Result::createError($request, 404, 'Story Not Found')->createResponse();
@@ -62,9 +67,6 @@ class V3StoriesController extends Controller
     private function listStory(Request $request, record_adapter $story)
     {
 
-        $per_page = (int)$request->get('per_page')?:10;
-        $page = (int)$request->get('page')?:1;
-        $offset = ($per_page * ($page - 1)) + 1;
 
         $ret = $this->getResultHelpers()->listRecord($request, $story, $this->getAclForUser());
         $ret['records'] = $this->listRecords($request, array_values($story->getChildren($offset, $per_page)->get_elements()));
@@ -99,14 +101,6 @@ class V3StoriesController extends Controller
         return $data;
     }
 
-
-    /**
-     * @return V3ResultHelpers
-     */
-    private function getResultHelpers()
-    {
-        return $this->app['controller.api.v3.resulthelpers'];
-    }
 
     /**
      * @return UrlGenerator

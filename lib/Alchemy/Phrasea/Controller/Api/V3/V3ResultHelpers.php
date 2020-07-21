@@ -163,6 +163,8 @@ class V3ResultHelpers
             'technical_informations' => $technicalInformation,
             'phrasea_type'           => $record->getType(),
             'uuid'                   => $record->getUuid(),
+            'is_story'               => $record->isStory(),
+            // 'children'               => $record->isStory() ? [] : null,
         ];
 
         if ($request->attributes->get('_extended', false)) {
@@ -175,6 +177,10 @@ class V3ResultHelpers
                 $this->listRecordMetadataAndDCES($record, $aclforuser)  // ['metadata'=>... , 'dces'=>...]
             );
         }
+
+        //        if($record->isStory()) {
+        //
+        //        }
 
         return $data;
     }
