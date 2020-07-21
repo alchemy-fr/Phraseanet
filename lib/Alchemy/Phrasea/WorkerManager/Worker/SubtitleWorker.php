@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
+use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
@@ -10,6 +11,8 @@ use Psr\Log\LoggerInterface;
 
 class SubtitleWorker implements WorkerInterface
 {
+    use FilesystemAware;
+
     /**
      * @var callable
      */
@@ -50,31 +53,40 @@ class SubtitleWorker implements WorkerInterface
         }
 
         $workerJob->setStatus(WorkerJob::RUNNING)
-                    ->setStarted(new \DateTime('now'));
+            ->setStarted(new \DateTime('now'));
 
         $em = $this->repoWorkerJob->getEntityManager();
         $this->repoWorkerJob->reconnect();
         $em->persist($workerJob);
         $em->flush();
 
+        switch ($gingaTranscriptFormat) {
+            case 'text/srt,':
+                $extension = 'srt';
+                break;
+            case 'text/plain':
+                $extension = 'txt';
+                break;
+            case 'application/json':
+                $extension = 'json';
+                break;
+            case 'text/vtt':
+            default:
+                $extension = 'vtt';
+                break;
+        }
+
+        $languageSource         = $this->getLanguageFormat($payload['languageSource']);
+        $languageDestination    = $this->getLanguageFormat($payload['languageDestination']);
+
         $record = $this->getApplicationBox()->get_databox($payload['databoxId'])->get_record($payload['recordId']);
+        $languageSourceFieldName = $record->getDatabox()->get_meta_structure()->get_element($payload['metaStructureIdSource'])->get_name();
 
-        if ($payload['permalinkUrl'] != '' && $payload['metaStructureId']) {
-            switch ($payload['langageSource']) {
-                case 'En':
-                    $language = 'en-GB';
-                    break;
-                case 'De':
-                    $language = 'de-DE';
-                    break;
-                case 'Fr':
-                default:
-                    $language = 'fr-FR';
-                    break;
-            }
+        $subtitleSourceTemporaryFile = $this->getTemporaryFilesystem()->createTemporaryFile("subtitle", null, $extension);
+        $gingerClient = new Client();
 
-            $gingerClient = new Client();
-
+        // if the languageSourceFieldName do not yet exist, first generate subtitle for it
+        if ($payload['permalinkUrl'] != '' && !$record->get_caption()->has_field($languageSourceFieldName)) {
             try {
                 $response = $gingerClient->post($gingaBaseurl.'/media/', [
                     'headers' => [
@@ -82,7 +94,7 @@ class SubtitleWorker implements WorkerInterface
                     ],
                     'json' => [
                         'url'       => $payload['permalinkUrl'],
-                        'language'  => $language
+                        'language'  => $languageSource
                     ]
                 ]);
             } catch(\Exception $e) {
@@ -144,7 +156,7 @@ class SubtitleWorker implements WorkerInterface
                         'ACCEPT'        => $gingaTranscriptFormat
                     ],
                     'query' => [
-                        'language'  => $language
+                        'language'  => $languageSource
                     ]
                 ]);
             } catch (\Exception $e) {
@@ -165,8 +177,11 @@ class SubtitleWorker implements WorkerInterface
 
             $transcriptContent = preg_replace('/WEBVTT/', 'WEBVTT - with cue identifier', $transcriptContent, 1);
 
+            // save subtitle on temporary file to use to translate if needed
+            file_put_contents($subtitleSourceTemporaryFile, $transcriptContent);
+
             $metadatas[0] = [
-                'meta_struct_id' => (int)$payload['metaStructureId'],
+                'meta_struct_id' => (int)$payload['metaStructureIdSource'],
                 'meta_id'        => '',
                 'value'          => $transcriptContent
             ];
@@ -180,7 +195,77 @@ class SubtitleWorker implements WorkerInterface
                 return 0;
             }
 
-            $this->logger->info("Auto subtitle SUCCESS");
+            $this->logger->info("Generate subtitle on language source SUCCESS");
+        } elseif ($record->get_caption()->has_field($languageSourceFieldName)) {
+            // get the source subtitle and save it to a temporary file
+            $fieldValues = $record->get_caption()->get_field($languageSourceFieldName)->get_values();
+            $fieldValue = array_pop($fieldValues);
+
+            file_put_contents($subtitleSourceTemporaryFile, $fieldValue->getValue());
+        }
+
+        if ($payload['metaStructureIdSource'] !== $payload['metaStructureIdDestination']) {
+            try {
+                $response = $gingerClient->post($gingaBaseurl.'/translate/', [
+                    'headers' => [
+                        'Authorization' => 'token '.$gingaToken,
+                        'ACCEPT'        => $gingaTranscriptFormat
+                    ],
+                    'multipart' => [
+                        [
+                            'name'      => 'transcript',
+                            'contents'  => fopen($subtitleSourceTemporaryFile, 'r')
+                        ],
+                        [
+                            'name'      => 'transcript_format',
+                            'contents'  => $gingaTranscriptFormat,
+
+                        ],
+                        [
+                            'name'      => 'language_in',
+                            'contents'  => $languageSource,
+
+                        ],
+                        [
+                            'name'      => 'language_out',
+                            'contents'  => $languageDestination,
+
+                        ]
+                    ]
+                ]);
+            } catch(\Exception $e) {
+                $this->logger->error($e->getMessage());
+                $this->jobFinished($workerJob);
+
+                return 0;
+            }
+
+            if ($response->getStatusCode() !== 200) {
+                $this->logger->error("response status /translate/ : ". $response->getStatusCode());
+                $this->jobFinished($workerJob);
+
+                return 0;
+            }
+
+            $transcriptContent = $response->getBody()->getContents();
+            $transcriptContent = preg_replace('/WEBVTT/', 'WEBVTT - with cue identifier', $transcriptContent, 1);
+
+            $metadatas[0] = [
+                'meta_struct_id' => (int)$payload['metaStructureIdDestination'],
+                'meta_id'        => '',
+                'value'          => $transcriptContent
+            ];
+
+            try {
+                $record->set_metadatas($metadatas);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+                $this->jobFinished($workerJob);
+
+                return 0;
+            }
+
+            $this->logger->info("Translate subtitle on language destination SUCCESS");
         }
 
         $this->jobFinished($workerJob);
@@ -208,5 +293,18 @@ class SubtitleWorker implements WorkerInterface
 
         $em->persist($workerJob);
         $em->flush();
+    }
+
+    private function getLanguageFormat($language)
+    {
+        switch ($language) {
+            case 'En':
+                return 'en-GB';
+            case 'De':
+                return 'de-DE';
+            case 'Fr':
+            default:
+                return 'fr-FR';
+        }
     }
 }
