@@ -24,13 +24,13 @@ if [ -f "$FILE" ]; then
     if [[ -n $PHRASEANET_TRUSTED_PROXY ]]; then
         bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXY
     fi
-        bin/setup system:config set registry.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
-        bin/setup system:config set registry.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
-        bin/setup system:config set registry.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
-        bin/setup system:config set registry.binaries.mp4box_timeout $PHRASEANET_MP4BOX_TIMEOUT
-        bin/setup system:config set registry.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
-        bin/setup system:config set registry.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
-        bin/setup system:config set registry.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
+    bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
+    bin/setup system:config set main.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
+    bin/setup system:config set main.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
+    bin/setup system:config set main.binaries.mp4box_timeout $PHRASEANET_MP4BOX_TIMEOUT
+    bin/setup system:config set main.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
+    bin/setup system:config set main.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
+    bin/setup system:config set main.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
 
     if [[  $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED=true ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
