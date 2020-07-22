@@ -13,7 +13,6 @@
 {% set overlapChapters = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'overlapChapters') %}
 
 <div id='prod-tool-box' class="PNB10 video-edit">
-
     {# jquery Tabs #}
     <div id="tool-tabs" class="tabs PNB">
         {# jquery menu #}
@@ -356,7 +355,7 @@
         }
     };
 
-    $('#submit-subtitle-request').on('click', function (e) {
+   /* $('#submit-subtitle-request').on('click', function (e) {
         e.preventDefault();
         console.log("auto-subtitle process");
         $.ajax({
@@ -376,6 +375,7 @@
                 $('#request-status').removeClass('hide');
             }
         });
-    });
+    });*/
+
 
 </script>
