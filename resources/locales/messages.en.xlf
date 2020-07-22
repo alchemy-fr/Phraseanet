@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-06-08T08:13:16Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2020-06-08T07:53:36Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9081,9 +9081,9 @@
         <target state="translated">Select an option</target>
         <jms:reference-file line="306">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right" approved="yes">
+      <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right">
         <source>admin::users:edit: check all right</source>
-        <target state="translated">Give all rights on the collection</target>
+        <target state="needs-translation">Give all rights on the collection</target>
         <jms:reference-file line="312">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="622a6320218ce751b33cf90a1def6bfb5ac837e0" resname="admin::users:edit: check read right" approved="yes">
@@ -9179,9 +9179,9 @@
         <target state="translated">Launch pull assets</target>
         <jms:reference-file line="26">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description" approved="yes">
+      <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description">
         <source>admin::workermanager:tab:pullassets: description</source>
-        <target state="translated">Uploader "Pull mode" settings</target>
+        <target state="needs-translation">Uploader "Pull mode" settings</target>
         <jms:reference-file line="1">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8c41af96270369f510fd8400c78a0584738d3631" resname="admin::workermanager:tab:pullassets: title" approved="yes">
@@ -9354,9 +9354,9 @@
         <target state="translated">Started</target>
         <jms:reference-file line="50">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id" approved="yes">
+      <trans-unit id="545ddfa72c5bbc75234fb4c4063292fd26d4c0ff" resname="admin::workermanager:tab:workerinfo: databox_id">
         <source>admin::workermanager:tab:workerinfo: databox_id</source>
-        <target state="translated">Database Id</target>
+        <target state="needs-translation">Database Id</target>
         <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description" approved="yes">
@@ -11789,11 +11789,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Valid changes or Cancel</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="yes">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="needs-translation">Cancelling editing will lose all edits.
-- Cancel : to go back to editing
-- OK : to close and loose edits</target>
+        <target state="translated">Cancel : no modification will be applied ?</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9999b27bac2f63123760f54d7312b7b7133930fc" resname="prod::editing::fields: status" approved="yes">
@@ -11863,7 +11861,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification">
         <source>prod::export: send mail notification</source>
-        <target state="needs-translation">Email sending request submitted</target>
+        <target state="new">prod::export: send mail notification</target>
         <jms:reference-file line="1018">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">

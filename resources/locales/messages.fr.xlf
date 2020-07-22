@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-06-08T08:13:45Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2020-06-08T07:54:03Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9129,9 +9129,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="36">web/admin/tree.html.twig</jms:reference-file>
         <jms:reference-file line="44">web/admin/connected-users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error" approved="yes">
+      <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error">
         <source>admin::workermanager: Rabbit config error</source>
-        <target state="translated">Erreur dans la configuration du gestionnaire de messages</target>
+        <target state="needs-translation">Erreur dans la configuration du gestionnaire de messages</target>
         <jms:reference-file line="89">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title" approved="yes">
@@ -9161,7 +9161,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="cfa86fe111066de573dae34ad424a8d9300e9b0a" resname="admin::workermanager:tab:pullassets: Endpoint get commit">
         <source>admin::workermanager:tab:pullassets: Endpoint get commit</source>
-        <target state="needs-translation">Point de terminaison (url)  pour la récupération des fichiers (adresse de l'uploader)</target>
+        <target state="needs-translation">Point de terminaison pour la récupération des fichiers (adresse de l'uploader)</target>
         <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a6df16c30b678f118cbde60abc6eccc0c84f58c" resname="admin::workermanager:tab:pullassets: Endpoint get token" approved="yes">
@@ -9189,9 +9189,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Uploader</target>
         <jms:reference-file line="25">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="yes">
+      <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate">
         <source>admin::workermanager:tab:searchengine: Databox to populate</source>
-        <target state="translated">Sélectionner les databox(s) à indexer</target>
+        <target state="needs-translation">Sélectionner les databox(s) à indexer</target>
         <jms:reference-file line="18">admin/worker-manager/worker_searchengine.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e948590a23c114afd7da0c33ceedad6ea4c63407" resname="admin::workermanager:tab:searchengine: Elasticsearch index name" approved="yes">
@@ -11789,11 +11789,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Valider ou annuler les modifications</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="yes">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="needs-translation">L'annulation de l'édition effacera toutes les modifications.
-- Annuler: pour revenir à l'édition
-- OK: pour fermer et perdre les modifications</target>
+        <target state="translated">Annulation : abandonner les modifications ?</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9999b27bac2f63123760f54d7312b7b7133930fc" resname="prod::editing::fields: status" approved="yes">
@@ -11861,9 +11859,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Rechercher</target>
         <jms:reference-file line="298">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification" approved="yes">
+      <trans-unit id="021da4e7ad79ba6ef0855ecca3539db02b2d12f9" resname="prod::export: send mail notification">
         <source>prod::export: send mail notification</source>
-        <target state="translated">Demande d'envois d'email soumise</target>
+        <target state="new">prod::export: send mail notification</target>
         <jms:reference-file line="1018">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -12191,21 +12189,21 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="48">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="33">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e53680d42ba7c2071293a23790dfaef8d0761e60" resname="publication : subtitle alert" approved="yes">
+      <trans-unit id="e53680d42ba7c2071293a23790dfaef8d0761e60" resname="publication : subtitle alert">
         <source>publication : subtitle alert</source>
-        <target state="translated">Nombre de caractères supérieur à 1024</target>
+        <target state="needs-translation">Nombre de caractères supérieur à 1024</target>
         <jms:reference-file line="50">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="35">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3cc295db2f960fa339ba3b57e33fe421923e3026" resname="publication : subtitle warning" approved="yes">
+      <trans-unit id="3cc295db2f960fa339ba3b57e33fe421923e3026" resname="publication : subtitle warning">
         <source>publication : subtitle warning</source>
-        <target state="translated">1024 Caractères Max</target>
+        <target state="needs-translation">1024 Caractères Max</target>
         <jms:reference-file line="48">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="33">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af22a65a7f5adb86b9f18a891c7a895146af5f23" resname="publication : title alert" approved="yes">
+      <trans-unit id="af22a65a7f5adb86b9f18a891c7a895146af5f23" resname="publication : title alert">
         <source>publication : title alert</source>
-        <target state="translated">Nombre de caractères supérieur à 128</target>
+        <target state="needs-translation">Nombre de caractères supérieur à 128</target>
         <jms:reference-file line="47">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="32">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
