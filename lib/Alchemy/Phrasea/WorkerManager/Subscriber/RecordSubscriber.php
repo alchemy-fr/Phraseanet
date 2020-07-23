@@ -106,17 +106,15 @@ class RecordSubscriber implements EventSubscriberInterface
         // check connection an re-connect if needed
         $repoWorker->reconnect();
 
-        $workerRunningJob = $repoWorker->findOneBy([
-            'databoxId' => $event->getRecord()->getDataboxId(),
-            'recordId'  => $event->getRecord()->getRecordId(),
-            'work'       => PhraseaTokens::MAKE_SUBDEF,
-            'workOn'    => $event->getSubdefName()
-        ]);
+        $workerRunningJob = $repoWorker->find($event->getWorkerJobId());
 
         if ($workerRunningJob) {
             $em->beginTransaction();
             try {
-                $em->remove($workerRunningJob);
+                // count-1  for the number of finished attempt
+                $workerRunningJob->setStatus(WorkerRunningJob::ERROR. ($event->getCount() - 1));
+
+                $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();
             } catch (\Exception $e) {
@@ -226,24 +224,20 @@ class RecordSubscriber implements EventSubscriberInterface
             );
             $this->messagePublisher->pushLog($logMessage);
 
-            $jeton = ($event->getSubdefName() == "document") ? PhraseaTokens::WRITE_META_DOC : PhraseaTokens::WRITE_META_SUBDEF;
-
             $repoWorker = $this->getRepoWorker();
             $em = $repoWorker->getEntityManager();
             // check connection an re-connect if needed
             $repoWorker->reconnect();
 
-            $workerRunningJob = $repoWorker->findOneBy([
-                'databoxId' => $event->getRecord()->getDataboxId(),
-                'recordId'  => $event->getRecord()->getRecordId(),
-                'work'       => $jeton,
-                'workOn'    => $event->getSubdefName()
-            ]);
+            $workerRunningJob = $repoWorker->find($event->getWorkerJobId());
 
             if ($workerRunningJob) {
                 $em->beginTransaction();
                 try {
-                    $em->remove($workerRunningJob);
+                    // count-1  for the number of finished attempt
+                    $workerRunningJob->setStatus(WorkerRunningJob::ERROR. ($event->getCount() - 1));
+
+                    $em->persist($workerRunningJob);
                     $em->flush();
                     $em->commit();
                 } catch (\Exception $e) {

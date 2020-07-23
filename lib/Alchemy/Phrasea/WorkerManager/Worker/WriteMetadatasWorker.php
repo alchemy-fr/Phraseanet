@@ -120,7 +120,8 @@ class WriteMetadatasWorker implements WorkerInterface
                     $payload['subdefName'],
                     SubdefinitionWritemetaEvent::FAILED,
                     $workerMessage,
-                    $count
+                    $count,
+                    $workerRunningJob->getId()
                 ));
 
                 return ;
@@ -243,7 +244,8 @@ class WriteMetadatasWorker implements WorkerInterface
                         $payload['subdefName'],
                         SubdefinitionWritemetaEvent::FAILED,
                         $workerMessage,
-                        $count
+                        $count,
+                        $workerRunningJob->getId()
                     ));
                 }
 
@@ -257,7 +259,8 @@ class WriteMetadatasWorker implements WorkerInterface
                     $payload['subdefName'],
                     SubdefinitionWritemetaEvent::FAILED,
                     'Subdef is not physically present!',
-                    $count
+                    $count,
+                    $workerRunningJob->getId()
                 ));
             }
 

@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
-use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\SubdefGenerator;
@@ -109,14 +108,8 @@ class SubdefCreationWorker implements WorkerInterface
                 try {
                     $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
                 } catch (\Exception $e) {
-                    try {
-                        $this->repoWorker->reconnect();
-                        $em->getConnection()->beginTransaction();
-                        $em->remove($workerRunningJob);
-                        $em->flush();
-                        $em->commit();
-                    } catch (\Exception $e) {
-                    }
+                    $this->logger->error("Exception catched: " . $e->getMessage());
+
                 } catch (\Throwable $e) {
                     $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
                     $workerMessage = "Exception throwable catched when create subdef for the recordID: " .$recordId;
@@ -127,7 +120,8 @@ class SubdefCreationWorker implements WorkerInterface
                         $record,
                         $payload['subdefName'],
                         $workerMessage,
-                        $count
+                        $count,
+                        $workerRunningJob->getId()
                     ));
 
                     return ;
@@ -151,7 +145,8 @@ class SubdefCreationWorker implements WorkerInterface
                         $record,
                         $payload['subdefName'],
                         'Subdef generation failed !',
-                        $count
+                        $count,
+                        $workerRunningJob->getId()
                     ));
 
                     $this->subdefGenerator->setLogger($oldLogger);

@@ -19,6 +19,7 @@ class WorkerRunningJob
 {
     const FINISHED = 'finished';
     const RUNNING  = 'running';
+    const ERROR    = 'error attempt ';
 
     const MAX_RESULT = 500;
 
