@@ -6,7 +6,6 @@ use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
-use Alchemy\Phrasea\Model\Repositories\WorkerRunningPopulateRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
@@ -21,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AdminConfigurationController extends Controller
 {
-    public function indexAction(PhraseaApplication $app, Request $request)
+    public function indexAction(PhraseaApplication $app)
     {
         /** @var AMQPConnection $serverConnection */
         $serverConnection = $this->app['alchemy_worker.amqp.connection'];
@@ -108,7 +107,7 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
-    public function truncateTableAction(PhraseaApplication $app, Request $request)
+    public function truncateTableAction(PhraseaApplication $app)
     {
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
@@ -117,7 +116,7 @@ class AdminConfigurationController extends Controller
         return $app->redirectPath('worker_admin');
     }
 
-    public function deleteFinishedAction(PhraseaApplication $app, Request $request)
+    public function deleteFinishedAction(PhraseaApplication $app)
     {
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
@@ -147,13 +146,13 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
-    public function subviewAction(PhraseaApplication $app)
+    public function subviewAction()
     {
         return $this->render('admin/worker-manager/worker_subview.html.twig', [
         ]);
     }
 
-    public function metadataAction(PhraseaApplication $app)
+    public function metadataAction()
     {
         return $this->render('admin/worker-manager/worker_metadata.html.twig', [
         ]);
@@ -163,10 +162,10 @@ class AdminConfigurationController extends Controller
     {
         $databoxIds = $request->get('sbasIds');
 
-        /** @var WorkerRunningPopulateRepository $repoWorkerPopulate */
-        $repoWorkerPopulate = $app['repo.worker-running-populate'];
+        /** @var WorkerRunningJobRepository $repoWorkerJob */
+        $repoWorkerJob = $app['repo.worker-running-job'];
 
-        return $repoWorkerPopulate->checkPopulateStatusByDataboxIds($databoxIds);
+        return $repoWorkerJob->checkPopulateStatusByDataboxIds($databoxIds);
     }
 
     public function pullAssetsAction(PhraseaApplication $app, Request $request)

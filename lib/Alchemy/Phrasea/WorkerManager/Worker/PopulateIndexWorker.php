@@ -4,8 +4,8 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
-use Alchemy\Phrasea\Model\Entities\WorkerRunningPopulate;
-use Alchemy\Phrasea\Model\Repositories\WorkerRunningPopulateRepository;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexFailureEvent;
@@ -23,34 +23,33 @@ class PopulateIndexWorker implements WorkerInterface
     /** @var Indexer $indexer */
     private $indexer;
 
-    /** @var  WorkerRunningPopulateRepository  $repoWorkerPopulate*/
-    private $repoWorkerPopulate;
+    /** @var  WorkerRunningJobRepository $repoWorker*/
+    private $repoWorker;
 
-    public function __construct(MessagePublisher $messagePublisher, Indexer $indexer, WorkerRunningPopulateRepository $repoWorkerPopulate)
+    public function __construct(MessagePublisher $messagePublisher, Indexer $indexer, WorkerRunningJobRepository $repoWorker)
     {
         $this->indexer              = $indexer;
         $this->messagePublisher     = $messagePublisher;
-        $this->repoWorkerPopulate   = $repoWorkerPopulate;
+        $this->repoWorker           = $repoWorker;
     }
 
     public function process(array $payload)
     {
-        $em = $this->repoWorkerPopulate->getEntityManager();
+        $em = $this->repoWorker->getEntityManager();
         $em->beginTransaction();
         $date = new \DateTime();
 
         try {
-            $workerRunningPopulate = new WorkerRunningPopulate();
-            $workerRunningPopulate
-                ->setHost($payload['host'])
-                ->setPort($payload['port'])
-                ->setIndexName($payload['indexName'])
+            $workerRunningJob = new WorkerRunningJob();
+            $workerRunningJob
+                ->setWork(MessagePublisher::POPULATE_INDEX_TYPE)
+                ->setWorkOn($payload['indexName'])
                 ->setDataboxId($payload['databoxId'])
                 ->setPublished($date->setTimestamp($payload['published']))
-                ->setStatus(WorkerRunningPopulate::RUNNING)
+                ->setStatus(WorkerRunningJob::RUNNING)
             ;
 
-            $em->persist($workerRunningPopulate);
+            $em->persist($workerRunningJob);
 
             $em->flush();
 
@@ -98,9 +97,9 @@ class PopulateIndexWorker implements WorkerInterface
                     $r['memory']/1048576
                 ));
             } catch(\Exception $e) {
-                if ($workerRunningPopulate != null) {
+                if ($workerRunningJob != null) {
 
-                    $em->remove($workerRunningPopulate);
+                    $em->remove($workerRunningJob);
 
                     $em->flush();
                 }
@@ -123,13 +122,13 @@ class PopulateIndexWorker implements WorkerInterface
         }
 
         // tell that the populate is finished
-        if ($workerRunningPopulate != null) {
-            $workerRunningPopulate
-                ->setStatus(WorkerRunningPopulate::FINISHED)
+        if ($workerRunningJob != null) {
+            $workerRunningJob
+                ->setStatus(WorkerRunningJob::FINISHED)
                 ->setFinished(new \DateTime('now'))
             ;
 
-            $em->persist($workerRunningPopulate);
+            $em->persist($workerRunningJob);
 
             $em->flush();
         }

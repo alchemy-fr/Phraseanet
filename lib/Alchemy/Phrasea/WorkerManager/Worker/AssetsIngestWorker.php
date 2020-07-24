@@ -5,9 +5,9 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
-use Alchemy\Phrasea\Model\Entities\WorkerRunningUploader;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Alchemy\Phrasea\Model\Repositories\WorkerRunningUploaderRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
@@ -22,8 +22,8 @@ class AssetsIngestWorker implements WorkerInterface
     /** @var MessagePublisher $messagePublisher */
     private $messagePublisher;
 
-    /** @var  WorkerRunningUploaderRepository $repoWorkerUploader */
-    private $repoWorkerUploader;
+    /** @var  WorkerRunningJobRepository $repoWorkerJob */
+    private $repoWorkerJob;
 
     public function __construct(PhraseaApplication $app)
     {
@@ -34,7 +34,7 @@ class AssetsIngestWorker implements WorkerInterface
     public function process(array $payload)
     {
         $assets = $payload['assets'];
-        $this->repoWorkerUploader = $this->getWorkerRunningUploaderRepository();
+        $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
 
         $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
@@ -127,33 +127,34 @@ class AssetsIngestWorker implements WorkerInterface
     }
 
     /**
-     * @return WorkerRunningUploaderRepository
+     * @return WorkerRunningJobRepository
      */
-    private function getWorkerRunningUploaderRepository()
+    private function getWorkerRunningJobRepository()
     {
-        return $this->app['repo.worker-running-uploader'];
+        return $this->app['repo.worker-running-job'];
     }
 
     private function saveAssetsList($commitId, $assetsId, $published, $type)
     {
-        $em = $this->repoWorkerUploader->getEntityManager();
+        $em = $this->repoWorkerJob->getEntityManager();
         $em->beginTransaction();
         $date = new \DateTime();
 
         try {
             foreach ($assetsId as $assetId) {
-                $workerRunningUploader = new WorkerRunningUploader();
-                $workerRunningUploader
+                $workerRunningJob = new WorkerRunningJob();
+                $workerRunningJob
                     ->setCommitId($commitId)
                     ->setAssetId($assetId)
                     ->setPublished($date->setTimestamp($published))
-                    ->setStatus(WorkerRunningUploader::RUNNING)
-                    ->setType($type)
+                    ->setWork(MessagePublisher::ASSETS_INGEST_TYPE)
+                    ->setWorkOn($type)
+                    ->setStatus(WorkerRunningJob::RUNNING)
                 ;
 
-                $em->persist($workerRunningUploader);
+                $em->persist($workerRunningJob);
 
-                unset($workerRunningUploader);
+                unset($workerRunningJob);
             }
 
             $em->flush();

@@ -53,7 +53,7 @@ class SubdefCreationWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        if(isset($payload['recordId']) && isset($payload['databoxId'])) {
+        if (isset($payload['recordId']) && isset($payload['databoxId'])) {
             $recordId       = $payload['recordId'];
             $databoxId      = $payload['databoxId'];
             $wantedSubdef   = [$payload['subdefName']];
@@ -89,7 +89,7 @@ class SubdefCreationWorker implements WorkerInterface
                     $workerRunningJob
                         ->setDataboxId($databoxId)
                         ->setRecordId($recordId)
-                        ->setWork(PhraseaTokens::MAKE_SUBDEF)
+                        ->setWork(MessagePublisher::SUBDEF_CREATION_TYPE)
                         ->setWorkOn($payload['subdefName'])
                         ->setPublished($date->setTimestamp($payload['published']))
                         ->setStatus(WorkerRunningJob::RUNNING)

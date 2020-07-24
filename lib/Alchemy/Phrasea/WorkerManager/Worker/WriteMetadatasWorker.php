@@ -63,9 +63,6 @@ class WriteMetadatasWorker implements WorkerInterface
             $clearDoc = isset($payload['clearDoc']) ? $payload['clearDoc'] : false;
             $databox = $this->findDataboxById($databoxId);
 
-
-            $param = ($payload['subdefName'] == "document") ? PhraseaTokens::WRITE_META_DOC : PhraseaTokens::WRITE_META_SUBDEF;
-
             // check if there is a make subdef running for the record or the same task running
             $canWriteMeta = $this->repoWorker->canWriteMetadata($payload['subdefName'], $recordId, $databoxId);
 
@@ -91,7 +88,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 $workerRunningJob
                     ->setDataboxId($databoxId)
                     ->setRecordId($recordId)
-                    ->setWork($param)
+                    ->setWork(MessagePublisher::WRITE_METADATAS_TYPE)
                     ->setWorkOn($payload['subdefName'])
                     ->setPublished($date->setTimestamp($payload['published']))
                     ->setStatus(WorkerRunningJob::RUNNING)

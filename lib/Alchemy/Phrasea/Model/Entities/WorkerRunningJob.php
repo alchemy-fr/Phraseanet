@@ -7,12 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="WorkerRunningJob",
- *      indexes={
- *          @ORM\index(name="databox_id", columns={"databox_id"}),
- *          @ORM\index(name="record_id", columns={"record_id"}),
- *      }
- * )
+ * @ORM\Table(name="WorkerRunningJob")
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository")
  */
 class WorkerRunningJob
@@ -21,6 +16,9 @@ class WorkerRunningJob
     const RUNNING  = 'running';
     const ERROR    = 'error attempt ';
 
+    const TYPE_PULL     = 'uploader pull';
+    const TYPE_PUSH     = 'uploader push';
+
     const MAX_RESULT = 500;
 
     /**
@@ -28,28 +26,37 @@ class WorkerRunningJob
      * @ORM\Id
      * @ORM\GeneratedValue
      */
-
     private $id;
 
     /**
-     * @ORM\Column(type="integer", name="databox_id")
+     * @ORM\Column(type="integer", name="databox_id", nullable=true)
      */
     private $databoxId;
 
     /**
-     * @ORM\Column(type="integer", name="record_id")
+     * @ORM\Column(type="integer", name="record_id", nullable=true)
      */
     private $recordId;
 
     /**
-     * @ORM\Column(type="integer", name="work")
+     * @ORM\Column(type="string", name="work", nullable=true)
      */
     private $work;
 
     /**
-     * @ORM\Column(type="string", name="work_on")
+     * @ORM\Column(type="string", name="work_on", nullable=true)
      */
     private $workOn;
+
+    /**
+     * @ORM\Column(type="string", name="commit_id", nullable=true)
+     */
+    private $commitId;
+
+    /**
+     * @ORM\Column(type="string", name="asset_id", nullable=true)
+     */
+    private $assetId;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -99,7 +106,6 @@ class WorkerRunningJob
         return $this->databoxId;
     }
 
-
     /**
      * @param $recordId
      * @return $this
@@ -120,7 +126,6 @@ class WorkerRunningJob
 
     }
 
-
     /**
      * @param $work
      * @return $this
@@ -140,7 +145,6 @@ class WorkerRunningJob
         return $this->work;
     }
 
-
     /**
      * @param $workOn
      * @return $this
@@ -158,6 +162,44 @@ class WorkerRunningJob
     public function getWorkOn()
     {
         return $this->workOn;
+    }
+
+    /**
+     * @param $commitId
+     * @return $this
+     */
+    public function setCommitId($commitId)
+    {
+        $this->commitId = $commitId;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommitId()
+    {
+        return $this->commitId;
+    }
+
+    /**
+     * @param $assetId
+     * @return $this
+     */
+    public function setAssetId($assetId)
+    {
+        $this->assetId = $assetId;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAssetId()
+    {
+        return $this->assetId;
     }
 
     /**
@@ -223,20 +265,5 @@ class WorkerRunningJob
     public function getStatus()
     {
         return $this->status;
-    }
-
-    public function getWorkName()
-    {
-        switch ($this->work) {
-            case PhraseaTokens::MAKE_SUBDEF:
-                return 'MAKE_SUBDEF';
-            case PhraseaTokens::WRITE_META_DOC:
-                return 'WRITE_META_DOC';
-            case PhraseaTokens::WRITE_META_SUBDEF:
-                return 'WRITE_META_SUBDEF';
-            default:
-                return $this->work;
-
-        }
     }
 }
