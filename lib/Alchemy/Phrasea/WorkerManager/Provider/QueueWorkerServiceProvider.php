@@ -66,8 +66,8 @@ class QueueWorkerServiceProvider implements PluginProviderInterface
                     new RecordSubscriber($app, new LazyLocator($app, 'phraseanet.appbox'))
                 );
                 $dispatcher->addSubscriber(new ExportSubscriber($app['alchemy_worker.message.publisher']));
-                $dispatcher->addSubscriber(new AssetsIngestSubscriber($app['alchemy_worker.message.publisher']));
-                $dispatcher->addSubscriber(new SearchengineSubscriber($app['alchemy_worker.message.publisher']));
+                $dispatcher->addSubscriber(new AssetsIngestSubscriber($app['alchemy_worker.message.publisher'], new LazyLocator($app, 'repo.worker-running-job')));
+                $dispatcher->addSubscriber(new SearchengineSubscriber($app['alchemy_worker.message.publisher'], new LazyLocator($app, 'repo.worker-running-job')));
                 $dispatcher->addSubscriber(new WebhookSubscriber($app['alchemy_worker.message.publisher']));
                 $dispatcher->addSubscriber(new SubtitleSubscriber(new LazyLocator($app, 'repo.worker-job'), $app['alchemy_worker.message.publisher']));
 

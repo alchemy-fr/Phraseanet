@@ -9,7 +9,6 @@ use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
-use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
@@ -97,7 +96,8 @@ class RecordSubscriber implements EventSubscriberInterface
                 'recordId'      => $event->getRecord()->getRecordId(),
                 'databoxId'     => $event->getRecord()->getDataboxId(),
                 'subdefName'    => $event->getSubdefName(),
-                'status'        => ''
+                'status'        => '',
+                'workerJobId'   => $event->getWorkerJobId()
             ]
         ];
 
@@ -106,13 +106,17 @@ class RecordSubscriber implements EventSubscriberInterface
         // check connection an re-connect if needed
         $repoWorker->reconnect();
 
+        /** @var WorkerRunningJob $workerRunningJob */
         $workerRunningJob = $repoWorker->find($event->getWorkerJobId());
 
         if ($workerRunningJob) {
             $em->beginTransaction();
             try {
                 // count-1  for the number of finished attempt
-                $workerRunningJob->setStatus(WorkerRunningJob::ERROR. ($event->getCount() - 1));
+                $workerRunningJob
+                    ->setInfo(WorkerRunningJob::ATTEMPT. ($event->getCount() - 1))
+                    ->setStatus(WorkerRunningJob::ERROR)
+                ;
 
                 $em->persist($workerRunningJob);
                 $em->flush();
@@ -212,7 +216,8 @@ class RecordSubscriber implements EventSubscriberInterface
                 'payload' => [
                     'recordId'      => $event->getRecord()->getRecordId(),
                     'databoxId'     => $event->getRecord()->getDataboxId(),
-                    'subdefName'    => $event->getSubdefName()
+                    'subdefName'    => $event->getSubdefName(),
+                    'workerJobId'   => $event->getWorkerJobId()
                 ]
             ];
 
@@ -229,13 +234,17 @@ class RecordSubscriber implements EventSubscriberInterface
             // check connection an re-connect if needed
             $repoWorker->reconnect();
 
+            /** @var WorkerRunningJob $workerRunningJob */
             $workerRunningJob = $repoWorker->find($event->getWorkerJobId());
 
             if ($workerRunningJob) {
                 $em->beginTransaction();
                 try {
                     // count-1  for the number of finished attempt
-                    $workerRunningJob->setStatus(WorkerRunningJob::ERROR. ($event->getCount() - 1));
+                    $workerRunningJob
+                        ->setInfo(WorkerRunningJob::ATTEMPT. ($event->getCount() - 1))
+                        ->setStatus(WorkerRunningJob::ERROR)
+                    ;
 
                     $em->persist($workerRunningJob);
                     $em->flush();

@@ -2,7 +2,6 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
-use Alchemy\Phrasea\Core\PhraseaTokens;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -14,7 +13,8 @@ class WorkerRunningJob
 {
     const FINISHED = 'finished';
     const RUNNING  = 'running';
-    const ERROR    = 'error attempt ';
+    const ERROR    = 'error';
+    const ATTEMPT  = 'attempt ';
 
     const TYPE_PULL     = 'uploader pull';
     const TYPE_PUSH     = 'uploader push';
@@ -57,6 +57,11 @@ class WorkerRunningJob
      * @ORM\Column(type="string", name="asset_id", nullable=true)
      */
     private $assetId;
+
+    /**
+     * @ORM\Column(type="string", name="info", nullable=true)
+     */
+    private $info;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -200,6 +205,25 @@ class WorkerRunningJob
     public function getAssetId()
     {
         return $this->assetId;
+    }
+
+    /**
+     * @param $info
+     * @return $this
+     */
+    public function setInfo($info)
+    {
+        $this->info = $info;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInfo()
+    {
+        return $this->info;
     }
 
     /**

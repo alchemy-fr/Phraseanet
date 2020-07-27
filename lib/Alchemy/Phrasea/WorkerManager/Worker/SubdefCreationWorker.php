@@ -81,26 +81,46 @@ class SubdefCreationWorker implements WorkerInterface
                 // tell that a file is in used to create subdef
                 $em = $this->repoWorker->getEntityManager();
                 $this->repoWorker->reconnect();
-                $em->beginTransaction();
 
-                try {
-                    $date = new \DateTime();
-                    $workerRunningJob = new WorkerRunningJob();
+                if (isset($payload['workerJobId'])) {
+                    /** @var WorkerRunningJob $workerRunningJob */
+                    $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
+
+                    if ($workerRunningJob == null) {
+                        $this->logger->error("Given workerJobId not found !");
+
+                        return ;
+                    }
+                    
                     $workerRunningJob
-                        ->setDataboxId($databoxId)
-                        ->setRecordId($recordId)
-                        ->setWork(MessagePublisher::SUBDEF_CREATION_TYPE)
-                        ->setWorkOn($payload['subdefName'])
-                        ->setPublished($date->setTimestamp($payload['published']))
-                        ->setStatus(WorkerRunningJob::RUNNING)
-                    ;
+                        ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
+                        ->setStatus(WorkerRunningJob::RUNNING);
 
                     $em->persist($workerRunningJob);
+
                     $em->flush();
 
-                    $em->commit();
-                } catch (\Exception $e) {
-                    $em->rollback();
+                } else {
+                    $em->beginTransaction();
+                    try {
+                        $date = new \DateTime();
+                        $workerRunningJob = new WorkerRunningJob();
+                        $workerRunningJob
+                            ->setDataboxId($databoxId)
+                            ->setRecordId($recordId)
+                            ->setWork(MessagePublisher::SUBDEF_CREATION_TYPE)
+                            ->setWorkOn($payload['subdefName'])
+                            ->setPublished($date->setTimestamp($payload['published']))
+                            ->setStatus(WorkerRunningJob::RUNNING)
+                        ;
+
+                        $em->persist($workerRunningJob);
+                        $em->flush();
+
+                        $em->commit();
+                    } catch (\Exception $e) {
+                        $em->rollback();
+                    }
                 }
 
                 $this->subdefGenerator->setLogger($this->logger);
