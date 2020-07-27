@@ -523,12 +523,8 @@
         $(document).find(".tagsinput").tagsinput('items');
 
         $(document).find(".emailslist").on('change', function(e) {
-            $(document).find(".tagsinput").tagsinput('removeAll');
             $(document).find(".tagsinput").tagsinput('add', $(this).val());
-            $(document).find(".bootstrap-tagsinput").on('mouseover', function(e) {
-                console.log('aa');
-                $(document).find(".emailslist").val($('.tagsinput').val());
-            });
+            $(this).val('');
         });
     </script>
 {% endif %}
