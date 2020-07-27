@@ -3,8 +3,8 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Model\Entities\WorkerRunningUploader;
-use Alchemy\Phrasea\Model\Repositories\WorkerRunningUploaderRepository;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
 
@@ -13,14 +13,14 @@ class PullAssetsWorker implements WorkerInterface
     private $messagePublisher;
     private $conf;
 
-    /** @var  WorkerRunningUploaderRepository $repoWorkerUploader */
-    private $repoWorkerUploader;
+    /** @var  WorkerRunningJobRepository $repoWorkerJob */
+    private $repoWorkerJob;
 
-    public function __construct(MessagePublisher $messagePublisher, PropertyAccess $conf, WorkerRunningUploaderRepository $repoWorkerUploader)
+    public function __construct(MessagePublisher $messagePublisher, PropertyAccess $conf, WorkerRunningJobRepository $repoWorkerJob)
     {
         $this->messagePublisher     = $messagePublisher;
         $this->conf                 = $conf;
-        $this->repoWorkerUploader   = $repoWorkerUploader;
+        $this->repoWorkerJob        = $repoWorkerJob;
     }
 
     public function process(array $payload)
@@ -81,7 +81,7 @@ class PullAssetsWorker implements WorkerInterface
                         'commit_id' => $commit['id'],
                         'token'     => $commit['token'],
                         'base_url'  => $baseUrl,
-                        'type'      => WorkerRunningUploader::TYPE_PULL
+                        'type'      => WorkerRunningJob::TYPE_PULL
                     ]
                 ];
 
@@ -148,7 +148,7 @@ class PullAssetsWorker implements WorkerInterface
      */
     private function isCommitToBeCreating($commitId)
     {
-        $res = $this->repoWorkerUploader->findBy(['commitId' => $commitId]);
+        $res = $this->repoWorkerJob->findBy(['commitId' => $commitId, 'status'   => WorkerRunningJob::RUNNING]);
 
         return count($res) != 0;
     }

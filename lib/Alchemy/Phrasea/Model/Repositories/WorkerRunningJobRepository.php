@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Doctrine\ORM\EntityRepository;
 
 class WorkerRunningJobRepository extends EntityRepository
@@ -22,15 +23,15 @@ class WorkerRunningJobRepository extends EntityRepository
 
         $sql = 'SELECT work_on
             FROM WorkerRunningJob
-            WHERE ((work & :write_meta) > 0 OR ((work & :make_subdef) > 0 AND work_on = :work_on) ) 
+            WHERE ((work = :write_meta) OR ((work = :make_subdef) AND work_on = :work_on) ) 
             AND record_id = :record_id 
             AND databox_id = :databox_id
             AND status = :status';
 
         $query = $this->_em->createNativeQuery($sql, $rsm);
         $query->setParameters([
-            'write_meta' => PhraseaTokens::WRITE_META,
-            'make_subdef'=> PhraseaTokens::MAKE_SUBDEF,
+            'write_meta' => MessagePublisher::WRITE_METADATAS_TYPE,
+            'make_subdef'=> MessagePublisher::SUBDEF_CREATION_TYPE,
             'work_on'    => $subdefName,
             'record_id'  => $recordId,
             'databox_id' => $databoxId,
@@ -56,15 +57,15 @@ class WorkerRunningJobRepository extends EntityRepository
 
         $sql = 'SELECT work_on
             FROM WorkerRunningJob
-            WHERE ((work & :make_subdef) > 0 OR ((work & :write_meta) > 0 AND work_on = :work_on) ) 
+            WHERE ((work = :make_subdef) OR ((work = :write_meta) AND work_on = :work_on) ) 
             AND record_id = :record_id 
             AND databox_id = :databox_id
             AND status = :status';
 
         $query = $this->_em->createNativeQuery($sql, $rsm);
         $query->setParameters([
-                'make_subdef'=> PhraseaTokens::MAKE_SUBDEF,
-                'write_meta' => PhraseaTokens::WRITE_META,
+                'make_subdef'=> MessagePublisher::SUBDEF_CREATION_TYPE,
+                'write_meta' => MessagePublisher::WRITE_METADATAS_TYPE,
                 'work_on'    => $subdefName,
                 'record_id'  => $recordId,
                 'databox_id' => $databoxId,
@@ -73,6 +74,45 @@ class WorkerRunningJobRepository extends EntityRepository
         );
 
         return count($query->getResult()) == 0;
+    }
+
+    /**
+     * @param array $databoxIds
+     * @return int
+     */
+    public function checkPopulateStatusByDataboxIds(array $databoxIds)
+    {
+        $qb = $this->createQueryBuilder('w');
+        $qb->where($qb->expr()->in('w.databoxId', $databoxIds))
+            ->andWhere('w.work = :work')
+            ->andWhere('w.status != :status')
+            ->setParameters([ 'work' => MessagePublisher::POPULATE_INDEX_TYPE, 'status' => WorkerRunningJob::FINISHED])
+        ;
+
+        return count($qb->getQuery()->getResult());
+    }
+
+    /**
+     * @param $commitId
+     * @return bool
+     */
+    public function canAckUploader($commitId)
+    {
+        $qb = $this->createQueryBuilder('w');
+        $res = $qb
+            ->where('w.commitId = :commitId')
+            ->andWhere('w.work = :work')
+            ->andWhere('w.status != :status')
+            ->setParameters([
+                'commitId' => $commitId,
+                'work'     => MessagePublisher::ASSETS_INGEST_TYPE,
+                'status'   => WorkerRunningJob::FINISHED
+            ])
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return count($res) == 0;
     }
 
     public function truncateWorkerTable()
