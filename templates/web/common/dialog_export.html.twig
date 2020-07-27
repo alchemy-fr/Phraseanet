@@ -178,7 +178,8 @@
                         <div>
                             <span style="min-width: 21px;display: inline-block; ">
                                 {{ 'export::mail: destinataire' | trans }}</span>
-                            <input type="text" value="" class="span4 tagsinput" name="destmail" data-role="tagsinput" >
+                            <input type="text" value="" class="span4 emailslist" name="destmail" >
+                            <input type="text" value="" class="span4 tagsinput" data-role="tagsinput" >
                             <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px;">
                             <span style="font-style: italic">{{ 'export:email:info:: email addresses separated by commas' | trans }}</span>
                             </div>
@@ -521,9 +522,13 @@
 
         $(document).find(".tagsinput").tagsinput('items');
 
-        $(document).find(".bootstrap-tagsinput input").on('keydown', function(e) {
-            console.log('a');
-            $(this).val($(this).val().replace(/ /g,',').replace(';',',').replace('/',','));
+        $(document).find(".emailslist").on('change', function(e) {
+            $(document).find(".tagsinput").tagsinput('removeAll');
+            $(document).find(".tagsinput").tagsinput('add', $(this).val());
+            $(document).find(".bootstrap-tagsinput").on('mouseover', function(e) {
+                console.log('aa');
+                $(document).find(".emailslist").val($('.tagsinput').val());
+            });
         });
     </script>
 {% endif %}

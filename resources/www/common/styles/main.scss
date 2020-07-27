@@ -200,6 +200,7 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   cursor: text;
   margin-bottom: 10px;
   min-width: 350px;
+  min-height: 32px;
 }
 .bootstrap-tagsinput input {
   border: none;
@@ -210,6 +211,7 @@ $mainMenuLinkBackgroundHoverColor: transparent;
   margin: 0;
   width: 100%;
   max-width: inherit;
+  display: none;
 }
 .bootstrap-tagsinput.form-control input::-moz-placeholder {
   color: #777;
