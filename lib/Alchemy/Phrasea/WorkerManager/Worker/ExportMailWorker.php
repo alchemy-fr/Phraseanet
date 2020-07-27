@@ -7,19 +7,25 @@ use Alchemy\Phrasea\Core\Event\ExportFailureEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\Token;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailRecordsExport;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\WorkerManager\Event\ExportMailFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 
 class ExportMailWorker implements WorkerInterface
 {
     use Application\Helper\NotifierAware;
 
     private $app;
+
+    /** @var  WorkerRunningJobRepository $repoWorkerJob */
+    private $repoWorkerJob;
 
     public function __construct(Application $app)
     {
@@ -28,6 +34,28 @@ class ExportMailWorker implements WorkerInterface
 
     public function process(array $payload)
     {
+        $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
+        $em = $this->repoWorkerJob->getEntityManager();
+        $em->beginTransaction();
+        $date = new \DateTime();
+
+        try {
+            $workerRunningJob = new WorkerRunningJob();
+            $workerRunningJob
+                ->setWork(MessagePublisher::EXPORT_MAIL_TYPE)
+                ->setPublished($date->setTimestamp($payload['published']))
+                ->setStatus(WorkerRunningJob::RUNNING)
+            ;
+
+            $em->persist($workerRunningJob);
+
+            $em->flush();
+
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+        }
+
         $destMails = unserialize($payload['destinationMails']);
 
         $params = unserialize($payload['params']);
@@ -54,6 +82,7 @@ class ExportMailWorker implements WorkerInterface
         );
 
         $remaingEmails = $destMails;
+        $deliverEmails = [];
 
         $emitter = new Emitter($user->getDisplayName(), $user->getEmail());
 
@@ -69,6 +98,7 @@ class ExportMailWorker implements WorkerInterface
             $mail->setExpiration($token->getExpiration());
 
             $this->deliver($mail, $params['reading_confirm']);
+            $deliverEmails[] = $mail;
             unset($remaingEmails[$key]);
         }
 
@@ -98,5 +128,25 @@ class ExportMailWorker implements WorkerInterface
             }
         }
 
+        if ($workerRunningJob != null) {
+            $workerRunningJob
+                ->setWorkOn(implode(',', $deliverEmails))
+                ->setStatus(WorkerRunningJob::FINISHED)
+                ->setFinished(new \DateTime('now'))
+            ;
+
+            $em->persist($workerRunningJob);
+
+            $em->flush();
+        }
+
+    }
+
+    /**
+     * @return WorkerRunningJobRepository
+     */
+    private function getWorkerRunningJobRepository()
+    {
+        return $this->app['repo.worker-running-job'];
     }
 }

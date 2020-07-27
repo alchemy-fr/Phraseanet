@@ -117,22 +117,24 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::POPULATE_INDEX_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new PopulateIndexWorker($app['alchemy_worker.message.publisher'], $app['elasticsearch.indexer'], $app['repo.worker-running-populate']))
+            return (new PopulateIndexWorker($app['alchemy_worker.message.publisher'], $app['elasticsearch.indexer'], $app['repo.worker-running-job']))
                 ->setApplicationBox($app['phraseanet.appbox'])
                 ->setDispatcher($app['dispatcher']);
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::PULL_ASSETS_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return new PullAssetsWorker($app['alchemy_worker.message.publisher'], $app['conf'], $app['repo.worker-running-uploader']);
+            return new PullAssetsWorker($app['alchemy_worker.message.publisher'], $app['conf'], $app['repo.worker-running-job']);
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DELETE_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new DeleteRecordWorker())
+            return (new DeleteRecordWorker($app['repo.worker-running-job']))
                 ->setApplicationBox($app['phraseanet.appbox']);
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SUBTITLE_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return new SubtitleWorker($app['repo.worker-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger']);
+            return (new SubtitleWorker($app['repo.worker-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger']))
+                ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
+                ->setTemporaryFileSystemLocator(new LazyLocator($app, 'temporary-filesystem'));
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::MAIN_QUEUE_TYPE, new CallableWorkerFactory(function () use ($app) {
