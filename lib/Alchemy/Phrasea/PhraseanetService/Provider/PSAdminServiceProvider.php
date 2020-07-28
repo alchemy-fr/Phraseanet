@@ -10,7 +10,7 @@ use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
-class PSAdminServiceprovider implements ControllerProviderInterface, ServiceProviderInterface
+class PSAdminServiceProvider implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
 

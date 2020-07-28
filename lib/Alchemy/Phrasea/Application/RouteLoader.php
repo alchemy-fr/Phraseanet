@@ -5,7 +5,7 @@ namespace Alchemy\Phrasea\Application;
 use Alchemy\EmbedProvider\EmbedServiceProvider;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\ControllerProvider as Providers;
-use Alchemy\Phrasea\PhraseanetService\Provider\PSAdminServiceprovider;
+use Alchemy\Phrasea\PhraseanetService\Provider\PSAdminServiceProvider;
 use Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider;
 use Alchemy\Phrasea\WorkerManager\Provider\ControllerServiceProvider as WorkerManagerProvider;
 use Assert\Assertion;
@@ -31,7 +31,7 @@ class RouteLoader
         '/admin/subdefs'               => Providers\Admin\Subdefs::class,
         '/admin/task-manager'          => Providers\Admin\TaskManager::class,
         '/admin/worker-manager'        => WorkerManagerProvider::class,
-        '/admin/phraseanet-service'    => PSAdminServiceprovider::class,
+        '/admin/phraseanet-service'    => PSAdminServiceProvider::class,
         '/admin/users'                 => Providers\Admin\Users::class,
         '/client/'                     => Providers\Client\Root::class,
         '/datafiles'                   => Providers\Datafiles::class,
