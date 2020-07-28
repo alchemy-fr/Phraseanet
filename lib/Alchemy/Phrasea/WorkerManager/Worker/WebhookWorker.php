@@ -8,6 +8,8 @@ use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Webhook\Processor\ProcessorInterface;
 use Alchemy\Phrasea\WorkerManager\Event\WebhookDeliverFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
@@ -31,6 +33,9 @@ class WebhookWorker implements WorkerInterface
     /** @var MessagePublisher  $messagePublisher */
     private $messagePublisher;
 
+    /** @var  WorkerRunningJobRepository $repoWorkerJob */
+    private $repoWorkerJob;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -43,6 +48,29 @@ class WebhookWorker implements WorkerInterface
     public function process(array $payload)
     {
         if (isset($payload['id'])) {
+            $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
+            $em = $this->repoWorkerJob->getEntityManager();
+            $em->beginTransaction();
+            $date = new \DateTime();
+
+            try {
+                $workerRunningJob = new WorkerRunningJob();
+                $workerRunningJob
+                    ->setWork(MessagePublisher::WEBHOOK_TYPE)
+                    ->setWorkOn('WebhookEventId: '. $payload['id'])
+                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setStatus(WorkerRunningJob::RUNNING)
+                ;
+
+                $em->persist($workerRunningJob);
+
+                $em->flush();
+
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
+
             $webhookEventId = $payload['id'];
             $app = $this->app;
 
@@ -58,7 +86,6 @@ class WebhookWorker implements WorkerInterface
 
             // Set callback which logs success or failure
             $subscriber = new CallbackBackoffStrategy(function ($retries, Request $request, $response, $e) use ($app, $webhookEventId, $payload) {
-                $retry = true;
                 if ($response && (null !== $deliverId = parse_url($request->getUrl(), PHP_URL_FRAGMENT))) {
                     /** @var WebhookEventDelivery $delivery */
                     $delivery = $app['repo.webhook-delivery']->find($deliverId);
@@ -74,7 +101,6 @@ class WebhookWorker implements WorkerInterface
                             $delivery->getThirdPartyApplication()->getName()
                         );
 
-                        $retry = false;
                     } else {
                         $app['manipulator.webhook-delivery']->deliveryFailure($delivery);
 
@@ -95,8 +121,6 @@ class WebhookWorker implements WorkerInterface
                     }
 
                     $app['alchemy_worker.message.publisher']->pushLog($logEntry, $logType, $logContext);
-
-                    return $retry;
                 }
             }, true, new CurlBackoffStrategy());
 
@@ -118,6 +142,17 @@ class WebhookWorker implements WorkerInterface
                 $this->messagePublisher->pushLog(sprintf('Processing event "%s" with id %d', $webhookevent->getName(), $webhookevent->getId()));
                 // send requests
                 $this->deliverEvent($httpClient, $thirdPartyApplications, $webhookevent, $payload);
+            }
+
+            if ($workerRunningJob != null) {
+                $workerRunningJob
+                    ->setStatus(WorkerRunningJob::FINISHED)
+                    ->setFinished(new \DateTime('now'))
+                ;
+
+                $em->persist($workerRunningJob);
+
+                $em->flush();
             }
         }
     }
@@ -202,5 +237,13 @@ class WebhookWorker implements WorkerInterface
     private function getUrl(ApiApplication $application, WebhookEventDelivery $delivery)
     {
         return sprintf('%s#%s', $application->getWebhookUrl(), $delivery->getId());
+    }
+
+    /**
+     * @return WorkerRunningJobRepository
+     */
+    private function getWorkerRunningJobRepository()
+    {
+        return $this->app['repo.worker-running-job'];
     }
 }
