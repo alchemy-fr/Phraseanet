@@ -12,8 +12,9 @@ class PopulateIndexFailureEvent extends SfEvent
     private $databoxId;
     private $workerMessage;
     private $count;
+    private $workerJobId;
 
-    public function __construct($host, $port, $indexName, $databoxId, $workerMessage = '', $count = 2)
+    public function __construct($host, $port, $indexName, $databoxId, $workerMessage = '', $count = 2, $workerJobId = 0)
     {
         $this->host             = $host;
         $this->port             = $port;
@@ -21,6 +22,7 @@ class PopulateIndexFailureEvent extends SfEvent
         $this->databoxId        = $databoxId;
         $this->workerMessage    = $workerMessage;
         $this->count            = $count;
+        $this->workerJobId      = $workerJobId;
     }
 
     public function getHost()
@@ -51,5 +53,10 @@ class PopulateIndexFailureEvent extends SfEvent
     public function getCount()
     {
         return $this->count;
+    }
+
+    public function getWorkerJobId()
+    {
+        return $this->workerJobId;
     }
 }

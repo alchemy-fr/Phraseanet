@@ -58,7 +58,7 @@
 {% endif %}
 
 {% for workerRow in workerRunningJob | sort | reverse %}
-    <tr>
+    <tr title="{{ workerRow.info }}">
         <td>
             {% if workerRow.databoxId %}
                 {{ workerRow.databoxId | sbas_labels(app) }}
