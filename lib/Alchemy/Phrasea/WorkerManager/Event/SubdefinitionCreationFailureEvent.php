@@ -10,14 +10,16 @@ class SubdefinitionCreationFailureEvent extends RecordEvent
     private $subdefName;
     private $workerMessage;
     private $count;
+    private $workerJobId;
 
-    public function __construct(RecordInterface $record, $subdefName, $workerMessage = '', $count = 2)
+    public function __construct(RecordInterface $record, $subdefName, $workerMessage = '', $count = 2, $workerJobId = 0)
     {
         parent::__construct($record);
 
         $this->subdefName       = $subdefName;
         $this->workerMessage    = $workerMessage;
         $this->count            = $count;
+        $this->workerJobId      = $workerJobId;
     }
 
     public function getSubdefName()
@@ -33,5 +35,10 @@ class SubdefinitionCreationFailureEvent extends RecordEvent
     public function getCount()
     {
         return $this->count;
+    }
+
+    public function getWorkerJobId()
+    {
+        return $this->workerJobId;
     }
 }

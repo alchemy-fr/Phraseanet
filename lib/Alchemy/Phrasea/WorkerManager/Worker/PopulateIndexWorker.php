@@ -36,26 +36,47 @@ class PopulateIndexWorker implements WorkerInterface
     public function process(array $payload)
     {
         $em = $this->repoWorker->getEntityManager();
-        $em->beginTransaction();
-        $date = new \DateTime();
 
-        try {
-            $workerRunningJob = new WorkerRunningJob();
+        if (isset($payload['workerJobId'])) {
+            /** @var WorkerRunningJob $workerRunningJob */
+            $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
+
+            if ($workerRunningJob == null) {
+                $this->messagePublisher->pushLog("Given workerJobId not found !", "error");
+
+                return ;
+            }
+
             $workerRunningJob
-                ->setWork(MessagePublisher::POPULATE_INDEX_TYPE)
-                ->setWorkOn($payload['indexName'])
-                ->setDataboxId($payload['databoxId'])
-                ->setPublished($date->setTimestamp($payload['published']))
+                ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
                 ->setStatus(WorkerRunningJob::RUNNING)
             ;
 
             $em->persist($workerRunningJob);
 
             $em->flush();
+        } else {
+            $em->beginTransaction();
+            $date = new \DateTime();
 
-            $em->commit();
-        } catch (\Exception $e) {
-            $em->rollback();
+            try {
+                $workerRunningJob = new WorkerRunningJob();
+                $workerRunningJob
+                    ->setWork(MessagePublisher::POPULATE_INDEX_TYPE)
+                    ->setWorkOn($payload['indexName'])
+                    ->setDataboxId($payload['databoxId'])
+                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setStatus(WorkerRunningJob::RUNNING)
+                ;
+
+                $em->persist($workerRunningJob);
+
+                $em->flush();
+
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
         }
 
         /** @var ElasticsearchOptions $options */
@@ -82,7 +103,8 @@ class PopulateIndexWorker implements WorkerInterface
                 $payload['indexName'],
                 $payload['databoxId'],
                 $workerMessage,
-                $count
+                $count,
+                $workerRunningJob->getId()
             ));
         } else {
             $databox = $this->findDataboxById($databoxId);
@@ -97,13 +119,6 @@ class PopulateIndexWorker implements WorkerInterface
                     $r['memory']/1048576
                 ));
             } catch(\Exception $e) {
-                if ($workerRunningJob != null) {
-
-                    $em->remove($workerRunningJob);
-
-                    $em->flush();
-                }
-
                 $workerMessage = sprintf("Error on indexing : %s ", $e->getMessage());
                 $this->messagePublisher->pushLog($workerMessage);
 
@@ -116,7 +131,8 @@ class PopulateIndexWorker implements WorkerInterface
                     $payload['indexName'],
                     $payload['databoxId'],
                     $workerMessage,
-                    $count
+                    $count,
+                    $workerRunningJob->getId()
                 ));
             }
         }
