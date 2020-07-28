@@ -1,4 +1,11 @@
 send_timeout $GATEWAY_SEND_TIMEOUT;
+keepalive_timeout           $GATEWAY_SEND_TIMEOUT;
+proxy_connect_timeout       $GATEWAY_PROXY_TIMEOUT;
+proxy_send_timeout          $GATEWAY_PROXY_TIMEOUT;
+client_header_timeout       $GATEWAY_SEND_TIMEOUT;
+client_body_timeout         $GATEWAY_SEND_TIMEOUT;
+fastcgi_read_timeout        $GATEWAY_FASTCGI_TIMEOUT;
+
 upstream backend {
     server phraseanet:9000;
 }
@@ -35,6 +42,7 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_index index.php;
         include fastcgi_params;
+        include fastcgi_extended_params;
         fastcgi_pass backend;
     }
 }

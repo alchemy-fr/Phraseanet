@@ -19,9 +19,9 @@ use Alchemy\Phrasea\Media\SubdefSubstituer;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\WorkerRunningUploader;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
-use Alchemy\Phrasea\Model\Repositories\WorkerRunningUploaderRepository;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationRecordFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
@@ -42,8 +42,8 @@ class CreateRecordWorker implements WorkerInterface
     /** @var MessagePublisher $messagePublisher */
     private $messagePublisher;
 
-    /** @var  WorkerRunningUploaderRepository $repoWorkerUploader */
-    private $repoWorkerUploader;
+    /** @var  WorkerRunningJobRepository $repoWorkerJob */
+    private $repoWorkerJob;
 
     public function __construct(PhraseaApplication $app)
     {
@@ -54,8 +54,8 @@ class CreateRecordWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        $this->repoWorkerUploader = $this->getWorkerRunningUploaderRepository();
-        $em = $this->repoWorkerUploader->getEntityManager();
+        $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
+        $em = $this->repoWorkerJob->getEntityManager();
 
         $uploaderClient = new Client(['base_uri' => $payload['base_url']]);
 
@@ -70,11 +70,11 @@ class CreateRecordWorker implements WorkerInterface
 
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
 
-
-        /** @var WorkerRunningUploader $workerRunningUploader */
-        $workerRunningUploader =  $this->repoWorkerUploader->findOneBy([
+        /** @var WorkerRunningJob $workerRunningJob */
+        $workerRunningJob =  $this->repoWorkerJob->findOneBy([
             'commitId' => $payload['commit_id'],
-            'assetId'  => $payload['asset']
+            'assetId'  => $payload['asset'],
+            'status'   => WorkerRunningJob::RUNNING
         ]);
 
         //download the asset
@@ -95,8 +95,11 @@ class CreateRecordWorker implements WorkerInterface
                 $count
             ));
 
-            $em->remove($workerRunningUploader);
-            $em->flush();
+            if ($workerRunningJob != null) {
+                $em->remove($workerRunningJob);
+
+                $em->flush();
+            }
 
             return;
         }
@@ -115,18 +118,24 @@ class CreateRecordWorker implements WorkerInterface
                 $count
             ));
 
-            $em->remove($workerRunningUploader);
-            $em->flush();
+            if ($workerRunningJob != null) {
+                $em->remove($workerRunningJob);
+
+                $em->flush();
+            }
 
             return;
         }
 
-        if ($workerRunningUploader != null) {
+        if ($workerRunningJob != null) {
             $em->beginTransaction();
             try {
-                $workerRunningUploader->setStatus(WorkerRunningUploader::DOWNLOADED);
+                $workerRunningJob
+                    ->setStatus(WorkerRunningJob::FINISHED)
+                    ->setFinished(new \DateTime('now'))
+                ;
 
-                $em->persist($workerRunningUploader);
+                $em->persist($workerRunningJob);
 
                 $em->flush();
                 $em->commit();
@@ -136,7 +145,7 @@ class CreateRecordWorker implements WorkerInterface
 
         }
 
-        $canAck = $this->repoWorkerUploader->canAck($payload['commit_id']);
+        $canAck = $this->repoWorkerJob->canAckUploader($payload['commit_id']);
 
         //  if all assets in the commit are downloaded , send ack to the uploader
         if ($canAck) {
@@ -228,8 +237,10 @@ class CreateRecordWorker implements WorkerInterface
         $this->getBorderManager()->process($lazaretSession, $packageFile, $callback);
 
 
+        $recordId = null;
         if ($elementCreated instanceof \record_adapter) {
             $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
+            $recordId = $elementCreated->getRecordId();
         } else {
             $this->messagePublisher->pushLog(sprintf('The file was moved to the quarantine: %s', json_encode($reasons)));
             /** @var LazaretFile $elementCreated */
@@ -241,7 +252,6 @@ class CreateRecordWorker implements WorkerInterface
         if (is_int($payload['storyId']) && $elementCreated instanceof \record_adapter) {
             $this->addRecordInStory($user, $elementCreated, $sbasId, $payload['storyId'], $body['formData']);
         }
-
     }
 
     /**
@@ -337,10 +347,10 @@ class CreateRecordWorker implements WorkerInterface
     }
 
     /**
-     * @return WorkerRunningUploaderRepository
+     * @return WorkerRunningJobRepository
      */
-    private function getWorkerRunningUploaderRepository()
+    private function getWorkerRunningJobRepository()
     {
-        return $this->app['repo.worker-running-uploader'];
+        return $this->app['repo.worker-running-job'];
     }
 }
