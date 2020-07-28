@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\ControllerProvider;
 
 use Alchemy\EmbedProvider\EmbedServiceProvider;
+use Alchemy\Phrasea\PhraseanetService\Provider\PSAdminServiceprovider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -55,6 +56,7 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Admin\Subdefs::class => [],
             Admin\TaskManager::class => [],
             \Alchemy\Phrasea\WorkerManager\Provider\ControllerServiceProvider::class => [],
+            PSAdminServiceprovider::class => [],
             Admin\Users::class => [],
             Client\Root::class => [],
             Datafiles::class => [],
