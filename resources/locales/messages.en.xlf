@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-07-22T09:49:43Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9382,9 +9382,9 @@
         <target state="translated">Job running informations</target>
         <jms:reference-file line="3">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="23cbc34865b1b4777a5c169cc935c74b67bcf006" resname="admin::workermanager:tab:workerinfo: duration">
+      <trans-unit id="23cbc34865b1b4777a5c169cc935c74b67bcf006" resname="admin::workermanager:tab:workerinfo: duration" approved="no">
         <source>admin::workermanager:tab:workerinfo: duration</source>
-        <target state="new">admin::workermanager:tab:workerinfo: duration</target>
+        <target state="needs-translation">Duration</target>
         <jms:reference-file line="52">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a47a4872345c5f33d3fa94838e52e8e3da538ad" resname="admin::workermanager:tab:workerinfo: finished" approved="yes">
@@ -10219,9 +10219,9 @@
         <target state="translated">Title</target>
         <jms:reference-file line="71">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info">
+      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="no">
         <source>export:email:: acknowledgement info</source>
-        <target state="needs-translation">Acknowledgment works only if the recipient's server has activated this function.</target>
+        <target state="needs-translation">The "Acknowledgment" works only if the recipient supports this features.</target>
         <jms:reference-file line="198">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
