@@ -36,6 +36,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         mcrypt \
         swftools \
         unoconv \
+        ufraw \
         unzip \
         poppler-utils \
         libreoffice-base-core \
