@@ -42,7 +42,7 @@ class ExportSubscriber extends AbstractNotificationSubscriber
                 $mailed = true;
         }
 
-        $this->app['event-manager']->notify($params['usr_id'], 'eventsmanager_notify_downloadmailfail', $datas, $mailed);
+        $this->app['events-manager']->notify($params['usr_id'], 'eventsmanager_notify_downloadmailfail', $datas, $mailed);
     }
 
     public static function getSubscribedEvents()
