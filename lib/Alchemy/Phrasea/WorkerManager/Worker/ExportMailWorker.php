@@ -117,7 +117,7 @@ class ExportMailWorker implements WorkerInterface
             ));
 
             foreach ($remaingEmails as $mail) {
-                $this->app['dispatcher']->dispatch(PhraseaEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent(
+                $this->app['dispatcher']->dispatch(WorkerEvents::EXPORT_MAIL_FAILURE, new ExportFailureEvent(
                         $user,
                         $params['ssttid'],
                         $params['lst'],
