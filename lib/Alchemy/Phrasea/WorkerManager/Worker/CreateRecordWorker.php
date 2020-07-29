@@ -92,14 +92,9 @@ class CreateRecordWorker implements WorkerInterface
             $this->dispatch(WorkerEvents::ASSETS_CREATION_RECORD_FAILURE, new AssetsCreationRecordFailureEvent(
                 $payload,
                 'Error when downloading assets!',
-                $count
+                $count,
+                $workerRunningJob->getId()
             ));
-
-            if ($workerRunningJob != null) {
-                $em->remove($workerRunningJob);
-
-                $em->flush();
-            }
 
             return;
         }
@@ -115,14 +110,9 @@ class CreateRecordWorker implements WorkerInterface
             $this->dispatch(WorkerEvents::ASSETS_CREATION_RECORD_FAILURE, new AssetsCreationRecordFailureEvent(
                 $payload,
                 $workerMessage,
-                $count
+                $count,
+                $workerRunningJob->getId()
             ));
-
-            if ($workerRunningJob != null) {
-                $em->remove($workerRunningJob);
-
-                $em->flush();
-            }
 
             return;
         }
@@ -236,11 +226,8 @@ class CreateRecordWorker implements WorkerInterface
 
         $this->getBorderManager()->process($lazaretSession, $packageFile, $callback);
 
-
-        $recordId = null;
         if ($elementCreated instanceof \record_adapter) {
             $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
-            $recordId = $elementCreated->getRecordId();
         } else {
             $this->messagePublisher->pushLog(sprintf('The file was moved to the quarantine: %s', json_encode($reasons)));
             /** @var LazaretFile $elementCreated */

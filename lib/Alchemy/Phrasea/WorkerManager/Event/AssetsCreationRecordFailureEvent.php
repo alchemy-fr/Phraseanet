@@ -10,12 +10,14 @@ class AssetsCreationRecordFailureEvent extends SfEvent
     private $payload;
     private $workerMessage;
     private $count;
+    private $workerJobId;
 
-    public function __construct($payload, $workerMessage = '', $count = 2)
+    public function __construct($payload, $workerMessage = '', $count = 2, $workerJobId = 0)
     {
         $this->payload          = $payload;
         $this->workerMessage    = $workerMessage;
         $this->count            = $count;
+        $this->workerJobId      = $workerJobId;
     }
 
     public function getPayload()
@@ -31,5 +33,10 @@ class AssetsCreationRecordFailureEvent extends SfEvent
     public function getCount()
     {
         return $this->count;
+    }
+
+    public function getWorkerJobId()
+    {
+        return $this->workerJobId;
     }
 }
