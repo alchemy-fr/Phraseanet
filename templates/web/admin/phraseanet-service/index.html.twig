@@ -1,1 +1,41 @@
-<h1>Phraseanet Service setting</h1>
+<h1>{{ 'admin:phrasea-service-setting:tab-title:: Page title' | trans }}</h1>
+
+<div class="phraseanet-service-setting-tabs" style="display: none;">
+    <ul>
+        <li><a href="#auth">{{ 'admin:phrasea-service-setting:tab:: Auth' | trans }}</a></li>
+        <li><a href="#expose">{{ 'admin:phrasea-service-setting:tab:: Expose' | trans }}</a></li>
+        <li><a href="#uploader">{{ 'admin:phrasea-service-setting:tab:: Uploader' | trans }}</a></li>
+        <li><a href="#notify">{{ 'admin:phrasea-service-setting:tab:: Notify' | trans }}</a></li>
+        <li><a href="#report">{{ 'admin:phrasea-service-setting:tab:: Report' | trans }}</a></li>
+    </ul>
+    <div class="top-bar-shadow"></div>
+
+    <div id="auth">
+        {#{% include 'admin/search-engine/general-aggregation.html.twig'%}#}
+        auth
+    </div>
+    <div id="expose">
+        {% include 'admin/phraseanet-service/expose.html.twig' %}
+    </div>
+    <div id="uploader">
+        {#{% include 'admin/search-engine/elastic-search.html.twig' %}#}
+        uploader
+    </div>
+    <div id="notify">
+        {#{% include 'admin/search-engine/elastic-search.html.twig' %}#}
+        notify
+    </div>
+    <div id="report">
+        {#{% include 'admin/search-engine/elastic-search.html.twig' %}#}
+        report
+    </div>
+</div>
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.phraseanet-service-setting-tabs').tabs({ active: 1 });
+        });
+        $(".phraseanet-service-setting-tabs").show();
+    </script>
+{% endblock %}

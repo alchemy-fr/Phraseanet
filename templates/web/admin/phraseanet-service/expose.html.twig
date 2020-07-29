@@ -1,0 +1,105 @@
+<h2>{{ 'admin:phrasea-service-setting:tab:expose:: Expose setting' | trans }}</h2>
+<div class="expose_block ">
+    <form name="expose_plugin_configuration" method="post" action="">
+        <div class="expose-save-btn">
+            <input type="submit" class="btn btn-primary btn-green" value="Save">
+        </div>
+        <div>
+            <input
+                    type="checkbox" class="auth_connexion" name="auth_connexion" value="1" checked="checked"><label
+                    for="auth_connection">{{ 'admin:phrasea-service-setting:tab:expose:: Auth connexion' | trans }}</label>
+        </div>
+        <div class="control-group">
+            <div><p><span>{{ 'admin:phrasea-service-setting:tab:expose:: Name' | trans }}</span><input
+                            type="text" class="expose_name" value="Expose for external usage"></p>
+            </div>
+        </div>
+        <div class="control-group">
+            <div><label for="auth_connexion"
+                        class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Expose Front base uri' | trans }}</label><input
+                        type="text" name="expose_plugin_configuration[exposeFrontUri]" required="required"
+                        class="input-xxlarge"></div>
+        </div>
+
+        <div class="control-group">
+            <div><label for="expose_plugin_configuration_exposeBaseUri"
+                        class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Base Uri Expose api' | trans }}</label><input
+                        type="text" name="expose_plugin_configuration[exposeBaseUri]" required="required"
+                        class="input-xxlarge"></div>
+        </div>
+
+        <div class="control-group">
+            <div><label for="expose_plugin_configuration_clientSecret"
+                        class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Client secret' | trans }}</label><input
+                        type="text" name="expose_plugin_configuration[clientSecret]" required="required"
+                        class="input-xxlarge"></div>
+        </div>
+
+        <div class="control-group">
+            <div><label for="expose_plugin_configuration_clientId"
+                        class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Client ID' | trans }}</label><input
+                        type="text" name="expose_plugin_configuration[clientId]" required="required"
+                        class="input-xxlarge"></div>
+        </div>
+
+        <div class="control-group">
+            <div>
+                <label for="mapping">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</label><input
+                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+        </div>
+        <div class="control-group">
+            <div>
+                <label for="user_access">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</label><input
+                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+        </div>
+
+        <input type="hidden" id="expose_plugin_configuration__token" name="expose_plugin_configuration[_token]"
+               value="">
+    </form>
+</div>
+
+<div class="expose_block ">
+    <form name="expose_plugin_configuration" method="post" action="">
+
+        <div>
+            <input
+                    type="checkbox" class="auth_connexion" name="auth_connexion" value="0"><label
+                    for="auth_connection">{{ 'admin:phrasea-service-setting:tab:expose:: Auth connexion' | trans }}</label>
+        </div>
+        <div class="control-group">
+            <div><p>{{ 'admin:phrasea-service-setting:tab:expose:: Name' | trans }}
+                    : {{ 'admin:phrasea-service-setting:tab:expose:: Internal expose' | trans }}</p>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div><label for="expose_plugin_configuration_exposeBaseUri"
+                        class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Base Uri  api' | trans }}</label><input
+                        type="text" name="expose_plugin_configuration[exposeBaseUri]" required="required"
+                        class="input-xxlarge"></div>
+        </div>
+
+        <div class="control-group">
+            <div><label for="expose_plugin_configuration_clientSecret"
+                        class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Expose front base URI' | trans }}</label><input
+                        type="text" name="expose_plugin_configuration[clientSecret]" required="required"
+                        class="input-xxlarge"></div>
+        </div>
+
+
+        <div class="control-group">
+            <div>
+                <label for="mapping">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</label><input
+                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+        </div>
+        <div class="control-group">
+            <div>
+                <label for="user_access">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</label><input
+                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+        </div>
+
+        <input type="hidden" id="expose_plugin_configuration__token" name="expose_plugin_configuration[_token]"
+               value="">
+    </form>
+</div>
+

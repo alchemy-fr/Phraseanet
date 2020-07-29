@@ -955,6 +955,45 @@ span.simplecolorpicker.picker {
     margin-right: 15px;
   }
 }
+
+/**Phraseanet service setting**/
+
+.phraseanet-service-setting-tabs {
+  &.ui-widget-content {
+    border: 0;
+    background: none;
+  }
+  .ui-tabs-active {
+    background: #9EA09D!important;
+    .ui-tabs-anchor {
+      color: #fff;
+    }
+  }
+}
+/***Expose tab*****/
+.expose_block {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+
+  input[type=radio], input[type=checkbox]{
+    float: left;
+    margin-right: 10px;
+  }
+}
+.expose-save-btn {
+  float: right;
+
+}
+.btn.btn-primary.btn-green {
+  background: #5cb85c;
+}
+
+.expose_name {
+  border: 2px solid;
+  margin-left: 13px;
+}
+
 @import './databases';
 @import './fields';
 @import './tables';
