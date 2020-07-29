@@ -18,7 +18,6 @@ use PHPExiftool\Driver\Metadata\MetadataBag;
 use PHPExiftool\Driver\Tag;
 use PHPExiftool\Driver\Value\Mono;
 use PHPExiftool\Driver\Value\Multi;
-use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use PHPExiftool\Exception\TagUnknown;
 use PHPExiftool\Writer;
 use Psr\Log\LoggerInterface;
@@ -80,26 +79,47 @@ class WriteMetadatasWorker implements WorkerInterface
             // tell that a file is in used to create subdef
             $em = $this->getEntityManager();
             $this->repoWorker->reconnect();
-            $em->beginTransaction();
 
-            try {
-                $date = new \DateTime();
-                $workerRunningJob = new WorkerRunningJob();
+            if (isset($payload['workerJobId'])) {
+                /** @var WorkerRunningJob $workerRunningJob */
+                $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
+
+                if ($workerRunningJob == null) {
+                    $this->logger->error("Given workerJobId not found !");
+
+                    return ;
+                }
+
                 $workerRunningJob
-                    ->setDataboxId($databoxId)
-                    ->setRecordId($recordId)
-                    ->setWork(MessagePublisher::WRITE_METADATAS_TYPE)
-                    ->setWorkOn($payload['subdefName'])
-                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
                     ->setStatus(WorkerRunningJob::RUNNING)
                 ;
 
                 $em->persist($workerRunningJob);
-                $em->flush();
 
-                $em->commit();
-            } catch (\Exception $e) {
-                $em->rollback();
+                $em->flush();
+            } else {
+                $em->beginTransaction();
+
+                try {
+                    $date = new \DateTime();
+                    $workerRunningJob = new WorkerRunningJob();
+                    $workerRunningJob
+                        ->setDataboxId($databoxId)
+                        ->setRecordId($recordId)
+                        ->setWork(MessagePublisher::WRITE_METADATAS_TYPE)
+                        ->setWorkOn($payload['subdefName'])
+                        ->setPublished($date->setTimestamp($payload['published']))
+                        ->setStatus(WorkerRunningJob::RUNNING)
+                    ;
+
+                    $em->persist($workerRunningJob);
+                    $em->flush();
+
+                    $em->commit();
+                } catch (\Exception $e) {
+                    $em->rollback();
+                }
             }
 
             $record  = $databox->get_record($recordId);
@@ -117,7 +137,8 @@ class WriteMetadatasWorker implements WorkerInterface
                     $payload['subdefName'],
                     SubdefinitionWritemetaEvent::FAILED,
                     $workerMessage,
-                    $count
+                    $count,
+                    $workerRunningJob->getId()
                 ));
 
                 return ;
@@ -240,7 +261,8 @@ class WriteMetadatasWorker implements WorkerInterface
                         $payload['subdefName'],
                         SubdefinitionWritemetaEvent::FAILED,
                         $workerMessage,
-                        $count
+                        $count,
+                        $workerRunningJob->getId()
                     ));
                 }
 
@@ -254,7 +276,8 @@ class WriteMetadatasWorker implements WorkerInterface
                     $payload['subdefName'],
                     SubdefinitionWritemetaEvent::FAILED,
                     'Subdef is not physically present!',
-                    $count
+                    $count,
+                    $workerRunningJob->getId()
                 ));
             }
 
