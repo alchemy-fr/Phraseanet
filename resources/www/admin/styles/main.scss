@@ -975,8 +975,8 @@ span.simplecolorpicker.picker {
   border: 1px solid #ddd;
   padding: 15px;
   margin-bottom: 20px;
-
-  input[type=radio], input[type=checkbox]{
+  max-width: 700px;
+  input[type=radio], input[type=checkbox], .pull-left-btn {
     float: left;
     margin-right: 10px;
   }

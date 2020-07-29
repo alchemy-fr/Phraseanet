@@ -2,11 +2,11 @@
 <div class="expose_block ">
     <form name="expose_plugin_configuration" method="post" action="">
         <div class="expose-save-btn">
-            <input type="submit" class="btn btn-primary btn-green" value="Save">
+            <input type="submit" class="btn btn-primary btn-green" value="{{ 'admin:phrasea-service-setting:tab:expose:: Save' | trans }}">
         </div>
         <div>
             <input
-                    type="checkbox" class="auth_connexion" name="auth_connexion" value="1" checked="checked"><label
+                    type="checkbox" class="auth_connection" name="auth_connection" value="1" checked="checked"><label
                     for="auth_connection">{{ 'admin:phrasea-service-setting:tab:expose:: Auth connexion' | trans }}</label>
         </div>
         <div class="control-group">
@@ -44,17 +44,14 @@
 
         <div class="control-group">
             <div>
-                <label for="mapping">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</label><input
-                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</span><input
+                        type="button" class="btn btn-primary" value="{{ 'admin:phrasea-service-setting:tab:expose:: Add mapping' | trans }}"></div>
         </div>
         <div class="control-group">
             <div>
-                <label for="user_access">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</label><input
-                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</span><input
+                        type="button" class="btn btn-primary" value="{{ 'admin:phrasea-service-setting:tab:expose:: Add user' | trans }}"></div>
         </div>
-
-        <input type="hidden" id="expose_plugin_configuration__token" name="expose_plugin_configuration[_token]"
-               value="">
     </form>
 </div>
 
@@ -63,8 +60,8 @@
 
         <div>
             <input
-                    type="checkbox" class="auth_connexion" name="auth_connexion" value="0"><label
-                    for="auth_connection">{{ 'admin:phrasea-service-setting:tab:expose:: Auth connexion' | trans }}</label>
+                    type="checkbox" class="auth_connection" name="auth_connection_internal" value="0"><label
+                    for="auth_connection_internal">{{ 'admin:phrasea-service-setting:tab:expose:: Auth connexion' | trans }}</label>
         </div>
         <div class="control-group">
             <div><p>{{ 'admin:phrasea-service-setting:tab:expose:: Name' | trans }}
@@ -89,17 +86,19 @@
 
         <div class="control-group">
             <div>
-                <label for="mapping">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</label><input
-                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</span><input
+                        type="button" class="btn btn-primary" value="{{ 'admin:phrasea-service-setting:tab:expose:: Add mapping' | trans }}"></div>
         </div>
         <div class="control-group">
             <div>
-                <label for="user_access">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</label><input
-                        type="submit" class="btn btn-primary" value="Add mapping"></div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</span><input
+                        type="button" class="btn btn-primary " value="{{ 'admin:phrasea-service-setting:tab:expose:: Add user' | trans }}"></div>
         </div>
-
-        <input type="hidden" id="expose_plugin_configuration__token" name="expose_plugin_configuration[_token]"
-               value="">
     </form>
+<br>
+    <div class="control-group text-center">
+        <div><input
+                    type="button" class="btn btn-primary " value="{{ 'admin:phrasea-service-setting:tab:expose:: Add a new expose interconnection' | trans }}">
+    </div>
 </div>
 
