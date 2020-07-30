@@ -969,27 +969,49 @@ span.simplecolorpicker.picker {
       color: #fff;
     }
   }
-}
-/***Expose tab*****/
-.expose_block {
-  border: 1px solid #ddd;
-  padding: 15px;
-  margin-bottom: 20px;
-  max-width: 700px;
   input[type=radio], input[type=checkbox], .pull-left-btn {
     float: left;
     margin-right: 10px;
   }
 }
+/***Expose tab*****/
+#expose {
+  max-width: 992px;
+}
+.expose-block {
+  border: 2px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+  margin-top: 15px;
+}
 .expose-save-btn {
   float: right;
-
+  width: 350px;
+  max-width: 100%;
 }
-.btn.btn-primary.btn-green {
+.btn.btn-green {
   background: #5cb85c;
 }
+.btn.btn-red {
+  background: #da4f49;
+}
+.btn.btn-grey {
+  background: #aaa8a5;
+}
+input[type=button], input[type=submit] {
+  &.delete-expose {
+    width: 100%;
+  }
+  &.save-expose {
+    width: 49%;
+    float: right;
+  }
+  &.test-connection {
+    width: 49%;
+  }
+}
 
-.expose_name {
+.expose-name {
   border: 2px solid;
   margin-left: 13px;
 }
