@@ -182,10 +182,32 @@
                     {% block tabs_panel %}
                         <div id="retractableButton"><i class="fa fa-angle-double-left" aria-hidden="true"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
-                        <div id="baskets" class="PNB">
+
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                            {{WorkZoneMacros.make_bloc(app, WorkZone)}}
-                        </div>
+                            {% set expose_activate = 'true' %}
+                            {% if expose_activate == 'true' %}
+                                {% block tab_headers_wrapper %}
+                                    <div id="baskets_wrapper" class="PNB">
+                                    <div id="expose_tabs" class="tabs">
+                                        <ul>
+                                            <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
+                                            <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>
+                                        </ul>
+                                        <div class="ui-tabs-panels-container">
+                                            <div id="baskets" class="PNB">
+                                                {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                                            </div>
+                                            <div id="expose_tab">Expose</div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                {% endblock %}
+                            {% else %}
+                                <div id="baskets" class="PNB">
+                                   {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                                </div>
+                            {% endif %}
+
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
                                 <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
