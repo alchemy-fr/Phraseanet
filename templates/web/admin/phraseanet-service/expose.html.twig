@@ -2,24 +2,27 @@
 <div id="expose-block-modele" class="block_modele hidden">
     <div class="expose-block ">
         <form method="post" action="">
-            <div class="expose-save-btn">
+            <div class="expose-delete-btn">
                <p> <input type="button" class="btn btn-primary btn-red delete-expose"
                           value="{{ 'admin:phrasea-service-setting:tab:expose:: Delete' | trans }}"></p>
-                <p><input type="button" class="btn btn-primary btn-grey test-connection"
-                       value="{{ 'admin:phrasea-service-setting:tab:expose:: connection test' | trans }}">
-                <input type="submit" class="btn btn-primary btn-green save-expose"
-                       value="{{ 'admin:phrasea-service-setting:tab:expose:: Save' | trans }}">
-                </p>
             </div>
-            <div>
-                <input
-                        type="checkbox" class="auth-connection" name="auth-connection" value="1"
-                        checked="checked"><label
-                        for="auth-connection">{{ 'admin:phrasea-service-setting:tab:expose:: Connection Kind' | trans }}</label>
+            <div class="expose-config-block">
+                <div class="alert alert-info">
+                    <input
+                            type="checkbox" class="auth-connection" name="activate-expose" value="1"
+                            checked="checked"><label
+                            for="activate-expose">{{ 'admin:phrasea-service-setting:tab:expose:: Activate this expose' | trans }}</label>
+                </div>
+                <div class="alert alert-info">
+                    <input
+                            type="checkbox" class="auth-connection" name="auth-connection" value="1"
+                            checked="checked"><label
+                            for="auth-connection">{{ 'admin:phrasea-service-setting:tab:expose:: Connection Kind' | trans }}</label>
+                </div>
             </div>
             <div class="control-group">
                 <div><p><span>{{ 'admin:phrasea-service-setting:tab:expose:: Name' | trans }}</span><input
-                                type="text" class="expose_name" value="Expose for external usage"></p>
+                                type="text" class="expose-name" value="Expose for external usage"></p>
                 </div>
             </div>
             <div class="control-group">
@@ -62,20 +65,30 @@
                             type="button" class="btn btn-primary"
                             value="{{ 'admin:phrasea-service-setting:tab:expose:: Add user' | trans }}"></div>
             </div>
+
+            <div class="expose-save-btn">
+                <p><input type="button" class="btn btn-primary btn-grey test-connection"
+                          value="{{ 'admin:phrasea-service-setting:tab:expose:: connection test' | trans }}">
+                    <input type="submit" class="btn btn-primary btn-green save-expose"
+                           value="{{ 'admin:phrasea-service-setting:tab:expose:: Save' | trans }}">
+                </p>
+            </div>
         </form>
     </div>
 </div>
-<div>
+<div class="expose-header">
     <input
             type="checkbox" class="activate-expose" name="activate-expose"><label
             for="activate-expose">{{ 'admin:phrasea-service-setting:tab:expose:: activate Phraseanet-service expose' | trans }}</label>
-</div>
-<div class="expose-wrapper"></div>
-<div class="control-group text-center">
-    <div><input id="add-new-expose" type="button" class="btn btn-primary "
-                value="admin:phrasea-service-setting:tab:expose:: Add a new expose interconnection">
+
+    <div class="control-group text-center">
+        <div><input id="add-new-expose" type="button" class="btn btn-primary "
+                    value="admin:phrasea-service-setting:tab:expose:: Add a new expose interconnection">
+        </div>
     </div>
 </div>
+<div class="expose-wrapper"></div>
+
 {% block javascript %}
     <script type="text/javascript">
         function exposeActivation() {
