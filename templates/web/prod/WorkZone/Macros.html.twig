@@ -464,3 +464,23 @@
       </span>
   {% endfor %}
 {% endmacro %}
+
+{% macro make_expose_bloc(app) %}
+    <div id="expose_workzone" class="expose_workzone">
+        <div id="expose_sel" class="custom_select_dark" style="display: inline-block;">
+            <select name="expose_list" class="expose_list">
+                <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
+                <option value="">Expose 1</option>
+                <option value="">Expose 2</option>
+            </select>
+        </div>
+        <div class="insidebloc expose_insidebloc">
+            <div id="validations-block" class="validations-block">
+
+                <div class="basketTips ui-accordion-header ui-state-default
+                    ui-corner-all header">Expose workzone to do
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
