@@ -14,8 +14,9 @@ class SubdefinitionWritemetaEvent extends RecordEvent
     private $subdefName;
     private $workerMessage;
     private $count;
+    private $workerJobId;
 
-    public function __construct(RecordInterface $record, $subdefName, $status = self::CREATE, $workerMessage = '', $count = 2)
+    public function __construct(RecordInterface $record, $subdefName, $status = self::CREATE, $workerMessage = '', $count = 2, $workerJobId = 0)
     {
         parent::__construct($record);
 
@@ -23,6 +24,7 @@ class SubdefinitionWritemetaEvent extends RecordEvent
         $this->status           = $status;
         $this->workerMessage    = $workerMessage;
         $this->count            = $count;
+        $this->workerJobId      = $workerJobId;
     }
 
     public function getSubdefName()
@@ -43,5 +45,10 @@ class SubdefinitionWritemetaEvent extends RecordEvent
     public function getCount()
     {
         return $this->count;
+    }
+
+    public function getWorkerJobId()
+    {
+        return $this->workerJobId;
     }
 }

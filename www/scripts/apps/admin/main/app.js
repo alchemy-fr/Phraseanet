@@ -38,7 +38,9 @@ define([
             },
             success: function(data){
                 if (data) {
-                    commonModule.manageSession(data);
+                    if (data.status == 'disconnected' || data.status == 'session') {
+                        self.location.replace(self.location.href);
+                    }
                 }
                 var t = 120000;
                 if (data.apps && parseInt(data.apps) > 1) {

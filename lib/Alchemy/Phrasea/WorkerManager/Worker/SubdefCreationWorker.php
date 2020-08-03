@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
-use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\SubdefGenerator;
@@ -82,26 +81,46 @@ class SubdefCreationWorker implements WorkerInterface
                 // tell that a file is in used to create subdef
                 $em = $this->repoWorker->getEntityManager();
                 $this->repoWorker->reconnect();
-                $em->beginTransaction();
 
-                try {
-                    $date = new \DateTime();
-                    $workerRunningJob = new WorkerRunningJob();
+                if (isset($payload['workerJobId'])) {
+                    /** @var WorkerRunningJob $workerRunningJob */
+                    $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
+
+                    if ($workerRunningJob == null) {
+                        $this->logger->error("Given workerJobId not found !");
+
+                        return ;
+                    }
+                    
                     $workerRunningJob
-                        ->setDataboxId($databoxId)
-                        ->setRecordId($recordId)
-                        ->setWork(MessagePublisher::SUBDEF_CREATION_TYPE)
-                        ->setWorkOn($payload['subdefName'])
-                        ->setPublished($date->setTimestamp($payload['published']))
-                        ->setStatus(WorkerRunningJob::RUNNING)
-                    ;
+                        ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
+                        ->setStatus(WorkerRunningJob::RUNNING);
 
                     $em->persist($workerRunningJob);
+
                     $em->flush();
 
-                    $em->commit();
-                } catch (\Exception $e) {
-                    $em->rollback();
+                } else {
+                    $em->beginTransaction();
+                    try {
+                        $date = new \DateTime();
+                        $workerRunningJob = new WorkerRunningJob();
+                        $workerRunningJob
+                            ->setDataboxId($databoxId)
+                            ->setRecordId($recordId)
+                            ->setWork(MessagePublisher::SUBDEF_CREATION_TYPE)
+                            ->setWorkOn($payload['subdefName'])
+                            ->setPublished($date->setTimestamp($payload['published']))
+                            ->setStatus(WorkerRunningJob::RUNNING)
+                        ;
+
+                        $em->persist($workerRunningJob);
+                        $em->flush();
+
+                        $em->commit();
+                    } catch (\Exception $e) {
+                        $em->rollback();
+                    }
                 }
 
                 $this->subdefGenerator->setLogger($this->logger);
@@ -109,14 +128,8 @@ class SubdefCreationWorker implements WorkerInterface
                 try {
                     $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
                 } catch (\Exception $e) {
-                    try {
-                        $this->repoWorker->reconnect();
-                        $em->getConnection()->beginTransaction();
-                        $em->remove($workerRunningJob);
-                        $em->flush();
-                        $em->commit();
-                    } catch (\Exception $e) {
-                    }
+                    $this->logger->error("Exception catched: " . $e->getMessage());
+
                 } catch (\Throwable $e) {
                     $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
                     $workerMessage = "Exception throwable catched when create subdef for the recordID: " .$recordId;
@@ -127,7 +140,8 @@ class SubdefCreationWorker implements WorkerInterface
                         $record,
                         $payload['subdefName'],
                         $workerMessage,
-                        $count
+                        $count,
+                        $workerRunningJob->getId()
                     ));
 
                     return ;
@@ -151,7 +165,8 @@ class SubdefCreationWorker implements WorkerInterface
                         $record,
                         $payload['subdefName'],
                         'Subdef generation failed !',
-                        $count
+                        $count,
+                        $workerRunningJob->getId()
                     ));
 
                     $this->subdefGenerator->setLogger($oldLogger);
