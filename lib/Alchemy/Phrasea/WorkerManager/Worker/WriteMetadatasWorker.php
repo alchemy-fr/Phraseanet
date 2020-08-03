@@ -76,6 +76,15 @@ class WriteMetadatasWorker implements WorkerInterface
                 return ;
             }
 
+            $record  = $databox->get_record($recordId);
+
+            if ($record->getMimeType() == 'image/svg+xml') {
+
+                $this->logger->error("Can't write meta on svg file!");
+
+                return;
+            }
+
             // tell that a file is in used to create subdef
             $em = $this->getEntityManager();
             $this->repoWorker->reconnect();
@@ -121,8 +130,6 @@ class WriteMetadatasWorker implements WorkerInterface
                     $em->rollback();
                 }
             }
-
-            $record  = $databox->get_record($recordId);
 
             try {
                 $subdef = $record->get_subdef($payload['subdefName']);
