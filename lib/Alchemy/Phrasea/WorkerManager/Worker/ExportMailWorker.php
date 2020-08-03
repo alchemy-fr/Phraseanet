@@ -37,6 +37,7 @@ class ExportMailWorker implements WorkerInterface
         $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
         $em = $this->repoWorkerJob->getEntityManager();
         $em->beginTransaction();
+        $this->repoWorkerJob->reconnect();
         $date = new \DateTime();
 
         try {
@@ -73,6 +74,7 @@ class ExportMailWorker implements WorkerInterface
 
         $list = unserialize($token->getData());
 
+        $this->repoWorkerJob->reconnect();
         //zip documents
         \set_export::build_zip(
             $this->app,
@@ -129,6 +131,7 @@ class ExportMailWorker implements WorkerInterface
         }
 
         if ($workerRunningJob != null) {
+            $this->repoWorkerJob->reconnect();
             $workerRunningJob
                 ->setWorkOn(implode(',', $deliverEmails))
                 ->setStatus(WorkerRunningJob::FINISHED)
