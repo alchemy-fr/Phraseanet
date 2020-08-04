@@ -117,6 +117,7 @@ border-manager:
     extension-mapping:
         otc: application/vnd.oasis.opendocument.chart-template
         ttc: application/x-font-ttf
+        svg: image/svg+xml
     checkers:
         -
             type: Checker\Sha256
