@@ -94,13 +94,14 @@ class ExportMailWorker implements WorkerInterface
             } catch (InvalidArgumentException $e) {
                 continue;
             }
+            $deliverEmails[] = $mail;
 
             $mail = MailRecordsExport::create($this->app, $receiver, $emitter, $params['textmail']);
             $mail->setButtonUrl($params['url']);
             $mail->setExpiration($token->getExpiration());
 
             $this->deliver($mail, $params['reading_confirm']);
-            $deliverEmails[] = $mail;
+
             unset($remaingEmails[$key]);
         }
 
