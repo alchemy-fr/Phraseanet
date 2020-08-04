@@ -37,6 +37,7 @@ class ExportMailWorker implements WorkerInterface
         $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
         $em = $this->repoWorkerJob->getEntityManager();
         $em->beginTransaction();
+        $this->repoWorkerJob->reconnect();
         $date = new \DateTime();
 
         try {
@@ -73,6 +74,7 @@ class ExportMailWorker implements WorkerInterface
 
         $list = unserialize($token->getData());
 
+        $this->repoWorkerJob->reconnect();
         //zip documents
         \set_export::build_zip(
             $this->app,
@@ -92,13 +94,14 @@ class ExportMailWorker implements WorkerInterface
             } catch (InvalidArgumentException $e) {
                 continue;
             }
+            $deliverEmails[] = $mail;
 
             $mail = MailRecordsExport::create($this->app, $receiver, $emitter, $params['textmail']);
             $mail->setButtonUrl($params['url']);
             $mail->setExpiration($token->getExpiration());
 
             $this->deliver($mail, $params['reading_confirm']);
-            $deliverEmails[] = $mail;
+
             unset($remaingEmails[$key]);
         }
 
@@ -129,6 +132,7 @@ class ExportMailWorker implements WorkerInterface
         }
 
         if ($workerRunningJob != null) {
+            $this->repoWorkerJob->reconnect();
             $workerRunningJob
                 ->setWorkOn(implode(',', $deliverEmails))
                 ->setStatus(WorkerRunningJob::FINISHED)

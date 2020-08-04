@@ -49,6 +49,7 @@ gulp.task('build-common-js', function(){
         config.paths.src + 'common/js/components/dialog.js',
         config.paths.src + 'common/js/components/utils.js',
         config.paths.src + 'common/js/components/download.js',
+        config.paths.src + 'common/js/components/bootstrap-tagsinput.min.js',
     ];
     return utils.buildJsGroup(commonGroup, 'common', 'common/js', debugMode);
 });
