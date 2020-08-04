@@ -127,6 +127,7 @@ border-manager:
         pptx: application/vnd.ms-powerpoint
         mxf: application/mxf
         mp4: video/mp4
+        svg: image/svg+xml
     checkers:
         -
             type: Checker\Sha256
