@@ -73,6 +73,7 @@ class AssetsIngestSubscriber implements EventSubscriberInterface
                 // count-1  for the number of finished attempt
                 $workerRunningJob
                     ->setInfo(WorkerRunningJob::ATTEMPT. ($event->getCount() - 1))
+                    ->setStatus(WorkerRunningJob::FINISHED)
                 ;
 
                 $em->persist($workerRunningJob);
