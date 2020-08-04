@@ -57,8 +57,8 @@ class ExportSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            PhraseaEvents::EXPORT_MAIL_CREATE       => 'onExportMailCreate',
-            WorkerEvents::EXPORT_MAIL_FAILURE => 'onExportMailFailure'
+            PhraseaEvents::EXPORT_MAIL_CREATE   => 'onExportMailCreate',
+            WorkerEvents::EXPORT_MAIL_FAILURE   => 'onExportMailFailure'
         ];
     }
 }
