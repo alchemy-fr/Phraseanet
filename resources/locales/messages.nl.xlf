@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-08-05T10:38:21Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-08-05T13:44:37Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -7672,11 +7672,6 @@
         <source>Would you like to continue ?</source>
         <target state="translated">Wilt u verdergaan?</target>
         <jms:reference-file line="11">user/import/view.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="7ab92d62bb58a2af64dc9340b4af855014a1932f" resname="Would you like to receive an e-mail when your download is ready ?" approved="yes">
-        <source>Would you like to receive an e-mail when your download is ready ?</source>
-        <target state="translated">Wilt u een email ontvangen wanneer de download klaar is ?</target>
-        <jms:reference-file line="513">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1ed4ea66d26e0757b57b8c7af0813e42daa6c6a2" resname="Would you like to reset rights before applying the template?" approved="yes">
         <source>Would you like to reset rights before applying the template?</source>

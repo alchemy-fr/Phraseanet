@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-08-05T10:37:54Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2020-08-05T13:44:10Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -7665,11 +7665,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Voulez-vous continuer ?</target>
         <jms:reference-file line="11">user/import/view.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ab92d62bb58a2af64dc9340b4af855014a1932f" resname="Would you like to receive an e-mail when your download is ready ?" approved="yes">
-        <source>Would you like to receive an e-mail when your download is ready ?</source>
-        <target state="translated">Souhaitez-vous recevoir un e-mail quand votre téléchargement est prêt ?</target>
-        <jms:reference-file line="513">web/common/dialog_export.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="1ed4ea66d26e0757b57b8c7af0813e42daa6c6a2" resname="Would you like to reset rights before applying the template?" approved="yes">
         <source>Would you like to reset rights before applying the template?</source>
         <target state="translated">Souhaitez-vous réinitialiser les droits avant d'appliquer le modèle ?</target>
@@ -7762,7 +7757,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Télécharger un exemple de fichier CSV</target>
         <jms:reference-file line="37">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="no">
+      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready.">
         <source>You can alternatively receive an email when the download is ready.</source>
         <target state="needs-translation">Alternativement, vous pouvez recevoir un lien de téléchargement par email ?</target>
         <jms:reference-file line="512">web/common/dialog_export.html.twig</jms:reference-file>
@@ -7777,7 +7772,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Télécharger une documentation succincte</target>
         <jms:reference-file line="42">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long" approved="no">
+      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long">
         <source>You can not directly download more than %max_download% Mo ; time to package all documents is too long</source>
         <target state="needs-translation">Vous ne pouvez pas télécharger directement plus de %max_download% Mo de données.</target>
         <jms:reference-file line="511">web/common/dialog_export.html.twig</jms:reference-file>
@@ -11930,7 +11925,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Notifications</target>
         <jms:reference-file line="1014">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="no">
+      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title">
         <source>prod::publication:title</source>
         <target state="needs-translation">Publication</target>
         <jms:reference-file line="53">Controller/Prod/LanguageController.php</jms:reference-file>
