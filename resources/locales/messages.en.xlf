@@ -7765,7 +7765,7 @@
       </trans-unit>
       <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="no">
         <source>You can alternatively receive an email when the download is ready.</source>
-        <target state="needs-translation">Alternatively, you can receive a download link by email</target>
+        <target state="needs-translation">Alternatively, you can receive a download link by email?</target>
         <jms:reference-file line="512">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdfd850039f15d0459cfe507bcdea013d71a4142" resname="You can choose only one record" approved="yes">
@@ -10221,14 +10221,14 @@
         <target state="translated">Title</target>
         <jms:reference-file line="71">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info">
+      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="yes">
         <source>export:email:: acknowledgement info</source>
-        <target state="needs-translation">The "Acknowledgment" works only if the recipient supports this feature</target>
+        <target state="translated">The "Acknowledgment" works only if the recipient supports this feature</target>
         <jms:reference-file line="199">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas">
+      <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas" approved="yes">
         <source>export:email:info:: email addresses separated by commas</source>
-        <target state="needs-translation">Email addresses must be separated by commas</target>
+        <target state="translated">Email addresses must be separated by commas</target>
         <jms:reference-file line="179">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
@@ -11930,9 +11930,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Notifications</target>
         <jms:reference-file line="1014">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="no">
+      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="yes">
         <source>prod::publication:title</source>
-        <target state="needs-translation">Publication</target>
+        <target state="translated">Publication</target>
         <jms:reference-file line="53">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5fa97d7a05eb572c80ae0ccf85be3a27dcddb943" resname="prod::push: List name can not be empty" approved="yes">
