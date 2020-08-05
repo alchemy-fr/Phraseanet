@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-08-05T10:34:49Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2020-08-05T10:37:54Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -10226,9 +10226,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Les "Accuser Réception" fonctionne que si le destinataire supporte cette fonctionnalité.</target>
         <jms:reference-file line="199">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas">
+      <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas" approved="yes">
         <source>export:email:info:: email addresses separated by commas</source>
-        <target state="new">export:email:info:: email addresses separated by commas</target>
+        <target state="translated">Ajouter les adresses email en les séparant par une virgule</target>
         <jms:reference-file line="179">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
@@ -12185,7 +12185,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="4415c59007c7e89865ff4e7ef0b717b459e6d6cf" resname="prod:videoeditor:subtitleRequestTab:: Request in process">
         <source>prod:videoeditor:subtitleRequestTab:: Request in process</source>
-        <target state="needs-translation">Demande de Sous-titrage automatique soumise</target>
+        <target state="needs-translation">Demande de sous-titrage automatique soumise</target>
         <jms:reference-file line="264">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit">
@@ -12265,7 +12265,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="2b6e3888c22d8146b4fe551a4b797ee52583f5c3" resname="prod:videoeditor:subtitletab:: work on">
         <source>prod:videoeditor:subtitletab:: work on</source>
-        <target state="needs-translation">Choisir une langue a éditer</target>
+        <target state="needs-translation">Choisir une langue à éditer</target>
         <jms:reference-file line="186">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="yes">
@@ -13426,7 +13426,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title">
         <source>thesaurus: Populate title</source>
-        <target state="needs-translation">Indéxation</target>
+        <target state="needs-translation">Indexation</target>
         <jms:reference-file line="1530">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ece0fffe35c0acde3f67ee4bc99a8f17d3d266ac" resname="thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte" approved="yes">
@@ -13933,7 +13933,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Attention une indexation de la base est deja en cours. Il est nécéssaire d'attendre la fin de cette indexation pour en relancer une nouvelle.</target>
+        <target state="needs-translation">Attention, une indexation de la base est déjà en cours. Il est nécessaire d'attendre la fin de cette indexation pour en relancer une nouvelle.</target>
         <jms:reference-file line="1569">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">

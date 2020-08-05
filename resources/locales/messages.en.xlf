@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-08-05T10:34:21Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2020-08-05T10:37:29Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -10223,12 +10223,12 @@
       </trans-unit>
       <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info">
         <source>export:email:: acknowledgement info</source>
-        <target state="needs-translation">The "Acknowledgment" works only if the recipient supports this features.</target>
+        <target state="needs-translation">The "Acknowledgment" works only if the recipient supports this feature</target>
         <jms:reference-file line="199">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas">
         <source>export:email:info:: email addresses separated by commas</source>
-        <target state="new">export:email:info:: email addresses separated by commas</target>
+        <target state="needs-translation">Email addresses must be separated by commas</target>
         <jms:reference-file line="179">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
@@ -13867,7 +13867,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock">
         <source>thesaurus::menu:  Mettre dans le stock</source>
-        <target state="needs-translation">Move to the stock</target>
+        <target state="needs-translation">Move to stock</target>
         <jms:reference-file line="192">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="758b089c0ed0efc0a6b86e1b45b1526dca96bb34" resname="thesaurus::menu: Nouveau synonyme" approved="yes">
@@ -13930,7 +13930,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Warning populate is in process to indexing databox. Wait the end of this indexing, before launch a new one.</target>
+        <target state="needs-translation">Warning, populate is in process to indexing databox. Wait the end of this indexing, before launching a new one.</target>
         <jms:reference-file line="1569">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
