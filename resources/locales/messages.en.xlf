@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-08-05T10:37:29Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
       </trans-unit>
@@ -7780,7 +7780,7 @@
       </trans-unit>
       <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long" approved="no">
         <source>You can not directly download more than %max_download% Mo ; time to package all documents is too long</source>
-        <target state="needs-translation">You can't directly download more than %max_download% Mo .</target>
+        <target state="needs-translation">You can't directly download more than %max_download% Mo.</target>
         <jms:reference-file line="511">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dff09f0ed93eb1657329f3588569d2c43b4e65ff" resname="You can not edit this story" approved="yes">
@@ -9384,9 +9384,9 @@
         <target state="translated">Job running informations</target>
         <jms:reference-file line="3">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="23cbc34865b1b4777a5c169cc935c74b67bcf006" resname="admin::workermanager:tab:workerinfo: duration">
+      <trans-unit id="23cbc34865b1b4777a5c169cc935c74b67bcf006" resname="admin::workermanager:tab:workerinfo: duration" approved="yes">
         <source>admin::workermanager:tab:workerinfo: duration</source>
-        <target state="needs-translation">Duration</target>
+        <target state="translated">Duration</target>
         <jms:reference-file line="52">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a47a4872345c5f33d3fa94838e52e8e3da538ad" resname="admin::workermanager:tab:workerinfo: finished" approved="yes">
@@ -11930,9 +11930,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Notifications</target>
         <jms:reference-file line="1014">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title">
+      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="no">
         <source>prod::publication:title</source>
-        <target state="new">prod::publication:title</target>
+        <target state="needs-translation">Publication</target>
         <jms:reference-file line="53">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5fa97d7a05eb572c80ae0ccf85be3a27dcddb943" resname="prod::push: List name can not be empty" approved="yes">
