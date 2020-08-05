@@ -7760,9 +7760,9 @@
         <target state="translated">Sie können ein Vorbild hier herunterladen</target>
         <jms:reference-file line="37">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="yes">
+      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="no">
         <source>You can alternatively receive an email when the download is ready.</source>
-        <target state="translated">Sie können zur Bestätigung eine Email erhalten wenn Ihr Download abgeschlossen ist.</target>
+        <target state="needs-translation">Alternativ können Sie ein Download Link durch Email erhalten.</target>
         <jms:reference-file line="512">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdfd850039f15d0459cfe507bcdea013d71a4142" resname="You can choose only one record" approved="yes">
@@ -7775,9 +7775,9 @@
         <target state="translated">Sie können die Dokumentation hier herunterladen</target>
         <jms:reference-file line="42">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long" approved="yes">
+      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long" approved="no">
         <source>You can not directly download more than %max_download% Mo ; time to package all documents is too long</source>
-        <target state="translated">You can not download more than %max_download% Mo ; time to package all documents is too long</target>
+        <target state="needs-translation">Sie können nicht mehr als %max_download% Mo herunterladen.</target>
         <jms:reference-file line="511">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dff09f0ed93eb1657329f3588569d2c43b4e65ff" resname="You can not edit this story" approved="yes">
