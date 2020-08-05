@@ -6,8 +6,6 @@ main:
     maintenance: false
     languages: []
     key: ''
-    api_require_ssl: true
-    api_token_header: false
     delete-account-require-email-confirmation: true
     database:
         host: 127.0.0.1
@@ -232,6 +230,10 @@ api_cors_paths: []
 session:
   idle: 0
   lifetime: 604800 # 1 week
+registry:
+    api-clients:
+        api_require_ssl: false
+        api_token_header_only: false
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
