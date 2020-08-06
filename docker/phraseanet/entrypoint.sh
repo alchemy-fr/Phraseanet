@@ -21,9 +21,10 @@ if [ -f "$FILE" ]; then
     if [[ $PHRASEANET_PROJECT_NAME ]]; then
         bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
     fi
-    if [[ -n $PHRASEANET_TRUSTED_PROXY ]]; then
-        bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXY
+    if [[ -n $PHRASEANET_TRUSTED_PROXIES ]]; then
+        bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXIES
     fi
+
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
     bin/setup system:config set main.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
     bin/setup system:config set main.binaries.gs_timeout $PHRASEANET_GS_TIMEOUT
@@ -31,6 +32,11 @@ if [ -f "$FILE" ]; then
     bin/setup system:config set main.binaries.swftools_timeout $PHRASEANET_SWFTOOLS_TIMEOUT
     bin/setup system:config set main.binaries.unoconv_timeout $PHRASEANET_UNOCON_TIMEOUT
     bin/setup system:config set main.binaries.exiftool_timeout $PHRASEANET_EXIFTOOL_TIMEOUT
+    
+    bin/setup system:config set registry.api-clients.api-enabled $PHRASEANET_API_ENABLED
+    bin/setup system:config set registry.api-clients.api_require_ssl $PHRASEANET_API_SSL
+    bin/setup system:config set registry.api-clients.api_token_header_only $PHRASEANET_TOKEN_HEADER_ONLY
+
 
     if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
