@@ -36,6 +36,7 @@ class PopulateIndexWorker implements WorkerInterface
     public function process(array $payload)
     {
         $em = $this->repoWorker->getEntityManager();
+        $this->repoWorker->reconnect();
 
         if (isset($payload['workerJobId'])) {
             /** @var WorkerRunningJob $workerRunningJob */
@@ -139,6 +140,7 @@ class PopulateIndexWorker implements WorkerInterface
 
         // tell that the populate is finished
         if ($workerRunningJob != null) {
+            $this->repoWorker->reconnect();
             $workerRunningJob
                 ->setStatus(WorkerRunningJob::FINISHED)
                 ->setFinished(new \DateTime('now'))
