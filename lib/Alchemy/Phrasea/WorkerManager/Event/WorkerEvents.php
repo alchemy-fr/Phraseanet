@@ -16,7 +16,7 @@ final class WorkerEvents
     const SUBDEFINITION_WRITE_META          = 'subdefinition.write_meta';
     const SUBDEFINITION_CREATION_FAILURE    = 'subdefinition.creation_failure';
 
-    const EXPORT_MAIL_FAILURE               = 'export.mail_failure';
+    const EXPORT_MAIL_FAILURE               = 'export.worker_mail_failure';
 
     const WEBHOOK_DELIVER_FAILURE           = 'webhook.deliver_failure';
 }

@@ -50,6 +50,7 @@ class LanguageController
             'create'                  => $translator->trans('boutton::creer'),
             'rechercher'              => $translator->trans('boutton::rechercher'),
             'renewRss'                => $translator->trans('boutton::renouveller'),
+            'Publication'             => $translator->trans('prod::publication:title'),
             'candeletesome'           => $translator->trans('Vous n\'avez pas les droits pour supprimer certains documents'),
             'candeletedocuments'      => $translator->trans('Vous n\'avez pas les droits pour supprimer ces documents'),
             'needTitle'               => $translator->trans('Vous devez donner un titre'),

@@ -68,21 +68,27 @@ class CreateRecordWorker implements WorkerInterface
 
         $body = json_decode($body,true);
 
-        $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
-
         /** @var WorkerRunningJob $workerRunningJob */
         $workerRunningJob =  $this->repoWorkerJob->findOneBy([
             'commitId' => $payload['commit_id'],
             'assetId'  => $payload['asset'],
-            'status'   => WorkerRunningJob::RUNNING
+            'finished' => null
         ]);
 
+        $workerRunningJob
+            ->setStatus(WorkerRunningJob::RUNNING)
+        ;
+
+        $em->persist($workerRunningJob);
+
+        $em->flush();
+
         //download the asset
+        $client = new Client();
+        $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
+
         try {
-            $res = $uploaderClient->get('/assets/'.$payload['asset'].'/download', [
-                'headers' => [
-                    'Authorization' => 'AssetToken '.$payload['assetToken']
-                ],
+            $res = $client->get($body['url'], [
                 'save_to' => $tempfile
             ]);
         } catch (\Exception $e) {
