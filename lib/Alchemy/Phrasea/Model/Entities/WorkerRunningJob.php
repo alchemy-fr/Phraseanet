@@ -14,7 +14,7 @@ class WorkerRunningJob
     const FINISHED = 'finished';
     const RUNNING  = 'running';
     const ERROR    = 'error';
-    const INTERRUPT = 'interrupt manually';
+    const INTERRUPT = 'interrupted manually';
 
     const ATTEMPT  = 'attempt ';
 
