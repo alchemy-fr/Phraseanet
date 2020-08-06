@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-08-06T12:10:11Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -7758,9 +7758,9 @@
         <target state="translated">Download an example file</target>
         <jms:reference-file line="37">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready.">
+      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="yes">
         <source>You can alternatively receive an email when the download is ready.</source>
-        <target state="needs-translation">Alternatively, you can receive a download link by email?</target>
+        <target state="translated">Alternatively, you can receive a download link by email?</target>
         <jms:reference-file line="512">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdfd850039f15d0459cfe507bcdea013d71a4142" resname="You can choose only one record" approved="yes">
@@ -7773,9 +7773,9 @@
         <target state="translated">Download a short documentation</target>
         <jms:reference-file line="42">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long">
+      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long" approved="yes">
         <source>You can not directly download more than %max_download% Mo ; time to package all documents is too long</source>
-        <target state="needs-translation">You can't directly download more than %max_download% Mo.</target>
+        <target state="translated">You can't directly download more than %max_download% Mo.</target>
         <jms:reference-file line="511">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dff09f0ed93eb1657329f3588569d2c43b4e65ff" resname="You can not edit this story" approved="yes">
@@ -9329,9 +9329,9 @@
         <target state="translated">Apply in queue</target>
         <jms:reference-file line="50">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work">
+      <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="no">
         <source>admin::workermanager:tab:workerinfo: Display error work</source>
-        <target state="new">admin::workermanager:tab:workerinfo: Display error work</target>
+        <target state="needs-translation">Job in error</target>
         <jms:reference-file line="40">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work" approved="yes">
@@ -9339,14 +9339,14 @@
         <target state="translated">Display Finished Job(s)</target>
         <jms:reference-file line="37">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work">
+      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="no">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
-        <target state="new">admin::workermanager:tab:workerinfo: Display manually interrupt work</target>
+        <target state="needs-translation">interrupted job</target>
         <jms:reference-file line="43">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
+      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="no">
         <source>admin::workermanager:tab:workerinfo: Display running work</source>
-        <target state="translated">Display Running Job(s)</target>
+        <target state="needs-translation">Running Job(s)</target>
         <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished" approved="yes">
@@ -9359,9 +9359,9 @@
         <target state="translated">Clear all job(s)</target>
         <jms:reference-file line="8">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt">
+      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="no">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
-        <target state="new">admin::workermanager:tab:workerinfo: Manually interrupt</target>
+        <target state="needs-translation">interrupt</target>
         <jms:reference-file line="93">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list" approved="yes">
@@ -11837,9 +11837,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Valid changes or Cancel</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="yes">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="needs-translation">Cancelling editing will lose all edits. 
+        <target state="translated">Cancelling editing will lose all edits. 
 - Cancel : to go back to editing 
 - OK : to close and lose edits</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -12185,34 +12185,34 @@ It is possible to place several search areas</target>
         <target state="translated">Delete Selection</target>
         <jms:reference-file line="223">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling">
+      <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: Autosubtitling</source>
-        <target state="needs-translation">Auto Subtitling</target>
+        <target state="translated">Auto Subtitling</target>
         <jms:reference-file line="238">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4415c59007c7e89865ff4e7ef0b717b459e6d6cf" resname="prod:videoeditor:subtitleRequestTab:: Request in process">
+      <trans-unit id="4415c59007c7e89865ff4e7ef0b717b459e6d6cf" resname="prod:videoeditor:subtitleRequestTab:: Request in process" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: Request in process</source>
-        <target state="needs-translation">Auto subtitling request in process</target>
+        <target state="translated">Auto subtitling request in process</target>
         <jms:reference-file line="264">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit">
+      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: submit</source>
-        <target state="needs-translation">Submit Subtitling Request</target>
+        <target state="translated">Submit Subtitling Request</target>
         <jms:reference-file line="259">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title">
+      <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: title</source>
-        <target state="needs-translation">Auto Subtitling</target>
+        <target state="translated">Auto Subtitling</target>
         <jms:reference-file line="38">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b945e053b5fd4a0f2664bafff257dbfd2fec386c" resname="prod:videoeditor:subtitleRequestTab:label:: Kind">
+      <trans-unit id="b945e053b5fd4a0f2664bafff257dbfd2fec386c" resname="prod:videoeditor:subtitleRequestTab:label:: Kind" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Kind</source>
-        <target state="needs-translation">Kind</target>
+        <target state="translated">Kind</target>
         <jms:reference-file line="236">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination">
+      <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Language destination</source>
-        <target state="needs-translation">Subtitles language destination</target>
+        <target state="translated">Subtitles language destination</target>
         <jms:reference-file line="250">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9d2cafba3e0955e48f598fac8a8b257b624977d" resname="prod:videoeditor:subtitleRequestTab:label:: Provider" approved="yes">
@@ -12225,14 +12225,14 @@ It is possible to place several search areas</target>
         <target state="translated">Audio language Source</target>
         <jms:reference-file line="242">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title">
+      <trans-unit id="6e9acc3c0400e405ff7939645fe8cbc4c8936779" resname="prod:videoeditor:subtitleTab:: title" approved="yes">
         <source>prod:videoeditor:subtitleTab:: title</source>
-        <target state="needs-translation">Subtitle editing</target>
+        <target state="translated">Subtitle editing</target>
         <jms:reference-file line="33">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder">
+      <trans-unit id="39d65c8847a7e865be76d0bf51b341a58b6fedd7" resname="prod:videoeditor:subtitletab:: Caption placeholder" approved="yes">
         <source>prod:videoeditor:subtitletab:: Caption placeholder</source>
-        <target state="needs-translation">Type a subtitle</target>
+        <target state="translated">Type a subtitle</target>
         <jms:reference-file line="180">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e382cd2339d70cb6f6500fb44c81737e72ee66b1" resname="prod:videoeditor:subtitletab:: End time" approved="yes">
@@ -12270,9 +12270,9 @@ It is possible to place several search areas</target>
         <target state="translated">Save</target>
         <jms:reference-file line="210">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2b6e3888c22d8146b4fe551a4b797ee52583f5c3" resname="prod:videoeditor:subtitletab:: work on">
+      <trans-unit id="2b6e3888c22d8146b4fe551a4b797ee52583f5c3" resname="prod:videoeditor:subtitletab:: work on" approved="yes">
         <source>prod:videoeditor:subtitletab:: work on</source>
-        <target state="needs-translation">Select subtitling language</target>
+        <target state="translated">Select subtitling language</target>
         <jms:reference-file line="186">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="yes">
@@ -12280,9 +12280,9 @@ It is possible to place several search areas</target>
         <target state="translated">Error when saving subtitle</target>
         <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success">
+      <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success" approved="yes">
         <source>prod:videoeditor:subtitletab:message:: success</source>
-        <target state="needs-translation">Success</target>
+        <target state="translated">Success</target>
         <jms:reference-file line="160">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
@@ -13431,9 +13431,9 @@ It is possible to place several search areas</target>
         <target state="translated">Thesaurus has been updated</target>
         <jms:reference-file line="5">web/thesaurus/load-thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title">
+      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title" approved="yes">
         <source>thesaurus: Populate title</source>
-        <target state="needs-translation">Indexing</target>
+        <target state="translated">Indexing</target>
         <jms:reference-file line="1530">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ece0fffe35c0acde3f67ee4bc99a8f17d3d266ac" resname="thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte" approved="yes">
@@ -13561,9 +13561,9 @@ It is possible to place several search areas</target>
         <target state="translated">starts with</target>
         <jms:reference-file line="278">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate">
+      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate" approved="yes">
         <source>thesaurus:: confirm populate</source>
-        <target state="needs-translation">Launch databases indexing</target>
+        <target state="translated">Launch databases indexing</target>
         <jms:reference-file line="226">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a85aa8cf9c6c920e0d9853406c361da92ad7b6ba" resname="thesaurus:: contexte" approved="yes">
@@ -13748,9 +13748,9 @@ It is possible to place several search areas</target>
         <target state="translated">No re-index</target>
         <jms:reference-file line="86">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button">
+      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button" approved="yes">
         <source>thesaurus:: populate button</source>
-        <target state="needs-translation">Indexing</target>
+        <target state="translated">Indexing</target>
         <jms:reference-file line="222">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a448f487b7feb813766fdba3b0713bd3c690c756" resname="thesaurus:: presentation" approved="yes">
@@ -13938,9 +13938,10 @@ It is possible to place several search areas</target>
         <target state="translated">Delete</target>
         <jms:reference-file line="178">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
+      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="no">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Warning, populate is in process to indexing databox. Wait the end of this indexing, before launching a new one.</target>
+        <target state="needs-translation">Warning, populate is in process to indexing databox. 
+Wait the end of this indexing, before launching a new one.</target>
         <jms:reference-file line="1569">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
