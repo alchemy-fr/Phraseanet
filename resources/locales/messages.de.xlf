@@ -9331,19 +9331,19 @@
         <target state="needs-translation">Aufgabe Fehler</target>
         <jms:reference-file line="40">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work" approved="yes">
+      <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work" approved="no">
         <source>admin::workermanager:tab:workerinfo: Display finished work</source>
-        <target state="translated">Abgeschlossene Arbeiten anzeigen</target>
+        <target state="needs-translation">Abgeschlossene Arbeiten</target>
         <jms:reference-file line="37">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="no">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
-        <target state="needs-translation">Aufgabe Unterbrechungen</target>
+        <target state="needs-translation">Arbeiten Unterbrechungen</target>
         <jms:reference-file line="43">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
+      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="no">
         <source>admin::workermanager:tab:workerinfo: Display running work</source>
-        <target state="translated">Laufende Arbeiten anzeigen</target>
+        <target state="needs-translation">Laufende Arbeiten</target>
         <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished" approved="yes">
