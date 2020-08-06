@@ -88,6 +88,11 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET')
             ->bind('worker_admin_queue_monitor');
 
+        $controllers->match('/{workerId}/change-status',  'controller.worker.admin.configuration:changeStatusAction')
+            ->method('POST')
+            ->assert('workerId', '\d+')
+            ->bind('worker_admin_change_status');
+
         return $controllers;
     }
 
