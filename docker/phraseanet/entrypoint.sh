@@ -35,7 +35,7 @@ if [ -f "$FILE" ]; then
     
     bin/setup system:config set registry.api-clients.api-enabled $PHRASEANET_API_ENABLED
     bin/setup system:config set registry.api-clients.api-require-ssl $PHRASEANET_API_SSL
-    bin/setup system:config set registry.api-clients.api-auth-token-header-only $PHRASEANET_API_TOKEN_HEADER_ONLY
+    bin/setup system:config set registry.api-clients.api-auth-token-header-only $PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
 
 
     if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true ]]; then
