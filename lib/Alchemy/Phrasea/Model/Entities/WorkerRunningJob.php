@@ -14,6 +14,8 @@ class WorkerRunningJob
     const FINISHED = 'finished';
     const RUNNING  = 'running';
     const ERROR    = 'error';
+    const INTERRUPT = 'interrupt manually';
+
     const ATTEMPT  = 'attempt ';
 
     const TYPE_PULL     = 'uploader pull';
