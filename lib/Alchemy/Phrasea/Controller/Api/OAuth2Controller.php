@@ -282,8 +282,8 @@ class OAuth2Controller extends Controller
         /** @var PropertyAccess $config */
         $config = $this->app['conf'];
 
-        if ( ! $request->isSecure() && $config->get(['registry', 'api-clients', 'api_require_ssl'], true) == true) {
-            throw new HttpException(400, 'This route requires the use of the https scheme: ' . $config->get(['main', 'api_require_ssl']), null, ['content-type' => 'application/json']);
+        if ( ! $request->isSecure() && $config->get(['registry', 'api-clients', 'api-require-ssl'], true) == true) {
+            throw new HttpException(400, 'This route requires the use of the https scheme: ' . $config->get(['registry', 'api-clients', 'api-require-ssl']), null, ['content-type' => 'application/json']);
         }
 
         $this->oAuth2Adapter->grantAccessToken();

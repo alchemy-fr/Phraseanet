@@ -537,7 +537,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     public function verifyAccessToken($scope = null, $exit_not_present = true, $exit_invalid = true, $exit_expired = true, $exit_scope = true, $realm = null)
     {
-        $apiTokenHeader = $this->app['conf']->get(['registry', 'api-clients', 'api_token_header_only']);
+        $apiTokenHeader = $this->app['conf']->get(['registry', 'api-clients', 'api-auth-token-header-only']);
 
         $useTokenHeader = $this->useTokenHeaderChoice($apiTokenHeader);
 

@@ -54,18 +54,18 @@ class patch_412 implements patchInterface
      */
     public function apply(base $appbox, Application $app)
     {
-        // move api_require_ssl place in configuration.yml
+        // move api-require-ssl place in configuration.yml
         if ($app['conf']->has(['main', 'api_require_ssl'])) {
             $apiRequireSslValue = $app['conf']->get(['main', 'api_require_ssl']);
             $app['conf']->remove(['main', 'api_require_ssl']);
-            $app['conf']->set(['registry', 'api-clients', 'api_require_ssl'], $apiRequireSslValue);
+            $app['conf']->set(['registry', 'api-clients', 'api-require-ssl'], $apiRequireSslValue);
         }
 
         // change api_token_header place and name in configuration.yml
         if ($app['conf']->has(['main', 'api_token_header'])) {
             $apiTokenHeaderValue = $app['conf']->get(['main', 'api_token_header']);
             $app['conf']->remove(['main', 'api_token_header']);
-            $app['conf']->set(['registry', 'api-clients', 'api_token_header_only'], $apiTokenHeaderValue);
+            $app['conf']->set(['registry', 'api-clients', 'api-auth-token-header-only'], $apiTokenHeaderValue);
         }
 
         // add svg in extension-mapping

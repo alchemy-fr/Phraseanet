@@ -232,8 +232,8 @@ session:
   lifetime: 604800 # 1 week
 registry:
     api-clients:
-        api_require_ssl: false
-        api_token_header_only: false
+        api-require-ssl: false
+        api-auth-token-header-only: false
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
