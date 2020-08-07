@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-08-07T12:47:58Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9404,9 +9404,9 @@
         <target state="translated">Finished</target>
         <jms:reference-file line="58">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3004b16229a6402f4a56a62a4b6a3aaf33792ca3" resname="admin::workermanager:tab:workerinfo: payload">
+      <trans-unit id="3004b16229a6402f4a56a62a4b6a3aaf33792ca3" resname="admin::workermanager:tab:workerinfo: payload" approved="no">
         <source>admin::workermanager:tab:workerinfo: payload</source>
-        <target state="new">admin::workermanager:tab:workerinfo: payload</target>
+        <target state="needs-translation">Payload</target>
         <jms:reference-file line="55">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published" approved="yes">
