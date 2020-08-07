@@ -5,10 +5,11 @@
         <subdefgroup name="image">
             <subdef class="preview" name="preview" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>1024</size>
+                <size>1280</size>
                 <method>resample</method>
-                <dpi>72</dpi>
+                <dpi>300</dpi>
                 <strip>no</strip>
+                <flatten>yes</flatten>
                 <quality>75</quality>
                 <meta>yes</meta>
                 <devices>screen</devices>
@@ -18,10 +19,11 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>yes</strip>
+                <flatten>yes</flatten>
                 <quality>75</quality>
                 <meta>no</meta>
                 <devices>screen</devices>
@@ -30,9 +32,10 @@
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview_mobile" downloadable="false">
-                <size>480</size>
+                <size>640</size>
                 <resolution>72</resolution>
                 <strip>yes</strip>
+                <flatten>yes</flatten>
                 <quality>75</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
@@ -42,9 +45,10 @@
                 <label lang="en">Mobile Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
+                <size>192</size>
                 <resolution>72</resolution>
                 <strip>yes</strip>
+                <flatten>yes</flatten>
                 <quality>75</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
@@ -57,7 +61,7 @@
         <subdefgroup name="video">
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
@@ -140,7 +144,8 @@
                 <mediatype>image</mediatype>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <size>240</size>
+                <size>384</size>
+                <flatten>yes</flatten>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Vignette</label>
@@ -148,32 +153,8 @@
             </subdef>
             <subdef class="preview" name="preview" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>flexpaper</mediatype>
+                <mediatype>pdf</mediatype>
                 <writeDatas>no</writeDatas>
-                <devices>screen</devices>
-                <label lang="fr">Prévisualisation</label>
-                <label lang="en">Preview</label>
-            </subdef>
-        </subdefgroup>
-        <subdefgroup name="flash">
-            <subdef class="thumbnail" name="thumbnail" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>240</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
-                <devices>screen</devices>
-                <label lang="fr">Vignette</label>
-                <label lang="en">Thumbnail</label>
-            </subdef>
-            <subdef class="preview" name="preview" downloadable="false">
-                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <mediatype>image</mediatype>
-                <size>800</size>
-                <writeDatas>no</writeDatas>
-                <method>resample</method>
-                <dpi>72</dpi>
                 <devices>screen</devices>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
