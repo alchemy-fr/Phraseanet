@@ -198,7 +198,7 @@
                                                 {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                                             </div>
                                             <div id="expose_tab">
-                                                {{ WorkZoneMacros.make_expose_bloc(app) }}
+                                                {{ WorkZoneMacros.make_expose_bloc(app, WorkZone) }}
                                             </div>
                                         </div>
                                     </div>
@@ -1046,6 +1046,8 @@
     <input type="hidden" id="map-zoom-from-setting" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'map_zoom') }}" >
     <input type="hidden" id="map-position-to-setting">
     <input type="hidden" id="map-position-from-setting" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'map_position') }}">
+
+    <input type="hidden" id="basket-tab" value="#baskets">
 
     <script type="text/javascript" id="bitly_loader"></script>
     <script type="text/javascript">
