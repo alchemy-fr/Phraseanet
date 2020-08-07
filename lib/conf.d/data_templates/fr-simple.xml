@@ -24,7 +24,7 @@
                 <dpi>72</dpi>
                 <strip>yes</strip>
                 <flatten>yes</flatten>
-                <quality>75</quality>
+                <quality>50</quality>
                 <meta>no</meta>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
@@ -49,7 +49,7 @@
                 <resolution>72</resolution>
                 <strip>yes</strip>
                 <flatten>yes</flatten>
-                <quality>75</quality>
+                <quality>50</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <meta>no</meta>
@@ -93,6 +93,21 @@
                 <GOPsize>25</GOPsize>
                 <label lang="fr">Prévisualisation</label>
                 <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="preview" name="poster" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <meta>1</meta>
+                <size>1280</size>
+                <mediatype>image</mediatype>
+                <writeDatas>yes</writeDatas>
+                <devices>screen</devices>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <flatten>yes</flatten>
+                <quality>75</quality>
+                <icodec>jpeg</icodec>
+                <label lang="fr">Poster video</label>
+                <label lang="en">Poster video</label>
             </subdef>
             <subdef class="preview" name="preview_webm" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -180,8 +195,8 @@
         <Source src="IPTC:Source" type="string"/>
         <Legende src="IPTC:Caption-Abstract" type="string"/>
         <Redacteur src="IPTC:Writer-Editor" type="string"/>
-        <Longitude src="GPS:GPSLongitude" type="number" readonly="1"/>
-        <Latitude src="GPS:GPSLatitude" type="number" readonly="1"/>
+        <Longitude src="Composite:GPSLongitude" type="number" readonly="1"/>
+        <Latitude src="Composite:GPSLatitude" type="number" readonly="1"/>
         <AppareilPhoto src="IFD0:Model" type="string" readonly="1"/>
         <NomDeFichier src="Phraseanet:tf-basename" type="string" readonly="1"/>
     </description>

@@ -23,7 +23,7 @@
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>yes</strip>
-                <quality>75</quality>
+                <quality>50</quality>
                 <meta>no</meta>
                 <flatten>yes</flatten>
                 <devices>screen</devices>
@@ -51,7 +51,7 @@
                 <method>resample</method>
                 <strip>yes</strip>
                 <flatten>yes</flatten>
-                <quality>75</quality>
+                <quality>50</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <meta>no</meta>
