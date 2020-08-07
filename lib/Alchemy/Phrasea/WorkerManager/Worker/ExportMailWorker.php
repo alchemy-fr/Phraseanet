@@ -40,10 +40,16 @@ class ExportMailWorker implements WorkerInterface
         $this->repoWorkerJob->reconnect();
         $date = new \DateTime();
 
+        $message = [
+            'message_type'  => MessagePublisher::EXPORT_MAIL_TYPE,
+            'payload'       => $payload
+        ];
+
         try {
             $workerRunningJob = new WorkerRunningJob();
             $workerRunningJob
                 ->setWork(MessagePublisher::EXPORT_MAIL_TYPE)
+                ->setPayload($message)
                 ->setPublished($date->setTimestamp($payload['published']))
                 ->setStatus(WorkerRunningJob::RUNNING)
             ;

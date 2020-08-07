@@ -65,13 +65,15 @@ class WriteMetadatasWorker implements WorkerInterface
             // check if there is a make subdef running for the record or the same task running
             $canWriteMeta = $this->repoWorker->canWriteMetadata($payload['subdefName'], $recordId, $databoxId);
 
+            $message = [
+                'message_type'  => MessagePublisher::WRITE_METADATAS_TYPE,
+                'payload'       => $payload
+            ];
+
             if (!$canWriteMeta) {
                 // the file is in used to generate subdef
-                $payload = [
-                    'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                    'payload' => $payload
-                ];
-                $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_METADATAS_QUEUE);
+
+                $this->messagePublisher->publishMessage($message, MessagePublisher::DELAYED_METADATAS_QUEUE);
 
                 return ;
             }
@@ -118,6 +120,7 @@ class WriteMetadatasWorker implements WorkerInterface
                         ->setRecordId($recordId)
                         ->setWork(MessagePublisher::WRITE_METADATAS_TYPE)
                         ->setWorkOn($payload['subdefName'])
+                        ->setPayload($message)
                         ->setPublished($date->setTimestamp($payload['published']))
                         ->setStatus(WorkerRunningJob::RUNNING)
                     ;

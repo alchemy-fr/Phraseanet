@@ -66,6 +66,11 @@ class WorkerRunningJob
     private $info;
 
     /**
+     * @ORM\Column(type="json_array", name="payload", nullable=true)
+     */
+    private $payload;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -226,6 +231,23 @@ class WorkerRunningJob
     public function getInfo()
     {
         return $this->info;
+    }
+
+    /**
+     * @param array $payload
+     *
+     * @return WorkerRunningJob
+     */
+    public function setPayload(array $payload)
+    {
+        $this->payload = $payload;
+
+        return $this;
+    }
+
+    public function getPayload()
+    {
+        return $this->payload;
     }
 
     /**
