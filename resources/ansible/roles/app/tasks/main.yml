@@ -50,7 +50,7 @@
     chdir: /vagrant/
 
 - name: Disable API SSL requirement
-  shell: php bin/setup system:config set main.api_require_ssl false
+  shell: php bin/setup system:config set registry.api-clients.api-require-ssl false
   args:
     chdir: /vagrant/
 

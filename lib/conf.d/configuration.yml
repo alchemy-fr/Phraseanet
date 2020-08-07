@@ -9,8 +9,6 @@ languages:
 main:
     maintenance: false
     key: ''
-    api_require_ssl: true
-    api_token_header: false
     database:
         host: 'sql-host'
         port: 3306
