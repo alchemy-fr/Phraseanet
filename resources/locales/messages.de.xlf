@@ -7755,9 +7755,9 @@
         <target state="translated">Sie können ein Vorbild hier herunterladen</target>
         <jms:reference-file line="37">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready.">
+      <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="yes">
         <source>You can alternatively receive an email when the download is ready.</source>
-        <target state="needs-translation">Alternativ können Sie ein Download Link durch Email erhalten.</target>
+        <target state="translated">Alternativ können Sie ein Download Link durch Email erhalten.</target>
         <jms:reference-file line="512">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdfd850039f15d0459cfe507bcdea013d71a4142" resname="You can choose only one record" approved="yes">
@@ -7770,9 +7770,9 @@
         <target state="translated">Sie können die Dokumentation hier herunterladen</target>
         <jms:reference-file line="42">user/import/file.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long">
+      <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long" approved="yes">
         <source>You can not directly download more than %max_download% Mo ; time to package all documents is too long</source>
-        <target state="needs-translation">Sie können nicht mehr als %max_download% Mo herunterladen.</target>
+        <target state="translated">Sie können nicht mehr als %max_download% Mo herunterladen.</target>
         <jms:reference-file line="511">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dff09f0ed93eb1657329f3588569d2c43b4e65ff" resname="You can not edit this story" approved="yes">
@@ -9326,24 +9326,24 @@
         <target state="translated">Anwenden</target>
         <jms:reference-file line="50">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work">
+      <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display error work</source>
-        <target state="needs-translation">Aufgabe Fehler</target>
+        <target state="translated">Arbeiten Fehler</target>
         <jms:reference-file line="40">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work">
+      <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display finished work</source>
-        <target state="needs-translation">Abgeschlossene Arbeiten</target>
+        <target state="translated">Abgeschlossene Arbeiten</target>
         <jms:reference-file line="37">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work">
+      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
-        <target state="needs-translation">Arbeiten Unterbrechungen</target>
+        <target state="translated">Arbeiten Unterbrechen</target>
         <jms:reference-file line="43">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work">
+      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display running work</source>
-        <target state="needs-translation">Laufende Arbeiten</target>
+        <target state="translated">Laufende Arbeiten</target>
         <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished" approved="yes">
@@ -9356,9 +9356,9 @@
         <target state="translated">Alle Arbeiten löschen</target>
         <jms:reference-file line="8">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt">
+      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
-        <target state="needs-translation">Unterbrechen</target>
+        <target state="translated">Unterbrechen</target>
         <jms:reference-file line="95">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list" approved="yes">
@@ -10233,14 +10233,14 @@
         <target state="translated">Titel</target>
         <jms:reference-file line="71">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info">
+      <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info" approved="yes">
         <source>export:email:: acknowledgement info</source>
-        <target state="needs-translation">Empfangbestätigung schafft nur, wenn der Empfänger diese Funktion unterstützt</target>
+        <target state="translated">Empfangbestätigung schafft nur, wenn der Empfänger diese Funktion unterstützt</target>
         <jms:reference-file line="199">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas">
+      <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas" approved="yes">
         <source>export:email:info:: email addresses separated by commas</source>
-        <target state="needs-translation">E-Mail Adressen durch Kommas getrennt</target>
+        <target state="translated">E-Mail Adressen durch Kommas getrennt</target>
         <jms:reference-file line="179">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
@@ -11839,9 +11839,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Änderungen bestätigen oder abbrechen</target>
         <jms:reference-file line="397">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?">
+      <trans-unit id="f5b80c50fa70208435fd889b73915ca753efabd3" resname="prod::editing::annulation: abandonner les modification ?" approved="yes">
         <source>prod::editing::annulation: abandonner les modification ?</source>
-        <target state="needs-translation">Abbrechen der Bearbeitung wird alle Bearbeitungen verlieren - Abbrechen : Zur Bearbeitung zurückgehen - OK : schliessen und Bearbeitungen verlieren</target>
+        <target state="translated">Abbrechen der Bearbeitung wird alle Bearbeitungen verlieren - Abbrechen : Zur Bearbeitung zurückgehen - OK : schliessen und Bearbeitungen verlieren</target>
         <jms:reference-file line="46">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9999b27bac2f63123760f54d7312b7b7133930fc" resname="prod::editing::fields: status" approved="yes">
@@ -11940,9 +11940,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Benachrichtigungen</target>
         <jms:reference-file line="1014">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title">
+      <trans-unit id="fd532704ccd19891fe39fc3e14235cbfa6b79abf" resname="prod::publication:title" approved="yes">
         <source>prod::publication:title</source>
-        <target state="needs-translation">Veröffentlichung</target>
+        <target state="translated">Veröffentlichung</target>
         <jms:reference-file line="53">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5fa97d7a05eb572c80ae0ccf85be3a27dcddb943" resname="prod::push: List name can not be empty" approved="yes">
@@ -12187,24 +12187,24 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Automatisierte Untertitelung</target>
         <jms:reference-file line="238">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4415c59007c7e89865ff4e7ef0b717b459e6d6cf" resname="prod:videoeditor:subtitleRequestTab:: Request in process">
+      <trans-unit id="4415c59007c7e89865ff4e7ef0b717b459e6d6cf" resname="prod:videoeditor:subtitleRequestTab:: Request in process" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: Request in process</source>
-        <target state="needs-translation">Anfrage in Bearbeitung</target>
+        <target state="translated">Anfrage in Bearbeitung</target>
         <jms:reference-file line="264">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit">
+      <trans-unit id="ca51b1b3be02d8e640243e090dec0a6ee8089d28" resname="prod:videoeditor:subtitleRequestTab:: submit" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: submit</source>
-        <target state="needs-translation">Anfrage einreichen</target>
+        <target state="translated">Anfrage einreichen</target>
         <jms:reference-file line="259">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title">
+      <trans-unit id="3c08c8314c595e8d2dcab6bab15a07eda8833935" resname="prod:videoeditor:subtitleRequestTab:: title" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:: title</source>
-        <target state="needs-translation">Automatische Untertitel</target>
+        <target state="translated">Automatische Untertitel</target>
         <jms:reference-file line="38">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b945e053b5fd4a0f2664bafff257dbfd2fec386c" resname="prod:videoeditor:subtitleRequestTab:label:: Kind">
+      <trans-unit id="b945e053b5fd4a0f2664bafff257dbfd2fec386c" resname="prod:videoeditor:subtitleRequestTab:label:: Kind" approved="yes">
         <source>prod:videoeditor:subtitleRequestTab:label:: Kind</source>
-        <target state="needs-translation">Typ</target>
+        <target state="translated">Typ</target>
         <jms:reference-file line="236">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="414d5838357721af1ee45447b3ab4d100e459e24" resname="prod:videoeditor:subtitleRequestTab:label:: Language destination" approved="yes">
@@ -12242,9 +12242,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Keine Untertitel für diese Sprache</target>
         <jms:reference-file line="199">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for">
+      <trans-unit id="f79f9eb59816db76a3249710f753b7972c449654" resname="prod:videoeditor:subtitletab:: Show for" approved="yes">
         <source>prod:videoeditor:subtitletab:: Show for</source>
-        <target state="needs-translation">Dauer</target>
+        <target state="translated">Dauer</target>
         <jms:reference-file line="179">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e79e454459e7dc39a4aad9eb7f65014fa6f0a001" resname="prod:videoeditor:subtitletab:: Start time" approved="yes">
@@ -13428,9 +13428,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Thesaurus wurde aktualisiert</target>
         <jms:reference-file line="5">web/thesaurus/load-thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title">
+      <trans-unit id="04b142345b93cbda377e24dd051b6e3a051d6fc2" resname="thesaurus: Populate title" approved="yes">
         <source>thesaurus: Populate title</source>
-        <target state="needs-translation">Indexierung</target>
+        <target state="translated">Indexierung</target>
         <jms:reference-file line="1530">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ece0fffe35c0acde3f67ee4bc99a8f17d3d266ac" resname="thesaurus:: A cet emplacement du thesaurus , un candidat du champ %cfield% ne peut etre accepte" approved="yes">
@@ -13558,9 +13558,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">beginnt mit</target>
         <jms:reference-file line="278">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate">
+      <trans-unit id="830f705269778d157154cbd4b82a56c913601835" resname="thesaurus:: confirm populate" approved="yes">
         <source>thesaurus:: confirm populate</source>
-        <target state="needs-translation">Indexierung starten für die gesamte Datenbank</target>
+        <target state="translated">Indexierung starten für die gesamte Datenbank</target>
         <jms:reference-file line="226">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a85aa8cf9c6c920e0d9853406c361da92ad7b6ba" resname="thesaurus:: contexte" approved="yes">
@@ -13745,9 +13745,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Keine Wieder Indexierung</target>
         <jms:reference-file line="86">web/thesaurus/link-field-step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button">
+      <trans-unit id="8c922c9810f5a481a9bad960b4c2c838b09d4a22" resname="thesaurus:: populate button" approved="yes">
         <source>thesaurus:: populate button</source>
-        <target state="needs-translation">Indexierung</target>
+        <target state="translated">Indexierung</target>
         <jms:reference-file line="222">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a448f487b7feb813766fdba3b0713bd3c690c756" resname="thesaurus:: presentation" approved="yes">
@@ -13806,14 +13806,14 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Alle Datensätze wieder indexieren</target>
         <jms:reference-file line="40">web/thesaurus/link-field-step3.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="631198ae17ed6546039c322bdf5bd21cec8eeb61" resname="thesaurus:: removed tgt">
+      <trans-unit id="631198ae17ed6546039c322bdf5bd21cec8eeb61" resname="thesaurus:: removed tgt" approved="yes">
         <source>thesaurus:: removed tgt</source>
-        <target state="needs-translation">removed tgt</target>
+        <target state="translated">removed tgt</target>
         <jms:reference-file line="123">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dc86251647b05c28a44f834b166bd85582c529be" resname="thesaurus:: removed_src">
+      <trans-unit id="dc86251647b05c28a44f834b166bd85582c529be" resname="thesaurus:: removed_src" approved="yes">
         <source>thesaurus:: removed_src</source>
-        <target state="needs-translation">removed_src</target>
+        <target state="translated">removed_src</target>
         <jms:reference-file line="109">web/thesaurus/accept.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="19a2b92ea9f5680b4d5ab69a91984da8301b66e2" resname="thesaurus:: selectionner la provenance a accepter" approved="yes">
@@ -13872,9 +13872,9 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Alle zuklappen (mit Browsen)</target>
         <jms:reference-file line="137">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock">
+      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="yes">
         <source>thesaurus::menu:  Mettre dans le stock</source>
-        <target state="needs-translation">Zum Stock verschieben</target>
+        <target state="translated">Zum Stock verschieben</target>
         <jms:reference-file line="192">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="758b089c0ed0efc0a6b86e1b45b1526dca96bb34" resname="thesaurus::menu: Nouveau synonyme" approved="yes">
@@ -13935,34 +13935,34 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Löschen</target>
         <jms:reference-file line="178">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
+      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="yes">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Vorsicht, eine Indexierung für die Datenbank läuft bereits, es ist notwendig, die Ende dieser Indexierung zu warten, um eine andere zu starten.</target>
+        <target state="translated">Vorsicht, eine Indexierung für die Datenbank läuft bereits; es ist notwendig, die Ende dieser Indexierung zu warten, um eine andere zu starten.</target>
         <jms:reference-file line="1569">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
+      <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message" approved="yes">
         <source>thesaurus::populate: success message</source>
-        <target state="needs-translation">Erfolg</target>
+        <target state="translated">Erfolg</target>
         <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export">
+      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="yes">
         <source>thesaurus:dialog:: export</source>
-        <target state="needs-translation">Export von Termkandidaten</target>
+        <target state="translated">Export von Termkandidaten</target>
         <jms:reference-file line="695">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties">
+      <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties" approved="yes">
         <source>thesaurus:dialog:: properties</source>
-        <target state="needs-translation">Eigenschaften</target>
+        <target state="translated">Eigenschaften</target>
         <jms:reference-file line="646">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7a4dc241a74580954559e8c74f390dc508004ed9" resname="thesaurus:properties::  Mettre dans le stock">
+      <trans-unit id="7a4dc241a74580954559e8c74f390dc508004ed9" resname="thesaurus:properties::  Mettre dans le stock" approved="yes">
         <source>thesaurus:properties::  Mettre dans le stock</source>
-        <target state="needs-translation">Zum Stock</target>
+        <target state="translated">Zum Stock</target>
         <jms:reference-file line="33">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId">
+      <trans-unit id="bf4b4b493b31b491dfc5f522f303ea1ac691f65c" resname="thesaurus:termePorperties:termeId" approved="yes">
         <source>thesaurus:termePorperties:termeId</source>
-        <target state="needs-translation">ID</target>
+        <target state="translated">ID</target>
         <jms:reference-file line="62">web/thesaurus/properties.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1118f7e206d8ec4d92392f3e8c2804b156b3a082" resname="thumbnail validation" approved="yes">
