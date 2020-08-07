@@ -5,12 +5,13 @@
         <subdefgroup name="image">
             <subdef class="preview" name="preview" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>1024</size>
+                <size>1280</size>
                 <method>resample</method>
-                <dpi>72</dpi>
+                <dpi>300</dpi>
                 <strip>yes</strip>
                 <quality>75</quality>
                 <meta>yes</meta>
+                <flatten>yes</flatten>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <label lang="fr">Prévisualisation</label>
@@ -18,22 +19,25 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <method>resample</method>
                 <dpi>72</dpi>
                 <strip>yes</strip>
-                <quality>75</quality>
+                <quality>50</quality>
                 <meta>no</meta>
+                <flatten>yes</flatten>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <label lang="fr">Vignette</label>
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview_mobile" downloadable="false">
-                <size>480</size>
+                <size>640</size>
                 <resolution>72</resolution>
+                <method>resample</method>
                 <strip>yes</strip>
                 <quality>75</quality>
+                <flatten>yes</flatten>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <meta>no</meta>
@@ -42,10 +46,12 @@
                 <label lang="en">Mobile Preview</label>
             </subdef>
             <subdef class="thumbnail" name="thumbnail_mobile" downloadable="false">
-                <size>150</size>
+                <size>192</size>
                 <resolution>72</resolution>
+                <method>resample</method>
                 <strip>yes</strip>
-                <quality>75</quality>
+                <flatten>yes</flatten>
+                <quality>50</quality>
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
                 <meta>no</meta>
@@ -57,7 +63,7 @@
         <subdefgroup name="video">
             <subdef class="thumbnail" name="thumbnail" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>384</size>
                 <devices>screen</devices>
                 <mediatype>image</mediatype>
                 <writeDatas>no</writeDatas>
@@ -66,7 +72,7 @@
             </subdef>
             <subdef class="thumbnail" name="thumbnailgif" downloadable="false">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-                <size>240</size>
+                <size>250</size>
                 <mediatype>gif</mediatype>
                 <delay>150</delay>
                 <devices>screen</devices>
@@ -147,7 +153,7 @@
             <subdef class="thumbnail" name="thumbnail" downloadable="true">
                 <path>{{datapathnoweb}}{{basename}}/subdefs</path>
                 <mediatype>image</mediatype>
-                <size>240</size>
+                <size>384</size>
                 <devices>screen</devices>
                 <writeDatas>no</writeDatas>
                 <label lang="fr">Vignette</label>
@@ -177,7 +183,8 @@
                 <mediatype>image</mediatype>
                 <method>resample</method>
                 <dpi>72</dpi>
-                <size>240</size>
+                <size>380</size>
+                <flatten>yes</flatten>
                 <writeDatas>no</writeDatas>
                 <devices>screen</devices>
                 <label lang="fr">Vignette</label>

@@ -285,24 +285,26 @@ geocoding-providers:
                 speed: '2.2'
                 curve: '1.42'
         default-position:
-            - 2.335062
-            - 48.879162
+            - 42.488
+            - 3.779
         default-zoom: 2
         marker-default-zoom: 11
-        position-fields: []
+        position-fields:
             #-
             #   name: GpsCompositePosition
             #   type: latlng
-            # -
-            #    name: Longitude
-            #    type: lon
-            # -
-            #    name: Latitude
-            #    type: lat
+            -
+                name: Latitude
+                type: lat
+            -
+                name: Longitude
+                type: lon
         geonames-field-mapping: true
         cityfields: 'City, Ville'
         provincefields: Province
         countryfields: 'Country, Pays'
+        latitudefields: Latitude
+        longitudefields: Longitude
 video-editor:
     ChapterVttFieldName: VideoTextTrackChapters
     seekBackwardStep: 500 # in ms
