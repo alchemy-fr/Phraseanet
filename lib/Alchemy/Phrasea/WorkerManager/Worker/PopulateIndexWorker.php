@@ -59,12 +59,17 @@ class PopulateIndexWorker implements WorkerInterface
         } else {
             $em->beginTransaction();
             $date = new \DateTime();
+            $message = [
+                'message_type'  => MessagePublisher::POPULATE_INDEX_TYPE,
+                'payload'       => $payload
+            ];
 
             try {
                 $workerRunningJob = new WorkerRunningJob();
                 $workerRunningJob
                     ->setWork(MessagePublisher::POPULATE_INDEX_TYPE)
                     ->setWorkOn($payload['indexName'])
+                    ->setPayload($message)
                     ->setDataboxId($payload['databoxId'])
                     ->setPublished($date->setTimestamp($payload['published']))
                     ->setStatus(WorkerRunningJob::RUNNING)

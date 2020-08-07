@@ -25,12 +25,18 @@ class DeleteRecordWorker implements WorkerInterface
         $em->beginTransaction();
         $date = new \DateTime();
 
+        $message = [
+            'message_type'  => MessagePublisher::DELETE_RECORD_TYPE,
+            'payload'       => $payload
+        ];
+
         try {
             $workerRunningJob = new WorkerRunningJob();
             $workerRunningJob
                 ->setWork(MessagePublisher::DELETE_RECORD_TYPE)
                 ->setDataboxId($payload['databoxId'])
                 ->setRecordId($payload['recordId'])
+                ->setPayload($message)
                 ->setPublished($date->setTimestamp($payload['published']))
                 ->setStatus(WorkerRunningJob::RUNNING)
             ;
