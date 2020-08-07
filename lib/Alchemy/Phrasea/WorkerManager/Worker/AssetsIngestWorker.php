@@ -67,6 +67,8 @@ class AssetsIngestWorker implements WorkerInterface
             $storyId = $this->createStory($body);
         }
 
+        $em = $this->repoWorkerJob->getEntityManager();
+
         foreach ($assets as $assetId) {
             $createRecordMessage['message_type'] = MessagePublisher::CREATE_RECORD_TYPE;
             $createRecordMessage['payload'] = [
@@ -79,7 +81,20 @@ class AssetsIngestWorker implements WorkerInterface
             ];
 
             $this->messagePublisher->publishMessage($createRecordMessage, MessagePublisher::CREATE_RECORD_QUEUE);
+
+            /** @var WorkerRunningJob $workerRunningJob */
+            $workerRunningJob =  $this->repoWorkerJob->findOneBy([
+                'commitId' => $payload['commit_id'],
+                'assetId'  => $assetId,
+                'finished' => null
+            ]);
+
+            $workerRunningJob->setPayload($createRecordMessage);
+            $em->persist($workerRunningJob);
+
+            unset($workerRunningJob);
         }
+        $em->flush();
     }
 
     private function createStory(array $body)
