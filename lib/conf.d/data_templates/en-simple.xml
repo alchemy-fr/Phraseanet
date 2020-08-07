@@ -32,7 +32,7 @@
                 <label lang="en">Thumbnail</label>
             </subdef>
             <subdef class="preview" name="preview_mobile" downloadable="false">
-                <size>480</size>
+                <size>640</size>
                 <resolution>72</resolution>
                 <strip>yes</strip>
                 <flatten>yes</flatten>

@@ -293,12 +293,12 @@ geocoding-providers:
             #-
             #   name: GpsCompositePosition
             #   type: latlng
-            # -
-            #    name: Longitude
-            #    type: lon
-            # -
-            #    name: Latitude
-            #    type: lat
+            -
+                name: Longitude
+                type: lon
+            -
+                name: Latitude
+                type: lat
         geonames-field-mapping: true
         cityfields: 'City, Ville'
         provincefields: Province
