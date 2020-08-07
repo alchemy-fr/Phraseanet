@@ -289,7 +289,7 @@ geocoding-providers:
             - 48.879162
         default-zoom: 2
         marker-default-zoom: 11
-        position-fields: []
+        position-fields:
             #-
             #   name: GpsCompositePosition
             #   type: latlng
