@@ -183,7 +183,7 @@ class RegistryFormManipulator
                 [
                     'linkName'      => 'Phraseanet store',
                     'linkLanguage'  => 'all',
-                    'linkUrl'       => 'https://store.alchemy.fr',
+                    'linkUrl'       => 'https://www.alchemy.fr/fr/rubrique/store/',
                     'linkLocation'  => 'help-menu',
                     'linkOrder'     =>  1,
                     'linkBold'      =>  false,
