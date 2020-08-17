@@ -1,11 +1,2 @@
-record_response:
-    '200':
-        description: successful operation
-        content:
-            application/json:
-                schema:
-                    $ref: schemas.yaml#/ApiResponse_record
-    '400':
-        description: Any other error
-    '404':
-        description: Record not found
+error_response:
+        description: Any (other) error

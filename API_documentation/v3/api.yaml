@@ -39,12 +39,10 @@ paths:
             servers:
                 - url: 'https://alpha.preprod.alchemyasp.com/api/v1'
             responses:
-                '200':
+                200:
                     description: successful operation
-                '400':
-                    description: Any other error
-                '404':
-                    description: Record not found
+                default:
+                    description: Any error
 
     '/records/{base_id}':
         post:
@@ -79,8 +77,14 @@ paths:
                             allOf:
                                 - $ref: schemas.yaml#/RecordPatch
             responses:
+                200:
+                    description: ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: schemas.yaml#/ApiResponse_record
                 default:
-                    $ref: responses.yaml#/record_response
+                    $ref: 'responses.yaml#/error_response'
             security:
                 - api_key: []
     '/records/{sbas_id}/{record_id}':
@@ -104,5 +108,13 @@ paths:
                   schema:
                       $ref: schemas.yaml#/ID
             responses:
+                200:
+                    description: ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: schemas.yaml#/ApiResponse_record
+                404:
+                    description: Record not found
                 default:
-                    $ref: responses.yaml#/record_response
+                    $ref: 'responses.yaml#/error_response'
