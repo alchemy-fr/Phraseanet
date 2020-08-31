@@ -11,13 +11,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 
-class StringFieldMapping extends ComplexFieldMapping
+class TextFieldMapping extends ComplexFieldMapping
 {
-    /**
-     * @var bool
-     */
-    private $enableAnalysis = true;
-
     /**
      * @var string|null
      */
@@ -38,7 +33,7 @@ class StringFieldMapping extends ComplexFieldMapping
      */
     public function __construct($name)
     {
-        parent::__construct($name, self::TYPE_STRING);
+        parent::__construct($name, self::TYPE_TEXT);
     }
 
     public function addAnalyzedChild($name, $analyzer)
@@ -53,11 +48,11 @@ class StringFieldMapping extends ComplexFieldMapping
 
     public function addAnalyzedChildren(array $locales)
     {
-        $child = new StringFieldMapping('light');
+        $child = new TextFieldMapping('light');
         $child->setAnalyzer('general_light');
         $this->addChild($child);
 
-        $child = new StringFieldMapping('truncated');
+        $child = new TextFieldMapping('truncated');
         $child->setAnalyzer('truncation_analyzer', 'indexing');
         $child->setAnalyzer('truncation_analyzer#search', 'searching');
         $this->addChild($child);
@@ -70,8 +65,8 @@ class StringFieldMapping extends ComplexFieldMapping
     public function addLocalizedChildren(array $locales)
     {
         foreach ($locales as $locale) {
-            /** @var StringFieldMapping $child */
-            $child = new StringFieldMapping($locale);
+            /** @var TextFieldMapping $child */
+            $child = new TextFieldMapping($locale);
 
             $child->setAnalyzer(sprintf('%s_full', $locale));
             $this->addChild($child);
@@ -111,20 +106,6 @@ class StringFieldMapping extends ComplexFieldMapping
         return $this;
     }
 
-    public function disableAnalysis()
-    {
-        $this->enableAnalysis = false;
-
-        return $this;
-    }
-
-    public function enableAnalysis()
-    {
-        $this->enableAnalysis = true;
-
-        return $this;
-    }
-
     public function enableTermVectors($applyToChildren = false)
     {
         $this->termVector = 'with_positions_offsets';
@@ -132,7 +113,7 @@ class StringFieldMapping extends ComplexFieldMapping
         if ($applyToChildren) {
             /** @var self $child */
             foreach ($this->getChildren() as $child) {
-                if ($child instanceof StringFieldMapping) {
+                if ($child instanceof TextFieldMapping) {
                     $child->enableTermVectors(false);
                 }
             }
@@ -154,10 +135,6 @@ class StringFieldMapping extends ComplexFieldMapping
 
         if ($this->searchAnalyzer) {
             $properties['search_analyzer'] = $this->searchAnalyzer;
-        }
-
-        if (! $this->enableAnalysis) {
-            $properties['index'] = 'not_analyzed';
         }
 
         if ($this->termVector) {

@@ -165,7 +165,16 @@ services:
     restart: on-failure
 
   elasticsearch:
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
+    # image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
+    # image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.9
+    environment:
+      - discovery.type=single-node
+      # - node.max_local_storage_nodes=2
+    ulimits:
+        memlock:
+            soft: -1
+            hard: -1
     build: ./docker/elasticsearch
     restart: on-failure
     volumes:

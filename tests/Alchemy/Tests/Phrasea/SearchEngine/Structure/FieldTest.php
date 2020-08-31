@@ -15,14 +15,14 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testBasicMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['1', '2']]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['3', '4']]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['used_by_collections' => ['1', '2']]);
+        $other = new Field('foo', FieldMapping::TYPE_TEXT, ['used_by_collections' => ['3', '4']]);
         $merged = $field->mergeWith($other);
         $this->assertInstanceOf(Field::class, $merged);
         $this->assertNotSame($field, $merged);
         $this->assertNotSame($other, $merged);
         $this->assertEquals('foo', $merged->getName());
-        $this->assertEquals(FieldMapping::TYPE_STRING, $merged->getType());
+        $this->assertEquals(FieldMapping::TYPE_TEXT, $merged->getType());
         $this->assertTrue($merged->isSearchable());
         $this->assertFalse($merged->isPrivate());
         $this->assertFalse($merged->isFacet());
@@ -36,8 +36,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testConflictingNameMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING);
-        $other = new Field('bar', FieldMapping::TYPE_STRING);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT);
+        $other = new Field('bar', FieldMapping::TYPE_TEXT);
         $field->mergeWith($other);
     }
 
@@ -47,7 +47,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testConflictingTypeMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT);
         $other = new Field('foo', FieldMapping::TYPE_DATE);
         $field->mergeWith($other);
     }
@@ -58,8 +58,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testMixedSearchabilityMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['searchable' => true]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, ['searchable' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['searchable' => true]);
+        $other = new Field('foo', FieldMapping::TYPE_TEXT, ['searchable' => false]);
         $field->mergeWith($other);
     }
 
@@ -69,8 +69,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testMixedPrivateAndPublicMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => true]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => true]);
+        $other = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
         $field->mergeWith($other);
     }
 
@@ -80,8 +80,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
      */
     public function testMixedFacetEligibilityMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['facet' => Field::FACET_NO_LIMIT]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, ['facet' => Field::FACET_DISABLED]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['facet' => Field::FACET_NO_LIMIT]);
+        $other = new Field('foo', FieldMapping::TYPE_TEXT, ['facet' => Field::FACET_DISABLED]);
         $field->mergeWith($other);
     }
 
@@ -89,8 +89,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     {
         $foo = new Concept('/foo');
         $bar = new Concept('/bar');
-        $field = new Field('foo', FieldMapping::TYPE_STRING);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, [
+        $field = new Field('foo', FieldMapping::TYPE_TEXT);
+        $other = new Field('foo', FieldMapping::TYPE_TEXT, [
             'thesaurus_roots' => [$foo, $bar]
         ]);
         $merged = $field->mergeWith($other);
@@ -98,10 +98,10 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
         $foo = new Concept('/foo');
         $bar = new Concept('/bar');
-        $field = new Field('foo', FieldMapping::TYPE_STRING, [
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, [
             'thesaurus_roots' => [$foo]
         ]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, [
+        $other = new Field('foo', FieldMapping::TYPE_TEXT, [
             'thesaurus_roots' => [$bar]
         ]);
         $merged = $field->mergeWith($other);
@@ -110,10 +110,10 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeWithDependantCollections()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, [
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, [
             'used_by_collections' => [1, 2]
         ]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, [
+        $other = new Field('foo', FieldMapping::TYPE_TEXT, [
             'used_by_collections' => [2, 3]
         ]);
         $merged = $field->mergeWith($other);

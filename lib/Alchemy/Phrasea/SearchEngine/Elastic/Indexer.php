@@ -98,10 +98,11 @@ class Indexer
         }
 
         $now = sprintf("%s.%06d", Date('YmdHis'), 1000000*explode(' ', microtime())[0]) ;
-        $indexName .=  ('_' . $now);
+        $recordIndexName =  $indexName . ('.r_' . $now);
+        $termIndexName =  $indexName . ('.t_' . $now);
 
-        $params = [
-            'index' => $indexName,
+        $this->client->indices()->create([
+            'index' => $recordIndexName,
             'body'  => [
                 'settings' => [
                     'number_of_shards'   => $this->index->getOptions()->getShards(),
@@ -109,32 +110,37 @@ class Indexer
                     'analysis'           => $this->index->getAnalysis()
                 ],
                 'mappings' => [
-                    RecordIndexer::TYPE_NAME => $this->index->getRecordIndex()->getMapping()->export(),
+                    RecordIndexer::TYPE_NAME => $this->index->getRecordIndex()->getMapping()->export()
+                ]
+            ]
+        ]);
+
+        $this->client->indices()->create([
+            'index' => $termIndexName,
+            'body'  => [
+                'settings' => [
+                    'number_of_shards'   => $this->index->getOptions()->getShards(),
+                    'number_of_replicas' => $this->index->getOptions()->getReplicas(),
+                    'analysis'           => $this->index->getAnalysis()
+                ],
+                'mappings' => [
                     TermIndexer::TYPE_NAME   => $this->index->getTermIndex()->getMapping()->export()
                 ]
-                //    ,
-                //    'aliases' => [
-                //        $aliasName => []
-                //    ]
             ]
-        ];
+        ]);
 
-        $this->client->indices()->create($params);
-
-        $params = [
+        $this->client->indices()->updateAliases([
             'body' => [
                 'actions' => [
                     [
                         'add' => [
-                            'index' => $indexName,
+                            'indices' => [ $recordIndexName, $termIndexName ],
                             'alias' => $aliasName
                         ]
                     ]
                 ]
             ]
-        ];
-
-        $this->client->indices()->updateAliases($params);
+        ]);
 
         return [
             'index' => $indexName,
@@ -279,7 +285,7 @@ class Indexer
         );
 
         // Optimize index
-        $this->client->indices()->optimize(
+        $this->client->indices()->forceMerge(
             [
                 'index' => $this->index->getName()
             ]

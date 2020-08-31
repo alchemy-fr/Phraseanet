@@ -618,7 +618,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $highlighted_fields = [];
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
-                case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_TEXT:
                 case FieldMapping::TYPE_DOUBLE:
                 case FieldMapping::TYPE_DATE:
                     $index_field = $field->getIndexField();
@@ -738,7 +738,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $search_context = $this->context_factory->createContext($options);
         $fields = $search_context->getUnrestrictedFields();
         foreach ($fields as $field) {
-            if ($field->getType() == FieldMapping::TYPE_STRING) {
+            if ($field->getType() == FieldMapping::TYPE_TEXT) {
                 $k = '' . $field->getName();
                 $body[$k] = [
                     'text'       => $query,

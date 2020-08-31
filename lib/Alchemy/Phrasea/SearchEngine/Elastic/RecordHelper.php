@@ -147,7 +147,7 @@ class RecordHelper
             case FieldMapping::TYPE_BOOLEAN:
                 return (bool) $value;
 
-            case FieldMapping::TYPE_STRING:
+            case FieldMapping::TYPE_TEXT:
                 $value = str_replace("\0", '', $value); // no null char for lucene !
                 if( strlen($value) > 32766) {      // for lucene limit, before a better solution
                     for($l=32766; $l > 0; $l--) {

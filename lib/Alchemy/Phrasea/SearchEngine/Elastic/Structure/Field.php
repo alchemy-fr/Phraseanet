@@ -58,7 +58,7 @@ class Field implements Typed
         $databox = $field->get_databox();
 
         $roots = null;
-        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_STRING) {
+        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_TEXT) {
             // Thesaurus concept inference
             $xpath = $field->get_tbranch();
             if (!empty($xpath)) {
@@ -98,7 +98,7 @@ class Field implements Typed
             case databox_field::TYPE_NUMBER:
                 return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
-                return FieldMapping::TYPE_STRING;
+                return FieldMapping::TYPE_TEXT;
         }
 
         throw new \InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
@@ -154,7 +154,7 @@ class Field implements Typed
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            $raw && $this->type === FieldMapping::TYPE_STRING ? '.raw' : ''
+            $raw && $this->type === FieldMapping::TYPE_TEXT ? '.raw' : ''
         );
     }
 

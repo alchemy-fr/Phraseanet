@@ -28,21 +28,21 @@ class FieldToFieldMappingConverter
                 }
                 else {
                     $ret->addChild(
-                        (new StringFieldMapping('light'))
+                        (new TextFieldMapping('light'))
                             ->setAnalyzer('general_light')
                             ->enableTermVectors()
                     );
                 }
                 break;
 
-            case FieldMapping::TYPE_STRING:
-                $ret = new StringFieldMapping($field->getName());
+            case FieldMapping::TYPE_TEXT:
+                $ret = new TextFieldMapping($field->getName());
                 if (! $field->isFacet() && ! $field->isSearchable()) {
                     $ret->disableIndexing();
                 }
                 else {
                     $ret->addChild(
-                        (new StringFieldMapping('raw'))
+                        (new TextFieldMapping('raw'))
                             ->enableRawIndexing());
                     $ret->addAnalyzedChildren($locales);
                     $ret->enableTermVectors(true);
@@ -56,7 +56,7 @@ class FieldToFieldMappingConverter
                 }
                 else {
                     $ret->addChild(
-                        (new StringFieldMapping('light'))
+                        (new TextFieldMapping('light'))
                             ->setAnalyzer('general_light')
                             ->enableTermVectors()
                     );
