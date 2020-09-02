@@ -14,6 +14,8 @@ class WorkerRunningJob
     const FINISHED = 'finished';
     const RUNNING  = 'running';
     const ERROR    = 'error';
+    const INTERRUPT = 'interrupted manually';
+
     const ATTEMPT  = 'attempt ';
 
     const TYPE_PULL     = 'uploader pull';
@@ -62,6 +64,11 @@ class WorkerRunningJob
      * @ORM\Column(type="string", name="info", nullable=true)
      */
     private $info;
+
+    /**
+     * @ORM\Column(type="json_array", name="payload", nullable=true)
+     */
+    private $payload;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -224,6 +231,23 @@ class WorkerRunningJob
     public function getInfo()
     {
         return $this->info;
+    }
+
+    /**
+     * @param array $payload
+     *
+     * @return WorkerRunningJob
+     */
+    public function setPayload(array $payload)
+    {
+        $this->payload = $payload;
+
+        return $this;
+    }
+
+    public function getPayload()
+    {
+        return $this->payload;
     }
 
     /**

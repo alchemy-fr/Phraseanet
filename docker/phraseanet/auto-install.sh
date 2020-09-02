@@ -52,10 +52,19 @@ bin/setup system:config set workers.queue.worker-queue.vhost /
 
 ## enable API and disable ssl on it
 /var/alchemy/Phraseanet/bin/setup system:config set registry.api-clients.api-enabled $PHRASEANET_API_ENABLED
-/var/alchemy/Phraseanet/bin/setup system:config set main.api_require_ssl $PHRASEANET_API_SSL
+/var/alchemy/Phraseanet/bin/setup system:config set registry.api-clients.api-require-ssl $PHRASEANET_API_SSL
+/var/alchemy/Phraseanet/bin/setup system:config set registry.api-clients.api-auth-token-header-only $PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
 
-# set instance title
+## Trusted proxie setting 
+
+if [[ -n $PHRASEANET_TRUSTED_PROXIES ]]; then
+        bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXIES
+fi
+
+
+## set instance title
 bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
+
 
 /var/alchemy/Phraseanet/bin/console compile:configuration
 

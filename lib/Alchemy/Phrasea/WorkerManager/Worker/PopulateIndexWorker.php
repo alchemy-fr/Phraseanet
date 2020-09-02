@@ -36,6 +36,7 @@ class PopulateIndexWorker implements WorkerInterface
     public function process(array $payload)
     {
         $em = $this->repoWorker->getEntityManager();
+        $this->repoWorker->reconnect();
 
         if (isset($payload['workerJobId'])) {
             /** @var WorkerRunningJob $workerRunningJob */
@@ -58,12 +59,17 @@ class PopulateIndexWorker implements WorkerInterface
         } else {
             $em->beginTransaction();
             $date = new \DateTime();
+            $message = [
+                'message_type'  => MessagePublisher::POPULATE_INDEX_TYPE,
+                'payload'       => $payload
+            ];
 
             try {
                 $workerRunningJob = new WorkerRunningJob();
                 $workerRunningJob
                     ->setWork(MessagePublisher::POPULATE_INDEX_TYPE)
                     ->setWorkOn($payload['indexName'])
+                    ->setPayload($message)
                     ->setDataboxId($payload['databoxId'])
                     ->setPublished($date->setTimestamp($payload['published']))
                     ->setStatus(WorkerRunningJob::RUNNING)
@@ -139,6 +145,7 @@ class PopulateIndexWorker implements WorkerInterface
 
         // tell that the populate is finished
         if ($workerRunningJob != null) {
+            $this->repoWorker->reconnect();
             $workerRunningJob
                 ->setStatus(WorkerRunningJob::FINISHED)
                 ->setFinished(new \DateTime('now'))

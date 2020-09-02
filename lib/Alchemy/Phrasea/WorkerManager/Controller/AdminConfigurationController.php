@@ -73,22 +73,56 @@ class AdminConfigurationController extends Controller
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
 
-        $workerRunningJob = [];
-
         $reload = ($request->query->get('reload')) == 1 ? true : false ;
 
-        if ($request->query->get('running') == 1 && $request->query->get('finished') == 1) {
-            $workerRunningJob = $repoWorker->findBy([], ['id' => 'DESC'], WorkerRunningJob::MAX_RESULT);
-        } elseif ($request->query->get('running') == 1) {
-            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::RUNNING], ['id' => 'DESC'], WorkerRunningJob::MAX_RESULT);
-        } elseif ($request->query->get('finished') == 1) {
-            $workerRunningJob = $repoWorker->findBy(['status' => WorkerRunningJob::FINISHED], ['id' => 'DESC'], WorkerRunningJob::MAX_RESULT);
+        $workerRunningJob = [];
+        $filterStatus = [];
+        if ($request->query->get('running') == 1) {
+            $filterStatus[] = WorkerRunningJob::RUNNING;
+        }
+        if ($request->query->get('finished') == 1) {
+            $filterStatus[] = WorkerRunningJob::FINISHED;
+        }
+        if ($request->query->get('error') == 1) {
+            $filterStatus[] = WorkerRunningJob::ERROR;
+        }
+        if ($request->query->get('interrupt') == 1) {
+            $filterStatus[] = WorkerRunningJob::INTERRUPT;
+        }
+
+        if (count($filterStatus) > 0) {
+            $workerRunningJob = $repoWorker->findByStatus($filterStatus);
         }
 
         return $this->render('admin/worker-manager/worker_info.html.twig', [
             'workerRunningJob' => $workerRunningJob,
             'reload'           => $reload
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param integer $workerId
+     */
+    public function changeStatusAction(Request $request, $workerId)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+
+        /** @var WorkerRunningJob $workerRunningJob */
+        $workerRunningJob = $repoWorker->find($workerId);
+
+        $workerRunningJob
+            ->setStatus($request->request->get('status'))
+            ->setFinished(new \DateTime('now'))
+        ;
+
+        $em = $repoWorker->getEntityManager();
+        $em->persist($workerRunningJob);
+
+        $em->flush();
+
+        return $this->app->json(['success' => true]);
     }
 
     public function queueMonitorAction(PhraseaApplication $app, Request $request)

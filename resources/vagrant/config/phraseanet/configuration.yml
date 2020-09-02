@@ -5,7 +5,6 @@ languages:
 main:
     maintenance: false
     key: ''
-    api_require_ssl: true
     database:
         host: 'sql-host'
         port: 3306

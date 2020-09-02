@@ -53,11 +53,17 @@ class WebhookWorker implements WorkerInterface
             $em->beginTransaction();
             $date = new \DateTime();
 
+            $message = [
+                'message_type'  => MessagePublisher::WEBHOOK_TYPE,
+                'payload'       => $payload
+            ];
+
             try {
                 $workerRunningJob = new WorkerRunningJob();
                 $workerRunningJob
                     ->setWork(MessagePublisher::WEBHOOK_TYPE)
                     ->setWorkOn('WebhookEventId: '. $payload['id'])
+                    ->setPayload($message)
                     ->setPublished($date->setTimestamp($payload['published']))
                     ->setStatus(WorkerRunningJob::RUNNING)
                 ;
