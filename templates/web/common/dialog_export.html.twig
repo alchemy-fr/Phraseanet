@@ -175,13 +175,14 @@
                         <form action="{{ path('export_mail') }}" method="post" target="sendmail_target" style="text-align: left;">
                         <input type="hidden" name="lst" value="{{lst}}"/>
                         <input type="hidden" name="ssttid" value="{{ssttid}}"/>
+                            <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px; margin-bottom: 8px;">
+                                <span style="font-style: italic">{{ 'export:email:info:: email addresses separated by commas' | trans }}</span>
+                            </div>
                         <div>
                             <span style="min-width: 21px;display: inline-block; ">
                                 {{ 'export::mail: destinataire' | trans }}</span>
-                            <input type="text" value="" name="destmail" class="required span4">
-                            <div class="acceptDl-info" style="padding-top: 4px; margin-left: 25px;">
-                            <span style="font-style: italic">{{ 'Entrez plusieurs adresses email en les separant par des points-virgules' | trans }}</span>
-                            </div>
+                            <input type="text" value="" class="span4 emailslist" name="destmail" >
+                            <input type="text" value="" class="span4 tagsinput" data-role="tagsinput" name="taglistdestmail">
                             {% set my_email = app.getAuthenticatedUser().getEmail() %}
                             <div class="acceptDl-info">
                                 {% if my_email != '' %}
@@ -509,7 +510,6 @@
                 missingSubdef: '{{ 'Vous devez selectionner un type de sous definitions' | trans | e('js') }}',
                 fileTooLarge: '{{ 'You can not directly download more than %max_download% Mo ; time to package all documents is too long'|trans({'%max_download%' : max_download})|e('js') }}',
                 fileTooLargeAlt: '{{ 'You can alternatively receive an email when the download is ready.' | trans | e('js') }}',
-                fileTooLargeEmail: '{{ 'Would you like to receive an e-mail when your download is ready ?' | trans | e('js') }}',
                 success: '{{ "Success" | trans | e('js') }}',
                 warning: '{{ "Warning !" | trans | e('js') }}',
                 invalidEmail: '{{ 'export::export-email: email-invalid' | trans }}'
@@ -518,6 +518,13 @@
                 email: '{{app.getAuthenticatedUser().getEmail() | e('js')}}'
             }
         };
+
+        $(document).find(".tagsinput").tagsinput('items');
+
+        $(document).find(".emailslist").on('change', function(e) {
+            $(document).find(".tagsinput").tagsinput('add', $(this).val());
+            $(this).val('');
+        });
     </script>
 {% endif %}
 

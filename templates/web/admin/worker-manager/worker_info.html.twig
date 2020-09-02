@@ -36,6 +36,12 @@
         <label class="checkbox inline">
             <input class="finished-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display finished work' | trans }}
         </label>
+        <label class="checkbox inline">
+            <input class="error-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display error work' | trans }}
+        </label>
+        <label class="checkbox inline">
+            <input class="interrupt-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display manually interrupt work' | trans }}
+        </label>
     </div>
 
 </div>
@@ -46,11 +52,13 @@
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: record_id' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work_on' | trans }}</th>
+        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: payload' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: published' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: created' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: finished' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: duration' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: status' | trans }}</th>
+        <th></th>
 
     </tr>
     </thead>
@@ -67,6 +75,7 @@
         <td>{{ workerRow.recordId }}</td>
         <td>{{ workerRow.work }}</td>
         <td>{{ workerRow.workOn }}</td>
+        <td>{{ workerRow.payload| json_encode }}</td>
         <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
         <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
         <td>
@@ -81,6 +90,11 @@
             {{ duration.format("%H:%I:%S") }}
         </td>
         <td>{{ workerRow.status }}</td>
+        <td>
+            {% if workerRow.status == 'running' %}
+                <buton class="btn btn-danger btn-mini change-status-interrupt" data-id="{{ workerRow.id }}">{{ 'admin::workermanager:tab:workerinfo: Manually interrupt' | trans }}</buton>
+            {% endif %}
+        </td>
     </tr>
 {% endfor %}
 
@@ -92,6 +106,9 @@
         function refreshJobList () {
             var running  = 1;
             var finished = 1;
+            var error = 1;
+            var interrupt = 1;
+
             if (!$(".running-work").is(":checked"))
             {
                 running = 0;
@@ -100,10 +117,18 @@
             {
                 finished = 0;
             }
+            if (!$(".error-work").is(":checked"))
+            {
+                error = 0;
+            }
+            if (!$(".interrupt-work").is(":checked"))
+            {
+                interrupt = 0;
+            }
 
             $.ajax({
                 type: "GET",
-                url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished,
+                url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished+"&error="+error+"&interrupt="+interrupt,
                 success: function (data) {
                     $(".work-list").empty().html(data);
                 }
@@ -115,6 +140,24 @@
         $(".refresh-list-checkbox").on('change', function () {
             refreshJobList();
         });
+
+        $(".admintable").on('click', '.change-status-interrupt', function () {
+            var workerId = $(this).attr('data-id');
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    status: '{{ constant("\\Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob::INTERRUPT") }}'
+                },
+                url: "/admin/worker-manager/"+ workerId +"/change-status",
+                success: function (data) {
+                    refreshJobList();
+                }
+            });
+
+        });
+
     </script>
 {% endif %}
 

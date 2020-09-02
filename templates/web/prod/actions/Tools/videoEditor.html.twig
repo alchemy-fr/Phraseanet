@@ -13,7 +13,6 @@
 {% set overlapChapters = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'overlapChapters') %}
 
 <div id='prod-tool-box' class="PNB10 video-edit">
-
     {# jquery Tabs #}
     <div id="tool-tabs" class="tabs PNB">
         {# jquery menu #}
@@ -207,10 +206,10 @@
                                         <div class="fields-wrapper">
                                         </div>
                                     </div>
-                                    <div class="video-subtitle-left-button">
-                                        <button type="button" id="submit-subtitle" class="btn submit-subtitle btn-blue">{{ "prod:videoeditor:subtitletab:: save" | trans }}</button>
-                                        <button type="button" id="copy-subtitle" class="btn copy-subtitle btn-blue">{{ "prod:videoeditor:subtitletab:: copy to clipboard" | trans }}</button>
-                                        <button class="add-subtitle-vtt" tabindex="0" type="button" aria-label="Add VTT" title = {{ "prod:videoeditor:subtitletab:: add caption" | trans }}>
+                                    <div class="video-subtitle-left-button btn-container">
+                                        <button type="button" id="submit-subtitle" class="btn submit-subtitle add-btn pull-left">{{ "prod:videoeditor:subtitletab:: save" | trans }}</button>
+                                        <button type="button" id="copy-subtitle" class="btn copy-subtitle pull-left">{{ "prod:videoeditor:subtitletab:: copy to clipboard" | trans }}</button>
+                                        <button class="add-subtitle-vtt btn pull-right add-btn" tabindex="0" type="button" aria-label="Add VTT" title = {{ "prod:videoeditor:subtitletab:: add caption" | trans }}>
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
@@ -255,8 +254,9 @@
                                                 {% endfor %}
                                             </select>
                                         </p>
-                                        <div class="video-subtitle-center-button">
-                                            <button type="button" id="submit-subtitle-request" class="btn submit-subtitle btn-blue">{{ "prod:videoeditor:subtitleRequestTab:: submit" | trans }}</button>
+                                        <br>
+                                        <div class="video-subtitle-center-button btn-container">
+                                            <button type="button" id="submit-subtitle-request" class="btn add-btn submit-subtitle btn-blue">{{ "prod:videoeditor:subtitleRequestTab:: submit" | trans }}</button>
                                         </div>
                                         <input type="hidden" value='{{ record.get_sbas_id() }}' name='record_sbas_id'>
                                         <input type="hidden" value='{{ record.get_record_id() }}' name='record_record_id'>
@@ -354,7 +354,7 @@
         preferences: {
             overlapChapters: {% if overlapChapters != NULL %}{{ overlapChapters }}{% else %}1{% endif %},
         }
-    };
+    }
 
     $('#submit-subtitle-request').on('click', function (e) {
         e.preventDefault();
@@ -377,5 +377,6 @@
             }
         });
     });
+
 
 </script>

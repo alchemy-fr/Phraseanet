@@ -125,14 +125,14 @@ Pull images before launch docker-compose
 
 #### Tag organisation on docker hub 
 
-
 ```latest``` : latest stable version
 
-```4.0``` : latest stable version in 4.0
-
-```4.1``` : latest stable version in 4.1
+```4.1.2``` : Phraseanet version 4.1.2
 
 ```4.1.1``` : Phraseanet version 4.1.1
+
+
+Etc..
 
 
 ## Development mode

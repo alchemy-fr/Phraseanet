@@ -92,6 +92,19 @@ class WorkerRunningJobRepository extends EntityRepository
         return count($qb->getQuery()->getResult());
     }
 
+    public function findByStatus(array $status, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
+    {
+        $qb = $this->createQueryBuilder('w');
+        $qb
+            ->where($qb->expr()->in('w.status', $status))
+            ->setFirstResult($start)
+            ->setMaxResults($limit)
+            ->orderBy('w.id', 'DESC')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * @param $commitId
      * @return bool

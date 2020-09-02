@@ -1,3 +1,4 @@
+
 var p4 = p4 || {};
 var datepickerLang = [];
 
@@ -116,8 +117,7 @@ var commonModule = (function ($, p4) {
             showMessages = false;
 
         if (data.status == 'disconnected' || data.status == 'session') {
-            disconnected();
-            return false;
+            self.location.replace(self.location.href);
         }
         if (showMessages) {
             var box = $('#notification_box');

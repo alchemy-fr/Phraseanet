@@ -63,17 +63,19 @@ class SubdefCreationWorker implements WorkerInterface
 
             $oldLogger = $this->subdefGenerator->getLogger();
 
+            $message = [
+                'message_type'  => MessagePublisher::SUBDEF_CREATION_TYPE,
+                'payload'       => $payload
+            ];
+
             if (!$record->isStory()) {
                 // check if there is a write meta running for the record or the same task running
                 $canCreateSubdef = $this->repoWorker->canCreateSubdef($payload['subdefName'], $recordId, $databoxId);
 
                 if (!$canCreateSubdef) {
                     // the file is in used to write meta
-                    $payload = [
-                        'message_type'  => MessagePublisher::SUBDEF_CREATION_TYPE,
-                        'payload'       => $payload
-                    ];
-                    $this->messagePublisher->publishMessage($payload, MessagePublisher::DELAYED_SUBDEF_QUEUE);
+
+                    $this->messagePublisher->publishMessage($message, MessagePublisher::DELAYED_SUBDEF_QUEUE);
 
                     return ;
                 }
@@ -110,6 +112,7 @@ class SubdefCreationWorker implements WorkerInterface
                             ->setRecordId($recordId)
                             ->setWork(MessagePublisher::SUBDEF_CREATION_TYPE)
                             ->setWorkOn($payload['subdefName'])
+                            ->setPayload($message)
                             ->setPublished($date->setTimestamp($payload['published']))
                             ->setStatus(WorkerRunningJob::RUNNING)
                         ;
