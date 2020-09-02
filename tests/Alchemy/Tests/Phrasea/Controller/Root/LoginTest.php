@@ -2075,11 +2075,11 @@ class LoginTest extends \PhraseanetAuthenticatedWebTestCase
         $repo = $this->getMockBuilder('Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository')
             ->disableOriginalConstructor()
             ->getMock();
-
+        /*
         $repo->expects($participants ? $this->once() : $this->never())
             ->method('findNotConfirmedAndNotRemindedParticipantsByExpireDate')
             ->will($this->returnValue([]));
-
+        */
         $app['repo.validation-participants'] = $repo;
     }
 
