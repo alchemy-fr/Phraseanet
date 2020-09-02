@@ -596,6 +596,9 @@ class LoginController extends Controller
         $date = new \DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
         $manager = $this->getEntityManager();
 
+        /*
+         * todo : move this code to a worker
+         *
         foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
@@ -612,6 +615,7 @@ class LoginController extends Controller
         }
 
         $manager->flush();
+        */
 
         $session = $this->getAuthenticator()->openAccount($user);
 
