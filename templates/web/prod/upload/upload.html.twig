@@ -440,7 +440,8 @@ $(document).ready(function () {
                     UploaderManager.Preview.render(file, function (img) {
                         context.find('.thumbnail .canva-wrapper').prepend(img);
                         UploaderManager.addAttributeToData(uploadIndex, 'image', img);
-                        UploaderManager.addAttributeToData(uploadIndex, 'b64_image', img.toDataURL("image/png") || '');
+                        //  *** base64 url is still deprecated and unused ***
+                        //  UploaderManager.addAttributeToData(uploadIndex, 'b64_image', img.toDataURL("image/png") || '');
                     });
                 }
             });
