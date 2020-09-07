@@ -595,7 +595,7 @@ class LoginController extends Controller
         $manager = $this->getEntityManager();
 
         /*
-         * todo : move this code to a worker
+         * PHRAS-3210_disable-validation-reminder : This code is moved to console command "SendValidationRemindersCommand.php"
          *
         foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
             $validationSession = $participant->getSession();

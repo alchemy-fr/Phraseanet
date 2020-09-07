@@ -49,6 +49,7 @@ use Alchemy\Phrasea\Command\Task\TaskStart;
 use Alchemy\Phrasea\Command\Task\TaskStop;
 use Alchemy\Phrasea\Command\Task\TaskState;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\Command\SendValidationRemindersCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -133,6 +134,8 @@ $cli->command(new IndexPopulateCommand());
 $cli->command(new QueryParseCommand());
 $cli->command(new QuerySampleCommand());
 $cli->command(new FindConceptsCommand());
+
+$cli->command(new SendValidationRemindersCommand());
 
 $cli->loadPlugins();
 
