@@ -61,6 +61,7 @@ use Alchemy\Phrasea\Command\ApplyRightsCommand;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerExecuteCommand;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerRunServiceCommand;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerShowConfigCommand;
+use Alchemy\Phrasea\Command\SendValidationRemindersCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -168,6 +169,8 @@ $cli->command(new FindConceptsCommand());
 $cli->command(new WorkerExecuteCommand());
 $cli->command(new WorkerRunServiceCommand());
 $cli->command(new WorkerShowConfigCommand());
+
+$cli->command(new SendValidationRemindersCommand());
 
 $cli->loadPlugins();
 
