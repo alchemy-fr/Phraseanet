@@ -21,8 +21,8 @@ use Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder;
 use Alchemy\Phrasea\Notification\Receiver;
+use DateInterval;
 use DateTime;
-use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Console\Input\InputArgument;
@@ -113,7 +113,14 @@ class SendValidationRemindersCommand extends Command
         }
 
         $date_to = clone($this->now);
-        $date_to->add(new \DateInterval(sprintf('P%dD', $this->days)));
+        $interval = sprintf('P%dD', $this->days);
+        try {
+            $date_to->add(new DateInterval($interval));
+        }
+        catch(Exception $e) {
+            $this->output->writeln(sprintf('<error>Bad interval "%s" ?</error>', $interval));
+            return -1;
+        }
 
         if($this->dry) {
             $this->output->writeln('<info>dry mode : emails will NOT be sent</info>');
