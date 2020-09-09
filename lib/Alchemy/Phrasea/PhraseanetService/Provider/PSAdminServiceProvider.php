@@ -42,6 +42,31 @@ class PSAdminServiceProvider implements ControllerProviderInterface, ServiceProv
             ->method('GET')
             ->bind('ps_admin');
 
+        $controllers->match('/auth', 'controller.ps.admin:authAction')
+            ->method('GET|POST')
+            ->bind('ps_admin_auth')
+        ;
+
+        $controllers->match('/expose', 'controller.ps.admin:exposeAction')
+            ->method('GET|POST')
+            ->bind('ps_admin_expose')
+        ;
+
+        $controllers->match('/uploader', 'controller.ps.admin:uploaderAction')
+            ->method('GET|POST')
+            ->bind('ps_admin_uploader')
+        ;
+
+        $controllers->match('/notify', 'controller.ps.admin:notifyAction')
+            ->method('GET|POST')
+            ->bind('ps_admin_notify')
+        ;
+
+        $controllers->match('/report', 'controller.ps.admin:reportAction')
+            ->method('GET|POST')
+            ->bind('ps_admin_report')
+        ;
+
         return $controllers;
     }
 

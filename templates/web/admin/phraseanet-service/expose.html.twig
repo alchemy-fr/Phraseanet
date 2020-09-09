@@ -1,126 +1,128 @@
-<h2>{{ 'admin:phrasea-service-setting:tab:expose:: Expose setting' | trans }}</h2>
-<div id="expose-block-modele" class="block_modele hidden">
-    <div class="expose-block ">
-        <form method="post" action="">
-            <div class="expose-delete-btn">
-               <p> <input type="button" class="btn btn-primary btn-red delete-expose"
-                          value="{{ 'admin:phrasea-service-setting:tab:expose:: Delete' | trans }}"></p>
-            </div>
-            <div class="expose-config-block">
-                <div class="alert alert-info">
-                    <input
-                            type="checkbox" class="auth-connection" name="activate-expose" value="1"
-                            checked="checked"><label
-                            for="activate-expose">{{ 'admin:phrasea-service-setting:tab:expose:: Activate this expose' | trans }}</label>
-                </div>
-                <div class="alert alert-info">
-                    <input
-                            type="checkbox" class="auth-connection" name="auth-connection" value="1"
-                            checked="checked"><label
-                            for="auth-connection">{{ 'admin:phrasea-service-setting:tab:expose:: Connection Kind' | trans }}</label>
-                </div>
-            </div>
-            <div class="control-group">
-                <div><p><span>{{ 'admin:phrasea-service-setting:tab:expose:: Name' | trans }}</span><input
-                                type="text" class="expose-name" value="Expose for external usage"></p>
-                </div>
-            </div>
-            <div class="control-group">
-                <div><label for="auth_connexion"
-                            class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Expose Front base uri' | trans }}</label><input
-                            type="text" name="expose_plugin_configuration[exposeFrontUri]" required="required"
-                            class="input-xxlarge"></div>
+{% macro widget_prototype(form) %}
+    <div class="control-group well well-small action-block expose-block">
+        <div class="expose-delete-btn">
+            <p> <input type="button" class="btn btn-primary btn-red delete-expose"
+                       value="{{ 'admin:phrasea-service-setting:tab:expose:: Delete' | trans }}"></p>
+        </div>
+
+        <div class="expose-config-block">
+            <div class="control-group alert alert-info">
+                {{ form_widget(form.activate_expose) }}
+                {{ form_label(form.activate_expose) }}
             </div>
 
-            <div class="control-group">
-                <div><label for="expose_plugin_configuration_exposeBaseUri"
-                            class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Base Uri Expose api' | trans }}</label><input
-                            type="text" name="expose_plugin_configuration[exposeBaseUri]" required="required"
-                            class="input-xxlarge"></div>
+            <div class="control-group alert alert-info">
+                {{ form_widget(form.auth_connection_kind) }}
+                {{ form_label(form.auth_connection_kind) }}
             </div>
+        </div>
 
-            <div class="control-group auth-connection-field">
-                <div><label for="expose_plugin_configuration_clientSecret"
-                            class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Client secret' | trans }}</label><input
-                            type="text" name="expose_plugin_configuration[clientSecret]" 
-                            class="input-xxlarge"></div>
-            </div>
+        <div class="control-group">
+            {{ form_row(form.expose_name) }}
+        </div>
 
-            <div class="control-group auth-connection-field">
-                <div><label for="expose_plugin_configuration_clientId"
-                            class="required">{{ 'admin:phrasea-service-setting:tab:expose:: Client ID' | trans }}</label><input
-                            type="text" name="expose_plugin_configuration[clientId]" 
-                            class="input-xxlarge"></div>
-            </div>
+        <div class="control-group">
+            {{ form_row(form.expose_front_uri) }}
+        </div>
 
-            <div class="control-group">
-                <div>
-                    <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</span><input
-                            type="button" class="btn btn-primary"
-                            value="{{ 'admin:phrasea-service-setting:tab:expose:: Add mapping' | trans }}"></div>
-            </div>
-            <div class="control-group">
-                <div>
-                    <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</span><input
-                            type="button" class="btn btn-primary"
-                            value="{{ 'admin:phrasea-service-setting:tab:expose:: Add user' | trans }}"></div>
-            </div>
+        <div class="control-group">
+            {{ form_row(form.expose_base_uri) }}
+        </div>
 
-            <div class="expose-save-btn">
-                <p><input type="button" class="btn btn-primary btn-grey test-connection"
-                          value="{{ 'admin:phrasea-service-setting:tab:expose:: connection test' | trans }}">
-                    <input type="submit" class="btn btn-primary btn-green save-expose"
-                           value="{{ 'admin:phrasea-service-setting:tab:expose:: Save' | trans }}">
-                </p>
-            </div>
-        </form>
+        <div class="control-group">
+            {{ form_row(form.client_secret) }}
+        </div>
+
+        <div class="control-group">
+            {{ form_row(form.client_id) }}
+        </div>
+
+        <div class="control-group auth-connection-field">
+            <div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add Mapping' | trans }}</span><input
+                        type="button" class="btn btn-primary"
+                        value="{{ 'admin:phrasea-service-setting:tab:expose:: Add mapping' | trans }}"></div>
+        </div>
+
+        <div class="control-group auth-connection-field">
+            <div>
+                <span class="pull-left-btn">{{ 'admin:phrasea-service-setting:tab:expose:: add user' | trans }}</span><input
+                        type="button" class="btn btn-primary"
+                        value="{{ 'admin:phrasea-service-setting:tab:expose:: Add user' | trans }}"></div>
+        </div>
+
+        <div class="expose-save-btn">
+            <p><input type="button" class="btn btn-primary btn-grey test-connection"
+                      value="{{ 'admin:phrasea-service-setting:tab:expose:: connection test' | trans }}">
+            </p>
+        </div>
+
     </div>
-</div>
+{% endmacro %}
+
+<h2>{{ 'admin:phrasea-service-setting:tab:expose:: Expose setting' | trans }}</h2>
+
+{{ form_start(form, {'action': path('ps_admin_expose')}) }}
 <div class="expose-header">
-    <input
-            type="checkbox" class="activate-expose" name="activate-expose"><label
-            for="activate-expose">{{ 'admin:phrasea-service-setting:tab:expose:: activate Phraseanet-service expose' | trans }}</label>
+    <div class="control-group">
+        {{ form_widget(form.activate_service_expose) }}
+        {{ form_label(form.activate_service_expose) }}
+    </div>
 
     <div class="control-group text-center">
-        <div><input id="add-new-expose" type="button" class="btn btn-primary "
+        <div><input id="add-new-expose" type="button" class="btn btn-primary " data-list="#expose-list"
                     value="admin:phrasea-service-setting:tab:expose:: Add a new expose interconnection">
         </div>
+        <div style="position: fixed;top: 320px;right: 120px;">
+            <input type="submit" class="btn btn-primary btn-green save-expose"
+                   value="{{ 'admin:phrasea-service-setting:tab:expose:: Save' | trans }}">
+        </div>
+
     </div>
 </div>
-<div class="expose-wrapper"></div>
 
-{% block javascript %}
-    <script type="text/javascript">
-        function exposeActivation() {
-            if ($('input.activate-expose').prop('checked')) {
-                $('#add-new-expose').removeAttr('disabled');
-            } else {
-                $('#add-new-expose').attr('disabled', 'disabled');
-            }
+<div id="expose-list"  data-prototype="{{ _self.widget_prototype(form.expose_connections.vars.prototype)|e('html_attr') }}" style="height:800px;overflow-y:auto;">
+    {% for expose_connection in form.expose_connections %}
+        {{ _self.widget_prototype(expose_connection) }}
+    {% endfor %}
+</div>
+
+{{ form_end(form) }}
+
+<script type="text/javascript">
+    function exposeActivation() {
+        if ($('input.activate-expose').prop('checked')) {
+            $('#add-new-expose').removeAttr('disabled');
+        } else {
+            $('#add-new-expose').attr('disabled', 'disabled');
         }
-        $(document).ready(function () {
+    }
+    $(document).ready(function () {
+        exposeActivation();
+
+        $('input.activate-expose').on('change', function () {
             exposeActivation();
-
-            $('input.activate-expose').on('change', function () {
-                exposeActivation();
-            });
-
-            $('#add-new-expose').on('click', function () {
-                $('.expose-wrapper').append($('#expose-block-modele').html());
-
-                $('.delete-expose').on('click', function () {
-                    $(this).closest('.expose-block').remove();
-                });
-                $('.auth-connection').on('click', function () {
-                    if ($(this).prop('checked')) {
-                        $(this).closest('.expose-block').find('.auth-connection-field').show();
-                    } else {
-                        $(this).closest('.expose-block').find('.auth-connection-field').hide();
-                    }
-
-                });
-            });
         });
 
-    </script>
-{% endblock %}
+        $('#add-new-expose').on('click', function () {
+            collectionHolder = $('#expose-list');
+            prototype = collectionHolder.attr('data-prototype');
+            var newExpose = prototype.replace(/__name__/g, collectionHolder.children('.control-group').length);
+            collectionHolder.append(newExpose);
+        });
+
+        $('#expose-list').on('click', '.delete-expose', function () {
+            $(this).closest('.expose-block').remove();
+        });
+
+        $('#expose-list').on('click', '.auth-connection', function () {
+            if ($(this).prop('checked')) {
+                $(this).closest('.expose-block').find('.auth-connection-field').show();
+            } else {
+                $(this).closest('.expose-block').find('.auth-connection-field').hide();
+            }
+
+        });
+    });
+
+</script>
