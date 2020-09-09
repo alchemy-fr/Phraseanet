@@ -184,11 +184,11 @@
                         {% include 'prod/tab_headers.html.twig' %}
 
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                            {% set expose_activate = 'true' %}
+                            {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose', 'activate_service_expose']) %}
                             {% if expose_activate == 'true' %}
                                 {% block tab_headers_wrapper %}
                                     <div id="baskets_wrapper" class="PNB">
-                                    <div id="expose_tabs" class="tabs">
+                                    <div id="expose_tabs" class="tabs" aria-expanded="false">
                                         <ul>
                                             <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
                                             <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>

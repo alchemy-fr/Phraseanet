@@ -158,6 +158,7 @@ class LanguageController
             'create new user'     => $translator->trans('prod:push: create new user'),
             'prod:videoeditor:subtitletab:message:: error'     => $translator->trans('prod:videoeditor:subtitletab:message:: error'),
             'prod:videoeditor:subtitletab:message:: success'     => $translator->trans('prod:videoeditor:subtitletab:message:: success'),
+            'Edit expose title'     => $translator->trans('prod:workzone:expose:modal:: title'),
         ]);
     }
 }
