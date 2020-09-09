@@ -488,7 +488,7 @@
                         <div class="expose_item_top"><h3>The publication Title</h3><span>Edit</span><span>delete</span></div>
                         <div class="expose_item_bottom">
                             <span class="item_numbers">999 items</span>
-                            <input type="button green_button update_expose" value="update">
+                            <input type="button" class="green_button edit_expose" value="update">
                             <div id='expose_3'  class="expose_drag_drop">
                                 Place to drop elt
                             </div>
@@ -496,8 +496,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="validations-block" class="validations-block SSTT">
+
 
                 <div class="expose_basket_item basketTips ui-accordion-header ui-state-default
                     ui-corner-all header">
@@ -510,7 +509,7 @@
                         <div class="expose_item_top"><h3>The publication Title</h3><span>Edit</span><span>delete</span></div>
                         <div class="expose_item_bottom">
                             <span class="item_numbers">0 items</span>
-                            <input type="button green_button update_expose" value="update">
+                            <input type="button" class=" green_button edit_expose" value="update">
                             <div id='expose_4'  class="expose_drag_drop">
                                 Place to drop elt
                             </div>
@@ -522,4 +521,7 @@
 
         </div>
     </div>
+    {% import 'prod/WorkZone/ExposeEdit.html.twig' as Expose %}
+    {{ Expose.display_edit(app) }}
+
 {% endmacro %}
