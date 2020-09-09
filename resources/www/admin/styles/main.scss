@@ -1033,7 +1033,9 @@ span.simplecolorpicker.picker {
 /***Expose tab*****/
 #expose {
   max-width: 992px;
-
+  .expose-header {
+    position: relative;
+  }
   .expose-block {
     border: 2px solid #ddd;
     padding: 15px;
@@ -1041,6 +1043,7 @@ span.simplecolorpicker.picker {
     margin-top: 10px;
     width: 100%;
     display: inline-block;
+    box-sizing: border-box;
   }
   .expose-delete-btn {
     float: right;
@@ -1069,7 +1072,9 @@ span.simplecolorpicker.picker {
       width: 225px;
     }
     &.save-expose {
-      float: right;
+      position: absolute;
+      top: 0;
+      right: 0;
     }
     &.test-connection {
       margin-right: 20px;
