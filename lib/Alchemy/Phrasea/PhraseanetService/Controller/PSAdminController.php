@@ -21,14 +21,14 @@ class PSAdminController extends Controller
 
     public function exposeAction(PhraseaApplication $app, Request $request)
     {
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose'], null);
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service'], null);
 
         $form = $app->form(new PSExposeConfigurationType(), $exposeConfiguration);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $app['conf']->set(['phraseanet-service', 'expose'], $form->getData());
+            $app['conf']->set(['phraseanet-service', 'expose-service'], $form->getData());
 
             return $app->redirectPath('ps_admin');
         }

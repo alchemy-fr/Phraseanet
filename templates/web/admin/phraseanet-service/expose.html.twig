@@ -12,8 +12,7 @@
             </div>
 
             <div class="control-group alert alert-info">
-                {{ form_widget(form.auth_connection_kind) }}
-                {{ form_label(form.auth_connection_kind) }}
+                {{ form_row(form.connection_kind) }}
             </div>
         </div>
 
@@ -65,8 +64,8 @@
 {{ form_start(form, {'action': path('ps_admin_expose')}) }}
 <div class="expose-header">
     <div class="control-group">
-        {{ form_widget(form.activate_service_expose) }}
-        {{ form_label(form.activate_service_expose) }}
+        {{ form_widget(form.activated) }}
+        {{ form_label(form.activated) }}
     </div>
 
     <div class="control-group text-center">
@@ -81,8 +80,8 @@
     </div>
 </div>
 
-<div id="expose-list"  data-prototype="{{ _self.widget_prototype(form.expose_connections.vars.prototype)|e('html_attr') }}" style="height:800px;overflow-y:auto;">
-    {% for expose_connection in form.expose_connections %}
+<div id="expose-list"  data-prototype="{{ _self.widget_prototype(form.exposes.vars.prototype)|e('html_attr') }}" style="height:800px;overflow-y:auto;">
+    {% for expose_connection in form.exposes %}
         {{ _self.widget_prototype(expose_connection) }}
     {% endfor %}
 </div>
@@ -115,14 +114,14 @@
             $(this).closest('.expose-block').remove();
         });
 
-        $('#expose-list').on('click', '.auth-connection', function () {
-            if ($(this).prop('checked')) {
-                $(this).closest('.expose-block').find('.auth-connection-field').show();
-            } else {
-                $(this).closest('.expose-block').find('.auth-connection-field').hide();
-            }
-
-        });
+        // $('#expose-list').on('click', '.auth-connection', function () {
+        //     if ($(this).prop('checked')) {
+        //         $(this).closest('.expose-block').find('.auth-connection-field').show();
+        //     } else {
+        //         $(this).closest('.expose-block').find('.auth-connection-field').hide();
+        //     }
+        //
+        // });
     });
 
 </script>
