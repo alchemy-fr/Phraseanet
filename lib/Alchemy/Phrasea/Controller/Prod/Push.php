@@ -95,6 +95,8 @@ class Push implements ControllerProviderInterface
         };
     }
 
+
+
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
@@ -147,6 +149,12 @@ class Push implements ControllerProviderInterface
             return $app['twig']->render('prod/actions/Push.html.twig', $params);
         });
 
+
+        /** ----------------------------------------------------------------------------------
+         * a simple push is made by the current user to many "receivers" (=participants)
+         *
+         * this is the same code as "validation" request, except here we don't create a validation session
+         */
         $controllers->post('/send/', function (Application $app) {
             $request = $app['request'];
 
@@ -217,6 +225,15 @@ class Push implements ControllerProviderInterface
                         'ssel_id' => $Basket->getId(),
                     );
 
+                    // here we send an email to each participant
+                    //
+                    // if we don't request the user to auth (=type his login/pwd),
+                    //  we generate a !!!! 'view' !!!! token to be included as 'LOG' parameter in url
+                    //
+                    // compare with 4.x :
+                    // - the 'view' token is (here) created to give access to lightbox in "compare" mode, NOT "validation"
+                    // - the 'view' token has no expiration
+                    //
                     if (!$app['phraseanet.registry']->get('GV_enable_push_authentication') || !$request->get('force_authentication')) {
                         $arguments['LOG'] = $app['tokens']->getUrlToken(
                             \random::TYPE_VIEW,
@@ -226,6 +243,9 @@ class Push implements ControllerProviderInterface
                         );
                     }
 
+                    // generate the url to access the lightbox ("compare" gui), possibly with 'view' token
+                    // url = lightbox/compare/{{basket_id}}/?LOG={view_token}
+                    //
                     $url = $app->url('lightbox_compare', $arguments);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';
@@ -267,8 +287,13 @@ class Push implements ControllerProviderInterface
             return $app->json($ret);
         })->bind('prod_push_send');
 
-        /**
+
+
+        /** ----------------------------------------------------------------------------------
          * a validation request is made by the current user to many participants
+         *
+         * this is the same code as "send" request (=simple push), except here we create a validation session,
+         *   register participants and data...
          */
         $controllers->post('/validate/', function (Application $app) {
             $request = $app['request'];
@@ -278,12 +303,14 @@ class Push implements ControllerProviderInterface
                 'message' => _('Unable to send the documents')
             );
 
-            $app['EM']->beginTransaction();
+            /** @var \Doctrine\ORM\EntityManager $em */
+            $em = $app['EM'];
+            $em->beginTransaction();
 
             try {
                 $pusher = new RecordHelper\Push($app, $app['request']);
 
-                $repository = $app['EM']->getRepository('\Entities\Basket');
+                $repository = $em->getRepository('\Entities\Basket');
 
                 $validation_name = $request->request->get('name', sprintf(_('Validation from %s'), $app['authentication']->getUser()->get_display_name()));
                 $validation_description = $request->request->get('validation_description');
@@ -311,21 +338,21 @@ class Push implements ControllerProviderInterface
                     $Basket->setOwner($app['authentication']->getUser());
                     $Basket->setIsRead(false);
 
-                    $app['EM']->persist($Basket);
+                    $em->persist($Basket);
 
                     foreach ($pusher->get_elements() as $element) {
                         $BasketElement = new \Entities\BasketElement();
                         $BasketElement->setRecord($element);
                         $BasketElement->setBasket($Basket);
 
-                        $app['EM']->persist($BasketElement);
+                        $em->persist($BasketElement);
 
                         $Basket->addElement($BasketElement);
                     }
-                    $app['EM']->flush();
+                    $em->flush();
                 }
 
-                $app['EM']->refresh($Basket);
+                $em->refresh($Basket);
 
                 // if the basket is already under validation, we work on it
                 // else we create a validationSession
@@ -345,7 +372,7 @@ class Push implements ControllerProviderInterface
                     }
 
                     $Basket->setValidation($Validation);
-                    $app['EM']->persist($Validation);
+                    $em->persist($Validation);
                 }
                 else {
                     // go on with existing validationSession
@@ -402,7 +429,7 @@ class Push implements ControllerProviderInterface
                     $Participant->setCanAgree($participant['agree']);
                     $Participant->setCanSeeOthers($participant['see_others']);
 
-                    $app['EM']->persist($Participant);
+                    $em->persist($Participant);
 
                     // add 'validationData' for each participant/basket_element
                     //
@@ -427,8 +454,8 @@ class Push implements ControllerProviderInterface
                             );
                         }
 
-                        $app['EM']->merge($BasketElement);
-                        $app['EM']->persist($ValidationData);
+                        $em->merge($BasketElement);
+                        $em->persist($ValidationData);
 
                         $app['phraseanet.logger']($BasketElement->getRecord($app)->get_databox())
                             ->log($BasketElement->getRecord($app), \Session_Logger::EVENT_PUSH, $participant_user->get_id(), '');
@@ -436,9 +463,9 @@ class Push implements ControllerProviderInterface
                         $Participant->addData($ValidationData);
                     }
 
-                    $Participant = $app['EM']->merge($Participant);
+                    $Participant = $em->merge($Participant);
 
-                    $app['EM']->flush();
+                    $em->flush();
 
                     $arguments = array('ssel_id' => $Basket->getId());
 
@@ -448,6 +475,7 @@ class Push implements ControllerProviderInterface
                     //  we generate a !!!! 'validate' !!!! token to be included as 'LOG' parameter in url
                     //
                     // compare with 4.x :
+                    // - the 'validate' token is (here) created to INITIALY asking for validation, not to remind
                     // - the 'validate' token has NO expiration !
                     //
                     if (!$app['phraseanet.registry']->get('GV_enable_push_authentication') || !$request->get('force_authentication')) {
@@ -461,7 +489,8 @@ class Push implements ControllerProviderInterface
                         );
                     }
 
-                    // generate the url to access the lightbox (validation gui), possibly with token
+                    // generate the url to access the lightbox (validation gui), possibly with 'validate' token
+                    // url = lightbox/validate/{{basket_id}}/?LOG={validate_token}
                     //
                     $url = $app->url('lightbox_validation', $arguments);
 
@@ -483,10 +512,10 @@ class Push implements ControllerProviderInterface
                     $app['events-manager']->trigger('__PUSH_VALIDATION__', $params);
                 }
 
-                $Basket = $app['EM']->merge($Basket);
-                $Validation = $app['EM']->merge($Validation);
+                $Basket = $em->merge($Basket);
+                $Validation = $em->merge($Validation);
 
-                $app['EM']->flush();
+                $em->flush();
 
                 $message = sprintf(
                     _('%1$d records have been sent for validation to %2$d users')
@@ -499,14 +528,16 @@ class Push implements ControllerProviderInterface
                     'message' => $message
                 );
 
-                $app['EM']->commit();
+                $em->commit();
             } catch (ControllerException $e) {
                 $ret['message'] = $e->getMessage();
-                $app['EM']->rollback();
+                $em->rollback();
             }
 
             return $app->json($ret);
         })->bind('prod_push_validate');
+
+
 
         $controllers->get('/user/{usr_id}/', function (Application $app, $usr_id) use ($userFormatter) {
             $datas = null;
