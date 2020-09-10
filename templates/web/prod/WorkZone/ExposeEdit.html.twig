@@ -23,7 +23,10 @@
                     </div>
                     <div class="ui-widget">
                         <label>Enabled </label>
-                        <input id="enabled-field" type="checkbox" class="publication-field" name="enabled">
+                        <label class="switch">
+                            <input id="enabled-field" type="checkbox" class="publication-field" name="enabled">
+                            <span class="slider round"></span>
+                        </label>
                     </div>
                     <div class="ui-widget available-wrapper">
                         <label>Available (leave blank for permanet publication): </label>
@@ -45,7 +48,10 @@
                     </div>
                     <div class="ui-widget">
                         <label>Publicity listing </label>
-                        <input id="listing-field" type="checkbox" class="publication-field" name="listing">
+                        <label class="switch">
+                            <input id="listing-field" type="checkbox" class="publication-field" name="listing">
+                            <span class="slider round"></span>
+                        </label>
                     </div>
                     <div class="ui-widget profile-wrapper">
                         <label>Access rules </label>
@@ -70,40 +76,7 @@
                     </div>
 
                 </div>
-                <div class="right-publication inner-publication">
-                    <div class="ui-widget">
-                        <label>Layout: </label>
-                        <select id="publication_layout" name="layout" class="form-control publication-field">
-                            <option value="" selected="selected"></option>
-                            <option value="gallery">Gallery</option>
-                            <option value="mapbox">Mapbox</option>
-                            <option value="download">Download</option>
-                        </select>
-                    </div>
-                    <div class="ui-widget">
-                        <label>Enabled: </label>
-                        <select id="enabled_combobox" name="enabled" class="publication-field">
-                            <option value="" selected="selected"></option>
-                            <option value="true">true</option>
-                            <option value="false">false</option>
-                        </select>
-                    </div>
-                    <div class="ui-widget">
-                        <label>PubliclyListed: </label>
-                        <select id="publication_publiclyListed" name="publiclyListed" class="publication-field">
-                            <option value="" selected="selected"></option>
-                            <option value="true">true</option>
-                            <option value="false">false</option>
-                        </select>
-                    </div>
-                    <div class="ui-widget">
-                        <label>SecurityMethod: </label>
-                        <select id="publication_securityMethod" name="securityMethod" class="form-control">
-                            <option value="" selected="selected"></option>
-                            <option value="password">password</option>
-                            <option value="authentication">authentication</option>
-                        </select>
-                    </div>
+                <div class="right-publication inner-publication hide">
                     <div class="ui-widget publication_securityMethod_error hidden"
                          id="publication_securityMethod_error">
                         <p class="error form-error alert alert-error">Not implemented</p>
@@ -115,6 +88,8 @@
 
                 </div>
             </form>
+
+
         </div>
     </div>
     <script type="text/javascript">
