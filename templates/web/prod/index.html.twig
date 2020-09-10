@@ -184,7 +184,7 @@
                         {% include 'prod/tab_headers.html.twig' %}
 
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                            {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose', 'activate_service_expose']) %}
+                            {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
                             {% if expose_activate == 'true' %}
                                 {% block tab_headers_wrapper %}
                                     <div id="baskets_wrapper" class="PNB">

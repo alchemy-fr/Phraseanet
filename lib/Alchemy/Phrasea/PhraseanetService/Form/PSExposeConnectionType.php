@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\PhraseanetService\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -18,12 +19,15 @@ class PSExposeConnectionType extends AbstractType
                 'label'    => 'admin:phrasea-service-setting:tab:expose:: Activate this expose',
                 'required' => false
             ])
-            ->add('auth_connection_kind', CheckboxType::class, [
+            ->add('connection_kind', ChoiceType::class, [
                 'label'    => 'admin:phrasea-service-setting:tab:expose:: Connection Kind',
                 'required' => false,
-                'data'     => true,
                 'attr' => [
                     'class' => 'auth-connection'
+                ],
+                'choices' => [
+                    'auth'    => 'auth',
+                    'account' => 'account'
                 ]
             ])
             ->add('expose_name', TextType::class, [
