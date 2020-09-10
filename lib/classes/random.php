@@ -245,8 +245,9 @@ class random
      *      "type" and "usr_id" (indexed) ensure reduced subset so it's ok
      *
      * compare with 4.x :
-     * - there is NO "date" argument to search for a token that WILL expire in N days
-     *   so this code is probably NOT USED for validation-reminders
+     * - there is NO "date" argument to search for a token that will expire in N days
+     *   this code IS USED for validation-reminders, but date comparison is made on validation-session
+     *   THEN the token is search
      *
      * @param integer $userId
      * @param integer $basketId
