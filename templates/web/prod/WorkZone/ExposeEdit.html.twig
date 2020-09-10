@@ -53,37 +53,32 @@
                             <span class="slider round"></span>
                         </label>
                     </div>
-                    <div class="ui-widget profile-wrapper">
+                    <div class="ui-widget access-wrapper">
                         <label>Access rules </label>
                         <select id="access-field" name="access" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
                             <option value="">open access</option>
+                            <option value="password">password</option>
+                            <option value="users">users</option>
                         </select>
+                        <div class="ui-widget securityOptions_wrapper visibility-hidden">
+                            <label>Password: </label><input class="publication-field" type="text" name="password"
+                                                            id="publication_password"/>
+                        </div>
                     </div>
-                    <div class="ui-widget profile-wrapper">
+                    <div class="ui-widget">
                         <label>Layout </label>
                         <select id="layout-field" name="layout" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
                             <option value="">Select Layout</option>
                         </select>
                     </div>
-                    <div class="ui-widget profile-wrapper">
+                    <div class="ui-widget">
                         <label>Theme </label>
                         <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
                             <option value="">Select Theme</option>
                         </select>
-                    </div>
-
-                </div>
-                <div class="right-publication inner-publication hide">
-                    <div class="ui-widget publication_securityMethod_error hidden"
-                         id="publication_securityMethod_error">
-                        <p class="error form-error alert alert-error">Not implemented</p>
-                    </div>
-                    <div class="ui-widget securityOptions_wrapper visibility-hidden">
-                        <label>Password: </label><input class="publication-field" type="text" name="password"
-                                                        id="publication_password"/>
                     </div>
 
                 </div>
