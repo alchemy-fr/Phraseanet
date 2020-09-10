@@ -267,6 +267,9 @@ class Push implements ControllerProviderInterface
             return $app->json($ret);
         })->bind('prod_push_send');
 
+        /**
+         * a validation request is made by the current user to many participants
+         */
         $controllers->post('/validate/', function (Application $app) {
             $request = $app['request'];
 
@@ -295,9 +298,13 @@ class Push implements ControllerProviderInterface
                     throw new ControllerException(_('No elements to validate'));
                 }
 
+                // a validation must apply to a basket...
+                //
                 if ($pusher->is_basket()) {
                     $Basket = $pusher->get_original_basket();
-                } else {
+                }
+                else {
+                    // ...so if we got a list of elements (records), we create a basket for those
                     $Basket = new \Entities\Basket();
                     $Basket->setName($validation_name);
                     $Basket->setDescription($validation_description);
@@ -320,11 +327,16 @@ class Push implements ControllerProviderInterface
 
                 $app['EM']->refresh($Basket);
 
+                // if the basket is already under validation, we work on it
+                // else we create a validationSession
+                //
                 if (!$Basket->getValidation()) {
+                    // create the validationSession
                     $Validation = new \Entities\ValidationSession();
                     $Validation->setInitiator($app['authentication']->getUser());
                     $Validation->setBasket($Basket);
 
+                    // add an expiration date if a duration was specified
                     $duration = (int) $request->request->get('duration');
 
                     if ($duration > 0) {
@@ -334,10 +346,14 @@ class Push implements ControllerProviderInterface
 
                     $Basket->setValidation($Validation);
                     $app['EM']->persist($Validation);
-                } else {
+                }
+                else {
+                    // go on with existing validationSession
                     $Validation = $Basket->getValidation();
                 }
 
+                // we always add the author of the validation request (current user) to the participants
+                //
                 $found = false;
                 foreach ($participants as $key => $participant) {
                     if ($participant['usr_id'] == $app['authentication']->getUser()->get_id()) {
@@ -347,6 +363,7 @@ class Push implements ControllerProviderInterface
                 }
 
                 if (!$found) {
+                    // add the author
                     $participants[$app['authentication']->getUser()->get_id()] = array(
                         'see_others' => 1,
                         'usr_id'     => $app['authentication']->getUser()->get_id(),
@@ -355,7 +372,10 @@ class Push implements ControllerProviderInterface
                     );
                 }
 
+                // add participants to the validationSession
+                //
                 foreach ($participants as $key => $participant) {
+                    // sanity check
                     foreach (array('see_others', 'usr_id', 'agree', 'HD') as $mandatoryparam) {
                         if (!array_key_exists($mandatoryparam, $participant))
                             throw new ControllerException(sprintf(_('Missing mandatory parameter %s'), $mandatoryparam));
@@ -373,6 +393,7 @@ class Push implements ControllerProviderInterface
                     } catch (NotFoundHttpException $e) {
 
                     }
+                    // end of sanity check
 
                     $Participant = new \Entities\ValidationParticipant();
                     $Participant->setUser($participant_user);
@@ -383,6 +404,9 @@ class Push implements ControllerProviderInterface
 
                     $app['EM']->persist($Participant);
 
+                    // add 'validationData' for each participant/basket_element
+                    //
+                    /** @var \Entities\BasketElement $BasketElement */
                     foreach ($Basket->getElements() as $BasketElement) {
                         $ValidationData = new \Entities\ValidationData();
                         $ValidationData->setParticipant($Participant);
@@ -418,15 +442,27 @@ class Push implements ControllerProviderInterface
 
                     $arguments = array('ssel_id' => $Basket->getId());
 
+                    // here we send an email to each participant
+                    //
+                    // if we don't request the user to auth (=type his login/pwd),
+                    //  we generate a !!!! 'validate' !!!! token to be included as 'LOG' parameter in url
+                    //
+                    // compare with 4.x :
+                    // - the 'validate' token has NO expiration !
+                    //
                     if (!$app['phraseanet.registry']->get('GV_enable_push_authentication') || !$request->get('force_authentication')) {
-                        $arguments['LOG'] = $app['tokens']->getUrlToken(
+                        /** @var \random $random */
+                        $random = $app['tokens'];
+                        $arguments['LOG'] = $random->getUrlToken(
                             \random::TYPE_VALIDATE,
                             $participant_user->get_id(),
-                            null,
+                            null,                   // no expiration !
                             $Basket->getId()
                         );
                     }
 
+                    // generate the url to access the lightbox (validation gui), possibly with token
+                    //
                     $url = $app->url('lightbox_validation', $arguments);
 
                     $receipt = $request->get('recept') ? $app['authentication']->getUser()->get_email() : '';

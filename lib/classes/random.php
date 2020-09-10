@@ -43,6 +43,9 @@ class random
     }
 
     /**
+     * delete 'download' and 'email' expired tokens
+     *  also delete related zip files
+     *
      * @return Boolean
      */
     public function cleanTokens()
@@ -109,12 +112,13 @@ class random
     }
 
     /**
+     * create a token (random string 16c) for a user
      *
-     * @param string $type
-     * @param int $usr
-     * @param DateTime $end_date
-     * @param string $datas
-     * @return bool
+     * @param string $type          'download', 'view', 'validate' etc
+     * @param int $usr              usr_id
+     * @param DateTime $end_date    expiration datetime, or null for no-expiration
+     * @param string $datas         untyped data depending on token type (e.g. basket_id for 'validate")
+     * @return string               the token
      * @throws Exception
      * @throws Exception_InvalidArgument
      */
@@ -142,6 +146,9 @@ class random
 
         $n = 1;
 
+        // keep each token unique since a token in url must allow to find unique data
+        // method : loop while the token already exists ?!? no transaction ?!?
+        //  unique-key + insert-while-duplicated should be easier / safer
         $sql = 'SELECT id FROM tokens WHERE value = :test ';
         $stmt = $conn->prepare($sql);
         while ($n < 100) {
@@ -233,7 +240,13 @@ class random
     }
 
     /**
-     * Get the validation token for one user and one validation basket
+     * Get the non-expired validation token for one user and one validation basket
+     * nb : possibly bad perf since "datas" (blob) is searched with no index.
+     *      "type" and "usr_id" (indexed) ensure reduced subset so it's ok
+     *
+     * compare with 4.x :
+     * - there is NO "date" argument to search for a token that WILL expire in N days
+     *   so this code is probably NOT USED for validation-reminders
      *
      * @param integer $userId
      * @param integer $basketId
