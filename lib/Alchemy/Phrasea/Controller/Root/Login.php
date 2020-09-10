@@ -725,11 +725,30 @@ class Login implements ControllerProviderInterface
     // move this in an event
     public function postAuthProcess(PhraseaApplication $app, \User_Adapter $user)
     {
+        // ------------------------------------------------------
+        // here we send validation reminds
+        // we remind participants who :
+        // - have not yet validated a session
+        // - and where the session expiration date is in 2 days (setting)
+        // - and who have not already been reminded
+        //
+        // compare with 4.x :
+        // - almost the same code :
+        //   - find all participants to all sessions
+        //   - send link with original 'validate' token
+        // except here (3.8), the 'validate' token has no expiration
+        //
+        // there is probably a bug :
+        // since a validation request can be initiated WITHOUT a 'validate' token (to force the user to auth)
+        // the token will not be found, so the user will never be reminded.
+        //  see Push.php ... post('/validate/')
+        //
         $date = new \DateTime('+' . (int) $app['phraseanet.registry']->get('GV_validation_reminder') . ' days');
 
-        foreach ($app['EM']
-            ->getRepository('Entities\ValidationParticipant')
-            ->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
+        /** @var \Repositories\ValidationParticipantRepository $repo */
+        $repo = $app['EM']->getRepository('Entities\ValidationParticipant');
+
+        foreach ($repo->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
 
             /* @var $participant \Entities\ValidationParticipant */
 
@@ -738,8 +757,11 @@ class Login implements ControllerProviderInterface
             $basketId = $validationSession->getBasket()->getId();
 
             try {
-                $token = $app['tokens']->getValidationToken($participantId, $basketId);
-            } catch (NotFoundHttpException $e) {
+                /** @var \random $random */
+                $random = $app['tokens'];
+                $token = $random->getValidationToken($participantId, $basketId);
+            }
+            catch (NotFoundHttpException $e) {
                 continue;
             }
 
@@ -756,6 +778,9 @@ class Login implements ControllerProviderInterface
         }
 
         $app['EM']->flush();
+
+        // end of validation reminds
+        // -----------------------------------------------------------
 
         $session = $app['authentication']->openAccount($user);
 
