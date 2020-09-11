@@ -6,6 +6,7 @@ use Alchemy\EmbedProvider\EmbedServiceProvider;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\ControllerProvider as Providers;
 use Alchemy\Phrasea\PhraseanetService\Provider\PSAdminServiceProvider;
+use Alchemy\Phrasea\PhraseanetService\Provider\PSExposeServiceProvider;
 use Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider;
 use Alchemy\Phrasea\WorkerManager\Provider\ControllerServiceProvider as WorkerManagerProvider;
 use Assert\Assertion;
@@ -47,6 +48,7 @@ class RouteLoader
         '/prod/bridge/'                => Providers\Prod\Bridge::class,
         '/prod/download'               => Providers\Prod\Download::class,
         '/prod/export/'                => Providers\Prod\Export::class,
+        '/prod/expose/'                => PSExposeServiceProvider::class,
         '/prod/feeds'                  => Providers\Prod\Feed::class,
         '/prod/language'               => Providers\Prod\Language::class,
         '/prod/lazaret/'               => Providers\Prod\Lazaret::class,
