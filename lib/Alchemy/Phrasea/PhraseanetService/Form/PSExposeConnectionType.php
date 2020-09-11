@@ -21,13 +21,13 @@ class PSExposeConnectionType extends AbstractType
             ])
             ->add('connection_kind', ChoiceType::class, [
                 'label'    => 'admin:phrasea-service-setting:tab:expose:: Connection Kind',
-                'required' => false,
+                'required' => true,
                 'attr' => [
                     'class' => 'auth-connection'
                 ],
                 'choices' => [
-                    'auth'    => 'auth',
-                    'account' => 'account'
+                    'client_credentials'    => 'client_credentials',
+                    'authorization_code'    => 'authorization_code'
                 ]
             ])
             ->add('expose_name', TextType::class, [
