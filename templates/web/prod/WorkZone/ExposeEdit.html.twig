@@ -10,7 +10,9 @@
                     </div>
                     <div class="ui-widget">
                         <label>Slug: </label>
-                        <input type="text" value="" name="slug" class="publication-field"/>
+                        <input type="text" value="" name="slug" class="publication-field"/><input type="button"
+                                                                                                  class="blue_button edit_expose"
+                                                                                                  value="check slug availability">
                     </div>
                     <div class="ui-widget">
                         <label>Parent publication </label>
@@ -20,6 +22,13 @@
                                 <option value="">Select a parent publication</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="ui-widget profile-wrapper">
+                        <label>Profile </label>
+                        <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
+                                class="publication-field">
+                            <option value="">Select Parent publication</option>
+                        </select>
                     </div>
                     <div class="ui-widget">
                         <label>Enabled </label>
@@ -39,13 +48,6 @@
                             <input type="text" value="" name="to" class="use-datepicker publication-field"/>
                         </div>
                     </div>
-                    <div class="ui-widget profile-wrapper">
-                        <label>Profile </label>
-                        <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">Select Parent publication</option>
-                        </select>
-                    </div>
                     <div class="ui-widget">
                         <label>Publicity listing </label>
                         <label class="switch">
@@ -61,7 +63,7 @@
                             <option value="password">password</option>
                             <option value="users">users</option>
                         </select>
-                        <div class="ui-widget securityOptions_wrapper visibility-hidden">
+                        <div class="ui-widget securityOptions_wrapper hidden">
                             <label>Password: </label><input class="publication-field" type="text" name="password"
                                                             id="publication_password"/>
                         </div>
@@ -81,6 +83,20 @@
                         </select>
                     </div>
 
+                </div>
+                <div class="submit-block">
+                    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                        <div class="ui-dialog-buttonset">
+                            <button type="button"
+                                    class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                    role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
+                            </button>
+                            <button type="button"
+                                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                    role="button" aria-disabled="false"><span class="ui-button-text">Validate</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </form>
 
