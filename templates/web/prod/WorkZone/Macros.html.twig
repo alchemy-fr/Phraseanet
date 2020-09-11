@@ -468,10 +468,13 @@
 {% macro make_expose_bloc(app, WorkZone) %}
     <div id="expose_workzone" class="expose_workzone">
         <div id="expose_sel" class="custom_select_dark" style="display: inline-block;">
+            {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
+
             <select name="expose_list" class="expose_list">
                 <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
-                <option value="">Expose 1</option>
-                <option value="">Expose 2</option>
+                {% for key in expose_list|keys %}
+                    <option value="{{ key }}">{{ key }}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="insidebloc expose_insidebloc">
