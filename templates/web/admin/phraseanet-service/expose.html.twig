@@ -1,5 +1,10 @@
 {% macro widget_prototype(form) %}
+
+
     <div class="control-group well well-small action-block expose-block">
+        <div class="setting-block"><input id="toggle-setting" type="button" class="btn btn-primary toggle-setting"
+                  value="{{ 'admin:phrasea-service-setting:tab:expose:: setting' | trans }}">
+        </div>
         <div class="expose-delete-btn">
             <p> <input type="button" class="btn btn-primary btn-red delete-expose"
                        value="{{ 'admin:phrasea-service-setting:tab:expose:: Delete' | trans }}"></p>
@@ -72,7 +77,7 @@
         <div><input id="add-new-expose" type="button" class="btn btn-primary " data-list="#expose-list"
                     value="admin:phrasea-service-setting:tab:expose:: Add a new expose interconnection">
         </div>
-        <div style="position: fixed;top: 320px;right: 120px;">
+        <div>
             <input type="submit" class="btn btn-primary btn-green save-expose"
                    value="{{ 'admin:phrasea-service-setting:tab:expose:: Save' | trans }}">
         </div>
@@ -114,14 +119,10 @@
             $(this).closest('.expose-block').remove();
         });
 
-        // $('#expose-list').on('click', '.auth-connection', function () {
-        //     if ($(this).prop('checked')) {
-        //         $(this).closest('.expose-block').find('.auth-connection-field').show();
-        //     } else {
-        //         $(this).closest('.expose-block').find('.auth-connection-field').hide();
-        //     }
-        //
-        // });
+         $(document).on('click','.toggle-setting', function () {
+            $(this).toggleClass('open');
+            $(this).closest('.expose-block').toggleClass('open');
+         });
     });
 
 </script>
