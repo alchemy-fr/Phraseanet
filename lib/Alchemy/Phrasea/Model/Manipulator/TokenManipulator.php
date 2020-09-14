@@ -18,7 +18,9 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use InvalidArgumentException;
 use RandomLib\Generator;
+use RuntimeException;
 
 class TokenManipulator implements ManipulatorInterface
 {
@@ -69,7 +71,7 @@ class TokenManipulator implements ManipulatorInterface
         $n = 0;
         do {
             if ($n++ > 1024) {
-                throw new \RuntimeException('Unable to create a token.');
+                throw new RuntimeException('Unable to create a token.');
             }
             $value = $this->random->generateString(32, self::LETTERS_AND_NUMBERS);
             $found = null !== $this->om->getRepository('Phraseanet:Token')->find($value);
@@ -99,7 +101,7 @@ class TokenManipulator implements ManipulatorInterface
     public function createBasketValidationToken(Basket $basket, User $user, DateTime $expiration)
     {
         if (null === $basket->getValidation()) {
-            throw new \InvalidArgumentException('A validation token requires a validation basket.');
+            throw new InvalidArgumentException('A validation token requires a validation basket.');
         }
 
         return $this->create($user, self::TYPE_VALIDATE, $expiration, $basket->getId());
@@ -133,7 +135,6 @@ class TokenManipulator implements ManipulatorInterface
      * @param User[] $users
      * @param FeedEntry $entry
      * @return Token[]
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function createFeedEntryTokens($users, FeedEntry $entry)
     {
@@ -203,6 +204,7 @@ class TokenManipulator implements ManipulatorInterface
 
     /**
      * @param User $user
+     * @param string $email
      *
      * @return Token
      */
