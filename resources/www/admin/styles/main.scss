@@ -1044,38 +1044,29 @@ span.simplecolorpicker.picker {
     width: 100%;
     display: inline-block;
     box-sizing: border-box;
-    height: 248px;
+    /*height: 248px;
     max-height: 248px;
     transition: max-height .5s;
-    overflow: hidden;
+    overflow: hidden;*/
     position: relative;
-    &.open {
-      height: auto;
-      max-height: 100vh;
-    }
+    /* &.open {
+       height: auto;
+       max-height: 100vh;
+     }*/
   }
   .setting-block {
     position: absolute;
     bottom: 12px;
     right: 15px;
   }
+  .expose-title {
+    &.ui-accordion-header-active {
+      background: #3b99fc;
+      color: #fff;
+    }
+  }
   .toggle-setting {
     position: relative;
-  /*  &:before {
-      content: "\F054";
-      font-family: fontawesome;
-      font-size: 23px;
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      transition: all .3s;
-    }
-    &.open {
-      &:before {
-        transform: translateY(-50%) rotate(90deg);
-      }
-    }*/
   }
   .expose-delete-btn {
     float: right;

@@ -1,13 +1,10 @@
 {% macro widget_prototype(form) %}
-
-
+    <h3 class="expose-title">{{ 'admin:phrasea-service-setting:tab:expose:: New  expose interconnection name' | trans }}</h3>
     <div class="control-group well well-small action-block expose-block">
-        <div class="setting-block"><input id="toggle-setting" type="button" class="btn btn-primary toggle-setting"
-                  value="{{ 'admin:phrasea-service-setting:tab:expose:: more setting' | trans }}">
-        </div>
         <div class="expose-delete-btn">
-            <p> <input type="button" class="btn btn-primary btn-red delete-expose"
-                       value="{{ 'admin:phrasea-service-setting:tab:expose:: Delete' | trans }}"></p>
+            <p> <button type="button" class="btn btn-danger delete-expose pull-right"><i class="fa fa-trash-o icon-white" aria-hidden="true"></i>{{ 'admin:phrasea-service-setting:tab:expose:: Delete' | trans }}
+                </button>
+            </p>
         </div>
 
         <div class="expose-config-block">
@@ -113,16 +110,30 @@
             prototype = collectionHolder.attr('data-prototype');
             var newExpose = prototype.replace(/__name__/g, collectionHolder.children('.control-group').length);
             collectionHolder.append(newExpose);
+            $("#expose-list" ).accordion('refresh');
+            $( "h3:last" ).trigger( "click" );
         });
 
         $('#expose-list').on('click', '.delete-expose', function () {
+            $(this).closest('.expose-block').prev('h3').remove();
+            $("#expose-list" ).accordion('refresh');
             $(this).closest('.expose-block').remove();
         });
 
-         $(document).on('click','.toggle-setting', function () {
-            $(this).toggleClass('open');
-            $(this).closest('.expose-block').toggleClass('open');
-         });
+        $( function() {
+            $( ".expose-block" ).each(function( index ) {
+                $(this).prev('.expose-title').html( $(this).find('.expose-name').val() );
+            });
+            $("#expose-list" ).accordion(
+                { event: "click",
+                    active: false,
+                    collapsible: true
+                }
+            );
+        } );
+
+
+
     });
 
 </script>
