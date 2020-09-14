@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
+use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use RandomLib\Generator;
 
@@ -56,12 +57,12 @@ class TokenManipulator implements ManipulatorInterface
     /**
      * @param User|null      $user
      * @param string         $type
-     * @param \DateTime|null $expiration
+     * @param DateTime|null  $expiration
      * @param mixed|null     $data
      *
      * @return Token
      */
-    public function create(User $user = null, $type, \DateTime $expiration = null, $data = null)
+    public function create(User $user = null, $type, DateTime $expiration = null, $data = null)
     {
         $this->removeExpiredTokens();
 
@@ -90,17 +91,18 @@ class TokenManipulator implements ManipulatorInterface
 
     /**
      * @param Basket $basket
-     * @param User   $user
+     * @param User $user
+     * @param DateTime|null $expiration
      *
      * @return Token
      */
-    public function createBasketValidationToken(Basket $basket, User $user = null)
+    public function createBasketValidationToken(Basket $basket, User $user, DateTime $expiration)
     {
         if (null === $basket->getValidation()) {
             throw new \InvalidArgumentException('A validation token requires a validation basket.');
         }
 
-        return $this->create($user ?: $basket->getValidation()->getInitiator(), self::TYPE_VALIDATE, new \DateTime('+10 days'), $basket->getId());
+        return $this->create($user, self::TYPE_VALIDATE, $expiration, $basket->getId());
     }
 
     /**
@@ -165,7 +167,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createDownloadToken(User $user, $data)
     {
-        return $this->create($user, self::TYPE_DOWNLOAD, new \DateTime('+3 hours'), $data);
+        return $this->create($user, self::TYPE_DOWNLOAD, new DateTime('+3 hours'), $data);
     }
 
     /**
@@ -175,7 +177,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createEmailExportToken($data)
     {
-        return $this->create(null, self::TYPE_EMAIL, new \DateTime('+1 day'), $data);
+        return $this->create(null, self::TYPE_EMAIL, new DateTime('+1 day'), $data);
     }
 
     /**
@@ -186,7 +188,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createResetEmailToken(User $user, $email)
     {
-        return $this->create($user, self::TYPE_EMAIL_RESET, new \DateTime('+1 day'), $email);
+        return $this->create($user, self::TYPE_EMAIL_RESET, new DateTime('+1 day'), $email);
     }
 
     /**
@@ -196,7 +198,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createAccountUnlockToken(User $user)
     {
-        return $this->create($user, self::TYPE_ACCOUNT_UNLOCK, new \DateTime('+3 days'));
+        return $this->create($user, self::TYPE_ACCOUNT_UNLOCK, new DateTime('+3 days'));
     }
 
     /**
@@ -206,7 +208,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createAccountDeleteToken(User $user, $email)
     {
-        return $this->create($user, self::TYPE_ACCOUNT_DELETE, new \DateTime('+1 hour'), $email);
+        return $this->create($user, self::TYPE_ACCOUNT_DELETE, new DateTime('+1 hour'), $email);
     }
 
     /**
@@ -216,7 +218,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createResetPasswordToken(User $user)
     {
-        return $this->create($user, self::TYPE_PASSWORD, new \DateTime('+1 day'));
+        return $this->create($user, self::TYPE_PASSWORD, new DateTime('+1 day'));
     }
 
     /**
