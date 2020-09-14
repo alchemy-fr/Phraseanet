@@ -62,7 +62,7 @@ class TokenManipulator implements ManipulatorInterface
      *
      * @return Token
      */
-    public function create(User $user = null, $type, DateTime $expiration = null, $data = null)
+    public function create(User $user, $type, $expiration = null, $data = null)
     {
         $this->removeExpiredTokens();
 
