@@ -408,10 +408,17 @@ class PushController extends Controller
                 // if we don't request the user to auth (=type his login/pwd),
                 //  we generate a !!!! 'validate' !!!! token to be included as 'LOG' parameter in url
                 //
-                // - the 'validate' token has same expiration as validation-session
+                // - the 'validate' token has same expiration as validation-session (except for initiator)
                 //
                 if (!$this->getConf()->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication') ) {
-                    $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, $expireDate)->getValue();
+                    if($participantUser->getId() === $this->getAuthenticatedUser()->getId()) {
+                        // the initiator of the validation gets a no-expire token (so he can see result after validation expiration)
+                        $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, null)->getValue();
+                    }
+                    else {
+                        // a "normal" participant/user gets a expiring token
+                        $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, $expireDate)->getValue();
+                    }
                 }
 
                 $url = $this->app->url('lightbox_validation', $arguments);
@@ -731,7 +738,14 @@ class PushController extends Controller
             foreach($validation->getParticipants() as $participant) {
                 try {
                     if(!is_null($token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser()))) {
-                        $token->setExpiration($expirationDate);
+                        if($participant->getUser()->getId() === $validation->getInitiator()->getId()) {
+                            // the initiator keeps a no-expiration token
+                            $token->setExpiration(null);    // shoud already be null, but who knows...
+                        }
+                        else {
+                            // the "normal" user token is fixed
+                            $token->setExpiration($expirationDate);
+                        }
                     }
                 }
                 catch (Exception $e) {
