@@ -64,7 +64,7 @@ class TokenManipulator implements ManipulatorInterface
      *
      * @return Token
      */
-    public function create(User $user, $type, $expiration = null, $data = null)
+    public function create($user, $type, $expiration = null, $data = null)
     {
         $this->removeExpiredTokens();
 
@@ -98,7 +98,7 @@ class TokenManipulator implements ManipulatorInterface
      *
      * @return Token
      */
-    public function createBasketValidationToken(Basket $basket, User $user, DateTime $expiration)
+    public function createBasketValidationToken(Basket $basket, User $user, $expiration)
     {
         if (null === $basket->getValidation()) {
             throw new InvalidArgumentException('A validation token requires a validation basket.');
