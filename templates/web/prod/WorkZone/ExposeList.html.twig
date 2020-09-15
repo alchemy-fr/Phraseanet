@@ -1,0 +1,30 @@
+{% for publication in publications %}
+    <div class="expose_basket_item basketTips ui-accordion-header ui-state-default
+                    ui-corner-all header">
+        <div class="top-block">
+            <a class="workzone-menu-title">
+                    <span>
+                                                       {{ publication.title }}
+                    </span>
+            </a><div class="expose_item_title">Image to do<p class="exp_record_name">Record name<span class="exp_record_date"></span></p></div>
+
+        </div>
+        <input type="button" class="green_button edit_expose" value="edit">
+        <div class="expose_item_deployed">
+            <div class="expose_item_top"><h3>{{ publication.title }}</h3><span>Edit</span><span>delete</span></div>
+            <div class="expose_item_bottom">
+                <span class="item_numbers">{{ publication.assets|length }}</span>
+                <input type="button" class="green_button save_expose" value="save">
+                <div id='expose_3'  class="expose_drag_drop">
+                    {% for asset in publication.assets %}
+                        <div class="diapo">
+                            <img src="{{ asset.asset.url }}">
+                        </div>
+                    {% endfor %}
+                    Place to drop elt
+                </div>
+                <input type="button" class="load_more_expose" value="load More">
+            </div>
+        </div>
+    </div>
+{% endfor %}

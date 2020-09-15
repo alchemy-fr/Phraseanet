@@ -57,7 +57,7 @@
                 contentsDownloaded[e.target.hash] = true;
             }, function(error) {
                 console.log(error);
-                targetDiv.empty().html('<i class="icon-fire">{{ 'admin:worker Retrieve configuration error'|trans }}</i>');
+                targetDiv.empty().html('<i class="icon-fire">{{ 'admin:expose Retrieve configuration error'|trans }}</i>');
             });
         }
     });
@@ -77,7 +77,7 @@
             }
         }, function(error) {
             console.log(error);
-            $('#expose').empty().html('<i class="icon-fire">{{ 'admin:worker Retrieve configuration error'|trans }}</i>');
+            $('#expose').empty().html('<i class="icon-fire">{{ 'admin:expose Retrieve configuration error'|trans }}</i>');
         });
     });
 

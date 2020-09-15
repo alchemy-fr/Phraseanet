@@ -22,6 +22,12 @@ class PSExposeController extends Controller
             $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $request->get('exposeName'));
         }
 
+        if ($exposeConfiguration == null ) {
+            return $this->render("prod/WorkZone/ExposeList.html.twig", [
+                'publications' => [],
+            ]);
+        }
+
         $response = $exposeClient->get('/publications', [
             'headers' => [
                 'Authorization' => 'Bearer '. $exposeConfiguration['token'],
@@ -29,15 +35,28 @@ class PSExposeController extends Controller
             ]
         ]);
 
-        $publications = [];
+        $publicationsID = [];
         if ($response->getStatusCode() == 200) {
             $body = json_decode($response->getBody()->getContents(),true);
-            $publications = $body['hydra:member'];
+            $publicationsID = array_column($body['hydra:member'], 'id');
         }
 
-        return $app->json([
+        $publications = [];
+        foreach ($publicationsID as $publicationID) {
+            $resPublication = $exposeClient->get('/publications/' . $publicationID , [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $exposeConfiguration['token'],
+                    'Content-Type'  => 'application/json'
+                ]
+            ]);
+
+            if ($response->getStatusCode() == 200) {
+                $publications[] = json_decode($resPublication->getBody()->getContents(),true);
+            }
+        }
+
+        return $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications' => $publications,
-            'expose_front_uri' => \p4string::addEndSlash($exposeConfiguration['expose_front_uri'])
         ]);
     }
 
@@ -229,14 +248,25 @@ class PSExposeController extends Controller
     private function generateAndSaveToken($config, $exposeName)
     {
         $oauthClient = new Client();
-        $tokenBody = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
-            'json' => [
-                'client_id'     => $config['client_id'],
-                'client_secret' => $config['client_secret'],
-                'grant_type'    => 'client_credentials',
-                'scope'         => 'publish'
-            ]
-        ])->getBody()->getContents();
+
+        try {
+            $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
+                'json' => [
+                    'client_id'     => $config['client_id'],
+                    'client_secret' => $config['client_secret'],
+                    'grant_type'    => 'client_credentials',
+                    'scope'         => 'publish'
+                ]
+            ]);
+        } catch(\Exception $e) {
+            return null;
+        }
+
+        if ($response->getStatusCode() !== 200) {
+            return null;
+        }
+
+        $tokenBody = $response->getBody()->getContents();
 
         $tokenBody = json_decode($tokenBody,true);
 
