@@ -597,6 +597,9 @@ class LoginController extends Controller
         $date = new DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
         $manager = $this->getEntityManager();
 
+        /*
+         * PHRAS-3214_validation-tokens-refacto : This code is moved to console command "SendValidationRemindersCommand.php"
+         *
         foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
@@ -625,6 +628,7 @@ class LoginController extends Controller
         }
 
         $manager->flush();
+        */
 
         $session = $this->getAuthenticator()->openAccount($user);
 

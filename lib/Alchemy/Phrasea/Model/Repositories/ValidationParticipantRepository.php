@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
 
@@ -21,10 +22,12 @@ class ValidationParticipantRepository extends EntityRepository
     /**
      * Retrieve all not reminded participants where the validation has not expired
      *
-     * @param $expireDate The expiration Date
+     * @param $expireDate DateTime          The expiration Date
+     * @param $today DateTime               fake "today" to allow to get past/future events
+     *                                      (used by SendValidationRemindersCommand.php to debug with --dry)
      * @return ValidationParticipant[]
      */
-    public function findNotConfirmedAndNotRemindedParticipantsByExpireDate(\DateTime $expireDate)
+    public function findNotConfirmedAndNotRemindedParticipantsByExpireDate(DateTime $expireDate, DateTime $today=null)
     {
         $dql = '
             SELECT p, s
@@ -33,10 +36,14 @@ class ValidationParticipantRepository extends EntityRepository
             JOIN s.basket b
             WHERE p.is_confirmed = 0
             AND p.reminded IS NULL
-            AND s.expires < :date AND s.expires > CURRENT_TIMESTAMP()';
+            AND s.expires < :date AND s.expires > ' . ($today===null ? 'CURRENT_TIMESTAMP()' : ':today');
 
-        return $this->_em->createQuery($dql)
-                ->setParameter('date', $expireDate, Type::DATETIME)
-                ->getResult();
+        $q = $this->_em->createQuery($dql)
+            ->setParameter('date', $expireDate, Type::DATETIME);
+        if($today !== null) {
+            $q->setParameter('today', $today, Type::DATETIME);
+        }
+
+        return $q->getResult();
     }
 }
