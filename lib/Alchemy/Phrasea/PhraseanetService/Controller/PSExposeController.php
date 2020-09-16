@@ -13,6 +13,12 @@ class PSExposeController extends Controller
 {
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
+        if ( $request->get('exposeName') == null) {
+            return $this->render("prod/WorkZone/ExposeList.html.twig", [
+                'publications' => [],
+            ]);
+        }
+
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 

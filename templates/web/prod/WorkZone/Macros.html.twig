@@ -495,7 +495,6 @@
                 url: `/prod/expose/list-publication/?exposeName=` + this.value,
                 success: function (data) {
                     $('.publication-list').empty().html(data);
-                    console.log(data);
                 }
             });
         });
