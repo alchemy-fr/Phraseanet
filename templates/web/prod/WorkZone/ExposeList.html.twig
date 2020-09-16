@@ -31,32 +31,4 @@
         </div>
     </div>
 {% endfor %}
-<script>
-    $('.expose_basket_item .top_block').on('click', function (event) {
-        $(this).parent().find('.expose_item_deployed').toggleClass('open');
-        $(this).toggleClass('open');
-    });
-    $('.edit_expose').on('click',function (event) {
-        editExposeOnBasket();
-    });
-    function editExposeOnBasket() {
-        $('#DIALOG-expose-edit').attr('title','Edit expose title')
-            .dialog({
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: true,
-                draggable: true,
-                width: 900,
-                height: 575,
-                modal: true,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                }
-            }).dialog('open');
-        $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
-        $('.close-expose-modal').on('click', function () {
-            $('#DIALOG-expose-edit').dialog('close');
-        });
-    }
-</script>
+
