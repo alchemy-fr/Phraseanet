@@ -193,8 +193,10 @@
                 <div id="EDIT_EDIT" class="PNB">
                     <div id="ZTextMonoValued">
                         <textarea id="idEditZTextArea" ></textarea>
-                        <input id="datetime-picker-field" type="text" data-field="datetime" readonly>
-                        <div id="idEditDateZone"></div>
+                        <input id="datetime-picker-field" type="text" data-field="datetime" >
+                        &nbsp;<span class="date-timepicker-error alert alert-error hide ok"> {{ 'prod:action:edit:datetimepicker error' | trans }}</span>
+                        <div id="idEditDateZone">
+                        </div>
                     </div>
                     <div id="ZTextMultiValued">
                         <form class="add-multivalued-field-action"
