@@ -13948,8 +13948,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="no">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Attention, une indexation de la base est déjà en cours, 
-Il est nécessaire d'attendre la fin de cette indexation pour en relancer une nouvelle.</target>
+        <target state="needs-translation">Attention, une indexation de la base est déjà en cours, Il est nécessaire d'attendre la fin de cette indexation pour en relancer une nouvelle.</target>
         <jms:reference-file line="1569">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
