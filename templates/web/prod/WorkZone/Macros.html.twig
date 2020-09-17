@@ -473,7 +473,9 @@
             <select id="expose_list" name="expose_list" class="expose_list">
                 <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
                 {% for key in expose_list|keys %}
-                    <option value="{{ key }}">{{ key }}</option>
+                    {% if expose_list[key].activate_expose %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>
