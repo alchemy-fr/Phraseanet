@@ -1,9 +1,20 @@
 {% macro add_expose(app) %}
     <div id='DIALOG-expose-add' style="display: none">
-
         <div class="expose-edit-wrapper" style="margin-top: 100px">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
             <form id="publication-data-form" >
                 <div class="edit-publication-block">
+                    {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
+
+                    <select id="expose_name" class="expose_name">
+                        <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
+                        {% for key in expose_list|keys %}
+                            <option value="{{ key }}">{{ key }}</option>
+                        {% endfor %}
+                    </select>
                     <div class="ui-widget">
                         <label>Name </label>
                         <input type="text" value="" name="title" class="publication-field"/>
@@ -323,7 +334,7 @@
                 url: "/prod/expose/create-publication/",
                 dataType: 'json',
                 data: {
-                    exposeName: "Expose to use for testing",
+                    exposeName: $('#expose_name').val(),
                     publicationData: $('#advancedSetting').val()
                 },
                 success: function (data) {
