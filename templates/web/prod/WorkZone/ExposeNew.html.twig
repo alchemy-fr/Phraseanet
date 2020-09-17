@@ -68,22 +68,24 @@
                             <span class="slider round"></span>
                         </label>
                     </div>
-                    <div class="ui-widget access-wrapper">
+                    <div class="ui-widget access-wrapper available-wrapper">
                         <label>Access rules </label>
+                        <div class="available-widget">
                         <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
                             <option value="">open access</option>
                             <option value="password">password</option>
                             <option value="authentication">users</option>
                         </select>
-                        <div class="ui-widget securityOptions_wrapper visibility-hidden"">
-                            <label>Password: </label><input class="publication-field" type="text" name="password"
+                        </div>
+                        <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
+                            <input class="publication-field" type="text" name="password" placeholder="Password"
                                                             id="publication_password"/>
                         </div>
-                    <div class="ui-widget publication_securityMethod_error hidden"
-                         id="publication_securityMethod_error">
-                        <p class="error form-error alert alert-error">Not implemented</p>
-                    </div>
+                        <div class="available-widget ui-widget publication_securityMethod_error hidden"
+                             id="publication_securityMethod_error">
+                            <p class="error form-error alert alert-error">Not implemented</p>
+                        </div>
                     </div>
                     <div class="ui-widget">
                         <label>Layout </label>
@@ -105,42 +107,36 @@
                         </select>
                     </div>
 
+            </form>
 
+            <form name="publication-json" id="publication-json" class="text-center">
+                <div id="advancedSettingBlock">
+                    <h3 class="toggleSetting">Advanced setting</h3>
+                    <div id="advancedSettingInner" class="hidden">
+                        <div>
+                                    <textarea name="advancedSetting" id="advancedSetting" cols="100"
+                                              rows="11"></textarea></div>
 
-                <div class="submit-block">
+                    </div>
+                </div>
+                <div class="publication-btn-container submit-blockr">
+                    <p class="text-center"><span id="pub-error" class="hidden alert alert-error"></span></p>
+                    <p class="text-center"><span id="pub-success" class="hidden alert alert-success"></span></p>
                     <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
                         <div class="ui-dialog-buttonset">
                             <button type="button"
                                     class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                     role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
                             </button>
-                            <button type="button"
-                                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                    role="button" aria-disabled="false"><span class="ui-button-text">Validate</span>
+                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="create-publication">
+                                Create publication {% if lst %} from {{ lst|split(';')|length }} selected {% endif %}
                             </button>
+
                         </div>
                     </div>
                 </div>
+
             </form>
-
-        <form name="publication-json" id="publication-json">
-            <div id="advancedSettingBlock">
-                <h3 class="toggleSetting">Advanced setting</h3>
-                <div id="advancedSettingInner" class="hidden">
-                    <div>
-                                <textarea name="advancedSetting" id="advancedSetting" cols="100"
-                                          rows="11"></textarea></div>
-
-                </div>
-            </div>
-            <div class="publication-btn-container">
-                <button type="submit" class="btn btn-success" id="create-publication">
-                    Create publication {% if lst %} from {{ lst|split(';')|length }} selected {% endif %}
-                </button>
-                <p><span id="pub-error" class="hidden alert alert-error"></span></p>
-                <p><span id="pub-success" class="hidden alert alert-success"></span></p>
-            </div>
-        </form>
 
 
         </div>
@@ -277,6 +273,13 @@
                 var dataValue = buildData();
                 dataValue["securityMethod"] = '';
                 var Svalue = $(this).val();
+
+                if (Svalue == 'password') {
+                    $(".securityOptions_wrapper").removeClass('visibility-hidden');
+
+                } else {
+                    $(".securityOptions_wrapper").addClass('visibility-hidden');
+                };
                 if (Svalue !== '') {
                     dataValue["securityMethod"] = Svalue;
 
@@ -290,12 +293,7 @@
                     $("#publication_password").val('');
                 };
                 removeSecurityField();
-                if (Svalue == 'password') {
-                    $(".securityOptions_wrapper").removeClass('visibility-hidden');
 
-                } else {
-                    $(".securityOptions_wrapper").addClass('visibility-hidden');
-                };
 
             });
 
@@ -359,6 +357,25 @@
                 $("#pub-error").removeClass("hidden").text(err.message);
             }
         });
+
+
+
+        //generate publication list
+         $('#expose_name').on('change', function () {
+            // $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+             $.ajax({
+                 type: "GET",
+                 url: `/prod/expose/list-publication/?format=json&exposeName=` + this.value,
+                 success: function (data) {
+                     $('#publication_parent').html('');
+                     for (i = 0; i < data.publications.length; i++) {
+                         console.log(data.publications[i].title);
+                         $('select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                     }
+
+                 }
+             });
+         });
     </script>
     <style>
         .visibility-hidden {
