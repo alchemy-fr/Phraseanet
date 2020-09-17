@@ -118,3 +118,46 @@ paths:
                     description: Record not found
                 default:
                     $ref: 'responses.yaml#/error_response'
+    '/stories/{sbas_id}/{record_id}/children':
+        get:
+            tags:
+                - story
+            summary: Returns uri of each record (child) contained in the story ; Optional pagination
+            description: Returns children of a story
+            operationId: getRecordById
+            parameters:
+                - name: sbas_id
+                  in: path
+                  description: ID of the databox
+                  required: true
+                  schema:
+                      $ref: schemas.yaml#/ID
+                - name: record_id
+                  in: path
+                  description: ID of the story record
+                  required: true
+                  schema:
+                      $ref: schemas.yaml#/ID
+                - name: page
+                  in: query
+                  description: page number (default 1)
+                  required: false
+                  schema:
+                      type: integer
+                - name: per_page
+                  in: query
+                  description: number of children (records uri) per page (default 10)
+                  required: false
+                  schema:
+                      type: integer
+            responses:
+                200:
+                    description: ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: schemas.yaml#/ApiResponse_RecordsUriArray
+                404:
+                    description: Story (record) not found
+                default:
+                    $ref: 'responses.yaml#/error_response'

@@ -169,4 +169,19 @@ Record:
                 - video
         uuid:
             type: string
+RecordUri:
+    type: string
+    example:
+        '/api/v3/records/1/48'
+RecordsUriArray:
+    type: array
+    items:
+        $ref: '#/RecordUri'
 
+ApiResponse_RecordsUriArray:
+    type: object
+    properties:
+        meta:
+            $ref: '#/ApiResponse_meta'
+        response:
+            $ref: '#/RecordsUriArray'
