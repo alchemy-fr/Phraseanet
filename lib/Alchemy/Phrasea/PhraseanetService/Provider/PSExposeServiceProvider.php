@@ -34,9 +34,21 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('POST')
             ->bind('ps_expose_create_publication');
 
+        $controllers->match('/update-publication/{publicationId}', 'controller.ps.expose:updatePublicationAction')
+            ->method('POST|PUT')
+            ->bind('ps_expose_update_publication');
+
         $controllers->match('/list-publication/', 'controller.ps.expose:listPublicationAction')
             ->method('GET')
             ->bind('ps_expose_list_publication');
+
+        $controllers->match('/delete-publication/{publicationId}', 'controller.ps.expose:deletePublicationAction')
+            ->method('POST|DELETE')
+            ->bind('ps_expose_delete_publication');
+
+        $controllers->match('/publication/add-assets', 'controller.ps.expose:addPublicationAssetsAction')
+            ->method('POST')
+            ->bind('ps_expose_publication_add_assets');
 
         return $controllers;
     }

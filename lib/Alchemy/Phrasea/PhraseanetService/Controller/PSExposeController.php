@@ -11,6 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PSExposeController extends Controller
 {
+    /**
+     *  Get list of publication
+     *  Use param "format=json" to retrieve a json
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return string|\Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
         if ( $request->get('exposeName') == null) {
@@ -61,23 +69,31 @@ class PSExposeController extends Controller
             }
         }
 
+        //
+        if ($request->get('format') == 'json') {
+            return $app->json([
+                'publications' => $publications
+            ]);
+        }
+
         return $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications' => $publications,
         ]);
     }
 
+    /**
+     * Create a publication
+     * Require params "exposeName" and "publicationData"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function createPublicationAction(PhraseaApplication $app, Request $request)
     {
-        try {
-            $records = RecordsRequest::fromRequest($app, $request);
-        } catch (\Exception $e) {
-            return $app->json([
-                'success' => false,
-                'message'   => 'An error occured when wanting to create publication!'
-            ]);
-        }
-
         $exposeName = $request->get('exposeName');
+
+        // TODO: taken account admin config ,acces_token for user or client_credentiels
 
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$exposeName];
@@ -97,7 +113,7 @@ class PSExposeController extends Controller
                 $response = $this->postPublication($exposeClient, $exposeConfiguration['token'], json_decode($request->get('publicationData'), true));
             }
 
-            if ($response->getStatusCode() !==201) {
+            if ($response->getStatusCode() !== 201) {
                 return $app->json([
                     'success' => false,
                     'message' => "An error occurred when creating publication: status-code " . $response->getStatusCode()
@@ -111,6 +127,154 @@ class PSExposeController extends Controller
                 'message' => "An error occurred when creating publication!"
             ]);
         }
+
+        $path = empty($publicationsResponse['slug']) ? $publicationsResponse['id'] : $publicationsResponse['slug'] ;
+        $url = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $path;
+
+        $link = "<a style='color:blue;' target='_blank' href='" . $url . "'>" . $url . "</a>";
+
+        return $app->json([
+            'success' => true,
+            'message' => "Publication successfully created!",
+            'link'    => $link
+        ]);
+    }
+
+    /**
+     * Update a publication
+     * Require params "exposeName" and "publicationId"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function updatePublicationAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+
+        // TODO: taken account admin config ,acces_token for user or client_credentiels
+
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$exposeName];
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        try {
+            if (!isset($exposeConfiguration['token'])) {
+                $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $exposeName);
+            }
+
+            $response = $this->putPublication($exposeClient, $request->get('publicationId'), $exposeConfiguration['token'], json_decode($request->get('publicationData'), true));
+
+            if ($response->getStatusCode() == 401) {
+                $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $exposeName);
+                $response = $this->putPublication($exposeClient, $request->get('publicationId'), $exposeConfiguration['token'], json_decode($request->get('publicationData'), true));
+            }
+
+            if ($response->getStatusCode() !== 201) {
+                return $app->json([
+                    'success' => false,
+                    'message' => "An error occurred when updating publication: status-code " . $response->getStatusCode()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when updating publication!"
+            ]);
+        }
+
+        return $app->json([
+            'success' => true,
+            'message' => "Publication successfully updated!"
+        ]);
+    }
+
+    /**
+     * Delete a Publication
+     * require params "exposeName" and "publicationId"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deletePublication(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+
+        // TODO: taken account admin config ,acces_token for user or client_credentiels
+
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$exposeName];
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        try {
+            if (!isset($exposeConfiguration['token'])) {
+                $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $exposeName);
+            }
+
+            $response = $this->removePublication($exposeClient, $request->get('publicationId'), $exposeConfiguration['token']);
+
+            if ($response->getStatusCode() == 401) {
+                $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $exposeName);
+                $response = $this->removePublication($exposeClient, $request->get('publicationId'), $exposeConfiguration['token']);
+            }
+
+            if ($response->getStatusCode() !== 204) {
+                return $app->json([
+                    'success' => false,
+                    'message' => "An error occurred when deleting publication: status-code " . $response->getStatusCode()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when deleting publication!"
+            ]);
+        }
+
+        return $app->json([
+            'success' => true,
+            'message' => "Publication successfully deleted!"
+        ]);
+    }
+
+    /**
+     * Add assets in a publication
+     * Require params "lst" , "exposeName" and "publicationId"
+     * "lst" is a list of record as "baseId_recordId"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function addPublicationAssetsAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $publicationId = $request->get('publicationId');
+        if ($publicationId == null) {
+            return $app->json([
+                'success' => false,
+                'message'   => 'Need to give publicationId to add asset in publication!'
+            ]);
+        }
+
+        try {
+            $records = RecordsRequest::fromRequest($app, $request);
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message'   => 'An error occured when wanting to create publication!'
+            ]);
+        }
+
+        // TODO: taken account admin config ,acces_token for user or client_credentiels
+
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$exposeName];
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
         /** @var \record_adapter $record */
         foreach ($records as $record) {
@@ -158,7 +322,7 @@ class PSExposeController extends Controller
                     ],
                     [
                         'name'      => 'publication_id',
-                        'contents'  => $publicationsResponse['id'],
+                        'contents'  => $publicationId,
 
                     ],
                     [
@@ -233,15 +397,9 @@ class PSExposeController extends Controller
             }
         }
 
-        $path = empty($publicationsResponse['slug']) ? $publicationsResponse['id'] : $publicationsResponse['slug'] ;
-        $url = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $path;
-
-        $link = "<a style='color:blue;' target='_blank' href='" . $url . "'>" . $url . "</a>";
-
         return $app->json([
             'success' => true,
-            'message' => "Publication successfully created!",
-            'link'    => $link
+            'message' => count($records) . "added to the publication!"
         ]);
     }
 
@@ -291,6 +449,26 @@ class PSExposeController extends Controller
                 'Content-Type'  => 'application/json'
             ],
             'json' => $publicationData
+        ]);
+    }
+
+    private function putPublication(Client $exposeClient, $publicationId, $token, $publicationData)
+    {
+        return $exposeClient->put('/publications/' . $publicationId, [
+            'headers' => [
+                'Authorization' => 'Bearer '. $token,
+                'Content-Type'  => 'application/json'
+            ],
+            'json' => $publicationData
+        ]);
+    }
+
+    private function removePublication(Client $exposeClient, $publicationId, $token)
+    {
+        return $exposeClient->delete('/publications/' . $publicationId, [
+            'headers' => [
+                'Authorization' => 'Bearer '. $token
+            ]
         ]);
     }
 
