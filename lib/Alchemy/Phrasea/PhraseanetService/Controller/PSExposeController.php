@@ -64,7 +64,7 @@ class PSExposeController extends Controller
                 ]
             ]);
 
-            if ($response->getStatusCode() == 200) {
+            if ($resPublication->getStatusCode() == 200) {
                 $publications[] = json_decode($resPublication->getBody()->getContents(),true);
             }
         }
@@ -78,6 +78,41 @@ class PSExposeController extends Controller
 
         return $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications' => $publications,
+        ]);
+    }
+
+    /**
+     * Require params "exposeName" and "publicationId"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return string
+     */
+    public function getPublicationAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        if (!isset($exposeConfiguration['token'])) {
+            $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        }
+
+        $publication = [];
+        $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $exposeConfiguration['token'],
+                'Content-Type'  => 'application/json'
+            ]
+        ]);
+
+        if ($resPublication->getStatusCode() == 200) {
+            $publication = json_decode($resPublication->getBody()->getContents(),true);
+        }
+
+        return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
+            'publications' => $publication,
         ]);
     }
 
