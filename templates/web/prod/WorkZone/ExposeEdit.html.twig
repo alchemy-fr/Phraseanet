@@ -2,103 +2,146 @@
     <div id='DIALOG-expose-edit' style="display: none">
 
         <div class="expose-edit-wrapper">
-            <form name="publication-data" id="publication-data-form-edit">
-                <div class="edit-publication-block">
-                    <div class="ui-widget">
-                        <label>Name </label>
-                        <input type="text" value="" name="title" class="publication-field"/>
-                    </div>
-                    <div class="ui-widget">
-                        <label>Slug: </label>
-                        <input type="text" value="" name="slug" class="publication-field"/><input type="button"
-                                                                                                  class="blue_button edit_expose"
-                                                                                                  value="check slug availability">
-                    </div>
-                    <div class="ui-widget">
-                        <label>Parent publication </label>
-                        <div id="publication-list-data-edit" class="ui-widget publication_parent_wrapper ">
-                            <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
+            <div class="expose-edit-wrapper" style="margin-top: 100px">
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <form id="publication-data-form" >
+                    <div class="edit-publication-block">
+                        {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
+
+                        <select id="expose_name" class="expose_name">
+                            <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
+                            {% for key in expose_list|keys %}
+                                {% if expose_list[key].activate_expose %}
+                                    <option value="{{ key }}">{{ key }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <div class="ui-widget">
+                            <label>Name </label>
+                            <input type="text" value="" name="title" class="publication-field"/>
+                        </div>
+                        <div class="ui-widget">
+                            <label>Slug: </label>
+                            <input type="text" value="" name="slug" class=" slug publication-field"/><input type="button"
+                                                                                                            class="blue_button edit_expose"
+                                                                                                            value="check slug availability">
+                        </div>
+                        <div class="ui-widget">
+                            <label>Parent publication </label>
+                            <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
+                                <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
+                                        class="publication-field">
+                                    <option value="">Select a parent publication</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ui-widget profile-wrapper hide">
+                            <label>Profile </label>
+                            <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="">Select a parent publication</option>
+                                <option value="">Select Profile</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="ui-widget profile-wrapper">
-                        <label>Profile </label>
-                        <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">Select Parent publication</option>
-                        </select>
-                    </div>
-                    <div class="ui-widget">
-                        <label>Enabled </label>
-                        <label class="switch">
-                            <input id="enabled-field" type="checkbox" class="publication-field" name="enabled">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <div class="ui-widget available-wrapper">
-                        <label>Available (leave blank for permanet publication): </label>
-                        <div class="available-widget">
-                            <label>From </label>
-                            <input type="text" value="" name="from" class="use-datepicker publication-field"/>
+                        <div class="ui-widget">
+                            <label>Enabled </label>
+                            <label class="switch">
+                                <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
+                                <span class="slider round"></span>
+                            </label>
                         </div>
-                        <div class="available-widget">
-                            <label>To </label>
-                            <input type="text" value="" name="to" class="use-datepicker publication-field"/>
+                        <div class="ui-widget available-wrapper">
+                            <label>Available (leave blank for permanet publication): </label>
+                            <div class="available-widget">
+                                <label>From </label>
+                                <input type="text" value="" name="beginsAt" class="use-datepicker publication-field"/>
+                            </div>
+                            <div class="available-widget">
+                                <label>To </label>
+                                <input type="text" value="" name="expiresAt" class="use-datepicker publication-field"/>
+                            </div>
+                        </div>
+                        <div class="ui-widget">
+                            <label>Publicity listing </label>
+                            <label class="switch">
+                                <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="ui-widget access-wrapper available-wrapper">
+                            <label>Access rules </label>
+                            <div class="available-widget">
+                                <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
+                                        class="publication-field">
+                                    <option value="">open access</option>
+                                    <option value="password">password</option>
+                                    <option value="authentication">users</option>
+                                </select>
+                            </div>
+                            <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
+                                <input class="publication-field" type="text" name="password" placeholder="Password"
+                                       id="publication_password"/>
+                            </div>
+                            <div class="available-widget ui-widget publication_securityMethod_error hidden"
+                                 id="publication_securityMethod_error">
+                                <p class="error form-error alert alert-error">Not implemented</p>
+                            </div>
+                        </div>
+                        <div class="ui-widget">
+                            <label>Layout </label>
+                            <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="" selected="selected">Select Layout</option>
+                                <option value="gallery">Gallery</option>
+                                <option value="mapbox">Mapbox</option>
+                                <option value="download">Download</option>
+                            </select>
+                        </div>
+                        <div class="ui-widget">
+                            <label>Theme </label>
+                            <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">Select Theme</option>
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                            </select>
+                        </div>
+
+                </form>
+
+                <form name="publication-json" id="publication-json" class="text-center">
+                    <div id="advancedSettingBlock">
+                        <h3 class="toggleSetting">Advanced setting</h3>
+                        <div id="advancedSettingInner" class="hidden">
+                            <div>
+                                    <textarea name="advancedSetting" id="advancedSetting" cols="100"
+                                              rows="11"></textarea></div>
+
                         </div>
                     </div>
-                    <div class="ui-widget">
-                        <label>Publicity listing </label>
-                        <label class="switch">
-                            <input id="listing-field" type="checkbox" class="publication-field" name="listing">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-                    <div class="ui-widget access-wrapper">
-                        <label>Access rules </label>
-                        <select id="access-field" name="access" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">open access</option>
-                            <option value="password">password</option>
-                            <option value="users">users</option>
-                        </select>
-                        <div class="ui-widget securityOptions_wrapper hidden">
-                            <label>Password: </label><input class="publication-field" type="text" name="password"
-                                                            id="publication_password"/>
+                    <div class="publication-btn-container submit-blockr">
+                        <p class="text-center"><span id="pub-error" class="hidden alert alert-error"></span></p>
+                        <p class="text-center"><span id="pub-success" class="hidden alert alert-success"></span></p>
+                        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                            <div class="ui-dialog-buttonset">
+                                <button type="button"
+                                        class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                        role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
+                                </button>
+                                <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="create-publication">
+                                    Create publication {% if lst %} from {{ lst|split(';')|length }} selected {% endif %}
+                                </button>
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="ui-widget">
-                        <label>Layout </label>
-                        <select id="layout-field" name="layout" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">Select Layout</option>
-                        </select>
-                    </div>
-                    <div class="ui-widget">
-                        <label>Theme </label>
-                        <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">Select Theme</option>
-                        </select>
                     </div>
 
-                </div>
-                <div class="submit-block">
-                    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-                        <div class="ui-dialog-buttonset">
-                            <button type="button"
-                                    class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                    role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
-                            </button>
-                            <button type="button"
-                                    class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                    role="button" aria-disabled="false"><span class="ui-button-text">Validate</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+                </form>
+
+
+            </div>
 
 
         </div>
