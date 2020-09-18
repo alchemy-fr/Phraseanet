@@ -362,14 +362,12 @@
 
         //generate publication list
          $('#expose_name').on('change', function () {
-            // $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
-             $.ajax({
+            $.ajax({
                  type: "GET",
                  url: `/prod/expose/list-publication/?format=json&exposeName=` + this.value,
                  success: function (data) {
                      $('#publication_parent').html('');
                      for (i = 0; i < data.publications.length; i++) {
-                         console.log(data.publications[i].title);
                          $('select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
                      }
 
