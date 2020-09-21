@@ -486,9 +486,7 @@
 
         </div>
     </div>
-
-    {% import 'prod/WorkZone/ExposeEdit.html.twig' as Expose %}
-    {{ Expose.display_edit(app) }}
+    <div id='DIALOG-expose-edit' style="display: none"></div>
 
     {% import 'prod/WorkZone/ExposeNew.html.twig' as ExposeNew %}
     {{ ExposeNew.add_expose(app) }}

@@ -12,8 +12,8 @@
 
         </div>
         <div class="expose_item_deployed">
-            <div class="expose_item_top"><h3>{{ publication.title }}</h3>
-                <button type="button" class="green_button edit_expose"><span>Edit</span></button>
+            <div class="expose_item_top">
+                <span class="green_button edit_expose" data-id="{{ publication.id }}"><i class="fa fa-edit"></i></span>
                 <span>delete</span></div>
             <div class="expose_item_bottom">
                 <span class="item_numbers">{{ publication.assets|length }}</span>
@@ -30,5 +30,30 @@
             </div>
         </div>
     </div>
+    <script>
+        $('.edit_expose').on('click', function () {
+            //$('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/get-publication/{{ publication.id }}?exposeName=${$("#expose_list").val()}` ,
+                success: function (data) {
+                    $('#DIALOG-expose-edit').empty().html(data);
+                    console.log(data);
+                    console.log('++');
+                   // openExposeModalOnBasket();
+                    if({{ publication.publiclyListed == true }}) {
+                        $('#publication_publiclyListed').attr('checked','checked');
+                    }
+                    if({{ publication.enabled == true }}) {
+                        $('#enabled_combobox').attr('checked','checked');
+                    }
+                    $('#publication_layout option[value={{ publication.layout}}]').attr('selected','selected');
+                    $('#theme-field option[value={{ publication.theme}}]').attr('selected','selected');
+
+
+                }
+            });
+        });
+    </script>
 {% endfor %}
 

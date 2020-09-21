@@ -1,6 +1,3 @@
-{% macro display_edit(app) %}
-    <div id='DIALOG-expose-edit' style="display: none">
-
         <div class="expose-edit-wrapper">
             <div class="expose-edit-wrapper" style="margin-top: 100px">
                 <br/>
@@ -9,23 +6,13 @@
                 <br/>
                 <form id="publication-data-form" >
                     <div class="edit-publication-block">
-                        {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
-
-                        <select id="expose_name" class="expose_name">
-                            <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
-                            {% for key in expose_list|keys %}
-                                {% if expose_list[key].activate_expose %}
-                                    <option value="{{ key }}">{{ key }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
                         <div class="ui-widget">
                             <label>Name </label>
-                            <input type="text" value="" name="title" class="publication-field"/>
+                            <input type="text" value="{{ publications.name }}" name="title" class="publication-field"/>
                         </div>
                         <div class="ui-widget">
                             <label>Slug: </label>
-                            <input type="text" value="" name="slug" class=" slug publication-field"/><input type="button"
+                            <input type="text" value="{{ publications.slug }}" name="slug" class=" slug publication-field"/><input type="button"
                                                                                                             class="blue_button edit_expose"
                                                                                                             value="check slug availability">
                         </div>
@@ -53,14 +40,14 @@
                             </label>
                         </div>
                         <div class="ui-widget available-wrapper">
-                            <label>Available (leave blank for permanet publication): </label>
+                            <label>Available (leave blank for permanent publication): </label>
                             <div class="available-widget">
                                 <label>From </label>
-                                <input type="text" value="" name="beginsAt" class="use-datepicker publication-field"/>
+                                <input type="text" value="{{ publications.config.beginsAt }}" name="beginsAt" class="use-datepicker publication-field"/>
                             </div>
                             <div class="available-widget">
                                 <label>To </label>
-                                <input type="text" value="" name="expiresAt" class="use-datepicker publication-field"/>
+                                <input type="text" value="{{ publications.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
                             </div>
                         </div>
                         <div class="ui-widget">
@@ -93,7 +80,7 @@
                             <label>Layout </label>
                             <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="" selected="selected">Select Layout</option>
+                                <option value="{{ publications.layout }}" selected="selected">Select Layout</option>
                                 <option value="gallery">Gallery</option>
                                 <option value="mapbox">Mapbox</option>
                                 <option value="download">Download</option>
@@ -103,7 +90,7 @@
                             <label>Theme </label>
                             <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="">Select Theme</option>
+                                <option value="" selected="selected">Select Theme</option>
                                 <option value="light">Light</option>
                                 <option value="dark">Dark</option>
                             </select>
@@ -165,4 +152,3 @@
 
         $(".use-datepicker").datepicker($.datepicker.regional['default']);
     </script>
-{% endmacro %}
