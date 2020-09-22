@@ -178,9 +178,9 @@ class V3ResultHelpers
             );
         }
 
-        //        if($record->isStory()) {
-        //
-        //        }
+        if($record->isStory()) {
+            $data['children_total'] = $record->getChildrenCount();
+        }
 
         return $data;
     }
@@ -259,6 +259,55 @@ class V3ResultHelpers
         }
 
         return $ret;
+    }
+
+    /**
+     * @param Request $request
+     * @return int[]   [offset, limit]
+     */
+    public static function paginationFromRequest(Request $request)
+    {
+        // we can deal with "page / per_page" OR "offset / limit" OR "cursor / limit"
+        //
+        $method = '';
+        foreach(['page', 'per_page', 'offset', 'limit', 'cursor'] as $v) {
+            if($request->get($v) !== null) {
+                $method .= ($method?'+':'') . $v;
+            }
+        }
+        $offset = 0;    // default
+        $limit = 10;    // default
+        switch($method) {
+            case '':    // no parms -> default
+                break;
+            case 'page':
+            case 'per_page':
+            case 'page+per_page':
+                $limit = (int)($request->get('per_page') ?: 10);
+                $offset = ((int)($request->get('page') ?: 1) - 1) * $limit;      // page starts at 1
+                break;
+            case 'offset':
+            case 'limit':
+            case 'offset+limit':
+                $offset = (int)($request->get('offset') ?: 0);
+                $limit = (int)($request->get('limit') ?: 10);
+                break;
+            case 'cursor':
+            case 'cursor+limit':
+                if( ($cursor = $request->get('cursor')) !== null) {
+                    $offset = (int)(base64_decode($cursor));
+                }
+                $limit = (int)($request->get('limit') ?: 10);
+                break;
+            default:
+                // any other combination is invalid
+                throw new \InvalidArgumentException(sprintf('bad pagination "%s" method', $method));
+        }
+        if($offset < 0 || $limit < 1 || $limit > 100) {
+            throw new \InvalidArgumentException("offset must be > 0 ; limit must be [1...100]");
+        }
+
+        return([$offset, $limit]);
     }
 
 

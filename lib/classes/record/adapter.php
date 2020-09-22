@@ -1784,7 +1784,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @throws Exception
      * @throws DBALException
      */
-    public function getChildren($offset = 1, $max_items = null)
+    public function getChildren($offset = 0, $max_items = null)
     {
         if (!$this->isStory()) {
             throw new Exception('This record is not a grouping');
@@ -1795,6 +1795,17 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $selections = $this->getDatabox()->getRecordRepository()->findChildren([$this->getRecordId()], $user, $offset, $max_items);
 
         return reset($selections);
+    }
+
+    public function getChildrenCount()
+    {
+        if (!$this->isStory()) {
+            throw new Exception('This record is not a grouping');
+        }
+
+        $user = $this->getAuthenticatedUser();
+
+        return $this->getDatabox()->getRecordRepository()->getChildrenCount($this->getRecordId(), $user);
     }
 
     /**

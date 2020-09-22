@@ -63,6 +63,43 @@ ApiResponse_record:
             $ref: '#/ApiResponse_meta'
         response:
             $ref: '#/Record'
+
+# -------------------- search ---------------
+ApiResponse_search:
+    type: object
+    properties:
+        meta:
+            $ref: '#/ApiResponse_meta'
+        response:
+            $ref: '#/ApiResponse_search_response'
+ApiResponse_search_response:
+    type: object
+    properties:
+        offset:
+            type: integer
+            description: 'The pagination offset as passed in request'
+        limit:
+            type: integer
+            description: 'The pagination limit as passed in request'
+        page_result_count:
+            type: integer
+            description: 'The number of results in this page [0...limit]'
+        total_result_count:
+            type: integer
+            description: 'The total number of results request'
+        results:
+            type: object
+            properties:
+                stories:
+                    type: array
+                    items:
+                        $ref: '#/Record'
+                records:
+                    type: array
+                    items:
+                        $ref: '#/Record'
+
+
 ID:
     type: integer
 Permalink:

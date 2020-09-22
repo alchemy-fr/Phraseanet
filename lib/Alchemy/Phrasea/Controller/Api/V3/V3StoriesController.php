@@ -41,11 +41,10 @@ class V3StoriesController extends V3RecordController
                 throw new NotFoundHttpException();
             }
 
-            $per_page = (int)$request->get('per_page')?:10;
-            $page = (int)$request->get('page')?:1;
-            $offset = ($per_page * ($page - 1)) + 1;
+            list($offset, $limit) = V3ResultHelpers::paginationFromRequest($request);
 
-            $ret = $this->listRecords($request, array_values($story->getChildren($offset, $per_page)->get_elements()));
+            $ret = $this->listRecords($request, array_values($story->getChildren($offset, $limit)->get_elements()));
+
             return Result::create($request, $ret)->createResponse();
         }
         catch (NotFoundHttpException $e) {
@@ -56,23 +55,6 @@ class V3StoriesController extends V3RecordController
         }
     }
 
-    /**
-     * Retrieve detailed information about one story
-     *
-     * @param Request         $request
-     * @param record_adapter $story
-     * @return array
-     * @throws Exception
-     */
-    private function listStory(Request $request, record_adapter $story)
-    {
-
-
-        $ret = $this->getResultHelpers()->listRecord($request, $story, $this->getAclForUser());
-        $ret['records'] = $this->listRecords($request, array_values($story->getChildren($offset, $per_page)->get_elements()));
-
-        return $ret;
-    }
 
     /**
      * @param Request $request

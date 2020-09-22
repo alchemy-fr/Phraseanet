@@ -185,7 +185,70 @@ class LegacyRecordRepository implements RecordRepository
         return $this->mapRecordsFromResultSet($result);
     }
 
-    public function findChildren(array $storyIds, $user = null, $offset = 1, $max_items = null)
+    /**
+     * return the number of VISIBLE children of ONE story, for a specific user
+     *        if user is null -> count all children
+     *
+     * @param int $storyId
+     * @param User|int|null $user       // can pass a User, or a user_id
+     *
+     * @return int                      // -1 if story not found
+     */
+    public function getChildrenCount($storyId, $user = null)
+    {
+        $r = $this->getChildrenCounts([$storyId], $user);
+
+        return $r[$storyId];
+    }
+
+
+    /**
+     * return the number of VISIBLE children of MANY stories, for a specific user
+     *        if user is null -> count all children
+     *
+     * @param int[] $storyIds
+     * @param User|int|null $user       // can pass a User, or a user_id
+     *
+     * @return int[]                    // story_id => n_children (-1 if story not found)
+     */
+    public function getChildrenCounts(array $storyIds, $user = null)
+    {
+        $connection = $this->databox->get_connection();
+
+        $parmValues = [
+            ':storyIds' => $storyIds,
+        ];
+        $parmTypes  = [
+            ':storyIds' => Connection::PARAM_INT_ARRAY,
+        ];
+
+        // if there is a user, we must join collusr to filter results depending on coll/masks
+        //
+        $userFilter = "";
+        if(!is_null($user)) {
+            $userFilter = "         INNER JOIN collusr c ON c.site = :site AND c.usr_id = :userId AND c.coll_id=r.coll_id AND ((r.status ^ c.mask_xor) & c.mask_and) = 0\n";
+            $parmValues[':site'] = $this->site;
+            $parmValues[':userId'] = $user instanceof User ? $user->getId() : (int)$user;
+        }
+
+        $sql = "SELECT g.rid_parent AS story_id, COUNT(*) AS n_children\n"
+            . "    FROM regroup g\n"
+            . "         INNER JOIN record r ON r.record_id=g.rid_child\n"
+            . $userFilter
+            . "    WHERE g.rid_parent IN( :storyIds )\n"
+            . "    GROUP BY g.rid_parent\n"
+        ;
+
+        $r = array_fill_keys($storyIds, -1);
+        foreach($connection->fetchAll($sql, $parmValues, $parmTypes) as $row) {
+            $r[$row['story_id']] = (int)$row['n_children'];
+        }
+
+        return $r;
+    }
+
+
+    public function findChildren(array $storyIds, $user = null, $offset = 0, $max_items = null)
     {
         if (!$storyIds) {
             return [];
@@ -216,7 +279,7 @@ class LegacyRecordRepository implements RecordRepository
             $parmValues[':userId'] = $user instanceof User ? $user->getId() : (int)$user;
         }
 
-        if ($max_items) {
+        if ($max_items !== null) {
             //
             // we want paginated results AFTER applying all filters, we build a dynamic cptr
             // WARNING : due to bugs (?) in mysql optimizer, do NOT try to optimize this sql (e.g. removing a sub-q, or moving cpt to anothe sub-q)
@@ -235,11 +298,11 @@ class LegacyRecordRepository implements RecordRepository
                 . "    ORDER BY g.rid_parent, g.ord ASC\n"
                 . "  ) t\n"
                 . ") r\n"
-                . "WHERE CPT BETWEEN :offset AND :maxresult"
+                . "WHERE CPT BETWEEN :cptmin AND :cptmax"
             ;
 
-            $parmValues[':offset'] = $offset;
-            $parmValues[':maxresult'] = ($offset + $max_items -1);
+            $parmValues[':cptmin'] = $offset + 1;
+            $parmValues[':cptmax'] = $offset + $max_items;
 
             $connection->executeQuery('SET @cpt = 1');
             $connection->executeQuery('SET @old_rid_parent = -1');
@@ -264,6 +327,8 @@ class LegacyRecordRepository implements RecordRepository
 
         $records = $this->mapRecordsFromResultSet($data);
 
+        // todo : refacto to remove over-usage of array_map, array_combine, array_flip etc.
+        //
         $selections = array_map(
             function () {
                 return new set_selection($this->app);
