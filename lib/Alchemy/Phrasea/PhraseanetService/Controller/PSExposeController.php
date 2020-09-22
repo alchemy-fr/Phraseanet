@@ -112,7 +112,8 @@ class PSExposeController extends Controller
         }
 
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
-            'publications' => $publication,
+            'publication' => $publication,
+            'exposeName'  => $request->get('exposeName')
         ]);
     }
 
@@ -206,7 +207,7 @@ class PSExposeController extends Controller
                 $response = $this->putPublication($exposeClient, $request->get('publicationId'), $exposeConfiguration['token'], json_decode($request->get('publicationData'), true));
             }
 
-            if ($response->getStatusCode() !== 201) {
+            if ($response->getStatusCode() !== 200) {
                 return $app->json([
                     'success' => false,
                     'message' => "An error occurred when updating publication: status-code " . $response->getStatusCode()

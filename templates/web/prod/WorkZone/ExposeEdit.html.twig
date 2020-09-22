@@ -8,11 +8,11 @@
                     <div class="edit-publication-block">
                         <div class="ui-widget">
                             <label>Name </label>
-                            <input type="text" value="{{ publications.name }}" name="title" class="publication-field"/>
+                            <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
                         </div>
                         <div class="ui-widget">
                             <label>Slug: </label>
-                            <input type="text" value="{{ publications.slug }}" name="slug" class=" slug publication-field"/><input type="button"
+                            <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/><input type="button"
                                                                                                             class="blue_button edit_expose"
                                                                                                             value="check slug availability">
                         </div>
@@ -35,7 +35,9 @@
                         <div class="ui-widget">
                             <label>Enabled </label>
                             <label class="switch">
-                                <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
+                                <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled"
+                                       {% if publication.enabled == 1 %} checked {% endif %}
+                                >
                                 <span class="slider round"></span>
                             </label>
                         </div>
@@ -43,17 +45,19 @@
                             <label>Available (leave blank for permanent publication): </label>
                             <div class="available-widget">
                                 <label>From </label>
-                                <input type="text" value="{{ publications.config.beginsAt }}" name="beginsAt" class="use-datepicker publication-field"/>
+                                <input type="text" value="{{ publication.config.beginsAt }}" name="beginsAt" class="use-datepicker publication-field"/>
                             </div>
                             <div class="available-widget">
                                 <label>To </label>
-                                <input type="text" value="{{ publications.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
+                                <input type="text" value="{{ publication.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
                             </div>
                         </div>
                         <div class="ui-widget">
                             <label>Publicity listing </label>
                             <label class="switch">
-                                <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed">
+                                <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed"
+                                {% if publication.publiclyListed == 1 %} checked {% endif %}
+                                >
                                 <span class="slider round"></span>
                             </label>
                         </div>
@@ -63,8 +67,8 @@
                                 <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
                                         class="publication-field">
                                     <option value="">open access</option>
-                                    <option value="password">password</option>
-                                    <option value="authentication">users</option>
+                                    <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>password</option>
+                                    <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>users</option>
                                 </select>
                             </div>
                             <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
@@ -80,22 +84,22 @@
                             <label>Layout </label>
                             <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="{{ publications.layout }}" selected="selected">Select Layout</option>
-                                <option value="gallery">Gallery</option>
-                                <option value="mapbox">Mapbox</option>
-                                <option value="download">Download</option>
+                                <option value="">Select Layout</option>
+                                <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>Gallery</option>
+                                <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>Mapbox</option>
+                                <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>Download</option>
                             </select>
                         </div>
                         <div class="ui-widget">
                             <label>Theme </label>
                             <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="" selected="selected">Select Theme</option>
-                                <option value="light">Light</option>
-                                <option value="dark">Dark</option>
+                                <option value="">Select Theme</option>
+                                <option value="light" {% if publication.theme == 'light'%} selected="selected" {% endif %}>Light</option>
+                                <option value="dark" {% if publication.theme == 'dark'%} selected="selected" {% endif %}>Dark</option>
                             </select>
                         </div>
-
+                    </div>
                 </form>
 
                 <form name="publication-json" id="publication-json" class="text-center">
@@ -117,8 +121,8 @@
                                         class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                         role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
                                 </button>
-                                <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="create-publication">
-                                    Create publication {% if lst %} from {{ lst|split(';')|length }} selected {% endif %}
+                                <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="update-publication">
+                                    Update publication
                                 </button>
 
                             </div>
@@ -132,8 +136,18 @@
 
 
         </div>
-    </div>
+
     <script type="text/javascript">
+
+        var publicationEdit = $(document).find("#DIALOG-expose-edit");
+
+        var publicationForm = publicationEdit.find("#publication-data-form");
+        var publicationParent = publicationEdit.find("#publication_parent");
+        var profileField = publicationEdit.find("#profile-field");
+        var advancedSetting = publicationEdit.find("#advancedSetting");
+
+        var publicationFieldClass = publicationEdit.find(".publication-field")
+
         $.datepicker.regional['default'] = {
             closeText: "Close",
             prevText: "{{ 'workzone:datepicker:prevText' | trans }}",
@@ -151,4 +165,209 @@
         };
 
         $(".use-datepicker").datepicker($.datepicker.regional['default']);
+
+        //generate publication list
+        $(document).ready(function () {
+            publicationEdit.on('click', '.toggleSetting', function (e) {
+                $(this).toggleClass('open');
+                $(this).next("div").toggleClass('hidden');
+            });
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/list-publication/?format=json&exposeName={{ exposeName }}`,
+                success: function (data) {
+                    publicationParent.empty().html('<option value="">Select a parent publication</option>');
+                    for (i = 0; i < data.publications.length; i++) {
+                        if (data.publications[i].id !== '{{ publication.id }}') {
+                            publicationParent.append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                        }
+                    }
+                }
+            });
+        });
+
+        /**convert Object data  to Json**/
+        function booleanizeObject(obj) {
+            var keys = Object.keys(obj);
+            keys.forEach(function (key) {
+                var value = obj[key];
+                if (typeof value === 'string') {
+                    var lvalue = value.toLowerCase();
+                    if (lvalue === 'true') {
+                        obj[key] = true;
+                    } else if (lvalue === 'false') {
+                        obj[key] = false;
+                    }
+                } else if (typeof value === 'object') {
+                    booleanizeObject(obj[key]);
+                }
+            });
+        }
+
+        function buildData() {
+            try {
+                var allData = publicationForm.serializeArray();
+                // console.log(allData);
+                var dataValue = allData.reduce((acc, it) => {
+                    acc[it.name] = it.value;
+                    return acc;
+                }, {});
+
+                /**Build Config elt**/
+                var config = {};
+
+                if (dataValue.layout != '') {
+                    config = {...config, layout: dataValue.layout};
+                }
+                if (dataValue.enabled == 'on') {
+                    config = {...config, enabled: true};
+                }else{
+                    config = {...config, enabled: false};
+                }
+                if (dataValue.publiclyListed == 'on') {
+                    config = {...config, publiclyListed: true};
+                }else{
+                    config = {...config, publiclyListed: false};
+                }
+                if (dataValue.securityMethod != '') {
+                    config = {...config, securityMethod: dataValue.securityMethod};
+                }
+                if (dataValue.password) {
+                    config = {...config, password: dataValue.password};
+                }
+
+                if (dataValue.beginsAt) {
+                    config = {...config, beginsAt: dataValue.beginsAt};
+                }
+                if (dataValue.expiresAt) {
+                    config = {...config, expiresAt: dataValue.expiresAt};
+                }
+
+                if (dataValue.theme) {
+                    config = {...config, theme: dataValue.theme};
+                }
+
+                dataValue = {...dataValue, config};
+
+
+                booleanizeObject(dataValue);
+
+
+                return dataValue;
+
+            } catch (err) {
+                return;
+            }
+        }
+
+        function removeSecurityField() {
+            var datavalueMinus = buildData();
+
+            if (publicationParent.val() == "") {
+                delete datavalueMinus['parentId'];
+            }
+
+            if (profileField.val() == "") {
+                delete datavalueMinus['profile'];
+            }
+            ;
+
+            delete datavalueMinus['layout'];
+            delete datavalueMinus['enabled'];
+            delete datavalueMinus['publiclyListed'];
+            delete datavalueMinus['password'];
+            delete datavalueMinus['securityMethod'];
+            delete datavalueMinus['theme'];
+            delete datavalueMinus['beginsAt'];
+            delete datavalueMinus['expiresAt'];
+
+            advancedSetting.val(JSON.stringify(datavalueMinus, undefined, 4));
+            console.log(JSON.stringify(datavalueMinus, undefined, 4));
+
+        }
+
+        publicationFieldClass.on('keyup change', function (e) {
+            try {
+                publicationEdit.find("#pub-success").addClass("hidden");
+                publicationEdit.find("#pub-error").addClass("hidden");
+                jQuery.parseJSON(JSON.stringify($(this).val()));
+            } catch (err) {
+                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
+            }
+
+            removeSecurityField();
+            /**Toggle display the Security option field**/
+            // $("#publication_securityMethod").change(function (e) {
+            //     var dataValue = buildData();
+            //     dataValue["securityMethod"] = '';
+            //     var Svalue = $(this).val();
+            //
+            //     if (Svalue == 'password') {
+            //         $(".securityOptions_wrapper").removeClass('visibility-hidden');
+            //
+            //     } else {
+            //         $(".securityOptions_wrapper").addClass('visibility-hidden');
+            //     };
+            //     if (Svalue !== '') {
+            //         dataValue["securityMethod"] = Svalue;
+            //
+            //         if (Svalue == 'authentication') {
+            //             $("#publication_password").val('');
+            //             $("#publication_securityMethod_error").removeClass('hidden');
+            //         } else {
+            //             $("#publication_securityMethod_error").addClass('hidden');
+            //         }
+            //     } else {
+            //         $("#publication_password").val('');
+            //     };
+            //     removeSecurityField();
+            //
+            //
+            // });
+        });
+
+        publicationEdit.find('#publication-json').on('submit', function (e) {
+            e.preventDefault();
+
+            try {
+                publicationEdit.find("#pub-error").addClass("hidden");
+
+            } catch (err) {
+                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
+                return;
+            }
+            if (advancedSetting.val() !== '') {
+                $.ajax({
+                    type: "PUT",
+                    url: "/prod/expose/update-publication/{{ publication.id }}",
+                    dataType: 'json',
+                    data: {
+                        exposeName: "{{ exposeName }}",
+                        publicationData: advancedSetting.val()
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
+                            document.getElementById("publication-data-form").reset();
+                        } else {
+                            publicationEdit.find("#pub-error").removeClass("hidden").text(data.message);
+                        }
+                    }
+                });
+            } else {
+                publicationEdit.find("#pub-error").removeClass("hidden").text("No changed!");
+            }
+
+        });
+
     </script>
+    <style>
+        .visibility-hidden {
+            visibility: hidden;
+        }
+        .publication-block .ui-widget.hide {
+            display: none;
+        }
+    </style>
+

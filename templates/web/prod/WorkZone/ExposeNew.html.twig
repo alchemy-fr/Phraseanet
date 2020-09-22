@@ -106,7 +106,7 @@
                             <option value="dark">Dark</option>
                         </select>
                     </div>
-
+                </div>
             </form>
 
             <form name="publication-json" id="publication-json" class="text-center">
@@ -166,28 +166,12 @@
                 $(this).toggleClass('open');
                 $('#advancedSettingInner').toggleClass('hidden');
             });
-            var test = '';
-            /*$.ajax({
-                type: "GET",
-                url: `{{ config.exposeBaseUri }}/publications`,
-                headers: {
-                    'Authorization': 'Bearer ' + '{{ config.token }}',
-                },
-                success: function (data) {
-                    console.log(data['hydra:member']);
-                    data['hydra:member'].map(function (index) {
-                        $('#publication-list-data select').append('<option value="' + index.id + '"  data-title= "' + index.title + '" data-slug= "' + index.slug + '" >' + index.title + '</option>');
-                    });
-
-                }
-            });*/
-
         });
 
         function buildData() {
             try {
                 var allData = $('#publication-data-form').serializeArray();
-                console.log(allData);
+                // console.log(allData);
                 var dataValue = allData.reduce((acc, it) => {
                         acc[it.name] = it.value;
                 return acc;
@@ -296,17 +280,6 @@
 
 
             });
-
-            /**checkbox to show profile field **/
-            checkProfile = $("#add-profile").is(":checked");
-            if (checkProfile) {
-                $(".profile-wrapper").removeClass("hide");
-            } else {
-                $(".profile-wrapper").addClass("hide");
-                $("#profile-field").val('');
-                removeSecurityField();
-            }
-
         });
 
         /**Selected Parent info **/
