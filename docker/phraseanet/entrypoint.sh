@@ -9,7 +9,6 @@ cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$RE
 chown -R app:app \
     cache \
     config \
-    datas \
     tmp \
     logs \
     www
@@ -66,13 +65,8 @@ fi
 ./docker/phraseanet/plugins/console init
 #rm -Rf cache/
 
-chown -R app:app \
-    cache \
-    config \
-    datas \
-    tmp \
-    logs \
-    www
+chown -R app:app config 
+chown -R app:app data &
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins;
