@@ -65,7 +65,10 @@ fi
 ./docker/phraseanet/plugins/console init
 #rm -Rf cache/
 
-chown -R app:app config 
+chown -R app:app \ 
+    config \
+    cache
+    
 chown -R app:app datas &
 
 if [ -d "plugins/" ];then
