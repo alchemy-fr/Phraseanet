@@ -77,27 +77,63 @@ ApiResponse_search_response:
     properties:
         offset:
             type: integer
-            description: 'The pagination offset as passed in request'
+            description: 'The pagination offset as passed (or computed from "page/per_page") in request'
         limit:
             type: integer
             description: 'The pagination limit as passed in request'
-        page_result_count:
+        count:
             type: integer
             description: 'The number of results in this page [0...limit]'
-        total_result_count:
+        total:
             type: integer
-            description: 'The total number of results request'
+            description: 'The total number of results'
+            minimum: 1
         results:
             type: object
             properties:
                 stories:
                     type: array
                     items:
-                        $ref: '#/Record'
+                        $ref: '#/Story'
                 records:
                     type: array
                     items:
                         $ref: '#/Record'
+        facets:
+            type: array
+            items:
+                type: object
+                properties:
+                    name:
+                        type: string
+                        description: 'The unique internal name (=key) for the facet'
+                        example: '_base'
+                    field:
+                        type: string
+                        description: 'Source field (from db structure). Can be also virtual field like "database" '
+                        example: 'database'
+                    values:
+                        type: array
+                        items:
+                            type: object
+                            properties:
+                                value:
+                                    type: string
+                                    description: 'Human readable value for the value'
+                                    example: 'Demo'
+                                raw_value:
+                                    type: string
+                                    description: 'Real value, to be used to query'
+                                    example: 'db_demo'
+                                count:
+                                    type: integer
+                                    description: 'Number of items matching this value'
+                                query:
+                                    type: string
+                                    description: 'Formulated query to search items matching this facet'
+                                    example: 'database:db_demo'
+
+
 
 
 ID:
@@ -168,15 +204,13 @@ TechnicalInformation:
             type: string
         value:
             type: string
-Record:
+_Record_:
     type: object
     properties:
         databox_id:
             $ref: '#/ID'
         record_id:
             $ref: '#/ID'
-        mime_type:
-            type: string
         title:
             type: string
         original_name:
@@ -191,21 +225,55 @@ Record:
             $ref: '#/ID'
         base_id:
             $ref: '#/ID'
-        sha256:
-            type: string
         thumbnail:
             $ref: '#/Subdef'
-        technical_informations:
-            type: array
-            items:
-                $ref: '#/TechnicalInformation'
-        phrasea_type:
-            type: string
-            enum:
-                - image
-                - video
         uuid:
             type: string
+
+Record:
+    allOf:     # Combines the basic _Record_ and the records-only properties
+        - $ref: '#/_Record_'
+        - type: object
+          properties:
+            mime_type:
+                type: string
+            technical_informations:
+                type: array
+                items:
+                    $ref: '#/TechnicalInformation'
+            sha256:
+                type: string
+            phrasea_type:
+                type: string
+                enum:
+                    - image
+                    - video
+
+Story:
+    allOf:     # Combines the basic _Record_ and the stories-only properties
+        - $ref: '#/_Record_'
+        - type: object
+          properties:
+            children_offset:
+                type: integer
+                description: 'The children pagination offset ; Always 0'
+            children_limit:
+                type: integer
+                description: 'The children pagination limit ; Equal to "story_children_limit" passed in request'
+            children_count:
+                type: integer
+                description: 'The number of children in "children" array ; [0...limit]'
+            children_total:
+                type: integer
+                description: 'The total number of -visibles for user- children in this story'
+            children:
+                type: array
+                items:
+                    type: object
+                    items:
+                        $ref: '#/Record'
+
+
 RecordUri:
     type: string
     example:

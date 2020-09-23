@@ -70,8 +70,10 @@ paths:
         post:
             tags:
                 - search
-            description: 'Fulltext search for records or stories.
-                pagination: use (offset/limit) OR (page/per_page)'
+            description: |
+                Fulltext search for records or stories.
+
+                - pagination: use (offset/limit) OR (page/per_page)
             parameters:
                 - name: query
                   in: query
@@ -87,26 +89,10 @@ paths:
                   required: false
                   schema:
                       type: integer
-                      minimum: 0
-                      maximum: 1
+                      enum:
+                          - 0
+                          - 1
                       default: 0
-                - name: offset
-                  in: query
-                  description: offset in records count, from 0. Use along with "limit"
-                  required: false
-                  schema:
-                      type: integer
-                      minimum: 0
-                      default: 0
-                - name: limit
-                  in: query
-                  description: number of results. Use along with "offset"
-                  required: false
-                  schema:
-                      type: integer
-                      minimum: 1
-                      maximum: 100
-                      default: 10
                 - name: page
                   in: query
                   description: page number, from 1. Use along with "per_page"
@@ -124,26 +110,44 @@ paths:
                       minimum: 1
                       maximum: 100
                       default: 10
+                - name: offset
+                  in: query
+                  description: offset in records count, from 0. Use along with "limit"
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 0
+                      # default: 0
+                - name: limit
+                  in: query
+                  description: number of results. Use along with "offset"
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 1
+                      maximum: 100
+                      # default: 10
                 - name: story_children_limit
                   in: query
-                  description: For stories, include N children
+                  description: For each story in result, include N children
                   required: false
                   schema:
                       type: integer
                       minimum: 0
                       maximum: 10
-                      default: 0
+                      default: '0'
                 - name: include
                   in: query
-                  description: Elements to be included in response
+                  description: Suplemental elements to be included in response
                   required: false
                   schema:
-
-                      anyOf:
-                          - enum:
-                                - facets
-                                - result.stories.children
-                  explode: true
+                      type: array
+                      uniqueItems: false
+                      items:
+                          type: string
+                          enum:
+                              - facets
+                              - result.stories.children
             responses:
                 200:
                     description: ok
