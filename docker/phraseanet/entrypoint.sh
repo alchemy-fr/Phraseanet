@@ -66,7 +66,7 @@ fi
 #rm -Rf cache/
 
 chown -R app:app config 
-chown -R app:app data &
+chown -R app:app datas &
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins;
