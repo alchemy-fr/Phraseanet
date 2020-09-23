@@ -167,6 +167,14 @@ class Result
         return new static($request, null, $code, $errorType, $errorMessage, $errorDetails);
     }
 
+    public static function createBadRequest(Request $request, $message = '')
+    {
+        $response = self::createError($request, 400, $message)->createResponse();
+        $response->headers->set('X-Status-Code', $response->getStatusCode());
+
+        return $response;
+    }
+
     private function parseResponseType()
     {
         if (trim($this->request->get('callback')) !== '') {

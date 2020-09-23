@@ -8,6 +8,7 @@ use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
+use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
 use Alchemy\Phrasea\Fractal\CallbackTransformer;
 use Alchemy\Phrasea\Fractal\IncludeResolver;
 use Alchemy\Phrasea\Fractal\SearchResultTransformerResolver;
@@ -22,14 +23,14 @@ use Alchemy\Phrasea\Search\PermalinkView;
 use Alchemy\Phrasea\Search\RecordTransformer;
 use Alchemy\Phrasea\Search\RecordView;
 use Alchemy\Phrasea\Search\SearchResultView;
-use Alchemy\Phrasea\Search\StoryTransformer;
 use Alchemy\Phrasea\Search\StoryView;
 use Alchemy\Phrasea\Search\SubdefTransformer;
 use Alchemy\Phrasea\Search\SubdefView;
 use Alchemy\Phrasea\Search\TechnicalDataTransformer;
 use Alchemy\Phrasea\Search\TechnicalDataView;
 use Alchemy\Phrasea\Search\V1SearchCompositeResultTransformer;
-use Alchemy\Phrasea\Search\V1SearchResultTransformer;
+use Alchemy\Phrasea\Search\V3SearchResultTransformer;
+use Alchemy\Phrasea\Search\V3StoryTransformer;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -37,6 +38,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use caption_record;
 use League\Fractal\Manager as FractalManager;
 use League\Fractal\Resource\Item;
+use League\Fractal\Serializer\ArraySerializer;
 use media_Permalink_Adapter;
 use media_subdef;
 use record_adapter;
@@ -60,24 +62,25 @@ class V3SearchController extends Controller
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
         $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
-        $storyTransformer = new StoryTransformer($subdefTransformer, $recordTransformer);
+        $storyTransformer = new V3StoryTransformer($subdefTransformer, $recordTransformer);
         $compositeTransformer = new V1SearchCompositeResultTransformer($recordTransformer, $storyTransformer);
-        $searchTransformer = new V1SearchResultTransformer($compositeTransformer);
+        $searchTransformer = new V3SearchResultTransformer($compositeTransformer);
 
         $transformerResolver = new SearchResultTransformerResolver([
             '' => $searchTransformer,
             'results' => $compositeTransformer,
+            'facets' => new CallbackTransformer(),
             'results.stories' => $storyTransformer,
             'results.stories.thumbnail' => $subdefTransformer,
             'results.stories.metadatas' => new CallbackTransformer(),
             'results.stories.caption' => new CallbackTransformer(),
-            'results.stories.records' => $recordTransformer,
-            'results.stories.records.thumbnail' => $subdefTransformer,
-            'results.stories.records.technical_informations' => $technicalDataTransformer,
-            'results.stories.records.subdefs' => $subdefTransformer,
-            'results.stories.records.metadata' => new CallbackTransformer(),
-            'results.stories.records.status' => new CallbackTransformer(),
-            'results.stories.records.caption' => new CallbackTransformer(),
+            'results.stories.children' => $recordTransformer,
+            'results.stories.children.thumbnail' => $subdefTransformer,
+            'results.stories.children.technical_informations' => $technicalDataTransformer,
+            'results.stories.children.subdefs' => $subdefTransformer,
+            'results.stories.children.metadata' => new CallbackTransformer(),
+            'results.stories.children.status' => new CallbackTransformer(),
+            'results.stories.children.caption' => new CallbackTransformer(),
             'results.records' => $recordTransformer,
             'results.records.thumbnail' => $subdefTransformer,
             'results.records.technical_informations' => $technicalDataTransformer,
@@ -91,21 +94,23 @@ class V3SearchController extends Controller
 
         $fractal = new FractalManager();
         $fractal->setSerializer(new TraceableArraySerializer($this->app['dispatcher']));
-        $fractal->parseIncludes($this->resolveSearchIncludes($request));
+
+        // and push everything back to fractal
+        $fractal->parseIncludes($this->getIncludes($request));
 
         $result = $this->doSearch($request);
 
-        $story_max_records = null;
-        // if search on story
+        $story_children_limit = null;
+        // if searching stories
         if ($request->get('search_type') == 1) {
-            $story_max_records = (int)$request->get('story_max_records') ?: 10;
+            $story_children_limit = (int)$request->get('story_children_limit') ?: 10;
         }
 
         $searchView = $this->buildSearchView(
             $result,
             $includeResolver->resolve($fractal),
             $this->resolveSubdefUrlTTL($request),
-            $story_max_records
+            $story_children_limit
         );
 
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
@@ -113,25 +118,30 @@ class V3SearchController extends Controller
         return Result::create($request, $ret)->createResponse();
     }
 
-     /**
+    /**
      * Returns requested includes
      *
      * @param Request $request
      * @return string[]
      */
-    private function resolveSearchIncludes(Request $request)
+    private function getIncludes(Request $request)
     {
-        $includes = [
-            'results.stories.records'
-        ];
+        // a local fractal manager will help to smartly parse the request parameters.
+        $fractal = new FractalManager();
+
+        //  first, get includes from request
+        //
+        $fractal->parseIncludes($request->get('include', []));
+        $includes = $fractal->getRequestedIncludes();
 
         if ($request->attributes->get('_extended', false)) {
-            if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
+            // if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
+            if(in_array('results.stories.children', $includes)) {
                 $includes = array_merge($includes, [
-                    'results.stories.records.subdefs',
-                    'results.stories.records.metadata',
-                    'results.stories.records.caption',
-                    'results.stories.records.status'
+                    'results.stories.children.subdefs',
+                    'results.stories.children.metadata',
+                    'results.stories.children.caption',
+                    'results.stories.children.status'
                 ]);
             }
             else {
@@ -146,7 +156,13 @@ class V3SearchController extends Controller
             ]);
         }
 
-        return $includes;
+        // push back to fractal (it will keep values uniques)
+        //
+        $fractal->parseIncludes($includes);
+
+        // finally get the result
+        //
+        return $fractal->getRequestedIncludes();
     }
 
     /**
@@ -176,14 +192,26 @@ class V3SearchController extends Controller
         if ($stories->count() > 0) {
             $user = $this->getAuthenticatedUser();
             $children = [];
+            $childrenCounts = [];
 
+            // todo : refacto to remove over-usage of array_map, array_combine, array_flip etc.
+            //
             foreach ($stories->getDataboxIds() as $databoxId) {
                 $storyIds = $stories->getDataboxRecordIds($databoxId);
 
-                $selections = $this->findDataboxById($databoxId)
-                    ->getRecordRepository()
-                    ->findChildren($storyIds, $user,1, $story_max_records);
-                $children[$databoxId] = array_combine($storyIds, $selections);
+                /** @var LegacyRecordRepository $repo */
+                $repo = $this->findDataboxById($databoxId)->getRecordRepository();
+
+                // nb : findChildren() and getChildrenCounts() acts on MULTIPLE story-ids in single sql
+                //
+                $childrenCounts[$databoxId] = $repo->getChildrenCounts($storyIds, $user);
+
+                // search children only if needed
+                //
+                if(in_array('results.stories.children', $includes, true)) {
+                    $selections = $repo->findChildren($storyIds, $user, 0, $story_max_records);
+                    $children[$databoxId] = array_combine($storyIds, $selections);
+                }
             }
 
             /** @var StoryView[] $storyViews */
@@ -194,15 +222,23 @@ class V3SearchController extends Controller
             foreach ($stories as $index => $story) {
                 $storyView = new StoryView($story);
 
-                $selection = $children[$story->getDataboxId()][$story->getRecordId()];
+                // populate children only if needed
+                //
+                if(in_array('results.stories.children', $includes, true)) {
+                    $selection = $children[$story->getDataboxId()][$story->getRecordId()];
 
-                $childrenView = $this->buildRecordViews($selection);
+                    $childrenView = $this->buildRecordViews($selection);
 
-                foreach ($childrenView as $view) {
-                    $childrenViews[spl_object_hash($view)] = $view;
+                    foreach ($childrenView as $view) {
+                        $childrenViews[spl_object_hash($view)] = $view;
+                    }
+
+                    $storyView->setChildren($childrenView);
                 }
 
-                $storyView->setChildren($childrenView);
+                $storyView->setData('childrenOffset', 0);
+                $storyView->setData('childrenLimit', $story_max_records);
+                $storyView->setData('childrenCount', $childrenCounts[$story->getDataboxId()][$story->getRecordId()]);
 
                 $storyViews[$index] = $storyView;
             }
@@ -278,9 +314,12 @@ class V3SearchController extends Controller
      */
     private function doSearch(Request $request)
     {
+        list($offset, $limit) = V3ResultHelpers::paginationFromRequest($request);
+
         $options = SearchEngineOptions::fromRequest($this->app, $request);
-        $options->setFirstResult((int)($request->get('offset_start') ?: 0));
-        $options->setMaxResults((int)$request->get('per_page') ?: 10);
+
+        $options->setFirstResult($offset);
+        $options->setMaxResults($limit);
 
         $this->getSearchEngine()->resetCache();
 

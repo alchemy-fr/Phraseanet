@@ -62,7 +62,12 @@ class JsonBodyHelper
      */
     public function decodeJsonBody(Request $request, $schemaUri = null)
     {
-        $content = $request->getContent();
+        if(empty($content = $request->getContent())) {
+            // in case of multipart/form-data (e.g. to upload a file), the only way to send
+            // also json is to pass as parameter.
+            // we decide to use "body" as parameter name
+            $content = $request->get('body');
+        }
 
         $schema = $schemaUri ? $this->retrieveSchema($schemaUri) : null;
 
