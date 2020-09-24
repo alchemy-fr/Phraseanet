@@ -6,12 +6,7 @@ envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 envsubst < "docker/phraseanet/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
-chown -R app:app \
-    cache \
-    config \
-    tmp \
-    logs \
-    www
+
 
 FILE=config/configuration.yml
 
@@ -65,14 +60,18 @@ fi
 ./docker/phraseanet/plugins/console init
 #rm -Rf cache/
 
-chown -R app:app \ 
+chown -R app:app \
+    cache \
     config \
-    cache
+    tmp \
+    logs \
+    www
     
-chown -R app:app datas &
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins;
 fi
+
+chown -R app:app datas &
 
 bash -e docker-php-entrypoint $@
