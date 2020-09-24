@@ -1,0 +1,17 @@
+<div>
+    <span class="item_numbers">{{ assets|length }} assets</span>
+</div>
+
+{% for asset in assets %}
+<div class="chim-wrapper">
+    <div class="chim-content">
+        <div class="CHIM diapo">
+            <img
+                    data-kind="image" oncontextMenu="return(false);"
+                    src="{{ asset.asset.thumbUrl|trim }}" data-original="{{ asset.asset.thumbUrl|trim }}" ondragstart="return false;">
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+

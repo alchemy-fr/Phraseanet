@@ -1,5 +1,5 @@
 {% for publication in publications %}
-    <div class="expose_basket_item basketTips ui-accordion-header ui-state-default
+    <div class="expose_basket_item publication-droppable basketTips ui-accordion-header ui-state-default
                     ui-corner-all header">
         <div class="top_block">
                     <div class="diapo">
@@ -16,15 +16,8 @@
                 <span class="green_button edit_expose" data-id="{{ publication.id }}"><i class="fa fa-edit"></i></span>
                 <span>delete</span></div>
             <div class="expose_item_bottom">
-                <span class="item_numbers">{{ publication.assets|length }}</span>
-                <input type="button" class="green_button save_expose" value="save">
-                <div id='expose_3' class="expose_drag_drop">
-                    {% for asset in publication.assets %}
-                        <div class="diapo">
-                            <img src="{{ asset.asset.url }}">
-                        </div>
-                    {% endfor %}
-                    Place to drop elt
+                <div class="expose_drag_drop">
+                    {% include 'prod/WorkZone/ExposePublicationAssets.html.twig' with { 'assets' : publication.assets} %}
                 </div>
                 <input type="button" class="load_more_expose" value="load More">
             </div>

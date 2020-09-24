@@ -83,6 +83,7 @@ class PSExposeController extends Controller
 
     /**
      * Require params "exposeName" and "publicationId"
+     * optional param "onlyAssets" equal to 1  to return only assets list
      *
      * @param PhraseaApplication $app
      * @param Request $request
@@ -107,8 +108,21 @@ class PSExposeController extends Controller
             ]
         ]);
 
+        if ($resPublication->getStatusCode() != 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when getting publication: status-code " . $resPublication->getStatusCode()
+            ]);
+        }
+
         if ($resPublication->getStatusCode() == 200) {
             $publication = json_decode($resPublication->getBody()->getContents(),true);
+        }
+
+        if ($request->get('onlyAssets')) {
+            return $this->render("prod/WorkZone/ExposePublicationAssets.html.twig", [
+                'assets' => $publication['assets']
+            ]);
         }
 
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
@@ -435,7 +449,7 @@ class PSExposeController extends Controller
 
         return $app->json([
             'success' => true,
-            'message' => count($records) . "added to the publication!"
+            'message' => count($records) . " record (s) added to the publication!"
         ]);
     }
 
