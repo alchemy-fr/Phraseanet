@@ -19,6 +19,9 @@
                         <div class="ui-widget">
                             <label>Parent publication </label>
                             <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
+                                {% if publication.parent.id %}
+                                    {% set parentId =  publication.parent.id %}
+                                {% endif %}
                                 <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
                                         class="publication-field">
                                     <option value="">Select a parent publication</option>
@@ -179,8 +182,15 @@
                 success: function (data) {
                     publicationParent.empty().html('<option value="">Select a parent publication</option>');
                     for (i = 0; i < data.publications.length; i++) {
+                        let selected = '';
+                        console.log({{ publication.parent.id }} + '::::' + data.publications[i].id);
+
+                        if (data.publications[i].id == '{{ parentId }}') {
+                            selected = 'selected="selected"';
+                        }
+
                         if (data.publications[i].id !== '{{ publication.id }}') {
-                            publicationParent.append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                            publicationParent.append('<option value='+data.publications[i].id+' ' + selected +'>'+data.publications[i].title+'</option>');
                         }
                     }
                 }

@@ -46,6 +46,10 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('GET')
             ->bind('ps_expose_get_publication');
 
+        $controllers->match('/list-profile', 'controller.ps.expose:listProfileAction')
+            ->method('GET')
+            ->bind('ps_expose_get_publication_profile');
+
         $controllers->match('/delete-publication/{publicationId}', 'controller.ps.expose:deletePublicationAction')
             ->method('POST|DELETE')
             ->bind('ps_expose_delete_publication');

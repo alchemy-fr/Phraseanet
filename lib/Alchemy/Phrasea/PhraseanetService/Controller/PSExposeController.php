@@ -132,6 +132,60 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Require params "exposeName"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function listProfileAction(PhraseaApplication $app, Request $request)
+    {
+        if ( $request->get('exposeName') == null) {
+            return $app->json([
+                'profiles' => [],
+                'basePath' => []
+            ]);
+        }
+
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        if (!isset($exposeConfiguration['token'])) {
+            $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        }
+
+        $profiles = [];
+        $basePath = '';
+
+        $resProfile = $exposeClient->get('/publication-profiles' , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $exposeConfiguration['token'],
+                'Content-Type'  => 'application/json'
+            ]
+        ]);
+
+        if ($resProfile->getStatusCode() != 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when getting publication: status-code " . $resProfile->getStatusCode()
+            ]);
+        }
+
+        if ($resProfile->getStatusCode() == 200) {
+            $body = json_decode($resProfile->getBody()->getContents(),true);
+            $profiles = $body['hydra:member'];
+            $basePath = $body['@id'];
+        }
+
+        return $app->json([
+            'profiles' => $profiles,
+            'basePath' => $basePath
+        ]);
+    }
+
+    /**
      * Create a publication
      * Require params "exposeName" and "publicationData"
      *

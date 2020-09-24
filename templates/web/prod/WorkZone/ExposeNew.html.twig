@@ -339,13 +339,30 @@
                  type: "GET",
                  url: `/prod/expose/list-publication/?format=json&exposeName=` + this.value,
                  success: function (data) {
-                     $('#publication_parent').html('');
+                     $('#publication_parent').empty().html('<option value="">Select a parent publication</option>');
                      for (i = 0; i < data.publications.length; i++) {
                          $('select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
                      }
 
                  }
              });
+
+             $.ajax({
+                 type: "GET",
+                 url: `/prod/expose/list-profile?exposeName=` + this.value,
+                 success: function (data) {
+                     $('#profile-field').empty().html('<option value="">Select Profile</option>');;
+                     for (i = 0; i < data.profiles.length; i++) {
+                         $('#profile-field').append('<option ' +
+                             'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                             + data.profiles[i].name +
+                             '</option>'
+                         );
+                     }
+
+                 }
+             });
+
          });
     </script>
     <style>
