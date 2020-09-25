@@ -10,11 +10,12 @@
 
 namespace Alchemy\Phrasea\Search;
 
+use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use League\Fractal\TransformerAbstract;
 
 class V3SearchResultTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['results', 'facets'];
+    protected $availableIncludes = ['results', 'suggestions', 'facets'];
     protected $defaultIncludes = ['results'];
 
     /**
@@ -48,6 +49,13 @@ class V3SearchResultTransformer extends TransformerAbstract
     public function includeResults(SearchResultView $resultView)
     {
         return $this->item($resultView, $this->transformer);
+    }
+
+    public function includeSuggestions(SearchResultView $resultView)
+    {
+        return $this->collection($resultView->getResult()->getSuggestions()->toArray(), function ($x) {
+            return $x->toArray();
+        });
     }
 
     public function includeFacets(SearchResultView $resultView)
