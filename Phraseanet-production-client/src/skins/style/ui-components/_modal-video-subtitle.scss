@@ -1,0 +1,205 @@
+/**Video subtitle **/
+.video-subtitle-editor-container {
+  font-size: 12px;
+  .video-subtitle-top {
+    padding: 7px 7px 10px;
+    form {
+      margin: 0;
+    }
+  }
+  .video-subtitle-left-inner {
+    overflow: auto;
+    position: relative;
+    background: #1a1a1a;
+    padding-top: 10px;
+  }
+
+  .video-subtitle-wrapper {
+    > div {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .number {
+    background: #5cb85c;
+    color: #ffffff;
+    padding: 4px 2px;
+    line-height: 1;
+    float: left;
+    margin-right: 12px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+    display: block;
+    width: 26px;
+    text-align: center;
+  }
+  .video-subtitle-item {
+    padding-right: 50px;
+    padding-bottom: 20px;
+    position: relative;
+    margin-bottom: 20px;
+    transition: 0.3s all;
+    &:after {
+      width: 100%;
+      height: 1px;
+      background: #7f7f7f;
+      content: " ";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+
+
+  }
+  .caption-label {
+    position: relative;
+    padding-bottom: 14px;
+    padding-top: 2px;
+    color: #fff;
+    &:after {
+      content: '\f078';
+      font-family: fontawesome;
+      position: absolute;
+      right: 20px;
+      top: 0;
+      color: #7f7f7f;;
+    }
+    &:before {
+      content: "";
+      background: #7f7f7f;
+      width: 100%;
+      height: 1px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    &.caption_active {
+      display: block;
+      &:after {
+        content: '\f077';
+      }
+      &:before {
+        content: none;
+      }
+    }
+
+  }
+  .editing {
+    .video-subtitle-item {
+      display: none;
+      &.active {
+        display: block;
+      }
+      .number {
+        float: left;
+      }
+    }
+
+  }
+  .item-field {
+    margin-right: 10px;
+    float: left;
+    width: 93px;
+    padding-right: 10px;
+    float: left;
+    input[type="text"] {
+      width: 100%;
+    }
+    &.caption-text {
+      width: 100%;
+    }
+  }
+
+  textarea {
+    width: 100%;
+    display: block;
+  }
+  .remove-item {
+    position: absolute;
+    right: 8px;
+    bottom: 35px;
+    font-size: 28px;
+    color: red;
+    cursor: pointer;
+  }
+
+  .video-subtitle-left-button {
+    text-align: left;
+    padding: 5px 20px;
+    .btn {
+      margin-right: 5px;
+    }
+  }
+  .editing .item-field.caption-text {
+    margin-left: 0;
+  }
+  .duration {
+    display: none;
+  }
+  .start-label, .end-label {
+    padding: 0 10px;
+  }
+  .text-label {
+    padding-right: 60px;
+    color: #fff;
+  }
+
+}
+#record-vtt {
+  position: absolute;
+  z-index: -1;
+}
+
+.video-subtitle-bottom {
+  display: flex;
+  flex-wrap: wrap;
+}
+.video-subtitle-left {
+  width: 50%;
+  position: relative;
+}
+.video-subtitle-right {
+  width: 50%;
+  background: #000;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.video-subtitle-wrapper {
+  text-align: center;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.video-subtitle-request {
+  padding: 20px;
+}
+.video-subtitle-center-button {
+  text-align: center;
+  margin-top: 20px;
+}
+.video-subtitle-right {
+  .thumb_video {
+    height: 100%;
+    width: 100%;
+  }
+}
+#video-subtitle-data {
+  margin-bottom: 2px;
+}
+.video-player {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.alert-wrapper {
+  margin-top: 20px;
+}

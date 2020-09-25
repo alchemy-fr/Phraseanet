@@ -12,7 +12,7 @@ gulp.task('copy-phraseanet-production-client-debug', function(){
 gulp.task('copy-phraseanet-production-client', function(){
     // copy all dist folder:
 
-    return gulp.src('node_modules/phraseanet-production-client/dist/**/*')
+    return gulp.src('Phraseanet-production-client/dist/**/*')
         .pipe(gulp.dest( config.paths.build + 'production'));
 });
 gulp.task('watch-phraseanet-production-client-js', function() {
