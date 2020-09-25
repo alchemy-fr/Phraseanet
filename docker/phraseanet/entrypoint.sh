@@ -49,6 +49,15 @@ if [ -f "$FILE" ]; then
 
 else
     echo "$FILE doesn't exist, entering setup..."
+
+    chown app:app \
+        cache \
+        config \
+        tmp \
+        logs \
+        www \
+        datas
+
     runuser app -c docker/phraseanet/auto-install.sh
 fi
 
