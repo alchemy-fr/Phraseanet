@@ -320,7 +320,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $queryESLib,
             $res['took'],   // duration
             $options->getFirstResult(),
-            $res['hits']['total'],  // available
+            count($res['hits']['hits']),  // available
             $res['hits']['total'],  // total
             null,   // error
             null,   // warning

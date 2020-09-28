@@ -1,0 +1,277 @@
+$workzoneBackgroundColor: $darkBackgroundColor !default; //$mediumBackgroundColor !default;
+$workzoneTopBorder: none !default;
+$workzoneTabTopBorder: 1px solid $darkBorderColor !default;
+$workzoneBorderTopColor: $mediumBorderColor !default;
+$tabHeight: 86px !default;
+$subTabHeight: 46px !default;
+
+$workzoneTabContentBackgroundColor: $workzoneBackgroundColor !default;
+
+$workzoneTabBackgroundColor: $workzoneBackgroundColor !default;
+$workzoneTabTextColor: $mediumTextColor !default;
+
+$workzoneTabActiveBackgroundColor: $tabContentBackgroundColor !default;
+$workzoneTabActiveTextColor: $lightTextColor !default;
+
+$workzoneTabDisabledBackgroundColor: $tabBackgroundColor !default;
+$workzoneTabDisabledTextColor: $mediumTextActiveColor !default;
+
+$white: #4990e2 !default;
+$toolsPanelBg: #464646 !default;
+$toolTitleColor: #b9b9b9 !default;
+$basketTips: rgba(0, 0, 0, 0.2) !default;
+$basketTips2: rgba(0, 0, 0, 0.19) !default;
+$dividerBg: #6c6c6c !default;
+
+/**
+ * Workzone
+ */
+#idFrameC {
+    top: 0 !important;
+    min-width: 300px;
+    bottom: 0 !important;
+    &.closed {
+        min-width: 0;
+    }
+    #retractableButton {
+        cursor: pointer;
+        width: 70px;
+        height: 85px;
+        float: right;
+        text-align: center;
+        line-height: 85px;
+        margin-bottom: -20px;
+        i {
+            font-size: 23px;
+            color: $mediumTextColor;
+        }
+    }
+    .wrapper {
+        background-color: $workzoneBackgroundColor;
+        right: 10px;
+        border-top: $workzoneTopBorder; //$workzoneBorderTop;
+    }
+
+    .ui-tabs {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        .ui-tabs-nav {
+            background-color: $workzoneTabContentBackgroundColor;
+            top: 0;
+            left: 10px;
+            right: 10px;
+            //margin-top: 21px;
+            // border-top: 1px solid $workzoneTabTopBorder;
+            border-radius: 0;
+            height: $subTabHeight;
+            border-bottom: 1px solid $workzoneTabBorderBottom;
+            box-sizing: border-box;
+            li {
+                width: auto;
+                height: $tabHeight;
+                display: inline-block;
+                background-color: $workzoneTabBackgroundColor;
+                z-index: 10;
+                border-radius: 0;
+                margin: 0;
+                box-sizing: border-box;
+                &.proposals_WZ {
+                    &.ui-state-active {
+                        a {
+                            border-bottom: 3px solid $proposalColor;
+                        }
+                    }
+                    &.active {
+                        img.proposals_off {
+                            display: none;
+                        }
+                    }
+                    img.proposals_on {
+                        display: none;
+                    }
+                }
+
+                /*&.proposals_WZ.ui-state-active a {
+                  border-bottom: 3px solid #4c5d84;
+                }*/
+                &.thesaurus.ui-state-active a {
+                    border-bottom: 3px solid $thesaurusColor;
+                }
+                &.baskets.ui-state-active a {
+                    border-bottom: 3px solid $basketsColor;
+                }
+                &.plugins.ui-state-active a {
+                    border-bottom: 3px solid $pluginsColor;
+                }
+
+                a {
+                    padding: 0;
+                    margin: 0;
+                    border-radius: 0;
+                    &.escamote {
+                        margin: 25px 25px 0 0;
+                    }
+                }
+                &:hover {
+                    a {
+                        background-color: $workzoneTabBgHover;
+                        border-bottom: 3px solid $workzoneTabBgHover;
+                    }
+                }
+                &.ui-state-active {
+                    a {
+                        background-color: $workzoneTabBgActive;
+                        border-bottom: 1px solid $thesaurusColor;
+                        // height: 82px;
+                    }
+                }
+            }
+        }
+        .ui-tabs-panel {
+            position: absolute;
+            top: 56px;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+    }
+    ul.prod-icon-menu {
+        width: 100%;
+        display: initial;
+    }
+    .prod-icon-menu {
+        .WZtabs, .WZplugins {
+            display: block;
+            width: 69px;
+            height: 82px;
+            line-height: 82px;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .WZbasketTab {
+            text-align: center;
+            #basket_menu_trigger {
+                line-height: 21px;
+            }
+        }
+    }
+    .closed {
+        .prod-icon-menu li {
+            clear: left;
+        }
+    }
+    .ui-tabs-panel,
+    .ui-resizable-handle {
+        display: none;
+    }
+    div.basketTips {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 12px 0 rgba(0, 0, 0, 0.19);
+        &.hidden {
+            display: none;
+            box-shadow: none;
+        }
+    }
+    .tools-accordion {
+        display: block;
+        z-index: 2;
+        position: relative;
+        margin-top: 3px;
+        margin-bottom: 10px;
+        width: auto;
+        min-width: 160px;
+        max-width: 234px;
+        height: 30px;
+        background-color: $mainMenuBackgroundColor;
+        padding-left: 16px;
+        color: $mainMenuLinkColor;
+        cursor: pointer;
+        text-align: left;
+        border: none;
+        outline: none;
+        font-family: Roboto;
+        font-size: 12px;
+        font-weight: 700;
+        &:before {
+            content: "\e96c";
+            font-family: "icomoon";
+            position: absolute;
+            right: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            -moz-transition: all 0.2s linear;
+            -webkit-transition: all .2s linear;
+            transition: all .2s linear;
+        }
+        &.active {
+           &:before {
+               color: $white !important;
+               -moz-transform: rotate(90deg);
+               -webkit-transform: rotate(90deg);
+               transform: rotate(90deg);
+           }
+        }
+    }
+    .tools-panel {
+        width: 136px;
+        z-index: 1000;
+        position: absolute;
+        background-color: $toolsPanelBg;
+        padding: 0 12px;
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.2s ease-out;
+        .divider {
+            width: 100%;
+            height: 1px;
+            background-color: $dividerBg;
+            margin: 6px 0px;
+        }
+        img {
+            width: 18px;
+            height: 18px;
+        }
+        span {
+            font-family: Roboto;
+            font-size: 11px;
+            font-weight: normal;
+            font-style: normal;
+            font-stretch: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            color: $toolTitleColor;
+        }
+        button {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: none;
+            margin: 4px 0px;
+            text-align: left;
+            padding: 2px 2px;
+            cursor: pointer;
+            span {
+                margin-left: 6px;
+                font-size: 11px;
+                color: $toolTitleColor;
+                font-family: Roboto;
+            }
+        }
+        button:hover {
+            span {
+                font-size: 12px;
+                color: $toolTitleColor;
+            }
+        }
+    }
+}
+
+.alert_datas_changed a {
+    color: #404040;
+    text-decoration: underline;
+}

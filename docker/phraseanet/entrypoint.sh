@@ -6,13 +6,7 @@ envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 envsubst < "docker/phraseanet/php-fpm.conf.sample" > /usr/local/etc/php-fpm.conf
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
-chown -R app:app \
-    cache \
-    config \
-    datas \
-    tmp \
-    logs \
-    www
+
 
 FILE=config/configuration.yml
 
@@ -55,6 +49,15 @@ if [ -f "$FILE" ]; then
 
 else
     echo "$FILE doesn't exist, entering setup..."
+
+    chown app:app \
+        cache \
+        config \
+        tmp \
+        logs \
+        www \
+        datas
+
     runuser app -c docker/phraseanet/auto-install.sh
 fi
 
@@ -69,13 +72,15 @@ fi
 chown -R app:app \
     cache \
     config \
-    datas \
     tmp \
     logs \
     www
+    
 
 if [ -d "plugins/" ];then
 chown -R app:app plugins;
 fi
+
+chown -R app:app datas &
 
 bash -e docker-php-entrypoint $@
