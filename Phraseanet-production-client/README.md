@@ -12,6 +12,7 @@ Node `^5.0.0`.
 ## Dev workflow
 
  - Go to Phraseanet-production-client-folder
+ - Install dependancies for dev : ```npm install```
  - make your modification
  - Generate dist ```npm run dist```
  - ```make install_asset``` to copy assets in www/assets folder
