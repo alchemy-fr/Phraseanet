@@ -1,0 +1,51 @@
+$colorpickerBoxBorder: #FFFFFF;
+$colorpickerSubmitBorder: #404040;
+$colorpickerFocusBorder: #999999;
+
+.colorpicker_box {
+  border: 1px solid $colorpickerBoxBorder;
+  cursor: pointer;
+  float: left;
+  margin: 2px;
+  padding: 0;
+}
+.colorpickerbox {
+  position: relative;
+  float: left;
+  .colorpicker {
+    width: 210px;
+    height: 220px;
+  }
+  .colorpicker_submit .submiter {
+    padding: 3px 0 0 0;
+  }
+  .colorpicker_submit {
+    background-image: none;
+    background-color: black;
+    height: 25px;
+    left: 90px;
+    overflow: hidden;
+    position: absolute;
+    top: 15px;
+    width: 100px;
+    border: 1px solid $colorpickerSubmitBorder;
+    cursor: pointer;
+    text-align: center;
+  }
+  .colorpicker_focus {
+    border: 1px solid $colorpickerFocusBorder;
+    border-radius: $defaultBorderRadius;
+  }
+  .colorpicker_current_color,
+  .colorpicker_field,
+  .colorpicker_hex {
+    display: none;
+  }
+  .colorpicker_color,
+  .colorpicker_hue {
+    top: 56px;
+  }
+  .colorpicker_new_color {
+    left: 14px;
+  }
+}

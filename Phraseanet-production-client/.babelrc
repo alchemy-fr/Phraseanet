@@ -1,0 +1,19 @@
+{
+
+"ignore": [
+    "foo.js",
+    "bar/**/*.js"
+  ],
+  "presets": [
+    "es2015", "stage-0"
+  ],
+"env": {
+    "start": {
+      /* TODO: */
+      /* fill with hmr settings when there is a new release */
+      /* to play nice with babel 6*/
+    }
+  },
+/* Add plugins here**/
+"plugins": ["babel-plugin-syntax-jsx"]
+}

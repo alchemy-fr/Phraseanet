@@ -1,0 +1,301 @@
+#pub_tabs .btn-group.open .btn-inverse.dropdown-toggle {
+  background-color: $bridgeDropdownToggleBg;
+  background-image: none;
+}
+#dialog_publicator {
+  .dropdown-menu {
+    min-width: 95px;
+    background-color: $bridgeDropdownMenuBg;
+    *border: 1px solid $bridgeDropdownMenuBorder;
+    a {
+      padding: 3px 10px;
+      color: $bridgeDropdownMenuColor;
+      cursor: pointer;
+      &:hover {
+        background-color: $bridgeDropdownMenuHoverBg;
+        color: $bridgeDropdownMenuHoverColor;
+      }
+    }
+  }
+  .ui-tabs-panel {
+    left: 200px;
+  }
+  .notice_box,
+  .error_box {
+    color: $textPrimaryInverseColor;
+    font-weight: bold;
+    margin: 5px auto;
+    padding: 5px 0;
+    text-align: center;
+    width: 90%;
+  }
+  .notice_box {
+    background-color: green;
+    color: $textPrimaryColor;
+  }
+  .error_box {
+    background-color: orange;
+  }
+  .api_banner {
+    height: 30px;
+    bottom: auto;
+    background-color: $lightBackgroundColor;
+    .submenu.ui-buttonset {
+      z-index: 600;
+    }
+  }
+  .api_content {
+    top: 30px;
+    bottom: 25px;
+    color: $textPrimaryColor;
+    .blockmenu {
+      bottom: auto;
+      background-repeat: repeat-x;
+      background-position: left bottom;
+      z-index: 1000;
+      width:100%;
+      height:40px
+    }
+    .blockresponse {
+      padding: 0 10px;
+      top: 40px;
+      overflow: auto;
+      z-index: 200;
+      .form-actions {
+        background-color: $darkerBackgroundColor;
+        border-top: none;
+        margin: 0;
+      }
+    }
+  }
+  .api_content .blockmenu a.selected,
+  .api_banner a.selected {
+    font-weight: bold;
+    color: $highlightBackgroundColor;
+  }
+  .api_infos {
+    top: auto;
+    height: 25px;
+    background-image: url('#{$iconsPath}api_info.png');
+    background-repeat: repeat-x;
+    background-position: 0 0;
+    color: $textSecondaryColor;
+  }
+  .main_menu {
+    float: left;
+  }
+  .diapo {
+    width: 90px;
+    overflow: hidden;
+    .title {
+      height: 16px;
+      overflow: hidden;
+    }
+    &.pending_records {
+      width: 50px;
+      overflow: hidden;
+    }
+    &.ui-selected {
+      background-color: #404040;
+    }
+    &.ui-selecting {
+      background-color: #202020;
+    }
+    .thumb_wrapper {
+      padding: 5px;
+    }
+  }
+
+  .api_thumbnail {
+    max-width: 120px;
+  }
+
+  .duration_time {
+    background-color: darken($darkerBackgroundColor, 10);
+    color: $darkerTextColor;
+    font-weight: bold;
+    padding: 2px 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 11px;
+  }
+
+}
+
+#dialog_publicator .ui-state-default.not_configured a {
+  color: #888888;
+  font-style: italic;
+}
+
+#dialog_publicator .ui-state-active a {
+  color: #0088CC;
+}
+
+#dialog_publicator .ui-state-active.not_configured a {
+  color: #CCCCCC;
+  font-style: normal;
+}
+
+#dialog_publicator .dropdown-menu .divider {
+  background-color: #515151;
+  border-bottom: 1px solid #404040;
+  margin: 3px 1px 3px 1px;
+}
+
+#dialog_publicator .ui-tabs .ui-tabs-panel.loading {
+  background-image: url('#{$iconsPath}loader000.gif');
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+#dialog_publicator .ui-tabs-panel .PNB10.container {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#dialog_publicator .blockresponse .element {
+  margin: 5px 10px;
+}
+
+#dialog_publicator .element table {
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+#dialog_publicator .element table tr {
+  vertical-align: top;
+}
+
+#dialog_publicator .element table .title {
+  color: #0088CC;
+  font-weight: bold;
+}
+
+#dialog_publicator .element table td.thumbnail {
+  width: 140px;
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+  background-color: transparent;
+  text-align: center;
+}
+
+#dialog_publicator .element table td.special {
+  width: 80px;
+}
+
+#dialog_publicator .ui-tabs-panel .blockresponse a {
+  color: #0088CC;
+  text-decoration: none;
+}
+
+#dialog_publicator .element_menu .default_action,
+.element_menu .trigger {
+  z-index: 444;
+  font-size: $mediumFontSize;
+  font-weight: normal;
+  border-color: #666
+}
+
+#dialog_publicator .submenu {
+  display: none;
+  position: absolute;
+}
+
+#dialog_publicator .multi_menu .submenu button {
+  background-color: #313131;
+  background-image: none;
+}
+
+#dialog_publicator .multi_menu .submenu button.ui-state-hover {
+  background-color: #212121;
+}
+
+#dialog_publicator .ui-state-active a {
+  color: #0077BC;
+}
+
+#dialog_publicator .api_banner button {
+  border: 1px solid #515151;
+  background-color: #404040;
+}
+
+#dialog_publicator .api_banner .submenu.ui-buttonset {
+  z-index: 600;
+}
+
+#dialog_publicator .api_content .element {
+  padding: 5px;
+  color: $textPrimaryColor;
+}
+
+#dialog_publicator .api_content .element.odd {
+  background-color: #404040;
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+  -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+}
+
+#dialog_publicator .api_content .element.even {
+  background-color: #666666;
+  -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+  -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25) inset, -2px -2px 4px rgba(0, 0, 0, 0.25) inset;
+}
+
+#dialog_publicator .api_content .element.selected {
+  background-color: #999999;
+}
+
+#dialog_publicator .api_content .element table .informations {
+  width: 296px;
+}
+
+#ul_main_pub_tabs {
+  width: 200px;
+  position: absolute;
+  overflow: hidden;
+  right: auto;
+}
+
+
+#ul_main_pub_tabs {
+  width: 200px;
+  position: absolute;
+  overflow: hidden;
+  right: auto;
+  margin-top: -1px;
+}
+
+#ul_main_pub_tabs li {
+  padding-left: 20px;
+  background-repeat: no-repeat;
+  background-position: 6px center;
+}
+
+#ul_main_pub_tabs li.bridge_Youtube {
+  background-image: url('#{$iconsPath}youtube-small.gif');
+}
+
+#ul_main_pub_tabs li.bridge_Dailymotion {
+  background-image: url('#{$iconsPath}dailymotion-small.gif');
+}
+
+#ul_main_pub_tabs li.bridge_Flickr {
+  background-image: url('#{$iconsPath}flickr-small.gif');
+}
+
+
+#publicator_selection {
+  height: 190px;
+  bottom: auto;
+  background-color: $lightBackgroundColor;
+  > .PNB10 {
+    overflow: auto;
+    bottom: 50px;
+    background-color: $darkerBackgroundColor;
+  }
+}
