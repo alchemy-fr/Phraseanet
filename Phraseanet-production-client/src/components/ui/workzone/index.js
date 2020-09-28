@@ -22,9 +22,26 @@ const workzone = (services) => {
     var nextBasketScroll = false;
     var warnOnRemove = true;
     let $container;
+    let dragBloc = $('#basket-tab').val() ;
+
+    function checkActiveBloc(destBloc) {
+
+        if (document.getElementById('expose_tab') && document.getElementById('expose_tab').getAttribute('aria-expanded') == 'true') {
+            $('#basket-tab').val('#expose_tab');
+        }
+        if (document.getElementById('baskets') && document.getElementById('baskets').getAttribute('aria-expanded') == 'true') {
+            $('#basket-tab').val('#baskets');
+        }
+
+        var destBloc =  $('#basket-tab').val();
+        console.log(destBloc);
+        return destBloc;
+    }
+    checkActiveBloc(dragBloc);
 
     const initialize = () => {
         $container = $('#idFrameC');
+        checkActiveBloc(dragBloc);
 
         $container.resizable({
             handles: 'e',
@@ -68,13 +85,47 @@ const workzone = (services) => {
             }
         });
 
+        $('#idFrameC .expose_li').on('click', function (event) {
+            checkActiveBloc(dragBloc);
+        });
+
+        $('.add_expose').on('click',function (event) {
+            openExposeModalOnBasket('#DIALOG-expose-add');
+        });
+
+        $('#expose_list').on('change', function () {
+            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            $.ajax({
+                type: 'GET',
+                url: '/prod/expose/list-publication/?exposeName=' + this.value,
+                success: function (data) {
+                    $('.publication-list').empty().html(data);
+
+                    $('.expose_basket_item .top_block').on('click', function (event) {
+                        $(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        $(this).toggleClass('open');
+                    });
+                    $('.edit_expose').on('click',function (event) {
+                        openExposeModalOnBasket();
+                    });
+
+                    activeExpose();
+                }
+            });
+        });
+
+        $('.publication-list').on('click', '.top-block' , function (event) {
+            $(this).parent().find('.expose_item_deployed').toggleClass('open');
+            $(this).toggleClass('open');
+        })
+
         $('#idFrameC .ui-tabs-nav li').on('click', function (event) {
             if ($container.attr('data-status') === 'closed') {
                 $('#retractableButton').find('i').removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
                 $container.width(360);
                 $('#rightFrame').css('left', 360);
                 $('#rightFrame').width($(window).width() - 360);
-                $('#baskets, #proposals, #thesaurus_tab').hide();
+                $('#baskets, #expose_tab, #proposals, #thesaurus_tab').hide();
                 $('.ui-resizable-handle, #basket_menu_trigger').show();
                 var IDname = $(this).attr('aria-controls');
                 $('#' + IDname).show();
@@ -95,7 +146,7 @@ const workzone = (services) => {
                 $('#rightFrame').css('left', 80);
                 $('#rightFrame').width($(window).width() - 80);
                 $container.attr('data-status', 'closed');
-                $('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
+                $('#baskets, #expose_tab, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
                 $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
                 $('.WZbasketTab').css('background-position', '15px 16px');
                 $container.addClass('closed');
@@ -224,6 +275,7 @@ const workzone = (services) => {
             }
         };
         filterBaskets();
+        $('#expose_tabs').tabs();
 
     };
 
@@ -527,6 +579,48 @@ const workzone = (services) => {
 
     }
 
+    function activeExpose() {
+        // drop on publication
+        $('#idFrameC').find('.publication-droppable')
+            .droppable({
+                scope: 'objects',
+                hoverClass: 'baskDrop',
+                tolerance: 'pointer',
+                accept: function (elem) {
+                    if ($(elem).hasClass('CHIM')) {
+                        if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
+                            return false;
+                        }
+                    }
+                    if ($(elem).hasClass('grouping') || $(elem).parent()[0] === $(this)[0]) {
+                        return false;
+                    }
+                    return true;
+                },
+                drop: function (event, ui) {
+                    dropOnBask(event, ui.draggable, $(this));
+                }
+            });
+    }
+
+    function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
+        $.ajax({
+            type: 'GET',
+            url: `/prod/expose/get-publication/${publicationId}?exposeName=${exposeName}&onlyAssets=1`,
+            beforeSend: function () {
+                assetsContainer.addClass('loading');
+            },
+            success: function (data) {
+                if (typeof data.success === 'undefined') {
+                    assetsContainer.removeClass('loading');
+                    assetsContainer.empty().html(data);
+                } else {
+                    console.log(data);
+                }
+            }
+        });
+    }
+
     function getContent(header, order) {
         if (window.console) {
             console.log('Reload content for ', header);
@@ -647,7 +741,30 @@ const workzone = (services) => {
         });
     }
 
+    function openExposeModalOnBasket(edit = '#DIALOG-expose-edit') {
+        $(edit).attr('title', localeService.t('Edit expose title'))
+            .dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: true,
+                draggable: true,
+                width: 900,
+                height: 575,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                }
+            }).dialog('open');
+        $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        $('.close-expose-modal').on('click', function () {
+            $('#DIALOG-expose-edit').dialog('close');
+        });
+    }
+
     function dropOnBask(event, from, destKey, singleSelection) {
+        checkActiveBloc(dragBloc);
+
         let action = '';
         let dest_uri = '';
         let lstbr = [];
@@ -747,33 +864,59 @@ const workzone = (services) => {
                 return false;
         }
 
-        if (window.console) {
-            window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
-        }
+        //save basket after drop elt
+        if ($('#basket-tab').val() === '#baskets') {
 
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: data,
-            dataType: 'json',
-            beforeSend: function () {
-
-            },
-            success: function (data) {
-                if (!data.success) {
-                    humane.error(data.message);
-                } else {
-                    humane.info(data.message);
-                }
-                if (act === 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true) {
-                    $('.CHIM.selected:visible').fadeOut();
-                    workzoneOptions.selection.empty();
-                    return workzoneOptions.reloadCurrent();
-                }
-
-                return true;
+            if (window.console) {
+                window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
             }
-        });
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    if (!data.success) {
+                        humane.error(data.message);
+                    } else {
+                        humane.info(data.message);
+                    }
+                    if (act === 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true) {
+                        $('.CHIM.selected:visible').fadeOut();
+                        workzoneOptions.selection.empty();
+                        return workzoneOptions.reloadCurrent();
+                    }
+
+                    return true;
+                }
+            });
+
+        } else {
+            console.log(data.lst);
+
+            let publicationId = destKey.find('.edit_expose').attr('data-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = destKey.find('.expose_drag_drop');
+
+            $.ajax({
+                type: 'POST',
+                url: '/prod/expose/publication/add-assets',
+                data: {
+                    publicationId: publicationId,
+                    exposeName: exposeName,
+                    lst: data.lst
+                },
+                dataType: 'json',
+                success: function (data) {
+                    getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    console.log(data.message);
+                }
+            });
+        }
     }
 
     function fix() {

@@ -9397,9 +9397,26 @@ var workzone = function workzone(services) {
     var nextBasketScroll = false;
     var warnOnRemove = true;
     var $container = void 0;
+    var dragBloc = (0, _jquery2.default)('#basket-tab').val();
+
+    function checkActiveBloc(destBloc) {
+
+        if (document.getElementById('expose_tab') && document.getElementById('expose_tab').getAttribute('aria-expanded') == 'true') {
+            (0, _jquery2.default)('#basket-tab').val('#expose_tab');
+        }
+        if (document.getElementById('baskets') && document.getElementById('baskets').getAttribute('aria-expanded') == 'true') {
+            (0, _jquery2.default)('#basket-tab').val('#baskets');
+        }
+
+        var destBloc = (0, _jquery2.default)('#basket-tab').val();
+        console.log(destBloc);
+        return destBloc;
+    }
+    checkActiveBloc(dragBloc);
 
     var initialize = function initialize() {
         $container = (0, _jquery2.default)('#idFrameC');
+        checkActiveBloc(dragBloc);
 
         $container.resizable({
             handles: 'e',
@@ -9439,13 +9456,47 @@ var workzone = function workzone(services) {
             }
         });
 
+        (0, _jquery2.default)('#idFrameC .expose_li').on('click', function (event) {
+            checkActiveBloc(dragBloc);
+        });
+
+        (0, _jquery2.default)('.add_expose').on('click', function (event) {
+            openExposeModalOnBasket('#DIALOG-expose-add');
+        });
+
+        (0, _jquery2.default)('#expose_list').on('change', function () {
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            _jquery2.default.ajax({
+                type: 'GET',
+                url: '/prod/expose/list-publication/?exposeName=' + this.value,
+                success: function success(data) {
+                    (0, _jquery2.default)('.publication-list').empty().html(data);
+
+                    (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
+                        (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        (0, _jquery2.default)(this).toggleClass('open');
+                    });
+                    (0, _jquery2.default)('.edit_expose').on('click', function (event) {
+                        openExposeModalOnBasket();
+                    });
+
+                    activeExpose();
+                }
+            });
+        });
+
+        (0, _jquery2.default)('.publication-list').on('click', '.top-block', function (event) {
+            (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+            (0, _jquery2.default)(this).toggleClass('open');
+        });
+
         (0, _jquery2.default)('#idFrameC .ui-tabs-nav li').on('click', function (event) {
             if ($container.attr('data-status') === 'closed') {
                 (0, _jquery2.default)('#retractableButton').find('i').removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
                 $container.width(360);
                 (0, _jquery2.default)('#rightFrame').css('left', 360);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 360);
-                (0, _jquery2.default)('#baskets, #proposals, #thesaurus_tab').hide();
+                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab').hide();
                 (0, _jquery2.default)('.ui-resizable-handle, #basket_menu_trigger').show();
                 var IDname = (0, _jquery2.default)(this).attr('aria-controls');
                 (0, _jquery2.default)('#' + IDname).show();
@@ -9466,7 +9517,7 @@ var workzone = function workzone(services) {
                 (0, _jquery2.default)('#rightFrame').css('left', 80);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 80);
                 $container.attr('data-status', 'closed');
-                (0, _jquery2.default)('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
+                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
                 (0, _jquery2.default)('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
                 (0, _jquery2.default)('.WZbasketTab').css('background-position', '15px 16px');
                 $container.addClass('closed');
@@ -9595,6 +9646,7 @@ var workzone = function workzone(services) {
             }
         };
         filterBaskets();
+        (0, _jquery2.default)('#expose_tabs').tabs();
     };
 
     var getResultSelectionStream = function getResultSelectionStream() {
@@ -9897,6 +9949,47 @@ var workzone = function workzone(services) {
         });
     }
 
+    function activeExpose() {
+        // drop on publication
+        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').droppable({
+            scope: 'objects',
+            hoverClass: 'baskDrop',
+            tolerance: 'pointer',
+            accept: function accept(elem) {
+                if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
+                    if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
+                        return false;
+                    }
+                }
+                if ((0, _jquery2.default)(elem).hasClass('grouping') || (0, _jquery2.default)(elem).parent()[0] === (0, _jquery2.default)(this)[0]) {
+                    return false;
+                }
+                return true;
+            },
+            drop: function drop(event, ui) {
+                dropOnBask(event, ui.draggable, (0, _jquery2.default)(this));
+            }
+        });
+    }
+
+    function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: '/prod/expose/get-publication/' + publicationId + '?exposeName=' + exposeName + '&onlyAssets=1',
+            beforeSend: function beforeSend() {
+                assetsContainer.addClass('loading');
+            },
+            success: function success(data) {
+                if (typeof data.success === 'undefined') {
+                    assetsContainer.removeClass('loading');
+                    assetsContainer.empty().html(data);
+                } else {
+                    console.log(data);
+                }
+            }
+        });
+    }
+
     function getContent(header, order) {
         if (window.console) {
             console.log('Reload content for ', header);
@@ -10009,7 +10102,31 @@ var workzone = function workzone(services) {
         });
     }
 
+    function openExposeModalOnBasket() {
+        var edit = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '#DIALOG-expose-edit';
+
+        (0, _jquery2.default)(edit).attr('title', localeService.t('Edit expose title')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 575,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            }
+        }).dialog('open');
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        (0, _jquery2.default)('.close-expose-modal').on('click', function () {
+            (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
+        });
+    }
+
     function dropOnBask(event, from, destKey, singleSelection) {
+        checkActiveBloc(dragBloc);
+
         var action = '';
         var dest_uri = '';
         var lstbr = [];
@@ -10109,31 +10226,56 @@ var workzone = function workzone(services) {
                 return false;
         }
 
-        if (window.console) {
-            window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
-        }
+        //save basket after drop elt
+        if ((0, _jquery2.default)('#basket-tab').val() === '#baskets') {
 
-        _jquery2.default.ajax({
-            type: 'POST',
-            url: url,
-            data: data,
-            dataType: 'json',
-            beforeSend: function beforeSend() {},
-            success: function success(data) {
-                if (!data.success) {
-                    humane.error(data.message);
-                } else {
-                    humane.info(data.message);
-                }
-                if (act === 'MOV' || (0, _jquery2.default)(destKey).next().is(':visible') === true || (0, _jquery2.default)(destKey).hasClass('content') === true) {
-                    (0, _jquery2.default)('.CHIM.selected:visible').fadeOut();
-                    workzoneOptions.selection.empty();
-                    return workzoneOptions.reloadCurrent();
-                }
-
-                return true;
+            if (window.console) {
+                window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
             }
-        });
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                beforeSend: function beforeSend() {},
+                success: function success(data) {
+                    if (!data.success) {
+                        humane.error(data.message);
+                    } else {
+                        humane.info(data.message);
+                    }
+                    if (act === 'MOV' || (0, _jquery2.default)(destKey).next().is(':visible') === true || (0, _jquery2.default)(destKey).hasClass('content') === true) {
+                        (0, _jquery2.default)('.CHIM.selected:visible').fadeOut();
+                        workzoneOptions.selection.empty();
+                        return workzoneOptions.reloadCurrent();
+                    }
+
+                    return true;
+                }
+            });
+        } else {
+            console.log(data.lst);
+
+            var publicationId = destKey.find('.edit_expose').attr('data-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = destKey.find('.expose_drag_drop');
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/prod/expose/publication/add-assets',
+                data: {
+                    publicationId: publicationId,
+                    exposeName: exposeName,
+                    lst: data.lst
+                },
+                dataType: 'json',
+                success: function success(data) {
+                    getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    console.log(data.message);
+                }
+            });
+        }
     }
 
     function fix() {

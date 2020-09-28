@@ -353,7 +353,7 @@
                  success: function (data) {
                      $('#profile-field').empty().html('<option value="">Select Profile</option>');;
                      for (i = 0; i < data.profiles.length; i++) {
-                         $('#profile-field').append('<option ' +
+                         $('select#profile-field').append('<option ' +
                              'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
                              + data.profiles[i].name +
                              '</option>'
