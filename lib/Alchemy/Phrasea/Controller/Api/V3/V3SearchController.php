@@ -70,6 +70,7 @@ class V3SearchController extends Controller
             '' => $searchTransformer,
             'results' => $compositeTransformer,
             'facets' => new CallbackTransformer(),
+            'suggestions' => new CallbackTransformer(),
             'results.stories' => $storyTransformer,
             'results.stories.thumbnail' => $subdefTransformer,
             'results.stories.metadatas' => new CallbackTransformer(),

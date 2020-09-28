@@ -1,0 +1,190 @@
+$diapoBorderColor: #404040 !default;
+
+/**
+ * Diapo are reused in answers, baskets,
+ */
+
+#reorder_box .diapo {
+  height: 130px!important;
+  width: 100px;
+  margin: 5px;
+}
+.editDiaButtons .icomoon {
+    color: gray;
+}
+.editIcon {
+    font-size: 18px;
+    color: #ffffff;
+    &:before {
+        background: gray;
+        padding: 2px 5px;
+        border-radius: 3px;
+        box-shadow: 0px 0px 3px 1px #b2b2b2;
+    }
+}
+
+#reorder_box .diapo.ui-sortable-placeholder,
+#reorder_box .diapo.ui-sortable-placeholderfollow {
+  background-color: orange;
+}
+
+#reorder_box .CHIM.diapo img {
+  z-index: 1000;
+  position: relative;
+  margin: 0;
+}
+
+#reorder_dialog .ui-sortable-placeholder,
+#reorder_dialog .ui-sortable-placeholderfollow {
+  width: 100px;
+  height: 130px;
+  background-color: $mediumBackgroundColor;
+}
+
+.diapo {
+  position: relative;
+  display: block;
+  float: left;
+  border: 1px solid $diapoBorderColor;
+//  border-radius: $defaultBorderRadius;
+  text-align: center;
+  margin: 8px 0;
+  &.selected {
+    cursor: url('#{$iconsPath}cursor-move.png'), -moz-grab;
+  }
+
+  .thumb {
+    overflow: hidden;
+    position: relative;
+    .record {
+      position: relative;
+      margin: 0 auto;
+    }
+  }
+
+  .bottom {
+    position: absolute;
+    bottom: 0;
+    z-index: 99;
+    &.actions {
+      tr {
+        td {
+          &:first-child {
+            font-size: $xmediumFontSize;
+            line-height: $xmediumFontSize;
+            text-shadow: 1px 1px 2px $darkBackgroundColor;
+
+          }
+        }
+      }
+      .fa-stack {
+        font-size: 11px;
+        cursor: pointer;
+        width: 19px;
+      }
+      .fa-stack-2x {
+        color: $stackBg;
+          &.fa-inverse-bg {
+              color:$stackInverse;
+          }
+      }
+
+        .icomoon.white {
+            color: $stackText;
+            &.fa-inverse {
+                color: $stackInverse; //$darkerTextColor;
+            }
+
+        }
+        .fa-stack {
+            transition: 0.3s all;
+            &:hover {
+                .fa-stack-2x {
+                    color: $stackInverseBg;
+                }
+                .icomoon.white {
+                    color: $stackInverse;
+                    &.fa-inverse {
+                        color: $stackText; //$darkerTextColor;
+                    }
+                    &.fa-inverse-bg {
+                        color:$stackBg;
+                    }
+                }
+                .fa-inverse-bg {
+                    color:$stackBg;
+                }
+            }
+        }
+    }
+
+  }
+
+
+  .title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 14px;
+    font-size: $mediumFontSize;
+  }
+
+  .duration {
+    background-color: darken($darkerBackgroundColor, 10);
+    color: $darkerTextColor;
+    vertical-align: middle;
+  }
+}
+.icon-stack-wrapper {
+  background: none;
+  float: right;
+
+  .thirty & {
+    height: 30px;
+  }
+
+  .twenty & {
+    height: 20px;
+  }
+
+  .twenty-four & {
+    height: 23px;
+      display: table;
+      .fa-stack {
+          padding-left: 1px;
+          padding-right: 1px;
+      }
+  }
+}
+.diapo.CHIM {
+    background: $chimImg;
+    border: 3px solid transparent;
+    box-sizing: border-box;
+    height: auto!important;
+    .diapo_top {
+        color: #fff;
+        background-color: $chimImg!important;
+    }
+}
+.diapo.CHIM .thumb_wrapper {
+  padding: 0;
+  border: 0;
+  margin: 0;
+  background: $chimImg;
+    height: 140px!important;
+    display: flex!important;
+    align-items: center;
+    justify-content: center;
+    .record_image {
+        position: relative;
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        margin-top: 0;
+        top: 0!important;
+    }
+}
+
+.diapo.IMGT .thumb_wrapper {
+  padding: 0;
+    margin: auto;
+}

@@ -1,0 +1,425 @@
+@import '../../../stylesheets/shared/variables';
+
+@import '../../../node_modules/humane-js/themes/libnotify';
+// @import '../../vendors/jquery-contextmenu/styles/jquery.contextmenu';
+// @import '../../vendors/jquery-image-enhancer/styles/jquery.image_enhancer';
+// @import '../../vendors/colorpicker/styles/colorpicker';
+@import '../../../stylesheets/shared/main';
+
+#ADVSRCH_SORT_ZONE {
+    position: absolute;
+    left: 255px;
+    margin-top: -57px;
+    > span {
+        margin-right: 5px;
+    }
+    select.input-medium {
+        height: 22px;
+        width: 120px;
+        color: #000;
+        font-size: 12px;
+        margin-right: 10px;
+        background-color: #f8f8f8;
+        border: 0 none;
+    }
+}
+
+#idFrameC {
+    top: 10px;
+    bottom: 10px;
+}
+
+#idFrameC .ui-tabs {
+    bottom: 10px;
+    left: 0;
+}
+
+#answers {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.caption-tooltip-container .popover-inner .popover-content {
+    overflow: auto;
+    overflow-x: hidden;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.popover-inner .popover-content dl.dl-horizontal {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.popover-inner .popover-content dl.dl-horizontal:first-child {
+    border-top: none;
+}
+
+.dl-horizontal dt,
+.popover-inner .popover-content .dl-horizontal dt {
+    padding-top: 6px;
+    padding-bottom: 6px;
+   /* color: #808080;*/
+    text-align: left;
+    width: 100px;
+}
+
+.dl-horizontal dd,
+.popover-inner .popover-content .dl-horizontal dd {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-left: 120px;
+}
+
+.break-word {
+    word-wrap: break-word;
+}
+
+.ui-button:focus,
+.ui-button-text:focus {
+    outline: none;
+}
+
+.descBoxes .dl-horizontal dt {
+    float: none;
+    width: 100%;
+    padding: 0;
+}
+.descBoxes .dl-horizontal dd {
+    padding-top: 0;
+    margin-left: 10px;
+}
+
+/** was inline code: */
+.noRepresent {
+    background-color: #a2f5f5;
+}
+
+.disable {
+    display: none;
+}
+
+.deployer_opened::before {
+    content: "\25BC";
+}
+
+.deployer_closed::before {
+    content: "\25B6";
+}
+
+/* Vertical Tabs */
+.ui-tabs-vertical .ui-tabs-nav {
+    padding: .2em .1em .2em .2em;
+    float: left;
+    width: 12em;
+}
+.ui-tabs-vertical .ui-tabs-nav li {
+    clear: left;
+    width: 100%;
+    border-bottom-width: 1px !important;
+    border-right-width: 0 !important;
+    margin: 0 -1px .2em 0;
+}
+.ui-tabs-vertical .ui-tabs-nav li a {
+    display: block;
+}
+.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+    padding-bottom: 0;
+    padding-right: .1em;
+    border-right-width: 1px;
+    border-right-width: 1px;
+}
+.ui-tabs-vertical .ui-tabs-panel {
+    padding: 1em;
+    float: right;
+}
+
+.history-collection {
+    background-image: url('#{$iconsPath}chgcoll_history.png');
+}
+
+.history-status {
+    background-image: url('#{$iconsPath}chgstatus_history.png');
+}
+
+.history-print {
+    background-image: url('#{$iconsPath}print_history.png');
+}
+
+.history-substit,
+.history-publish {
+    background-image: url('#{$iconsPath}imgtools_history.png');
+}
+
+.history-download,
+.history-mail,
+.history-ftp {
+    background-image: url('#{$iconsPath}disktt_history.png');
+}
+.history-edit {
+    background-image: url('#{$iconsPath}ppen_history.png');
+}
+
+.history-validate {
+    background-image: url('#{$iconsPath}basket_validation.png');
+}
+.history-push {
+    background-image: url('#{$iconsPath}push16.png');
+}
+
+.history-add {
+    background-image: url('#{$iconsPath}add.png');
+}
+
+/*.history-collection,
+.history-status,
+.history-print,
+.history-substit,
+.history-publish,
+.history-download,
+.history-mail,
+.history-ftp,
+.history-edit,
+.history-validate,
+.history-push,
+.history-add {
+    background-image: url('#{$iconsPath}add.png');
+}*/
+
+.history-collection,
+.history-status,
+.history-print,
+.history-substit,
+.history-publish,
+.history-download,
+.history-mail,
+.history-ftp,
+.history-edit,
+.history-validate,
+.history-push,
+.history-add {
+    background-repeat: no-repeat;
+    background-position: 3px center;
+    background-size: 24px;
+    padding-left: 37px;
+    min-height: 16px;
+}
+
+/* help section */
+.client_help {
+    margin: 0 1em 0 1em;
+}
+
+.help-section {
+    margin-top: 1.5em;
+}
+
+.help-section h4 {
+    margin-bottom: .5em;
+}
+
+#PROCESSED-ORDER,
+#TODO-ORDER {
+    width: 100%;
+    background-color: #f5f5f5;
+}
+
+#PROCESSEDVIEW,
+#TODOVIEW {
+    border: 1px solid #e3e3e3;
+    border-radius: 0px 3px 3px 3px;
+}
+
+#ORDERPREVIEW li.ui-state-default.ui-corner-top {
+    border: 1px solid #e3e3e3;
+    border-bottom: 0px;
+    background-color: #f5f5f5;
+}
+
+#ORDERPREVIEW li.ui-state-default.ui-corner-top.ui-tabs-active.ui-state-active a {
+    border: 1px solid #e3e3e3;
+    border-bottom: 0px;
+    background-color: #f5f5f5;
+    color: #737373;
+}
+
+.order_preview_box td {
+    vertical-align: middle;
+}
+
+.order_preview tr {
+    height: 75px;
+}
+
+.order_preview_box tr > td:last-of-type .text_block {
+    float: right;
+    margin-right: 30px;
+}
+
+.order_preview_box tr > td:last-of-type .text_block_bold {
+    clear: both;
+    float: right;
+    margin-right: 30px;
+}
+
+.order_preview_box td h4 {
+    font-weight: bold;
+    margin-left: 0px;
+}
+
+td span.text_block {
+    display: block;
+    font-size: 12px;
+}
+
+td span.text_block_bold {
+    display: block;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.order-indicator {
+    font-size: 10px;
+}
+
+#filter-date {
+    position: absolute;
+    right: 180px;
+    text-decoration: none;
+}
+
+#filter-date:hover {
+    color: #4990e2;
+    span {
+        color: #4990e2;
+    }
+}
+
+.active {
+    color: #4990e2 !important;
+}
+
+.dialog-left-section {
+    float: left;
+    width: 25%;
+    height: 100%;
+    text-align: center;
+    line-height: 58px;
+    img {
+        display: inline-block;
+        vertical-align: middle;
+        height: 55px;
+        width: auto;
+    }
+}
+
+.dialog-right-section {
+    float: left;
+    width: 75%;
+    height: 100%;
+    span {
+        padding-top: 8px;
+        padding-left: 10px;
+        padding-right: 20px;
+        display: block;
+        line-height: 14px;
+    }
+}
+
+.story {
+    clear: both;
+    margin: 0px 15px;
+    padding-top: 10px;
+    color: #000;
+    font-size: 13px;
+}
+
+#delete-record-form {
+    padding-bottom: 20px;
+    .well-small {
+        border: 0;
+        color: #000;
+        padding: 5px;
+        display: block;
+        word-wrap: break-word;
+        font-weight: bold;
+        min-height: 58px;
+        margin-bottom: 7px;
+    }
+    .form-actions {
+        position: absolute;
+        bottom: 4px;
+        right: 15px;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        .btn {
+            font-size: 12px;
+            color: #fff;
+            font-family: Helvetica;
+            background: #808080;
+            margin: 2px;
+            padding: 0px 10px;
+        }
+        .btn:hover {
+            background: #3b3b3b;
+        }
+    }
+}
+
+/** Publication modal**/
+.copy-feed {
+    float: right;
+    width: 150px;
+    margin: 0;
+    padding: 4px 0;
+    box-sizing: border-box;
+    border-radius: 4px;
+    background: #5cb85c;
+    &:hover, &:active, &:focus {
+        background: #3d8b3d;
+    }
+}
+/** End Publication modal**/
+.input_select_copy {
+    width: calc(100% - 180px);
+    float: left;
+    margin-left: 0;
+}
+
+.hidden {
+    height: 0!important;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 1.3),
+    only screen and (-o-min-device-pixel-ratio: 13/10),
+    only screen and (min-resolution: 120dpi) {
+    .history-collection,
+    .history-status,
+    .history-print,
+    .history-substit,
+    .history-publish,
+    .history-download,
+    .history-mail,
+    .history-ftp,
+    .history-edit,
+    .history-validate,
+    .history-push {
+        background-size: 16px 16px;
+    }
+}
+.humane.humane-libnotify-info.humane-large {
+    width: 400px;
+    background: #2d2d72;
+}
+
+
+@import 'ie7';
+@import 'ie8';

@@ -1,0 +1,26 @@
+#rangeExtractor {
+    // overflow: none;
+    position: absolute;
+    min-width: 1020px;
+    overflow-y: auto;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    top: 31px;
+    .main_title {
+
+        margin: 10px 15px 10px 10px;
+    }
+}
+
+.vjs-button .fa-circle {
+    color: transparent;
+    border: 1px solid #aa46bb;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+}
+
+.fa-info {
+    color: #fff;
+}

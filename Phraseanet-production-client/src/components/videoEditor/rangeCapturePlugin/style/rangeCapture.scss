@@ -1,0 +1,584 @@
+
+
+.video-js .vjs-control-bar,
+.vjs-control-bar {
+  bottom: 4em;
+}
+.PNB10 {
+  &.video-range-editor-container {
+    padding-top: 0;
+    padding-left: 0;
+  }
+}
+.video-range-editor-container {
+  height: 100%;
+  #embed-video {
+      overflow: hidden;
+      height: 100%;
+  }
+  overflow: auto;
+  #display-current {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+  }
+  .icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+    fill: currentColor;
+  }
+  .icon-label {
+    display: none;
+  }
+  .display-time {
+    padding: 0 10px;
+    text-align: center;
+  }
+  .control-button {
+      background: none;
+      border: none;
+      color: inherit;
+      display: inline-block;
+
+      overflow: visible; // IE8
+      font-size: inherit; // IE in general. WTF.
+      line-height: inherit;
+      text-transform: none;
+      text-decoration: none;
+      transition: none;
+
+      appearance:         none;
+
+
+      width: 35px;
+      height: 30px;
+      margin: auto;
+      padding: 0;
+      flex: none;
+      outline: none;
+      position: relative;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      &.active {
+        box-shadow: 0 0 0 1px rgba(0,0,0, 0.15) inset, 0 0 30px rgba(0,0,0, 0.7) inset;
+        border-color: #000\9;
+        background-color: #076882;
+      }
+
+  }
+
+  input.range-input {
+    background: none;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 12px;
+    width: 20px;
+    margin: 0;
+    margin-top: -2px;
+    padding: 0px 1px;
+    color: #FFF;
+    display: inline-block;
+    &:focus {
+      box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+      //border: 1px solid rgba(81, 203, 238, 1);
+      &.has-error {
+        box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+      }
+      &.is-valid {
+        box-shadow: 0 0 5px rgba(0, 255, 0, 1);
+      }
+    }
+    &.has-error {
+      box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+    }
+    &.is-valid {
+      box-shadow: 0 0 5px rgba(0, 255, 0, 1);
+    }
+    &.range-title {
+      width: 100%;
+      font-family: Roboto, sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: #ffffff;
+    }
+    // need to be separated, otherwise ignored (http://stackoverflow.com/questions/2610497/change-an-inputs-html5-placeholder-color-with-css)
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+      font-style: italic;
+      color: #fff;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+      font-style: italic;
+      color: #fff;
+      opacity:  1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+      font-style: italic;
+      color: #fff;
+      opacity:  1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+      font-style: italic;
+      color: #fff;
+    }
+  }
+  .progress-container {
+    position: relative;
+    background-color: #000;
+    width: 100%;
+    height: 13px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    border: 1px solid #054a5d;
+    .progress-bar {
+      position: absolute;
+      background-color: #72CEFD;
+
+    }
+    .progress-value {
+      font-size: 10px;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+  }
+    .video-player-container {
+        left: 30%;
+        width: 70%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: 4px;
+    }
+}
+
+#prod-tool-box .btn-container{
+  margin: 10px 0px;
+  text-align: center;
+  position: relative;
+  &.video-subtitle-left-button {
+    margin: 0;
+  }
+  .btn {
+    border-radius: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #525252;
+    border: 1px solid #fff;
+    color: #fff;
+    font-family: Roboto, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    font-style: normal;
+    margin: 0 10px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2), 0 4px 16px 0 rgba(0, 0, 0, 0.19);
+    &.btn-blue {
+
+    }
+    &.add-range, &.add-btn {
+      border: 1px solid #aa46bb;
+    }
+    &:hover {
+      border: 1px solid #aa46bb;
+      background: #aa46bb;
+    }
+  }
+}
+.range-control-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    .range-capture-container {
+        background-color: rgba(0,0,0,0.8);
+        height: 30px;
+        display: flex;
+        box-sizing: border-box;
+        width: 100%;
+        justify-content: space-between;
+        font-size: 12px;
+        font-family: Roboto, sans-serif;
+        > span {
+            margin: auto;
+            flex-grow: 2;
+        }
+    }
+    .control-button {
+        width: 26px;
+        height: 30px;
+        margin: auto;
+    }
+    .display-time {
+        padding: 0 3px;
+        font-size: 11px;
+    }
+}
+
+.range-item-container {
+    position: absolute;
+    width: 30%;
+    top: 0;
+    background-color: rgba(82, 82, 82, 1);
+    height: 100%;
+    padding-left: 4px;
+    padding-right: 4px;
+    .range-collection-container {
+        margin-top: 48px;
+        overflow: auto;
+        position: relative;
+        .range-item-index-div {
+            padding: 0;
+            width: 22px;
+            text-align: center;
+            background: #aa46bb;
+            span {
+                line-height: 60px;
+                font-family: Roboto, sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                color: #ffffff;
+            }
+        }
+    }
+    .header-chapters {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 48px;
+        margin-left: 4px;
+        margin-right: 4px;
+        border-bottom: 1px solid #484848;
+        padding: 4px;
+        h4 {
+            color: #ffffff;
+            font-family: Roboto, sans-serif;
+            font-size: 14px;
+        }
+        .checkbox-chapters {
+            display: block;
+            text-align: right;
+            color: #ffffff;
+            font-family: Roboto, sans-serif;
+            font-size: 12px;
+            input {
+                margin: 0 4px 0 0;
+            }
+            span {
+                line-height: 16px;
+            }
+        }
+    }
+  .range-collection-item {
+    border-bottom: 1px solid #484848;
+    box-sizing: content-box;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-family: Roboto, sans-serif;
+    position: relative;
+    cursor: pointer;
+    margin-left: 4px;
+    margin-right: 4px;
+    // padding-left: 20px;
+    * {
+      user-drag: none;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+    .range-item-screenshot {
+      padding: 0 10px 0 0;
+      position: relative;
+        img {
+            min-width: 90px;
+        }
+        #capture-thumbnail-icon {
+            background-image: url("/assets/common/images/icons/capture-chapter.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 36px;
+            height: 36px;
+            position: absolute;
+            right: 4px;
+            display: none;
+        }
+    }
+    .range-item-index {
+      text-align: center;
+    }
+    .range-item-title {
+      padding-left: 10px;
+      padding-right: 10px;
+      flex-grow: 3;
+      box-sizing: border-box;
+    }
+    .range-item-time-data {
+      flex-grow: 3;
+        padding: 0;
+      .display-time {
+        font-size: 11px;
+        padding: 0 3px;
+      }
+      .display-time-container {
+          text-align: center;
+      }
+    }
+    .spacer {
+      flex-grow: 2;
+    }
+    > span {
+      margin: auto;
+    }
+    &.active {
+      // border: 2px solid rgba(255,255,255,0.1);
+      //box-shadow: 0 0 0 1px rgba(0,0,0, 0.15) inset, 0 0 30px rgba(0,0,0, 0.7) inset;
+      border-color: #000\9;
+      background-color: rgba(137, 76, 148, 0.6);
+      .progress-bar {
+          background-color: #aa46bb;
+      }
+      span {
+          color: #FFF;
+      }
+      .range-item-screenshot {
+         #capture-thumbnail-icon {
+             display: block;
+         }
+      }
+    }
+    .icon-container {
+      width: 40px;
+      height: 30px;
+      margin: 0;
+      padding: 0;
+      vertical-align: middle;
+
+      white-space: nowrap;
+      text-align: center;
+      display: inline-block;
+      line-height: 36px;
+      &.small-icon {
+        width: 16px;
+        height: 16px;
+        vertical-align: sub;
+        line-height: 16px;
+      }
+    }
+    &.drag-selected {
+      // background-color: #3FAB8F;
+      opacity: .2;
+    }
+    //&:after {
+    //  content: '';
+    //  position: absolute;
+    //  box-sizing: border-box;
+    //  left: 5px;
+    //  top: 10%;
+    //  height: 80%;
+    //  width: 6px;
+    //  border: 2px dotted rgba(0, 0, 0, 0.1);
+    //  background: transparent;
+    //  cursor: move;
+    //}
+    //&:hover {
+    //  &:after {
+    //    border: 2px dotted rgba(0, 0, 0, 0.3);
+    //  }
+    //}
+    &.drag-over {
+      background-color: transparent;
+      border: 3px dotted rgba(0, 0, 0, 0.3);
+      &:after {
+        display: none;
+      }
+      > * {
+        visibility: hidden;
+
+      }
+    }
+    &.over:after {
+      display: none;
+    }
+    .range-item-close {
+        flex-grow: 1;
+        .remove-range {
+            cursor: pointer;
+            width: 20px;
+            height: 100%;
+            background-image: url("/assets/common/images/icons/picto-delete.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            margin: 0 auto;
+        }
+        .remove-range:hover {
+            background-image: url("/assets/common/images/icons/picto-delete-hover.png");
+        }
+    }
+  }
+}
+.vjs-fullscreen {
+  .range-control-bar {
+    position: absolute;
+    bottom: 0;
+  }
+  .video-player-container {
+      left: 0%;
+      width: 100%;
+  }
+  .range-item-container {
+      position: absolute;
+      top: 40px;
+      width: 400px;
+      right: 20px;
+      margin: 0;
+      padding: 10px 10px 0px 10px;
+      background-color: rgba(82, 82, 82, 0.9);
+      height: auto;
+      margin-left: 0;
+      margin-right: 0;
+      .range-collection-container {
+          overflow-y: auto;
+          max-height: 600px;
+          position: relative;
+      }
+      .btn-container {
+          position: relative;
+      }
+  }
+  .vjs-control-bar {
+    bottom: 4em;
+  }
+}
+.vjs-mini-screen {
+  .range-item-container {
+      .range-collection-container {
+          margin-top: 48px;
+          .range-collection-item {
+              margin-left: 0px;
+              margin-right: 0px;
+              .range-item-screenshot {
+                  padding-right: 3px;
+              }
+              .range-item-time-data, .range-item-index, .range-item-title {
+                  padding: 4px 4px;
+              }
+          }
+      }
+  }
+  input.range-input {
+    width: 17px;
+    padding: 0;
+    font-size: 11px;
+  }
+
+}
+.video-range-editor-container {
+    .video-js .vjs-modal-dialog {
+        background: rgba(0,0,0,.8);
+    }
+}
+
+.vjs-modal-dialog-content {
+  overflow: auto;
+  bottom: 6em;
+  height: auto;
+  .vjs-hotkeys-modal {
+    .shortcut-label {
+      display: inline-block;
+      padding: 3px 10px;
+      color: #4d4d4d;
+      background-color: #FFF;
+      border-radius: 2px;
+      min-width: 30px;
+      text-align: center;
+    }
+    .dl-horizontal dt{
+      width: 200px;
+      color: #FFF;
+    }
+      &.video-tools-help {
+          h1 {
+              text-align: center;
+          }
+          .dl-horizontal dt {
+              width: 50%;
+              padding-right: 25px;
+              text-align: right;
+          }
+      }
+  }
+}
+.vjs-button {
+  background: none;
+  border: none;
+  color: inherit;
+  display: inline-block;
+
+  overflow: visible; // IE8
+  font-size: inherit; // IE in general. WTF.
+  line-height: inherit;
+  text-transform: none;
+  text-decoration: none;
+  transition: none;
+
+  -webkit-appearance: none;
+  -moz-appearance:    none;
+  appearance:         none;
+}
+
+.video-js button.vjs-hotkeys-modal-button {
+  cursor: pointer;
+  height: 3em;
+  position: absolute;
+  right: 5px;
+  top: 0.5em;
+  z-index: 2;
+  // background-color: rgba(0,0,0, .4);
+  border-radius: 3px;
+  .vjs-control-text {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    //font-size: 16px;
+    color: #FFF;
+    clip: inherit;
+    position: relative;
+    .fa-info {
+      color: #000;
+    }
+  }
+}
+
+
+.vjs-range-container {
+  position: relative;
+  // background-color: #FF0000;
+  // height: 100px;
+  top: -15px;
+  left: 0;
+  width: 100%;
+
+}
+
+.drag-mousemove-container {
+  position: absolute;
+  z-index: 9999;
+  ul {
+    margin: -6px 0 0 10px;
+    padding: 5px 10px;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 3px;
+  }
+}

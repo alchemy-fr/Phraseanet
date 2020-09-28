@@ -38,7 +38,7 @@
     "dev": "./node_modules/.bin/gulp sync;",
     "build": "./node_modules/.bin/gulp build;",
     "postinstall": "./node_modules/.bin/gulp -v && ./node_modules/.bin/gulp install;",
-    "phraseanet-production-client": "yarn remove phraseanet-production-client && yarn add phraseanet-production-client && ./node_modules/.bin/gulp build-phraseanet-production-client"
+    "phraseanet-production-client": "./node_modules/.bin/gulp build-phraseanet-production-client"
   },
   "dependencies": {
     "JSON2": "^0.1.0",
@@ -65,7 +65,6 @@
     "normalize-css": "^2.1.0",
     "npm": "^6.0.0",
     "npm-modernizr": "^2.8.3",
-    "phraseanet-production-client": "0.34.272-d",
     "requirejs": "^2.3.5",
     "tinymce": "^4.0.28",
     "underscore": "^1.8.3",
