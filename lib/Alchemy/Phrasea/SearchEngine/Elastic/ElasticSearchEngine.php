@@ -344,14 +344,18 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query_filters = $this->createQueryFilters($options);
         $acl_filters = $this->createACLFilters($options);
 
-        $ESQuery = ['filtered' => ['query' => $ESQuery]];
+        $ESQuery = [
+            'bool' => [
+                'must' => $ESQuery
+            ]
+        ];
 
         if (count($query_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $query_filters;
+            $ESQuery['bool']['filter']['bool']['must'][] = $query_filters;
         }
 
         if (count($acl_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $acl_filters;
+            $ESQuery['bool']['filter']['bool']['must'][] = $acl_filters;
         }
 
         $params['body']['query'] = $ESQuery;

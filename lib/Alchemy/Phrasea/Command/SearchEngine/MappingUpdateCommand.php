@@ -28,6 +28,7 @@ class MappingUpdateCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+        /** @var Indexer $indexer */
         $indexer = $this->container['elasticsearch.indexer'];
 
         $indexer->updateMapping();

@@ -133,11 +133,26 @@ class Indexer
             'body' => [
                 'actions' => [
                     [
+                        // alias 1->1 to access the "record" index whithout knowing the date part
+                        'add' => [
+                            'indices' => [ $recordIndexName ],
+                            'alias' => $aliasName . '.r'
+                        ],
+                    ],
+                    [
+                        // alias 1->1 to access the "term" index whithout knowing the date part
+                        'add' => [
+                            'indices' => [ $termIndexName ],
+                            'alias' => $aliasName . '.t'
+                        ],
+                    ],
+                    // alias 1->2 to access the whole index
+                    [
                         'add' => [
                             'indices' => [ $recordIndexName, $termIndexName ],
                             'alias' => $aliasName
-                        ]
-                    ]
+                        ],
+                    ],
                 ]
             ]
         ]);
@@ -150,11 +165,30 @@ class Indexer
 
     public function updateMapping()
     {
-        $params = array();
-        $params['index'] = $this->index->getName();
-        $params['type'] = RecordIndexer::TYPE_NAME;
-        $params['body'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping()->export();
-        $params['body'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping()->export();
+//        $params = array();
+//        $params['index'] = $this->index->getName();
+//        $params['type'] = RecordIndexer::TYPE_NAME;
+//        $params['body'][RecordIndexer::TYPE_NAME] = $this->index->getRecordIndex()->getMapping()->export();
+//        $params['body'][TermIndexer::TYPE_NAME]   = $this->index->getTermIndex()->getMapping()->export();
+
+        $params = [
+            'index' => $this->index->getName() . '.t',      // here we can use the 1->1 alias
+            'type' => TermIndexer::TYPE_NAME,
+            'body' => [
+                TermIndexer::TYPE_NAME => $this->index->getTermIndex()->getMapping()->export()
+            ]
+        ];
+
+        // @todo This must throw a new indexation if a mapping is edited
+        $this->client->indices()->putMapping($params);
+
+        $params = [
+            'index' => $this->index->getName() . '.r',      // here we can use the 1->1 alias
+            'type' => RecordIndexer::TYPE_NAME,
+            'body' => [
+                RecordIndexer::TYPE_NAME => $this->index->getRecordIndex()->getMapping()->export()
+            ]
+        ];
 
         // @todo This must throw a new indexation if a mapping is edited
         $this->client->indices()->putMapping($params);
@@ -162,8 +196,16 @@ class Indexer
 
     public function deleteIndex()
     {
+        // we must delete indexes, we can't delete by alias
+        //
+        $indices = array_keys(
+            $this->client->indices()->getAliases([
+                'index' => $this->index->getName()
+            ]
+        ));
+        // we can delete the 2 indices (record, term) at once
         $this->client->indices()->delete([
-            'index' => $this->index->getName()
+            'index' => join(',', $indices)
         ]);
     }
 
@@ -262,7 +304,37 @@ class Indexer
         $stopwatch = new Stopwatch();
         $stopwatch->start('populate');
 
-        $this->apply(
+        if ($what & self::THESAURUS) {
+            $this->apply(
+                function (BulkOperation $bulk, $index) use ($databox) {
+                    $bulk->setDefaultIndex($index->getName() . '.t');
+                    $this->termIndexer->populateIndex($bulk, $databox);
+
+                    // Record indexing depends on indexed terms so we need to make
+                    // everything ready to search
+                    $bulk->flush();
+                    $this->client->indices()->refresh();
+                },
+                $this->index
+            );
+        }
+
+        if ($what & self::RECORDS) {
+            $this->apply(
+                function (BulkOperation $bulk, $index) use ($databox) {
+                    $bulk->setDefaultIndex($index->getName() . '.r');
+                    $databox->clearCandidates();
+                    $this->recordIndexer->populateIndex($bulk, $databox);
+
+                    // Final flush
+                    $bulk->flush();
+                },
+                $this->index
+            );
+        }
+
+
+/*        $this->apply(
             function (BulkOperation $bulk) use ($what, $databox) {
                 if ($what & self::THESAURUS) {
                     $this->termIndexer->populateIndex($bulk, $databox);
@@ -282,14 +354,22 @@ class Indexer
                 }
             },
             $this->index
-        );
+        );*/
 
         // Optimize index
+
         $this->client->indices()->forceMerge(
             [
                 'index' => $this->index->getName()
             ]
         );
+
+//        $this->client->indices()->optimize(
+//            [
+//                'index' => $this->index->getName()
+//            ]
+//        );
+
 
         $event = $stopwatch->stop('populate');
 

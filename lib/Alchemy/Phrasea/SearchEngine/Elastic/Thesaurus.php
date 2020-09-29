@@ -288,15 +288,15 @@ class Thesaurus
 
     private static function applyQueryFilter(array $query, array $filters)
     {
-        if (!isset($query['filtered'])) {
+        if (!isset($query['bool'])) {
             // Wrap in a filtered query
-            $query = ['filtered' => ['query' => $query, 'filter' => []]];
+            $query = ['bool' => ['must' => $query, 'filter' => []]];
         }
-        elseif (!isset($query['filtered']['filter'])) {
-            $query['filtered']['filter'] = [];
+        elseif (!isset($query['bool']['filter'])) {
+            $query['bool']['filter'] = [];
         }
 
-        self::addFilters($query['filtered']['filter'], $filters);
+        self::addFilters($query['bool']['filter'], $filters);
 
         return $query;
     }

@@ -51,9 +51,18 @@ class QueryHelper
 
     private static function restrictQueryToCollections(array $query, array $collections)
     {
-        $wrapper = [];
-        $wrapper['filtered']['filter']['terms']['base_id'] = $collections;
-        $wrapper['filtered']['query'] = $query;
+        // $wrapper['filtered']['filter']['terms']['base_id'] = $collections;
+        // $wrapper['filtered']['query'] = $query;
+        $wrapper = [
+            'bool' => [
+                'must' => $query,
+                'filter' => [
+                    'terms' => [
+                        'base_id' => $collections
+                    ]
+                ]
+            ]
+        ];
         return $wrapper;
     }
 
