@@ -25,14 +25,22 @@
                                 <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
                                         class="publication-field">
                                     <option value="">Select a parent publication</option>
+                                    {% if publication.parent %}
+                                        <option value="{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
+                                    {% endif %}
                                 </select>
                             </div>
                         </div>
                         <div class="ui-widget profile-wrapper hide">
                             <label>Profile </label>
+                            {% set nbProfile =  publication.profile|length %}
+
                             <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
                                 <option value="">Select Profile</option>
+                                {% if nbProfile %}
+                                    <option value="{{ publication.profile.id }}">{{ publication.profile.name }}</option>
+                                {% endif %}
                             </select>
                         </div>
                         <div class="ui-widget">
@@ -183,8 +191,6 @@
                     publicationParent.empty().html('<option value="">Select a parent publication</option>');
                     for (i = 0; i < data.publications.length; i++) {
                         let selected = '';
-                        console.log({{ publication.parent.id }} + '::::' + data.publications[i].id);
-
                         if (data.publications[i].id == '{{ parentId }}') {
                             selected = 'selected="selected"';
                         }
@@ -195,6 +201,28 @@
                     }
                 }
             });
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
+                success: function (data) {
+                    profileField.empty().html('<option value="">Select Profile</option>');;
+                    for (i = 0; i < data.profiles.length; i++) {
+                        let selected = '';
+                        if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
+                            selected = 'selected="selected"';
+                        }
+
+                        $('#DIALOG-expose-edit select#profile-field').append('<option ' +
+                            'value=' + data.basePath + '/' + data.profiles[i].id + ' ' + selected + ' >'
+                            + data.profiles[i].name +
+                            '</option>'
+                        );
+                    }
+
+                }
+            });
+
         });
 
         /**convert Object data  to Json**/

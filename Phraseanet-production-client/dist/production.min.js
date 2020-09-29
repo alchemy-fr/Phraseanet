@@ -9461,7 +9461,7 @@ var workzone = function workzone(services) {
         });
 
         (0, _jquery2.default)('.add_expose').on('click', function (event) {
-            openExposeModalOnBasket('#DIALOG-expose-add');
+            openExposePublicationAdd();
         });
 
         (0, _jquery2.default)('#expose_list').on('change', function () {
@@ -9477,7 +9477,7 @@ var workzone = function workzone(services) {
                         (0, _jquery2.default)(this).toggleClass('open');
                     });
                     (0, _jquery2.default)('.edit_expose').on('click', function (event) {
-                        openExposeModalOnBasket();
+                        openExposePublicationEdit();
                     });
 
                     activeExpose();
@@ -10102,10 +10102,8 @@ var workzone = function workzone(services) {
         });
     }
 
-    function openExposeModalOnBasket() {
-        var edit = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '#DIALOG-expose-edit';
-
-        (0, _jquery2.default)(edit).attr('title', localeService.t('Edit expose title')).dialog({
+    function openExposePublicationAdd() {
+        (0, _jquery2.default)('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title')).dialog({
             autoOpen: false,
             closeOnEscape: true,
             resizable: true,
@@ -10116,10 +10114,34 @@ var workzone = function workzone(services) {
             overlay: {
                 backgroundColor: '#000',
                 opacity: 0.7
+            },
+            close: function close(e, ui) {}
+        }).dialog('open');
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-expose-add').dialog('close');
+        });
+    }
+
+    function openExposePublicationEdit() {
+        (0, _jquery2.default)('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 575,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {
+                (0, _jquery2.default)('#DIALOG-expose-edit').empty();
             }
         }).dialog('open');
         (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
-        (0, _jquery2.default)('.close-expose-modal').on('click', function () {
+        (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
             (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
         });
     }

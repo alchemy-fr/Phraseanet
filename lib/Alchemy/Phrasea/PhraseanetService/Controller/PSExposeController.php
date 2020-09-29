@@ -65,7 +65,12 @@ class PSExposeController extends Controller
             ]);
 
             if ($resPublication->getStatusCode() == 200) {
-                $publications[] = json_decode($resPublication->getBody()->getContents(),true);
+                $publication = json_decode($resPublication->getBody()->getContents(),true);
+                $publications[] = $publication;
+
+                foreach ($publication['children'] as $child ) {
+                    $publications[] = $child;
+                }
             }
         }
 

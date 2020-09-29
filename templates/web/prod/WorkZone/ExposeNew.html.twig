@@ -162,15 +162,15 @@
         }
 
         $(document).ready(function () {
-            $(".toggleSetting").click(function (e) {
+            $("#DIALOG-expose-add .toggleSetting").click(function (e) {
                 $(this).toggleClass('open');
-                $('#advancedSettingInner').toggleClass('hidden');
+                $('#DIALOG-expose-add #advancedSettingInner').toggleClass('hidden');
             });
         });
 
         function buildData() {
             try {
-                var allData = $('#publication-data-form').serializeArray();
+                var allData = $('#DIALOG-expose-add #publication-data-form').serializeArray();
                 // console.log(allData);
                 var dataValue = allData.reduce((acc, it) => {
                         acc[it.name] = it.value;
@@ -227,11 +227,11 @@
         function removeSecurityField() {
             var datavalueMinus = buildData();
 
-            if ($("#publication_parent").val() == "") {
+            if ($("#DIALOG-expose-add #publication_parent").val() == "") {
                 delete datavalueMinus['parentId'];
             }
 
-            if ($("#profile-field").val() == "") {
+            if ($("#DIALOG-expose-add #profile-field").val() == "") {
                 delete datavalueMinus['profile'];
             }
             ;
@@ -245,12 +245,12 @@
             delete datavalueMinus['beginsAt'];
             delete datavalueMinus['expiresAt'];
 
-            $('#advancedSetting').val(JSON.stringify(datavalueMinus, undefined, 4));
+            $('#DIALOG-expose-add #advancedSetting').val(JSON.stringify(datavalueMinus, undefined, 4));
             console.log(JSON.stringify(datavalueMinus, undefined, 4));
 
         }
 
-        $('.publication-field').on('keyup change', function (e) {
+        $('#DIALOG-expose-add .publication-field').on('keyup change', function (e) {
             removeSecurityField();
             /**Toggle display the Security option field**/
             $("#publication_securityMethod").change(function (e) {
@@ -268,13 +268,13 @@
                     dataValue["securityMethod"] = Svalue;
 
                     if (Svalue == 'authentication') {
-                        $("#publication_password").val('');
-                        $("#publication_securityMethod_error").removeClass('hidden');
+                        $("#DIALOG-expose-add #publication_password").val('');
+                        $("#DIALOG-expose-add #publication_securityMethod_error").removeClass('hidden');
                     } else {
-                        $("#publication_securityMethod_error").addClass('hidden');
+                        $("#DIALOG-expose-add #publication_securityMethod_error").addClass('hidden');
                     }
                 } else {
-                    $("#publication_password").val('');
+                    $("#DIALOG-expose-add #publication_password").val('');
                 };
                 removeSecurityField();
 
@@ -293,7 +293,7 @@
         });
 
 
-        $('#publication-json').on('submit', function (e) {
+        $('#DIALOG-expose-add #publication-json').on('submit', function (e) {
             e.preventDefault();
             try {
                 $("#pub-error").addClass("hidden");
@@ -308,7 +308,7 @@
                 dataType: 'json',
                 data: {
                     exposeName: $('#expose_name').val(),
-                    publicationData: $('#advancedSetting').val()
+                    publicationData: $('#DIALOG-expose-add #advancedSetting').val()
                 },
                 success: function (data) {
                     if (data.success) {
@@ -320,7 +320,7 @@
                 }
             });
         });
-        $('.publication-field').on('keyup change', function (e) {
+        $('#DIALOG-expose-add .publication-field').on('keyup change', function (e) {
             try {
                 $("#pub-success").addClass("hidden");
                 $("#pub-error").addClass("hidden");
@@ -339,9 +339,9 @@
                  type: "GET",
                  url: `/prod/expose/list-publication/?format=json&exposeName=` + this.value,
                  success: function (data) {
-                     $('#publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                     $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
                      for (i = 0; i < data.publications.length; i++) {
-                         $('select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                         $('#DIALOG-expose-add select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
                      }
 
                  }
@@ -351,7 +351,7 @@
                  type: "GET",
                  url: `/prod/expose/list-profile?exposeName=` + this.value,
                  success: function (data) {
-                     $('#profile-field').empty().html('<option value="">Select Profile</option>');;
+                     $('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
                      for (i = 0; i < data.profiles.length; i++) {
                          $('select#profile-field').append('<option ' +
                              'value=' + data.basePath + '/' + data.profiles[i].id + ' >'

@@ -90,7 +90,7 @@ const workzone = (services) => {
         });
 
         $('.add_expose').on('click',function (event) {
-            openExposeModalOnBasket('#DIALOG-expose-add');
+            openExposePublicationAdd();
         });
 
         $('#expose_list').on('change', function () {
@@ -106,7 +106,7 @@ const workzone = (services) => {
                         $(this).toggleClass('open');
                     });
                     $('.edit_expose').on('click',function (event) {
-                        openExposeModalOnBasket();
+                        openExposePublicationEdit();
                     });
 
                     activeExpose();
@@ -741,8 +741,8 @@ const workzone = (services) => {
         });
     }
 
-    function openExposeModalOnBasket(edit = '#DIALOG-expose-edit') {
-        $(edit).attr('title', localeService.t('Edit expose title'))
+    function openExposePublicationAdd() {
+        $('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title'))
             .dialog({
                 autoOpen: false,
                 closeOnEscape: true,
@@ -754,10 +754,36 @@ const workzone = (services) => {
                 overlay: {
                     backgroundColor: '#000',
                     opacity: 0.7
+                },
+                close: function(e, ui) {
                 }
             }).dialog('open');
         $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
-        $('.close-expose-modal').on('click', function () {
+        $('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
+            $('#DIALOG-expose-add').dialog('close');
+        });
+    }
+
+    function openExposePublicationEdit() {
+        $('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title'))
+            .dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: true,
+                draggable: true,
+                width: 900,
+                height: 575,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                },
+                close: function(e, ui) {
+                    $('#DIALOG-expose-edit').empty();
+                }
+            }).dialog('open');
+        $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        $('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
             $('#DIALOG-expose-edit').dialog('close');
         });
     }
