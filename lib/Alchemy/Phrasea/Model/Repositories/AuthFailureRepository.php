@@ -57,4 +57,14 @@ class AuthFailureRepository extends EntityRepository
 
         return $query->getResult();
     }
+    
+    public function count()
+  	{
+
+  	$dql = 'SELECT COUNT(a.id) FROM Phraseanet:AuthFailure a';
+
+    $query = $this->_em->createQuery($dql);
+    return $query->getSingleScalarResult();
+    
+	}
 }
