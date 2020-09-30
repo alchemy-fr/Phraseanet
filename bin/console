@@ -49,6 +49,7 @@ use Alchemy\Phrasea\Command\Task\TaskStart;
 use Alchemy\Phrasea\Command\Task\TaskStop;
 use Alchemy\Phrasea\Command\Task\TaskState;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
+use Alchemy\Phrasea\Command\TruncateAuthFailure;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -101,6 +102,7 @@ $cli->command(new SchedulerRun());
 $cli->command(new TaskList());
 $cli->command(new TaskStart());
 $cli->command(new TaskStop());
+$cli->command(new TruncateAuthFailure('authFailures:truncate'));
 
 $cli->command(new MailTest('mail:test'));
 
