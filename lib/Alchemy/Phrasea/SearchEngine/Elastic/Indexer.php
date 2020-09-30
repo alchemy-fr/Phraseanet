@@ -159,7 +159,8 @@ class Indexer
 
         return [
             'index' => $indexName,
-            'alias' => $aliasName
+            'alias' => $aliasName,
+            'date'  => $now
         ];
     }
 
@@ -221,7 +222,7 @@ class Indexer
      * @param string $newAliasName
      * @return array
      */
-    public function replaceIndex($newIndexName, $newAliasName)
+    public function replaceIndex($newIndexName, $newAliasName, $newDate)
     {
         $ret = [];
 
@@ -231,56 +232,73 @@ class Indexer
             ]
         );
 
-        // delete old alias(es), only one alias on one index should exist
-        foreach($oldIndexes as $oldIndexName => $data) {
-            foreach($data['aliases'] as $oldAliasName => $data2) {
-                $params['body']['actions'][] = [
-                    'remove' => [
-                        'alias' => $oldAliasName,
-                        'index' => $oldIndexName,
-                    ]
-                ];
-                $ret[] = [
-                    'action' => "ALIAS_REMOVE",
-                    'msg'    => sprintf('alias "%s" -> "%s" removed', $oldAliasName, $oldIndexName),
-                    'alias'  => $oldAliasName,
-                    'index'  => $oldIndexName,
-                ];
+        $newIndexes = $this->client->indices()->getAlias(
+            [
+                'index' => $newAliasName
+            ]
+        );
+
+        $params = [
+            'body' => [
+                'actions' => []
+            ]
+        ];
+
+        // delete old aliases and temp aliases
+        foreach([$oldIndexes, $newIndexes] as $index) {
+            foreach ($index as $indexName => $data) {
+                foreach ($data['aliases'] as $aliasName => $data2) {
+                    $params['body']['actions'][] = [
+                        'remove' => [
+                            'alias' => $aliasName,
+                            'index' => $indexName,
+                        ]
+                    ];
+                    $ret[] = [
+                        'action' => "ALIAS_REMOVE",
+                        'msg'    => sprintf('alias "%s" -> "%s" removed', $aliasName, $indexName),
+                        'alias'  => $aliasName,
+                        'index'  => $indexName,
+                    ];
+                }
             }
         }
 
-        // create new alias
+        // create new aliases for direct acces to term and record
+        $indices = [];
+        foreach(['.r', '.t'] as $sfx) {
+            $indices[] = ($indexName = $newIndexName . $sfx . '_' . $newDate);
+            $params['body']['actions'][] = [
+                'add' => [
+                    'alias' => ($aliasName = $newIndexName . $sfx),
+                    'index' => $indexName,
+                ]
+            ];
+            $ret[] = [
+                'action' => "ALIAS_ADD",
+                'msg'    => sprintf('alias "%s" -> "%s" added', $aliasName, $indexName),
+                'alias'  => $aliasName,
+                'index'  => $indexName,
+            ];
+        }
+        // create top-level alias
         $params['body']['actions'][] = [
             'add' => [
-                'alias' => $this->index->getName(),
-                'index' => $newIndexName,
+                'alias'   => $newIndexName,
+                'indices' => $indices,
             ]
         ];
         $ret[] = [
-            'action' => "ALIAS_ADD",
-            'msg'   => sprintf('alias "%s" -> "%s" added', $this->index->getName(), $newIndexName),
-            'alias' => $this->index->getName(),
-            'index' => $newIndexName,
+            'action'  => "ALIAS_ADD",
+            'msg'     => sprintf('alias "%s" -> ["%s"] added', $newIndexName, join('", "', $indices)),
+            'alias'   => $newIndexName,
+            'indices' => $indices,
         ];
-
-        //
-        $params['body']['actions'][] = [
-            'remove' => [
-                'alias' => $newAliasName,
-                'index' => $newIndexName,
-            ]
-        ];
-        $ret[] = [
-            'action' => "ALIAS_REMOVE",
-            'msg'    => sprintf('alias "%s" -> "%s" removed', $newAliasName, $newIndexName),
-            'alias'  => $newAliasName,
-            'index'  => $newIndexName,
-        ];
-
 
         $this->client->indices()->updateAliases($params);
 
-        // delete old index(es), only one index should exist
+
+        // delete old index(es)
         $params = [
             'index' => []
         ];
