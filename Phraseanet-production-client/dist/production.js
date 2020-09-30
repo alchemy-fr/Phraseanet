@@ -9477,7 +9477,7 @@ var workzone = function workzone(services) {
                         (0, _jquery2.default)(this).toggleClass('open');
                     });
                     (0, _jquery2.default)('.edit_expose').on('click', function (event) {
-                        openExposePublicationEdit();
+                        openExposePublicationEdit((0, _jquery2.default)(this));
                     });
 
                     activeExpose();
@@ -10123,7 +10123,9 @@ var workzone = function workzone(services) {
         });
     }
 
-    function openExposePublicationEdit() {
+    function openExposePublicationEdit(edit) {
+        (0, _jquery2.default)('#DIALOG-expose-edit').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
         (0, _jquery2.default)('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title')).dialog({
             autoOpen: false,
             closeOnEscape: true,
@@ -10143,6 +10145,14 @@ var workzone = function workzone(services) {
         (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
             (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-edit').empty().html(data);
+            }
         });
     }
 

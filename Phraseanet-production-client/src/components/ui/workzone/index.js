@@ -106,7 +106,7 @@ const workzone = (services) => {
                         $(this).toggleClass('open');
                     });
                     $('.edit_expose').on('click',function (event) {
-                        openExposePublicationEdit();
+                        openExposePublicationEdit($(this));
                     });
 
                     activeExpose();
@@ -764,7 +764,9 @@ const workzone = (services) => {
         });
     }
 
-    function openExposePublicationEdit() {
+    function openExposePublicationEdit(edit) {
+        $('#DIALOG-expose-edit').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
         $('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title'))
             .dialog({
                 autoOpen: false,
@@ -785,6 +787,14 @@ const workzone = (services) => {
         $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         $('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
             $('#DIALOG-expose-edit').dialog('close');
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}` ,
+            success: function (data) {
+                $('#DIALOG-expose-edit').empty().html(data);
+            }
         });
     }
 
