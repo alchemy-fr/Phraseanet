@@ -179,7 +179,7 @@
 
         //generate publication list
         $(document).ready(function () {
-            publicationEdit.on('click', '.toggleSetting', function (e) {
+            publicationEdit.find('.toggleSetting').on('click', function (e) {
                 $(this).toggleClass('open');
                 $(this).next("div").toggleClass('hidden');
             });
@@ -246,7 +246,6 @@
         function buildData() {
             try {
                 var allData = publicationForm.serializeArray();
-                // console.log(allData);
                 var dataValue = allData.reduce((acc, it) => {
                     acc[it.name] = it.value;
                     return acc;
@@ -335,34 +334,6 @@
             }
 
             removeSecurityField();
-            /**Toggle display the Security option field**/
-            // $("#publication_securityMethod").change(function (e) {
-            //     var dataValue = buildData();
-            //     dataValue["securityMethod"] = '';
-            //     var Svalue = $(this).val();
-            //
-            //     if (Svalue == 'password') {
-            //         $(".securityOptions_wrapper").removeClass('visibility-hidden');
-            //
-            //     } else {
-            //         $(".securityOptions_wrapper").addClass('visibility-hidden');
-            //     };
-            //     if (Svalue !== '') {
-            //         dataValue["securityMethod"] = Svalue;
-            //
-            //         if (Svalue == 'authentication') {
-            //             $("#publication_password").val('');
-            //             $("#publication_securityMethod_error").removeClass('hidden');
-            //         } else {
-            //             $("#publication_securityMethod_error").addClass('hidden');
-            //         }
-            //     } else {
-            //         $("#publication_password").val('');
-            //     };
-            //     removeSecurityField();
-            //
-            //
-            // });
         });
 
         publicationEdit.find('#publication-json').on('submit', function (e) {

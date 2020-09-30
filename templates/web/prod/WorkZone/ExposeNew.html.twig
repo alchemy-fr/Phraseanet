@@ -164,14 +164,13 @@
         $(document).ready(function () {
             $("#DIALOG-expose-add .toggleSetting").click(function (e) {
                 $(this).toggleClass('open');
-                $('#DIALOG-expose-add #advancedSettingInner').toggleClass('hidden');
+                $('#DIALOG-expose-add').find('#advancedSettingInner').toggleClass('hidden');
             });
         });
 
-        function buildData() {
+        function extractData() {
             try {
-                var allData = $('#DIALOG-expose-add #publication-data-form').serializeArray();
-                // console.log(allData);
+                var allData = $('#DIALOG-expose-add').find('#publication-data-form').serializeArray();
                 var dataValue = allData.reduce((acc, it) => {
                         acc[it.name] = it.value;
                 return acc;
@@ -224,8 +223,8 @@
             }
         }
 
-        function removeSecurityField() {
-            var datavalueMinus = buildData();
+        function removeSecurityFieldDialogAdd() {
+            var datavalueMinus = extractData();
 
             if ($("#DIALOG-expose-add #publication_parent").val() == "") {
                 delete datavalueMinus['parentId'];
@@ -245,41 +244,22 @@
             delete datavalueMinus['beginsAt'];
             delete datavalueMinus['expiresAt'];
 
-            $('#DIALOG-expose-add #advancedSetting').val(JSON.stringify(datavalueMinus, undefined, 4));
+            $('#DIALOG-expose-add').find('#advancedSetting').val(JSON.stringify(datavalueMinus, undefined, 4));
             console.log(JSON.stringify(datavalueMinus, undefined, 4));
 
         }
 
-        $('#DIALOG-expose-add .publication-field').on('keyup change', function (e) {
-            removeSecurityField();
-            /**Toggle display the Security option field**/
-            $("#publication_securityMethod").change(function (e) {
-                var dataValue = buildData();
-                dataValue["securityMethod"] = '';
-                var Svalue = $(this).val();
+        $('#DIALOG-expose-add').find('.publication-field').on('keyup change', function (e) {
+            try {
+                $("#pub-success").addClass("hidden");
+                $("#pub-error").addClass("hidden");
+                // JSON.parse($(this).val());
+                jQuery.parseJSON(JSON.stringify($(this).val()));
+            } catch (err) {
+                $("#pub-error").removeClass("hidden").text(err.message);
+            }
 
-                if (Svalue == 'password') {
-                    $(".securityOptions_wrapper").removeClass('visibility-hidden');
-
-                } else {
-                    $(".securityOptions_wrapper").addClass('visibility-hidden');
-                };
-                if (Svalue !== '') {
-                    dataValue["securityMethod"] = Svalue;
-
-                    if (Svalue == 'authentication') {
-                        $("#DIALOG-expose-add #publication_password").val('');
-                        $("#DIALOG-expose-add #publication_securityMethod_error").removeClass('hidden');
-                    } else {
-                        $("#DIALOG-expose-add #publication_securityMethod_error").addClass('hidden');
-                    }
-                } else {
-                    $("#DIALOG-expose-add #publication_password").val('');
-                };
-                removeSecurityField();
-
-
-            });
+            removeSecurityFieldDialogAdd();
         });
 
         /**Selected Parent info **/
@@ -293,7 +273,7 @@
         });
 
 
-        $('#DIALOG-expose-add #publication-json').on('submit', function (e) {
+        $('#DIALOG-expose-add').on('submit', '#publication-json', function (e) {
             e.preventDefault();
             try {
                 $("#pub-error").addClass("hidden");
@@ -308,7 +288,7 @@
                 dataType: 'json',
                 data: {
                     exposeName: $('#expose_name').val(),
-                    publicationData: $('#DIALOG-expose-add #advancedSetting').val()
+                    publicationData: $('#DIALOG-expose-add').find('#advancedSetting').val()
                 },
                 success: function (data) {
                     if (data.success) {
@@ -320,17 +300,6 @@
                 }
             });
         });
-        $('#DIALOG-expose-add .publication-field').on('keyup change', function (e) {
-            try {
-                $("#pub-success").addClass("hidden");
-                $("#pub-error").addClass("hidden");
-                // JSON.parse($(this).val());
-                jQuery.parseJSON(JSON.stringify($(this).val()));
-            } catch (err) {
-                $("#pub-error").removeClass("hidden").text(err.message);
-            }
-        });
-
 
 
         //generate publication list

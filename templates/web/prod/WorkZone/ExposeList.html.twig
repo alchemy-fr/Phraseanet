@@ -8,7 +8,7 @@
                         {% endfor %}
                     </div>
 
-                <p class="expose_item_title"><span>{{ publication.title }}</span><span class="exp_date"></span></p>
+                <a target="_blank" href="{{ publication.frontUrl }}" class="expose_item_title" style="color:#4990e2;"><span>{{ publication.title }}</span><span class="exp_date"></span></a>
 
         </div>
         <div class="expose_item_deployed">
@@ -19,7 +19,6 @@
                 <div class="expose_drag_drop">
                     {% include 'prod/WorkZone/ExposePublicationAssets.html.twig' with { 'assets' : publication.assets} %}
                 </div>
-                <input type="button" class="load_more_expose" value="load More">
             </div>
         </div>
     </div>

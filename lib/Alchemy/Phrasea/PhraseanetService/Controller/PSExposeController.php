@@ -66,9 +66,16 @@ class PSExposeController extends Controller
 
             if ($resPublication->getStatusCode() == 200) {
                 $publication = json_decode($resPublication->getBody()->getContents(),true);
+                $path = empty($publication['slug']) ? $publication['id'] : $publication['slug'] ;
+                $exposeFrontUrl = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $path;
+                $publication['frontUrl'] = $exposeFrontUrl;
+
                 $publications[] = $publication;
 
                 foreach ($publication['children'] as $child ) {
+                    $pathChild = empty($child['slug']) ? $child['id'] : $child['slug'] ;
+                    $exposeFrontUrl = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $pathChild;
+                    $child['frontUrl'] = $exposeFrontUrl;
                     $publications[] = $child;
                 }
             }
@@ -80,6 +87,9 @@ class PSExposeController extends Controller
                 'publications' => $publications
             ]);
         }
+
+
+        $url = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $path;
 
         return $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications' => $publications,
