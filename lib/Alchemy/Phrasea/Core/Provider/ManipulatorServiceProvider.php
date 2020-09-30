@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Model\Manipulator\ApiLogManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthCodeManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthRefreshTokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\ApiOauthTokenManipulator;
+use Alchemy\Phrasea\Model\Manipulator\AuthFailureManipulator;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Manipulator\LazaretManipulator;
 use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
@@ -122,6 +123,10 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
 
         $app['manipulator.lazaret'] = $app->share(function (Application $app) {
             return new LazaretManipulator($app, $app['repo.lazaret-files'], $app['filesystem'], $app['orm.em']);
+        });
+        
+        $app['manipulator.auth-failures'] = $app->share(function (Application $app) {
+            return new AuthFailureManipulator($app, $app['repo.auth-failures'], $app['orm.em']);
         });
     }
 
