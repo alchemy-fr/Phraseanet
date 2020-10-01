@@ -61,8 +61,8 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         );
 
         $this->assertEquals($warning, $result->getWarning());
-        $this->assertEquals(2, $result->getTotalPages(23));
-        $this->assertEquals(5, $result->getTotalPages(5));
+        $this->assertEquals(435, $result->getTotalPages(23));
+        $this->assertEquals(2000, $result->getTotalPages(5));
         $this->assertEquals($total, $result->getTotal());
         $this->assertEquals($suggestions, $result->getSuggestions());
         $this->assertEquals($results, $result->getResults());
