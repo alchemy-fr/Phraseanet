@@ -136,7 +136,8 @@ class PSExposeController extends Controller
 
         if ($request->get('onlyAssets')) {
             return $this->render("prod/WorkZone/ExposePublicationAssets.html.twig", [
-                'assets' => $publication['assets']
+                'assets'        => $publication['assets'],
+                'publicationId' => $publication['id']
             ]);
         }
 
@@ -317,7 +318,7 @@ class PSExposeController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function deletePublication(PhraseaApplication $app, Request $request)
+    public function deletePublicationAction(PhraseaApplication $app, Request $request)
     {
         $exposeName = $request->get('exposeName');
 
@@ -357,6 +358,57 @@ class PSExposeController extends Controller
             'success' => true,
             'message' => "Publication successfully deleted!"
         ]);
+    }
+
+    /**
+     * Delete asset from publication
+     * require params "exposeName" ,"publicationId" and "assetId"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deletePublicationAssetAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+
+        // TODO: taken account admin config ,acces_token for user or client_credentiels
+
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$exposeName];
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        try {
+            if (!isset($exposeConfiguration['token'])) {
+                $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $exposeName);
+            }
+
+            $response = $this->removeAssetPublication($exposeClient, $request->get('publicationId'), $request->get('assetId'), $exposeConfiguration['token']);
+
+            if ($response->getStatusCode() == 401) {
+                $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $exposeName);
+                $response = $this->removeAssetPublication($exposeClient, $request->get('publicationId'), $request->get('assetId'), $exposeConfiguration['token']);
+            }
+
+            if ($response->getStatusCode() !== 204) {
+                return $app->json([
+                    'success' => false,
+                    'message' => "An error occurred when deleting asset: status-code " . $response->getStatusCode()
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when deleting asset!"
+            ]);
+        }
+
+        return $app->json([
+            'success' => true,
+            'message' => "Asset successfully removed from publication!"
+        ]);
+
     }
 
     /**
@@ -589,6 +641,21 @@ class PSExposeController extends Controller
                 'Authorization' => 'Bearer '. $token
             ]
         ]);
+    }
+
+    private function removeAssetPublication(Client $exposeClient, $publicationId, $assetId, $token)
+    {
+         return $exposeClient->delete('/publication-assets/'.$publicationId.'/'.$assetId, [
+            'headers' => [
+                'Authorization' => 'Bearer '. $token
+            ]
+        ]);
+
+//        $exposeClient->delete('/assets/'. $assetId, [
+//            'headers' => [
+//                'Authorization' => 'Bearer '. $token
+//            ]
+//        ]);
     }
 
     private function postSubDefinition(Client $exposeClient, $token, $path, $assetId, $subdefName, $isPreview = false, $isThumbnail = false)

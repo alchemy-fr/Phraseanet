@@ -9466,23 +9466,7 @@ var workzone = function workzone(services) {
 
         (0, _jquery2.default)('#expose_list').on('change', function () {
             (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
-            _jquery2.default.ajax({
-                type: 'GET',
-                url: '/prod/expose/list-publication/?exposeName=' + this.value,
-                success: function success(data) {
-                    (0, _jquery2.default)('.publication-list').empty().html(data);
-
-                    (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
-                        (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
-                        (0, _jquery2.default)(this).toggleClass('open');
-                    });
-                    (0, _jquery2.default)('.edit_expose').on('click', function (event) {
-                        openExposePublicationEdit((0, _jquery2.default)(this));
-                    });
-
-                    activeExpose();
-                }
-            });
+            updatePublicationList(this.value);
         });
 
         (0, _jquery2.default)('.publication-list').on('click', '.top-block', function (event) {
@@ -9968,6 +9952,66 @@ var workzone = function workzone(services) {
             },
             drop: function drop(event, ui) {
                 dropOnBask(event, ui.draggable, (0, _jquery2.default)(this));
+            }
+        });
+
+        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.removeAsset', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_drag_drop');
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/prod/expose/publication/delete-asset/' + publicationId + '/' + assetId + '/?exposeName=' + exposeName,
+                beforeSend: function beforeSend() {
+                    assetsContainer.addClass('loading');
+                },
+                success: function success(data) {
+                    if (data.success === true) {
+                        assetsContainer.removeClass('loading');
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    } else {
+                        console.log(data);
+                    }
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.delete-publication', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/prod/expose/delete-publication/' + publicationId + '/?exposeName=' + exposeName,
+                success: function success(data) {
+                    if (data.success === true) {
+                        updatePublicationList(exposeName);
+                    } else {
+                        console.log(data);
+                    }
+                }
+            });
+        });
+    }
+
+    function updatePublicationList(exposeName) {
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('.publication-list').empty().html(data);
+
+                (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
+                    (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                    (0, _jquery2.default)(this).toggleClass('open');
+                });
+                (0, _jquery2.default)('.edit_expose').on('click', function (event) {
+                    openExposePublicationEdit((0, _jquery2.default)(this));
+                });
+
+                activeExpose();
             }
         });
     }

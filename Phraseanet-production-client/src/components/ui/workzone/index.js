@@ -95,23 +95,7 @@ const workzone = (services) => {
 
         $('#expose_list').on('change', function () {
             $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
-            $.ajax({
-                type: 'GET',
-                url: '/prod/expose/list-publication/?exposeName=' + this.value,
-                success: function (data) {
-                    $('.publication-list').empty().html(data);
-
-                    $('.expose_basket_item .top_block').on('click', function (event) {
-                        $(this).parent().find('.expose_item_deployed').toggleClass('open');
-                        $(this).toggleClass('open');
-                    });
-                    $('.edit_expose').on('click',function (event) {
-                        openExposePublicationEdit($(this));
-                    });
-
-                    activeExpose();
-                }
-            });
+            updatePublicationList(this.value);
         });
 
         $('.publication-list').on('click', '.top-block' , function (event) {
@@ -601,7 +585,70 @@ const workzone = (services) => {
                     dropOnBask(event, ui.draggable, $(this));
                 }
             });
+
+        $('#idFrameC').find('.publication-droppable').on('click', '.removeAsset', function(){
+            let publicationId = $(this).attr('data-publication-id');
+            let assetId = $(this).attr('data-asset-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_drag_drop');
+
+            $.ajax({
+                type: 'POST',
+                url: `/prod/expose/publication/delete-asset/${publicationId}/${assetId}/?exposeName=${exposeName}`,
+                beforeSend: function () {
+                    assetsContainer.addClass('loading');
+                },
+                success: function (data) {
+                    if (data.success === true) {
+                        assetsContainer.removeClass('loading');
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    } else {
+                        console.log(data);
+                    }
+                }
+            });
+        });
+
+        $('#idFrameC').find('.publication-droppable').on('click', '.delete-publication', function(){
+            let publicationId = $(this).attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+
+            $.ajax({
+                type: 'POST',
+                url: `/prod/expose/delete-publication/${publicationId}/?exposeName=${exposeName}`,
+                success: function (data) {
+                    if (data.success === true) {
+                        updatePublicationList(exposeName);
+                    } else {
+                        console.log(data);
+                    }
+                }
+            });
+        });
+
     }
+
+    function updatePublicationList(exposeName)
+    {
+        $.ajax({
+            type: 'GET',
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            success: function (data) {
+                $('.publication-list').empty().html(data);
+
+                $('.expose_basket_item .top_block').on('click', function (event) {
+                    $(this).parent().find('.expose_item_deployed').toggleClass('open');
+                    $(this).toggleClass('open');
+                });
+                $('.edit_expose').on('click',function (event) {
+                    openExposePublicationEdit($(this));
+                });
+
+                activeExpose();
+            }
+        });
+    }
+
 
     function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
         $.ajax({

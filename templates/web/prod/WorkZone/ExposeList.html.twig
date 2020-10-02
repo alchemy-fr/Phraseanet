@@ -14,10 +14,13 @@
         <div class="expose_item_deployed">
             <div class="expose_item_top">
                 <span class="green_button edit_expose" data-id="{{ publication.id }}"><i class="fa fa-edit"></i></span>
-                <span>delete</span></div>
+                <span class="delete-publication" data-publication-id="{{ publication.id }}">
+                    <i class="fa fa-trash"></i> Delete
+                </span>
+            </div>
             <div class="expose_item_bottom">
                 <div class="expose_drag_drop">
-                    {% include 'prod/WorkZone/ExposePublicationAssets.html.twig' with { 'assets' : publication.assets} %}
+                    {% include 'prod/WorkZone/ExposePublicationAssets.html.twig' with { 'assets' : publication.assets, 'publicationId': publication.id } %}
                 </div>
             </div>
         </div>

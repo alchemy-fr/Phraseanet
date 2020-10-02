@@ -10,10 +10,10 @@
                 <img
                         data-kind="image" oncontextMenu="return(false);"
                         src="{{ asset.asset.thumbUrl|trim }}" data-original="{{ asset.asset.thumbUrl|trim }}" ondragstart="return false;">
-
             </div>
+
             <div class="bottom">
-                <a class="WorkZoneElementRemover">
+                <a class="WorkZoneElementRemover removeAsset" data-asset-id="{{ asset.asset.id }}" data-publication-id="{{ publicationId }}">
                     <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
                     <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
                 </a>
