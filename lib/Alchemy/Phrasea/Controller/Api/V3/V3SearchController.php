@@ -139,6 +139,8 @@ class V3SearchController extends Controller
             // if ($request->get('search_type') != SearchEngineOptions::RECORD_STORY) {
             if(in_array('results.stories.children', $includes)) {
                 $includes = array_merge($includes, [
+                    'results.stories.caption',
+                    'results.stories.metadata',
                     'results.stories.children.subdefs',
                     'results.stories.children.metadata',
                     'results.stories.children.caption',
@@ -146,7 +148,9 @@ class V3SearchController extends Controller
                 ]);
             }
             else {
-                $includes = [ 'results.stories.caption' ];
+                $includes = array_merge($includes, [
+                    'results.stories.caption'
+                ]);
             }
 
             $includes = array_merge($includes, [
@@ -265,7 +269,7 @@ class V3SearchController extends Controller
                 $allChildren[$index] = $childrenView->getRecord();
             }
 
-            $names = in_array('results.stories.records.subdefs', $includes, true) ? null : ['thumbnail'];
+            $names = in_array('results.stories.children.subdefs', $includes, true) ? null : ['thumbnail'];
             $subdefViews = $this->buildSubdefsViews($allChildren, $names, $urlTTL);
             $technicalDatasets = $this->app['service.technical_data']->fetchRecordsTechnicalData($allChildren);
 
@@ -274,7 +278,7 @@ class V3SearchController extends Controller
                 $recordView->setTechnicalDataView(new TechnicalDataView($technicalDatasets[$index]));
             }
 
-            if (array_intersect($includes, ['results.stories.records.metadata', 'results.stories.records.caption'])) {
+            if (array_intersect($includes, ['results.stories.children.metadata', 'results.stories.children.caption'])) {
                 $captions = $this->app['service.caption']->findByReferenceCollection($allChildren);
                 $canSeeBusiness = $this->retrieveSeeBusinessPerDatabox($allChildren);
 

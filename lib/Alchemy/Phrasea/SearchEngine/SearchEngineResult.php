@@ -154,7 +154,7 @@ class SearchEngineResult
      */
     public function getTotalPages($amountPerPage)
     {
-        return ceil($this->available / $amountPerPage);
+        return ceil($this->total / $amountPerPage);
     }
 
     /**
