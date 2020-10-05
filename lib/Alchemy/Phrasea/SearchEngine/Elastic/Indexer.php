@@ -101,7 +101,7 @@ class Indexer
         $recordIndexName =  $indexName . ('.r_' . $now);
         $termIndexName =  $indexName . ('.t_' . $now);
 
-        $this->client->indices()->create([
+        $this->client->indices()->create($params = [
             'index' => $recordIndexName,
             'body'  => [
                 'settings' => [
@@ -437,9 +437,14 @@ class Indexer
      */
     public function indexScheduledRecords(\databox $databox)
     {
-        $this->apply(function(BulkOperation $bulk) use($databox) {
-            $this->recordIndexer->indexScheduled($bulk, $databox);
-        }, $this->index);
+        $this->apply(
+            function(BulkOperation $bulk) use($databox) {
+                $bulk->setDefaultIndex($this->getIndex()->getName() . '.r');
+
+                $this->recordIndexer->indexScheduled($bulk, $databox);
+            },
+            $this->index
+        );
     }
 
     public function flushQueue()
@@ -452,11 +457,16 @@ class Indexer
             return;
         }
 
-        $this->apply(function(BulkOperation $bulk) {
-            $this->recordIndexer->index($bulk, $this->indexQueue);
-            $this->recordIndexer->delete($bulk, $this->deleteQueue);
-            $bulk->flush();
-        }, $this->index);
+        $this->apply(
+            function(BulkOperation $bulk) {
+                $bulk->setDefaultIndex($this->getIndex()->getName() . '.r');
+
+                $this->recordIndexer->index($bulk, $this->indexQueue);
+                $this->recordIndexer->delete($bulk, $this->deleteQueue);
+                $bulk->flush();
+            },
+            $this->index
+        );
 
         $this->indexQueue = new SplObjectStorage();
         $this->deleteQueue = new SplObjectStorage();
