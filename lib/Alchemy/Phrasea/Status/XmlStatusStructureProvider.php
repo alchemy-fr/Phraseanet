@@ -136,6 +136,11 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 
     public function updateStatus(StatusStructure $statusStructure, $bit, array $properties)
     {
+        // never ever set a sb with empty "labelOn", it will crash es with "field name cannot be an empty string"
+        if(trim($properties['labelOn']) == '') {
+            $properties['labelOn'] = 'sb' . $bit . '_on';
+        }
+
         $databox = $statusStructure->getDatabox();
 
         if (false === $statusStructure->hasStatus($bit)) {
