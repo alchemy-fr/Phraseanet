@@ -9374,6 +9374,10 @@ var _alert = __webpack_require__(44);
 
 var _alert2 = _interopRequireDefault(_alert);
 
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -9462,6 +9466,12 @@ var workzone = function workzone(services) {
 
         (0, _jquery2.default)('.add_expose').on('click', function (event) {
             openExposePublicationAdd();
+        });
+
+        (0, _jquery2.default)('.refresh-list').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
         });
 
         (0, _jquery2.default)('#expose_list').on('change', function () {
@@ -9961,38 +9971,80 @@ var workzone = function workzone(services) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_drag_drop');
 
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: '/prod/expose/publication/delete-asset/' + publicationId + '/' + assetId + '/?exposeName=' + exposeName,
-                beforeSend: function beforeSend() {
-                    assetsContainer.addClass('loading');
-                },
-                success: function success(data) {
-                    if (data.success === true) {
-                        assetsContainer.removeClass('loading');
-                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
-                    } else {
-                        console.log(data);
-                    }
-                }
+            var buttons = {};
+
+            var $dialog = _dialog2.default.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
             });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/delete-asset/' + publicationId + '/' + assetId + '/?exposeName=' + exposeName,
+                    beforeSend: function beforeSend() {
+                        assetsContainer.addClass('loading');
+                    },
+                    success: function success(data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            assetsContainer.removeClass('loading');
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            var texte = '<p>' + localeService.t('removeAssetPublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
         });
 
         (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.delete-publication', function () {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var buttons = {};
 
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: '/prod/expose/delete-publication/' + publicationId + '/?exposeName=' + exposeName,
-                success: function success(data) {
-                    if (data.success === true) {
-                        updatePublicationList(exposeName);
-                    } else {
-                        console.log(data);
-                    }
-                }
+            var $dialog = _dialog2.default.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
             });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/delete-publication/' + publicationId + '/?exposeName=' + exposeName,
+                    success: function success(data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            updatePublicationList(exposeName);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            var texte = '<p>' + localeService.t('removeExposePublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
         });
     }
 
@@ -10021,7 +10073,7 @@ var workzone = function workzone(services) {
             type: 'GET',
             url: '/prod/expose/get-publication/' + publicationId + '?exposeName=' + exposeName + '&onlyAssets=1',
             beforeSend: function beforeSend() {
-                assetsContainer.addClass('loading');
+                assetsContainer.empty().addClass('loading');
             },
             success: function success(data) {
                 if (typeof data.success === 'undefined') {

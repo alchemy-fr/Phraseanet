@@ -479,13 +479,21 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="add_expose_block"><a id="add_expose" class="add_expose" href="#" ><span>{{ 'prod:: workzone:expose: Add publication' | trans }}</span><img src="/assets/common/images/icons/Basket-New.png" title="New Expose"></a></div>
+        <div class="add_expose_block">
+            <a id="add_expose" class="add_expose" href="#" >
+                <span>{{ 'prod:: workzone:expose: Add publication' | trans }}</span>
+                <img src="/assets/common/images/icons/Basket-New.png" title="New Expose">
+            </a>
+            <button class="btn-success refresh-list">{{ 'Refresh' | trans }}</button>
+        </div>
+
         <div class="insidebloc expose_insidebloc">
             <div id="validations-block" class="validations-block publication-list">
             </div>
 
         </div>
     </div>
+{#    <div id="DIALOG-expose"></div>#}
     <div id='DIALOG-expose-edit' style="display: none"></div>
 
     {% import 'prod/WorkZone/ExposeNew.html.twig' as ExposeNew %}

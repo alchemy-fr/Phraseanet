@@ -59,6 +59,8 @@ class LanguageController
             'feed_require_fields'     => $translator->trans('Vous n\'avez pas rempli tous les champ requis'),
             'feed_require_feed'       => $translator->trans('Vous n\'avez pas selectionne de fil de publication'),
             'removeTitle'             => $translator->trans('panier::Supression d\'un element d\'un reportage'),
+            'removeExposePublication' => $translator->trans('expose::Your are about to delete a publication from expose, please confirm your action !'),
+            'removeAssetPublication'  => $translator->trans('expose::Your are about to delete an asset from a publication, please confirm your action !'),
             'confirmRemoveReg'        => $translator->trans('panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action.'),
             'advsearch_title'         => $translator->trans('phraseanet::recherche avancee'),
             'bask_rename'             => $translator->trans('panier:: renommer le panier'),

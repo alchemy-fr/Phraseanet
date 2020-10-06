@@ -5,6 +5,7 @@ import workzoneFacets from './facets/index';
 import workzoneBaskets from './baskets/index';
 import Selectable from '../../utils/selectable';
 import Alerts from '../../utils/alert';
+import dialog from './../../../phraseanet-common/components/dialog';
 const humane = require('humane-js');
 require('./../../../phraseanet-common/components/tooltip');
 require('./../../../phraseanet-common/components/vendors/contextMenu');
@@ -91,6 +92,12 @@ const workzone = (services) => {
 
         $('.add_expose').on('click',function (event) {
             openExposePublicationAdd();
+        });
+
+        $('.refresh-list').on('click',function (event) {
+            let exposeName = $('#expose_list').val();
+            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
         });
 
         $('#expose_list').on('change', function () {
@@ -592,40 +599,81 @@ const workzone = (services) => {
             let exposeName = $('#expose_list').val();
             let assetsContainer = $(this).parents('.expose_drag_drop');
 
-            $.ajax({
-                type: 'POST',
-                url: `/prod/expose/publication/delete-asset/${publicationId}/${assetId}/?exposeName=${exposeName}`,
-                beforeSend: function () {
-                    assetsContainer.addClass('loading');
-                },
-                success: function (data) {
-                    if (data.success === true) {
-                        assetsContainer.removeClass('loading');
-                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
-                    } else {
-                        console.log(data);
-                    }
-                }
+            let buttons = {};
+
+            let $dialog = dialog.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
             });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+                $.ajax({
+                    type: 'POST',
+                    url: `/prod/expose/publication/delete-asset/${publicationId}/${assetId}/?exposeName=${exposeName}`,
+                    beforeSend: function () {
+                        assetsContainer.addClass('loading');
+                    },
+                    success: function (data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            assetsContainer.removeClass('loading');
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            let texte = '<p>' + localeService.t('removeAssetPublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
         });
 
-        $('#idFrameC').find('.publication-droppable').on('click', '.delete-publication', function(){
+        $('#idFrameC').find('.publication-droppable').on('click', '.delete-publication', function() {
             let publicationId = $(this).attr('data-publication-id');
             let exposeName = $('#expose_list').val();
+            let buttons = {};
 
-            $.ajax({
-                type: 'POST',
-                url: `/prod/expose/delete-publication/${publicationId}/?exposeName=${exposeName}`,
-                success: function (data) {
-                    if (data.success === true) {
-                        updatePublicationList(exposeName);
-                    } else {
-                        console.log(data);
-                    }
-                }
+            let $dialog = dialog.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
             });
-        });
 
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+                $.ajax({
+                    type: 'POST',
+                    url: `/prod/expose/delete-publication/${publicationId}/?exposeName=${exposeName}`,
+                    success: function (data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            updatePublicationList(exposeName);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            let texte = '<p>' + localeService.t('removeExposePublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
+        });
     }
 
     function updatePublicationList(exposeName)
@@ -655,7 +703,7 @@ const workzone = (services) => {
             type: 'GET',
             url: `/prod/expose/get-publication/${publicationId}?exposeName=${exposeName}&onlyAssets=1`,
             beforeSend: function () {
-                assetsContainer.addClass('loading');
+                assetsContainer.empty().addClass('loading');
             },
             success: function (data) {
                 if (typeof data.success === 'undefined') {

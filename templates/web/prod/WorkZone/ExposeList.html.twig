@@ -14,9 +14,13 @@
         <div class="expose_item_deployed">
             <div class="expose_item_top">
                 <span class="green_button edit_expose" data-id="{{ publication.id }}"><i class="fa fa-edit"></i></span>
-                <span class="delete-publication" data-publication-id="{{ publication.id }}">
-                    <i class="fa fa-trash"></i> Delete
-                </span>
+                {% if publication.children|length == 0 %}
+                    <button type="button" class="delete-publication btn-danger" data-publication-id="{{ publication.id }}">
+                        <i class="fa fa-trash"></i> Delete
+                    </button>
+                {% else  %}
+                    <span>Parent publication</span>
+                {% endif %}
             </div>
             <div class="expose_item_bottom">
                 <div class="expose_drag_drop">
