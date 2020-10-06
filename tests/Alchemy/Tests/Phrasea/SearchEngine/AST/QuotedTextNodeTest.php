@@ -85,13 +85,13 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
                         "lenient": true
                     }
                 }, {
-                    "filtered": {
+                    "bool": {
                         "filter": {
                             "terms": {
                                 "base_id": [1, 2, 3]
                             }
                         },
-                        "query": {
+                        "must": {
                             "multi_match": {
                                 "type": "phrase",
                                 "fields": [

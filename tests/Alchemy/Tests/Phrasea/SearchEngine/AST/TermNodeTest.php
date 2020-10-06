@@ -116,13 +116,13 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
                         "query": "/qux"
                     }
                 }, {
-                    "filtered": {
+                    "bool": {
                         "filter": {
                             "terms": {
                                 "base_id": [1, 2, 3]
                             }
                         },
-                        "query": {
+                        "must": {
                             "bool": {
                                 "should": [{
                                     "multi_match": {
