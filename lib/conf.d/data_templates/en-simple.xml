@@ -202,6 +202,15 @@
     </description>
 
     <statbits>
-        <bit n="4">Online</bit>
+        <bit n="4" labelOn="Online" searchable="0" printable="0" labelOff="Offline">
+            <label switch="off" code="de" />
+            <label switch="off" code="en" />
+            <label switch="off" code="fr" />
+            <label switch="off" code="nl" />
+            <label switch="on" code="de" />
+            <label switch="on" code="en" />
+            <label switch="on" code="fr" />
+            <label switch="on" code="nl" />
+        </bit>
     </statbits>
 </record>
