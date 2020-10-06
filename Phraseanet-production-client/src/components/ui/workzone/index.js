@@ -618,7 +618,6 @@ const workzone = (services) => {
                     success: function (data) {
                         if (data.success === true) {
                             $dialog.close();
-                            assetsContainer.removeClass('loading');
                             getPublicationAssetsList(publicationId, exposeName, assetsContainer);
                         } else {
                             $dialog.setContent(data.message);
@@ -702,9 +701,6 @@ const workzone = (services) => {
         $.ajax({
             type: 'GET',
             url: `/prod/expose/get-publication/${publicationId}?exposeName=${exposeName}&onlyAssets=1`,
-            beforeSend: function () {
-                assetsContainer.empty().addClass('loading');
-            },
             success: function (data) {
                 if (typeof data.success === 'undefined') {
                     assetsContainer.removeClass('loading');
@@ -1043,7 +1039,11 @@ const workzone = (services) => {
                 },
                 dataType: 'json',
                 success: function (data) {
-                    getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    setTimeout(function(){
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                        }
+                        , 6000);
+
                     console.log(data.message);
                 }
             });

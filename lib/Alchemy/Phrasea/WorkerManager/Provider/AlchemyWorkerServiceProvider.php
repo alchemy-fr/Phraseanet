@@ -10,6 +10,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\AssetsIngestWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\DeleteRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExportMailWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\ExposeUploadWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Factory\CallableWorkerFactory;
 use Alchemy\Phrasea\WorkerManager\Worker\MainQueueWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\PopulateIndexWorker;
@@ -128,6 +129,11 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DELETE_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new DeleteRecordWorker($app['repo.worker-running-job']))
+                ->setApplicationBox($app['phraseanet.appbox']);
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EXPOSE_UPLOAD_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return (new ExposeUploadWorker($app))
                 ->setApplicationBox($app['phraseanet.appbox']);
         }));
 

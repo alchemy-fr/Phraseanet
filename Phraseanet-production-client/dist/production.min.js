@@ -9990,7 +9990,6 @@ var workzone = function workzone(services) {
                     success: function success(data) {
                         if (data.success === true) {
                             $dialog.close();
-                            assetsContainer.removeClass('loading');
                             getPublicationAssetsList(publicationId, exposeName, assetsContainer);
                         } else {
                             $dialog.setContent(data.message);
@@ -10072,9 +10071,6 @@ var workzone = function workzone(services) {
         _jquery2.default.ajax({
             type: 'GET',
             url: '/prod/expose/get-publication/' + publicationId + '?exposeName=' + exposeName + '&onlyAssets=1',
-            beforeSend: function beforeSend() {
-                assetsContainer.empty().addClass('loading');
-            },
             success: function success(data) {
                 if (typeof data.success === 'undefined') {
                     assetsContainer.removeClass('loading');
@@ -10399,7 +10395,10 @@ var workzone = function workzone(services) {
                 },
                 dataType: 'json',
                 success: function success(data) {
-                    getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    setTimeout(function () {
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    }, 6000);
+
                     console.log(data.message);
                 }
             });

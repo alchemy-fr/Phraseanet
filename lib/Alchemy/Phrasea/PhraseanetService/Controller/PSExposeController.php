@@ -5,8 +5,10 @@ namespace Alchemy\Phrasea\PhraseanetService\Controller;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
-use Alchemy\Phrasea\Twig\PhraseanetExtension;
+use Alchemy\Phrasea\WorkerManager\Event\ExposeUploadEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use GuzzleHttp\Client;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class PSExposeController extends Controller
@@ -424,6 +426,8 @@ class PSExposeController extends Controller
     {
         $exposeName = $request->get('exposeName');
         $publicationId = $request->get('publicationId');
+        $lst =  $request->get('lst');
+
         if ($publicationId == null) {
             return $app->json([
                 'success' => false,
@@ -431,146 +435,11 @@ class PSExposeController extends Controller
             ]);
         }
 
-        try {
-            $records = RecordsRequest::fromRequest($app, $request);
-        } catch (\Exception $e) {
-            return $app->json([
-                'success' => false,
-                'message'   => 'An error occured when wanting to create publication!'
-            ]);
-        }
-
-        // TODO: taken account admin config ,acces_token for user or client_credentiels
-
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$exposeName];
-
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
-
-        /** @var \record_adapter $record */
-        foreach ($records as $record) {
-            try {
-                $helpers = new PhraseanetExtension($app);
-                $canSeeBusiness = $helpers->isGrantedOnCollection($record->getBaseId(), [\ACL::CANMODIFRECORD]);
-
-                $captionsByfield = $record->getCaption($helpers->getCaptionFieldOrder($record, $canSeeBusiness));
-
-                $description = "<dl>";
-
-                foreach ($captionsByfield as $name => $value) {
-                    if ($helpers->getCaptionFieldGuiVisible($record, $name) == 1) {
-                        $description .= "<dt>" . $helpers->getCaptionFieldLabel($record, $name). "</dt>";
-                        $description .= "<dd>" . $helpers->getCaptionField($record, $name, $value). "</dd>";
-                    }
-                }
-
-                $description .= "</dl>";
-
-                $databox = $record->getDatabox();
-                $caption = $record->get_caption();
-                $lat = $lng = null;
-
-                foreach ($databox->get_meta_structure() as $meta) {
-                    if (strpos(strtolower($meta->get_name()), 'longitude') !== FALSE  && $caption->has_field($meta->get_name())) {
-                        // retrieve value for the corresponding field
-                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
-                        $fieldValue = array_pop($fieldValues);
-                        $lng = $fieldValue->getValue();
-
-                    } elseif (strpos(strtolower($meta->get_name()), 'latitude') !== FALSE  && $caption->has_field($meta->get_name())) {
-                        // retrieve value for the corresponding field
-                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
-                        $fieldValue = array_pop($fieldValues);
-                        $lat = $fieldValue->getValue();
-
-                    }
-                }
-
-                $multipartData = [
-                    [
-                        'name'      => 'file',
-                        'contents'  => fopen($record->get_subdef('document')->getRealPath(), 'r')
-                    ],
-                    [
-                        'name'      => 'publication_id',
-                        'contents'  => $publicationId,
-
-                    ],
-                    [
-                        'name'      => 'slug',
-                        'contents'  => 'asset_'. $record->getId()
-                    ],
-                    [
-                        'name'      => 'description',
-                        'contents'  => $description
-                    ]
-                ];
-
-                if ($lat !== null) {
-                    array_push($multipartData, [
-                        'name'      => 'lat',
-                        'contents'  => $lat
-                    ]);
-                }
-
-                if ($lng !== null) {
-                    array_push($multipartData, [
-                        'name'      => 'lng',
-                        'contents'  => $lng
-                    ]);
-                }
-
-                $response = $exposeClient->post('/assets', [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $exposeConfiguration['token']
-                    ],
-                    'multipart' => $multipartData
-                ]);
-
-                if ($response->getStatusCode() !==201) {
-                    return $app->json([
-                        'success' => false,
-                        'message' => "An error occurred when creating asset: status-code " . $response->getStatusCode()
-                    ]);
-                }
-
-                $assetsResponse = json_decode($response->getBody(),true);
-
-                // add preview sub-definition
-
-                $this->postSubDefinition(
-                    $exposeClient,
-                    $exposeConfiguration['token'],
-                    $record->get_subdef('preview')->getRealPath(),
-                    $assetsResponse['id'],
-                    'preview',
-                    true
-                );
-
-                // add thumbnail sub-definition
-
-                $this->postSubDefinition(
-                    $exposeClient,
-                    $exposeConfiguration['token'],
-                    $record->get_subdef('thumbnail')->getRealPath(),
-                    $assetsResponse['id'],
-                    'thumbnail',
-                    false,
-                    true
-                );
-
-
-            } catch (\Exception $e) {
-                return $app->json([
-                    'success' => false,
-                    'message' => "An error occurred when creating asset!"
-                ]);
-            }
-        }
+        $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId));
 
         return $app->json([
             'success' => true,
-            'message' => count($records) . " record (s) added to the publication!"
+            'message' => " Record (s) to be added to the publication!"
         ]);
     }
 
@@ -658,36 +527,12 @@ class PSExposeController extends Controller
 //        ]);
     }
 
-    private function postSubDefinition(Client $exposeClient, $token, $path, $assetId, $subdefName, $isPreview = false, $isThumbnail = false)
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getEventDispatcher()
     {
-        return $exposeClient->post('/sub-definitions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' .$token
-            ],
-            'multipart' => [
-                [
-                    'name'      => 'file',
-                    'contents'  => fopen($path, 'r')
-                ],
-                [
-                    'name'      => 'asset_id',
-                    'contents'  => $assetId,
-
-                ],
-                [
-                    'name'      => 'name',
-                    'contents'  => $subdefName
-                ],
-                [
-                    'name'      => 'use_as_preview',
-                    'contents'  => $isPreview
-                ],
-                [
-                    'name'      => 'use_as_thumbnail',
-                    'contents'  => $isThumbnail
-                ]
-            ]
-        ]);
+        return $this->app['dispatcher'];
     }
-
 }
