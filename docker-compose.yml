@@ -172,7 +172,7 @@ services:
       - discovery.type=single-node
       - ELASTICSEARCH_USE_NVX
       - useNVX=ELASTICSEARCH_USE_NVX
-      - TAKE_FILE_OWNERSHIP
+      - TAKE_FILE_OWNERSHIP=/usr/share/elasticsearch/data
       # - node.max_local_storage_nodes=2
     ulimits:
         memlock:
