@@ -41,7 +41,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 
         foreach ($sxe->statbits->bit as $sb) {
             $bit = (int) ($sb['n']);
-            if ($bit < 4 && $bit > 31) {
+            if ($bit < 4 || $bit > 31) {
                 continue;
             }
 
@@ -220,6 +220,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 
         $status = $statusStructure->getStatus($bit);
 
+        $status['bit'] = $bit;
         $status['labelon'] = $properties['labelon'];
         $status['labeloff'] = $properties['labeloff'];
         $status['searchable'] = (Boolean) $properties['searchable'];
