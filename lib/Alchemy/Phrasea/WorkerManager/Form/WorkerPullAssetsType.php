@@ -12,11 +12,8 @@ class WorkerPullAssetsType extends AbstractType
         parent::buildForm($builder, $options);
 
         $builder
-            ->add('endpointCommit', 'text', [
-                'label' => 'admin::workermanager:tab:pullassets: Endpoint get commit'
-            ])
-            ->add('endpointToken', 'text', [
-                'label' => 'admin::workermanager:tab:pullassets: Endpoint get token'
+            ->add('UploaderApiBaseUri', 'text', [
+                'label' => 'admin::workermanager:tab:pullassets: Uploader api base uri'
             ])
             ->add('clientSecret', 'text', [
                 'label' => 'admin::workermanager:tab:pullassets: Client secret'
