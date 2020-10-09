@@ -9159,9 +9159,9 @@
         <target state="translated">Launch pull assets</target>
         <jms:reference-file line="22">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ad2a78767b3542baec93331285da8ad19a0799b2" resname="admin::workermanager:tab:pullassets: Uploader api base uri" approved="no">
+      <trans-unit id="ad2a78767b3542baec93331285da8ad19a0799b2" resname="admin::workermanager:tab:pullassets: Uploader api base uri" approved="yes">
         <source>admin::workermanager:tab:pullassets: Uploader api base uri</source>
-        <target state="needs-translation">Uploader API base URI, example : https://api-uploader.phrasea.io</target>
+        <target state="translated">Uploader API base URI, example : https://api-uploader.phrasea.io</target>
         <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description" approved="yes">
@@ -13948,9 +13948,9 @@ It is possible to place several search areas</target>
         <target state="new">thesaurus::populate: success message</target>
         <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export">
+      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="yes">
         <source>thesaurus:dialog:: export</source>
-        <target state="needs-translation">Export Candidats</target>
+        <target state="translated">Export Candidats</target>
         <jms:reference-file line="695">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties">
