@@ -16,7 +16,10 @@ if [ -f "$FILE" ]; then
         bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
     fi
     if [[ -n $PHRASEANET_TRUSTED_PROXIES ]]; then
-        bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXIES
+        for i in $(echo $PHRASEANET_TRUSTED_PROXIES | sed "s/,/ /g")
+          do
+            bin/setup system:config add trusted-proxies $i
+         done
     fi
 
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
