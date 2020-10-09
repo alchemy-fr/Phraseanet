@@ -64,10 +64,10 @@ class WorkerRunningJob extends \Alchemy\Phrasea\Model\Entities\WorkerRunningJob 
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'databoxId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'work', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'workOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'published', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'status'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'databoxId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'work', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'workOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'commitId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'assetId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'info', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'payload', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'published', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'finished', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'status'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'databoxId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'work', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'workOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'published', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'status'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'databoxId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'recordId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'work', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'workOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'commitId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'assetId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'info', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'payload', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'published', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'finished', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob' . "\0" . 'status'];
     }
 
     /**
@@ -279,6 +279,94 @@ class WorkerRunningJob extends \Alchemy\Phrasea\Model\Entities\WorkerRunningJob 
     /**
      * {@inheritDoc}
      */
+    public function setCommitId($commitId)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCommitId', [$commitId]);
+
+        return parent::setCommitId($commitId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCommitId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCommitId', []);
+
+        return parent::getCommitId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAssetId($assetId)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAssetId', [$assetId]);
+
+        return parent::setAssetId($assetId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAssetId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAssetId', []);
+
+        return parent::getAssetId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setInfo($info)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInfo', [$info]);
+
+        return parent::setInfo($info);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getInfo()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInfo', []);
+
+        return parent::getInfo();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPayload(array $payload)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPayload', [$payload]);
+
+        return parent::setPayload($payload);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPayload()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPayload', []);
+
+        return parent::getPayload();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCreated()
     {
 
@@ -312,6 +400,28 @@ class WorkerRunningJob extends \Alchemy\Phrasea\Model\Entities\WorkerRunningJob 
     /**
      * {@inheritDoc}
      */
+    public function setFinished(\DateTime $finished)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFinished', [$finished]);
+
+        return parent::setFinished($finished);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFinished()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFinished', []);
+
+        return parent::getFinished();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setStatus($status)
     {
 
@@ -329,17 +439,6 @@ class WorkerRunningJob extends \Alchemy\Phrasea\Model\Entities\WorkerRunningJob 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStatus', []);
 
         return parent::getStatus();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getWorkName()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWorkName', []);
-
-        return parent::getWorkName();
     }
 
 }
