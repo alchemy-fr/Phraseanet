@@ -40,6 +40,7 @@ use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\RemovePlugin;
 use Alchemy\Phrasea\Command\CheckConfig;
 use Alchemy\Phrasea\Command\SearchEngine\MappingUpdateCommand;
+use Alchemy\Phrasea\Command\SendValidationRemindersCommand;
 use Alchemy\Phrasea\Command\Setup\H264ConfigurationDumper;
 use Alchemy\Phrasea\Command\Setup\H264MappingGenerator;
 use Alchemy\Phrasea\Command\Setup\XSendFileConfigurationDumper;
@@ -168,6 +169,8 @@ $cli->command(new FindConceptsCommand());
 $cli->command(new WorkerExecuteCommand());
 $cli->command(new WorkerRunServiceCommand());
 $cli->command(new WorkerShowConfigCommand());
+
+$cli->command(new SendValidationRemindersCommand());
 
 $cli->loadPlugins();
 

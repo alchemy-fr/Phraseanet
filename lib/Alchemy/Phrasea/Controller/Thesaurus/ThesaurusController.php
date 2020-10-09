@@ -541,9 +541,15 @@ class ThesaurusController extends Controller
 
         $err = '';
 
-        if (null === $bid = $request->get("bid")) {
+        if (($bid = $request->get("bid")) === null) {
             return new Response('Missing bid parameter', 400);
         }
+
+        if ($request->files->get('fil') === null) {
+            return new Response('Missing file to import', 400);
+        }
+
+
 
         try {
             $databox = $this->findDataboxById((int) $bid);

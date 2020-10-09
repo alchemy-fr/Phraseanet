@@ -41,6 +41,7 @@ services:
     - elasticsearch
     environment:
     - PHRASEANET_PROJECT_NAME
+    - PHRASEANET_TRUSTED_PROXIES
     - MAX_BODY_SIZE
     - MAX_INPUT_VARS
     - MAX_EXECUTION_TIME
@@ -120,6 +121,7 @@ services:
     - elasticsearch
     environment:
     - PHRASEANET_PROJECT_NAME
+    - PHRASEANET_TRUSTED_PROXIES
     - MAX_BODY_SIZE
     - MAX_INPUT_VARS
     - OPCACHE_ENABLED

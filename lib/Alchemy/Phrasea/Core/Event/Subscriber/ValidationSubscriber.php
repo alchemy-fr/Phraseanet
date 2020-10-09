@@ -108,6 +108,9 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
         return $this->app['events-manager']->notify($params['to'], 'eventsmanager_notify_validationdone', $datas, $mailed);
     }
 
+    /*
+     * PHRAS-3214_validation-tokens-refacto : This code is moved to console command "SendValidationRemindersCommand.php"
+     *
     public function onRemind(ValidationEvent $event)
     {
         $params = [
@@ -150,13 +153,15 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
 
         return $this->app['events-manager']->notify($params['to'], 'eventsmanager_notify_validationreminder', $datas, $mailed);
     }
+    */
 
     public static function getSubscribedEvents()
     {
         return [
             PhraseaEvents::VALIDATION_CREATE => 'onCreate',
             PhraseaEvents::VALIDATION_DONE => 'onFinish',
-            PhraseaEvents::VALIDATION_REMINDER => 'onRemind',
+            // PHRAS-3214_validation-tokens-refacto : This code is moved to console command "SendValidationRemindersCommand.php"
+            // PhraseaEvents::VALIDATION_REMINDER => 'onRemind',
         ];
     }
 }

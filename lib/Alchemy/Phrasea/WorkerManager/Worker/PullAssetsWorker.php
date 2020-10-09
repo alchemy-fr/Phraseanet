@@ -33,7 +33,7 @@ class PullAssetsWorker implements WorkerInterface
             return;
         }
 
-        $uploaderClient = new Client();
+        $uploaderClient = new Client(['base_uri' => $config['UploaderApiBaseUri'], 'http_errors' => false]);
 
         // if a token exist , use it
         if (isset($config['assetToken'])) {
@@ -62,9 +62,6 @@ class PullAssetsWorker implements WorkerInterface
         $body = json_decode($body,true);
         $commits = $body['hydra:member'];
 
-        $urlInfo = parse_url($config['endpointCommit']);
-        $baseUrl = $urlInfo['scheme'] . '://' . $urlInfo['host'] .':'.$urlInfo['port'];
-
         foreach ($commits as $commit) {
             //  send only payload in ingest-queue if the commit is ack false and it is not being creating
             if (!$commit['acknowledged'] && !$this->isCommitToBeCreating($commit['id'])) {
@@ -80,7 +77,7 @@ class PullAssetsWorker implements WorkerInterface
                         'publisher' => $commit['userId'],
                         'commit_id' => $commit['id'],
                         'token'     => $commit['token'],
-                        'base_url'  => $baseUrl,
+                        'base_url'  => $config['UploaderApiBaseUri'],
                         'type'      => WorkerRunningJob::TYPE_PULL
                     ]
                 ];
@@ -98,10 +95,11 @@ class PullAssetsWorker implements WorkerInterface
      */
     private function getCommits(Client $uploaderClient, array $config)
     {
+        // get only unacknowledged
         try {
-            $res = $uploaderClient->get($config['endpointCommit'], [
+            $res = $uploaderClient->get('/commits?acknowledged=false', [
                 'headers' => [
-                    'Authorization' => 'AssetToken '.$config['assetToken']
+                    'Authorization' => 'Bearer '.$config['assetToken']
                 ]
             ]);
         } catch(\Exception $e) {
@@ -121,21 +119,21 @@ class PullAssetsWorker implements WorkerInterface
     private function generateToken(Client $uploaderClient, array $config)
     {
         try {
-            $tokenBody = $uploaderClient->post($config['endpointToken'], [
+            $tokenBody = $uploaderClient->post('/oauth/v2/token', [
                 'json' => [
                     'client_id'     => $config['clientId'],
                     'client_secret' => $config['clientSecret'],
                     'grant_type'    => 'client_credentials',
-                    'scope'         => 'uploader:commit_list'
+                    'scope'         => 'commit:list'
                 ]
             ])->getBody()->getContents();
+
+            $tokenBody = json_decode($tokenBody,true);
         } catch (\Exception $e) {
             $this->messagePublisher->pushLog("An error occurred when fetching endpointToken : " . $e->getMessage());
 
             return null;
         }
-
-        $tokenBody = json_decode($tokenBody,true);
 
         $this->conf->set(['workers', 'pull_assets', 'assetToken'], $tokenBody['access_token']);
 
