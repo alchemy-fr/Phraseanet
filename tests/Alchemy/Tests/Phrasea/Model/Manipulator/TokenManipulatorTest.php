@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Model\Manipulator;
 
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
+use DateTime;
 
 /**
  * @group functional
@@ -35,37 +36,38 @@ class TokenManipulatorTest extends \PhraseanetTestCase
         return [
             [true, TokenManipulator::TYPE_RSS, null, null],
             [false, TokenManipulator::TYPE_RSS, null, null],
-            [false, TokenManipulator::TYPE_RSS, new \DateTime('-1 day'), 'data'],
+            [false, TokenManipulator::TYPE_RSS, new DateTime('-1 day'), 'data'],
         ];
     }
 
     public function testCreateBasketValidationToken()
     {
         $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens'], self::$DI['app']['tmp.download.path']);
-        $token = $manipulator->createBasketValidationToken(self::$DI['basket_4'], self::$DI['user_1']);
+        $expire = new DateTime('+10 days');
+        $token = $manipulator->createBasketValidationToken(self::$DI['basket_4'], self::$DI['user_1'], $expire);
 
         $this->assertSame(self::$DI['basket_4']->getId(), $token->getData());
         $this->assertSame(self::$DI['user_1'], $token->getUser());
         $this->assertSame(TokenManipulator::TYPE_VALIDATE, $token->getType());
-        $this->assertDateNear('+10 days', $token->getExpiration());
+        $this->assertSame($expire, $token->getExpiration());
     }
 
-    public function testCreateBasketValidationTokenWithoutUser()
+    public function testCreateBasketValidationTokenWithoutExpiration()
     {
         $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens'], self::$DI['app']['tmp.download.path']);
-        $token = $manipulator->createBasketValidationToken(self::$DI['basket_4']);
+        $token = $manipulator->createBasketValidationToken(self::$DI['basket_4'], self::$DI['user_1'], null);
 
         $this->assertSame(self::$DI['basket_4']->getId(), $token->getData());
-        $this->assertSame(self::$DI['basket_4']->getValidation()->getInitiator(), $token->getUser());
+        $this->assertSame(self::$DI['user_1'], $token->getUser());
         $this->assertSame(TokenManipulator::TYPE_VALIDATE, $token->getType());
-        $this->assertDateNear('+10 days', $token->getExpiration());
+        $this->assertSame(null, $token->getExpiration());
     }
 
     public function testCreateBasketValidationTokenWithInvalidBasket()
     {
         $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens'], self::$DI['app']['tmp.download.path']);
         $this->setExpectedException('InvalidArgumentException', 'A validation token requires a validation basket.');
-        $manipulator->createBasketValidationToken(self::$DI['basket_1']);
+        $manipulator->createBasketValidationToken(self::$DI['basket_1'], self::$DI['user_1'], null);
     }
 
     public function testCreateBasketAccessToken()

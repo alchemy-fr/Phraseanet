@@ -18,8 +18,10 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
+use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -416,6 +418,7 @@ class LightboxController extends Controller
     /**
      * @param Basket $basket
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function ajaxSetReleaseAction(Basket $basket)
     {
@@ -431,8 +434,17 @@ class LightboxController extends Controller
             $this->assertAtLeastOneElementAgreed($basket);
             $participant = $basket->getValidation()->getParticipant($this->getAuthenticatedUser());
 
-            /** @var Token $token */
-            $token = $this->app['manipulator.token']->createBasketValidationToken($basket);
+            // find / create a "validate" token so the initator of the session can view results (no expiration)
+            $initiatorUser = $basket->getValidation()->getInitiator();
+
+            if(is_null($token = $this->getTokenRepository()->findValidationToken($basket, $initiatorUser))) {
+                // should not happen since when a validation is created, the initiator is force-included as a participant
+                $token = $this->getTokenManipulator()->createBasketValidationToken($basket, $initiatorUser, null);
+            }
+            else {
+                // a token already exists for the initiator
+                $token->setExpiration(null);        // the expiration for initiator should already be null...
+            }
             $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
 
             $this->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($participant, $basket, $url));
@@ -443,7 +455,8 @@ class LightboxController extends Controller
             $this->app['orm.em']->flush();
 
             $data = ['error' => false, 'datas' => $this->app->trans('Envoie avec succes')];
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             $data = ['error' => true, 'datas' => $e->getMessage()];
         }
 
@@ -510,4 +523,21 @@ class LightboxController extends Controller
         $message = $this->app->trans('You have to give your feedback at least on one document to send a report');
         throw new Exception($message);
     }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
+    }
+
+    /**
+     * @return TokenRepository
+     */
+    private function getTokenRepository()
+    {
+        return $this->app['repo.tokens'];
+    }
+
 }
