@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-10-08T13:29:07Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -8102,9 +8102,9 @@
         <jms:reference-file line="283">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="284">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a1750389f4eb83def7118c916d93effda8798545" resname="action:: video tools">
+      <trans-unit id="a1750389f4eb83def7118c916d93effda8798545" resname="action:: video tools" approved="yes">
         <source>action:: video tools</source>
-        <target state="needs-translation">Video tools</target>
+        <target state="translated">Video tools</target>
         <jms:reference-file line="163">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="164">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="165">prod/results/record.html.twig</jms:reference-file>
@@ -9159,9 +9159,9 @@
         <target state="translated">Launch pull assets</target>
         <jms:reference-file line="22">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ad2a78767b3542baec93331285da8ad19a0799b2" resname="admin::workermanager:tab:pullassets: Uploader api base uri">
+      <trans-unit id="ad2a78767b3542baec93331285da8ad19a0799b2" resname="admin::workermanager:tab:pullassets: Uploader api base uri" approved="yes">
         <source>admin::workermanager:tab:pullassets: Uploader api base uri</source>
-        <target state="new">admin::workermanager:tab:pullassets: Uploader api base uri</target>
+        <target state="translated">Uploader API base URI, example : https://api-uploader.phrasea.io</target>
         <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description" approved="yes">
@@ -9324,9 +9324,9 @@
         <target state="translated">Apply in queue</target>
         <jms:reference-file line="50">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work">
+      <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display error work</source>
-        <target state="needs-translation">Job in error</target>
+        <target state="translated">Job in error</target>
         <jms:reference-file line="40">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work" approved="yes">
@@ -9334,14 +9334,14 @@
         <target state="translated">Display Finished Job(s)</target>
         <jms:reference-file line="37">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work">
+      <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
-        <target state="needs-translation">interrupted job</target>
+        <target state="translated">interrupted job</target>
         <jms:reference-file line="43">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work">
+      <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display running work</source>
-        <target state="needs-translation">Running Job(s)</target>
+        <target state="translated">Running Job(s)</target>
         <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished" approved="yes">
@@ -9399,9 +9399,9 @@
         <target state="translated">Finished</target>
         <jms:reference-file line="58">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3004b16229a6402f4a56a62a4b6a3aaf33792ca3" resname="admin::workermanager:tab:workerinfo: payload">
+      <trans-unit id="3004b16229a6402f4a56a62a4b6a3aaf33792ca3" resname="admin::workermanager:tab:workerinfo: payload" approved="yes">
         <source>admin::workermanager:tab:workerinfo: payload</source>
-        <target state="needs-translation">Payload</target>
+        <target state="translated">Payload</target>
         <jms:reference-file line="55">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published" approved="yes">
@@ -13875,9 +13875,9 @@ It is possible to place several search areas</target>
         <target state="translated">Close all (with navigation)</target>
         <jms:reference-file line="137">web/thesaurus/export-topics-dialog.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock">
+      <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="yes">
         <source>thesaurus::menu:  Mettre dans le stock</source>
-        <target state="needs-translation">Move to stock</target>
+        <target state="translated">Move to stock</target>
         <jms:reference-file line="192">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="758b089c0ed0efc0a6b86e1b45b1526dca96bb34" resname="thesaurus::menu: Nouveau synonyme" approved="yes">
@@ -13948,9 +13948,9 @@ It is possible to place several search areas</target>
         <target state="new">thesaurus::populate: success message</target>
         <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export">
+      <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="yes">
         <source>thesaurus:dialog:: export</source>
-        <target state="needs-translation">Export Candidats</target>
+        <target state="translated">Export Candidats</target>
         <jms:reference-file line="695">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="20d809c23bf735082691fef2239d95d86d37e461" resname="thesaurus:dialog:: properties">
