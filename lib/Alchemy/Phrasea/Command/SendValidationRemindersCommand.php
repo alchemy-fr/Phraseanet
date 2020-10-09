@@ -189,7 +189,7 @@ class SendValidationRemindersCommand extends Command
                     $str_token = sprintf('%s (cre. %s, exp. %s)',
                         $this->dotdot($token->getValue(), 10),
                         $token->getCreated()->format(self::DATE_FMT),
-                        $token->getExpiration()->format(self::DATE_FMT)
+                        ($token->getExpiration())? $token->getExpiration()->format(self::DATE_FMT): "null"
                     );
                 }
                 else {
@@ -286,7 +286,7 @@ class SendValidationRemindersCommand extends Command
             }
 
             if ($readyToSend) {
-                $this->output->writeln(sprintf('    -> remind "<info>%s</info>" from "<info>%s</info>" to "<info>%s</info>"', $title, $receiver->getEmail(), $emitter->getEmail()));
+                $this->output->writeln(sprintf('    -> remind "<info>%s</info>" from "<info>%s</info>" to "<info>%s</info>"', $title, $emitter->getEmail(), $receiver->getEmail()));
                 if(!$this->dry) {
                     // for real
                     $mail = MailInfoValidationReminder::create($this->container, $receiver, $emitter);
