@@ -41,9 +41,7 @@ class FieldToFieldMappingConverter
                     $ret->disableIndexing();
                 }
                 else {
-                    $ret->addChild(
-                        (new TextFieldMapping('raw'))
-                            ->enableRawIndexing());
+                    $ret->addRawChild();
                     $ret->addAnalyzedChildren($locales);
                     $ret->enableTermVectors(true);
                 }

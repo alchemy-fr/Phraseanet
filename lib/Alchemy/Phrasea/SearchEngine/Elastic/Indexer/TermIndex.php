@@ -43,7 +43,6 @@ class TermIndex implements MappingProvider
         $mapping->addTextField('path')
             ->setAnalyzer('thesaurus_path', 'indexing')
             ->setAnalyzer('keyword', 'searching')
-            // ->addChild(new RawFieldMapping($this->getType()));
             ->addRawChild();
 
         $mapping->addKeywordField('lang');

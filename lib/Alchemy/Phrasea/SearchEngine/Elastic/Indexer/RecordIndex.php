@@ -114,7 +114,8 @@ class RecordIndex implements MappingProvider
         $localizedCaptionMapping = new Mapping\TextFieldMapping(sprintf('%s_all', $name));
         $localizedCaptionMapping
             ->addLocalizedChildren($this->locales)
-            ->addChild((new Mapping\TextFieldMapping('raw'))->enableRawIndexing());
+            ->addRawChild()
+        ;
 
         $parent->add($localizedCaptionMapping);
 
@@ -130,7 +131,7 @@ class RecordIndex implements MappingProvider
 
             $child->setAnalyzer('thesaurus_path', 'indexing');
             $child->setAnalyzer('keyword', 'searching');
-            $child->addChild((new Mapping\TextFieldMapping('raw'))->enableRawIndexing());
+            $child->addRawChild();
 
             $thesaurusMapping->addChild($child);
         }

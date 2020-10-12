@@ -76,11 +76,6 @@ class FieldMapping
     private $enabled = true;
 
     /**
-     * @var bool
-     */
-    private $raw = false;
-
-    /**
      * @param string $name
      * @param string $type
      */
@@ -140,13 +135,6 @@ class FieldMapping
         return $this;
     }
 
-    public function enableRawIndexing()
-    {
-        $this->raw = true;
-
-        return $this;
-    }
-
     /**
      * @return bool
      */
@@ -200,9 +188,6 @@ class FieldMapping
         if (! $this->indexed) {
             $baseProperties['index'] = false;
         }
-//        elseif ($this->raw) {
-//            $baseProperties['index'] = 'not_analyzed';
-//        }
 
         if (! $this->enabled) {
             $baseProperties['enabled'] = false;
