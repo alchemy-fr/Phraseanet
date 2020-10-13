@@ -9464,11 +9464,17 @@ var workzone = function workzone(services) {
             checkActiveBloc(dragBloc);
         });
 
-        (0, _jquery2.default)('.add_expose').on('click', function (event) {
+        (0, _jquery2.default)('.add_publication').on('click', function (event) {
             openExposePublicationAdd();
         });
 
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        (0, _jquery2.default)('.display-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(exposeName);
@@ -10045,6 +10051,15 @@ var workzone = function workzone(services) {
             $dialog.setOption('buttons', buttons);
             $dialog.setContent(texte);
         });
+
+        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.refresh-publication', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed').find('.expose_drag_drop');
+
+            assetsContainer.empty().addClass('loading');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+        });
     }
 
     function updatePublicationList(exposeName) {
@@ -10384,6 +10399,7 @@ var workzone = function workzone(services) {
             var publicationId = destKey.find('.edit_expose').attr('data-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var assetsContainer = destKey.find('.expose_drag_drop');
+            assetsContainer.empty().addClass('loading');
 
             _jquery2.default.ajax({
                 type: 'POST',

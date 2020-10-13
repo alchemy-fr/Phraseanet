@@ -44,7 +44,7 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $response = $exposeClient->get('/publications', [
+        $response = $exposeClient->get('/publications?flatten=true&order[createdAt]=desc', [
             'headers' => [
                 'Authorization' => 'Bearer '. $exposeConfiguration['token'],
                 'Content-Type'  => 'application/json'
@@ -73,13 +73,6 @@ class PSExposeController extends Controller
                 $publication['frontUrl'] = $exposeFrontUrl;
 
                 $publications[] = $publication;
-
-                foreach ($publication['children'] as $child ) {
-                    $pathChild = empty($child['slug']) ? $child['id'] : $child['slug'] ;
-                    $exposeFrontUrl = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $pathChild;
-                    $child['frontUrl'] = $exposeFrontUrl;
-                    $publications[] = $child;
-                }
             }
         }
 
@@ -214,6 +207,12 @@ class PSExposeController extends Controller
     public function createPublicationAction(PhraseaApplication $app, Request $request)
     {
         $exposeName = $request->get('exposeName');
+        if ( $exposeName == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "ExposeName required, select one!"
+            ]);
+        }
 
         // TODO: taken account admin config ,acces_token for user or client_credentiels
 

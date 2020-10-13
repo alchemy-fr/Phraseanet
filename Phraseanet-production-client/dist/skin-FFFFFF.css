@@ -7950,7 +7950,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #idFrameC .edit_expose {
   position: absolute;
   right: 12px;
-  top: 12px;
+  top: 5px;
   font-size: 20px;
   cursor: pointer;
 }

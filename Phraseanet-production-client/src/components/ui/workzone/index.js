@@ -90,11 +90,17 @@ const workzone = (services) => {
             checkActiveBloc(dragBloc);
         });
 
-        $('.add_expose').on('click',function (event) {
+        $('.add_publication').on('click',function (event) {
             openExposePublicationAdd();
         });
 
         $('.refresh-list').on('click',function (event) {
+            let exposeName = $('#expose_list').val();
+            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        $('.display-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
             $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(exposeName);
@@ -673,6 +679,15 @@ const workzone = (services) => {
             $dialog.setOption('buttons', buttons);
             $dialog.setContent(texte);
         });
+
+        $('#idFrameC').find('.publication-droppable').on('click', '.refresh-publication', function() {
+            let publicationId = $(this).attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_deployed').find('.expose_drag_drop');
+
+            assetsContainer.empty().addClass('loading');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+        });
     }
 
     function updatePublicationList(exposeName)
@@ -1028,6 +1043,7 @@ const workzone = (services) => {
             let publicationId = destKey.find('.edit_expose').attr('data-id');
             let exposeName = $('#expose_list').val();
             let assetsContainer = destKey.find('.expose_drag_drop');
+            assetsContainer.empty().addClass('loading');
 
             $.ajax({
                 type: 'POST',

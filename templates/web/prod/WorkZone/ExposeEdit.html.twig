@@ -157,7 +157,7 @@
         var profileField = publicationEdit.find("#profile-field");
         var advancedSetting = publicationEdit.find("#advancedSetting");
 
-        var publicationFieldClass = publicationEdit.find(".publication-field")
+        var publicationFieldClass = publicationEdit.find(".publication-field");
 
         $.datepicker.regional['default'] = {
             closeText: "Close",
@@ -206,7 +206,7 @@
                 type: "GET",
                 url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
                 success: function (data) {
-                    profileField.empty().html('<option value="">Select Profile</option>');;
+                    profileField.empty().html('<option value="">Select Profile</option>');
                     for (i = 0; i < data.profiles.length; i++) {
                         let selected = '';
                         if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
@@ -308,7 +308,6 @@
             if (profileField.val() == "") {
                 delete datavalueMinus['profile'];
             }
-            ;
 
             delete datavalueMinus['layout'];
             delete datavalueMinus['enabled'];

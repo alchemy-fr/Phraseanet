@@ -4,7 +4,7 @@
         <div class="top_block">
                     <div class="diapo">
                         {% for asset in publication.assets|slice(0, 1) %}
-                        <img class="top_image" width="60" src="{{ asset.asset.url }}" />
+                        <img class="top_image" width="60" src="{{ asset.asset.thumbUrl }}" />
                         {% endfor %}
                     </div>
 
@@ -13,6 +13,7 @@
         </div>
         <div class="expose_item_deployed">
             <div class="expose_item_top">
+                <button class="btn-success refresh-publication pull-right" data-publication-id="{{ publication.id }}">{{ 'Refresh Publication' | trans }}</button>
                 <span class="green_button edit_expose" data-id="{{ publication.id }}"><i class="fa fa-edit"></i></span>
                 {% if publication.children|length == 0 %}
                     <button type="button" class="delete-publication btn-danger" data-publication-id="{{ publication.id }}">
@@ -25,6 +26,9 @@
             <div class="expose_item_bottom">
                 <div class="expose_drag_drop">
                     {% include 'prod/WorkZone/ExposePublicationAssets.html.twig' with { 'assets' : publication.assets, 'publicationId': publication.id } %}
+                </div>
+                <div class="load_more_expose">
+                    <input type="button"  value="load More">
                 </div>
             </div>
         </div>

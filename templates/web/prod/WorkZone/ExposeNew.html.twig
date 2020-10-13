@@ -1,4 +1,4 @@
-{% macro add_expose(app) %}
+{% macro add_publication(app) %}
     <div id='DIALOG-expose-add' style="display: none">
         <div class="expose-edit-wrapper" style="margin-top: 100px">
             <br/>
@@ -7,16 +7,6 @@
             <br/>
             <form id="publication-data-form" >
                 <div class="edit-publication-block">
-                    {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
-
-                    <select id="expose_name" class="expose_name">
-                        <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
-                        {% for key in expose_list|keys %}
-                            {% if expose_list[key].activate_expose %}
-                                <option value="{{ key }}">{{ key }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
                     <div class="ui-widget">
                         <label>Name </label>
                         <input type="text" value="" name="title" class="publication-field"/>
@@ -287,13 +277,18 @@
                 url: "/prod/expose/create-publication/",
                 dataType: 'json',
                 data: {
-                    exposeName: $('#expose_name').val(),
+                    exposeName: $('#expose_list').val(),
                     publicationData: $('#DIALOG-expose-add').find('#advancedSetting').val()
                 },
                 success: function (data) {
                     if (data.success) {
                         $("#pub-success").removeClass("hidden").html(data.message + ": " + data.link);
                         document.getElementById("publication-data-form").reset();
+                        setTimeout(function(){
+                                $('#DIALOG-expose-add').dialog('close');
+                            }
+                            , 3000
+                        );
                     } else {
                         $("#pub-error").removeClass("hidden").text(data.message);
                     }
@@ -303,7 +298,7 @@
 
 
         //generate publication list
-         $('#expose_name').on('change', function () {
+         $('#expose_list').on('change', function () {
             $.ajax({
                  type: "GET",
                  url: `/prod/expose/list-publication/?format=json&exposeName=` + this.value,

@@ -480,11 +480,18 @@
             </select>
         </div>
         <div class="add_expose_block">
-            <a id="add_expose" class="add_expose" href="#" >
+            <a id="add_publication" class="add_publication" href="#" >
                 <span>{{ 'prod:: workzone:expose: Add publication' | trans }}</span>
                 <img src="/assets/common/images/icons/Basket-New.png" title="New Expose">
             </a>
-            <button class="btn-success refresh-list">{{ 'Refresh' | trans }}</button>
+            <button class="btn-success refresh-list" style="margin-bottom: 5px;">{{ 'Refresh' | trans }}</button>
+
+            <button class="btn display-tree pull-right" style="padding-bottom: 2px;padding-top: 2px;">
+                <img src="/assets/common/images/icons/tree-icon.png" title="Display hierarchical">
+            </button>
+            <button class="btn display-list pull-right" style="padding-bottom: 2px;padding-top: 2px;">
+                <img src="/assets/common/images/icons/menu-icon.png" title="Display list">
+            </button>
         </div>
 
         <div class="insidebloc expose_insidebloc">
@@ -497,6 +504,6 @@
     <div id='DIALOG-expose-edit' style="display: none"></div>
 
     {% import 'prod/WorkZone/ExposeNew.html.twig' as ExposeNew %}
-    {{ ExposeNew.add_expose(app) }}
+    {{ ExposeNew.add_publication(app) }}
 
 {% endmacro %}
