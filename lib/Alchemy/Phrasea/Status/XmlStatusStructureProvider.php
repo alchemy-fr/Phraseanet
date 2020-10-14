@@ -49,8 +49,27 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 
             $status['bit'] = $bit;
 
-            $status['labeloff'] = (string) $sb['labelOff'];
-            $status['labelon'] = (string) $sb['labelOn'];
+            // fix in case the sb uses the old structure like "<bit n="4">Online</bit>"
+            // we introduce the "name" key. todo : in es we should use the "name" instead of  the "labelOn"
+            $label_on = trim((string) $sb['labelOn']);
+            $name = trim((string)$sb);  // old format
+            if($label_on) {
+                $name = $label_on;  // a labelOn (new format) is better
+            }
+            if(!$name) {
+                // really bad : no labelOn and no name ? skip this sb
+                // can happen is one enter a single <space> as labelOn. todo : fix that in admin
+                continue;
+            }
+            if(!$label_on) {
+                // old format : use the name as label_on
+                $label_on = $name;
+            }
+            // end fix
+
+            $status['name'] = $name;
+            $status['labeloff'] = trim((string) $sb['labelOff']);
+            $status['labelon'] = $label_on;
 
             foreach ($this->locales as $code => $language) {
                 $status['labels_on'][$code] = null;
@@ -58,7 +77,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
             }
 
             foreach ($sb->label as $label) {
-                $status['labels_'.$label['switch']][(string) $label['code']] = (string) $label;
+                $status['labels_'.$label['switch']][(string) $label['code']] = triim((string) $label);
             }
 
             foreach ($this->locales as $code => $language) {
@@ -80,6 +99,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
 
             $status['searchable'] = isset($sb['searchable']) ? (int) $sb['searchable'] : 0;
             $status['printable'] = isset($sb['printable']) ? (int) $sb['printable'] : 0;
+
 
             $statusStructure->setStatus($bit, $status);
         }
