@@ -12,6 +12,9 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -70,7 +73,7 @@ class ValidationSession
      */
     public function __construct()
     {
-        $this->participants = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     /**
@@ -118,10 +121,10 @@ class ValidationSession
     /**
      * Set created
      *
-     * @param  \DateTime         $created
+     * @param  DateTime         $created
      * @return ValidationSession
      */
-    public function setCreated(\DateTime $created)
+    public function setCreated(DateTime $created)
     {
         $this->created = $created;
 
@@ -131,7 +134,7 @@ class ValidationSession
     /**
      * Get created
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreated()
     {
@@ -141,10 +144,10 @@ class ValidationSession
     /**
      * Set updated
      *
-     * @param  \DateTime         $updated
+     * @param  DateTime         $updated
      * @return ValidationSession
      */
-    public function setUpdated(\DateTime $updated)
+    public function setUpdated(DateTime $updated)
     {
         $this->updated = $updated;
 
@@ -154,7 +157,7 @@ class ValidationSession
     /**
      * Get updated
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdated()
     {
@@ -164,7 +167,7 @@ class ValidationSession
     /**
      * Set expires
      *
-     * @param  \DateTime         $expires
+     * @param  DateTime         $expires
      * @return ValidationSession
      */
     public function setExpires($expires)
@@ -177,7 +180,7 @@ class ValidationSession
     /**
      * Get expires
      *
-     * @return \DateTime
+     * @return DateTime|null
      */
     public function getExpires()
     {
@@ -233,7 +236,7 @@ class ValidationSession
     /**
      * Get participants
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getParticipants()
     {
@@ -246,7 +249,7 @@ class ValidationSession
             return null;
         }
 
-        $date_obj = new \DateTime();
+        $date_obj = new DateTime();
 
         return $date_obj > $this->getExpires();
     }
@@ -261,15 +264,17 @@ class ValidationSession
             return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
         } else {
             if ($this->getParticipant($user)->getCanSeeOthers()) {
-                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator($app)->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getInitiator()->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
             }
 
-            return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator($app)->getDisplayName()]);
+            return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getInitiator()->getDisplayName()]);
         }
     }
 
     /**
      * Get a participant
+     *
+     * @param User $user
      *
      * @return ValidationParticipant
      */
