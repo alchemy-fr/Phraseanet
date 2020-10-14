@@ -12,6 +12,12 @@
                         src="{{ asset.asset.thumbUrl|trim }}" data-original="{{ asset.asset.thumbUrl|trim }}" ondragstart="return false;">
             </div>
 
+            <div class="set-cover" style="position: absolute;bottom: 0;cursor: pointer;" title="Set as Cover"
+                 data-publication-id="{{ publicationId }}" data-asset-id="{{ asset.asset.id }}">
+
+                <img src="/assets/common/images/icons/icon_story.gif" title="Set as Cover">
+            </div>
+
             <div class="bottom">
                 <a class="WorkZoneElementRemover removeAsset" data-asset-id="{{ asset.asset.id }}" data-publication-id="{{ publicationId }}">
                     <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>

@@ -51,43 +51,23 @@ class PSExposeController extends Controller
             ]
         ]);
 
-        $publicationsID = [];
+        $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
+        $publications = [];
+
         if ($response->getStatusCode() == 200) {
             $body = json_decode($response->getBody()->getContents(),true);
-            $publicationsID = array_column($body['hydra:member'], 'id');
+            $publications = $body['hydra:member'];
         }
 
-        $publications = [];
-        foreach ($publicationsID as $publicationID) {
-            $resPublication = $exposeClient->get('/publications/' . $publicationID , [
-                'headers' => [
-                    'Authorization' => 'Bearer '. $exposeConfiguration['token'],
-                    'Content-Type'  => 'application/json'
-                ]
-            ]);
-
-            if ($resPublication->getStatusCode() == 200) {
-                $publication = json_decode($resPublication->getBody()->getContents(),true);
-                $path = empty($publication['slug']) ? $publication['id'] : $publication['slug'] ;
-                $exposeFrontUrl = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $path;
-                $publication['frontUrl'] = $exposeFrontUrl;
-
-                $publications[] = $publication;
-            }
-        }
-
-        //
         if ($request->get('format') == 'json') {
             return $app->json([
                 'publications' => $publications
             ]);
         }
 
-
-        $url = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']) . $path;
-
         return $this->render("prod/WorkZone/ExposeList.html.twig", [
-            'publications' => $publications,
+            'publications'          => $publications,
+            'exposeFrontBasePath'   => $exposeFrontBasePath
         ]);
     }
 
@@ -301,7 +281,7 @@ class PSExposeController extends Controller
         } catch (\Exception $e) {
             return $app->json([
                 'success' => false,
-                'message' => "An error occurred when updating publication!"
+                'message' => "An error occurred when updating publication! ". $e->getMessage()
             ]);
         }
 

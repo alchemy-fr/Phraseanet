@@ -10060,6 +10060,30 @@ var workzone = function workzone(services) {
             assetsContainer.empty().addClass('loading');
             getPublicationAssetsList(publicationId, exposeName, assetsContainer);
         });
+
+        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.set-cover', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var publicationData = JSON.stringify({ "cover": '/assets/' + assetId }, undefined, 4);
+
+            _jquery2.default.ajax({
+                type: "PUT",
+                url: '/prod/expose/update-publication/' + publicationId,
+                dataType: 'json',
+                data: {
+                    exposeName: '' + exposeName,
+                    publicationData: publicationData
+                },
+                success: function success(data) {
+                    if (data.success) {
+                        updatePublicationList(exposeName);
+                    } else {
+                        console.log(data.message);
+                    }
+                }
+            });
+        });
     }
 
     function updatePublicationList(exposeName) {
@@ -10072,6 +10096,15 @@ var workzone = function workzone(services) {
                 (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
                     (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
                     (0, _jquery2.default)(this).toggleClass('open');
+
+                    if ((0, _jquery2.default)(this).hasClass('open')) {
+                        var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+                        var _exposeName = (0, _jquery2.default)('#expose_list').val();
+                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_drag_drop');
+
+                        assetsContainer.addClass('loading');
+                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer);
+                    }
                 });
                 (0, _jquery2.default)('.edit_expose').on('click', function (event) {
                     openExposePublicationEdit((0, _jquery2.default)(this));

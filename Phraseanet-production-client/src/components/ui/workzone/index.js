@@ -688,6 +688,30 @@ const workzone = (services) => {
             assetsContainer.empty().addClass('loading');
             getPublicationAssetsList(publicationId, exposeName, assetsContainer);
         });
+
+        $('#idFrameC').find('.publication-droppable').on('click', '.set-cover', function(){
+            let publicationId = $(this).attr('data-publication-id');
+            let assetId = $(this).attr('data-asset-id');
+            let exposeName = $('#expose_list').val();
+            let publicationData = JSON.stringify({"cover":`/assets/${assetId}`}, undefined, 4);
+
+            $.ajax({
+                type: "PUT",
+                url: `/prod/expose/update-publication/${publicationId}`,
+                dataType: 'json',
+                data: {
+                    exposeName: `${exposeName}`,
+                    publicationData: publicationData
+                },
+                success: function (data) {
+                    if (data.success) {
+                        updatePublicationList(exposeName);
+                    } else {
+                        console.log(data.message);
+                    }
+                }
+            });
+        });
     }
 
     function updatePublicationList(exposeName)
@@ -701,6 +725,15 @@ const workzone = (services) => {
                 $('.expose_basket_item .top_block').on('click', function (event) {
                     $(this).parent().find('.expose_item_deployed').toggleClass('open');
                     $(this).toggleClass('open');
+
+                    if ($(this).hasClass('open')) {
+                        let publicationId = $(this).attr('data-publication-id');
+                        let exposeName = $('#expose_list').val();
+                        let assetsContainer = $(this).parents('.expose_basket_item').find('.expose_drag_drop');
+
+                        assetsContainer.addClass('loading');
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                    }
                 });
                 $('.edit_expose').on('click',function (event) {
                     openExposePublicationEdit($(this));
@@ -725,6 +758,7 @@ const workzone = (services) => {
                 }
             }
         });
+
     }
 
     function getContent(header, order) {
