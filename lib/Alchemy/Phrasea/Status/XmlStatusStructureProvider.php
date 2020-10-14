@@ -77,7 +77,7 @@ class XmlStatusStructureProvider implements StatusStructureProviderInterface
             }
 
             foreach ($sb->label as $label) {
-                $status['labels_'.$label['switch']][(string) $label['code']] = triim((string) $label);
+                $status['labels_'.$label['switch']][(string) $label['code']] = trim((string) $label);
             }
 
             foreach ($this->locales as $code => $language) {
