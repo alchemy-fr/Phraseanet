@@ -27,8 +27,10 @@
                 <div class="expose_drag_drop">
                     {% include 'prod/WorkZone/ExposePublicationAssets.html.twig' with { 'assets' : publication.assets, 'publicationId': publication.id } %}
                 </div>
-                <div class="load_more_expose">
-                    <input type="button"  value="load More">
+                <div class="load_more_asset">
+                    <button type="button">
+                        {{ "Load More" | trans }}
+                    </button>
                 </div>
             </div>
         </div>

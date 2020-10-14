@@ -7956,6 +7956,11 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #idFrameC .expose_drag_drop {
   min-height: 120px;
   padding: 10px;
+  display: inline-block;
+}
+
+#idFrameC .load_more_asset {
+  text-align: center;
 }
 
 /******* PROPOSALS ************************************************************/
