@@ -62,12 +62,19 @@
     font-size: 20px;
     cursor: pointer;
   }
-  .expose_drag_drop {
-    min-height: 120px;
-    padding: 10px;
-    display: inline-block;
-  }
-  .load_more_asset {
-    text-align: center;
+  .expose_item_bottom {
+    max-height: 500px;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .expose_drag_drop {
+      min-height: 120px;
+      padding: 10px;
+      display: inline-block;
+      width: 100%;
+    }
+    .load_more_asset {
+      text-align: center;
+    }
   }
 }

@@ -7938,13 +7938,21 @@ dans l'onglet thesaurus : arbres, menus contextuels
   cursor: pointer;
 }
 
-#idFrameC .expose_drag_drop {
+#idFrameC .expose_item_bottom {
+  max-height: 500px;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#idFrameC .expose_item_bottom .expose_drag_drop {
   min-height: 120px;
   padding: 10px;
   display: inline-block;
+  width: 100%;
 }
 
-#idFrameC .load_more_asset {
+#idFrameC .expose_item_bottom .load_more_asset {
   text-align: center;
 }
 
