@@ -9950,8 +9950,10 @@ var workzone = function workzone(services) {
     }
 
     function activeExpose() {
+        var idFrameC = (0, _jquery2.default)('#idFrameC');
+
         // drop on publication
-        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').droppable({
+        idFrameC.find('.publication-droppable').droppable({
             scope: 'objects',
             hoverClass: 'baskDrop',
             tolerance: 'pointer',
@@ -9971,11 +9973,12 @@ var workzone = function workzone(services) {
             }
         });
 
-        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.removeAsset', function () {
+        // delete an asset from publication
+        idFrameC.find('.publication-droppable').on('click', '.removeAsset', function () {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
             var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
-            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_drag_drop');
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
 
             var buttons = {};
 
@@ -9996,7 +9999,7 @@ var workzone = function workzone(services) {
                     success: function success(data) {
                         if (data.success === true) {
                             $dialog.close();
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
                         } else {
                             $dialog.setContent(data.message);
                             console.log(data);
@@ -10015,7 +10018,12 @@ var workzone = function workzone(services) {
             $dialog.setContent(texte);
         });
 
-        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.delete-publication', function () {
+        idFrameC.find('.publication-droppable').on('click', '.edit_expose', function (event) {
+            openExposePublicationEdit((0, _jquery2.default)(this));
+        });
+
+        // delete a publication
+        idFrameC.find('.publication-droppable').on('click', '.delete-publication', function () {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var buttons = {};
@@ -10052,16 +10060,18 @@ var workzone = function workzone(services) {
             $dialog.setContent(texte);
         });
 
-        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.refresh-publication', function () {
+        // refresh publication content
+        idFrameC.find('.publication-droppable').on('click', '.refresh-publication', function () {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
-            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed').find('.expose_drag_drop');
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
 
             assetsContainer.empty().addClass('loading');
-            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
         });
 
-        (0, _jquery2.default)('#idFrameC').find('.publication-droppable').on('click', '.set-cover', function () {
+        // set publication cover
+        idFrameC.find('.publication-droppable').on('click', '.set-cover', function () {
             var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
             var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
@@ -10084,6 +10094,17 @@ var workzone = function workzone(services) {
                 }
             });
         });
+
+        // load more asset and append it at the end
+        idFrameC.find('.publication-droppable').on('click', '.load_more_asset', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_bottom').find('.expose_drag_drop');
+            var page = assetsContainer.find('#list_assets_page').val();
+
+            (0, _jquery2.default)(this).find('.loading_more').removeClass('hidden');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+        });
     }
 
     function updatePublicationList(exposeName) {
@@ -10100,14 +10121,11 @@ var workzone = function workzone(services) {
                     if ((0, _jquery2.default)(this).hasClass('open')) {
                         var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
                         var _exposeName = (0, _jquery2.default)('#expose_list').val();
-                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_drag_drop');
+                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
 
                         assetsContainer.addClass('loading');
-                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer);
+                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
                     }
-                });
-                (0, _jquery2.default)('.edit_expose').on('click', function (event) {
-                    openExposePublicationEdit((0, _jquery2.default)(this));
                 });
 
                 activeExpose();
@@ -10116,13 +10134,21 @@ var workzone = function workzone(services) {
     }
 
     function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
+        var page = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+
         _jquery2.default.ajax({
             type: 'GET',
-            url: '/prod/expose/get-publication/' + publicationId + '?exposeName=' + exposeName + '&onlyAssets=1',
+            url: '/prod/expose/get-publication/' + publicationId + '/assets?exposeName=' + exposeName + '&page=' + page,
             success: function success(data) {
                 if (typeof data.success === 'undefined') {
-                    assetsContainer.removeClass('loading');
-                    assetsContainer.empty().html(data);
+                    if (page === 1) {
+                        assetsContainer.removeClass('loading');
+                        assetsContainer.empty().html(data);
+                    } else {
+                        assetsContainer.append(data);
+                        assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
+                        assetsContainer.find('#list_assets_page').val(page);
+                    }
                 } else {
                     console.log(data);
                 }
@@ -10429,9 +10455,9 @@ var workzone = function workzone(services) {
         } else {
             console.log(data.lst);
 
-            var publicationId = destKey.find('.edit_expose').attr('data-id');
+            var publicationId = destKey.attr('data-publication-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
-            var assetsContainer = destKey.find('.expose_drag_drop');
+            var assetsContainer = destKey.find('.expose_item_deployed');
             assetsContainer.empty().addClass('loading');
 
             _jquery2.default.ajax({
@@ -10445,7 +10471,7 @@ var workzone = function workzone(services) {
                 dataType: 'json',
                 success: function success(data) {
                     setTimeout(function () {
-                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
                     }, 6000);
 
                     console.log(data.message);

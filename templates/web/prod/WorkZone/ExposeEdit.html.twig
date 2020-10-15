@@ -354,12 +354,12 @@
                         exposeName: "{{ exposeName }}",
                         publicationData: advancedSetting.val()
                     },
-                    success: function (data) {
+                    success: function (data) {console.log(data.success);
                         if (data.success) {
                             publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
                             document.getElementById("publication-data-form").reset();
                             setTimeout(function(){
-                                    $('#DIALOG-expose-add').dialog('close');
+                                    $('#DIALOG-expose-edit').dialog('close');
                                 }
                                 , 2000
                             );

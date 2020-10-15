@@ -7921,6 +7921,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #idFrameC .expose_item_deployed.open {
   height: auto;
   max-height: 100vh;
+  min-height: 130px;
 }
 
 #idFrameC .top_image {

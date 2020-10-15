@@ -123,6 +123,57 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Require params "exposeName" and "publicationId"
+     * optionnal param "page"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return string|\Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getPublicationAssetsAction(PhraseaApplication $app, Request $request)
+    {
+        $page = $request->get('page')?:1;
+
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        if (!isset($exposeConfiguration['token'])) {
+            $exposeConfiguration = $this->generateAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        }
+
+        $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $exposeConfiguration['token'],
+                'Content-Type'  => 'application/json'
+            ]
+        ]);
+
+        if ($resPublication->getStatusCode() != 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when getting publication assets: status-code " . $resPublication->getStatusCode()
+            ]);
+        }
+
+        $pubAssets = [];
+        $totalItems = 0;
+        if ($resPublication->getStatusCode() == 200) {
+            $body = json_decode($resPublication->getBody()->getContents(),true);
+            $pubAssets = $body['hydra:member'];
+            $totalItems = $body['hydra:totalItems'];
+        }
+
+        return $this->render("prod/WorkZone/ExposePublicationAssets.html.twig", [
+            'pubAssets'     => $pubAssets,
+            'publicationId' => $request->get('publicationId'),
+            'totalItems'    => $totalItems,
+            'page'          => $page
+        ]);
+    }
+
+    /**
      * Require params "exposeName"
      *
      * @param PhraseaApplication $app
@@ -493,17 +544,17 @@ class PSExposeController extends Controller
 
     private function removeAssetPublication(Client $exposeClient, $publicationId, $assetId, $token)
     {
-         return $exposeClient->delete('/publication-assets/'.$publicationId.'/'.$assetId, [
+        $exposeClient->delete('/publication-assets/'.$publicationId.'/'.$assetId, [
             'headers' => [
                 'Authorization' => 'Bearer '. $token
             ]
         ]);
 
-//        $exposeClient->delete('/assets/'. $assetId, [
-//            'headers' => [
-//                'Authorization' => 'Bearer '. $token
-//            ]
-//        ]);
+        return $exposeClient->delete('/assets/'. $assetId, [
+            'headers' => [
+                'Authorization' => 'Bearer '. $token
+            ]
+        ]);
     }
 
 

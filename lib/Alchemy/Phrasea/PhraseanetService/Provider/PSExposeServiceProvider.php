@@ -42,6 +42,10 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('GET')
             ->bind('ps_expose_list_publication');
 
+        $controllers->match('/get-publication/{publicationId}/assets', 'controller.ps.expose:getPublicationAssetsAction')
+            ->method('GET')
+            ->bind('ps_expose_get_publication_assets');
+
         $controllers->match('/get-publication/{publicationId}', 'controller.ps.expose:getPublicationAction')
             ->method('GET')
             ->bind('ps_expose_get_publication');

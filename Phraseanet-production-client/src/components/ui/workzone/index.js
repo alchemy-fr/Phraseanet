@@ -114,7 +114,7 @@ const workzone = (services) => {
         $('.publication-list').on('click', '.top-block' , function (event) {
             $(this).parent().find('.expose_item_deployed').toggleClass('open');
             $(this).toggleClass('open');
-        })
+        });
 
         $('#idFrameC .ui-tabs-nav li').on('click', function (event) {
             if ($container.attr('data-status') === 'closed') {
@@ -577,8 +577,10 @@ const workzone = (services) => {
     }
 
     function activeExpose() {
+        let idFrameC = $('#idFrameC');
+
         // drop on publication
-        $('#idFrameC').find('.publication-droppable')
+        idFrameC.find('.publication-droppable')
             .droppable({
                 scope: 'objects',
                 hoverClass: 'baskDrop',
@@ -599,11 +601,12 @@ const workzone = (services) => {
                 }
             });
 
-        $('#idFrameC').find('.publication-droppable').on('click', '.removeAsset', function(){
+        // delete an asset from publication
+        idFrameC.find('.publication-droppable').on('click', '.removeAsset', function(){
             let publicationId = $(this).attr('data-publication-id');
             let assetId = $(this).attr('data-asset-id');
             let exposeName = $('#expose_list').val();
-            let assetsContainer = $(this).parents('.expose_drag_drop');
+            let assetsContainer = $(this).parents('.expose_item_deployed');
 
             let buttons = {};
 
@@ -624,7 +627,7 @@ const workzone = (services) => {
                     success: function (data) {
                         if (data.success === true) {
                             $dialog.close();
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
                         } else {
                             $dialog.setContent(data.message);
                             console.log(data);
@@ -643,7 +646,12 @@ const workzone = (services) => {
             $dialog.setContent(texte);
         });
 
-        $('#idFrameC').find('.publication-droppable').on('click', '.delete-publication', function() {
+        idFrameC.find('.publication-droppable').on('click', '.edit_expose', function (event) {
+            openExposePublicationEdit($(this));
+        });
+
+        // delete a publication
+        idFrameC.find('.publication-droppable').on('click', '.delete-publication', function() {
             let publicationId = $(this).attr('data-publication-id');
             let exposeName = $('#expose_list').val();
             let buttons = {};
@@ -680,16 +688,18 @@ const workzone = (services) => {
             $dialog.setContent(texte);
         });
 
-        $('#idFrameC').find('.publication-droppable').on('click', '.refresh-publication', function() {
+        // refresh publication content
+        idFrameC.find('.publication-droppable').on('click', '.refresh-publication', function() {
             let publicationId = $(this).attr('data-publication-id');
             let exposeName = $('#expose_list').val();
-            let assetsContainer = $(this).parents('.expose_item_deployed').find('.expose_drag_drop');
+            let assetsContainer = $(this).parents('.expose_item_deployed');
 
             assetsContainer.empty().addClass('loading');
-            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
         });
 
-        $('#idFrameC').find('.publication-droppable').on('click', '.set-cover', function(){
+        // set publication cover
+        idFrameC.find('.publication-droppable').on('click', '.set-cover', function(){
             let publicationId = $(this).attr('data-publication-id');
             let assetId = $(this).attr('data-asset-id');
             let exposeName = $('#expose_list').val();
@@ -712,6 +722,17 @@ const workzone = (services) => {
                 }
             });
         });
+
+        // load more asset and append it at the end
+        idFrameC.find('.publication-droppable').on('click', '.load_more_asset', function() {
+            let publicationId = $(this).attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_bottom').find('.expose_drag_drop');
+            let page = assetsContainer.find('#list_assets_page').val();
+
+            $(this).find('.loading_more').removeClass('hidden');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+        });
     }
 
     function updatePublicationList(exposeName)
@@ -729,14 +750,11 @@ const workzone = (services) => {
                     if ($(this).hasClass('open')) {
                         let publicationId = $(this).attr('data-publication-id');
                         let exposeName = $('#expose_list').val();
-                        let assetsContainer = $(this).parents('.expose_basket_item').find('.expose_drag_drop');
+                        let assetsContainer = $(this).parents('.expose_basket_item').find('.expose_item_deployed');
 
                         assetsContainer.addClass('loading');
-                        getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
                     }
-                });
-                $('.edit_expose').on('click',function (event) {
-                    openExposePublicationEdit($(this));
                 });
 
                 activeExpose();
@@ -745,14 +763,20 @@ const workzone = (services) => {
     }
 
 
-    function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
+    function getPublicationAssetsList(publicationId, exposeName, assetsContainer, page=1) {
         $.ajax({
             type: 'GET',
-            url: `/prod/expose/get-publication/${publicationId}?exposeName=${exposeName}&onlyAssets=1`,
+            url: `/prod/expose/get-publication/${publicationId}/assets?exposeName=${exposeName}&page=${page}`,
             success: function (data) {
                 if (typeof data.success === 'undefined') {
-                    assetsContainer.removeClass('loading');
-                    assetsContainer.empty().html(data);
+                    if (page ===1) {
+                        assetsContainer.removeClass('loading');
+                        assetsContainer.empty().html(data);
+                    } else {
+                        assetsContainer.append(data);
+                        assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
+                        assetsContainer.find('#list_assets_page').val(page);
+                    }
                 } else {
                     console.log(data);
                 }
@@ -1074,9 +1098,9 @@ const workzone = (services) => {
         } else {
             console.log(data.lst);
 
-            let publicationId = destKey.find('.edit_expose').attr('data-id');
+            let publicationId = destKey.attr('data-publication-id');
             let exposeName = $('#expose_list').val();
-            let assetsContainer = destKey.find('.expose_drag_drop');
+            let assetsContainer = destKey.find('.expose_item_deployed');
             assetsContainer.empty().addClass('loading');
 
             $.ajax({
@@ -1090,7 +1114,7 @@ const workzone = (services) => {
                 dataType: 'json',
                 success: function (data) {
                     setTimeout(function(){
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer);
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
                         }
                         , 6000);
 
