@@ -34,7 +34,8 @@ class Tag implements Typed
         return sprintf(
             'metadata_tags.%s%s',
             $this->name,
-            $raw && $this->type === FieldMapping::TYPE_TEXT ? '.raw' : ''
+            // $raw && $this->type === FieldMapping::TYPE_TEXT ? '.raw' : ''
+            $raw ? '.raw' : ''
         );
     }
 }

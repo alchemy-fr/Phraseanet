@@ -279,7 +279,7 @@ class Thesaurus
         // Search request
         $params = [
             'index' => $this->options->getIndexName() . '.t',
-            'type'  => TermIndexer::TYPE_NAME,
+            // 'type'  => TermIndexer::TYPE_NAME,
             'body'  => [
                 'query' => $query,
                 'aggs'  => [

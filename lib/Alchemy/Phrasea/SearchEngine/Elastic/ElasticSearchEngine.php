@@ -334,8 +334,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
     {
         $params = [
-            'index' => $this->indexName,
-            'type'  => RecordIndexer::TYPE_NAME,
+            'index' => $this->indexName . '.r',
+            // 'type'  => RecordIndexer::TYPE_NAME,
             'body'  => [
                 'sort'   => $this->createSortQueryParams($options),
             ]
