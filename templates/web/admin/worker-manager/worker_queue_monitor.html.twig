@@ -11,6 +11,7 @@
                 <th></th>
                 <th>{{ 'admin::workermanager:tab:queueMonitor: Message count' |trans }}</th>
                 <th>{{ 'admin::workermanager:tab:queueMonitor: Consumer count' |trans }}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody class="queue-list">
@@ -21,6 +22,9 @@
                 <th>{{ queueStatus.queueName }}</th>
                 <td>{{ queueStatus.messageCount }}</td>
                 <td>{{ queueStatus.consumerCount }}</td>
+                <td>
+                    <buton class="btn btn-danger btn-mini purge-queue" data-queue-name="{{ queueStatus.queueName }}">{{ 'admin::workermanager:tab:queueMonitor: Purge Queue' | trans }}</buton>
+                </td>
             </tr>
         {% endfor %}
 
@@ -38,5 +42,23 @@
                 }
             });
         });
+
+        $("#worker-queue-monitor").on('click', '.purge-queue', function() {
+            if (confirm("Warning! Are you sure? Messages cannot be recovered after purging.")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/worker-manager/purge-queue",
+                    dataType: 'json',
+                    data : {
+                        queueName : $(this).attr("data-queue-name")
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        $("#refresh-monitor").trigger("click");
+                    }
+                });
+            }
+        });
+
     </script>
 {% endif %}

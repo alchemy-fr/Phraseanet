@@ -88,6 +88,10 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET')
             ->bind('worker_admin_queue_monitor');
 
+        $controllers->match('/purge-queue',  'controller.worker.admin.configuration:purgeQueueAction')
+            ->method('POST')
+            ->bind('worker_admin_purge_queue');
+
         $controllers->match('/{workerId}/change-status',  'controller.worker.admin.configuration:changeStatusAction')
             ->method('POST')
             ->assert('workerId', '\d+')
