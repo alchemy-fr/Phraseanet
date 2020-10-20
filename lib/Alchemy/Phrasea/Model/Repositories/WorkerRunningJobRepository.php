@@ -85,8 +85,8 @@ class WorkerRunningJobRepository extends EntityRepository
         $qb = $this->createQueryBuilder('w');
         $qb->where($qb->expr()->in('w.databoxId', $databoxIds))
             ->andWhere('w.work = :work')
-            ->andWhere('w.status != :status')
-            ->setParameters([ 'work' => MessagePublisher::POPULATE_INDEX_TYPE, 'status' => WorkerRunningJob::FINISHED])
+            ->andWhere('w.status = :status')
+            ->setParameters([ 'work' => MessagePublisher::POPULATE_INDEX_TYPE, 'status' => WorkerRunningJob::RUNNING])
         ;
 
         return count($qb->getQuery()->getResult());
