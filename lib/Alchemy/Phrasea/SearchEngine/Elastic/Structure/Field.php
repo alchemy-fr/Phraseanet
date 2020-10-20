@@ -154,7 +154,6 @@ class Field implements Typed
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            // $raw && $this->type === FieldMapping::TYPE_TEXT ? '.raw' : ''
             $raw ? '.raw' : ''
         );
     }

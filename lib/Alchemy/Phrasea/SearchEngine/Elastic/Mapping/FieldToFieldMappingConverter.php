@@ -23,12 +23,8 @@ class FieldToFieldMappingConverter
         switch($field->getType()) {
             case FieldMapping::TYPE_DATE:
                 $ret = new DateFieldMapping($field->getName(), FieldMapping::DATE_FORMAT_MYSQL_OR_CAPTION);
-                // if (! $field->isFacet() && ! $field->isSearchable()) {
                 if (! $field->isSearchable()) {
                     $ret->disableIndexing();
-                    if($field->isFacet()) {
-                        $ret->addRawChild(); // don't disable indexing on raw, as it will prevent facets
-                    }
                 }
                 else {
                     $ret->addChild(
@@ -36,25 +32,15 @@ class FieldToFieldMappingConverter
                             ->setAnalyzer('general_light')
                             ->enableTermVectors()
                     );
-                    $ret->addRawChild(); // don't disable indexing on raw, as it will prevent facets
                 }
                 break;
 
             case FieldMapping::TYPE_TEXT:
                 $ret = new TextFieldMapping($field->getName());
-                //if (! $field->isFacet() && ! $field->isSearchable()) {
                 if (! $field->isSearchable()) {
                     $ret->disableIndexing();
-                    if($field->isFacet()) {
-                        $ret->addRawChild(); // don't disable indexing on raw, as it will prevent facets
-                    }
                 }
                 else {
-                    // ---- test : is raw only used for facets ?
-                    if($field->isFacet()) {
-                        $ret->addRawChild();
-                    }
-                    // ---- /test
                     $ret->addAnalyzedChildren($locales);
                     $ret->enableTermVectors(true);
                 }
@@ -62,12 +48,8 @@ class FieldToFieldMappingConverter
 
             case FieldMapping::TYPE_DOUBLE:
                 $ret = new DoubleFieldMapping($field->getName());
-                // if (! $field->isFacet() && ! $field->isSearchable()) {
                 if (! $field->isSearchable()) {
                     $ret->disableIndexing();
-                    if($field->isFacet()) {
-                        $ret->addRawChild(); // don't disable indexing on raw, as it will prevent facets
-                    }
                 }
                 else {
                     $ret->addChild(
@@ -81,6 +63,11 @@ class FieldToFieldMappingConverter
             default:
                 $ret = new FieldMapping($field->getName(), $field->getType());
                 break;
+        }
+
+        // to check : is "raw" only used for facets ?
+        if($field->isFacet()) {
+            $ret->addRawChild(); // don't disable indexing on raw, as it will prevent facets
         }
 
         return $ret;
