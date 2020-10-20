@@ -23,7 +23,7 @@
                 <td>{{ queueStatus.messageCount }}</td>
                 <td>{{ queueStatus.consumerCount }}</td>
                 <td>
-                    <buton class="btn btn-danger btn-mini purge-queue" data-queue-name="{{ queueStatus.queueName }}">{{ 'admin::workermanager:tab:queueMonitor: Purge Queue' | trans }}</buton>
+                    <button class="btn btn-danger btn-mini purge-queue" data-queue-name="{{ queueStatus.queueName }}">{{ 'admin::workermanager:tab:queueMonitor: Purge Queue' | trans }}</button>
                 </td>
             </tr>
         {% endfor %}
