@@ -52,10 +52,17 @@ SQL;
                 // sql is ordered by rid so we won't find the same record twice.
                 $current_rid = $subdef['record_id'];
                 // getting all subdefs once is faster than getting subdef one by one in the main loop
-                $subdefs = $this->databox->getRecordRepository()->find($current_rid)->get_subdefs();
                 $pls = [];  // permalinks, by subdef name
-                foreach($subdefs as $s) {
-                    $pls[$s->get_name()] = (string)($s->get_permalink()->get_url());
+                try {
+                    $subdefs = $this->databox->getRecordRepository()->find($current_rid)->get_subdefs();
+                    foreach ($subdefs as $s) {
+                        if(!is_null($pl = $s->get_permalink())) {
+                            $pls[$s->get_name()] = (string)($pl->get_url());
+                        }
+                    }
+                }
+                catch (\Exception $e) {
+                    // cant get record ? ignore
                 }
             }
             $name = $subdef['name'];
