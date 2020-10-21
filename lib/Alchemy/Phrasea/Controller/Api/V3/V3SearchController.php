@@ -9,6 +9,7 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
 use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefService;
 use Alchemy\Phrasea\Fractal\CallbackTransformer;
 use Alchemy\Phrasea\Fractal\IncludeResolver;
 use Alchemy\Phrasea\Fractal\SearchResultTransformerResolver;
@@ -455,7 +456,9 @@ class V3SearchController extends Controller
      */
     private function buildSubdefsViews($references, array $names = null, $urlTTL)
     {
-        $subdefGroups = $this->app['service.media_subdef']
+        /** @var MediaSubdefService $MediaSubdefService */
+        $MediaSubdefService = $this->app['service.media_subdef'];
+        $subdefGroups = $MediaSubdefService
             ->findSubdefsByRecordReferenceFromCollection($references, $names);
 
         $fakeSubdefs = [];
