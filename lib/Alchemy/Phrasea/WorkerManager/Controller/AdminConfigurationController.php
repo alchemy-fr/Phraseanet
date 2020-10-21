@@ -102,7 +102,9 @@ class AdminConfigurationController extends Controller
 
     /**
      * @param Request $request
-     * @param integer $workerId
+     * @param $workerId
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function changeStatusAction(Request $request, $workerId)
     {
