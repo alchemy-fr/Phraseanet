@@ -84,6 +84,11 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
         $controllers->match('/search/', 'controller.api.v3.search:searchAction');
 
         /**
+         * @uses V3SearchController::searchRawAction()
+         */
+        $controllers->match('/searchraw/', 'controller.api.v3.search:searchRawAction');
+
+        /**
          * @uses V3RecordController::indexAction_GET()
          */
         $controllers->get('/records/{databox_id}/{record_id}/', 'controller.api.v3.records:indexAction_GET')
