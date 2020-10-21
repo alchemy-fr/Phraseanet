@@ -331,6 +331,53 @@ class ElasticSearchEngine implements SearchEngineInterface
         );
     }
 
+    public function queryraw($queryText, SearchEngineOptions $options = null)
+    {
+        $options = $options ?: new SearchEngineOptions();
+        $context = $this->context_factory->createContext($options);
+
+        /** @var QueryCompiler $query_compiler */
+        $query_compiler = $this->app['query_compiler'];
+        $queryAST      = $query_compiler->parse($queryText)->dump();
+        $queryCompiled = $query_compiler->compile($queryText, $context);
+
+        $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
+
+        // ask ES to return field _version (incremental version number of document)
+        $queryESLib['body']['version'] = true;
+
+        $queryESLib['body']['from'] = $options->getFirstResult();
+        $queryESLib['body']['size'] = $options->getMaxResults();
+        if($this->options->getHighlight()) {
+            $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
+        }
+
+        $aggs = $this->getAggregationQueryParams($options);
+        if ($aggs) {
+            $queryESLib['body']['aggs'] = $aggs;
+        }
+
+        $res = $this->client->search($queryESLib);
+
+        // return $res;
+
+        $results = [];
+        foreach ($res['hits']['hits'] as $hit) {
+            $results[] = $hit;
+        }
+
+        /** @var FacetsResponse $facets */
+        $facets = $this->facetsResponseFactory->__invoke($res);
+
+        return [
+            'results' => $results,
+            'took' => $res['took'],   // duration
+            'count' => count($res['hits']['hits']),  // available
+            'total' => $res['hits']['total'],  // total
+            'facets' => $facets->toArray()
+        ];
+    }
+
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
     {
         $params = [

@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Fractal\CallbackTransformer;
 use Alchemy\Phrasea\Fractal\IncludeResolver;
 use Alchemy\Phrasea\Fractal\SearchResultTransformerResolver;
 use Alchemy\Phrasea\Fractal\TraceableArraySerializer;
+use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Record\RecordCollection;
@@ -44,11 +45,19 @@ use media_subdef;
 use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 
 class V3SearchController extends Controller
 {
     use JsonBodyAware;
     use DispatcherAware;
+
+    public function searchRawAction(Request $request)
+    {
+        $result = $this->doSearchRaw($request);
+
+        return Result::create($request, $result)->createResponse();
+    }
 
     /**
      * Search for results
@@ -59,6 +68,8 @@ class V3SearchController extends Controller
      */
     public function searchAction(Request $request)
     {
+        $stopwatch = new Stopwatch();
+
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
         $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
@@ -99,7 +110,11 @@ class V3SearchController extends Controller
         // and push everything back to fractal
         $fractal->parseIncludes($this->getIncludes($request));
 
+        $tim0 = $stopwatch->getElapsedMilliseconds();
+
         $result = $this->doSearch($request);
+
+        $tim1 = $stopwatch->getElapsedMilliseconds();
 
         $story_children_limit = null;
         // if searching stories
@@ -114,7 +129,19 @@ class V3SearchController extends Controller
             $story_children_limit
         );
 
+        $tim2 = $stopwatch->getElapsedMilliseconds();
+
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
+
+        $tim3 = $stopwatch->getElapsedMilliseconds();
+
+        $ret['__timers__'] = [
+            '_where_' => sprintf("%s::%s", __FILE__, __METHOD__),
+            'boot' => $tim0,
+            'doSearch' => $tim1,
+            'buildSearchView' => $tim2,
+            'fractal' => $tim3,
+        ];
 
         return Result::create($request, $ret)->createResponse();
     }
@@ -313,6 +340,23 @@ class V3SearchController extends Controller
         return $resultView;
     }
 
+    private function doSearchRaw(Request $request)
+    {
+        list($offset, $limit) = V3ResultHelpers::paginationFromRequest($request);
+
+        $options = SearchEngineOptions::fromRequest($this->app, $request);
+        $options->setFirstResult($offset);
+        $options->setMaxResults($limit);
+
+        $this->getSearchEngine()->resetCache();
+
+        $search_result = $this->getSearchEngine()->queryraw((string)$request->get('query'), $options);
+
+        $this->getSearchEngine()->clearCache();
+
+        return $search_result;
+    }
+
     /**
      * @param Request $request
      * @return SearchEngineResult
@@ -432,8 +476,10 @@ class V3SearchController extends Controller
                 return !isset($fakeSubdefs[spl_object_hash($subdef)]);
             })
         );
-        $urls = $this->app['media_accessor.subdef_url_generator']
-            ->generateMany($this->getAuthenticatedUser(), $allSubdefs, $urlTTL);
+
+        /** @var MediaSubDefinitionUrlGenerator $urlGenerator */
+        $urlGenerator = $this->app['media_accessor.subdef_url_generator'];
+        $urls = $urlGenerator->generateMany($this->getAuthenticatedUser(), $allSubdefs, $urlTTL);
 
         $subdefViews = [];
 
