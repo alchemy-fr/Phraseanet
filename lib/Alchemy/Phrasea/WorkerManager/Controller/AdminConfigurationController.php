@@ -143,6 +143,22 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
+    public function purgeQueueAction(PhraseaApplication $app, Request $request)
+    {
+        $queueName = $request->request->get('queueName');
+
+        if (empty($queueName)) {
+            return $this->app->json(['success' => false]);
+        }
+
+        /** @var AMQPConnection $serverConnection */
+        $serverConnection = $this->app['alchemy_worker.amqp.connection'];
+
+        $serverConnection->reinitializeQueue([$queueName]);
+
+        return $this->app->json(['success' => true]);
+    }
+
     public function truncateTableAction(PhraseaApplication $app)
     {
         /** @var WorkerRunningJobRepository $repoWorker */
