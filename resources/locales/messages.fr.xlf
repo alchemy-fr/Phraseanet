@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-10-08T13:29:55Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2020-10-20T09:15:34Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -123,12 +123,12 @@
       <trans-unit id="a3d70e96ee0ee9b8753b146dbdd1e646e08b3138" resname="%d collection selected" approved="yes">
         <source>%d collection selected</source>
         <target state="translated">%d collection sélectionnée</target>
-        <jms:reference-file line="146">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="147">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b4cb2c97cedf159b56a1ef22e437929264129fd2" resname="%d collections selected" approved="yes">
         <source>%d collections selected</source>
         <target state="translated">%d collections sélectionnées</target>
-        <jms:reference-file line="147">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="148">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ca5f190bf18ece3d706b1d9a15222be94259943d" resname="%d fields have been updated" approved="yes">
         <source>%d fields have been updated</source>
@@ -263,12 +263,12 @@
       <trans-unit id="eae910e840fe7df8ef8211d587e72af74ab69463" resname="%quantity_records% records have been sent for validation to %quantity_users% users" approved="yes">
         <source>%quantity_records% records have been sent for validation to %quantity_users% users</source>
         <target state="translated">%quantity_records% enregistrements ont été envoyés pour validation auprès de %quantity_users% utilisateurs</target>
-        <jms:reference-file line="371">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="446">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf07c4ba2da42f09b8be161748fd40c133a86646" resname="%quantity_records% records have been sent to %quantity_users% users" approved="yes">
         <source>%quantity_records% records have been sent to %quantity_users% users</source>
         <target state="translated">%quantity_records% enregistrements envoyés auprès de %quantity_users% utilisateurs</target>
-        <jms:reference-file line="160">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="186">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d90df6ce9691d4bc172b9129250a5af4bef4b7f" resname="%record_count% records match the unique identifier :" approved="yes">
         <source>%record_count% records match the unique identifier :</source>
@@ -591,18 +591,18 @@
       <trans-unit id="47fdb73f25a5741ae837b5ff6952465d9a205d62" resname="Account has been unlocked, you can now login." approved="yes">
         <source>Account has been unlocked, you can now login.</source>
         <target state="translated">Le compte a été débloqué. Vous pouvez maintenant vous connecter.</target>
-        <jms:reference-file line="362">Controller/Root/LoginController.php</jms:reference-file>
-        <jms:reference-file line="373">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="363">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="374">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="632ed364ab91b2c197af55b21a56915da46ab097" resname="Account has been unlocked, you still have to wait for admin approval." approved="yes">
         <source>Account has been unlocked, you still have to wait for admin approval.</source>
         <target state="translated">Le compte a été débloqué. Vous devez toutefois attendre l'approbation d'un administrateur.</target>
-        <jms:reference-file line="378">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="379">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d0f5633269121ec8e07965a8adb4032ba9e51c3d" resname="Account is already unlocked, you can login." approved="yes">
         <source>Account is already unlocked, you can login.</source>
         <target state="translated">Le compte est déjà déverrouillé. Vous pouvez vous connecter.</target>
-        <jms:reference-file line="350">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="351">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b49bb6d5d1b2f39b2eb12fbd6cd22fe8556a81a5" resname="Account is not found." approved="yes">
         <source>Account is not found.</source>
@@ -1050,7 +1050,7 @@
       <trans-unit id="a45ff91e0c1ebb94d62f5daaad1e708278ba484e" resname="An unexpected error occurred during authentication process, please contact an admin" approved="yes">
         <source>An unexpected error occurred during authentication process, please contact an admin</source>
         <target state="translated">Une erreur est survenue lors de l'authentification. Veuillez contacter un Administrateur</target>
-        <jms:reference-file line="749">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="766">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2063ba5ce348f48f77284c961f2291da1fdd79a5" resname="An upload on %bridge_adapter% failed, the resaon is : %reason%" approved="yes">
         <source>An upload on %bridge_adapter% failed, the resaon is : %reason%</source>
@@ -2566,7 +2566,7 @@
       <trans-unit id="017fd7aedf39f509d51ce202368e4f0ea943de4e" resname="Do you want to send your report ?" approved="yes">
         <source>Do you want to send your report ?</source>
         <target state="translated">Souhaitez-vous envoyer votre rapport ?</target>
-        <jms:reference-file line="401">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="403">Phrasea/Controller/LightboxController.php</jms:reference-file>
         <jms:reference-file line="15">mobile/lightbox/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e214b8a29923056887b7edf6635d90dcbb2abe88" resname="Document" approved="yes">
@@ -2787,12 +2787,12 @@
       <trans-unit id="fe7db1d225b18b4bc134c757a6f95dd4d38a5d02" resname="Email is invalid" approved="yes">
         <source>Email is invalid</source>
         <target state="translated">L'adresse e-mail est invalide</target>
-        <jms:reference-file line="447">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="535">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4da1d591c49e895131ce66f5b488149cd53d651b" resname="Email is required" approved="yes">
         <source>Email is required</source>
         <target state="translated">L'adresse e-mail est obligatoire</target>
-        <jms:reference-file line="444">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="532">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8efc876746f2fe8dae7e433323dc4f22535d1ac" resname="Email successfully confirmed" approved="yes">
         <source>Email successfully confirmed</source>
@@ -3001,7 +3001,7 @@
       <trans-unit id="98dd4f677700f017df171e2104facd08d511adab" resname="Envoie avec succes" approved="yes">
         <source>Envoie avec succes</source>
         <target state="translated">Envoi avec succès</target>
-        <jms:reference-file line="445">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="457">Phrasea/Controller/LightboxController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="09b6a6dcd3f6d4a7d3a95bceaad67a7f1800272f" resname="Equals" approved="yes">
         <source>Equals</source>
@@ -3067,7 +3067,7 @@
       <trans-unit id="dc8650b35a764f3450ce48373dfd45b6f350f199" resname="Erreur lors de la mise a jour des donnes" approved="yes">
         <source>Erreur lors de la mise a jour des donnes</source>
         <target state="translated">Erreur lors de la mise à jour des données</target>
-        <jms:reference-file line="375">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="377">Phrasea/Controller/LightboxController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f7bf810a272a035f6da919a27124160567c0b3f" resname="Erreur lors de la tentative ; errreur : %message%" approved="yes">
         <source>Erreur lors de la tentative ; errreur : %message%</source>
@@ -3099,7 +3099,7 @@
       <trans-unit id="3bce15460cac7169ea217ebc3f887d839e28e3a8" resname="Error while creating user" approved="yes">
         <source>Error while creating user</source>
         <target state="translated">Erreur lors de la création de l'utilisateur</target>
-        <jms:reference-file line="494">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="582">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="15059bc07c7d22747a0bf89dbefdeffe625a4776" resname="Error while saving preference" approved="yes">
         <source>Error while saving preference</source>
@@ -3160,6 +3160,11 @@
         <source>Executables settings</source>
         <target state="translated">Paramètres d'exécutables</target>
         <jms:reference-file line="58">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!">
+        <source>Expiration date successfully updated!</source>
+        <target state="new">Expiration date successfully updated!</target>
+        <jms:reference-file line="763">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c" resname="Export" approved="yes">
         <source>Export</source>
@@ -3320,7 +3325,7 @@
       <trans-unit id="df38d55fa30014ac035c1a14bac9a1cfa3464c67" resname="First name is required" approved="yes">
         <source>First name is required</source>
         <target state="translated">Le prénom est obligatoire</target>
-        <jms:reference-file line="438">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="526">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="36127f34f2ad9712e37d8f38c92edb518c6b78f2" resname="First/Last Name" approved="yes">
         <source>First/Last Name</source>
@@ -3513,7 +3518,7 @@
       <trans-unit id="61dedcf053ff33692baacbf7789c5d7195d9acbe" resname="Good" approved="yes">
         <source>Good</source>
         <target state="translated">Bonne</target>
-        <jms:reference-file line="152">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="153">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="442bee77a51f11ee32ca32751c4e244e80de6e3d" resname="Google Analytics identifier" approved="yes">
         <source>Google Analytics identifier</source>
@@ -3548,7 +3553,7 @@
       <trans-unit id="bd846adf34307e77ff7d457b28a426470fc0bad9" resname="Great" approved="yes">
         <source>Great</source>
         <target state="translated">Excellente</target>
-        <jms:reference-file line="153">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="154">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d36ed42d18a32e092664742ba0e0879f66ff0439" resname="Groupez 2 ou plusieurs mots avec des guillemets: &quot;Michael Jackson&quot;" approved="yes">
         <source>Groupez 2 ou plusieurs mots avec des guillemets: "Michael Jackson"</source>
@@ -3788,7 +3793,7 @@
       <trans-unit id="1bddb5c56be2e76fe8a41b5eadf149654b7b87eb" resname="Invalid captcha answer." approved="yes">
         <source>Invalid captcha answer.</source>
         <target state="translated">La réponse au code CAPTCHA est incorrecte.</target>
-        <jms:reference-file line="229">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="230">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3da203883b919e942c295aa2ebec1ac7e121c3fb" resname="Invalid file format" approved="yes">
         <source>Invalid file format</source>
@@ -3823,7 +3828,7 @@
       <trans-unit id="d211e2ef8dd9e15443e081e455da91938085a2ff" resname="Invalid link." approved="yes">
         <source>Invalid link.</source>
         <target state="translated">Lien non valide.</target>
-        <jms:reference-file line="304">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="305">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a3506d6dd32abc6a9d3651ec8b9bba513f65e81" resname="Invalid password provided" approved="yes">
         <source>Invalid password provided</source>
@@ -3838,8 +3843,8 @@
       <trans-unit id="72194a4e30eb11f8611b35e5339851fe3e766353" resname="Invalid unlock link." approved="yes">
         <source>Invalid unlock link.</source>
         <target state="translated">Lien de déverrouillage non valide.</target>
-        <jms:reference-file line="336">Controller/Root/LoginController.php</jms:reference-file>
-        <jms:reference-file line="342">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="337">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="343">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8606f0ad87b5f92e01e46416cad301829571b7a7" resname="Inverser" approved="yes">
         <source>Inverser</source>
@@ -3967,7 +3972,7 @@
       <trans-unit id="b1d9a735d1617fef40cde4ef819ca57eec8b12f9" resname="Last name is required" approved="yes">
         <source>Last name is required</source>
         <target state="translated">Le nom est obligatoire</target>
-        <jms:reference-file line="441">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="529">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="124dd29fd1578743c9d4ec4ba6dbe78187e5104a" resname="Last update on %updateTime%" approved="yes">
         <source>Last update on %updateTime%</source>
@@ -4351,7 +4356,7 @@
       <trans-unit id="b4efaf7a18aa1ca3f50081c404e78c7fec456e40" resname="Missing mandatory parameter %parameter%" approved="yes">
         <source>Missing mandatory parameter %parameter%</source>
         <target state="translated">Le paramètre obligatoire %parameter% est manquant</target>
-        <jms:reference-file line="272">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="329">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0f0312bad12a23972edbf3999e9de2678039b079" resname="Missing name parameter" approved="yes">
         <source>Missing name parameter</source>
@@ -4555,7 +4560,7 @@
       <trans-unit id="629ba46ae69b67c8bf68328eb3473260a88710f0" resname="No collection selected" approved="yes">
         <source>No collection selected</source>
         <target state="translated">Aucune collection sélectionnée</target>
-        <jms:reference-file line="145">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="146">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5ea5b2992faa66191412bdd06f605554ba4e2985" resname="No document in quarantine" approved="yes">
         <source>No document in quarantine</source>
@@ -4570,12 +4575,12 @@
       <trans-unit id="1730e13a1377a3de9e5a8f3f8539490d5f54a545" resname="No elements to push" approved="yes">
         <source>No elements to push</source>
         <target state="translated">Aucun élément à Pusher</target>
-        <jms:reference-file line="81">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="101">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7b31ae7275270be268b176b6692bf79434aa3898" resname="No elements to validate" approved="yes">
         <source>No elements to validate</source>
         <target state="translated">Il n'y a pas de documents à valider</target>
-        <jms:reference-file line="205">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="243">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a68d28f1ee865c1c560e3e69257aa6a70b3fba34" resname="No matches found" approved="yes">
         <source>No matches found</source>
@@ -4590,7 +4595,7 @@
       <trans-unit id="ee0ccefc5da5a79647ce65575ea97814db7506b7" resname="No participants specified" approved="yes">
         <source>No participants specified</source>
         <target state="translated">Aucun participant indiqué</target>
-        <jms:reference-file line="201">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="239">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6320c7bfd43866de80959e07bfb291725fe0f0f1" resname="No permalink available." approved="yes">
         <source>No permalink available.</source>
@@ -4606,7 +4611,7 @@
       <trans-unit id="657c9f21a7a4da0e213e67dbee089b281dce3279" resname="No receivers specified" approved="yes">
         <source>No receivers specified</source>
         <target state="translated">Aucun destinataire indiqué</target>
-        <jms:reference-file line="77">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="97">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="04dfe4ba3df4b0c34cf992189176df876d2b1bf9" resname="No records" approved="yes">
         <source>No records</source>
@@ -4865,7 +4870,7 @@
       <trans-unit id="0bc63392df32795e16ab5cbb605be75812542d30" resname="Ordinary" approved="yes">
         <source>Ordinary</source>
         <target state="translated">Normale</target>
-        <jms:reference-file line="151">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="152">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="86e4e3875420cdee95d08d4472073493729a7aee" resname="Orientation" approved="yes">
         <source>Orientation</source>
@@ -5002,7 +5007,7 @@
       <trans-unit id="17d47194ec888edc3eb2a8f200f0400f787924ff" resname="Phraseanet guest-access is disabled" approved="yes">
         <source>Phraseanet guest-access is disabled</source>
         <target state="translated">L'accès invité de Phraseanet est désactivé.</target>
-        <jms:reference-file line="545">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="546">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f76e81b1e826c0255a8e7e2b0e9c8f6c33bba34c" resname="Phraseanet may require many binaries." approved="yes">
         <source>Phraseanet may require many binaries.</source>
@@ -5034,7 +5039,7 @@
       <trans-unit id="9a79729c3f4563330799d576273950579e1ba3f5" resname="Please accept the terms of use to register." approved="yes">
         <source>Please accept the terms of use to register.</source>
         <target state="translated">Veuillez accepter les condtions d'utilisation pour vous inscrire.</target>
-        <jms:reference-file line="144">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="145">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d312932c3a2b63d365d7843ee31644b6018a8b2" resname="Please be sure it is still valid and you can access it" approved="yes">
         <source>Please be sure it is still valid and you can access it</source>
@@ -5064,7 +5069,7 @@
       <trans-unit id="2bec3eec3fa44ad54758d6446a424345830aac30" resname="Please fill the captcha" approved="yes">
         <source>Please fill the captcha</source>
         <target state="translated">Veuillez remplir le champ CAPTCHA</target>
-        <jms:reference-file line="768">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="785">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="66dbd3018d4d017b79095548149d667f198fef8b" resname="Please fix the database before starting" approved="yes">
         <source>Please fix the database before starting</source>
@@ -5074,7 +5079,7 @@
       <trans-unit id="9e2c0ab9af6e38d878dbf46b76d429bd6f4658b6" resname="Please provide a longer value. It should have %s character or more." approved="yes">
         <source>Please provide a longer value. It should have %s character or more.</source>
         <target state="translated">Veuillez indiquer une valeur plus grande :  %s caractères ou plus.</target>
-        <jms:reference-file line="141">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="142">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2cae406488922733ecc9c7714719701ccd509717" resname="Please provide a name for this selection." approved="yes">
         <source>Please provide a name for this selection.</source>
@@ -5084,32 +5089,32 @@
       <trans-unit id="ae9ef8ef63f2c23026e64c0489bb30a2e6af7a86" resname="Please provide a valid IP address." approved="yes">
         <source>Please provide a valid IP address.</source>
         <target state="translated">Veuillez indiquer une adresse IP valide.</target>
-        <jms:reference-file line="140">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="141">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="09016875ee2bcdd8846a2f551ae59df83d51a038" resname="Please provide a valid email address." approved="yes">
         <source>Please provide a valid email address.</source>
         <target state="translated">Veuillez indiquer une adresse e-mail valide.</target>
-        <jms:reference-file line="139">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="140">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="613b71339081d03b324eb4d7ffc4dac2291a38fb" resname="Please provide a value." approved="yes">
         <source>Please provide a value.</source>
         <target state="translated">Veuillez indiquer une valeur.</target>
-        <jms:reference-file line="137">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="138">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a845af798646902aeb0d49cd0e7efed858d74ec8" resname="Please provide the same emails." approved="yes">
         <source>Please provide the same emails.</source>
         <target state="translated">Veuillez indiquer les mêmes adresses e-mail.</target>
-        <jms:reference-file line="143">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="144">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="96f0767cb7ea65a7f86c8c9432e80d16cf9d8680" resname="Please provide the same passwords." approved="yes">
         <source>Please provide the same passwords.</source>
         <target state="translated">Veuillez indiquer des mots de passe identiques.</target>
-        <jms:reference-file line="142">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="143">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="909937ac0774309e683ebb56a623ec8218c96e14" resname="Please select at least %s choice." approved="yes">
         <source>Please select at least %s choice.</source>
         <target state="translated">Sélectionnez au moins %s choix.</target>
-        <jms:reference-file line="138">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="139">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3e4a31c2ea12d47389b4d3de57c741256020ca6f" resname="Please select at least one valid file" approved="yes">
         <source>Please select at least one valid file</source>
@@ -5206,12 +5211,12 @@
       <trans-unit id="1e9881366e0171af30ea532858a0569c171dc2c3" resname="Processus de validation recu de %user%" approved="yes">
         <source>Processus de validation recu de %user%</source>
         <target state="translated">Demande de validation reçue de %user%</target>
-        <jms:reference-file line="267">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="270">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a28669d9391b214077076cbf4f1d662bc2167704" resname="Processus de validation recu de %user% et concernant %n% utilisateurs" approved="yes">
         <source>Processus de validation recu de %user% et concernant %n% utilisateurs</source>
         <target state="translated">Demande de validation reçue de %user% et concernant %n% autre(s) utilisateur(s)</target>
-        <jms:reference-file line="264">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="267">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="644c8d02cf4d365edfeb12f28afdc32c8b1f6b14" resname="Propositions de modifications des tables" approved="yes">
         <source>Propositions de modifications des tables</source>
@@ -5262,7 +5267,7 @@
       <trans-unit id="5af801b860f0c16ff1fa7c14e4365c4a1372df5e" resname="Push from %user%" approved="yes">
         <source>Push from %user%</source>
         <target state="translated">Push de %user%</target>
-        <jms:reference-file line="68">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="88">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc5a4abd4a0dd0729a7935958c49369f845aefe7" resname="Push::filter on companies" approved="yes">
         <source>Push::filter on companies</source>
@@ -6025,7 +6030,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="7c83f0d10a0a04ab6ae1ceb098113b081e9bc4d5" resname="Select all collections" approved="yes">
         <source>Select all collections</source>
         <target state="translated">Sélectionner toutes les collections</target>
-        <jms:reference-file line="148">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="149">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aacba52fe3c2b562e2ef14b41fcd4abab92a0619" resname="Select files..." approved="yes">
         <source>Select files...</source>
@@ -6693,11 +6698,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Les erreurs suivantes ont été détectées.</target>
         <jms:reference-file line="5">user/import/view.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="99d8c6d419ad0732e7d87098c3f60b62f2316e61" resname="The provided date is null!" approved="yes">
-        <source>The provided date is null!</source>
-        <target state="translated">La date fournie est NULL (vide)</target>
-        <jms:reference-file line="616">Controller/Prod/PushController.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="d22c09c164965d42fcdb8d8fe2b40d7d57799a8f" resname="The publication has been stopped" approved="yes">
         <source>The publication has been stopped</source>
         <target state="translated">La publication a été suspendue</target>
@@ -7013,7 +7013,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="a5d2dca08b69ce907e38ed1bf35fc219df18edb3" resname="Unable to authenticate with %provider_name%" approved="yes">
         <source>Unable to authenticate with %provider_name%</source>
         <target state="translated">Impossible de s'authentifier avec %provider_name%</target>
-        <jms:reference-file line="656">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="673">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="207">Controller/Api/OAuth2Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7adcfb8dcac6fb17a9283fcb6b53f1e31ca2f3a0" resname="Unable to connect to MySQL server" approved="yes">
@@ -7056,25 +7056,20 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="c8cfcd74a9813267d93550c9cf1d2930f23815f0" resname="Unable to retrieve provider identity" approved="yes">
         <source>Unable to retrieve provider identity</source>
         <target state="translated">Impossible de récupérer l'identité auprès du fournisseur.</target>
-        <jms:reference-file line="679">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="696">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="224">Controller/Api/OAuth2Controller.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="c35e31f5dafff1fdd756af111f7699abf3a5ffd0" resname="Unable to save the expiration date" approved="yes">
-        <source>Unable to save the expiration date</source>
-        <target state="translated">Impossible de sauvegarder la date d'expiration</target>
-        <jms:reference-file line="613">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6af8293be2ccc7fc664c96b11293a226fd300026" resname="Unable to send the documents" approved="yes">
         <source>Unable to send the documents</source>
         <target state="translated">Impossible d'envoyer les documents</target>
-        <jms:reference-file line="60">Controller/Prod/PushController.php</jms:reference-file>
-        <jms:reference-file line="183">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="80">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="221">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0bbb2cdad7d42313f72364a3ae791e60d966988a" resname="Unable to send your account unlock email." approved="yes">
         <source>Unable to send your account unlock email.</source>
         <target state="translated">Impossible d'adresser l'e-mail de déverrouillage du compte.</target>
-        <jms:reference-file line="244">Controller/Root/LoginController.php</jms:reference-file>
-        <jms:reference-file line="314">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="245">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="315">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="59ec986cc97e00e4d00c0fb3fa9d04e5e4f7d7fe" resname="Unable to share the list with the usr" approved="yes">
         <source>Unable to share the list with the usr</source>
@@ -7127,12 +7122,12 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="7e86eeab8070ef42ff9eed2f163ca033250ce8cd" resname="Unknown user %user_id%" approved="yes">
         <source>Unknown user %user_id%</source>
         <target state="translated">L'utilisateur %user_id% est inconnu</target>
-        <jms:reference-file line="91">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="111">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="982f751a2ffee1db2a357a60f880c72f1f19fa25" resname="Unknown user %usr_id%" approved="yes">
         <source>Unknown user %usr_id%</source>
         <target state="translated">Utilisateur inconnu %usr_id%</target>
-        <jms:reference-file line="282">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="340">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="abf9e4b5a3d4601e96a01d234e03e24d68f64e39" resname="Unreachable server" approved="yes">
         <source>Unreachable server</source>
@@ -7258,7 +7253,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="5bb94bfadf4a04bc6b31a3298c5f19a7dead6769" resname="User already exists" approved="yes">
         <source>User already exists</source>
         <target state="translated">L'utilisateur existe déjà</target>
-        <jms:reference-file line="458">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="546">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9546419cc7444e01dd83274b24608fa8cd4dc778" resname="User can download HD" approved="yes">
         <source>User can download HD</source>
@@ -7288,7 +7283,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="981305c0c2dad92d70b1afd4757a274596de6ec7" resname="User successfully created" approved="yes">
         <source>User successfully created</source>
         <target state="translated">Utilisateur créé avec succès</target>
-        <jms:reference-file line="490">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="578">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="57f2b181d0a5e79a147ea1cdf41457f58dbbb3c9" resname="Users" approved="yes">
         <source>Users</source>
@@ -7338,7 +7333,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="83da6b62512e6597a104cf295a8f050cd9799a6d" resname="Validation from %user%" approved="yes">
         <source>Validation from %user%</source>
         <target state="translated">Validation de %user%</target>
-        <jms:reference-file line="192">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="230">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b48f9fba4e8006b68c009a21b0e1087b6aafa91" resname="Validation request from %user% for '%title%'" approved="yes">
         <source>Validation request from %user% for '%title%'</source>
@@ -7460,7 +7455,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="f53665e212dedb32290a407b376c9094fb0506dc" resname="Vous avez envoye cette demande a %n% utilisateurs" approved="yes">
         <source>Vous avez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">La demande a été adressée à %n% utilisateurs</target>
-        <jms:reference-file line="261">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="264">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="026481a9062eacd74b454487256e11a12286ad35" resname="Vous avez envoye une demande de validation de document sur ce panier" approved="yes">
         <source>Vous avez envoye une demande de validation de document sur ce panier</source>
@@ -7480,7 +7475,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="48b0edd4b7baadecf72f020e6bc23a8a2118e83f" resname="Vous aviez envoye cette demande a %n% utilisateurs" approved="yes">
         <source>Vous aviez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">La demande avait été adressée à %n% utilisateurs</target>
-        <jms:reference-file line="258">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="261">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7654bd1b49c9d4df25f0b7a1fca600e69587286" resname="Vous devez donner un titre" approved="yes">
         <source>Vous devez donner un titre</source>
@@ -7520,7 +7515,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="0d3d97ffc6b526aad5b5c5e4f99df4298a48ce0b" resname="Vous etes maintenant deconnecte. A bientot." approved="yes">
         <source>Vous etes maintenant deconnecte. A bientot.</source>
         <target state="translated">Vous êtes maintenant déconnecté. A bientôt.</target>
-        <jms:reference-file line="481">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="482">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b31652d33be49a2d9d3187a0c31719a1c834f18" resname="Vous n'avez pas assez de droits sur certains elements selectionnes" approved="yes">
         <source>Vous n'avez pas assez de droits sur certains elements selectionnes</source>
@@ -7615,7 +7610,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="8bfada821419f7b1c35da6470b04b8c1b0c72d91" resname="Weak" approved="yes">
         <source>Weak</source>
         <target state="translated">Faible</target>
-        <jms:reference-file line="150">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="151">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8615df6f3944845fdf0fed38e531933d9d14159" resname="Webservices connectivity" approved="yes">
         <source>Webservices connectivity</source>
@@ -7728,7 +7723,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="0bf32a6400b9de91ad488c473e1b868d06101d55" resname="You are not allowed to add users" approved="yes">
         <source>You are not allowed to add users</source>
         <target state="translated">Vous n'êtes pas autorisé à ajouter des utilisateurs</target>
-        <jms:reference-file line="435">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="523">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="afea8dd8eed3b51b074840c17770df2690b50d32" resname="You are not authorized to do this" approved="yes">
         <source>You are not authorized to do this</source>
@@ -7856,7 +7851,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="2c12289df53f45e732321cf08c7fb1af6bb82b6a" resname="You have to give your feedback at least on one document to send a report" approved="yes">
         <source>You have to give your feedback at least on one document to send a report</source>
         <target state="translated">Vous devez donner au moins un avis pour envoyer un report</target>
-        <jms:reference-file line="510">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="523">Phrasea/Controller/LightboxController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ff6b60e650f5a3ebd1b908717edee4452693eef0" resname="You have to wait for an administrator approval for your access request" approved="yes">
         <source>You have to wait for an administrator approval for your access request</source>
@@ -7896,8 +7891,8 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="130e33971b6d9be263419bddefb300d8439ff523" resname="You tried to register with an unknown provider" approved="yes">
         <source>You tried to register with an unknown provider</source>
         <target state="translated">Vous tentez de vous inscrire auprès d'un fournisseur inconnu.</target>
-        <jms:reference-file line="194">Controller/Root/LoginController.php</jms:reference-file>
-        <jms:reference-file line="202">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="195">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="203">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="395f228aab22448bf79af1c7fa4b7019c5eb4aa6" resname="You will no longer receive notifications at %old_email%" approved="yes">
         <source>You will no longer receive notifications at %old_email%</source>
@@ -7957,7 +7952,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="ff2e2369a8f0959a7f665f926ec4d84b3c5a46f5" resname="Your identity is not recognized." approved="yes">
         <source>Your identity is not recognized.</source>
         <target state="translated">Votre identité n'est pas reconnue.</target>
-        <jms:reference-file line="720">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="737">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aaf57216976f942ee7fe118918b2b8893bde955f" resname="Your install might need to build some sub-definitions" approved="yes">
         <source>Your install might need to build some sub-definitions</source>
@@ -8877,9 +8872,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>admin::monitor: module validation</source>
         <target state="translated">Lightbox</target>
         <jms:reference-file line="85">lib/classes/phrasea.php</jms:reference-file>
-        <jms:reference-file line="205">Phrasea/Controller/LightboxController.php</jms:reference-file>
-        <jms:reference-file line="236">Phrasea/Controller/LightboxController.php</jms:reference-file>
-        <jms:reference-file line="313">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="207">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="238">Phrasea/Controller/LightboxController.php</jms:reference-file>
+        <jms:reference-file line="315">Phrasea/Controller/LightboxController.php</jms:reference-file>
         <jms:reference-file line="121">Controller/Admin/ConnectedUsersController.php</jms:reference-file>
         <jms:reference-file line="78">web/common/menubar.html.twig</jms:reference-file>
       </trans-unit>
@@ -9159,6 +9154,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Lancer le processus</target>
         <jms:reference-file line="22">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="dd8f6390304c7e3ef23622ca634ff8e2c5e56a2f" resname="admin::workermanager:tab:pullassets: Stop pull assets">
+        <source>admin::workermanager:tab:pullassets: Stop pull assets</source>
+        <target state="new">admin::workermanager:tab:pullassets: Stop pull assets</target>
+        <jms:reference-file line="24">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="ad2a78767b3542baec93331285da8ad19a0799b2" resname="admin::workermanager:tab:pullassets: Uploader api base uri" approved="yes">
         <source>admin::workermanager:tab:pullassets: Uploader api base uri</source>
         <target state="translated">Uploader API base URI, URI de base de l'api uploader, exemple http://api-uploader.phrasea.io</target>
@@ -9183,6 +9183,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>admin::workermanager:tab:queueMonitor: Message count</source>
         <target state="translated">Nombre de Message</target>
         <jms:reference-file line="12">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="06a4df374fcd16d27a5efb5326fbf3107f65ed20" resname="admin::workermanager:tab:queueMonitor: Purge Queue">
+        <source>admin::workermanager:tab:queueMonitor: Purge Queue</source>
+        <target state="new">admin::workermanager:tab:queueMonitor: Purge Queue</target>
+        <jms:reference-file line="26">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Refresh list</source>
@@ -10597,18 +10602,18 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="8af68da04218b6188405e5f7422866b5412ec7a8" resname="login::erreur: Erreur d'authentification" approved="yes">
         <source>login::erreur: Erreur d'authentification</source>
         <target state="translated">Erreur d'authentification</target>
-        <jms:reference-file line="779">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="796">Controller/Root/LoginController.php</jms:reference-file>
         <jms:reference-file line="103">Controller/Api/OAuth2Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e7678ea875773920bf91f79b62b97f31986f211b" resname="login::erreur: No available connection - Please contact sys-admin" approved="yes">
         <source>login::erreur: No available connection - Please contact sys-admin</source>
         <target state="translated">Connexion impossible, contactez un administrateur système</target>
-        <jms:reference-file line="504">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="505">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dcc7f0cac10852ef9bcc7f10019e2679174e3df7" resname="login::erreur: Vous n'avez pas confirme votre email" approved="yes">
         <source>login::erreur: Vous n'avez pas confirme votre email</source>
         <target state="translated">Accès impossible, vous n'avez pas confirmé votre adresse e-mail.</target>
-        <jms:reference-file line="772">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="789">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5cdbff50d2a3ae92720c5af32d4cd560d1351a91" resname="login::notification: Changements enregistres" approved="yes">
         <source>login::notification: Changements enregistres</source>
@@ -10619,13 +10624,13 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>login::notification: Mise a jour du mot de passe avec succes</source>
         <target state="translated">Mise à jour du mot de passe effectuée</target>
         <jms:reference-file line="67">Controller/Root/AccountController.php</jms:reference-file>
-        <jms:reference-file line="397">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="398">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="28dd2416483329c548279196d0c60f722578632f" resname="login::notification: demande de confirmation par mail envoyee" approved="yes">
         <source>login::notification: demande de confirmation par mail envoyee</source>
         <target state="translated">Demande de confirmation envoyée par e-mail</target>
-        <jms:reference-file line="241">Controller/Root/LoginController.php</jms:reference-file>
-        <jms:reference-file line="311">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="242">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="312">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fd24fc482ff7c390471bcff193f8ed218a520ccc" resname="login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous." approved="yes">
         <source>login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.</source>
@@ -11135,7 +11140,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="2751058550fb9a63ba3ffa07152ec68f594dec2a" resname="phraseanet:: Un email vient de vous etre envoye" approved="yes">
         <source>phraseanet:: Un email vient de vous etre envoye</source>
         <target state="translated">Un e-mail vient de vous être envoyé</target>
-        <jms:reference-file line="436">Controller/Root/LoginController.php</jms:reference-file>
+        <jms:reference-file line="437">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb699a47b1a213ea730879af2fd492110b3c1f4e" resname="phraseanet:: a propos" approved="yes">
         <source>phraseanet:: a propos</source>
