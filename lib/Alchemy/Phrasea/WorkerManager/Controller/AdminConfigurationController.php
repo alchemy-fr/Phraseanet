@@ -10,6 +10,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
+use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
@@ -194,6 +195,24 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
+    public function ftpAction(PhraseaApplication $app, Request $request)
+    {
+        $ftpConfig = $this->getFtpConfiguration();
+        $form = $app->form(new WorkerFtpType(), $ftpConfig);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            // save new ftp config
+            $app['conf']->set(['workers', 'ftp'], array_merge($ftpConfig, $form->getData()));
+
+            return $app->redirectPath('worker_admin');
+        }
+
+        return $this->render('admin/worker-manager/worker_ftp.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
     public function populateStatusAction(PhraseaApplication $app, Request $request)
     {
         $databoxIds = $request->get('sbasIds');
@@ -266,6 +285,11 @@ class AdminConfigurationController extends Controller
     private function getPullAssetsConfiguration()
     {
         return $this->app['conf']->get(['workers', 'pull_assets'], []);
+    }
+
+    private function getFtpConfiguration()
+    {
+        return $this->app['conf']->get(['workers', 'ftp'], []);
     }
 
     private function getRetryQueueConfiguration()
