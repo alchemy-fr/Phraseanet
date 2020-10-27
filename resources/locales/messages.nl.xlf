@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-10-20T09:16:23Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-10-27T14:29:55Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -142,12 +142,12 @@
       <trans-unit id="326e63c362bd04df2f787cb42ef3dbbeecc769dc" resname="%docs_not_orderable% documents ne peuvent pas etre commandes" approved="yes">
         <source>%docs_not_orderable% documents ne peuvent pas etre commandes</source>
         <target state="translated">%docs_not_orderable% documenten kunnen niet worden besteld</target>
-        <jms:reference-file line="278">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="272">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4098d12c97c7ab1125c1d6e21f657726ddced09" resname="%docs_orderable% documents commandes" approved="yes">
         <source>%docs_orderable% documents commandes</source>
         <target state="translated">%docs_orderable% documenten besteld</target>
-        <jms:reference-file line="271">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="265">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="04e1bd8f4666f6ba452383e440e3ca232bf078ff" resname="%entry_length% documents" approved="yes">
         <source>%entry_length% documents</source>
@@ -622,7 +622,7 @@
       <trans-unit id="589db073670b88b4b42b9f60b53d87e049fa5e3f" resname="Accuse de reception indisponible, vous n'avez pas declare d'adresse email" approved="yes">
         <source>Accuse de reception indisponible, vous n'avez pas declare d'adresse email</source>
         <target state="translated">Ontvangstbevestiging niet beschikbaar is, u hebt geen emailadres opgegeven</target>
-        <jms:reference-file line="195">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="189">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="43c8f4baa612c748fb9c0b6672d77827013ff2be" resname="Action Forbidden : You are not the publisher" approved="yes">
         <source>Action Forbidden : You are not the publisher</source>
@@ -1548,10 +1548,10 @@
       <trans-unit id="7985544ae054430f8b4416a883fa9d0b084ee0cf" resname="By checking this box, you accept %beginning_link% Terms of Use %end_link%" approved="yes">
         <source>By checking this box, you accept %beginning_link% Terms of Use %end_link%</source>
         <target state="translated">Door deze optie aan te klikken aanvaardt u %beginning_link% Gebruiksvoorwaarden %end_link%</target>
-        <jms:reference-file line="161">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="249">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="402">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="483">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="155">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="243">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="396">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="477">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4a9b7a5a8f68ffe693f4205fc0d2916e373e4b64" resname="By default it is available for admins" approved="yes">
         <source>By default it is available for admins</source>
@@ -1710,7 +1710,7 @@
       <trans-unit id="4fbd263a9cb76ca87df7a4c3035299d087da5fc3" resname="Certains champs sont obligatoires, veuillez les remplir" approved="yes">
         <source>Certains champs sont obligatoires, veuillez les remplir</source>
         <target state="translated">Sommige velden zijn verplicht, wilt u ze invullen</target>
-        <jms:reference-file line="509">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="503">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c4098d248603ebfd3ffe8e44d9c8a0344db1376" resname="Ces informations sont directement fournies par la norme de metadonnees de ce champ : %norm_name%" approved="yes">
         <source>Ces informations sont directement fournies par la norme de metadonnees de ce champ : %norm_name%</source>
@@ -1776,7 +1776,7 @@
       <trans-unit id="0506773f181511d306efe57b7d20af4ea44fa1b3" resname="Civility" approved="yes">
         <source>Civility</source>
         <target state="translated">Beleefdheid</target>
-        <jms:reference-file line="316">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="310">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="719ea396ad92e01b4757ec2b93bb1e5f270f771d" resname="Clear" approved="yes">
         <source>Clear</source>
@@ -1964,7 +1964,7 @@
       <trans-unit id="9390154f77eb29d90b7e2211b4400502106fb7bb" resname="Connection to FTP succeed" approved="yes">
         <source>Connection to FTP succeed</source>
         <target state="translated">De verbinding met de FTP is geslaagd</target>
-        <jms:reference-file line="79">Controller/Prod/ExportController.php</jms:reference-file>
+        <jms:reference-file line="81">Controller/Prod/ExportController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bb1c716aa18bf2715bba8b61aba67482e53d6f6d" resname="Consultez en ligne les pré-requis et la configuration du serveur web" approved="yes">
         <source>Consultez en ligne les pré-requis et la configuration du serveur web</source>
@@ -2458,6 +2458,7 @@
       <trans-unit id="ec52b98c45f63139a4bee23fa7d177838f2b3628" resname="Des difficultes ont ete rencontres a la connection au serveur distant" approved="yes">
         <source>Des difficultes ont ete rencontres a la connection au serveur distant</source>
         <target state="translated">Er zijn moeilijkheden ontstaan met de connectie naar de server</target>
+        <jms:reference-file line="451">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="377">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="55f8ebc805e65b5b71ddafdae390e3be2bcd69af" resname="Description" approved="yes">
@@ -2614,10 +2615,10 @@
       <trans-unit id="1096d02ee2e62ae8ea5873c92b391094d9f9516e" resname="Documents indisponibles" approved="yes">
         <source>Documents indisponibles</source>
         <target state="translated">Documenten niet beschikbaar</target>
-        <jms:reference-file line="130">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="216">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="283">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="451">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="124">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="210">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="277">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="445">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ccb09436937c261f270db2155dd4595686483ad4" resname="Don't worry, You can modify your configuration later" approved="yes">
         <source>Don't worry, You can modify your configuration later</source>
@@ -3104,7 +3105,7 @@
       <trans-unit id="bc734127246d99b3d51ab7055ef7e3d9bfeda582" resname="Error while connecting to FTP">
         <source>Error while connecting to FTP</source>
         <target state="new">Error while connecting to FTP</target>
-        <jms:reference-file line="72">Controller/Prod/ExportController.php</jms:reference-file>
+        <jms:reference-file line="74">Controller/Prod/ExportController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3bce15460cac7169ea217ebc3f887d839e28e3a8" resname="Error while creating user" approved="yes">
         <source>Error while creating user</source>
@@ -3191,7 +3192,7 @@
       <trans-unit id="7b5aee5f7481692dc91d979390b3f446641f553a" resname="Export saved in the waiting queue" approved="yes">
         <source>Export saved in the waiting queue</source>
         <target state="translated">Export werd in de wachtrij geplaatst</target>
-        <jms:reference-file line="137">Controller/Prod/ExportController.php</jms:reference-file>
+        <jms:reference-file line="142">Controller/Prod/ExportController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6d2830b1e76dc7300fce6745176601827d233de8" resname="FR">
         <source>FR</source>
@@ -3585,7 +3586,7 @@
       <trans-unit id="7c21967265bf9049878f80f29c6ae9e7d74da4af" resname="Guest, you must be authenticated to have the right to download.">
         <source>Guest, you must be authenticated to have the right to download.</source>
         <target state="new">Guest, you must be authenticated to have the right to download.</target>
-        <jms:reference-file line="88">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="82">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="771d30c668093219776b418dc5d3475682457167" resname="Gui-editable">
         <source>Gui-editable</source>
@@ -3743,9 +3744,9 @@
       <trans-unit id="37ba6b0018a45c0890440d9e1cae63e046bad31d" resname="Include Business-fields in caption" approved="yes">
         <source>Include Business-fields in caption</source>
         <target state="translated">Business-fields opnemen in caption</target>
-        <jms:reference-file line="150">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="237">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="472">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="144">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="231">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="466">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e60e6d0321b0dc4e2a47c163bdb8402df3deb18f" resname="Incorrect please try again" approved="yes">
         <source>Incorrect please try again</source>
@@ -3921,14 +3922,15 @@
       <trans-unit id="6f16ba73379400f5465d624690a333f732ba02a5" resname="La connection vers le serveur distant est OK" approved="yes">
         <source>La connection vers le serveur distant est OK</source>
         <target state="translated">Connectie met de server is OK</target>
+        <jms:reference-file line="453">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="379">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8800d5df3b53bfc0802922b08f11199af469392" resname="La sous resolution n'est pas disponible pour les documents suivants" approved="yes">
         <source>La sous resolution n'est pas disponible pour les documents suivants</source>
         <target state="translated">De onder resolutie is niet beschikbaar voor de volgende documenten</target>
-        <jms:reference-file line="223">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="287">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="458">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="217">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="281">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="452">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfa0120ab592ae2bc3198dbde15a7a87a0c792c4" resname="La taille maximale d'une video est de %duration% minutes.">
         <source>La taille maximale d'une video est de %duration% minutes.</source>
@@ -4066,8 +4068,8 @@
       <trans-unit id="da0a53433d64afd7e51eb62c5af6a290cd3d542a" resname="Les documents ne peuvent pas etre exportes" approved="yes">
         <source>Les documents ne peuvent pas etre exportes</source>
         <target state="translated">De documenten kunnen niet worden geëxporteerd</target>
-        <jms:reference-file line="95">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="137">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="89">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="131">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e330465da3182b7f6ed1b78217993edb4e22aacb" resname="Les elements ne peuvent etre uploades (problemes de type ou de droit)" approved="yes">
         <source>Les elements ne peuvent etre uploades (problemes de type ou de droit)</source>
@@ -4657,7 +4659,7 @@
       <trans-unit id="978c0865f6eafe1285d685b7b3b85ef5855c1996" resname="Nom des fichiers a l'export" approved="yes">
         <source>Nom des fichiers a l'export</source>
         <target state="translated">Naam van het bestand bij de export</target>
-        <jms:reference-file line="67">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="61">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c2788209a60bf1ad55eb769fe0532798f2755db" resname="Nom du nouveau modele" approved="yes">
         <source>Nom du nouveau modele</source>
@@ -5546,7 +5548,7 @@
       <trans-unit id="75670270ebfa505b89e4942c9ed9f816d23227e8" resname="Recevoir un accuse de reception a %my_email%" approved="yes">
         <source>Recevoir un accuse de reception a %my_email%</source>
         <target state="translated">Ontvangen van een bevestigingsmail van ontvangst  van %my_email%</target>
-        <jms:reference-file line="191">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="185">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f5e93456bc3a36a53bbcc31ea9dc7dc18b084a3d" resname="Rechercher dans un champ date" approved="yes">
         <source>Rechercher dans un champ date</source>
@@ -5926,6 +5928,7 @@
         <jms:reference-file line="108">actions/Feedback/list.html.twig</jms:reference-file>
         <jms:reference-file line="3">admin/search-engine/general-aggregation.html.twig</jms:reference-file>
         <jms:reference-file line="3">admin/search-engine/elastic-search.html.twig</jms:reference-file>
+        <jms:reference-file line="22">admin/worker-manager/worker_ftp.html.twig</jms:reference-file>
         <jms:reference-file line="75">task-manager/task-editor/task.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="960c9d85e9849fa58deb038c6c9bcf36ec973c99" resname="Save all changes" approved="yes">
@@ -6244,11 +6247,6 @@
         <target state="translated">Sommige zijn verplicht, zoals indexer, Exiftool of ImageMagick componenten, anderen zijn optioneel, zoals FFmpeg die gebruikt wordt voor de voorvertoning van video's</target>
         <jms:reference-file line="411">web/setup/step2.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8d886c0ba6f2b683daba5f19568a316226ce3e4c" resname="Something went wrong" approved="yes">
-        <source>Something went wrong</source>
-        <target state="translated">Er is iets fout gegaan</target>
-        <jms:reference-file line="142">Controller/Prod/ExportController.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="c8e7b3a1b3b333acf93d804ea012e721de6a8683" resname="Something went wrong, please contact an administrator" approved="yes">
         <source>Something went wrong, please contact an administrator</source>
         <target state="translated">Er is iets misgegaan, gelieve de beheerder te contacteren</target>
@@ -6437,7 +6435,7 @@
       <trans-unit id="42a8f651d79fd005eeac0612df6442b983a01184" resname="Success" approved="yes">
         <source>Success</source>
         <target state="translated">Gelukt</target>
-        <jms:reference-file line="513">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="507">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="9">api/auth/native_app_access_token.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5f7dcc16f00b622a8fb8bf4abf16dad52640a5fc" resname="Successful install" approved="yes">
@@ -6599,7 +6597,7 @@
         <source>Terms of Use</source>
         <target state="translated">Gebruiksvoorwaarden</target>
         <jms:reference-file line="62">Form/Login/PhraseaRegisterForm.php</jms:reference-file>
-        <jms:reference-file line="507">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="501">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6a1d25b018c9318540556e3fe374fdf8b23aff8" resname="Terms of service" approved="yes">
         <source>Terms of service</source>
@@ -6938,11 +6936,13 @@
       <trans-unit id="ad22588b357de16914f78be458f2cf55b1a18137" resname="Transfert Annule" approved="yes">
         <source>Transfert Annule</source>
         <target state="translated">Transfert Gestopt</target>
+        <jms:reference-file line="445">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="371">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cdbda343d33d6b398cdcb28b94d97fd7f92377e3" resname="Transfert OK">
         <source>Transfert OK</source>
         <target>Transfert OK</target>
+        <jms:reference-file line="436">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="362">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9764c016bb5a296069109116fa95c49815dcba82" resname="Transmited files" approved="yes">
@@ -7000,12 +7000,12 @@
       <trans-unit id="268f900effee1beb15231a1504d02543e8827bb3" resname="Un document commande" approved="yes">
         <source>Un document commande</source>
         <target state="translated">Een document bestelling</target>
-        <jms:reference-file line="269">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="263">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="678cb886ed3e8e4fc5c2cf7e4bfa6353de8d7a81" resname="Un document ne peut etre commande" approved="yes">
         <source>Un document ne peut etre commande</source>
         <target state="translated">Eén document kan niet worden besteld</target>
-        <jms:reference-file line="276">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="270">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d32751443628a0d2c5b31b441c1e2b3001f35dfd" resname="Unable to add file to Phraseanet" approved="yes">
         <source>Unable to add file to Phraseanet</source>
@@ -7092,7 +7092,7 @@
       <trans-unit id="ea7bea1b32b926feb2acad0146a1157d284c0b7c" resname="Unauthorized action">
         <source>Unauthorized action</source>
         <target state="new">Unauthorized action</target>
-        <jms:reference-file line="87">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="81">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a9eabd761d61c0b7e2cf45390ac2c43ced410767" resname="Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?" approved="yes">
         <source>Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?</source>
@@ -7498,7 +7498,7 @@
       <trans-unit id="d30e482b31f235fe321d5b4ef3a7d729334a96b6" resname="Vous devez selectionner un type de sous definitions" approved="yes">
         <source>Vous devez selectionner un type de sous definitions</source>
         <target state="translated">U moet een type thumbnail selecteren</target>
-        <jms:reference-file line="510">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="504">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd7d9b9fe8ae83d942ba82a7800b4e73266e5b42" resname="Vous devez specifier une adresse email et un mot de passe valides" approved="yes">
         <source>Vous devez specifier une adresse email et un mot de passe valides</source>
@@ -7592,7 +7592,7 @@
       <trans-unit id="338f05228fd3d0770eac9a4d37cc93dcc1cd7cdc" resname="Warning !" approved="yes">
         <source>Warning !</source>
         <target state="translated">Waarschuwing !</target>
-        <jms:reference-file line="514">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="508">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b0b39c7242ec17b1126ffe19d3e377337b26d6c9" resname="Warning, this database is not empty" approved="yes">
         <source>Warning, this database is not empty</source>
@@ -7763,7 +7763,7 @@
       <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready." approved="yes">
         <source>You can alternatively receive an email when the download is ready.</source>
         <target state="translated">Als alternatief kunt u een email ontvangen wanneer de download klaar is.</target>
-        <jms:reference-file line="512">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="506">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdfd850039f15d0459cfe507bcdea013d71a4142" resname="You can choose only one record" approved="yes">
         <source>You can choose only one record</source>
@@ -7778,7 +7778,7 @@
       <trans-unit id="3c97d9fc762c01bc93368b4cd94fb886338f5439" resname="You can not directly download more than %max_download% Mo ; time to package all documents is too long" approved="yes">
         <source>You can not directly download more than %max_download% Mo ; time to package all documents is too long</source>
         <target state="translated">U kan niet meer dan %max_download% Mb downloaded ; tijd om alle documenten compresseren is te lang</target>
-        <jms:reference-file line="511">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="505">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dff09f0ed93eb1657329f3588569d2c43b4e65ff" resname="You can not edit this story" approved="yes">
         <source>You can not edit this story</source>
@@ -7809,7 +7809,7 @@
       <trans-unit id="17df5cc60ecb9f0a8ddd50a8cdedadb343c0d333" resname="You do not have required rights to send these documents over FTP" approved="yes">
         <source>You do not have required rights to send these documents over FTP</source>
         <target state="translated">U hebt niet de nodige rechten om deze documenten te versturen over FTP</target>
-        <jms:reference-file line="109">Controller/Prod/ExportController.php</jms:reference-file>
+        <jms:reference-file line="111">Controller/Prod/ExportController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d22354b7fd4ef371f98345acd4cbcc4ab67a4f82" resname="You do not have rights to remove all selected documents. Are you sure ?" approved="yes">
         <source>You do not have rights to remove all selected documents. Are you sure ?</source>
@@ -7874,7 +7874,7 @@
       <trans-unit id="0b7f6182358b90d198c53a2f8361335d67d60067" resname="You must agree to the Terms of Use to continue." approved="yes">
         <source>You must agree to the Terms of Use to continue.</source>
         <target state="translated">U moet de gebruiksvoorwaarden aanvaarden.</target>
-        <jms:reference-file line="508">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="502">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="449d444c22a2efe79a2a38e8389e4a3072999a2f" resname="You must give a destination collection" approved="yes">
         <source>You must give a destination collection</source>
@@ -8512,7 +8512,7 @@
         <jms:reference-file line="69">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="304">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="87">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="369">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="363">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="460">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="225">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
@@ -8527,7 +8527,7 @@
         <jms:reference-file line="76">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="306">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="94">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="376">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="370">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="468">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc2f858e3323d3baa8be27661724b11ce9c0a57b" resname="admin::compte-utilisateur confirmer la nouvelle adresse email" approved="yes">
@@ -8551,7 +8551,7 @@
         <jms:reference-file line="111">Event/Subscriber/RegistrationSubscriber.php</jms:reference-file>
         <jms:reference-file line="301">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="74">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="341">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="335">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="452">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="215">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="112">web/admin/users.html.twig</jms:reference-file>
@@ -8563,7 +8563,7 @@
         <jms:reference-file line="118">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="309">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="136">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="390">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="384">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="518">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d6e2b9ddcaf97ba5258571cb54935f1ff6b581a2" resname="admin::compte-utilisateur id utilisateur" approved="yes">
@@ -8600,7 +8600,7 @@
         <jms:reference-file line="109">Event/Subscriber/RegistrationSubscriber.php</jms:reference-file>
         <jms:reference-file line="299">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="60">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="327">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="321">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="444">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="213">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="13">web/admin/connected-users.html.twig</jms:reference-file>
@@ -8622,7 +8622,7 @@
         <jms:reference-file line="90">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="310">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="108">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="362">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="356">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="485">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="219">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
@@ -8633,7 +8633,7 @@
         <jms:reference-file line="110">Event/Subscriber/RegistrationSubscriber.php</jms:reference-file>
         <jms:reference-file line="300">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="67">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="334">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="328">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="436">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="213">admin/user/registrations.html.twig</jms:reference-file>
       </trans-unit>
@@ -8650,7 +8650,7 @@
         <jms:reference-file line="97">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="311">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="115">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="355">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="349">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="493">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="217">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="107">web/admin/users.html.twig</jms:reference-file>
@@ -8666,7 +8666,7 @@
         <target state="translated">Telefoon</target>
         <jms:reference-file line="308">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="129">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="348">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="342">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="510">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="223">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="19">web/admin/connected-users.html.twig</jms:reference-file>
@@ -8682,7 +8682,7 @@
         <jms:reference-file line="83">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="305">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="101">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="383">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="377">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="476">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f752312fcd370b6547b296ca173da51487a2c5d" resname="admin::compte-utilisateur: L'email a correctement ete mis a jour" approved="yes">
@@ -8734,7 +8734,7 @@
         <source>admin::compte-utilisateur:ftp:  repertoire de destination ftp</source>
         <target state="translated">Bestemmings ftp-map</target>
         <jms:reference-file line="202">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="43">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="37">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d6084018a101b645f6a3a136be17cb1b8c2a499c" resname="admin::compte-utilisateur:ftp: Activer le compte FTP" approved="yes">
         <source>admin::compte-utilisateur:ftp: Activer le compte FTP</source>
@@ -8750,7 +8750,6 @@
         <source>admin::compte-utilisateur:ftp: Nombre d'essais max</source>
         <target state="translated">Aantal max probeersels</target>
         <jms:reference-file line="225">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="37">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7353ab4d025765f9e75cf84168059ea043b71166" resname="admin::compte-utilisateur:ftp: Utiliser le mode passif" approved="yes">
         <source>admin::compte-utilisateur:ftp: Utiliser le mode passif</source>
@@ -8761,12 +8760,12 @@
       <trans-unit id="58538c361989dbed251ba82a942de32f4a23b003" resname="admin::compte-utilisateur:ftp: creer un dossier" approved="yes">
         <source>admin::compte-utilisateur:ftp: creer un dossier</source>
         <target state="translated">Maak een map</target>
-        <jms:reference-file line="49">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="43">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecb2f8622b82381a2644ebc58188783f0775d83a" resname="admin::compte-utilisateur:ftp: ecrire un fichier de log" approved="yes">
         <source>admin::compte-utilisateur:ftp: ecrire un fichier de log</source>
         <target state="translated">Een logbestand maken</target>
-        <jms:reference-file line="56">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="50">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7af264166b8ed25e435e792209fbc0882d669c84" resname="admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp" approved="yes">
         <source>admin::compte-utilisateur:ftp: prefixe des noms de dossier ftp</source>
@@ -8778,7 +8777,7 @@
         <target state="translated">Mevrouw</target>
         <jms:reference-file line="50">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="50">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="320">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="314">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="429">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7af00728508b30971b5cd3eb769433546ad9abfa" resname="admin::compte-utilisateur:sexe: mademoiselle" approved="yes">
@@ -8786,7 +8785,7 @@
         <target state="translated">Jufrouw</target>
         <jms:reference-file line="49">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="47">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="319">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="313">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="428">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="db663dadd7bd9b045a68cafcfe2ca4e0c832e50a" resname="admin::compte-utilisateur:sexe: monsieur" approved="yes">
@@ -8794,7 +8793,7 @@
         <target state="translated">De heer</target>
         <jms:reference-file line="51">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="53">web/account/account.html.twig</jms:reference-file>
-        <jms:reference-file line="321">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="315">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="430">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfc904c9a87afe2d3986041a6bdb542298607880" resname="admin::monitor: bases sur lesquelles l'utilisateur est connecte :" approved="yes">
@@ -9124,12 +9123,42 @@
       <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error">
         <source>admin::workermanager: Rabbit config error</source>
         <target state="new">admin::workermanager: Rabbit config error</target>
-        <jms:reference-file line="95">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="101">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title">
         <source>admin::workermanager:tab:configuration: title</source>
         <target state="new">admin::workermanager:tab:configuration: title</target>
         <jms:reference-file line="10">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b86a82cd52e1ca2780268cc4bb55a4717bc803d5" resname="admin::workermanager:tab:ftp: Proxy">
+        <source>admin::workermanager:tab:ftp: Proxy</source>
+        <target state="new">admin::workermanager:tab:ftp: Proxy</target>
+        <jms:reference-file line="16">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ff5b2560444ada591d1a50002dd643478c417eb3" resname="admin::workermanager:tab:ftp: Proxy password">
+        <source>admin::workermanager:tab:ftp: Proxy password</source>
+        <target state="new">admin::workermanager:tab:ftp: Proxy password</target>
+        <jms:reference-file line="28">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="eaa6bd4a71b0c08571e8cfc22777ca4a1675759f" resname="admin::workermanager:tab:ftp: Proxy port">
+        <source>admin::workermanager:tab:ftp: Proxy port</source>
+        <target state="new">admin::workermanager:tab:ftp: Proxy port</target>
+        <jms:reference-file line="20">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4e356839c679500e767416a96bbf1c83d39c5ae1" resname="admin::workermanager:tab:ftp: Proxy user">
+        <source>admin::workermanager:tab:ftp: Proxy user</source>
+        <target state="new">admin::workermanager:tab:ftp: Proxy user</target>
+        <jms:reference-file line="24">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8888d55f2a4b362322b1ef934c5af4efa9426522" resname="admin::workermanager:tab:ftp: description">
+        <source>admin::workermanager:tab:ftp: description</source>
+        <target state="new">admin::workermanager:tab:ftp: description</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_ftp.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="22c768fe5661a25f4f91e89f3b85e2df917fa1b8" resname="admin::workermanager:tab:ftp: title">
+        <source>admin::workermanager:tab:ftp: title</source>
+        <target state="new">admin::workermanager:tab:ftp: title</target>
+        <jms:reference-file line="30">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6e7083ac98423878bd52a1bc01b84904f13fb01" resname="admin::workermanager:tab:metadata: description">
         <source>admin::workermanager:tab:metadata: description</source>
@@ -9139,7 +9168,7 @@
       <trans-unit id="335aaf2331865078d562586873c3c864cb70e023" resname="admin::workermanager:tab:metadata: title">
         <source>admin::workermanager:tab:metadata: title</source>
         <target state="new">admin::workermanager:tab:metadata: title</target>
-        <jms:reference-file line="35">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="40">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3dd0c965b1c04116efbd7a5eb85615b35c20a09" resname="admin::workermanager:tab:pullassets: Client ID">
         <source>admin::workermanager:tab:pullassets: Client ID</source>
@@ -9209,7 +9238,7 @@
       <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title">
         <source>admin::workermanager:tab:queueMonitor: title</source>
         <target state="new">admin::workermanager:tab:queueMonitor: title</target>
-        <jms:reference-file line="40">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="45">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate">
         <source>admin::workermanager:tab:searchengine: Databox to populate</source>
@@ -9259,12 +9288,12 @@
       <trans-unit id="0eea783321bf62b3fcfa883de895edb22f19368a" resname="admin::workermanager:tab:subview: title">
         <source>admin::workermanager:tab:subview: title</source>
         <target state="new">admin::workermanager:tab:subview: title</target>
-        <jms:reference-file line="30">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="35">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="777439dc521881595ca9123ff7cb56db26c2a1b8" resname="admin::workermanager:tab:workerconfig: Config Worker queue delayed">
         <source>admin::workermanager:tab:workerconfig: Config Worker queue delayed</source>
         <target state="new">admin::workermanager:tab:workerconfig: Config Worker queue delayed</target>
-        <jms:reference-file line="37">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+        <jms:reference-file line="41">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="35e859a404c0f84b72fc273c41659ae86d6fcf91" resname="admin::workermanager:tab:workerconfig: Create record retry delay in ms">
         <source>admin::workermanager:tab:workerconfig: Create record retry delay in ms</source>
@@ -9275,6 +9304,11 @@
         <source>admin::workermanager:tab:workerconfig: Export mail retry delay in ms</source>
         <target state="new">admin::workermanager:tab:workerconfig: Export mail retry delay in ms</target>
         <jms:reference-file line="32">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="5bca71e20f1344ceb5dfd4be62d80e9eff2bca51" resname="admin::workermanager:tab:workerconfig: Ftp retry delay in ms (default 3 min)">
+        <source>admin::workermanager:tab:workerconfig: Ftp retry delay in ms (default 3 min)</source>
+        <target state="new">admin::workermanager:tab:workerconfig: Ftp retry delay in ms (default 3 min)</target>
+        <jms:reference-file line="38">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="03326b4399bdce5ed1e809c3845317e18b84f2e1" resname="admin::workermanager:tab:workerconfig: Ingest retry delay in ms">
         <source>admin::workermanager:tab:workerconfig: Ingest retry delay in ms</source>
@@ -9299,7 +9333,7 @@
       <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms">
         <source>admin::workermanager:tab:workerconfig: Subdef delay in ms</source>
         <target state="new">admin::workermanager:tab:workerconfig: Subdef delay in ms</target>
-        <jms:reference-file line="38">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
+        <jms:reference-file line="41">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f244e6e83373721615f3c7d2f43415ff6280596" resname="admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms">
         <source>admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms</source>
@@ -9314,12 +9348,12 @@
       <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms">
         <source>admin::workermanager:tab:workerconfig: Write meta delay in ms</source>
         <target state="new">admin::workermanager:tab:workerconfig: Write meta delay in ms</target>
-        <jms:reference-file line="41">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
+        <jms:reference-file line="44">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="af7b7ed1fa5c279ad2ccdf6cd06a4c15a07c63a8" resname="admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond">
         <source>admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond</source>
         <target state="new">admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond</target>
-        <jms:reference-file line="38">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+        <jms:reference-file line="42">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title">
         <source>admin::workermanager:tab:workerconfig: title</source>
@@ -9334,7 +9368,7 @@
       <trans-unit id="1bd245ee491c4fa77d7ede38c6ea4c36e00cbde4" resname="admin::workermanager:tab:workerconfig:Apply in queue">
         <source>admin::workermanager:tab:workerconfig:Apply in queue</source>
         <target state="new">admin::workermanager:tab:workerconfig:Apply in queue</target>
-        <jms:reference-file line="50">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+        <jms:reference-file line="54">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work">
         <source>admin::workermanager:tab:workerinfo: Display error work</source>
@@ -9449,7 +9483,7 @@
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error">
         <source>admin:worker Retrieve configuration error</source>
         <target state="new">admin:worker Retrieve configuration error</target>
-        <jms:reference-file line="88">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="94">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert">
         <source>alert</source>
@@ -9559,10 +9593,10 @@
         <jms:reference-file line="41">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="49">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="49">web/account/reset-email.html.twig</jms:reference-file>
-        <jms:reference-file line="167">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="256">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="410">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="493">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="161">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="250">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="404">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="487">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="253">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="372">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="13">Bridge/Flickr/photo_modify.html.twig</jms:reference-file>
@@ -9611,7 +9645,7 @@
       <trans-unit id="17a9219fec93feeffdf8c320e3be79a9f0daf9b1" resname="boutton::commander" approved="yes">
         <source>boutton::commander</source>
         <target state="translated">Bestellen</target>
-        <jms:reference-file line="408">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="402">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="136a12280c8d3c058d4e4a49375393bf64772a08" resname="boutton::creer" approved="yes">
         <source>boutton::creer</source>
@@ -9639,13 +9673,13 @@
       <trans-unit id="14d298134c13049667a2953dc8d07db2c32868b6" resname="boutton::envoyer" approved="yes">
         <source>boutton::envoyer</source>
         <target state="translated">Verzenden</target>
-        <jms:reference-file line="254">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="491">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="248">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="485">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f46a99be2c4b5d15ea61f0eb8750c2d1f7ff8ea7" resname="boutton::essayer" approved="yes">
         <source>boutton::essayer</source>
         <target state="translated">Proberen</target>
-        <jms:reference-file line="489">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="483">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="100e3f667e32fbc2a6f79eda40d2ef8bdf7186aa" resname="boutton::exporter" approved="yes">
         <source>boutton::exporter</source>
@@ -9656,7 +9690,7 @@
         <source>boutton::fermer</source>
         <target state="translated">Sluiten</target>
         <jms:reference-file line="58">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="96">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="90">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="391">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="396">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="11">prod/actions/Push.html.twig</jms:reference-file>
@@ -9807,7 +9841,7 @@
       <trans-unit id="68b702f13ff62025c57948bf5c4a5b47af10dee9" resname="boutton::telecharger" approved="yes">
         <source>boutton::telecharger</source>
         <target state="translated">Downloaden</target>
-        <jms:reference-file line="166">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="160">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="21">web/lightbox/sc_options_box.html.twig</jms:reference-file>
         <jms:reference-file line="21">web/lightbox/feed_options_box.html.twig</jms:reference-file>
       </trans-unit>
@@ -9995,12 +10029,12 @@
       <trans-unit id="2fddc09141619140a386d62d12fc79a784dee067" resname="commande::deadline" approved="yes">
         <source>commande::deadline</source>
         <target state="translated">Deadline</target>
-        <jms:reference-file line="309">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="303">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d2db28b9a58115d0ea4853d76d55b64349100c69" resname="commande::utilisation prevue" approved="yes">
         <source>commande::utilisation prevue</source>
         <target state="translated">Utilisation gepland</target>
-        <jms:reference-file line="302">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="296">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="101">prod/orders/order_item.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a70a59b9120185471e5b45630f8ba24d5516f590" resname="copyClipboardLabel">
@@ -10182,19 +10216,19 @@
       <trans-unit id="200248c0399e3e35796c7190defa825d2039dc8e" resname="export:: FTP" approved="yes">
         <source>export:: FTP</source>
         <target state="translated">FTP</target>
-        <jms:reference-file line="110">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="418">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="104">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="412">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="06d528a625d247cc215fc56f858c21b813799856" resname="export:: commande" approved="yes">
         <source>export:: commande</source>
         <target state="translated">Opdracht</target>
-        <jms:reference-file line="107">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="101">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d84ee35dd66b8c72fc2aa12949f5795e945c0e7" resname="export:: envoi par mail" approved="yes">
         <source>export:: envoi par mail</source>
         <target state="translated">Verstuur per mail</target>
-        <jms:reference-file line="104">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="174">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="98">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="168">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d67a3a7adb767f230b62fd72ec7f3d8624ca8e33" resname="export:: erreur : aucun document selectionne" approved="yes">
         <source>export:: erreur : aucun document selectionne</source>
@@ -10204,13 +10238,13 @@
       <trans-unit id="87ebe3542857dc472902c8fa173b6147a8ed6f86" resname="export:: telechargement" approved="yes">
         <source>export:: telechargement</source>
         <target state="translated">Download</target>
-        <jms:reference-file line="103">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="116">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="97">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="110">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fcf5093722566a47fe3e773296cc63fac7190dac" resname="export::export-email: email-invalid">
         <source>export::export-email: email-invalid</source>
         <target state="new">export::export-email: email-invalid</target>
-        <jms:reference-file line="515">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="509">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40a92233bac9303de825031d1954e6b109088b38" resname="export::ftp: reglages manuels" approved="yes">
         <source>export::ftp: reglages manuels</source>
@@ -10220,38 +10254,38 @@
       <trans-unit id="076c427ffe1fe647c7c158681b1bbd17cb5e2ad3" resname="export::mail: contenu du mail" approved="yes">
         <source>export::mail: contenu du mail</source>
         <target state="translated">Inhoud van de mail</target>
-        <jms:reference-file line="203">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="197">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0b327a027e077a200e8523dd6be0c9610b1574ef" resname="export::mail: destinataire" approved="yes">
         <source>export::mail: destinataire</source>
         <target state="translated">Bestemmeling</target>
-        <jms:reference-file line="183">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="177">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3141f1008c89d0214d8945bf34fb9fed6cfbcf27" resname="export::mail: fichiers joint" approved="yes">
         <source>export::mail: fichiers joint</source>
         <target state="translated">Toegevoegde bestanden</target>
-        <jms:reference-file line="207">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="442">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="201">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="436">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e50cb3bbf96d091f73a62e69dd2c05a571e7f45d" resname="export::titre: nom original du document" approved="yes">
         <source>export::titre: nom original du document</source>
         <target state="translated">Originele naam van het document</target>
-        <jms:reference-file line="75">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="69">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2bb616f9c2c251b11f6e4d12fc5444092b7c80ab" resname="export::titre: titre du documument" approved="yes">
         <source>export::titre: titre du documument</source>
         <target state="translated">Titel van het document</target>
-        <jms:reference-file line="71">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="65">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3db4f8b4e83ee1642d47ccd75285c0043aec9b85" resname="export:email:: acknowledgement info">
         <source>export:email:: acknowledgement info</source>
         <target state="new">export:email:: acknowledgement info</target>
-        <jms:reference-file line="199">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="193">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5d5182a8958d58aae79be9b9e860b597e42f473a" resname="export:email:info:: email addresses separated by commas">
         <source>export:email:info:: email addresses separated by commas</source>
         <target state="new">export:email:info:: email addresses separated by commas</target>
-        <jms:reference-file line="179">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="173">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
         <source>failed to send mail</source>
@@ -11241,7 +11275,7 @@
       <trans-unit id="d740b723ca8d6ad82bc08312d22d97abeff7a74d" resname="phraseanet:: prereglages" approved="yes">
         <source>phraseanet:: prereglages</source>
         <target state="translated">Voorinstellingen</target>
-        <jms:reference-file line="421">web/common/dialog_export.html.twig</jms:reference-file>
+        <jms:reference-file line="415">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="02e53272b6740f58947e81b6fd23e62e2ca5c301" resname="phraseanet:: presse-papier" approved="yes">
         <source>phraseanet:: presse-papier</source>
@@ -13296,16 +13330,19 @@
       <trans-unit id="b209118220972d780ce7d6c1ba4777be551244d4" resname="task::ftp:Certains documents n'ont pas pu etre tranferes" approved="yes">
         <source>task::ftp:Certains documents n'ont pas pu etre tranferes</source>
         <target state="translated">Sommige documenten zijn niet overgezet</target>
+        <jms:reference-file line="446">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="372">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0727fa8b2d7c54ef13bd42f18f9246af2f3dcb2a" resname="task::ftp:Details des fichiers" approved="yes">
         <source>task::ftp:Details des fichiers</source>
         <target state="translated">Details van het document</target>
+        <jms:reference-file line="464">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="390">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c28528f993cb07c3716f88b03f1235750bfc6055" resname="task::ftp:Etat d'envoi FTP vers le serveur &quot;%server%&quot; avec le compte &quot;%username%&quot; et pour destination le dossier : &quot;%directory%&quot;">
         <source>task::ftp:Etat d'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"</source>
         <target state="new">task::ftp:Etat d'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"</target>
+        <jms:reference-file line="132">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="111">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c9c22d9454175a7d9635068f39d78d100642f6ad" resname="task::ftp:FTP Pull" approved="yes">
@@ -13316,11 +13353,14 @@
       <trans-unit id="45e13d4a98d29746203b8174e32db990b6860b06" resname="task::ftp:File &quot;%file%&quot; (record %record_id%) de la base &quot;%basename%&quot; (Export du Document) : Transfert cancelled (le document n'existe plus)">
         <source>task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n'existe plus)</source>
         <target state="new">task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n'existe plus)</target>
+        <jms:reference-file line="277">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="256">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="80a29136ce99f9c32aba5f2118e942909b9c2014" resname="task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%">
         <source>task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</source>
         <target state="new">task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</target>
+        <jms:reference-file line="430">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="439">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="356">TaskManager/Job/FtpJob.php</jms:reference-file>
         <jms:reference-file line="365">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
@@ -13333,11 +13373,13 @@
       <trans-unit id="3442bca4992e5cd06a67f05beebf5721383d1653" resname="task::ftp:TENTATIVE no %number%, %date%">
         <source>task::ftp:TENTATIVE no %number%, %date%</source>
         <target state="new">task::ftp:TENTATIVE no %number%, %date%</target>
+        <jms:reference-file line="141">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="120">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0c408a4355fd00097aba861dd9bb650acdff3d96" resname="task::ftp:Tous les documents ont ete transferes avec succes" approved="yes">
         <source>task::ftp:Tous les documents ont ete transferes avec succes</source>
         <target state="translated">Alle documenten zijn met succes overgezet</target>
+        <jms:reference-file line="425">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="351">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f0dea9613c9721ad0a2afadccba858183856338b" resname="task::ftp:chemin distant">

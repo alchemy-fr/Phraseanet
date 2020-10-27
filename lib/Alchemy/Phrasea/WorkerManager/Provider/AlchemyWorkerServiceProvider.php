@@ -11,6 +11,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\DeleteRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExportMailWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Factory\CallableWorkerFactory;
+use Alchemy\Phrasea\WorkerManager\Worker\FtpWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\MainQueueWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\PopulateIndexWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
@@ -139,6 +140,10 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::MAIN_QUEUE_TYPE, new CallableWorkerFactory(function () use ($app) {
             return new MainQueueWorker($app['alchemy_worker.message.publisher'], $app['repo.worker-job']);
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::FTP_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new FtpWorker($app);
         }));
     }
 

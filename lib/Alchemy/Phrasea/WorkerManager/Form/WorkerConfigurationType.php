@@ -34,6 +34,9 @@ class WorkerConfigurationType extends AbstractType
             ->add(MessagePublisher::POPULATE_INDEX_TYPE, 'text', [
                 'label' => 'admin::workermanager:tab:workerconfig: Populate Index retry delay in ms'
             ])
+            ->add(MessagePublisher::FTP_TYPE, 'text', [
+                'label' => 'admin::workermanager:tab:workerconfig: Ftp retry delay in ms (default 3 min)'
+            ])
             ->add('delayedSubdef', 'text', [
                 'label' => 'admin::workermanager:tab:workerconfig: Subdef delay in ms'
             ])
