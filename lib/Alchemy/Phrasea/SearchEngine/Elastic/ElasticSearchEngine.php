@@ -378,6 +378,10 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $results = [];
         foreach ($res['hits']['hits'] as $hit) {
+            // remove "path" from subdefs
+            foreach($hit['_source']['subdefs'] as $name=>$subdef) {
+                unset($hit['_source']['subdefs'][$name]['path']);
+            }
             $results[] = $hit;
         }
 
