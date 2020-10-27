@@ -46,6 +46,10 @@ SQL;
         $record = null;
         $pls = [];
         while ($subdef = $statement->fetch()) {
+            /*
+             * for now disable permalink fetch, since if permalink does not exists, it will
+             * be created and it's very sloooow (btw: why ?)
+             *
             // too bad : to get permalinks we must instantiate a recordadapter
             // btw : why the unique permalink is not stored in subdef table ???
             if($subdef['record_id'] !== $current_rid) {
@@ -65,12 +69,17 @@ SQL;
                     // cant get record ? ignore
                 }
             }
+            */
             $name = $subdef['name'];
             $records[$subdef['record_id']]['subdefs'][$name] = array(
                 'path' => $subdef['path'],
                 'width' => $subdef['width'],
                 'height' => $subdef['height'],
+                /*
+                 * no permalinks for now
+                 *
                 'permalink' => array_key_exists($name, $pls) ? $pls[$name] : null
+                 */
             );
         }
     }

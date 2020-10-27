@@ -26,6 +26,7 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
@@ -331,17 +332,25 @@ class ElasticSearchEngine implements SearchEngineInterface
         );
     }
 
-    public function queryraw($queryText, SearchEngineOptions $options = null)
+    public function queryraw($queryText, SearchEngineOptions $options)
     {
-        $options = $options ?: new SearchEngineOptions();
+        $stopwatch = new Stopwatch("es");
+
         $context = $this->context_factory->createContext($options);
 
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
         $queryAST      = $query_compiler->parse($queryText)->dump();
+
+        $stopwatch->lap("query parse");
+
         $queryCompiled = $query_compiler->compile($queryText, $context);
 
+        $stopwatch->lap("query compile");
+
         $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
+
+        $stopwatch->lap("createRecordQueryParams");
 
         // ask ES to return field _version (incremental version number of document)
         $queryESLib['body']['version'] = true;
@@ -352,12 +361,18 @@ class ElasticSearchEngine implements SearchEngineInterface
             $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
         }
 
+        $stopwatch->lap("buildHighlightRules");
+
         $aggs = $this->getAggregationQueryParams($options);
         if ($aggs) {
             $queryESLib['body']['aggs'] = $aggs;
         }
 
+        $stopwatch->lap("getAggregationQueryParams");
+
         $res = $this->client->search($queryESLib);
+
+        $stopwatch->lap("es client search");
 
         // return $res;
 
@@ -366,15 +381,22 @@ class ElasticSearchEngine implements SearchEngineInterface
             $results[] = $hit;
         }
 
+        $stopwatch->lap("copy hits to results");
+
         /** @var FacetsResponse $facets */
-        $facets = $this->facetsResponseFactory->__invoke($res);
+        $facets = $this->facetsResponseFactory->__invoke($res)->toArray();
+
+        $stopwatch->lap("build facets");
+
+        $stopwatch->stop();
 
         return [
+            '__stopwatch__' => $stopwatch,
             'results' => $results,
             'took' => $res['took'],   // duration
             'count' => count($res['hits']['hits']),  // available
             'total' => $res['hits']['total'],  // total
-            'facets' => $facets->toArray()
+            'facets' => $facets
         ];
     }
 
