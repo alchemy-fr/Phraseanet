@@ -36,13 +36,19 @@ class V3SearchRawController extends Controller
 
         $this->getSearchEngine()->resetCache();
 
-        $search_result = $this->getSearchEngine()->queryraw((string)$request->get('query'), $options);
+        $stopwatch->lap("resetCache");
+
+        $se= $this->getSearchEngine();
+
+        $stopwatch->lap("getSearchEngine");
+
+        $search_result = $se->queryraw((string)$request->get('query'), $options);
+
+        $stopwatch->lap("queryraw");
 
         // queryraw returns also a stopwatch, get and remove it
         $stopwatch_es = $search_result['__stopwatch__'];
         unset($search_result['__stopwatch__']);
-
-        $stopwatch->lap("queryraw");
 
         $this->getSearchEngine()->clearCache();
 
