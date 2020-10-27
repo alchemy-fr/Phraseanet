@@ -34,13 +34,13 @@ class V3SearchRawController extends Controller
 
         $stopwatch->lap("set options");
 
-        $this->getSearchEngine()->resetCache();
-
-        $stopwatch->lap("resetCache");
-
-        $se= $this->getSearchEngine();
+        $se = $this->getSearchEngine();
 
         $stopwatch->lap("getSearchEngine");
+
+        $se->resetCache();
+
+        $stopwatch->lap("resetCache");
 
         $search_result = $se->queryraw((string)$request->get('query'), $options);
 
