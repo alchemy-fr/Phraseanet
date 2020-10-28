@@ -82,7 +82,7 @@ class DataboxFetcherFactory
                 new MetadataHydrator($this->conf, $connection, $this->getStructure(), $this->recordHelper),
                 new FlagHydrator($this->getStructure(), $databox),
                 new ThesaurusHydrator($this->getStructure(), $this->getThesaurus(), $candidateTerms),
-                new SubDefinitionHydrator($connection)
+                new SubDefinitionHydrator($databox)
             ],
             $fetcherDelegate
         );
