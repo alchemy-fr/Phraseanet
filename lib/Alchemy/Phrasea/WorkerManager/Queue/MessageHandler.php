@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\WorkerManager\Queue;
 
 use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use Ramsey\Uuid\Uuid;
@@ -61,7 +62,7 @@ class MessageHandler
             }
 
             // if message is yet executed 3 times, save the unprocessed message in the corresponding failed queues
-            if ($count > self::MAX_OF_TRY  && $data['message_type'] !=  MessagePublisher::PULL_ASSETS_TYPE) {
+            if ($count > self::MAX_OF_TRY  && !in_array($data['message_type'], AMQPConnection::$defaultLoopTypes)) {
                 $this->messagePublisher->publishFailedMessage($data['payload'], $headers, AMQPConnection::$defaultFailedQueues[$data['message_type']]);
 
                 $logMessage = sprintf("Rabbit message executed 3 times, it's to be saved in %s , payload >>> %s",
@@ -75,8 +76,8 @@ class MessageHandler
                 try {
                     $workerInvoker->invokeWorker($data['message_type'], json_encode($data['payload']));
 
-                    if ($data['message_type'] ==  MessagePublisher::PULL_ASSETS_TYPE) {
-                        // make a loop for the pull assets
+                    if (in_array($data['message_type'], AMQPConnection::$defaultLoopTypes)) {
+                        // make a loop for the loop type
                         $channel->basic_nack($message->delivery_info['delivery_tag']);
                     } else {
                         $channel->basic_ack($message->delivery_info['delivery_tag']);
@@ -101,19 +102,26 @@ class MessageHandler
         foreach (AMQPConnection::$defaultQueues as $queueName) {
             if ($argQueueName ) {
                 if (in_array($queueName, $argQueueName)) {
-                    $serverConnection->setQueue($queueName);
-
-                    //  give prefetch message to a worker consumer at a time
-                    $channel->basic_qos(null, $prefetchCount, null);
-                    $channel->basic_consume($queueName, Uuid::uuid4(), false, false, false, false, $callback);
+                    $this->runConsumer($queueName, $serverConnection, $channel, $prefetchCount, $callback);
                 }
             } else {
-                $serverConnection->setQueue($queueName);
-
-                //  give prefetch message to a worker consumer at a time
-                $channel->basic_qos(null, $prefetchCount, null);
-                $channel->basic_consume($queueName, Uuid::uuid4(), false, false, false, false, $callback);
+                $this->runConsumer($queueName, $serverConnection, $channel, $prefetchCount, $callback);
             }
         }
+    }
+
+    private function runConsumer($queueName, AMQPConnection $serverConnection, AMQPChannel $channel, $prefetchCount, $callback)
+    {
+        // initialize validation reminder when starting consumer
+        if ($queueName == MessagePublisher::VALIDATION_REMINDER_QUEUE) {
+            $serverConnection->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_QUEUE]);
+            $this->messagePublisher->initializeLoopQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
+        }
+
+        $serverConnection->setQueue($queueName);
+
+        //  give prefetch message to a worker consumer at a time
+        $channel->basic_qos(null, $prefetchCount, null);
+        $channel->basic_consume($queueName, Uuid::uuid4(), false, false, false, false, $callback);
     }
 }

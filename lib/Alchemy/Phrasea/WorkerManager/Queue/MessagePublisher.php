@@ -18,6 +18,7 @@ class MessagePublisher
     const WEBHOOK_TYPE         = 'webhook';
     const POPULATE_INDEX_TYPE  = 'populateIndex';
     const PULL_ASSETS_TYPE     = 'pullAssets';
+    const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const SUBTITLE_TYPE        = 'subtitle';
     const MAIN_QUEUE_TYPE      = 'mainQueue';
 
@@ -35,6 +36,7 @@ class MessagePublisher
     const DELETE_RECORD_QUEUE  = 'deleterecord-queue';
     const POPULATE_INDEX_QUEUE = 'populateindex-queue';
     const PULL_QUEUE           = 'pull-queue';
+    const VALIDATION_REMINDER_QUEUE     = 'validationReminder-queue';
 
     // retry queue
     // we can use these retry queue with TTL, so when message expires it is requeued to the corresponding worker queue
@@ -45,8 +47,9 @@ class MessagePublisher
     const RETRY_ASSETS_INGEST_QUEUE  = 'retry-ingest-queue';
     const RETRY_CREATE_RECORD_QUEUE  = 'retry-createrecord-queue';
     const RETRY_POPULATE_INDEX_QUEUE = 'retry-populateindex-queue';
-    // use this queue to make a loop on a consumer
-    const LOOP_PULL_QUEUE            = 'loop-pull-queue';
+    // use those queue to make a loop on a consumer
+    const LOOP_PULL_QUEUE                   = 'loop-pull-queue';
+    const LOOP_VALIDATION_REMINDER_QUEUE    = 'loop-validationReminder-queue';
 
     // all failed queue, if message is treated over 3 times it goes to the failed queue
     const FAILED_EXPORT_QUEUE         = 'failed-export-queue';
@@ -116,16 +119,16 @@ class MessagePublisher
         return true;
     }
 
-    public function initializePullAssets()
+    public function initializeLoopQueue($type)
     {
         $payload = [
-            'message_type' => self::PULL_ASSETS_TYPE,
+            'message_type' => $type,
             'payload' => [
                 'initTimestamp' => new \DateTime('now', new \DateTimeZone('UTC'))
             ]
         ];
 
-        $this->publishMessage($payload, self::PULL_QUEUE);
+        $this->publishMessage($payload, AMQPConnection::$defaultQueues[$type]);
     }
 
     public function connectionClose()

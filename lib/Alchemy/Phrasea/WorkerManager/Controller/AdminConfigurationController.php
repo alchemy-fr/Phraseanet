@@ -210,6 +210,29 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
+    public function validationReminderAction(PhraseaApplication $app, Request $request)
+    {
+        $interval = $app['conf']->get(['workers', 'validationReminder', 'interval'], 10);
+
+        if ($request->getMethod() == 'POST') {
+            $reminderInterval = (int)$request->request->get('worker_reminder_interval');
+            // save the period interval in second
+            $app['conf']->set(['workers', 'validationReminder', 'interval'], $reminderInterval);
+
+            /** @var AMQPConnection $serverConnection */
+            $serverConnection = $this->app['alchemy_worker.amqp.connection'];
+            // reinitialize the validation reminder queues
+            $serverConnection->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_QUEUE]);
+            $this->app['alchemy_worker.message.publisher']->initializeLoopQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
+
+            return $app->redirectPath('worker_admin');
+        }
+
+        return $this->render('admin/worker-manager/worker_validation_reminder.html.twig', [
+            'interval' => $interval
+        ]);
+    }
+
     public function populateStatusAction(PhraseaApplication $app, Request $request)
     {
         $databoxIds = $request->get('sbasIds');
@@ -236,7 +259,7 @@ class AdminConfigurationController extends Controller
 
             // reinitialize the pull queues
             $serverConnection->reinitializeQueue([MessagePublisher::PULL_QUEUE]);
-            $this->app['alchemy_worker.message.publisher']->initializePullAssets();
+            $this->app['alchemy_worker.message.publisher']->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
 
             return $app->redirectPath('worker_admin');
         }
