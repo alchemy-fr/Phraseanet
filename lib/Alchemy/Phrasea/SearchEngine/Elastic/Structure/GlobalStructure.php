@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Assert\Assertion;
 use DomainException;
 
@@ -56,6 +57,7 @@ final class GlobalStructure implements Structure
         $fields = [];
         $flags = [];
 
+        $stopwatch = new Stopwatch("globalStructure");
         foreach ($databoxes as $databox) {
             if($what & self::STRUCTURE_WITH_FIELDS) {
                 foreach ($databox->get_meta_structure() as $fieldStructure) {
@@ -69,8 +71,12 @@ final class GlobalStructure implements Structure
                 }
             }
         }
+        $stopwatch->lap('loop0');
+        $r = new self($fields, $flags, MetadataHelper::createTags());
 
-        return new self($fields, $flags, MetadataHelper::createTags());
+        $stopwatch->log();
+
+        return $r;
     }
 
     /**

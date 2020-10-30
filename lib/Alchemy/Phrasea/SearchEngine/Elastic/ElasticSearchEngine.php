@@ -61,13 +61,13 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @param Application $app
-     * @param Structure $structure
+     * @param Structure|callable $structure
      * @param Client $client
      * @param QueryContextFactory $context_factory
-     * @param callable $facetsResponseFactory
+     * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
      */
-    public function __construct(Application $app, Structure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -77,7 +77,18 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->options = $options;
 
         $this->indexName = $options->getIndexName();
+    }
 
+    /**
+     * @return Structure
+     */
+    public function getStructure()
+    {
+        if (!($this->structure instanceof Structure)) {
+            $this->structure = call_user_func($this->structure);
+        }
+
+        return $this->structure;
     }
 
     public function getIndexName()
@@ -129,7 +140,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableDateFields()
     {
         // TODO Use limited structure
-        return array_keys($this->structure->getDateFields());
+        return array_keys($this->getStructure()->getDateFields());
     }
 
     /**
