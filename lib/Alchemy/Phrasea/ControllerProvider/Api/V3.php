@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Controller\Api\V1Controller;
 use Alchemy\Phrasea\Controller\Api\V3\V3RecordController;
 use Alchemy\Phrasea\Controller\Api\V3\V3ResultHelpers;
 use Alchemy\Phrasea\Controller\Api\V3\V3SearchController;
+use Alchemy\Phrasea\Controller\Api\V3\V3SearchRawController;
 use Alchemy\Phrasea\Controller\Api\V3\V3StoriesController;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
@@ -37,6 +38,9 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
         });
         $app['controller.api.v3.search'] = $app->share(function (PhraseaApplication $app) {
             return (new V3SearchController($app));
+        });
+        $app['controller.api.v3.searchraw'] = $app->share(function (PhraseaApplication $app) {
+            return (new V3SearchRawController($app));
         });
         $app['controller.api.v3.stories'] = $app->share(function (PhraseaApplication $app) {
             return (new V3StoriesController($app));
@@ -79,9 +83,19 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->value('must_be_story', true);
 
         /**
+         * @uses V3SearchController::helloAction()
+         */
+        $controllers->match('/hello/', 'controller.api.v3.searchraw:helloAction');
+
+        /**
          * @uses V3SearchController::searchAction()
          */
         $controllers->match('/search/', 'controller.api.v3.search:searchAction');
+
+        /**
+         * @uses V3SearchController::searchRawAction()
+         */
+        $controllers->match('/searchraw/', 'controller.api.v3.searchraw:searchRawAction');
 
         /**
          * @uses V3RecordController::indexAction_GET()

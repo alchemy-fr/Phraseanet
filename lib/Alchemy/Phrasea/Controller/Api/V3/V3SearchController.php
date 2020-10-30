@@ -9,10 +9,12 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
 use Alchemy\Phrasea\Databox\Record\LegacyRecordRepository;
+use Alchemy\Phrasea\Databox\Subdef\MediaSubdefService;
 use Alchemy\Phrasea\Fractal\CallbackTransformer;
 use Alchemy\Phrasea\Fractal\IncludeResolver;
 use Alchemy\Phrasea\Fractal\SearchResultTransformerResolver;
 use Alchemy\Phrasea\Fractal\TraceableArraySerializer;
+use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Record\RecordCollection;
@@ -44,6 +46,7 @@ use media_subdef;
 use record_adapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 
 class V3SearchController extends Controller
 {
@@ -59,6 +62,8 @@ class V3SearchController extends Controller
      */
     public function searchAction(Request $request)
     {
+        $stopwatch = new Stopwatch("controller");
+
         $subdefTransformer = new SubdefTransformer($this->app['acl'], $this->getAuthenticatedUser(), new PermalinkTransformer());
         $technicalDataTransformer = new TechnicalDataTransformer();
         $recordTransformer = new RecordTransformer($subdefTransformer, $technicalDataTransformer);
@@ -99,7 +104,11 @@ class V3SearchController extends Controller
         // and push everything back to fractal
         $fractal->parseIncludes($this->getIncludes($request));
 
+        $stopwatch->lap("boot");
+
         $result = $this->doSearch($request);
+
+        $stopwatch->lap("doSearch");
 
         $story_children_limit = null;
         // if searching stories
@@ -114,9 +123,13 @@ class V3SearchController extends Controller
             $story_children_limit
         );
 
+        $stopwatch->lap("buildSearchView");
+
         $ret = $fractal->createData(new Item($searchView, $searchTransformer))->toArray();
 
-        return Result::create($request, $ret)->createResponse();
+        $stopwatch->lap("fractal");
+
+        return Result::create($request, $ret)->createResponse([$stopwatch]);
     }
 
     /**
@@ -411,7 +424,9 @@ class V3SearchController extends Controller
      */
     private function buildSubdefsViews($references, array $names = null, $urlTTL)
     {
-        $subdefGroups = $this->app['service.media_subdef']
+        /** @var MediaSubdefService $MediaSubdefService */
+        $MediaSubdefService = $this->app['service.media_subdef'];
+        $subdefGroups = $MediaSubdefService
             ->findSubdefsByRecordReferenceFromCollection($references, $names);
 
         $fakeSubdefs = [];
@@ -432,8 +447,10 @@ class V3SearchController extends Controller
                 return !isset($fakeSubdefs[spl_object_hash($subdef)]);
             })
         );
-        $urls = $this->app['media_accessor.subdef_url_generator']
-            ->generateMany($this->getAuthenticatedUser(), $allSubdefs, $urlTTL);
+
+        /** @var MediaSubDefinitionUrlGenerator $urlGenerator */
+        $urlGenerator = $this->app['media_accessor.subdef_url_generator'];
+        $urls = $urlGenerator->generateMany($this->getAuthenticatedUser(), $allSubdefs, $urlTTL);
 
         $subdefViews = [];
 

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Api;
 
 use Alchemy\Phrasea\ControllerProvider\Api\V1;
 use Alchemy\Phrasea\ControllerProvider\Api\V3;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,17 +88,30 @@ class Result
     /**
      * Creates a Symfony Response
      *
+     * include lapses from stopwatch(es) as server-timing headers
+     *
+     * @param Stopwatch[] $stopwatches
      * @return Response
      */
-    public function createResponse()
+    public function createResponse($stopwatches=[])
     {
         $response = $this->format();
         $response->headers->set('content-type', $this->getContentType());
+        // add specific timing debug
+        foreach($stopwatches as $stopwatch) {
+            $response->headers->set('Server-Timing', $stopwatch->getLapsesAsServerTimingHeader(), false);
+        }
         $response->setStatusCode($this->getStatusCode());
         $response->setCharset('UTF-8');
 
+        // add general timing debug
+        $duration = (microtime(true) - $this->request->server->get('REQUEST_TIME_FLOAT')) * 1000.0;
+        $h = '_global;' . 'dur=' . $duration;
+        $response->headers->set('Server-Timing', $h, false);    // false : add header (don't replace)
+
         return $response;
     }
+
 
     /**
      * @param Request $request

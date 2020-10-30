@@ -87,7 +87,12 @@
         </td>
         <td>
             {% set duration = workerRow.finished.diff(workerRow.created) %}
-            {{ duration.format("%H:%I:%S") }}
+
+            {% if duration.days %}
+                {{ duration.format("%d days  %H:%I:%S") }}
+            {% else %}
+                {{ duration.format("%H:%I:%S") }}
+            {% endif %}
         </td>
         <td>{{ workerRow.status }}</td>
         <td>
