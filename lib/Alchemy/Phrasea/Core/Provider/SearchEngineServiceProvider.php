@@ -32,6 +32,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Elasticsearch\ClientBuilder;
 use Hoa\Compiler;
 use Hoa\File;
@@ -72,29 +73,42 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new SearchEngineLogger($app);
         });
 
+        $app['search_engine.structure.factory'] = $app->protect(function () use ($app) {
+            return $app['search_engine.structure'];
+        });
+
         $app['search_engine'] = $app->share(function ($app) {
-            $type = $app['conf']->get(['main', 'search-engine', 'type']);
-            if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
-                throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
-            }
+            $stopwatch = new Stopwatch("se");
+            // $type = $app['conf']->get(['main', 'search-engine', 'type']);
+            // if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
+            //     throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
+            // }
+            // $stopwatch->lap("se.conf");
 
             /** @var ElasticsearchOptions $options */
             $options = $app['elasticsearch.options'];
 
-            return new ElasticSearchEngine(
+            $r = new ElasticSearchEngine(
                 $app,
+                // $app['search_engine.structure.factory'],
                 $app['search_engine.structure'],
                 $app['elasticsearch.client'],
                 $app['query_context.factory'],
                 $app['elasticsearch.facets_response.factory'],
                 $options
             );
+            $stopwatch->lap("se.new");
+            $stopwatch->log();
+            return $r;
         });
 
         $app['search_engine.structure'] = $app->share(function (\Alchemy\Phrasea\Application $app) {
+            $stopwatch = new Stopwatch("se.structure");
             $databoxes = $app->getDataboxes();
-
-            return GlobalStructure::createFromDataboxes($databoxes);
+            $stopwatch ->lap('get db');
+            $r = GlobalStructure::createFromDataboxes($databoxes);
+            $stopwatch->log();
+            return $r;
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
@@ -268,7 +282,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['query_context.factory'] = $app->share(function ($app) {
             return new QueryContextFactory(
-                $app['search_engine.structure'],
+                $app['search_engine.structure.factory'],
                 array_keys($app['locales.available']),
                 $app['locale']
             );

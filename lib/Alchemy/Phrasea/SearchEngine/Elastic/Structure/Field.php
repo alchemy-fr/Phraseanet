@@ -108,26 +108,25 @@ class Field implements Typed
     {
         $this->name = (string) $name;
         $this->type = $type;
-        $this->databox_id      = \igorw\get_in($options, ['databox_id'], 0);
-        $this->is_searchable   = \igorw\get_in($options, ['searchable'], true);
-        $this->is_private      = \igorw\get_in($options, ['private'], false);
-        $this->facet           = \igorw\get_in($options, ['facet']);
-        $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
-        $this->generate_cterms  = \igorw\get_in($options, ['generate_cterms'], false);
-        $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
-
-        Assertion::boolean($this->is_searchable);
-        Assertion::boolean($this->is_private);
-
-        if ($this->facet !== self::FACET_DISABLED) {
-            Assertion::integer($this->facet);
+        if(1) {
+            $this->databox_id = \igorw\get_in($options, ['databox_id'], 0);
+            $this->is_searchable = \igorw\get_in($options, ['searchable'], true);
+            $this->is_private = \igorw\get_in($options, ['private'], false);
+            $this->facet = \igorw\get_in($options, ['facet']);
+            $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
+            $this->generate_cterms = \igorw\get_in($options, ['generate_cterms'], false);
+            $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
         }
-
-        if ($this->thesaurus_roots !== null) {
-            Assertion::allIsInstanceOf($this->thesaurus_roots, Concept::class);
+        else {
+            // todo: this is faster code, but need to fix unit-tests to pass all options
+            $this->databox_id = $options['databox_id'];
+            $this->is_searchable = $options['searchable'];
+            $this->is_private = $options['private'];
+            $this->facet = $options['facet'];
+            $this->thesaurus_roots = $options['thesaurus_roots'];
+            $this->generate_cterms = $options['generate_cterms'];
+            $this->used_by_collections = $options['used_by_collections'];
         }
-
-        Assertion::allScalar($this->used_by_collections);
     }
 
     public function withOptions(array $options)
