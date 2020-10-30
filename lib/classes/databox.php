@@ -579,39 +579,37 @@ class databox extends base implements ThumbnailedElement
     /**
      * @return int[]
      */
+    private $_collection_unique_ids = null;
     public function get_collection_unique_ids()
     {
-        static $_r = null;
-
-        if($_r === null) {
-            $_r = [];
+        if($this->_collection_unique_ids === null) {
+            $this->_collection_unique_ids = [];
 
             foreach ($this->get_collections() as $collection) {
-                $_r[] = $collection->get_base_id();
+                $this->_collection_unique_ids[] = $collection->get_base_id();
             }
         }
 
-        return $_r;
+        return $this->_collection_unique_ids;
     }
 
     /**
      * @return collection[]
      */
+    private $_collections = null;
     public function get_collections()
     {
-        static $_r = null;
-
-        if($_r === null) {
+        if($this->_collections === null) {
             /** @var CollectionRepositoryRegistry $repositoryRegistry */
             $repositoryRegistry = $this->app['repo.collections-registry'];
             $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
 
-            $_r = array_filter($repository->findAll(), function (collection $collection) {
+            $this->_collections = array_filter($repository->findAll(), function (collection $collection) {
                 return $collection->is_active();
             });
         }
 
-        return $_r;
+        return $this->_collections;
     }
 
     /**
