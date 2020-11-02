@@ -576,10 +576,24 @@ class databox extends base implements ThumbnailedElement
         parent::delete_data_from_cache($option);
     }
 
+    /*
+     * trivial cache to speed-up get_collections() which does sql
+     */
+    private $_collection_unique_ids = null;
+    private $_collections = null;
+
+    public function clearCache($what)
+    {
+        switch($what) {
+            case self::CACHE_COLLECTIONS:
+                $this->_collection_unique_ids = $this->_collections = null;
+                break;
+        }
+    }
+
     /**
      * @return int[]
      */
-    private $_collection_unique_ids = null;
     public function get_collection_unique_ids()
     {
         if($this->_collection_unique_ids === null) {
@@ -596,7 +610,6 @@ class databox extends base implements ThumbnailedElement
     /**
      * @return collection[]
      */
-    private $_collections = null;
     public function get_collections()
     {
         if($this->_collections === null) {
@@ -604,13 +617,19 @@ class databox extends base implements ThumbnailedElement
             $repositoryRegistry = $this->app['repo.collections-registry'];
             $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
 
-            $this->_collections = array_filter($repository->findAll(), function (collection $collection) {
-                return $collection->is_active();
-            });
+           // $this->_collections = array_filter($repository->findAll(), function (collection $collection) {
+           //     return $collection->is_active();
+           // });
+            $this->_collections = $repository->findAll();
         }
 
-        return $this->_collections;
+        // return $this->_collections;
+
+        return array_filter($this->_collections, function (collection $collection) {
+                 return $collection->is_active();
+             });
     }
+
 
     /**
      * @return collection|null
