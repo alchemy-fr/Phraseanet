@@ -9465,7 +9465,7 @@ var workzone = function workzone(services) {
         });
 
         (0, _jquery2.default)('.add_publication').on('click', function (event) {
-            openExposePublicationAdd();
+            openExposePublicationAdd((0, _jquery2.default)('#expose_list').val());
         });
 
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
@@ -10268,7 +10268,7 @@ var workzone = function workzone(services) {
         });
     }
 
-    function openExposePublicationAdd() {
+    function openExposePublicationAdd(exposeName) {
         (0, _jquery2.default)('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title')).dialog({
             autoOpen: false,
             closeOnEscape: true,
@@ -10286,6 +10286,30 @@ var workzone = function workzone(services) {
         (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
             (0, _jquery2.default)('#DIALOG-expose-add').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/list-publication/?format=json&exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                var i = 0;
+                for (; i < data.publications.length; i++) {
+                    (0, _jquery2.default)('#DIALOG-expose-add select#publication_parent').append('<option value=' + data.publications[i].id + ' >' + data.publications[i].title + '</option>');
+                }
+            }
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/list-profile?exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
+                var i = 0;
+                for (; i < data.profiles.length; i++) {
+                    (0, _jquery2.default)('select#profile-field').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+                }
+            }
         });
     }
 

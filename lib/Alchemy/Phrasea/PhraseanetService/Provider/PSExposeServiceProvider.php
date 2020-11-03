@@ -30,6 +30,10 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        $controllers->match('/authenticate/', 'controller.ps.expose:authenticateAction')
+            ->method('POST')
+            ->bind('ps_expose_authenticate');
+
         $controllers->match('/create-publication/', 'controller.ps.expose:createPublicationAction')
             ->method('POST')
             ->bind('ps_expose_create_publication');

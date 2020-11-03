@@ -7,6 +7,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class PSExposeConnectionType extends AbstractType
 {
@@ -27,7 +29,7 @@ class PSExposeConnectionType extends AbstractType
                 ],
                 'choices' => [
                     'client_credentials'    => 'client_credentials',
-                    'authorization_code'    => 'authorization_code'
+                    'password'              => 'password'
                 ]
             ])
             ->add('expose_name', TextType::class, [
@@ -43,20 +45,43 @@ class PSExposeConnectionType extends AbstractType
                 ]
             ])
             ->add('expose_base_uri', TextType::class, [
-                'label' => 'admin:phrasea-service-setting:tab:expose:: Base Uri Expose api',
+                'label' => 'admin:phrasea-service-setting:tab:expose:: Expose Base Uri api',
                 'attr'  => [
                     'class' => 'input-xxlarge'
                 ]
             ])
-            ->add('client_secret', TextType::class, [
-                'label' => 'admin:phrasea-service-setting:tab:expose:: Client secret',
-                'attr'  => [
+            ->add('expose_client_secret', TextType::class, [
+                'label'     => 'admin:phrasea-service-setting:tab:expose:: Expose Client secret',
+                'required'  => false,
+                'attr'      => [
                     'class' => 'input-xxlarge'
                 ]
             ])
-            ->add('client_id', TextType::class, [
-                'label' => 'admin:phrasea-service-setting:tab:expose:: Client ID',
-                'attr'  => [
+            ->add('expose_client_id', TextType::class, [
+                'label'     => 'admin:phrasea-service-setting:tab:expose:: Expose Client ID',
+                'required'  => false,
+                'attr'      => [
+                    'class' => 'input-xxlarge'
+                ]
+            ])
+            ->add('auth_base_uri', TextType::class, [
+                'label'     => 'admin:phrasea-service-setting:tab:expose:: Auth Base Uri ',
+                'required'  => false,
+                'attr'      => [
+                    'class' => 'input-xxlarge'
+                ]
+            ])
+            ->add('auth_client_secret', TextType::class, [
+                'label'     => 'admin:phrasea-service-setting:tab:expose:: Auth Client secret',
+                'required'  => false,
+                'attr'      => [
+                    'class' => 'input-xxlarge'
+                ]
+            ])
+            ->add('auth_client_id', TextType::class, [
+                'label'     => 'admin:phrasea-service-setting:tab:expose:: Auth Client ID',
+                'required'  => false,
+                'attr'      => [
                     'class' => 'input-xxlarge'
                 ]
             ])

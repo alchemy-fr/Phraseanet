@@ -58,8 +58,6 @@ class ExposeUploadWorker implements WorkerInterface
             $em->rollback();
         }
 
-        // TODO: taken account admin config ,access_token for user or client_credentiels
-
         $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
 
@@ -140,7 +138,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             $response = $exposeClient->post('/assets', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $exposeConfiguration['token']
+                    'Authorization' => 'Bearer ' . $payload['accessToken']
                 ],
                 'multipart' => $multipartData
             ]);
@@ -155,7 +153,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             $this->postSubDefinition(
                 $exposeClient,
-                $exposeConfiguration['token'],
+                $payload['accessToken'],
                 $record->get_subdef('preview')->getRealPath(),
                 $assetsResponse['id'],
                 'preview',
@@ -166,7 +164,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             $this->postSubDefinition(
                 $exposeClient,
-                $exposeConfiguration['token'],
+                $payload['accessToken'],
                 $record->get_subdef('thumbnail')->getRealPath(),
                 $assetsResponse['id'],
                 'thumbnail',

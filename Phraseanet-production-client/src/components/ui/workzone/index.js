@@ -91,7 +91,7 @@ const workzone = (services) => {
         });
 
         $('.add_publication').on('click',function (event) {
-            openExposePublicationAdd();
+            openExposePublicationAdd($('#expose_list').val());
         });
 
         $('.refresh-list').on('click',function (event) {
@@ -905,7 +905,7 @@ const workzone = (services) => {
         });
     }
 
-    function openExposePublicationAdd() {
+    function openExposePublicationAdd(exposeName) {
         $('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title'))
             .dialog({
                 autoOpen: false,
@@ -925,6 +925,34 @@ const workzone = (services) => {
         $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         $('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
             $('#DIALOG-expose-add').dialog('close');
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/list-publication/?format=json&exposeName=` + exposeName,
+            success: function (data) {
+                $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                var i = 0;
+                for ( ;i < data.publications.length; i++) {
+                    $('#DIALOG-expose-add select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                }
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/list-profile?exposeName=` + exposeName,
+            success: function (data) {
+                $('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
+                var i = 0;
+                for (; i < data.profiles.length; i++) {
+                    $('select#profile-field').append('<option ' +
+                        'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                        + data.profiles[i].name +
+                        '</option>'
+                    );
+                }
+            }
         });
     }
 

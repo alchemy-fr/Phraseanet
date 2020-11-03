@@ -30,12 +30,24 @@
             {{ form_row(form.expose_base_uri) }}
         </div>
 
-        <div class="control-group">
-            {{ form_row(form.client_secret) }}
+        <div class="control-group expose-field">
+            {{ form_row(form.expose_client_secret) }}
         </div>
 
-        <div class="control-group">
-            {{ form_row(form.client_id) }}
+        <div class="control-group expose-field">
+            {{ form_row(form.expose_client_id) }}
+        </div>
+
+        <div class="control-group auth-field">
+            {{ form_row(form.auth_base_uri) }}
+        </div>
+
+        <div class="control-group auth-field">
+            {{ form_row(form.auth_client_secret) }}
+        </div>
+
+        <div class="control-group auth-field">
+            {{ form_row(form.auth_client_id) }}
         </div>
 
         <div class="control-group auth-connection-field">
@@ -123,6 +135,8 @@
         $( function() {
             $( ".expose-block" ).each(function( index ) {
                 $(this).prev('.expose-title').html( $(this).find('.expose-name').val() );
+
+                displayField($(this).find('.auth-connection'));
             });
             $("#expose-list" ).accordion(
                 { event: "click",
@@ -130,10 +144,28 @@
                     collapsible: true
                 }
             );
+
+            $('#expose-list').on('change', '.auth-connection', function(){
+                displayField($(this));
+            });
         } );
 
 
+        function displayField(connectionKind) {
+            let authFields = connectionKind.parents('.expose-config-block').siblings('.auth-field');
+            let exposeFields = connectionKind.parents('.expose-config-block').siblings('.expose-field');
 
+            switch (connectionKind.val()) {
+                case 'password':
+                    exposeFields.addClass('hidden');
+                    authFields.removeClass('hidden');
+                    break;
+                case 'client_credentials':
+                    authFields.addClass('hidden');
+                    exposeFields.removeClass('hidden');
+                    break;
+            }
+        }
     });
 
 </script>
