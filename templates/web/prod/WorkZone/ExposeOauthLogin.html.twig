@@ -1,0 +1,37 @@
+<h3>Auth connexion</h3>
+<div class="">
+    <form id="oauth-login-form" method="post" name="login" novalidate action="{{ path('ps_expose_authenticate') }}">
+        <input type="hidden" name="exposeName" value="{{ exposeName }}"/>
+        <div class="control-group">
+            <label for="auth-email">Username</label>
+            <input value="" type="text" name="auth-username" id="auth-email" placeholder="Enter your email" required="">
+        </div>
+        <div class="control-group">
+            <label for="auth-password">Password</label>
+            <input type="password" name="auth-password" id="auth-password" placeholder="Enter your password" required="">
+        </div>
+        <div>
+            <button class="btn btn-block btn-primary auth-sign-in">Sign in</button>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $('.publication-list').on('click', '.auth-sign-in' , function (e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+
+        $.ajax({
+            dataType: 'json',
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serializeArray(),
+            success: function(datas) {
+                console.log(datas);
+                if (datas.success) {
+                    $('.refresh-list').trigger('click');
+                }
+            }
+        });
+    });
+</script>
