@@ -21,11 +21,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field AS ESField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\SearchEngine\SearchEngineStructure;
 use Alchemy\Phrasea\Utilities\Stopwatch;
 use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -61,16 +63,17 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @param Application $app
-     * @param Structure|callable $structure
+     * @param GlobalStructure $structure2
      * @param Client $client
      * @param QueryContextFactory $context_factory
      * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
      */
-    public function __construct(Application $app, $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure2, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
-        $this->structure = $structure;
+        // $this->structure = $structure;
+        $this->structure = $structure2;
         $this->client = $client;
         $this->context_factory = $context_factory;
         $this->facetsResponseFactory = $facetsResponseFactory;

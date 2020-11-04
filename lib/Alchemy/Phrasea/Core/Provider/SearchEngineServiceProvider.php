@@ -32,6 +32,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\SearchEngine\SearchEngineStructure;
 use Alchemy\Phrasea\Utilities\Stopwatch;
 use Elasticsearch\ClientBuilder;
 use Hoa\Compiler;
@@ -44,11 +45,14 @@ use Silex\ServiceProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+use \Alchemy\Phrasea\Application as PhraseaApplication;
+
 
 class SearchEngineServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        /** @var PhraseaApplication $app */
         $this->registerElasticSearchClient($app);
         $this->registerQueryParser($app);
         $this->registerIndexer($app);
@@ -60,22 +64,22 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
     }
 
     /**
-     * @param Application $app
+     * @param  PhraseaApplication $app
      * @return Application
      */
-    private function registerSearchEngine(Application $app)
+    private function registerSearchEngine(PhraseaApplication $app)
     {
         $app['phraseanet.SE'] = function ($app) {
             return $app['search_engine'];
         };
 
-        $app['phraseanet.SE.logger'] = $app->share(function (Application $app) {
+        $app['phraseanet.SE.logger'] = $app->share(function (PhraseaApplication $app) {
             return new SearchEngineLogger($app);
         });
 
-        $app['search_engine.structure.factory'] = $app->protect(function () use ($app) {
-            return $app['search_engine.structure'];
-        });
+//        $app['search_engine.structure.factory'] = $app->protect(function () use ($app) {
+//            return $app['search_engine.structure'];
+//        });
 
         $app['search_engine'] = $app->share(function ($app) {
             $stopwatch = new Stopwatch("se");
@@ -88,10 +92,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             /** @var ElasticsearchOptions $options */
             $options = $app['elasticsearch.options'];
 
+            /** @var SearchEngineStructure $seStructure */
+            //$seStructure = $app['search_engine.structure2'];
+
+            $stopwatch->lap("se.options");
             $r = new ElasticSearchEngine(
                 $app,
                 // $app['search_engine.structure.factory'],
-                $app['search_engine.structure'],
+                // $app['search_engine.structure'],
+                $app['search_engine.structure2'],
                 $app['elasticsearch.client'],
                 $app['query_context.factory'],
                 $app['elasticsearch.facets_response.factory'],
@@ -102,7 +111,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return $r;
         });
 
-        $app['search_engine.structure'] = $app->share(function (\Alchemy\Phrasea\Application $app) {
+        $app['search_engine.structure2'] = $app->share(function (PhraseaApplication $app) {
+            $stopwatch = new Stopwatch("se.structure2");
+            $seStructure = new SearchEngineStructure($app['cache']);
+            $globalStructure = $seStructure->getGlobalStructureFromDataboxes($app->getDataboxes());
+            $stopwatch->log();
+            return $globalStructure;
+        });
+
+        $app['search_engine.structure'] = $app->share(function (PhraseaApplication $app) {
             $stopwatch = new Stopwatch("se.structure");
             $databoxes = $app->getDataboxes();
             $stopwatch ->lap('get db');
@@ -112,7 +129,11 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
-            return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.structure']);
+            /** @var SearchEngineStructure $seStructure */
+           // $seStructure = $app['search_engine.structure2'];
+           // $globalStructure = $seStructure->getGlobalStructureFromDataboxes($app->getDataboxes());
+            // return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.structure']);
+            return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.structure2']);
         });
 
         return $app;
@@ -282,7 +303,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['query_context.factory'] = $app->share(function ($app) {
             return new QueryContextFactory(
-                $app['search_engine.structure.factory'],
+                $app['search_engine.structure2'],
                 array_keys($app['locales.available']),
                 $app['locale']
             );
@@ -303,7 +324,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['query_visitor.factory'] = $app->protect(function () use ($app) {
-            return new QueryVisitor($app['search_engine.structure']);
+            return new QueryVisitor($app['search_engine.structure2']);
         });
 
         $app['query_compiler'] = $app->share(function ($app) {
