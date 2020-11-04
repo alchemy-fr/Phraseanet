@@ -57,7 +57,7 @@ final class GlobalStructure implements Structure
         $fields = [];
         $flags = [];
 
-        $stopwatch = new Stopwatch("globalStructure");
+        $stopwatch = new Stopwatch("globalStructure2");
         foreach ($databoxes as $databox) {
             if($what & self::STRUCTURE_WITH_FIELDS) {
                 foreach ($databox->get_meta_structure() as $fieldStructure) {
@@ -79,11 +79,12 @@ final class GlobalStructure implements Structure
         return $r;
     }
 
+
     /**
      * @param \databox $databox
      * @return GlobalStructure
      */
-    public static function createFromDatabox(\databox $databox)
+    public static function unused_createFromDatabox(\databox $databox)
     {
         $fields = [];
         $flags = [];
@@ -107,9 +108,6 @@ final class GlobalStructure implements Structure
      */
     public function __construct(array $fields = [], array $flags = [], array $metadata_tags = [])
     {
-        Assertion::allIsInstanceOf($fields, Field::class);
-        Assertion::allIsInstanceOf($flags, Flag::class);
-        Assertion::allIsInstanceOf($metadata_tags, Tag::class);
 
         foreach ($fields as $field) {
             $this->add($field);
