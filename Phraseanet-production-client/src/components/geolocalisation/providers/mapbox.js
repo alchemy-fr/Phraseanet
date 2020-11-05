@@ -169,16 +169,16 @@ const leafletMap = (services) => {
 
             if (!shouldUseMapboxGl()) {
                 L.mapbox.accessToken = activeProvider.accessToken;
-                map = L.mapbox.map(mapUID, 'mapbox.streets', mapOptions);
+                map = L.mapbox.map(mapUID, _, mapOptions);
                 shouldUpdateZoom = false;
                 map.setView(activeProvider.defaultPosition, activeProvider.defaultZoom);
                 if (searchable) {
                     map.addControl(L.mapbox.geocoderControl('mapbox.places'));
                 }
                 var layers = {
-                    Streets: L.mapbox.tileLayer('mapbox.streets'),
-                    Outdoors: L.mapbox.tileLayer('mapbox.outdoors'),
-                    Satellite: L.mapbox.tileLayer('mapbox.satellite')
+                    Streets: L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'),
+                    Outdoors: L.mapbox.styleLayer('mapbox://styles/mapbox/outdoors-v11'),
+                    Satellite: L.mapbox.styleLayer('mapbox://styles/mapbox/satellite-v9')
                 };
 
                 layers.Streets.addTo(map);
