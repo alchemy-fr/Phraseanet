@@ -63,17 +63,16 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @param Application $app
-     * @param GlobalStructure $structure2
+     * @param GlobalStructure $structure
      * @param Client $client
      * @param QueryContextFactory $context_factory
      * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
      */
-    public function __construct(Application $app, GlobalStructure $structure2, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
-        // $this->structure = $structure;
-        $this->structure = $structure2;
+        $this->structure = $structure;
         $this->client = $client;
         $this->context_factory = $context_factory;
         $this->facetsResponseFactory = $facetsResponseFactory;
@@ -87,10 +86,6 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     public function getStructure()
     {
-        if (!($this->structure instanceof Structure)) {
-            $this->structure = call_user_func($this->structure);
-        }
-
         return $this->structure;
     }
 
