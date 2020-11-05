@@ -4,11 +4,7 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
-use Alchemy\Phrasea\Utilities\Stopwatch;
-use Assert\Assertion;
 use databox_field;
 
 /**
@@ -53,37 +49,26 @@ class Field implements Typed
 
     private $used_by_collections;
 
-    public static function createFromLegacyField(databox_field $field, $with = Structure::WITH_EVERYTHING)
+    public static function createFromLegacyField(databox_field $field)
     {
-        // $stopwatch = new Stopwatch("createFromLegacyField.".$field->get_name());
-
         $type = self::getTypeFromLegacy($field);
         $databox = $field->get_databox();
 
+        // Thesaurus concept inference
         $roots = null;
-        if(($with & Structure::FIELD_WITH_THESAURUS) && $type === FieldMapping::TYPE_STRING) {
-            // Thesaurus concept inference
-            $xpath = $field->get_tbranch();
-            if (!empty($xpath)) {
-                // $stopwatch->lap('before findConceptsByXPath');
-                $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
-                //$stopwatch->lap('after findConceptsByXPath');
-
-            }
+        if($type === FieldMapping::TYPE_STRING && !empty($xpath = $field->get_tbranch())) {
+            $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
         }
 
-        $facet = self::FACET_DISABLED;
-        if($with & Structure::FIELD_WITH_FACETS) {
-            // Facet (enable + optional limit)
-            $facet = $field->getFacetValuesLimit();
-            if ($facet === databox_field::FACET_DISABLED) {
-                $facet = self::FACET_DISABLED;
-            } elseif ($facet === databox_field::FACET_NO_LIMIT) {
-                $facet = self::FACET_NO_LIMIT;
-            }
+        // Facet (enable + optional limit)
+        $facet = $field->getFacetValuesLimit();
+        if ($facet === databox_field::FACET_DISABLED) {
+            $facet = self::FACET_DISABLED;
+        } elseif ($facet === databox_field::FACET_NO_LIMIT) {
+            $facet = self::FACET_NO_LIMIT;
         }
 
-        $r = new self($field->get_name(), $type, [
+        return new self($field->get_name(), $type, [
             'databox_id' => $databox->get_sbas_id(),
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
@@ -92,9 +77,6 @@ class Field implements Typed
             'generate_cterms' => $field->get_generate_cterms(),
             'used_by_collections' => $databox->get_collection_unique_ids()
         ]);
-
-        // $stopwatch->log();
-        return $r;
     }
 
     private static function getTypeFromLegacy(databox_field $field)
@@ -278,4 +260,5 @@ class Field implements Typed
             'used_by_collections' => $used_by_collections
         ]);
     }
+
 }

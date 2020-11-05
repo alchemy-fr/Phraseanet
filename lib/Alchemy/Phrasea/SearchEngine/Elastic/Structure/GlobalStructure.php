@@ -3,9 +3,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\Utilities\Stopwatch;
-use Assert\Assertion;
 use DomainException;
 
 final class GlobalStructure implements Structure
@@ -14,7 +11,6 @@ final class GlobalStructure implements Structure
      * @var Field[]
      */
     private $fields = array();
-
 
     /**
      * @var Field[][]
@@ -46,59 +42,6 @@ final class GlobalStructure implements Structure
      */
     private $metadata_tags = array();
 
-    /**
-     * @param \databox[] $databoxes
-     * @param int $what    bitmask of what should be included in this structure, in fields, ...
-     *
-     * @return GlobalStructure
-     */
-    public static function createFromDataboxes(array $databoxes, $what = self::WITH_EVERYTHING)
-    {
-        $fields = [];
-        $flags = [];
-
-        $stopwatch = new Stopwatch("globalStructure2");
-        foreach ($databoxes as $databox) {
-            if($what & self::STRUCTURE_WITH_FIELDS) {
-                foreach ($databox->get_meta_structure() as $fieldStructure) {
-                    $fields[] = Field::createFromLegacyField($fieldStructure, $what);
-                }
-            }
-
-            if($what & self::STRUCTURE_WITH_FLAGS) {
-                foreach ($databox->getStatusStructure() as $status) {
-                    $flags[] = Flag::createFromLegacyStatus($status);
-                }
-            }
-        }
-        $stopwatch->lap('loop0');
-        $r = new self($fields, $flags, MetadataHelper::createTags());
-
-        $stopwatch->log();
-
-        return $r;
-    }
-
-
-    /**
-     * @param \databox $databox
-     * @return GlobalStructure
-     */
-    public static function unused_createFromDatabox(\databox $databox)
-    {
-        $fields = [];
-        $flags = [];
-
-        foreach ($databox->get_meta_structure() as $fieldStructure) {
-            $fields[] = Field::createFromLegacyField($fieldStructure);
-        }
-
-        foreach ($databox->getStatusStructure() as $status) {
-            $flags[] = Flag::createFromLegacyStatus($status);
-        }
-
-        return new self($fields, $flags, MetadataHelper::createTags());
-    }
 
     /**
      * GlobalStructure constructor.

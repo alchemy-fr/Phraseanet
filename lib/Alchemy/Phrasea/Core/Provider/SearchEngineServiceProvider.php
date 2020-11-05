@@ -18,8 +18,6 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Index;
 use Alchemy\Phrasea\SearchEngine\Elastic\IndexLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
 use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\IndexerSubscriber;
@@ -30,10 +28,9 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\SearchEngineStructure;
-use Alchemy\Phrasea\Utilities\Stopwatch;
+// use Alchemy\Phrasea\Utilities\Stopwatch;
 use Elasticsearch\ClientBuilder;
 use Hoa\Compiler;
 use Hoa\File;
@@ -78,28 +75,29 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['search_engine'] = $app->share(function ($app) {
-            $stopwatch = new Stopwatch("se");
-            // $type = $app['conf']->get(['main', 'search-engine', 'type']);
-            // if ($type !== SearchEngineInterface::TYPE_ELASTICSEARCH) {
-            //     throw new InvalidArgumentException(sprintf('Invalid search engine type "%s".', $type));
-            // }
-            // $stopwatch->lap("se.conf");
+//            $stopwatch = new Stopwatch("se");
 
-            /** @var ElasticsearchOptions $options */
-            $options = $app['elasticsearch.options'];
+//            $stopwatch->lap("se.options");
+//            $r = new ElasticSearchEngine(
+//                $app,
+//                $app['search_engine.global_structure'],
+//                $app['elasticsearch.client'],
+//                $app['query_context.factory'],
+//                $app['elasticsearch.facets_response.factory'],
+//                $app['elasticsearch.options']
+//            );
+//            $stopwatch->lap("se.new");
+//            $stopwatch->log();
+//            return $r;
 
-            $stopwatch->lap("se.options");
-            $r = new ElasticSearchEngine(
+            return new ElasticSearchEngine(
                 $app,
                 $app['search_engine.global_structure'],
                 $app['elasticsearch.client'],
                 $app['query_context.factory'],
                 $app['elasticsearch.facets_response.factory'],
-                $options
+                $app['elasticsearch.options']
             );
-            $stopwatch->lap("se.new");
-            $stopwatch->log();
-            return $r;
         });
 
         $app['search_engine.structure'] = $app->share(function (PhraseaApplication $app) {
@@ -107,12 +105,15 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['search_engine.global_structure'] = $app->share(function (PhraseaApplication $app) {
-            $stopwatch = new Stopwatch("se.global_structure");
-            /** @var SearchEngineStructure $seStructure */
+//            $stopwatch = new Stopwatch("se.global_structure");
+            /** @var SearchEngineStructure $s */
             $s = $app['search_engine.structure'];
-            $globalStructure = $s->getGlobalStructureFromDataboxes($app->getDataboxes());
-            $stopwatch->log();
-            return $globalStructure;
+
+//            $globalStructure = $s->getGlobalStructureFromDataboxes($app->getDataboxes());
+//            $stopwatch->log();
+//            return $globalStructure;
+
+            return $s->getGlobalStructureFromDataboxes($app->getDataboxes());
         });
 
        $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
