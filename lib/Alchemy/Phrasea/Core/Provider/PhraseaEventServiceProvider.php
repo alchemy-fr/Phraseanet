@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\StructureChangeSubscriber;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\Event\Subscriber\ContentNegotiationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\CookiesDisablerSubscriber;
@@ -59,6 +60,10 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
             return new RecordEditSubscriber(new LazyLocator($app, 'phraseanet.appbox'));
         });
 
+        $app['phraseanet.structure-change-subscriber'] = $app->share(function (Application $app) {
+            return new StructureChangeSubscriber($app['search_engine.structure']);
+        });
+
         $app['dispatcher'] = $app->share(
             $app->extend('dispatcher', function (EventDispatcherInterface $dispatcher, Application $app) {
                 $dispatcher->addSubscriber($app['phraseanet.logout-subscriber']);
@@ -68,6 +73,7 @@ class PhraseaEventServiceProvider implements ServiceProviderInterface
                 $dispatcher->addSubscriber($app['phraseanet.cookie-disabler-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.session-manager-subscriber']);
                 $dispatcher->addSubscriber($app['phraseanet.record-edit-subscriber']);
+                $dispatcher->addSubscriber($app['phraseanet.structure-change-subscriber']);
 
                 return $dispatcher;
             })
