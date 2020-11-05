@@ -749,7 +749,6 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
                 $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
-                $dispatcher->addSubscriber(new StructureChangeSubscriber($app['search_engine.structure']));
 
                 return $dispatcher;
             })
