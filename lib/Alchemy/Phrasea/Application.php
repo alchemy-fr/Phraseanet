@@ -25,6 +25,7 @@ use Alchemy\Phrasea\Core\Event\Subscriber\FeedEntrySubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\LazaretSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\PhraseaInstallSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\RegistrationSubscriber;
+use Alchemy\Phrasea\Core\Event\Subscriber\StructureChangeSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\ValidationSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\WebhookUserEventSubscriber;
 use Alchemy\Phrasea\Core\MetaProvider\DatabaseMetaProvider;
@@ -748,6 +749,7 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
                 $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
+                $dispatcher->addSubscriber(new StructureChangeSubscriber($app['search_engine.structure']));
 
                 return $dispatcher;
             })

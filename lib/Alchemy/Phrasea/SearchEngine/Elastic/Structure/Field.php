@@ -7,6 +7,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Assert\Assertion;
 use databox_field;
 
@@ -54,6 +55,8 @@ class Field implements Typed
 
     public static function createFromLegacyField(databox_field $field, $with = Structure::WITH_EVERYTHING)
     {
+        // $stopwatch = new Stopwatch("createFromLegacyField.".$field->get_name());
+
         $type = self::getTypeFromLegacy($field);
         $databox = $field->get_databox();
 
@@ -62,7 +65,10 @@ class Field implements Typed
             // Thesaurus concept inference
             $xpath = $field->get_tbranch();
             if (!empty($xpath)) {
+                // $stopwatch->lap('before findConceptsByXPath');
                 $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
+                //$stopwatch->lap('after findConceptsByXPath');
+
             }
         }
 
@@ -77,7 +83,7 @@ class Field implements Typed
             }
         }
 
-        return new self($field->get_name(), $type, [
+        $r = new self($field->get_name(), $type, [
             'databox_id' => $databox->get_sbas_id(),
             'searchable' => $field->is_indexable(),
             'private' => $field->isBusiness(),
@@ -86,6 +92,9 @@ class Field implements Typed
             'generate_cterms' => $field->get_generate_cterms(),
             'used_by_collections' => $databox->get_collection_unique_ids()
         ]);
+
+        // $stopwatch->log();
+        return $r;
     }
 
     private static function getTypeFromLegacy(databox_field $field)
