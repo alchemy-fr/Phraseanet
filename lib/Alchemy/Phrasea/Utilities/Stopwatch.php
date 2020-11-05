@@ -69,10 +69,10 @@ class Stopwatch
 
     public function log()
     {
-         file_put_contents('/var/alchemy/Phraseanet/tmp/phraseanet.log',
-            $this->_name . "\n" . var_export($this->getLapses(), true) . "\n\n",
-            FILE_APPEND
-         );
+//         file_put_contents('/var/alchemy/Phraseanet/tmp/phraseanet.log',
+//            $this->_name . "\n" . var_export($this->getLapses(), true) . "\n\n",
+//            FILE_APPEND
+//         );
     }
 
     /**
