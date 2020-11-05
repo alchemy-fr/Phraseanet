@@ -42,8 +42,8 @@ class SearchEngineStructure
         $stopwatch = new Stopwatch("getGlobalStructureFromDataboxes");
         foreach ($databoxes as $databox) {
 
-            // we will store both FIELDS and FLAGS in the same cache entry :
-            // it's small data and $what=WITH_EVERYTHING allways
+            // we will cache both FIELDS and FLAGS in the same entry :
+            // it's small data and $what seems always WITH_EVERYTHING
             $k = $this->getCacheKey("FieldsAndFlags", $databox);
             try {
                 $data = $this->cache->get($k);
@@ -70,7 +70,7 @@ class SearchEngineStructure
             }
 
             if($what & Structure::STRUCTURE_WITH_FLAGS) {
-                $flags  = array_merge($fields, $data['flags']);
+                $flags  = array_merge($flags, $data['flags']);
             }
         }
         $stopwatch->lap('loop0');
@@ -79,6 +79,12 @@ class SearchEngineStructure
         $stopwatch->log();
 
         return $r;
+    }
+
+    public function deleteFromCache($databox)
+    {
+        $k = $this->getCacheKey("FieldsAndFlags", $databox);
+        $this->cache->delete($k);
     }
 
     private function getCacheKey($what, databox $db)

@@ -77,10 +77,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return new SearchEngineLogger($app);
         });
 
-//        $app['search_engine.structure.factory'] = $app->protect(function () use ($app) {
-//            return $app['search_engine.structure'];
-//        });
-
         $app['search_engine'] = $app->share(function ($app) {
             $stopwatch = new Stopwatch("se");
             // $type = $app['conf']->get(['main', 'search-engine', 'type']);
@@ -92,15 +88,10 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             /** @var ElasticsearchOptions $options */
             $options = $app['elasticsearch.options'];
 
-            /** @var SearchEngineStructure $seStructure */
-            //$seStructure = $app['search_engine.structure2'];
-
             $stopwatch->lap("se.options");
             $r = new ElasticSearchEngine(
                 $app,
-                // $app['search_engine.structure.factory'],
-                // $app['search_engine.structure'],
-                $app['search_engine.structure2'],
+                $app['search_engine.global_structure'],
                 $app['elasticsearch.client'],
                 $app['query_context.factory'],
                 $app['elasticsearch.facets_response.factory'],
@@ -111,29 +102,21 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
             return $r;
         });
 
-        $app['search_engine.structure2'] = $app->share(function (PhraseaApplication $app) {
-            $stopwatch = new Stopwatch("se.structure2");
-            $seStructure = new SearchEngineStructure($app['cache']);
-            $globalStructure = $seStructure->getGlobalStructureFromDataboxes($app->getDataboxes());
+        $app['search_engine.structure'] = $app->share(function (PhraseaApplication $app) {
+            return new SearchEngineStructure($app['cache']);
+        });
+
+        $app['search_engine.global_structure'] = $app->share(function (PhraseaApplication $app) {
+            $stopwatch = new Stopwatch("se.global_structure");
+            /** @var SearchEngineStructure $seStructure */
+            $s = $app['search_engine.structure'];
+            $globalStructure = $s->getGlobalStructureFromDataboxes($app->getDataboxes());
             $stopwatch->log();
             return $globalStructure;
         });
 
-        $app['search_engine.structure'] = $app->share(function (PhraseaApplication $app) {
-            $stopwatch = new Stopwatch("se.structure");
-            $databoxes = $app->getDataboxes();
-            $stopwatch ->lap('get db');
-            $r = GlobalStructure::createFromDataboxes($databoxes);
-            $stopwatch->log();
-            return $r;
-        });
-
-        $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
-            /** @var SearchEngineStructure $seStructure */
-           // $seStructure = $app['search_engine.structure2'];
-           // $globalStructure = $seStructure->getGlobalStructureFromDataboxes($app->getDataboxes());
-            // return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.structure']);
-            return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.structure2']);
+       $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
+            return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.global_structure']);
         });
 
         return $app;
@@ -151,7 +134,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['elasticsearch.index.record'] = $app->share(function ($app) {
-            return new Indexer\RecordIndex($app['search_engine.structure'], array_keys($app['locales.available']));
+            return new Indexer\RecordIndex($app['search_engine.global_structure'], array_keys($app['locales.available']));
         });
 
         $app['elasticsearch.index.term'] = $app->share(function ($app) {
@@ -185,7 +168,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
                 $app['elasticsearch.record_helper'],
                 $app['elasticsearch.options'],
                 $app,
-                'search_engine.structure',
+                'search_engine.global_structure',
                 'thesaurus'
             );
         });
@@ -303,7 +286,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['query_context.factory'] = $app->share(function ($app) {
             return new QueryContextFactory(
-                $app['search_engine.structure2'],
+                $app['search_engine.global_structure'],
                 array_keys($app['locales.available']),
                 $app['locale']
             );
@@ -324,7 +307,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
         $app['query_visitor.factory'] = $app->protect(function () use ($app) {
-            return new QueryVisitor($app['search_engine.structure2']);
+            return new QueryVisitor($app['search_engine.global_structure']);
         });
 
         $app['query_compiler'] = $app->share(function ($app) {
