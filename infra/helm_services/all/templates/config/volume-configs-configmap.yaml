@@ -1,9 +1,0 @@
-{{ if empty .Values.globalConfig.externalConfigmapName -}}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-configs
-data:
-  config.json: |
-{{ .Values.globalConfig.content | indent 4 }}
-{{- end }}
