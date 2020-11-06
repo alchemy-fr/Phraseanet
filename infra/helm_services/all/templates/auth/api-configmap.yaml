@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: auth-api-config
-data:
-  REGISTRATION_VALIDATE_EMAIL: {{ ternary "\"true\"" "\"false\"" .Values.auth.api.config.registrationValidateEmail }}
