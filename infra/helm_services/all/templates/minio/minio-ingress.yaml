@@ -1,0 +1,56 @@
+{{- if .Values.minio.enabled }}
+{{- if .Values.minio.ingress.enabled }}
+{{- with .Values.minio }}
+{{- $ingressNode := . }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: minio-ingress
+  annotations:
+{{- if .ingress.annotations }}
+{{ toYaml .ingress.annotations | indent 4 }}
+{{- else }}
+    kubernetes.io/ingress.class: "nginx"
+{{- if .ingress.maxBodySize }}
+    nginx.ingress.kubernetes.io/proxy-body-size: {{ .ingress.maxBodySize | quote }}
+{{- end }}
+{{- with $.Values._internal.minio }}
+{{- if .ingress }}
+{{- if .ingress.annotations }}
+{{ toYaml .ingress.annotations | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .ingress.extraLabels }}
+  labels:
+{{ toYaml .ingress.extraLabels | indent 4 }}
+{{- end }}
+spec:
+  rules:
+    - host: {{ .hostname }}
+      http:
+        paths:
+          - backend:
+              serviceName: minio
+              servicePort: 80
+            path: /
+{{- if .ingress.tls }}
+{{- $tlsNode := .ingress.tls -}}
+{{- range $value := $tlsNode }}
+  {{- if not (hasKey $value "hosts") }}
+    {{- $hosts := list $ingressNode.hostname }}
+    {{- $_ := set $value "hosts" $hosts }}
+  {{- end -}}
+{{- end }}
+  tls:
+{{ toYaml $tlsNode | indent 2 }}
+{{- else if $.Values.ingress.tls.wildcard.enabled }}
+  tls:
+  - hosts:
+    - {{ .hostname }}
+    secretName: {{ include "secretRef.ingress.tls.wildcard" $ }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

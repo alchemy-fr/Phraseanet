@@ -1,0 +1,27 @@
+{{- with .Values.dashboard }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phraseanet-services
+      tier: dashboard
+  template:
+    metadata:
+      labels:
+        app: phraseanet-services
+        tier: dashboard
+    spec:
+      containers:
+      - name: dashboard
+        image: {{ $.Values.repository.baseurl }}/ps-dashboard:{{ $.Values.repository.tag }}
+        terminationMessagePolicy: FallbackToLogsOnError
+        envFrom:
+        - configMapRef:
+            name: urls-config
+{{- end }}
+{{- end }}

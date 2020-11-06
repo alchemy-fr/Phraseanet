@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-php-config
+data:
+  RABBITMQ_HOST: {{ quote .Values.rabbitmq.host }}
+  RABBITMQ_PORT: {{ quote .Values.rabbitmq.port }}

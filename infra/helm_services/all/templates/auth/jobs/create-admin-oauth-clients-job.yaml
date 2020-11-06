@@ -1,0 +1,67 @@
+{{- range .Values._internal.services }}
+{{ $appName := . }}
+{{- if and (index $.Values $appName).enabled (index $.Values $appName).adminOAuthClient }}
+{{- with (index $.Values $appName)  }}
+{{ $tplArgs := dict "app" $appName "ctx" . "glob" $ }}
+{{ $jobName := printf "%s-create-admin-oauth-client" $appName }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $jobName }}-script
+data:
+  job.sh: |
+    #!/bin/sh
+    set -ex
+
+    bin/console alchemy:oauth:create-client "${ADMIN_CLIENT_ID}" \
+      --random-id="${ADMIN_CLIENT_RANDOM_ID}" \
+      --secret="${ADMIN_CLIENT_SECRET}" \
+    {{- range .adminOAuthClient.grantTypes }}
+      --grant-type {{ . }} \
+    {{- end }}
+    {{- range .adminOAuthClient.scopes }}
+      --scope {{ . }} \
+    {{- end }}
+      --redirect-uri {{ .api.baseUrl | quote }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $jobName }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ $jobName }}-script
+          defaultMode: 0777
+      containers:
+      - name: {{ $jobName }}
+        image: {{ $.Values.repository.baseurl }}/ps-auth-api-php:{{ $.Values.repository.tag }}
+        args: ["/setup/job.sh"]
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: scripts
+          mountPath: /setup/job.sh
+          subPath: job.sh
+        env:
+{{ include "envRef.phpApp" $tplArgs | indent 8 }}
+        envFrom:
+{{ include "configMapRef.phpApp" $tplArgs | indent 8 }}
+{{- include "envFrom.rabbitmq" $ | indent 8 }}
+{{- include "envFrom.postgresql" $ | indent 8 }}
+        - secretRef:
+            name: {{ .adminOAuthClient.externalSecretName | default (printf "%s-admin-oauth-client-secret" $appName) }}
+        - configMapRef:
+            name: {{ $appName }}-api-config
+      restartPolicy: Never
+  backoffLimit: 0
+---
+{{- end }}
+{{- end }}
+{{- end }}

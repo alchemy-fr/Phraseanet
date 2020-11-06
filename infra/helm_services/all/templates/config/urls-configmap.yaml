@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: urls-config
+data:
+{{- if .Values.report.enabled }}
+  REPORT_BASE_URL: {{ quote .Values.report.api.baseUrl }}
+{{- end }}
+{{- if .Values.notify.enabled }}
+  NOTIFY_BASE_URL: {{ quote .Values.notify.api.baseUrl }}
+{{- end }}
+{{- if .Values.auth.enabled }}
+  AUTH_BASE_URL: {{ quote .Values.auth.api.baseUrl }}
+{{- end }}
+{{- if .Values.expose.enabled }}
+  EXPOSE_API_BASE_URL: {{ quote .Values.expose.api.baseUrl }}
+  EXPOSE_FRONT_BASE_URL: {{ quote .Values.expose.client.baseUrl }}
+{{- end }}
+{{- if .Values.uploader.enabled }}
+  UPLOADER_API_BASE_URL: {{ quote .Values.uploader.api.baseUrl }}
+  UPLOADER_FRONT_BASE_URL: {{ quote .Values.uploader.client.baseUrl }}
+{{- end }}
+{{- if .Values.dashboard.enabled }}
+  DASHBOARD_BASE_URL: {{ quote .Values.dashboard.baseUrl }}
+  DISPLAY_SERVICES_MENU: "true"
+{{- end }}

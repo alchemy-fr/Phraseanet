@@ -1,0 +1,44 @@
+{{- if .Values.dashboard.enabled }}
+{{- with .Values.dashboard }}
+{{- if .ingress.enabled }}
+{{- $ingressNode := . }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dashboard-ingress
+{{- if .ingress.annotations }}
+  annotations:
+{{ toYaml .ingress.annotations | indent 4 }}
+{{- end }}
+{{- if .ingress.extraLabels }}
+  labels:
+{{ toYaml .ingress.extraLabels | indent 4 }}
+{{- end }}
+spec:
+  rules:
+  - host: {{ .hostname }}
+    http:
+      paths:
+      - backend:
+          serviceName: dashboard
+          servicePort: 80
+        path: /
+{{- if .ingress.tls }}
+{{- $tlsNode := .ingress.tls -}}
+{{- range $value := $tlsNode }}
+  {{- if not (hasKey $value "hosts") }}
+    {{- $hosts := list $ingressNode.hostname }}
+    {{- $_ := set $value "hosts" $hosts }}
+  {{- end -}}
+{{- end }}
+  tls:
+{{ toYaml $tlsNode | indent 2 }}
+{{- else if $.Values.ingress.tls.wildcard.enabled }}
+  tls:
+  - hosts:
+    - {{ .hostname }}
+    secretName: {{ include "secretRef.ingress.tls.wildcard" $ }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

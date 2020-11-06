@@ -1,0 +1,40 @@
+{{- with .Values.postgresql }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: phraseanet-services
+      tier: postgresql
+  template:
+    metadata:
+      labels:
+        app: phraseanet-services
+        tier: postgresql
+    spec:
+      volumes:
+      - name: data
+      {{- if .persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .persistence.existingClaim | default (printf "%s-postgresql" (include "ps.fullname" $)) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      containers:
+      - name: postgresql
+        image: postgres:11.2-alpine
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: data
+          mountPath: "/var/lib/postgresql/data"
+        envFrom:
+        - secretRef:
+            name: {{ include "secretName.postgresql" $ }}
+{{- end }}
+{{- end }}
