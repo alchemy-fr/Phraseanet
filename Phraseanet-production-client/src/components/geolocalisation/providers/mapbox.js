@@ -8,11 +8,14 @@ import {generateRandStr} from '../../utils/utils';
 import provider from '../provider';
 import leafletLocaleFr from './locales/fr';
 import merge from 'lodash.merge';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 require('mapbox.js/theme/style.css');
 require('mapbox-gl/dist/mapbox-gl.css');
 require('./mapbox.css');
 require('leaflet-draw/dist/leaflet.draw.css');
 require('leaflet-contextmenu/dist/leaflet.contextmenu.css');
+
 const leafletMap = (services) => {
     const {configService, localeService, eventEmitter} = services;
     let $container = null;
@@ -245,6 +248,15 @@ const leafletMap = (services) => {
 
                 } else {
                     map.addControl(new mapboxgl.NavigationControl());
+                }
+
+                if (searchable) {
+                    let geocoderSearch = new MapboxGeocoder({
+                        accessToken: mapboxgl.accessToken,
+                        mapboxgl: mapboxgl,
+                        marker: false
+                    });
+                    map.addControl(geocoderSearch, 'top-left');
                 }
 
                 map.on('style.load', function () {

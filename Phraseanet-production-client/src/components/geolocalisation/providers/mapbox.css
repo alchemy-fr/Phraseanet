@@ -277,3 +277,12 @@
 .map-dropdown-content.show {
     display: block;
 }
+
+/* mapbox Gl search */
+@media screen and (min-width: 640px) {
+    .mapboxgl-ctrl-geocoder--input {
+        height: 36px !important;
+        padding: 6px 35px !important;
+        margin-bottom: 0px !important;
+    }
+}
