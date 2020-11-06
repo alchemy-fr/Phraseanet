@@ -1,0 +1,55 @@
+{{- if and .Values.minio.enabled .Values.expose.enabled }}
+{{ $jobName := "minio-create-buckets" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $jobName }}-script
+data:
+  job.sh: |
+    #!/bin/sh
+    set -ex
+
+    while ! nc -z minio 80; do
+      echo "Wait for minio to startup..." && sleep 0.1;
+    done;
+    sleep 5
+    mc config host add minio http://minio:80 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+  {{- if .Values.expose.enabled }}
+    mc mb --ignore-existing minio/{{ .Values.expose.api.config.s3Storage.bucketName }}
+  {{- end }}
+  {{- if .Values.uploader.enabled }}
+    mc mb --ignore-existing minio/{{ .Values.uploader.api.config.s3Storage.bucketName }}
+  {{- end }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $jobName }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ $jobName }}-script
+          defaultMode: 0777
+      containers:
+      - name: {{ $jobName }}
+        image: minio/mc
+        command: ["sh", "-c"]
+        args: ["/setup/job.sh"]
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: scripts
+          mountPath: /setup/job.sh
+          subPath: job.sh
+        envFrom:
+        - secretRef:
+            name: minio-secret
+      restartPolicy: Never
+  backoffLimit: 0
+{{- end }}

@@ -1,0 +1,79 @@
+{{- range .Values._internal.services }}
+{{- $appName := . }}
+{{- $appNode := (index $.Values $appName) }}
+{{- $tplArgs := dict "app" $appName "ctx" $appNode "glob" $ }}
+{{- if and $appNode.enabled $appNode.client }}
+{{- if $appNode.client.oauthClient }}
+{{- $jobName := printf "%s-create-oauth-client" $appName }}
+{{- with $appNode.client.oauthClient }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $jobName }}-script
+data:
+  job.sh: |
+    #!/bin/sh
+    set -ex
+
+    bin/console alchemy:oauth:create-client "${CLIENT_ID}" \
+      --random-id="${CLIENT_RANDOM_ID}" \
+      --secret="${CLIENT_SECRET}" \
+    {{- range .grantTypes }}
+      --grant-type {{ . }} \
+    {{- end }}
+    {{- range .scopes }}
+      --scope {{ . }} \
+    {{- end }}
+      --redirect-uri={{ tpl .redirectUri $ | quote }}
+---
+{{- if not .externalSecretName }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $jobName }}
+stringData:
+  CLIENT_ID: {{ .id | quote }}
+  CLIENT_RANDOM_ID: {{ .randomId | quote }}
+  CLIENT_SECRET: {{ .secret | quote }}
+---
+{{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $jobName }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ $jobName }}-script
+          defaultMode: 0777
+      containers:
+      - name: {{ $jobName }}
+        image: {{ $.Values.repository.baseurl }}/ps-auth-api-php:{{ $.Values.repository.tag }}
+        args: ["/setup/job.sh"]
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: scripts
+          mountPath: /setup/job.sh
+          subPath: job.sh
+        envFrom:
+        - secretRef:
+            name: {{ .externalSecretName | default $jobName }}
+        - configMapRef:
+            name: auth-api-config
+{{ include "configMapRef.phpApp" $tplArgs | indent 8 }}
+{{- include "envFrom.rabbitmq" $ | indent 8 }}
+{{- include "envFrom.postgresql" $ | indent 8 }}
+      restartPolicy: Never
+  backoffLimit: 0
+---
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

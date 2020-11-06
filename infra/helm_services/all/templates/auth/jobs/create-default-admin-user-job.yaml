@@ -1,0 +1,59 @@
+{{- $appName := "auth" }}
+{{- $tplArgs := dict "app" $appName "ctx" .Values.auth "glob" $ }}
+{{- if .Values.auth.defaultUser }}
+{{ $jobName := "auth-create-default-admin-user" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $jobName }}-script
+data:
+  job.sh: |
+    #!/bin/sh
+    set -e
+
+    bin/console app:user:create \
+      --update-if-exist "${DEFAULT_ADMIN_USER_USERNAME}" \
+      -p "${DEFAULT_ADMIN_USER_PASSWORD}" \
+      --roles ROLE_SUPER_ADMIN
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $jobName }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ $jobName }}-script
+          defaultMode: 0777
+{{- include "app.volumes" $tplArgs | indent 6 }}
+      containers:
+      - name: {{ $jobName }}
+        image: {{ $.Values.repository.baseurl }}/ps-auth-api-php:{{ $.Values.repository.tag }}
+        args: ["/setup/job.sh"]
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: scripts
+          mountPath: /setup/job.sh
+          subPath: job.sh
+{{- include "app.volumesMounts" $tplArgs | indent 8 }}
+        env:
+{{ include "envRef.phpApp" $tplArgs | indent 8 }}
+        envFrom:
+        - secretRef:
+            name: {{ .Values.auth.defaultUser.externalSecretName | default "default-admin-user-secret"  }}
+        - configMapRef:
+            name: auth-api-config
+{{ include "configMapRef.phpApp" $tplArgs | indent 8 }}
+{{- include "envFrom.rabbitmq" $ | indent 8 }}
+{{- include "envFrom.postgresql" $ | indent 8 }}
+      restartPolicy: Never
+  backoffLimit: 0
+{{- end }}

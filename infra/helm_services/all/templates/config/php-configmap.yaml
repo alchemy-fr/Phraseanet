@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: php-config
+data:
+  APP_ENV: prod
+  TRUSTED_PROXIES: 127.0.0.1,REMOTE_ADDR

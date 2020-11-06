@@ -1,0 +1,57 @@
+{{ $jobName := "rabbitmq-vhost-setup" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $jobName }}-script
+data:
+  job.sh: |
+    #!/bin/sh
+    set -ex
+
+    n=0
+    until [ "$n" -ge 20 ]; do
+      rabbitmqctl -n rabbit@rabbitmq await_startup && break
+      n=$((n+1))
+      sleep 5
+    done
+
+    rabbitmqctl -n rabbit@rabbitmq await_startup
+{{- range .Values._internal.services }}
+{{- $appName := . }}
+{{- if (index $.Values $appName).enabled }}
+    VHOST="{{ (index $.Values $appName).rabbitmq.vhost }}"
+    rabbitmqctl -n rabbit@rabbitmq add_vhost ${VHOST}
+    rabbitmqctl -n rabbit@rabbitmq set_permissions -p ${VHOST} ${RABBITMQ_USER} '.*' '.*' '.*'
+{{- end }}
+{{- end }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $jobName }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ $jobName }}-script
+          defaultMode: 0777
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3.7.14-management
+        args: ["/setup/job.sh"]
+        volumeMounts:
+        - name: scripts
+          mountPath: /setup/job.sh
+          subPath: job.sh
+        envFrom:
+        - secretRef:
+            name: {{ include "secretName.rabbitmq" . }}
+        - configMapRef:
+            name: rabbitmq-config
+      restartPolicy: Never
+  backoffLimit: 10

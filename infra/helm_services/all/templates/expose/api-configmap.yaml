@@ -1,0 +1,12 @@
+{{- if .Values.expose.enabled }}
+{{- with .Values.expose.api.config }}
+{{- $tplArgs := dict "app" "uploader" "ctx" . "glob" $ }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: expose-api-config
+data:
+  EXPOSE_REQUEST_SIGNATURE_TTL: {{ .requestSignatureTtl | quote }}
+{{ include "app.s3Storage.configMap" $tplArgs | indent 2 }}
+{{- end }}
+{{- end }}

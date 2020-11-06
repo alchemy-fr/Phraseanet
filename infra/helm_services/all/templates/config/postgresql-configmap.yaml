@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgresql-php-config
+data:
+  POSTGRES_HOST: {{ quote .Values.postgresql.host }}
+  POSTGRES_PORT: {{ quote .Values.postgresql.port }}

@@ -1,0 +1,45 @@
+{{ $jobName := "postgresql-create-databases" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $jobName }}-script
+data:
+  job.sh: |
+    #!/bin/sh
+    set -ex
+
+    DB="report"
+
+    DSN="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@{{ .Values.postgresql.host }}:{{ .Values.postgresql.port }}"
+    psql ${DSN} -tc "SELECT 1 FROM pg_database WHERE datname = '$DB'" | grep -q 1 || psql ${DSN} -c "CREATE DATABASE $DB"
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $jobName }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ $jobName }}-script
+          defaultMode: 0777
+      containers:
+      - name: {{ $jobName }}
+        image: jbergknoff/postgresql-client
+        command: ["/setup/job.sh"]
+        volumeMounts:
+        - name: scripts
+          mountPath: /setup/job.sh
+          subPath: job.sh
+        envFrom:
+        - secretRef:
+            name: {{ .Values.postgresql.externalSecretName | default "postgresql-secret" }}
+      restartPolicy: Never
+  backoffLimit: 10

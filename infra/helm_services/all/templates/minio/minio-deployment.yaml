@@ -1,0 +1,37 @@
+{{- if .Values.minio.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phraseanet-services
+      tier: minio
+  template:
+    metadata:
+      labels:
+        app: phraseanet-services
+        tier: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio
+        terminationMessagePolicy: FallbackToLogsOnError
+        args: ["server", "/data"]
+        envFrom:
+          - secretRef:
+              name: minio-secret
+        volumeMounts:
+          - name: data
+            mountPath: "/data"
+      volumes:
+        - name: data
+          {{- if .Values.minio.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.minio.persistence.existingClaim | default (printf "%s-minio" (include "ps.fullname" .)) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end }}

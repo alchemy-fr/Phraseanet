@@ -1,0 +1,44 @@
+{{- range .Values._internal.services }}
+{{ $appName := . }}
+{{- if (index $.Values $appName).enabled }}
+{{- with (index $.Values $appName)  }}
+{{ $tplArgs := dict "app" $appName "ctx" . "glob" $ }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $appName }}-setup
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      volumes:
+{{- include "volumes.configs" $ | indent 6 }}
+{{- include "app.volumes" $tplArgs | indent 6 }}
+      containers:
+      - name: {{ $appName }}-php-job
+        image: {{ $.Values.repository.baseurl }}/ps-{{ $appName }}-api-php:{{ $.Values.repository.tag }}
+        args: ["bin/setup.sh"]
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - name: configs
+          mountPath: /configs
+{{- include "app.volumesMounts" $tplArgs | indent 8 }}
+        env:
+{{ include "envRef.phpApp" $tplArgs | indent 8 }}
+        envFrom:
+{{ include "configMapRef.phpApp" $tplArgs | indent 8 }}
+{{- include "envFrom.rabbitmq" $ | indent 8 }}
+{{- include "envFrom.postgresql" $ | indent 8 }}
+        - secretRef:
+            name: {{ .adminOAuthClient.externalSecretName | default (printf "%s-admin-oauth-client-secret" $appName) }}
+        - configMapRef:
+            name: {{ $appName }}-api-config
+      restartPolicy: Never
+  backoffLimit: 0
+---
+{{- end }}
+{{- end }}
+{{- end }}

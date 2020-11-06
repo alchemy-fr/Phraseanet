@@ -1,0 +1,138 @@
+auth:
+  defaultUser:
+    externalSecretName:
+    # Secret must contain:
+    # - DEFAULT_ADMIN_USER_USERNAME
+    # - DEFAULT_ADMIN_USER_PASSWORD
+  api:
+    hostname: api-auth.phrasea.io
+    baseUrl: https://api-auth.phrasea.io
+    ingress:
+      annotations: {}
+      tls: []
+  adminOAuthClient:
+    externalSecretName:
+    # Secret must contain:
+    # - ADMIN_CLIENT_ID
+    # - ADMIN_CLIENT_RANDOM_ID
+    # - ADMIN_CLIENT_SECRET
+
+expose:
+  api:
+    hostname: api-expose.phrasea.io
+    baseUrl: https://api-expose.phrasea.io
+    config:
+      s3Storage:
+        baseUrl: "https://s3.eu-west-1.amazonaws.com/expose"
+        # Leave me empty for AWS S3
+        endpoint: ""
+        bucketName: expose
+        externalSecretKey:
+        # Secret must contain:
+        # - S3_STORAGE_ACCESS_KEY
+        # - S3_STORAGE_SECRET_KEY
+
+    ingress:
+      annotations: {}
+  adminOAuthClient:
+    externalSecretName:
+    # Secret must contain:
+    # - ADMIN_CLIENT_ID
+    # - ADMIN_CLIENT_RANDOM_ID
+    # - ADMIN_CLIENT_SECRET
+  client:
+    hostname: expose.phrasea.io
+    baseUrl: https://expose.phrasea.io
+    ingress:
+      annotations: {}
+      tls: []
+    oauthClient:
+      externalSecretName:
+      # Secret must contain:
+      # - CLIENT_ID
+      # - CLIENT_RANDOM_ID
+      # - CLIENT_SECRET
+      secret: ""
+    mapbox:
+      token: ""
+
+notify:
+  api:
+    hostname: api-notify.phrasea.io
+    baseUrl: https://api-notify.phrasea.io
+    ingress:
+      annotations: {}
+      tls: []
+  adminOAuthClient:
+    externalSecretName:
+    # Secret must contain:
+    # - ADMIN_CLIENT_ID
+    # - ADMIN_CLIENT_RANDOM_ID
+    # - ADMIN_CLIENT_SECRET
+
+uploader:
+  persistence:
+    existingClaim:
+  api:
+    hostname: api-uploader.phrasea.io
+    baseUrl: https://api-uploader.phrasea.io
+    ingress:
+      annotations: {}
+    config:
+      s3Storage:
+        baseUrl: "https://s3.eu-west-1.amazonaws.com/uploader-deposit"
+        # Leave me empty for AWS S3
+        endpoint: ""
+        bucketName: uploader-deposit
+        externalSecretKey:
+        # Secret must contain:
+        # - S3_STORAGE_ACCESS_KEY
+        # - S3_STORAGE_SECRET_KEY
+
+  adminOAuthClient:
+    externalSecretName:
+    # Secret must contain:
+    # - ADMIN_CLIENT_ID
+    # - ADMIN_CLIENT_RANDOM_ID
+    # - ADMIN_CLIENT_SECRET
+  client:
+    hostname: uploader.phrasea.io
+    ingress:
+      annotations: {}
+      tls: []
+    oauthClient:
+      externalSecretName:
+      # Secret must contain:
+      # - CLIENT_ID
+      # - CLIENT_RANDOM_ID
+      # - CLIENT_SECRET
+
+report:
+  api:
+    hostname: report.phrasea.io
+    baseUrl: https://report.phrasea.io
+
+mailer:
+  dsn: ""
+
+postgresql:
+  externalSecretName:
+  # Secret must contain:
+  # - POSTGRES_USER
+  # - POSTGRES_PASSWORD
+  persistence:
+    existingClaim:
+
+rabbitmq:
+  externalSecretName:
+  # Secret must contain:
+  # - RABBITMQ_USER
+  # - RABBITMQ_PASSWORD
+  persistence:
+    existingClaim:
+
+minio:
+  enabled: false
+
+globalConfig:
+  externalConfigmapName:

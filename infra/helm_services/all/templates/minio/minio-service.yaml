@@ -1,0 +1,14 @@
+{{- if .Values.minio.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+spec:
+  ports:
+  - name: minio
+    port: 80
+    targetPort: 9000
+  selector:
+    app: phraseanet-services
+    tier: minio
+{{- end }}

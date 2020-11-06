@@ -1,0 +1,30 @@
+{{ with .Values.postgresql }}
+{{- if and .persistence.enabled (not .persistence.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+{{- if .persistence.annotations }}
+  annotations:
+{{ toYaml .persistence.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "ps.fullname" $ }}-postgresql
+  labels:
+    "app.kubernetes.io/name": '{{ template "ps.name" $ }}'
+    "helm.sh/chart": "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    "app.kubernetes.io/managed-by": "{{ $.Release.Service }}"
+    "app.kubernetes.io/instance": "{{ $.Release.Name }}"
+spec:
+  accessModes:
+    - {{ .persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .persistence.size | quote }}
+{{- if .persistence.storageClass }}
+{{- if (eq "-" .persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
