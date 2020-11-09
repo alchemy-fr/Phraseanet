@@ -195,7 +195,7 @@ class Fetcher
                 . " FROM ((\n"
                 . "     SELECT record_id, coll_id AS collection_id, uuid, status AS flags_bitfield, sha256,\n"
                 . "            originalname AS original_name, mime, type, parent_record_id,\n"
-                . "            credate AS created_on, moddate AS updated_on, coll_id\n"
+                . "            credate AS created_on, moddate AS updated_on, coll_id, jeton\n"
                 . "     FROM record\n"
                 . "     WHERE -- WHERE\n"
                 . "     ORDER BY " . ($this->options->getPopulateOrder() === ElasticsearchOptions::POPULATE_ORDER_RID ? 'record_id':'moddate')
