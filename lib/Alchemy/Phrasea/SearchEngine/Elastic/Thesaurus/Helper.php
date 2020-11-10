@@ -31,26 +31,54 @@ class Helper
         $nodes = $xpath->query($expression);
         $concepts = [];
 
+        /** @var DOMElement $node */
         foreach ($nodes as $node) {
-            $me_and_parents = array_merge([$node], self::getElementAncestors($node));
+            if(1) {
+                $me_and_parents = array_merge([$node], self::getElementAncestors($node));
 
-            $path_segments = [];
+                $path_segments = [];
 
-            foreach ($me_and_parents as $me_or_parent) {
-                if (!Navigator::isConcept($me_or_parent)) {
-                    // Silently skips invalid targeted nodes
-                    break;
+                foreach ($me_and_parents as $me_or_parent) {
+                    if (!Navigator::isConcept($me_or_parent)) {
+                        // Silently skips invalid targeted nodes
+                        break;
+                    }
+
+                    $path_segments[] = self::conceptPathSegment($me_or_parent);
                 }
 
-                $path_segments[] = self::conceptPathSegment($me_or_parent);
+                // Concept paths are have databox identifier at root level
+                $concepts[] = new Concept(sprintf(
+                    '/%d/%s',
+                    $databox->get_sbas_id(),
+                    implode('/', array_reverse($path_segments))
+                ));
             }
-
-            // Concept paths are have databox identifier at root level
-            $concepts[] = new Concept(sprintf(
-                '/%d/%s',
-                $databox->get_sbas_id(),
-                implode('/', array_reverse($path_segments))
-            ));
+            else {
+                $path = '';
+                // go up thru parents
+                while ($node) {
+                    $v = null;
+                    for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
+                        if ($n->nodeType === XML_ELEMENT_NODE && $n->nodeName === 'sy') {
+                            if ($v === null) {
+                                $v = $n->getAttribute('v');
+                                continue;
+                            }
+                            if ($n->getAttribute('lng') === 'en') {
+                                $v = $n->getAttribute('v');
+                                break;
+                            }
+                        }
+                    }
+                    if ($v !== null) {
+                        $path = '/' . $v . $path;
+                    }
+                    $node = $node->parentNode;
+                }
+                $path = '/' . $databox->get_sbas_id() . $path;
+                $concepts[] = new Concept($path);
+            }
         }
 
         return $concepts;

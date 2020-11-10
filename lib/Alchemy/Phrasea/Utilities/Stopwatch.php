@@ -62,7 +62,17 @@ class Stopwatch
      */
     public function getLapses()
     {
+        $this->stop();
+        $this->_lapses['_total'] = ($this->_stop - $this->_start) * 1000.0;
         return $this->_lapses;
+    }
+
+    public function log()
+    {
+//         file_put_contents('/var/alchemy/Phraseanet/tmp/phraseanet.log',
+//            $this->_name . "\n" . var_export($this->getLapses(), true) . "\n\n",
+//            FILE_APPEND
+//         );
     }
 
     /**

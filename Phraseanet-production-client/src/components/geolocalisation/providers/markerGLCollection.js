@@ -91,7 +91,7 @@ const markerGLCollection = (services) => {
                 lng: cachedGeoJson.features[0].geometry.coordinates[0],
                 lat: cachedGeoJson.features[0].geometry.coordinates[1]
             };
-            marker.feature = marker.features[0];
+            marker.feature = cachedGeoJson.features[0];
             eventEmitter.emit('markerChange', {marker, position: marker.lngLat});
         });
 
