@@ -21,11 +21,13 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field AS ESField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\SearchEngine\SearchEngineStructure;
 use Alchemy\Phrasea\Utilities\Stopwatch;
 use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -61,13 +63,13 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @param Application $app
-     * @param Structure $structure
+     * @param GlobalStructure $structure
      * @param Client $client
      * @param QueryContextFactory $context_factory
-     * @param callable $facetsResponseFactory
+     * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
      */
-    public function __construct(Application $app, Structure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -77,7 +79,14 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->options = $options;
 
         $this->indexName = $options->getIndexName();
+    }
 
+    /**
+     * @return Structure
+     */
+    public function getStructure()
+    {
+        return $this->structure;
     }
 
     public function getIndexName()
@@ -129,7 +138,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableDateFields()
     {
         // TODO Use limited structure
-        return array_keys($this->structure->getDateFields());
+        return array_keys($this->getStructure()->getDateFields());
     }
 
     /**

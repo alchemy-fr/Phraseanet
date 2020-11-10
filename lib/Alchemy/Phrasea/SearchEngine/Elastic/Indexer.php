@@ -279,11 +279,11 @@ class Indexer
         );
 
         // Optimize index
-        $this->client->indices()->optimize(
-            [
-                'index' => $this->index->getName()
-            ]
-        );
+//        $this->client->indices()->optimize(
+//            [
+//                'index' => $this->index->getName()
+//            ]
+//        );
 
         $event = $stopwatch->stop('populate');
 
