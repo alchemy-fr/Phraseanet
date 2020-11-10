@@ -2344,6 +2344,7 @@ var leafletMap = function leafletMap(services) {
                 }
                 addMarkersLayers();
                 refreshMarkers(pois);
+                addNoticeControlJS(drawable, editable);
             } else {
                 mapboxgl.accessToken = activeProvider.accessToken;
                 if (mapboxGLDefaultPosition == null) {
@@ -2385,20 +2386,36 @@ var leafletMap = function leafletMap(services) {
                         eventEmitter.emit('updateCircleGeo', { shapes: [], drawnItems: [] });
                         eventEmitter.emit('updateSearchValue');
                         removeCircleIfExist();
-                        removeNoticeControl();
+                        removeNoticeControlGL();
                     });
 
                     (0, _jquery2.default)('.submit-geo-search-action').on('click', function (event) {
                         removeCircleIfExist();
-                        removeNoticeControl();
+                        removeNoticeControlGL();
                     });
 
                     addCircleDrawControl();
-                    addNoticeControl();
                     addCircleGeoDrawing(drawnItems);
                 } else {
                     map.addControl(new mapboxgl.NavigationControl());
+
+                    (0, _jquery2.default)('#PREVIEWBOX .close-preview-action').on('click', function (event) {
+                        removeNoticeControlGL();
+                        removeNoticeControlJS();
+                    });
+
+                    (0, _jquery2.default)('#EDITWINDOW .cancel-multi-desc-action').on('click', function (event) {
+                        removeNoticeControlGL();
+                        removeNoticeControlJS();
+                    });
+
+                    (0, _jquery2.default)('#EDITWINDOW .apply-multi-desc-action').on('click', function (event) {
+                        removeNoticeControlGL();
+                        removeNoticeControlJS();
+                    });
                 }
+
+                addNoticeControlGL(drawable, editable);
 
                 if (searchable) {
                     var geocoderSearch = new _mapboxGlGeocoder2.default({
@@ -2458,6 +2475,32 @@ var leafletMap = function leafletMap(services) {
                         //map.on('moveend', calculateBounds).on('zoomend', calculateBounds);
                     }
                 });
+
+                if (editable) {
+                    // init add marker context menu only if 1 record is available and has no coords
+                    if (pois.length === 1) {
+                        map.on('contextmenu', function (eContext) {
+                            var poiIndex = 0;
+                            var selectedPoi = pois[poiIndex];
+                            var poiCoords = haveValidCoords(selectedPoi);
+                            if (poiCoords === false) {
+                                var popup = document.getElementsByClassName('mapboxgl-popup');
+                                // Check if there is already a popup on the map and if so, remove it
+                                if (popup[0]) {
+                                    popup[0].parentElement.removeChild(popup[0]);
+                                }
+
+                                var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(eContext.lngLat).setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + localeService.t("mapMarkerAdd") + '</button>').addTo(map);
+
+                                popup = document.getElementsByClassName('mapboxgl-popup');
+                                (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
+                                    popup[0].parentElement.removeChild(popup[0]);
+                                    addMarkerOnce(eContext, poiIndex, selectedPoi);
+                                });
+                            }
+                        });
+                    }
+                }
             }
 
             currentZoomLevel = activeProvider.markerDefaultZoom;
@@ -2522,18 +2565,36 @@ var leafletMap = function leafletMap(services) {
         }
     };
 
-    var addNoticeControl = function addNoticeControl() {
-        var controlContainerList = (0, _jquery2.default)('.mapboxgl-control-container');
-        var $noticeButton = (0, _jquery2.default)('<button id="map-notice-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
-        controlContainerList.append($noticeButton);
+    var addNoticeControlGL = function addNoticeControlGL(drawable, editable) {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .mapboxgl-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .mapboxgl-control-container');
 
-        var $noticeBox = (0, _jquery2.default)('<div id="notice-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("title notice") + '</span></span><span class="notice-desc">' + localeService.t("description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
-        controlContainerList.append($noticeBox);
+        var $noticeButton = null;
+        var $noticeBox = null;
+        if (drawable) {
+            $noticeButton = (0, _jquery2.default)('<button id="map-notice-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
 
-        $noticeButton.on('click', function (event) {
-            $noticeBox.show();
-            $noticeButton.hide();
-        });
+            $noticeBox = (0, _jquery2.default)('<div id="notice-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("title notice") + '</span></span><span class="notice-desc">' + localeService.t("description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerSearch.append($noticeButton);
+            controlContainerSearch.append($noticeBox);
+        }
+
+        if (editable) {
+            $noticeButton = (0, _jquery2.default)('<button id="map-info-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBox = (0, _jquery2.default)('<div id="notice-info-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("prod:mapboxgl: title info") + '</span></span><span class="notice-desc">' + localeService.t("prod:mapboxgl: description info : right click to add position") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerEdit.append($noticeButton);
+            controlContainerEdit.append($noticeBox);
+        }
+
+        if ($noticeButton != null) {
+            $noticeButton.on('click', function (event) {
+                $noticeBox.show();
+                $noticeButton.hide();
+            });
+        }
 
         (0, _jquery2.default)('.notice-close-btn').on('click', function (event) {
             $noticeBox.hide();
@@ -2541,10 +2602,64 @@ var leafletMap = function leafletMap(services) {
         });
     };
 
-    var removeNoticeControl = function removeNoticeControl() {
-        var controlContainerList = (0, _jquery2.default)('.mapboxgl-control-container');
-        if (controlContainerList.find('#notice-box').length > 0) {
+    var removeNoticeControlGL = function removeNoticeControlGL() {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .mapboxgl-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .mapboxgl-control-container');
+
+        if (controlContainerSearch.find('#notice-box').length > 0) {
             (0, _jquery2.default)('#notice-box').remove();
+        }
+        if (controlContainerEdit.find('#notice-info-box').length > 0) {
+            (0, _jquery2.default)('#notice-info-box').remove();
+        }
+    };
+
+    var addNoticeControlJS = function addNoticeControlJS(drawable) {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .leaflet-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .leaflet-control-container');
+
+        var $noticeButtonJs = null;
+        var $noticeBoxJs = null;
+        if (drawable) {
+            $noticeButtonJs = (0, _jquery2.default)('<button id="map-noticeJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBoxJs = (0, _jquery2.default)('<div id="noticeJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("prod:mapboxjs: title notice") + '</span></span><span class="notice-desc">' + localeService.t("prod:mapboxjs: description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerSearch.append($noticeButtonJs);
+            controlContainerSearch.append($noticeBoxJs);
+        }
+
+        if (editable) {
+            $noticeButtonJs = (0, _jquery2.default)('<button id="map-infoJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBoxJs = (0, _jquery2.default)('<div id="notice-infoJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("prod:mapboxjs: title info") + '</span></span><span class="notice-desc">' + localeService.t("prod:mapboxjs: description info : right click to add position") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerEdit.append($noticeButtonJs);
+            controlContainerEdit.append($noticeBoxJs);
+        }
+
+        if ($noticeButtonJs != null) {
+            $noticeButtonJs.on('click', function (event) {
+                $noticeBoxJs.show();
+                $noticeButtonJs.hide();
+            });
+        }
+
+        (0, _jquery2.default)('.notice-close-btn').on('click', function (event) {
+            $noticeBoxJs.hide();
+            $noticeButtonJs.show();
+        });
+    };
+
+    var removeNoticeControlJS = function removeNoticeControlJS() {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .leaflet-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .leaflet-control-container');
+
+        if (controlContainerSearch.find('#noticeJs-box').length > 0) {
+            (0, _jquery2.default)('#noticeJs-box').remove();
+        }
+        if (controlContainerEdit.find('#notice-infoJs-box').length > 0) {
+            (0, _jquery2.default)('#notice-infoJs-box').remove();
         }
     };
 
@@ -2794,7 +2909,13 @@ var leafletMap = function leafletMap(services) {
     };
     var addMarkerOnce = function addMarkerOnce(e, poiIndex, poi) {
         // inject coords into poi's fields:
-        var mappedCoords = getMappedFields(e.latlng);
+        var mappedCoords = '';
+        if (shouldUseMapboxGl()) {
+            mappedCoords = getMappedFields(e.lngLat);
+        } else {
+            mappedCoords = getMappedFields(e.latlng);
+        }
+
         var pois = [(0, _lodash2.default)(poi, mappedCoords)];
         refreshMarkers(pois).then(function () {
             // broadcast event:
@@ -2809,7 +2930,9 @@ var leafletMap = function leafletMap(services) {
             var presets = {
                 fields: wrappedMappedFields //presetFields
             };
-            map.contextmenu.disable();
+            if (!shouldUseMapboxGl()) {
+                map.contextmenu.disable();
+            }
             eventEmitter.emit('recordEditor.addPresetValuesFromDataSource', { data: presets, recordIndex: poiIndex });
         });
     };
@@ -2841,14 +2964,19 @@ var leafletMap = function leafletMap(services) {
             data: geojson
         });
 
-        map.addLayer({
-            id: 'points',
-            source: 'data',
-            type: 'symbol',
-            layout: {
-                "icon-image": "star-15",
-                "icon-size": 1.5
-            }
+        map.loadImage('/assets/common/images/icons/marker_icon.png', function (error, image) {
+            if (error) throw error;
+            map.addImage('custom-marker', image);
+
+            // Add a symbol layer
+            map.addLayer({
+                id: 'points',
+                source: 'data',
+                type: 'symbol',
+                layout: {
+                    "icon-image": 'custom-marker'
+                }
+            });
         });
     };
 
@@ -2918,7 +3046,6 @@ var leafletMap = function leafletMap(services) {
                         position.lng = featureLayer.getGeoJSON()[0].geometry.coordinates[0];
                         position.lat = featureLayer.getGeoJSON()[0].geometry.coordinates[1];
                         updateMarkerPosition(featureLayer.getGeoJSON()[0].properties.recordIndex, position);
-                        console.log('ato');
                     } else {
                         // set default position
                         shouldUpdateZoom = false;
@@ -55453,7 +55580,7 @@ exports = module.exports = __webpack_require__(40)(false);
 
 
 // module
-exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content {\n    background: #555555;\n    width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n\n/* mapbox Gl search */\n@media screen and (min-width: 640px) {\n    .mapboxgl-ctrl-geocoder--input {\n        height: 36px !important;\n        padding: 6px 35px !important;\n        margin-bottom: 0px !important;\n    }\n}\n", ""]);
+exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content {\n    background: #555555;\n    width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 110px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-noticeJs-btn {\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-infoJs-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn:focus {\n    outline: 0;\n}\n\n#notice-info-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 125px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#noticeJs-box {\n    display: block;\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#notice-infoJs-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n\n/* mapbox Gl search */\n@media screen and (min-width: 640px) {\n    .mapboxgl-ctrl-geocoder--input {\n        height: 36px !important;\n        padding: 6px 35px !important;\n        margin-bottom: 0px !important;\n    }\n}\n", ""]);
 
 // exports
 

@@ -156,6 +156,12 @@ class LanguageController
             'description notice'  => $translator->trans('prod:mapboxgl: description notice'),
             'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),
             'create new user'     => $translator->trans('prod:push: create new user'),
+            'prod:mapboxjs: title notice' => $translator->trans('prod:mapboxjs: title notice'),
+            'prod:mapboxjs: description notice' => $translator->trans('prod:mapboxjs: description notice'),
+            'prod:mapboxjs: title info' => $translator->trans('prod:mapboxjs: title info'),
+            'prod:mapboxjs: description info : right click to add position' => $translator->trans('prod:mapboxjs: description info : right click to add position'),
+            'prod:mapboxgl: title info' => $translator->trans('prod:mapboxgl: title info'),
+            'prod:mapboxgl: description info : right click to add position' => $translator->trans('prod:mapboxgl: description info : right click to add position'),
             'prod:videoeditor:subtitletab:message:: error'     => $translator->trans('prod:videoeditor:subtitletab:message:: error'),
             'prod:videoeditor:subtitletab:message:: success'     => $translator->trans('prod:videoeditor:subtitletab:message:: success'),
         ]);
