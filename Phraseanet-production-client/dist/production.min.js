@@ -2398,21 +2398,6 @@ var leafletMap = function leafletMap(services) {
                     addCircleGeoDrawing(drawnItems);
                 } else {
                     map.addControl(new mapboxgl.NavigationControl());
-
-                    (0, _jquery2.default)('#PREVIEWBOX .close-preview-action').on('click', function (event) {
-                        removeNoticeControlGL();
-                        removeNoticeControlJS();
-                    });
-
-                    (0, _jquery2.default)('#EDITWINDOW .cancel-multi-desc-action').on('click', function (event) {
-                        removeNoticeControlGL();
-                        removeNoticeControlJS();
-                    });
-
-                    (0, _jquery2.default)('#EDITWINDOW .apply-multi-desc-action').on('click', function (event) {
-                        removeNoticeControlGL();
-                        removeNoticeControlJS();
-                    });
                 }
 
                 addNoticeControlGL(drawable, editable);
@@ -2477,27 +2462,32 @@ var leafletMap = function leafletMap(services) {
                 });
 
                 if (editable) {
-                    // init add marker context menu only if 1 record is available and has no coords
+                    // init add marker context menu only if 1 record is available
                     if (pois.length === 1) {
                         map.on('contextmenu', function (eContext) {
+                            var buttonText = localeService.t("prod:mapboxgl Change position");
                             var poiIndex = 0;
                             var selectedPoi = pois[poiIndex];
                             var poiCoords = haveValidCoords(selectedPoi);
+
+                            // if has no coords
                             if (poiCoords === false) {
-                                var popup = document.getElementsByClassName('mapboxgl-popup');
-                                // Check if there is already a popup on the map and if so, remove it
-                                if (popup[0]) {
-                                    popup[0].parentElement.removeChild(popup[0]);
-                                }
-
-                                var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(eContext.lngLat).setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + localeService.t("mapMarkerAdd") + '</button>').addTo(map);
-
-                                popup = document.getElementsByClassName('mapboxgl-popup');
-                                (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
-                                    popup[0].parentElement.removeChild(popup[0]);
-                                    addMarkerOnce(eContext, poiIndex, selectedPoi);
-                                });
+                                buttonText = localeService.t("mapMarkerAdd");
                             }
+
+                            var popup = document.getElementsByClassName('mapboxgl-popup');
+                            // Check if there is already a popup on the map and if so, remove it
+                            if (popup[0]) {
+                                popup[0].parentElement.removeChild(popup[0]);
+                            }
+
+                            var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(eContext.lngLat).setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>').addTo(map);
+
+                            popup = document.getElementsByClassName('mapboxgl-popup');
+                            (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
+                                popup[0].parentElement.removeChild(popup[0]);
+                                addMarkerOnce(eContext, poiIndex, selectedPoi);
+                            });
                         });
                     }
                 }
@@ -2567,7 +2557,7 @@ var leafletMap = function leafletMap(services) {
 
     var addNoticeControlGL = function addNoticeControlGL(drawable, editable) {
         var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .mapboxgl-control-container');
-        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .mapboxgl-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .mapboxgl-control-container');
 
         var $noticeButton = null;
         var $noticeBox = null;
@@ -2604,7 +2594,7 @@ var leafletMap = function leafletMap(services) {
 
     var removeNoticeControlGL = function removeNoticeControlGL() {
         var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .mapboxgl-control-container');
-        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .mapboxgl-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .mapboxgl-control-container');
 
         if (controlContainerSearch.find('#notice-box').length > 0) {
             (0, _jquery2.default)('#notice-box').remove();
@@ -2616,7 +2606,7 @@ var leafletMap = function leafletMap(services) {
 
     var addNoticeControlJS = function addNoticeControlJS(drawable) {
         var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .leaflet-control-container');
-        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .leaflet-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .leaflet-control-container');
 
         var $noticeButtonJs = null;
         var $noticeBoxJs = null;
@@ -2653,7 +2643,7 @@ var leafletMap = function leafletMap(services) {
 
     var removeNoticeControlJS = function removeNoticeControlJS() {
         var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .leaflet-control-container');
-        var controlContainerEdit = (0, _jquery2.default)('#leafletTabContainer .leaflet-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .leaflet-control-container');
 
         if (controlContainerSearch.find('#noticeJs-box').length > 0) {
             (0, _jquery2.default)('#noticeJs-box').remove();

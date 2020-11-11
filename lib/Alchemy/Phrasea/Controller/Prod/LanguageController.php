@@ -116,6 +116,7 @@ class LanguageController
             'attention'             => $translator->trans('Attention !'),
             'mapMarkerEdit'         => $translator->trans('Edit position'),
             'mapMarkerAdd'          => $translator->trans('Add a position'),
+            'prod:mapboxgl Change position' => $translator->trans('prod:mapboxgl Change position'),
             'mapMarkerMoveLabel'    => $translator->trans('Drag and drop the pin to move position'),
             'mapMarkerEditCancel'   => $translator->trans('Cancel'),
             'mapMarkerEditSubmit'   => $translator->trans('Submit'),
