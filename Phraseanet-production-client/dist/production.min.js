@@ -2462,34 +2462,35 @@ var leafletMap = function leafletMap(services) {
                 });
 
                 if (editable) {
-                    // init add marker context menu only if 1 record is available
-                    if (pois.length === 1) {
-                        map.on('contextmenu', function (eContext) {
-                            var buttonText = localeService.t("prod:mapboxgl Change position");
-                            var poiIndex = 0;
-                            var selectedPoi = pois[poiIndex];
-                            var poiCoords = haveValidCoords(selectedPoi);
+                    map.on('contextmenu', function (eContext) {
+                        var buttonText = localeService.t("prod:mapboxgl Change position");
+                        if (pois.length === 1) {
+                            var _poiIndex = 0;
+                            var _selectedPoi = pois[_poiIndex];
+                            var _poiCoords = haveValidCoords(_selectedPoi);
 
                             // if has no coords
-                            if (poiCoords === false) {
+                            if (_poiCoords === false) {
                                 buttonText = localeService.t("mapMarkerAdd");
                             }
+                        }
 
-                            var popup = document.getElementsByClassName('mapboxgl-popup');
-                            // Check if there is already a popup on the map and if so, remove it
-                            if (popup[0]) {
-                                popup[0].parentElement.removeChild(popup[0]);
+                        var popup = document.getElementsByClassName('mapboxgl-popup');
+                        // Check if there is already a popup on the map and if so, remove it
+                        if (popup[0]) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                        }
+
+                        var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(eContext.lngLat).setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>').addTo(map);
+
+                        popup = document.getElementsByClassName('mapboxgl-popup');
+                        (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                            for (var i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
                             }
-
-                            var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(eContext.lngLat).setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>').addTo(map);
-
-                            popup = document.getElementsByClassName('mapboxgl-popup');
-                            (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
-                                popup[0].parentElement.removeChild(popup[0]);
-                                addMarkerOnce(eContext, poiIndex, selectedPoi);
-                            });
                         });
-                    }
+                    });
                 }
             }
 

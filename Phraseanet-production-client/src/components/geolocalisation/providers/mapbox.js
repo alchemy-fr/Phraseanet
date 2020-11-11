@@ -315,10 +315,9 @@ const leafletMap = (services) => {
                 });
 
                 if (editable) {
-                    // init add marker context menu only if 1 record is available
-                    if (pois.length === 1) {
-                        map.on('contextmenu', function(eContext) {
-                            let buttonText = localeService.t("prod:mapboxgl Change position");
+                    map.on('contextmenu', function(eContext) {
+                        let buttonText = localeService.t("prod:mapboxgl Change position");
+                        if (pois.length === 1) {
                             let poiIndex = 0;
                             let selectedPoi = pois[poiIndex];
                             let poiCoords = haveValidCoords(selectedPoi);
@@ -327,26 +326,28 @@ const leafletMap = (services) => {
                             if (poiCoords === false) {
                                 buttonText = localeService.t("mapMarkerAdd");
                             }
+                        }
 
-                            let popup = document.getElementsByClassName('mapboxgl-popup');
-                            // Check if there is already a popup on the map and if so, remove it
-                            if (popup[0]) {
-                                popup[0].parentElement.removeChild(popup[0]);
+                        let popup = document.getElementsByClassName('mapboxgl-popup');
+                        // Check if there is already a popup on the map and if so, remove it
+                        if (popup[0]) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                        }
+
+                        let popupDialog = new mapboxgl.Popup({ closeOnClick: false })
+                            .setLngLat(eContext.lngLat)
+                            .setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>')
+                            .addTo(map);
+
+                        popup = document.getElementsByClassName('mapboxgl-popup');
+                        $(popup[0]).on('click', '.add-position', function(event) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                            for (let i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
                             }
-
-                            let popupDialog = new mapboxgl.Popup({ closeOnClick: false })
-                                .setLngLat(eContext.lngLat)
-                                .setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>')
-                                .addTo(map);
-
-                            popup = document.getElementsByClassName('mapboxgl-popup');
-                            $(popup[0]).on('click', '.add-position', function(event) {
-                                popup[0].parentElement.removeChild(popup[0]);
-                                addMarkerOnce(eContext, poiIndex, selectedPoi);
-                            });
-
                         });
-                    }
+
+                    });
                 }
             }
 
