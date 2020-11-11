@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Utilities\Stopwatch;
@@ -60,7 +61,8 @@ class V3SearchRawController extends Controller
     }
 
     /**
-     * @return SearchEngineInterface
+     * // return SearchEngineInterface
+     * @return ElasticSearchEngine
      */
     private function getSearchEngine()
     {
