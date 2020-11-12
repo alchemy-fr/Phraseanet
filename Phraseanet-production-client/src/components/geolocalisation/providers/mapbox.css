@@ -76,7 +76,7 @@
     margin-top: 0;
 }
 
-.mapboxgl-popup-content {
+.mapboxgl-popup-content, .leaflet-popup-content {
     background: #555555;
     width: 200px;
     font-size: 15px;

@@ -2300,27 +2300,6 @@ var leafletMap = function leafletMap(services) {
 
             $container.empty().append('<div id="' + mapUID + '" class="phrasea-popup" style="width: 100%;height:100%; position: absolute;top:0;left:0"></div>');
 
-            if (editable) {
-                // init add marker context menu only if 1 record is available and has no coords
-                if (pois.length === 1) {
-                    var poiIndex = 0;
-                    var selectedPoi = pois[poiIndex];
-                    var poiCoords = haveValidCoords(selectedPoi);
-                    if (poiCoords === false) {
-                        mapOptions = (0, _lodash2.default)({
-                            contextmenu: true,
-                            contextmenuWidth: 140,
-                            contextmenuItems: [{
-                                text: localeService.t('mapMarkerAdd'),
-                                callback: function callback(e) {
-                                    addMarkerOnce(e, poiIndex, selectedPoi);
-                                }
-                            }]
-                        }, mapOptions);
-                    }
-                }
-            }
-
             if (!shouldUseMapboxGl()) {
                 L.mapbox.accessToken = activeProvider.accessToken;
                 map = L.mapbox.map(mapUID, _underscore2.default, mapOptions);
@@ -2345,6 +2324,31 @@ var leafletMap = function leafletMap(services) {
                 addMarkersLayers();
                 refreshMarkers(pois);
                 addNoticeControlJS(drawable, editable);
+
+                if (editable) {
+                    map.on('contextmenu', function (eContext) {
+                        var buttonText = localeService.t("Change position");
+                        if (pois.length === 1) {
+                            var poiIndex = 0;
+                            var selectedPoi = pois[poiIndex];
+                            var poiCoords = haveValidCoords(selectedPoi);
+
+                            // if has no coords
+                            if (poiCoords === false) {
+                                buttonText = localeService.t("mapMarkerAdd");
+                            }
+                        }
+
+                        var popupDialog = L.popup({ closeOnClick: false }).setLatLng(eContext.latlng).setContent('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>').openOn(map);
+
+                        var popup = document.getElementsByClassName('leaflet-popup');
+                        (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
+                            for (var i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
+                            }
+                        });
+                    });
+                }
             } else {
                 mapboxgl.accessToken = activeProvider.accessToken;
                 if (mapboxGLDefaultPosition == null) {
@@ -2463,14 +2467,14 @@ var leafletMap = function leafletMap(services) {
 
                 if (editable) {
                     map.on('contextmenu', function (eContext) {
-                        var buttonText = localeService.t("prod:mapboxgl Change position");
+                        var buttonText = localeService.t("Change position");
                         if (pois.length === 1) {
-                            var _poiIndex = 0;
-                            var _selectedPoi = pois[_poiIndex];
-                            var _poiCoords = haveValidCoords(_selectedPoi);
+                            var poiIndex = 0;
+                            var selectedPoi = pois[poiIndex];
+                            var poiCoords = haveValidCoords(selectedPoi);
 
                             // if has no coords
-                            if (_poiCoords === false) {
+                            if (poiCoords === false) {
                                 buttonText = localeService.t("mapMarkerAdd");
                             }
                         }
@@ -19244,7 +19248,7 @@ var recordEditorService = function recordEditorService(services) {
         });
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: getRecordSelection()
+            selection: loadSelectedRecords()
         });
     }
 
@@ -19864,10 +19868,12 @@ var recordEditorService = function recordEditorService(services) {
                 var $record = (0, _jquery2.default)(selected[_pos]);
                 selection.push($record.attr('id').split('_').pop());
             }
-            recordEditorEvents.emit('recordSelection.changed', {
-                selection: getRecordSelection()
-            });
         }
+
+        recordEditorEvents.emit('recordSelection.changed', {
+            selection: loadSelectedRecords()
+        });
+
         /**trigger select all checkbox**/
         if (selected.length < allRecords.length) {
             (0, _jquery2.default)("#select-all-diapo").removeAttr("checked");
@@ -19877,6 +19883,7 @@ var recordEditorService = function recordEditorService(services) {
             }
         };
         options.lastClickId = recordIndex;
+
         refreshFields(event);
     }
 
@@ -55571,7 +55578,7 @@ exports = module.exports = __webpack_require__(40)(false);
 
 
 // module
-exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content {\n    background: #555555;\n    width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 110px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-noticeJs-btn {\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-infoJs-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn:focus {\n    outline: 0;\n}\n\n#notice-info-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 125px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#noticeJs-box {\n    display: block;\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#notice-infoJs-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n\n/* mapbox Gl search */\n@media screen and (min-width: 640px) {\n    .mapboxgl-ctrl-geocoder--input {\n        height: 36px !important;\n        padding: 6px 35px !important;\n        margin-bottom: 0px !important;\n    }\n}\n", ""]);
+exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content, .leaflet-popup-content {\n    background: #555555;\n    width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 110px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-noticeJs-btn {\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-infoJs-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn:focus {\n    outline: 0;\n}\n\n#notice-info-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 125px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#noticeJs-box {\n    display: block;\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#notice-infoJs-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n\n/* mapbox Gl search */\n@media screen and (min-width: 640px) {\n    .mapboxgl-ctrl-geocoder--input {\n        height: 36px !important;\n        padding: 6px 35px !important;\n        margin-bottom: 0px !important;\n    }\n}\n", ""]);
 
 // exports
 

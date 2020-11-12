@@ -149,27 +149,6 @@ const leafletMap = (services) => {
 
             $container.empty().append(`<div id="${mapUID}" class="phrasea-popup" style="width: 100%;height:100%; position: absolute;top:0;left:0"></div>`);
 
-            if (editable) {
-                // init add marker context menu only if 1 record is available and has no coords
-                if (pois.length === 1) {
-                    let poiIndex = 0;
-                    let selectedPoi = pois[poiIndex];
-                    let poiCoords = haveValidCoords(selectedPoi);
-                    if (poiCoords === false) {
-                        mapOptions = merge({
-                            contextmenu: true,
-                            contextmenuWidth: 140,
-                            contextmenuItems: [{
-                                text: localeService.t('mapMarkerAdd'),
-                                callback: (e) => {
-                                    addMarkerOnce(e, poiIndex, selectedPoi)
-                                }
-                            }]
-                        }, mapOptions);
-                    }
-                }
-            }
-
             if (!shouldUseMapboxGl()) {
                 L.mapbox.accessToken = activeProvider.accessToken;
                 map = L.mapbox.map(mapUID, _, mapOptions);
@@ -194,6 +173,35 @@ const leafletMap = (services) => {
                 addMarkersLayers();
                 refreshMarkers(pois);
                 addNoticeControlJS(drawable, editable);
+
+                if (editable) {
+                    map.on('contextmenu', function(eContext) {
+                        let buttonText = localeService.t("Change position");
+                        if (pois.length === 1) {
+                            let poiIndex = 0;
+                            let selectedPoi = pois[poiIndex];
+                            let poiCoords = haveValidCoords(selectedPoi);
+
+                            // if has no coords
+                            if (poiCoords === false) {
+                                buttonText = localeService.t("mapMarkerAdd");
+                            }
+                        }
+
+                        let popupDialog = L.popup({ closeOnClick: false })
+                            .setLatLng(eContext.latlng)
+                            .setContent('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>')
+                            .openOn(map);
+
+                        let popup = document.getElementsByClassName('leaflet-popup');
+                        $(popup[0]).on('click', '.add-position', function(event) {
+                            for (let i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
+                            }
+                        });
+
+                    });
+                }
             } else {
                 mapboxgl.accessToken = activeProvider.accessToken
                 if (mapboxGLDefaultPosition == null) {
@@ -316,7 +324,7 @@ const leafletMap = (services) => {
 
                 if (editable) {
                     map.on('contextmenu', function(eContext) {
-                        let buttonText = localeService.t("prod:mapboxgl Change position");
+                        let buttonText = localeService.t("Change position");
                         if (pois.length === 1) {
                             let poiIndex = 0;
                             let selectedPoi = pois[poiIndex];
