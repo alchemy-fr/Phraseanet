@@ -60,7 +60,7 @@ class Field implements Typed
 
         // Thesaurus concept inference
         $roots = null;
-        if($type === FieldMapping::TYPE_STRING && !empty($xpath = $field->get_tbranch())) {
+        if($type === FieldMapping::TYPE_TEXT && !empty($xpath = $field->get_tbranch())) {
             $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
         }
 
