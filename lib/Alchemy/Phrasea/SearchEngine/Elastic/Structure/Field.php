@@ -4,8 +4,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
 use Alchemy\Phrasea\Utilities\Stopwatch;
 use Assert\Assertion;
@@ -264,4 +262,5 @@ class Field implements Typed
             'used_by_collections' => $used_by_collections
         ]);
     }
+
 }
