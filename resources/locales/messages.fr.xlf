@@ -3161,9 +3161,9 @@
         <target state="translated">Paramètres d'exécutables</target>
         <jms:reference-file line="58">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!">
+      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!" approved="no">
         <source>Expiration date successfully updated!</source>
-        <target state="new">Expiration date successfully updated!</target>
+        <target state="needs-translation">Date d'expiration mise à jour avec succès!</target>
         <jms:reference-file line="763">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c" resname="Export" approved="yes">
@@ -4170,9 +4170,9 @@
         <target state="translated">Recherche dynamique</target>
         <jms:reference-file line="27">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9ecde8751aca5fdbd5f84834b14a216f5a911c17" resname="Load More">
+      <trans-unit id="9ecde8751aca5fdbd5f84834b14a216f5a911c17" resname="Load More" approved="no">
         <source>Load More</source>
-        <target state="new">Load More</target>
+        <target state="needs-translation">Charger plus</target>
         <jms:reference-file line="58">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d199e1a9275786d54f74e5d79f41702274fe5160" resname="Loading database documentary structure ..." approved="yes">
@@ -5600,14 +5600,14 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Type des enregistrements</target>
         <jms:reference-file line="20">actions/Property/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="56e3badc4e6c5cc95e0ea5a9a878b9bd09f319d4" resname="Refresh">
+      <trans-unit id="56e3badc4e6c5cc95e0ea5a9a878b9bd09f319d4" resname="Refresh" approved="no">
         <source>Refresh</source>
-        <target state="new">Refresh</target>
+        <target state="needs-translation">Rafraîchir</target>
         <jms:reference-file line="487">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8341fb596e80ccb2c214adc31d72bcd66f02dac8" resname="Refresh Publication">
+      <trans-unit id="8341fb596e80ccb2c214adc31d72bcd66f02dac8" resname="Refresh Publication" approved="no">
         <source>Refresh Publication</source>
-        <target state="new">Refresh Publication</target>
+        <target state="needs-translation">Rafraîchir la publication</target>
         <jms:reference-file line="3">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
@@ -8165,7 +8165,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="ec54407a03c3b0693732fbfaa4fc8b38cc76acc8" resname="admin:: Phraseanet service setting (beta)" approved="no">
         <source>admin:: Phraseanet service setting (beta)</source>
-        <target state="needs-translation">Phraseanet service réglages (beta)</target>
+        <target state="needs-translation">Réglages Phraseanet-Service (beta)</target>
         <jms:reference-file line="28">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="21a0648a0d5db7740c7ed2ff84041aeb87c8224a" resname="admin:: appliquer le modele" approved="yes">
@@ -9379,9 +9379,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Effacer tous les travaux</target>
         <jms:reference-file line="8">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt">
+      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="no">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
-        <target state="needs-translation">interrompre</target>
+        <target state="needs-translation">Interrompre</target>
         <jms:reference-file line="100">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list" approved="yes">
@@ -9505,9 +9505,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Ajouter un mapping Phraseanet pour les assets et la fiche d'indexation</target>
         <jms:reference-file line="57">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d44ff57d4e838e5e2132b8d4391f10cba90bfa08" resname="admin:phrasea-service-setting:tab:expose:: Add user">
+      <trans-unit id="d44ff57d4e838e5e2132b8d4391f10cba90bfa08" resname="admin:phrasea-service-setting:tab:expose:: Add user" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: Add user</source>
-        <target state="new">admin:phrasea-service-setting:tab:expose:: Add user</target>
+        <target state="needs-translation">Ajouter un utilisateur</target>
         <jms:reference-file line="64">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c800582318436c5814922b85274f02231797ff33" resname="admin:phrasea-service-setting:tab:expose:: Auth Base Uri " approved="no">
@@ -9562,7 +9562,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="2f084b26c3ad8d5325b585590c492b46ec26fe0e" resname="admin:phrasea-service-setting:tab:expose:: Name" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: Name</source>
-        <target state="needs-translation">Nom de l'expose</target>
+        <target state="needs-translation">Nom de l'Expose</target>
         <jms:reference-file line="36">PhraseanetService/Form/PSExposeConnectionType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a058a0d9570c131d091fd5e08cfffe2fc4548480" resname="admin:phrasea-service-setting:tab:expose:: New  expose interconnection name" approved="no">
@@ -9585,9 +9585,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Ajouter un mapping Phraseanet pour les assets et les champs de description</target>
         <jms:reference-file line="55">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22f2e8cc325cfde8357fe7d66502a79257b173a9" resname="admin:phrasea-service-setting:tab:expose:: add user">
+      <trans-unit id="22f2e8cc325cfde8357fe7d66502a79257b173a9" resname="admin:phrasea-service-setting:tab:expose:: add user" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: add user</source>
-        <target state="new">admin:phrasea-service-setting:tab:expose:: add user</target>
+        <target state="needs-translation">Ajouter un utilisateur</target>
         <jms:reference-file line="62">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e34f0393cdcc4561b6d749d15e9892a4990d81c0" resname="admin:phrasea-service-setting:tab:expose:: connection test" approved="no">
@@ -11268,9 +11268,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">par mois</target>
         <jms:reference-file line="62">web/admin/editusers_quotas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8" resname="password">
+      <trans-unit id="5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8" resname="password" approved="no">
         <source>password</source>
-        <target state="new">password</target>
+        <target state="needs-translation">mot de passe</target>
         <jms:reference-file line="32">PhraseanetService/Form/PSExposeConnectionType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ead5a6379197deb9163d2101354822e6caaa30eb" resname="personalize logo" approved="yes">
@@ -12365,7 +12365,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="9b591771eaaea126c4fc9c3a97f9c95674c4179d" resname="prod:mapboxgl: description info : right click to add position" approved="no">
         <source>prod:mapboxgl: description info : right click to add position</source>
-        <target state="needs-translation">Clic droit pour changer la position des Record(s) sélectionnés ou Clic droit sur une icone de positions pour changer la position d'un Record</target>
+        <target state="needs-translation">Clic droit pour changer la position des Record(s) sélectionnés ou Clic droit sur une icône de position pour changer la position d'un Record</target>
         <jms:reference-file line="167">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice" approved="yes">
@@ -14182,14 +14182,14 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Supprimer</target>
         <jms:reference-file line="178">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
+      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="no">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Attention, une indexation de la base est déjà en cours, Il est nécessaire d'attendre la fin de cette indexation pour en relancer une nouvelle.</target>
+        <target state="needs-translation">Attention, une indexation de la base est déjà en cours. Il est nécessaire d'attendre la fin de cette indexation pour en relancer une nouvelle.</target>
         <jms:reference-file line="1569">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message">
+      <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message" approved="no">
         <source>thesaurus::populate: success message</source>
-        <target state="new">thesaurus::populate: success message</target>
+        <target state="needs-translation">Populate terminé</target>
         <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="yes">
