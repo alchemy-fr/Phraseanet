@@ -396,7 +396,7 @@ const recordEditorService = services => {
         });
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: getRecordSelection()
+            selection: loadSelectedRecords()
         });
     }
 
@@ -1128,10 +1128,12 @@ const recordEditorService = services => {
                 let $record = $(selected[pos]);
                 selection.push($record.attr('id').split('_').pop());
             }
-            recordEditorEvents.emit('recordSelection.changed', {
-                selection: getRecordSelection()
-            });
         }
+
+        recordEditorEvents.emit('recordSelection.changed', {
+            selection: loadSelectedRecords()
+        });
+
         /**trigger select all checkbox**/
         if (selected.length < allRecords.length) {
             $("#select-all-diapo").removeAttr("checked");
@@ -1142,6 +1144,8 @@ const recordEditorService = services => {
 
         };
         options.lastClickId = recordIndex;
+
+
         refreshFields(event);
     }
 
