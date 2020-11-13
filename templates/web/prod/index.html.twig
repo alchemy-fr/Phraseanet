@@ -182,10 +182,34 @@
                     {% block tabs_panel %}
                         <div id="retractableButton"><i class="fa fa-angle-double-left" aria-hidden="true"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
-                        <div id="baskets" class="PNB">
+
                             {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                            {{WorkZoneMacros.make_bloc(app, WorkZone)}}
-                        </div>
+                            {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
+                            {% if expose_activate == 'true' %}
+                                {% block tab_headers_wrapper %}
+                                    <div id="baskets_wrapper" class="PNB">
+                                    <div id="expose_tabs" class="tabs" aria-expanded="false">
+                                        <ul>
+                                            <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
+                                            <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>
+                                        </ul>
+                                        <div class="ui-tabs-panels-container">
+                                            <div id="baskets" class="PNB">
+                                                {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                                            </div>
+                                            <div id="expose_tab">
+                                                {{ WorkZoneMacros.make_expose_bloc(app, WorkZone) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                {% endblock %}
+                            {% else %}
+                                <div id="baskets" class="PNB">
+                                   {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                                </div>
+                            {% endif %}
+
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
                                 <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
@@ -1022,6 +1046,8 @@
     <input type="hidden" id="map-zoom-from-setting" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'map_zoom') }}" >
     <input type="hidden" id="map-position-to-setting">
     <input type="hidden" id="map-position-from-setting" value="{{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'map_position') }}">
+
+    <input type="hidden" id="basket-tab" value="#baskets">
 
     <script type="text/javascript" id="bitly_loader"></script>
     <script type="text/javascript">

@@ -31,7 +31,8 @@ class AMQPConnection
         MessagePublisher::POPULATE_INDEX_TYPE   => MessagePublisher::POPULATE_INDEX_QUEUE,
         MessagePublisher::DELETE_RECORD_TYPE    => MessagePublisher::DELETE_RECORD_QUEUE,
         MessagePublisher::MAIN_QUEUE_TYPE       => MessagePublisher::MAIN_QUEUE,
-        MessagePublisher::SUBTITLE_TYPE         => MessagePublisher::SUBTITLE_QUEUE
+        MessagePublisher::SUBTITLE_TYPE         => MessagePublisher::SUBTITLE_QUEUE,
+        MessagePublisher::EXPOSE_UPLOAD_TYPE    => MessagePublisher::EXPOSE_UPLOAD_QUEUE
     ];
 
     //  the corresponding worker queues and retry queues, loop queue

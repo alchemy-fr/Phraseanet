@@ -9998,6 +9998,10 @@ var _alert = __webpack_require__(46);
 
 var _alert2 = _interopRequireDefault(_alert);
 
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -10021,9 +10025,26 @@ var workzone = function workzone(services) {
     var nextBasketScroll = false;
     var warnOnRemove = true;
     var $container = void 0;
+    var dragBloc = (0, _jquery2.default)('#basket-tab').val();
+
+    function checkActiveBloc(destBloc) {
+
+        if (document.getElementById('expose_tab') && document.getElementById('expose_tab').getAttribute('aria-expanded') == 'true') {
+            (0, _jquery2.default)('#basket-tab').val('#expose_tab');
+        }
+        if (document.getElementById('baskets') && document.getElementById('baskets').getAttribute('aria-expanded') == 'true') {
+            (0, _jquery2.default)('#basket-tab').val('#baskets');
+        }
+
+        var destBloc = (0, _jquery2.default)('#basket-tab').val();
+        console.log(destBloc);
+        return destBloc;
+    }
+    checkActiveBloc(dragBloc);
 
     var initialize = function initialize() {
         $container = (0, _jquery2.default)('#idFrameC');
+        checkActiveBloc(dragBloc);
 
         $container.resizable({
             handles: 'e',
@@ -10063,13 +10084,43 @@ var workzone = function workzone(services) {
             }
         });
 
+        (0, _jquery2.default)('#idFrameC .expose_li').on('click', function (event) {
+            checkActiveBloc(dragBloc);
+        });
+
+        (0, _jquery2.default)('.add_publication').on('click', function (event) {
+            openExposePublicationAdd((0, _jquery2.default)('#expose_list').val());
+        });
+
+        (0, _jquery2.default)('.refresh-list').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        (0, _jquery2.default)('.display-list').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        (0, _jquery2.default)('#expose_list').on('change', function () {
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(this.value);
+        });
+
+        (0, _jquery2.default)('.publication-list').on('click', '.top-block', function (event) {
+            (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+            (0, _jquery2.default)(this).toggleClass('open');
+        });
+
         (0, _jquery2.default)('#idFrameC .ui-tabs-nav li').on('click', function (event) {
             if ($container.attr('data-status') === 'closed') {
                 (0, _jquery2.default)('#retractableButton').find('i').removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
                 $container.width(360);
                 (0, _jquery2.default)('#rightFrame').css('left', 360);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 360);
-                (0, _jquery2.default)('#baskets, #proposals, #thesaurus_tab').hide();
+                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab').hide();
                 (0, _jquery2.default)('.ui-resizable-handle, #basket_menu_trigger').show();
                 var IDname = (0, _jquery2.default)(this).attr('aria-controls');
                 (0, _jquery2.default)('#' + IDname).show();
@@ -10090,7 +10141,7 @@ var workzone = function workzone(services) {
                 (0, _jquery2.default)('#rightFrame').css('left', 80);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 80);
                 $container.attr('data-status', 'closed');
-                (0, _jquery2.default)('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
+                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
                 (0, _jquery2.default)('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
                 (0, _jquery2.default)('.WZbasketTab').css('background-position', '15px 16px');
                 $container.addClass('closed');
@@ -10219,6 +10270,7 @@ var workzone = function workzone(services) {
             }
         };
         filterBaskets();
+        (0, _jquery2.default)('#expose_tabs').tabs();
     };
 
     var getResultSelectionStream = function getResultSelectionStream() {
@@ -10521,6 +10573,213 @@ var workzone = function workzone(services) {
         });
     }
 
+    function activeExpose() {
+        var idFrameC = (0, _jquery2.default)('#idFrameC');
+
+        // drop on publication
+        idFrameC.find('.publication-droppable').droppable({
+            scope: 'objects',
+            hoverClass: 'baskDrop',
+            tolerance: 'pointer',
+            accept: function accept(elem) {
+                if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
+                    if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
+                        return false;
+                    }
+                }
+                if ((0, _jquery2.default)(elem).hasClass('grouping') || (0, _jquery2.default)(elem).parent()[0] === (0, _jquery2.default)(this)[0]) {
+                    return false;
+                }
+                return true;
+            },
+            drop: function drop(event, ui) {
+                dropOnBask(event, ui.draggable, (0, _jquery2.default)(this));
+            }
+        });
+
+        // delete an asset from publication
+        idFrameC.find('.publication-droppable').on('click', '.removeAsset', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
+
+            var buttons = {};
+
+            var $dialog = _dialog2.default.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
+            });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/delete-asset/' + publicationId + '/' + assetId + '/?exposeName=' + exposeName,
+                    beforeSend: function beforeSend() {
+                        assetsContainer.addClass('loading');
+                    },
+                    success: function success(data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            var texte = '<p>' + localeService.t('removeAssetPublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
+        });
+
+        idFrameC.find('.publication-droppable').on('click', '.edit_expose', function (event) {
+            openExposePublicationEdit((0, _jquery2.default)(this));
+        });
+
+        // delete a publication
+        idFrameC.find('.publication-droppable').on('click', '.delete-publication', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var buttons = {};
+
+            var $dialog = _dialog2.default.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
+            });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/delete-publication/' + publicationId + '/?exposeName=' + exposeName,
+                    success: function success(data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            updatePublicationList(exposeName);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            var texte = '<p>' + localeService.t('removeExposePublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
+        });
+
+        // refresh publication content
+        idFrameC.find('.publication-droppable').on('click', '.refresh-publication', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
+
+            assetsContainer.empty().addClass('loading');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+        });
+
+        // set publication cover
+        idFrameC.find('.publication-droppable').on('click', '.set-cover', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var publicationData = JSON.stringify({ "cover": '/assets/' + assetId }, undefined, 4);
+
+            _jquery2.default.ajax({
+                type: "PUT",
+                url: '/prod/expose/update-publication/' + publicationId,
+                dataType: 'json',
+                data: {
+                    exposeName: '' + exposeName,
+                    publicationData: publicationData
+                },
+                success: function success(data) {
+                    if (data.success) {
+                        updatePublicationList(exposeName);
+                    } else {
+                        console.log(data.message);
+                    }
+                }
+            });
+        });
+
+        // load more asset and append it at the end
+        idFrameC.find('.publication-droppable').on('click', '.load_more_asset', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_bottom').find('.expose_drag_drop');
+            var page = assetsContainer.find('#list_assets_page').val();
+
+            (0, _jquery2.default)(this).find('.loading_more').removeClass('hidden');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+        });
+    }
+
+    function updatePublicationList(exposeName) {
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('.publication-list').empty().html(data);
+
+                (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
+                    (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                    (0, _jquery2.default)(this).toggleClass('open');
+
+                    if ((0, _jquery2.default)(this).hasClass('open')) {
+                        var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+                        var _exposeName = (0, _jquery2.default)('#expose_list').val();
+                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
+
+                        assetsContainer.addClass('loading');
+                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
+                    }
+                });
+
+                activeExpose();
+            }
+        });
+    }
+
+    function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
+        var page = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: '/prod/expose/get-publication/' + publicationId + '/assets?exposeName=' + exposeName + '&page=' + page,
+            success: function success(data) {
+                if (typeof data.success === 'undefined') {
+                    if (page === 1) {
+                        assetsContainer.removeClass('loading');
+                        assetsContainer.empty().html(data);
+                    } else {
+                        assetsContainer.append(data);
+                        assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
+                        assetsContainer.find('#list_assets_page').val(page);
+                    }
+                } else {
+                    console.log(data);
+                }
+            }
+        });
+    }
+
     function getContent(header, order) {
         if (window.console) {
             console.log('Reload content for ', header);
@@ -10633,7 +10892,87 @@ var workzone = function workzone(services) {
         });
     }
 
+    function openExposePublicationAdd(exposeName) {
+        (0, _jquery2.default)('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 575,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {}
+        }).dialog('open');
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-expose-add').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/list-publication/?format=json&exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                var i = 0;
+                for (; i < data.publications.length; i++) {
+                    (0, _jquery2.default)('#DIALOG-expose-add select#publication_parent').append('<option value=' + data.publications[i].id + ' >' + data.publications[i].title + '</option>');
+                }
+            }
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/list-profile?exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
+                var i = 0;
+                for (; i < data.profiles.length; i++) {
+                    (0, _jquery2.default)('select#profile-field').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+                }
+            }
+        });
+    }
+
+    function openExposePublicationEdit(edit) {
+        (0, _jquery2.default)('#DIALOG-expose-edit').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+        (0, _jquery2.default)('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 575,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {
+                (0, _jquery2.default)('#DIALOG-expose-edit').empty();
+            }
+        }).dialog('open');
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-edit').empty().html(data);
+            }
+        });
+    }
+
     function dropOnBask(event, from, destKey, singleSelection) {
+        checkActiveBloc(dragBloc);
+
         var action = '';
         var dest_uri = '';
         var lstbr = [];
@@ -10733,31 +11072,60 @@ var workzone = function workzone(services) {
                 return false;
         }
 
-        if (window.console) {
-            window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
-        }
+        //save basket after drop elt
+        if ((0, _jquery2.default)('#basket-tab').val() === '#baskets') {
 
-        _jquery2.default.ajax({
-            type: 'POST',
-            url: url,
-            data: data,
-            dataType: 'json',
-            beforeSend: function beforeSend() {},
-            success: function success(data) {
-                if (!data.success) {
-                    humane.error(data.message);
-                } else {
-                    humane.info(data.message);
-                }
-                if (act === 'MOV' || (0, _jquery2.default)(destKey).next().is(':visible') === true || (0, _jquery2.default)(destKey).hasClass('content') === true) {
-                    (0, _jquery2.default)('.CHIM.selected:visible').fadeOut();
-                    workzoneOptions.selection.empty();
-                    return workzoneOptions.reloadCurrent();
-                }
-
-                return true;
+            if (window.console) {
+                window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
             }
-        });
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                beforeSend: function beforeSend() {},
+                success: function success(data) {
+                    if (!data.success) {
+                        humane.error(data.message);
+                    } else {
+                        humane.info(data.message);
+                    }
+                    if (act === 'MOV' || (0, _jquery2.default)(destKey).next().is(':visible') === true || (0, _jquery2.default)(destKey).hasClass('content') === true) {
+                        (0, _jquery2.default)('.CHIM.selected:visible').fadeOut();
+                        workzoneOptions.selection.empty();
+                        return workzoneOptions.reloadCurrent();
+                    }
+
+                    return true;
+                }
+            });
+        } else {
+            console.log(data.lst);
+
+            var publicationId = destKey.attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = destKey.find('.expose_item_deployed');
+            assetsContainer.empty().addClass('loading');
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/prod/expose/publication/add-assets',
+                data: {
+                    publicationId: publicationId,
+                    exposeName: exposeName,
+                    lst: data.lst
+                },
+                dataType: 'json',
+                success: function success(data) {
+                    setTimeout(function () {
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                    }, 6000);
+
+                    console.log(data.message);
+                }
+            });
+        }
     }
 
     function fix() {
