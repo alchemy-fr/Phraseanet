@@ -19,4 +19,6 @@ final class WorkerEvents
     const EXPORT_MAIL_FAILURE               = 'export.worker_mail_failure';
 
     const WEBHOOK_DELIVER_FAILURE           = 'webhook.deliver_failure';
+
+    const EXPOSE_UPLOAD_ASSETS              = 'expose.upload_assets';
 }

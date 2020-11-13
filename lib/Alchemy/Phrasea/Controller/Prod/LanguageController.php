@@ -59,6 +59,8 @@ class LanguageController
             'feed_require_fields'     => $translator->trans('Vous n\'avez pas rempli tous les champ requis'),
             'feed_require_feed'       => $translator->trans('Vous n\'avez pas selectionne de fil de publication'),
             'removeTitle'             => $translator->trans('panier::Supression d\'un element d\'un reportage'),
+            'removeExposePublication' => $translator->trans('expose::Your are about to delete a publication from expose, please confirm your action !'),
+            'removeAssetPublication'  => $translator->trans('expose::Your are about to delete an asset from a publication, please confirm your action !'),
             'confirmRemoveReg'        => $translator->trans('panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action.'),
             'advsearch_title'         => $translator->trans('phraseanet::recherche avancee'),
             'bask_rename'             => $translator->trans('panier:: renommer le panier'),
@@ -116,6 +118,7 @@ class LanguageController
             'attention'             => $translator->trans('Attention !'),
             'mapMarkerEdit'         => $translator->trans('Edit position'),
             'mapMarkerAdd'          => $translator->trans('Add a position'),
+            'Change position'       => $translator->trans('prod:mapbox Change position'),
             'mapMarkerMoveLabel'    => $translator->trans('Drag and drop the pin to move position'),
             'mapMarkerEditCancel'   => $translator->trans('Cancel'),
             'mapMarkerEditSubmit'   => $translator->trans('Submit'),
@@ -156,8 +159,15 @@ class LanguageController
             'description notice'  => $translator->trans('prod:mapboxgl: description notice'),
             'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),
             'create new user'     => $translator->trans('prod:push: create new user'),
+            'prod:mapboxjs: title notice' => $translator->trans('prod:mapboxjs: title notice'),
+            'prod:mapboxjs: description notice' => $translator->trans('prod:mapboxjs: description notice'),
+            'prod:mapboxjs: title info' => $translator->trans('prod:mapboxjs: title info'),
+            'prod:mapboxjs: description info : right click to add position' => $translator->trans('prod:mapboxjs: description info : right click to add position'),
+            'prod:mapboxgl: title info' => $translator->trans('prod:mapboxgl: title info'),
+            'prod:mapboxgl: description info : right click to add position' => $translator->trans('prod:mapboxgl: description info : right click to add position'),
             'prod:videoeditor:subtitletab:message:: error'     => $translator->trans('prod:videoeditor:subtitletab:message:: error'),
             'prod:videoeditor:subtitletab:message:: success'     => $translator->trans('prod:videoeditor:subtitletab:message:: success'),
+            'Edit expose title'     => $translator->trans('prod:workzone:expose:modal:: title'),
         ]);
     }
 }
