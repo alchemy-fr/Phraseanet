@@ -78,7 +78,7 @@
 
 .mapboxgl-popup-content, .leaflet-popup-content {
     background: #555555;
-    width: 200px;
+    min-width: 200px;
     font-size: 15px;
 }
 
