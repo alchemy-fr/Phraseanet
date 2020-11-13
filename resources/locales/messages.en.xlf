@@ -3164,9 +3164,9 @@
         <target state="translated">Executables setting</target>
         <jms:reference-file line="58">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!">
+      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!" approved="yes">
         <source>Expiration date successfully updated!</source>
-        <target state="new">Expiration date successfully updated!</target>
+        <target state="translated">Expiration date successfully updated!</target>
         <jms:reference-file line="763">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c" resname="Export" approved="yes">
@@ -8166,7 +8166,7 @@
       </trans-unit>
       <trans-unit id="ec54407a03c3b0693732fbfaa4fc8b38cc76acc8" resname="admin:: Phraseanet service setting (beta)" approved="no">
         <source>admin:: Phraseanet service setting (beta)</source>
-        <target state="needs-translation">Phraseanet service setting (beta)</target>
+        <target state="needs-translation">Phraseanet Service setting (beta)</target>
         <jms:reference-file line="28">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="21a0648a0d5db7740c7ed2ff84041aeb87c8224a" resname="admin:: appliquer le modele" approved="yes">
@@ -9379,9 +9379,9 @@
         <target state="translated">Clear all job(s)</target>
         <jms:reference-file line="8">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt">
+      <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="no">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
-        <target state="needs-translation">interrupt</target>
+        <target state="needs-translation">Interrupt</target>
         <jms:reference-file line="100">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list" approved="yes">
@@ -9461,13 +9461,13 @@
       </trans-unit>
       <trans-unit id="1b41cc035754ddd857cdd2054f5500fc9297bb76" resname="admin:expose Retrieve configuration error" approved="no">
         <source>admin:expose Retrieve configuration error</source>
-        <target state="needs-translation">Expose Retrieve configuration error</target>
+        <target state="needs-translation">Expose Retrieval configuration error</target>
         <jms:reference-file line="60">admin/phraseanet-service/index.html.twig</jms:reference-file>
         <jms:reference-file line="80">admin/phraseanet-service/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aad9c7bfbd4ec6c06db323888012969d0c2d7497" resname="admin:phrasea-service-setting:tab-title:: Page title" approved="no">
         <source>admin:phrasea-service-setting:tab-title:: Page title</source>
-        <target state="needs-translation">Phraseanet-service Setup (Beta)</target>
+        <target state="needs-translation">Phraseanet Service Setup (Beta)</target>
         <jms:reference-file line="1">admin/phraseanet-service/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a985de2a62972487e307b2e0d4a41daea2f472ee" resname="admin:phrasea-service-setting:tab:: Auth" approved="no">
@@ -9527,7 +9527,7 @@
       </trans-unit>
       <trans-unit id="1605ab7bb7f09f7a71cb2cf7284131c8cd85ae6a" resname="admin:phrasea-service-setting:tab:expose:: Connection Kind" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: Connection Kind</source>
-        <target state="needs-translation">Connection Kind</target>
+        <target state="needs-translation">Interconnection method</target>
         <jms:reference-file line="25">PhraseanetService/Form/PSExposeConnectionType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2b1ed6bb7cc08f560e6e9945d4af9760d2428f50" resname="admin:phrasea-service-setting:tab:expose:: Delete" approved="no">
@@ -9567,12 +9567,12 @@
       </trans-unit>
       <trans-unit id="a058a0d9570c131d091fd5e08cfffe2fc4548480" resname="admin:phrasea-service-setting:tab:expose:: New  expose interconnection name" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: New  expose interconnection name</source>
-        <target state="needs-translation">New expose interconnection name</target>
+        <target state="needs-translation">New Expose</target>
         <jms:reference-file line="2">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b0770ac3eca00f796ae6a1bfd073c9a5b15c585" resname="admin:phrasea-service-setting:tab:expose:: Save" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: Save</source>
-        <target state="needs-translation">Save setting</target>
+        <target state="needs-translation">Save settings</target>
         <jms:reference-file line="91">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="444c2536498aa372a04230c013c75a27970b51d2" resname="admin:phrasea-service-setting:tab:expose:: activate Phraseanet-service expose" approved="no">
@@ -9592,7 +9592,7 @@
       </trans-unit>
       <trans-unit id="e34f0393cdcc4561b6d749d15e9892a4990d81c0" resname="admin:phrasea-service-setting:tab:expose:: connection test" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: connection test</source>
-        <target state="needs-translation">Test connection with expose</target>
+        <target state="needs-translation">Test connection with Expose</target>
         <jms:reference-file line="69">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error" approved="yes">
@@ -10409,12 +10409,12 @@
       </trans-unit>
       <trans-unit id="9124db61ef2b18f239e7eba3cae3358bf0bf1806" resname="expose::Your are about to delete a publication from expose, please confirm your action !" approved="no">
         <source>expose::Your are about to delete a publication from expose, please confirm your action !</source>
-        <target state="needs-translation">Your are about to delete a publication from expose, please confirm your action !</target>
+        <target state="needs-translation">Confirm deletion of publication</target>
         <jms:reference-file line="62">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="03a4d48c22a0b04bd387e6dbfe06989714a0a966" resname="expose::Your are about to delete an asset from a publication, please confirm your action !" approved="no">
         <source>expose::Your are about to delete an asset from a publication, please confirm your action !</source>
-        <target state="needs-translation">Your are about to delete an asset from a publication, please confirm your action !</target>
+        <target state="needs-translation">Confirm deletion of asset in the publication</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
@@ -12365,7 +12365,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="9b591771eaaea126c4fc9c3a97f9c95674c4179d" resname="prod:mapboxgl: description info : right click to add position" approved="no">
         <source>prod:mapboxgl: description info : right click to add position</source>
-        <target state="needs-translation">Right click to add position for selected record or Right Click on a position to edit the record Position</target>
+        <target state="needs-translation">Right click to add position for selected record or right click on a position to edit the record's position</target>
         <jms:reference-file line="167">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice" approved="yes">
@@ -12393,7 +12393,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="58c99910c7e56b82e9b7ef4d9029a472585cd423" resname="prod:mapboxjs: description info : right click to add position" approved="no">
         <source>prod:mapboxjs: description info : right click to add position</source>
-        <target state="needs-translation">Right click to add position for selected Record(s) or Right click on a Pin for edit position of one record</target>
+        <target state="needs-translation">Right click to add position for selected record(s) or right click on a pin to edit position of one record</target>
         <jms:reference-file line="165">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db26b26f3033b25e4bbee3d5d901bb2c1a4720bf" resname="prod:mapboxjs: description notice">
@@ -12534,7 +12534,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="e7a77a1df74d725737df947f6debe604070f0014" resname="prod:workzone:expose:modal:: title" approved="no">
         <source>prod:workzone:expose:modal:: title</source>
-        <target state="needs-translation">Publication setting</target>
+        <target state="needs-translation">Publication settings</target>
         <jms:reference-file line="170">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options" approved="yes">
@@ -14179,14 +14179,14 @@ It is possible to place several search areas</target>
         <target state="translated">Delete</target>
         <jms:reference-file line="178">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox">
+      <trans-unit id="2f3ee022a88321b6be0c4a75ba9d2fe332a5271a" resname="thesaurus::populate: Warning populate is in process to indexing databox" approved="no">
         <source>thesaurus::populate: Warning populate is in process to indexing databox</source>
-        <target state="needs-translation">Warning, populate is in process to indexing databox, Wait the end of this indexing, before launching a new one.</target>
+        <target state="needs-translation">Warning, populate is in process to indexing databox. Please wait for the end of this indexing before launching a new one.</target>
         <jms:reference-file line="1569">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="86465964be7ece23a936c992fc5caff911f7a259" resname="thesaurus::populate: success message" approved="no">
         <source>thesaurus::populate: success message</source>
-        <target state="needs-translation">Populate is finish</target>
+        <target state="needs-translation">Populate is finished</target>
         <jms:reference-file line="1564">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af1aa44c04fac8955dcec74f9a412e27baf564f1" resname="thesaurus:dialog:: export" approved="yes">
