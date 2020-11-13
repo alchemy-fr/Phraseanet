@@ -9,17 +9,18 @@ use Psr\Log\LoggerInterface;
 
 class MessagePublisher
 {
-    const EXPORT_MAIL_TYPE     = 'exportMail';
-    const SUBDEF_CREATION_TYPE = 'subdefCreation';
-    const WRITE_METADATAS_TYPE = 'writeMetadatas';
-    const ASSETS_INGEST_TYPE   = 'assetsIngest';
-    const CREATE_RECORD_TYPE   = 'createRecord';
-    const DELETE_RECORD_TYPE   = 'deleteRecord';
-    const WEBHOOK_TYPE         = 'webhook';
-    const POPULATE_INDEX_TYPE  = 'populateIndex';
-    const PULL_ASSETS_TYPE     = 'pullAssets';
-    const SUBTITLE_TYPE        = 'subtitle';
-    const MAIN_QUEUE_TYPE      = 'mainQueue';
+    const EXPORT_MAIL_TYPE       = 'exportMail';
+    const SUBDEF_CREATION_TYPE   = 'subdefCreation';
+    const WRITE_METADATAS_TYPE   = 'writeMetadatas';
+    const ASSETS_INGEST_TYPE     = 'assetsIngest';
+    const CREATE_RECORD_TYPE     = 'createRecord';
+    const DELETE_RECORD_TYPE     = 'deleteRecord';
+    const WEBHOOK_TYPE           = 'webhook';
+    const POPULATE_INDEX_TYPE    = 'populateIndex';
+    const PULL_ASSETS_TYPE       = 'pullAssets';
+    const SUBTITLE_TYPE          = 'subtitle';
+    const MAIN_QUEUE_TYPE        = 'mainQueue';
+    const EXPOSE_UPLOAD_TYPE     = 'exposeUpload';
 
 
     const MAIN_QUEUE           = 'main-queue';
@@ -35,6 +36,7 @@ class MessagePublisher
     const DELETE_RECORD_QUEUE  = 'deleterecord-queue';
     const POPULATE_INDEX_QUEUE = 'populateindex-queue';
     const PULL_QUEUE           = 'pull-queue';
+    const EXPOSE_UPLOAD_QUEUE  = 'exposeupload-queue';
 
     // retry queue
     // we can use these retry queue with TTL, so when message expires it is requeued to the corresponding worker queue
