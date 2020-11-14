@@ -3164,9 +3164,9 @@
         <target state="translated">Executables setting</target>
         <jms:reference-file line="58">Form/Configuration/MainConfigurationFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!">
+      <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!" approved="yes">
         <source>Expiration date successfully updated!</source>
-        <target state="new">Expiration date successfully updated!</target>
+        <target state="translated">Expiration date successfully updated!</target>
         <jms:reference-file line="763">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c" resname="Export" approved="yes">
