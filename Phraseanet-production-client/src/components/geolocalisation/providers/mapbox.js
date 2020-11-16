@@ -30,6 +30,7 @@ const leafletMap = (services) => {
     let map = null;
     let geocoder = null;
     let mapboxClient = null;
+    let markerGl = [];
     let $tabContent;
     let tabContainerName = 'leafletTabContainer';
     let editable;
@@ -300,6 +301,15 @@ const leafletMap = (services) => {
                     }
 
                     if (!drawable) {
+
+                        for (let i = 0; i < pois.length; i++) {
+                            // add class for the icon
+                            let el = document.createElement('div');
+                            el.className = 'mapboxGl-phrasea-marker';
+
+                            markerGl[pois[i]._rid] = new mapboxgl.Marker(el);
+                        }
+
                         addMarkersLayersGL(geojson);
                         refreshMarkers(pois);
                     } else {
@@ -845,23 +855,23 @@ const leafletMap = (services) => {
             data: geojson
         });
 
-        map.loadImage(
-            '/assets/common/images/icons/marker_icon.png',
-            function (error, image) {
-                if (error) throw error;
-                map.addImage('custom-marker', image);
-
-                // Add a symbol layer
-                map.addLayer({
-                    id: 'points',
-                    source: 'data',
-                    type: 'symbol',
-                    layout: {
-                        "icon-image": 'custom-marker'
-                    },
-                });
-            }
-        );
+        // map.loadImage(
+        //     '/assets/common/images/icons/marker_icon.png',
+        //     function (error, image) {
+        //         if (error) throw error;
+        //         map.addImage('custom-marker', image);
+        //
+        //         // Add a symbol layer
+        //         map.addLayer({
+        //             id: 'points',
+        //             source: 'data',
+        //             type: 'symbol',
+        //             layout: {
+        //                 "icon-image": 'custom-marker'
+        //             },
+        //         });
+        //     }
+        // );
     }
 
     const addMarkersLayers = () => {
@@ -895,8 +905,12 @@ const leafletMap = (services) => {
 
                     map.getSource('data').setData(geojson);
 
+                    markerGl.forEach(function (item, index) {
+                        item.remove();
+                    });
+
                     let markerGlColl = markerGLCollection(services);
-                    markerGlColl.initialize({map, geojson, editable});
+                    markerGlColl.initialize({map, geojson, markerGl, editable});
 
                     if (geojson.features.length > 0) {
                         shouldUpdateZoom = true;
@@ -965,6 +979,7 @@ const leafletMap = (services) => {
                         coordinates: poiCoords
                     },
                     properties: {
+                        _rid: poi._rid,
                         recordIndex: poiIndex,
                         'marker-color': '0c4554',
                         'marker-zoom': currentZoomLevel,

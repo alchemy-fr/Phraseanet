@@ -2175,6 +2175,7 @@ var leafletMap = function leafletMap(services) {
     var map = null;
     var geocoder = null;
     var mapboxClient = null;
+    var markerGl = [];
     var $tabContent = void 0;
     var tabContainerName = 'leafletTabContainer';
     var editable = void 0;
@@ -2445,6 +2446,15 @@ var leafletMap = function leafletMap(services) {
                     }
 
                     if (!drawable) {
+
+                        for (var _i = 0; _i < pois.length; _i++) {
+                            // add class for the icon
+                            var el = document.createElement('div');
+                            el.className = 'mapboxGl-phrasea-marker';
+
+                            markerGl[pois[_i]._rid] = new mapboxgl.Marker(el);
+                        }
+
                         addMarkersLayersGL(geojson);
                         refreshMarkers(pois);
                     } else {
@@ -2959,20 +2969,23 @@ var leafletMap = function leafletMap(services) {
             data: geojson
         });
 
-        map.loadImage('/assets/common/images/icons/marker_icon.png', function (error, image) {
-            if (error) throw error;
-            map.addImage('custom-marker', image);
-
-            // Add a symbol layer
-            map.addLayer({
-                id: 'points',
-                source: 'data',
-                type: 'symbol',
-                layout: {
-                    "icon-image": 'custom-marker'
-                }
-            });
-        });
+        // map.loadImage(
+        //     '/assets/common/images/icons/marker_icon.png',
+        //     function (error, image) {
+        //         if (error) throw error;
+        //         map.addImage('custom-marker', image);
+        //
+        //         // Add a symbol layer
+        //         map.addLayer({
+        //             id: 'points',
+        //             source: 'data',
+        //             type: 'symbol',
+        //             layout: {
+        //                 "icon-image": 'custom-marker'
+        //             },
+        //         });
+        //     }
+        // );
     };
 
     var addMarkersLayers = function addMarkersLayers() {
@@ -3006,8 +3019,12 @@ var leafletMap = function leafletMap(services) {
 
                     map.getSource('data').setData(geojson);
 
+                    markerGl.forEach(function (item, index) {
+                        item.remove();
+                    });
+
                     var markerGlColl = (0, _markerGLCollection2.default)(services);
-                    markerGlColl.initialize({ map: map, geojson: geojson, editable: editable });
+                    markerGlColl.initialize({ map: map, geojson: geojson, markerGl: markerGl, editable: editable });
 
                     if (geojson.features.length > 0) {
                         shouldUpdateZoom = true;
@@ -3072,6 +3089,7 @@ var leafletMap = function leafletMap(services) {
                         coordinates: poiCoords
                     },
                     properties: {
+                        _rid: poi._rid,
                         recordIndex: poiIndex,
                         'marker-color': '0c4554',
                         'marker-zoom': currentZoomLevel,
@@ -20815,6 +20833,7 @@ var recordEditorService = function recordEditorService(services) {
             if (!record._selected) {
                 continue;
             }
+            recordFieldValue["_rid"] = record.rid;
             for (var _recordIndex in options.recordConfig.records) {
                 if (options.recordConfig.records[_recordIndex].id === record.rid) {
                     recordFieldValue["technicalInfo"] = options.recordConfig.records[_recordIndex].technicalInfo;
@@ -50545,10 +50564,10 @@ var markerGLCollection = function markerGLCollection(services) {
         localeService = services.localeService,
         eventEmitter = services.eventEmitter;
 
-    var markerCollection = {};
     var cachedGeoJson = void 0;
     var map = void 0;
     var geojson = void 0;
+    var markerGl = void 0;
     var editable = void 0;
     var isDraggable = false;
     var isCursorOverPoint = false;
@@ -50559,7 +50578,7 @@ var markerGLCollection = function markerGLCollection(services) {
     var initialize = function initialize(params) {
         var _params;
 
-        var initWith = (_params = params, map = _params.map, geojson = _params.geojson, _params);
+        var initWith = (_params = params, map = _params.map, geojson = _params.geojson, markerGl = _params.markerGl, _params);
         editable = params.editable || false;
         setCollection(geojson);
     };
@@ -50583,158 +50602,92 @@ var markerGLCollection = function markerGLCollection(services) {
     };
 
     var setPoint = function setPoint(marker) {
+
+        var markerElement = getMarker(marker.properties._rid);
+
+        markerElement.feature = {
+            properties: {
+                recordIndex: marker.properties.recordIndex
+            }
+        };
+
+        // add marker to map
+        markerElement.setLngLat(marker.geometry.coordinates).addTo(map);
+
         var $content = (0, _jquery2.default)('<div style="min-width: 200px"/>');
 
         var template = '<p>' + marker.properties.title + '</p> ';
 
         if (editable === true) {
-            template += '\n            <div class="view-mode">\n                    <button class="edit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties.recordIndex + '">' + localeService.t('mapMarkerEdit') + '</button>\n            </div>\n            <div class="edit-mode">\n                <p class="help" style="font-size: 12px;font-style: italic;">' + localeService.t('mapMarkerMoveLabel') + '</p>\n                <p><span class="updated-position" style="font-size: 12px;"></span></p>\n                <div>\n                    <button class="cancel-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties.recordIndex + '">' + localeService.t('mapMarkerEditCancel') + '</button>\n                    <button class="submit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties.recordIndex + '">' + localeService.t('mapMarkerEditSubmit') + '</button>\n                </div>\n            </div>';
+            template += '\n            <div class="view-mode">\n                    <button class="edit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties._rid + '">' + localeService.t('mapMarkerEdit') + '</button>\n            </div>\n            <div class="edit-mode">\n                <p class="help" style="font-size: 12px;font-style: italic;">' + localeService.t('mapMarkerMoveLabel') + '</p>\n                <p><span class="updated-position" style="font-size: 12px;"></span></p>\n                <div>\n                    <button class="cancel-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties._rid + '">' + localeService.t('mapMarkerEditCancel') + '</button>\n                    <button class="submit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties._rid + '">' + localeService.t('mapMarkerEditSubmit') + '</button>\n                </div>\n            </div>';
         }
 
         $content.append(template);
 
         $content.find('.edit-mode').hide();
-        //
+
+        var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setDOMContent($content.get(0));
+
+        popupDialog.on('close', function (event) {
+            if (editable) {
+                markerElement.setDraggable(false);
+            }
+        });
+
+        // bind popup to the marker element
+        markerElement.setPopup(popupDialog);
+
+        markerElement.on('dragend', function () {
+            var position = markerElement.getLngLat().wrap();
+            $content.find('.updated-position').html(position.lat + '<br>' + position.lng);
+            $content.find('.edit-mode').show();
+        });
+
         $content.on('click', '.edit-position', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var marker = getMarker($el.data('marker-id'));
-            marker._originalPosition = marker.lngLat.wrap();
+            var markerSelected = getMarker($el.data('marker-id'));
+            markerSelected._originalPosition = markerElement.getLngLat().wrap();
             $content.find('.view-mode').hide();
             $content.find('.edit-mode').show();
             $content.find('.help').show();
-            isDraggable = true;
 
-            map.on('mousedown', mouseDown);
+            markerSelected.setDraggable(true);
         });
 
         $content.on('click', '.submit-position', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var marker = getMarker($el.data('marker-id'));
+            var markerSelected = getMarker($el.data('marker-id'));
 
-            isDraggable = false;
+            markerSelected.setDraggable(false);
             $content.find('.view-mode').show();
             $content.find('.help').hide();
             $content.find('.updated-position').html('');
             $content.find('.edit-mode').hide();
 
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
+            markerSelected.togglePopup();
 
-            marker.lngLat = {
-                lng: cachedGeoJson.features[0].geometry.coordinates[0],
-                lat: cachedGeoJson.features[0].geometry.coordinates[1]
-            };
-            marker.feature = cachedGeoJson.features[0];
-            eventEmitter.emit('markerChange', { marker: marker, position: marker.lngLat });
+            markerSelected._originalPosition = markerSelected.getLngLat().wrap();
+            eventEmitter.emit('markerChange', { marker: markerSelected, position: markerSelected.getLngLat().wrap() });
         });
 
         $content.on('click', '.cancel-position', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var marker = getMarker($el.data('marker-id'));
-            isDraggable = false;
+            var markerSelected = getMarker($el.data('marker-id'));
+
+            markerSelected.setDraggable(false);
             $content.find('.view-mode').show();
             $content.find('.updated-position').html('');
             $content.find('.edit-mode').hide();
             $content.find('.help').hide();
 
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
+            markerSelected.togglePopup();
 
             cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
-            map.getSource('data').setData(cachedGeoJson);
+            resetMarkerPosition($content, markerSelected);
         });
-
-        // When the cursor enters a feature in the point layer, prepare for dragging.
-        map.on('mouseenter', 'points', function () {
-            if (!isDraggable) {
-                return;
-            }
-            map.getCanvas().style.cursor = 'move';
-            isCursorOverPoint = true;
-            map.dragPan.disable();
-        });
-
-        map.on('mouseleave', 'points', function () {
-            if (!isDraggable) {
-                return;
-            }
-            map.getCanvas().style.cursor = '';
-            isCursorOverPoint = false;
-            map.dragPan.enable();
-        });
-
-        map.on('click', 'points', function (e) {
-            markerCollection[e.features[0].properties.recordIndex] = e;
-            var coordinates = e.features[0].geometry.coordinates.slice();
-
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            // Check if there is already a popup on the map and if so, remove it
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
-
-            popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(coordinates).setDOMContent($content.get(0)).addTo(map);
-
-            popupDialog.on('close', function (event) {
-                if (editable) {
-                    resetMarkerPosition($content);
-                }
-            });
-        });
-
-        function mouseDown() {
-            if (!isCursorOverPoint) return;
-
-            isDragging = true;
-
-            // Set a cursor indicator
-            map.getCanvas().style.cursor = 'grab';
-
-            // Mouse events
-            map.on('mousemove', onMove);
-            map.once('mouseup', onUp);
-
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
-        }
-
-        function onMove(e) {
-            if (!isDragging) return;
-            var coords = e.lngLat;
-
-            // Set a UI indicator for dragging.
-            map.getCanvas().style.cursor = 'grabbing';
-
-            // Update the Point feature in `geojson` coordinates
-            // and call setData to the source layer `point` on it.
-            cachedGeoJson.features[0].geometry.coordinates = [coords.lng, coords.lat];
-            map.getSource('data').setData(cachedGeoJson);
-        }
-
-        function onUp(e) {
-            if (!isDragging) return;
-            var position = e.lngLat;
-
-            map.getCanvas().style.cursor = '';
-            isDragging = false;
-
-            // Unbind mouse events
-            map.off('mousemove', onMove);
-            $content.find('.updated-position').html(position.lat + '<br>' + position.lng);
-            popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(position).setDOMContent($content.get(0)).addTo(map);
-
-            popupDialog.on('close', function (event) {
-                if (editable) {
-                    resetMarkerPosition($content);
-                }
-            });
-        }
     };
 
-    var resetMarkerPosition = function resetMarkerPosition($content) {
-        var marker = getMarker($content.find('.edit-position').data('marker-id'));
+    var resetMarkerPosition = function resetMarkerPosition($content, marker) {
         $content.find('.view-mode').show();
         $content.find('.updated-position').html('');
         $content.find('.edit-mode').hide();
@@ -50742,12 +50695,12 @@ var markerGLCollection = function markerGLCollection(services) {
         isDraggable = false;
         if (marker._originalPosition !== undefined) {
             cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
-            map.getSource('data').setData(cachedGeoJson);
+            marker.setLngLat(marker._originalPosition);
         }
     };
 
     var getMarker = function getMarker(markerId) {
-        return markerCollection[markerId];
+        return markerGl[markerId];
     };
 
     return {
@@ -55946,7 +55899,7 @@ exports = module.exports = __webpack_require__(40)(false);
 
 
 // module
-exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content, .leaflet-popup-content {\n    background: #555555;\n    min-width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 110px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-noticeJs-btn {\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-infoJs-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn:focus {\n    outline: 0;\n}\n\n#notice-info-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 125px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#noticeJs-box {\n    display: block;\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#notice-infoJs-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n\n/* mapbox Gl search */\n@media screen and (min-width: 640px) {\n    .mapboxgl-ctrl-geocoder--input {\n        height: 36px !important;\n        padding: 6px 35px !important;\n        margin-bottom: 0px !important;\n    }\n}\n", ""]);
+exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content, .leaflet-popup-content {\n    background: #555555;\n    min-width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 110px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-noticeJs-btn {\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-infoJs-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn:focus {\n    outline: 0;\n}\n\n#notice-info-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 125px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#noticeJs-box {\n    display: block;\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#notice-infoJs-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n\n/* mapbox Gl search */\n@media screen and (min-width: 640px) {\n    .mapboxgl-ctrl-geocoder--input {\n        height: 36px !important;\n        padding: 6px 35px !important;\n        margin-bottom: 0px !important;\n    }\n}\n\n.mapboxGl-phrasea-marker {\n    background-image: url('/assets/common/images/icons/marker_icon.png');\n    background-size: cover;\n    width: 32px;\n    height: 32px;\n    border-radius: 50%;\n    cursor: pointer;\n}\n", ""]);
 
 // exports
 
