@@ -371,3 +371,12 @@
         margin-bottom: 0px !important;
     }
 }
+
+.mapboxGl-phrasea-marker {
+    background-image: url('/assets/common/images/icons/marker_icon.png');
+    background-size: cover;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+}
