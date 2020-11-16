@@ -1776,6 +1776,7 @@ const recordEditorService = services => {
             if (!record._selected) {
                 continue;
             }
+            recordFieldValue["_rid"] = record.rid;
             for (var _recordIndex in options.recordConfig.records) {
                 if (options.recordConfig.records[_recordIndex].id === record.rid) {
                     recordFieldValue["technicalInfo"] = options.recordConfig.records[_recordIndex].technicalInfo;
