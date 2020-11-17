@@ -110,7 +110,7 @@ class SearchEngineController extends Controller
     private function getConfigurationForm(ElasticsearchOptions $options)
     {
         /** @var GlobalStructure $g */
-        $g = $this->app['search_engine.structure'];
+        $g = $this->app['search_engine.global_structure'];
 
         return $this->app->form(new ElasticsearchSettingsFormType($g, $options), $options, [
             'action' => $this->app->url('admin_searchengine_form'),

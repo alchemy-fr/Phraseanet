@@ -109,14 +109,6 @@ class media_Permalink_AdapterTest extends \PhraseanetTestCase
         $this->assertInstanceOf('DateTime', $this->object->get_last_modified());
     }
 
-    /**
-     * @expectedException \Alchemy\Phrasea\Exception\RuntimeException
-     */
-    public function testCreateAPermalinkAlreadyCreated()
-    {
-        media_Permalink_Adapter::create(self::$DI['app'], self::$DI['record_1']->get_databox(), self::$DI['record_1']->get_subdef('document'));
-    }
-
     private function removeScheme($s)
     {
         return preg_replace('/^(http|https):\\/\\/(.*)$/', '$2', $s);

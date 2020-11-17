@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Guzzle\Http\Url;
 
 class media_Permalink_Adapter implements cache_cacheableInterface
@@ -380,13 +381,14 @@ class media_Permalink_Adapter implements cache_cacheableInterface
      * @param Application $app
      * @param databox $databox
      * @param media_subdef[] $subdefs
-     * @throws DBALException
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException|Exception
      */
     public static function createMany(Application $app, databox $databox, $subdefs)
     {
         $databoxId = $databox->get_sbas_id();
         $recordIds = [];
+        /** @var media_subdef[] $uniqSubdefs */
+        $uniqSubdefs = [];
 
         foreach ($subdefs as $media_subdef) {
             if ($media_subdef->get_sbas_id() !== $databoxId) {
@@ -397,12 +399,17 @@ class media_Permalink_Adapter implements cache_cacheableInterface
                 ));
             }
 
-            $recordIds[] = $media_subdef->get_record_id();
+            // keep unique record_id, to fetch records and find if some are missing
+            $recordIds[$media_subdef->get_record_id()] = $media_subdef->get_record_id();
+
+            // keep unique subdefs so we don't try to generate the same twice
+            // (even if we could since it's catched)
+            $uniqSubdefs[$media_subdef->get_subdef_id()] = $media_subdef;
         }
 
+        // find records
         $databoxRecords = $databox->getRecordRepository()->findByRecordIds($recordIds);
 
-        /** @var record_adapter[] $records */
         $records = array_combine(
             array_map(function (record_adapter $record) {
                 return $record->getRecordId();
@@ -410,7 +417,8 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             $databoxRecords
         );
 
-        if (count(array_unique($recordIds)) !== count($records)) {
+        // check if some records are missing
+        if (count($recordIds) !== count($records)) {
             throw new \RuntimeException('Some records are missing');
         }
 
@@ -418,7 +426,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
         $data = [];
 
-        foreach ($subdefs as $media_subdef) {
+        foreach ($uniqSubdefs as $media_subdef) {
             $data[] = [
                 'subdef_id' => $media_subdef->get_subdef_id(),
                 'token' => $generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS),
@@ -426,20 +434,22 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             ];
         }
 
-        try {
-            $databox->get_connection()->transactional(function (Connection $connection) use ($data) {
-                $sql = "INSERT INTO permalinks (subdef_id, token, activated, created_on, last_modified, label)\n"
-                     . " VALUES (:subdef_id, :token, 1, NOW(), NOW(), :label)";
+        $databox->get_connection()->transactional(function (Connection $connection) use ($data) {
+            $sql = "INSERT INTO permalinks (subdef_id, token, activated, created_on, last_modified, label)\n"
+                 . " VALUES (:subdef_id, :token, 1, NOW(), NOW(), :label)";
 
-                $statement = $connection->prepare($sql);
+            $statement = $connection->prepare($sql);
 
-                foreach ($data as $params) {
+            foreach ($data as $params) {
+                try {
                     $statement->execute($params);
                 }
-            });
-        } catch (Exception $e) {
-            throw new RuntimeException('Permalink already exists', $e->getCode(), $e);
-        }
+                catch(UniqueConstraintViolationException $e) {
+                    // we ignore this because somebody else might have created this plink
+                    // between the test of "to be created" and here
+                }
+            }
+        });
     }
 
     /**

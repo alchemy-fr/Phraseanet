@@ -21,7 +21,7 @@ class MessagePublisher
     const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const SUBTITLE_TYPE        = 'subtitle';
     const MAIN_QUEUE_TYPE      = 'mainQueue';
-
+    const EXPOSE_UPLOAD_TYPE     = 'exposeUpload';
 
     const MAIN_QUEUE           = 'main-queue';
     const SUBTITLE_QUEUE       = 'subtitle-queue';
@@ -37,6 +37,7 @@ class MessagePublisher
     const POPULATE_INDEX_QUEUE = 'populateindex-queue';
     const PULL_QUEUE           = 'pull-queue';
     const VALIDATION_REMINDER_QUEUE     = 'validationReminder-queue';
+    const EXPOSE_UPLOAD_QUEUE  = 'exposeupload-queue';
 
     // retry queue
     // we can use these retry queue with TTL, so when message expires it is requeued to the corresponding worker queue
