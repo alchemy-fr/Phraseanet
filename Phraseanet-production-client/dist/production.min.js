@@ -50602,8 +50602,20 @@ var markerGLCollection = function markerGLCollection(services) {
     };
 
     var setPoint = function setPoint(marker) {
+        var markerId = marker.properties.recordIndex;
 
-        var markerElement = getMarker(marker.properties._rid);
+        if (marker.properties._rid !== undefined) {
+            markerId = marker.properties._rid;
+        }
+
+        var markerElement = getMarker(markerId);
+
+        if (markerElement === undefined) {
+            var el = document.createElement('div');
+            el.className = 'mapboxGl-phrasea-marker';
+
+            markerElement = markerGl[markerId] = new mapboxgl.Marker(el);
+        }
 
         markerElement.feature = {
             properties: {
@@ -50682,7 +50694,6 @@ var markerGLCollection = function markerGLCollection(services) {
 
             markerSelected.togglePopup();
 
-            cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
             resetMarkerPosition($content, markerSelected);
         });
     };
