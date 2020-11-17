@@ -21,4 +21,6 @@ final class WorkerEvents
     const SUBDEFINITION_CREATION_FAILURE    = 'subdefinition.creation_failure';
 
     const WEBHOOK_DELIVER_FAILURE           = 'webhook.deliver_failure';
+
+    const EXPOSE_UPLOAD_ASSETS              = 'expose.upload_assets';
 }

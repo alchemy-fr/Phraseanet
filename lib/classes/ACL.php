@@ -1248,9 +1248,12 @@ class ACL implements cache_cacheableInterface
 
                 }
             }
+            $this->app->getApplicationBox()->get_databox($sbas_id)->clearCache(databox::CACHE_COLLECTIONS);
         }
         $stmt_ins->closeCursor();
+
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
+        // $this->delete_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
 
         return $this;
     }
@@ -1365,7 +1368,10 @@ class ACL implements cache_cacheableInterface
         $stmt->execute([':sbas_id' => $sbas_id, ':usr_id' => $this->user->getId()]);
         $stmt->closeCursor();
 
+        $this->app->getApplicationBox()->get_databox($sbas_id)->clearCache(databox::CACHE_COLLECTIONS);
+
         $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
+        // $this->delete_data_from_cache(self::CACHE_GLOBAL_RIGHTS);
 
         $this->app['dispatcher']->dispatch(
             AclEvents::RIGHTS_TO_SBAS_CHANGED,

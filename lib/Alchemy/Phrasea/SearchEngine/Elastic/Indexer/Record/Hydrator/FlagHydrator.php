@@ -20,6 +20,9 @@ use databox;
 
 class FlagHydrator implements HydratorInterface
 {
+    /** @var array */
+    private $field_names_map;
+
     public function __construct(Structure $structure, databox $databox)
     {
         $this->field_names_map = self::buildFieldNamesMap($structure, $databox);

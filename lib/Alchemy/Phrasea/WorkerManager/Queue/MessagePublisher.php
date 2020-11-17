@@ -13,6 +13,7 @@ class MessagePublisher
     const CREATE_RECORD_TYPE   = 'createRecord';
     const DELETE_RECORD_TYPE   = 'deleteRecord';
     const EXPORT_MAIL_TYPE     = 'exportMail';
+    const EXPOSE_UPLOAD_TYPE   = 'exposeUpload';
     const FTP_TYPE             = 'ftp';
     const POPULATE_INDEX_TYPE  = 'populateIndex';
     const PULL_ASSETS_TYPE     = 'pullAssets';
@@ -33,6 +34,7 @@ class MessagePublisher
     const CREATE_RECORD_QUEUE  = 'createrecord-queue';
     const DELETE_RECORD_QUEUE  = 'deleterecord-queue';
     const EXPORT_QUEUE         = 'export-queue';
+    const EXPOSE_UPLOAD_QUEUE  = 'exposeupload-queue';
     const FTP_QUEUE            = 'ftp-queue';
     const METADATAS_QUEUE      = 'metadatas-queue';
     const POPULATE_INDEX_QUEUE = 'populateindex-queue';
