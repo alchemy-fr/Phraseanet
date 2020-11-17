@@ -15,8 +15,10 @@ use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Media\SubdefGenerator;
 use Databox;
 use databox_subdef;
+use DateTime;
 use Doctrine\DBAL\Connection;
 use PDO;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,6 +43,8 @@ class BuildPermalinks extends Command
     private $connection;
 
     /** @var bool */
+    private $clear_cache;
+    /** @var bool */
     private $prune;
     /** @var bool */
     private $create;
@@ -60,8 +64,9 @@ class BuildPermalinks extends Command
 
         $this->setDescription('Build permalinks');
         $this->addOption('databox',            null, InputOption::VALUE_REQUIRED,                             'Mandatory : The id (or dbname or viewname) of the databox');
+        $this->addOption('clear_cache',        null, InputOption::VALUE_NONE,                                 'Clear the cache before running');
         $this->addOption('create',             null, InputOption::VALUE_NONE,                                 'Create missing permalinks');
-        $this->addOption('force_create',       null, InputOption::VALUE_NONE,                                 '(re)create all permalinks');
+        $this->addOption('force_create',       null, InputOption::VALUE_NONE,                                 '(re)create all permalinks (enforce clear_cache)');
         $this->addOption('name',               null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Create only for those subdefs, ex. "thumbnail,preview", default=ALL');
         $this->addOption('prune',              null, InputOption::VALUE_NONE,                                 'Delete permalinks on non-existing subdefs');
         $this->addOption('dry',                null, InputOption::VALUE_NONE,                                 'dry run, list but don\'t act');
@@ -136,12 +141,17 @@ class BuildPermalinks extends Command
             $argsOK = false;
         }
 
+        $this->clear_cache        = $input->getOption('clear_cache') ? true : false;
         $this->show_sql           = $input->getOption('show_sql') ? true : false;
         $this->dry                = $input->getOption('dry') ? true : false;
         $this->create             = $input->getOption('create') ? true : false;
         $this->force_create       = $input->getOption('force_create') ? true : false;
         $this->prune              = $input->getOption('prune') ? true : false;
         $this->names              = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
+
+        if($this->force_create) {
+            $this->clear_cache = true;
+        }
 
         return $argsOK;
     }
@@ -151,8 +161,6 @@ class BuildPermalinks extends Command
      */
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $time_start = new \DateTime();
-
         if(!$this->sanitizeArgs($input, $output)) {
             return -1;
         }
@@ -160,6 +168,15 @@ class BuildPermalinks extends Command
         $this->input  = $input;
         $this->output = $output;
         $progress = null;
+
+        if($this->clear_cache) {
+            $output->writeln(sprintf("=== clear cache ==="));
+            $command = $this->getApplication()->find('system:clear-cache');
+            $return_code = $command->run(new ArrayInput([]), $output);
+            if($return_code !== 0) {
+                $output->writeln("system:clear-cache failed, quit.");
+            }
+        }
 
         /**
          * prune
@@ -176,11 +193,45 @@ class BuildPermalinks extends Command
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             $output->writeln(sprintf("%d permalinks to be deleted", $row['n']));
+
             if($this->dry) {
                 $output->writeln(sprintf("dry : not executed"));
             }
             else {
-                $this->connection->executeQuery($sqlDel);
+                $stmt = $this->connection->executeQuery($sqlDel);
+                $output->writeln(sprintf("%d permalinks deleted", $stmt->rowCount()));
+            }
+        }
+
+        /*
+         * force_create : delete all plinks to force recreate
+         */
+        if($this->force_create) {
+            $output->writeln(sprintf("=== force create ==="));
+            $s = "`permalinks` p INNER JOIN `subdef` s USING(subdef_id)";
+            if (!empty($this->names)) {
+                $n = join(',', array_map(function ($v) {
+                    return $this->connection->quote($v);
+                }, $this->names));
+                $s .=  " WHERE s.name IN(" . $n . ")";
+            }
+
+            $sqlDel = "DELETE p FROM " . $s;
+            if($this->show_sql) {
+                $this->output->writeln($sqlDel);
+            }
+            $sqlCount = "SELECT COUNT(*) AS n FROM " . $s;
+            $stmt = $this->connection->executeQuery($sqlCount);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            $output->writeln(sprintf("%d permalinks to be deleted", $row['n']));
+
+            if($this->dry) {
+                $output->writeln(sprintf("dry : not executed"));
+            }
+            else {
+                $stmt = $this->connection->executeQuery($sqlDel);
+                $output->writeln(sprintf("%d permalinks deleted", $stmt->rowCount()));
             }
         }
 
@@ -220,6 +271,10 @@ class BuildPermalinks extends Command
             else {
                 $stmt = $this->connection->executeQuery($sqlSelect);
                 $record = $last_rid = null;
+                $time_start = microtime(true);
+                $duration = 0.0;
+                $n_created = 0;
+                $lmax = 0;  // max length of msg (displayed on same line), useful to clear the line after run
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $record_id = $row['record_id'];
                     $subdef_id = $row['subdef_id'];
@@ -228,7 +283,6 @@ class BuildPermalinks extends Command
                         $last_rid = $record_id;
                         $record = $this->databox->get_record($record_id);
                     }
-                    $plink = '<failed>';
                     if($record) {
                         try {
                             /*
@@ -239,14 +293,25 @@ class BuildPermalinks extends Command
                             /*
                              * todo : use permalink adapter
                              */
+                            $n_created++;
                         }
                         catch (\Exception $e) {
                             // cant get record ? ignore
                         }
                     }
-                    $output->writeln(sprintf("%s ; %s (%s)", $record_id, $name, $subdef_id));
+                    $duration = microtime(true) - $time_start ;
+                    if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+                        $name = substr($name, 0, 20);
+                        $lmax = max($lmax, strlen($msg = sprintf("rid: %-6s %-20s %10.1f\r", $record_id, $name, $n_created / $duration)));
+                        $output->write($msg, $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE);
+                    }
+
+                    // usleep(10000);
                 }
                 $stmt->closeCursor();
+                $output->write(str_repeat(' ', $lmax) . "\r");    // clear the line
+                $duration = max(.000001, $duration);  // avoid division by 0 (anyway n_created is 0 in this case)
+                $output->writeln(sprintf("%s permalinks created in %.2f seconds : %.1f p/s", $n_created, $duration, $n_created / $duration ));
             }
         }
 
