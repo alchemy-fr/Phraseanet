@@ -377,35 +377,43 @@ class media_Permalink_Adapter implements cache_cacheableInterface
     /**
      * @param Application $app
      * @param record_adapter $record
-     * @param int $subdef_id
-     * @throws DBALException
+     * @param int[] $subdef_ids
+     * @return int
      */
-    public static function createFromRecord(Application $app, record_adapter $record, $subdef_id)
+    public static function createFromRecord(Application $app, record_adapter $record, $subdef_ids)
     {
         /** @var Generator $generator */
         $generator = $app['random.medium'];
         /** @var unicode $unicode */
         $unicode = $app['unicode'];
 
-        $params = [
-            'subdef_id' => $subdef_id,
-            'token' => $generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS),
-            'label' => self::cleanLabel($unicode, $record->get_title(['removeExtension' => true])),
-        ];
         $connection = $record->getDatabox()->get_connection();
-        $sql = "INSERT INTO permalinks (subdef_id, token, activated, created_on, last_modified, label)\n"
-            . " VALUES (:subdef_id, :token, 1, NOW(), NOW(), :label)";
 
-        $statement = $connection->prepare($sql);
+        $n_created = 0;
 
-        try {
-            $statement->execute($params);
+        // build a multi-rows insert
+        $inserts = '';
+        // constant part values
+        $insk = ", 1, NOW(), NOW(), " . $connection->quote(self::cleanLabel($unicode, $record->get_title(['removeExtension' => true])));
+        // multiple rows
+        foreach($subdef_ids as $subdef_id) {
+            $inserts .= ($inserts ? ',' : '') . '('
+                . $connection->quote($subdef_id) . ', '
+                . $connection->quote($generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS))
+                . $insk . ')';
         }
-        catch(Exception $e) {
+        $sql = "INSERT INTO permalinks (subdef_id, token, activated, created_on, last_modified, label)\n"
+            . " VALUES " . $inserts;
+        try {
+            $connection->exec($sql);
+            $n_created += count($subdef_ids);
+        }
+        catch (Exception $e) {
             // we ignore this because somebody else might have created this plink
             // between the test of "to be created" and here
         }
-        $statement->closeCursor();
+
+        return $n_created;
     }
 
     /**
@@ -552,7 +560,7 @@ SQL;
     private static function cleanLabel(unicode $unicode, $label)
     {
         $label = $unicode->remove_nonazAZ09(
-            preg_replace("/\\s\\s+/", '-', trim($label))
+            preg_replace("/\\s+/", '-', trim($label))
         );
 
         return $label ? $label : 'untitled';

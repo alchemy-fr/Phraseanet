@@ -256,8 +256,7 @@ class BuildPermalinks extends Command
                 $s .= " WHERE " . $w;
             }
 
-            $s .= " ORDER BY record_id ASC";
-            $sqlSelect = "SELECT s.record_id, s.subdef_id, s.name FROM " . $s;
+            $sqlSelect = "SELECT s.record_id, GROUP_CONCAT(s.subdef_id) AS subdef_ids FROM " . $s . " GROUP BY record_id";
             if ($this->show_sql) {
                 $this->output->writeln($sqlSelect);
             }
@@ -271,7 +270,6 @@ class BuildPermalinks extends Command
             }
             else {
                 $stmt = $this->connection->executeQuery($sqlSelect);
-                $record = $last_rid = null;
                 $time_start = microtime(true);
                 $duration = 0.0;
                 $n_created = 0;
@@ -279,12 +277,9 @@ class BuildPermalinks extends Command
                 $app = $this->getContainer();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $record_id = $row['record_id'];
-                    $subdef_id = $row['subdef_id'];
-                    $name = $row['name'];
-                    if($record_id !== $last_rid) {
-                        $last_rid = $record_id;
-                        $record = $this->databox->get_record($record_id);
-                    }
+                    $subdef_ids = $row['subdef_ids'];
+                    $record = $this->databox->get_record($record_id);
+
                     if($record) {
                         try {
                             /*
@@ -295,8 +290,8 @@ class BuildPermalinks extends Command
                             /*
                              * todo : use permalink adapter
                              */
-                            media_Permalink_Adapter::createFromRecord($app, $record, $subdef_id);
-                            $n_created++;
+                            $subdef_ids = explode(',', $subdef_ids);
+                            $n_created += media_Permalink_Adapter::createFromRecord($app, $record, $subdef_ids);
                         }
                         catch (\Exception $e) {
                             // cant get record ? ignore
@@ -304,8 +299,7 @@ class BuildPermalinks extends Command
                     }
                     $duration = microtime(true) - $time_start ;
                     if($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                        $name = substr($name, 0, 20);
-                        $lmax = max($lmax, strlen($msg = sprintf("rid: %-6s %-20s %10.1f\r", $record_id, $name, $n_created / $duration)));
+                        $lmax = max($lmax, strlen($msg = sprintf("rid: %-6s %4.1f\r", $record_id, $n_created / $duration)));
                         $output->write($msg, $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE);
                     }
                 }
@@ -313,7 +307,7 @@ class BuildPermalinks extends Command
 
                 $output->write(str_repeat(' ', $lmax) . "\r");    // clear the line
                 $duration = max(.000001, $duration);  // avoid division by 0 (anyway n_created is 0 in this case)
-                $output->writeln(sprintf("%s permalinks created in %.2f seconds : %.1f p/s", $n_created, $duration, $n_created / $duration ));
+                $output->writeln(sprintf("%s permalinks created in %.1f seconds : %.1f p/s", $n_created, $duration, $n_created / $duration ));
             }
         }
 
