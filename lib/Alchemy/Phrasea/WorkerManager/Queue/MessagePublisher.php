@@ -18,6 +18,7 @@ class MessagePublisher
     const POPULATE_INDEX_TYPE  = 'populateIndex';
     const PULL_ASSETS_TYPE     = 'pullAssets';
     const SUBDEF_CREATION_TYPE = 'subdefCreation';
+    const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const WRITE_METADATAS_TYPE = 'writeMetadatas';
     const WEBHOOK_TYPE         = 'webhook';
 
@@ -40,6 +41,7 @@ class MessagePublisher
     const POPULATE_INDEX_QUEUE = 'populateindex-queue';
     const PULL_QUEUE           = 'pull-queue';
     const SUBDEF_QUEUE         = 'subdef-queue';
+    const VALIDATION_REMINDER_QUEUE     = 'validationReminder-queue';
     const WEBHOOK_QUEUE        = 'webhook-queue';
 
     // retry queue
@@ -53,8 +55,10 @@ class MessagePublisher
     const RETRY_SUBDEF_QUEUE         = 'retry-subdef-queue';
     const RETRY_WEBHOOK_QUEUE        = 'retry-webhook-queue';
 
-    // use this queue to make a loop on a consumer
-    const LOOP_PULL_QUEUE            = 'loop-pull-queue';
+    // use those queue to make a loop on a consumer
+    const LOOP_PULL_QUEUE                   = 'loop-pull-queue';
+    const LOOP_VALIDATION_REMINDER_QUEUE    = 'loop-validationReminder-queue';
+
 
     // all failed queue, if message is treated over 3 times it goes to the failed queue
     const FAILED_ASSETS_INGEST_QUEUE  = 'failed-ingest-queue';
@@ -126,16 +130,16 @@ class MessagePublisher
         return true;
     }
 
-    public function initializePullAssets()
+    public function initializeLoopQueue($type)
     {
         $payload = [
-            'message_type' => self::PULL_ASSETS_TYPE,
+            'message_type' => $type,
             'payload' => [
                 'initTimestamp' => new \DateTime('now', new \DateTimeZone('UTC'))
             ]
         ];
 
-        $this->publishMessage($payload, self::PULL_QUEUE);
+        $this->publishMessage($payload, AMQPConnection::$defaultQueues[$type]);
     }
 
     public function connectionClose()

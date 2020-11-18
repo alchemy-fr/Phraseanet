@@ -39,8 +39,20 @@ const markerGLCollection = (services) => {
     };
 
     const setPoint = (marker) => {
+        let markerId = marker.properties.recordIndex;
 
-        let markerElement = getMarker(marker.properties._rid);
+        if (marker.properties._rid !== undefined) {
+            markerId = marker.properties._rid;
+        }
+
+        let markerElement = getMarker(markerId);
+
+        if (markerElement === undefined) {
+            let el = document.createElement('div');
+            el.className = 'mapboxGl-phrasea-marker';
+
+            markerElement = markerGl[markerId] = new mapboxgl.Marker(el);
+        }
 
         markerElement.feature = {
             properties : {
@@ -134,7 +146,6 @@ const markerGLCollection = (services) => {
 
             markerSelected.togglePopup();
 
-            cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
             resetMarkerPosition($content, markerSelected);
         });
     }

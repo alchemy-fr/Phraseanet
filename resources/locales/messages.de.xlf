@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-11-17T07:21:26Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2020-11-18T15:21:24Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4460,7 +4460,7 @@
       <trans-unit id="1b369c4651e2b82200334fa587669b3828071192" resname="My application " approved="yes">
         <source>My application </source>
         <target state="translated">Meine Anwendung</target>
-        <jms:reference-file line="266">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="259">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f36fd4dc42df8a92572afe51d887c5f33dda5b0" resname="My baskets" approved="yes">
         <source>My baskets</source>
@@ -4542,7 +4542,7 @@
         <source>No</source>
         <target state="translated">Nein</target>
         <jms:reference-file line="32">web/developers/applications.html.twig</jms:reference-file>
-        <jms:reference-file line="290">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="283">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8c123d8ad43d08cc48c3d6a7676e65f71eea59df" resname="No URL available" approved="yes">
         <source>No URL available</source>
@@ -4919,7 +4919,7 @@
       <trans-unit id="fe42b90acc297644b70123354014701c49384489" resname="Paniers" approved="yes">
         <source>Paniers</source>
         <target state="translated">Sammelkörbe</target>
-        <jms:reference-file line="257">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="250">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="127">lightbox/IE6/validate.html.twig</jms:reference-file>
         <jms:reference-file line="92">web/lightbox/index.html.twig</jms:reference-file>
         <jms:reference-file line="173">web/lightbox/validate.html.twig</jms:reference-file>
@@ -7700,7 +7700,7 @@
         <source>Yes</source>
         <target state="translated">Ja</target>
         <jms:reference-file line="33">web/developers/applications.html.twig</jms:reference-file>
-        <jms:reference-file line="291">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="284">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="13">user/import/view.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4de66b40cf0800d4a25cc75b4f3f593cfc44ef6c" resname="You are Admin" approved="yes">
@@ -8756,11 +8756,6 @@
         <target state="translated">falsches Passwort</target>
         <jms:reference-file line="100">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9bf7a0391d97674b47027a4021a3fa438db12b2d" resname="admin::compte-utilisateur:ftp: Nombre d'essais max" approved="yes">
-        <source>admin::compte-utilisateur:ftp: Nombre d'essais max</source>
-        <target state="translated">maximale Anzahl von Versuchen</target>
-        <jms:reference-file line="225">web/account/account.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="7353ab4d025765f9e75cf84168059ea043b71166" resname="admin::compte-utilisateur:ftp: Utiliser le mode passif" approved="yes">
         <source>admin::compte-utilisateur:ftp: Utiliser le mode passif</source>
         <target state="translated">Passiv Mode benutzen</target>
@@ -9133,7 +9128,27 @@
       <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error" approved="yes">
         <source>admin::workermanager: Rabbit config error</source>
         <target state="translated">Konfigurationsfehler des Nachrichten Managers</target>
-        <jms:reference-file line="101">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="107">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second">
+        <source>admin::workermanager:tab:Reminder: Interval in second</source>
+        <target state="new">admin::workermanager:tab:Reminder: Interval in second</target>
+        <jms:reference-file line="6">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2595e37b2158ece0ddfb2640ced15109f959a811" resname="admin::workermanager:tab:Reminder: Start">
+        <source>admin::workermanager:tab:Reminder: Start</source>
+        <target state="new">admin::workermanager:tab:Reminder: Start</target>
+        <jms:reference-file line="12">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f1170f88a845b046b9a67610a9ca5cf16df5c206" resname="admin::workermanager:tab:Reminder: Stop">
+        <source>admin::workermanager:tab:Reminder: Stop</source>
+        <target state="new">admin::workermanager:tab:Reminder: Stop</target>
+        <jms:reference-file line="14">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af1fc0b0c903fd4213684e7e7f3e374044a5b417" resname="admin::workermanager:tab:Reminder: description">
+        <source>admin::workermanager:tab:Reminder: description</source>
+        <target state="new">admin::workermanager:tab:Reminder: description</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title" approved="yes">
         <source>admin::workermanager:tab:configuration: title</source>
@@ -9248,6 +9263,11 @@
       <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: title</source>
         <target state="translated">Warteschlange</target>
+        <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="15a2a28d354353ef62c87266c96a8586ea6d7f00" resname="admin::workermanager:tab:reminder: title">
+        <source>admin::workermanager:tab:reminder: title</source>
+        <target state="new">admin::workermanager:tab:reminder: title</target>
         <jms:reference-file line="45">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate" approved="yes">
@@ -9629,7 +9649,7 @@
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error" approved="yes">
         <source>admin:worker Retrieve configuration error</source>
         <target state="translated">Worker Abruf Konfigurationsfehler</target>
-        <jms:reference-file line="94">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="100">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert" approved="yes">
         <source>alert</source>
@@ -10012,7 +10032,7 @@
         <jms:reference-file line="121">web/developers/application_form.html.twig</jms:reference-file>
         <jms:reference-file line="75">web/account/access.html.twig</jms:reference-file>
         <jms:reference-file line="48">web/account/reset-email.html.twig</jms:reference-file>
-        <jms:reference-file line="236">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="229">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="349">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="371">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="39">Bridge/Flickr/photo_modify.html.twig</jms:reference-file>
@@ -10820,7 +10840,7 @@
       <trans-unit id="5cdbff50d2a3ae92720c5af32d4cd560d1351a91" resname="login::notification: Changements enregistres" approved="yes">
         <source>login::notification: Changements enregistres</source>
         <target state="translated">Veränderungen wurden bestätigt</target>
-        <jms:reference-file line="490">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="488">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="46f7a3bb71222626147c7e64c6a59a3f4c3d8e42" resname="login::notification: Mise a jour du mot de passe avec succes" approved="yes">
         <source>login::notification: Mise a jour du mot de passe avec succes</source>
@@ -11522,12 +11542,12 @@
       <trans-unit id="245fd09d0518644a6580518f710add762804ca9a" resname="phraseanet::account The account has been deleted" approved="yes">
         <source>phraseanet::account The account has been deleted</source>
         <target state="translated">Ihr Benutzerkonto wurde gelöscht</target>
-        <jms:reference-file line="555">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="553">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
         <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >> ]]></source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
-        <jms:reference-file line="296">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="047b7994f5960aae108105ad5deadb5bbd72c8fc" resname="phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion" approved="yes">
         <source>phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion</source>
@@ -11537,32 +11557,32 @@
       <trans-unit id="d0ee9e2c90a05b113b00bf7accd590557bd78528" resname="phraseanet::account: Are you sure you want to delete your account?" approved="yes">
         <source>phraseanet::account: Are you sure you want to delete your account?</source>
         <target state="translated">Möchten Sie Ihr Konto wirklich löschen?</target>
-        <jms:reference-file line="253">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="246">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b98be91d0f8cadb22e52e6217584b7a11370fbb6" resname="phraseanet::account: Delete my account" approved="yes">
         <source>phraseanet::account: Delete my account</source>
         <target state="translated">Mein Benutzerkonto löschen</target>
-        <jms:reference-file line="244">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="237">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7993903466c49139bfae4c34c63446ff24b1474" resname="phraseanet::account: I am agree to delete my account" approved="yes">
         <source>phraseanet::account: I am agree to delete my account</source>
         <target state="translated">Ich bin damit einverstanden, mein Konto zu löschen</target>
-        <jms:reference-file line="285">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="278">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b836fda2a5c65abfd05c215d4c4dd66361e4f0f" resname="phraseanet::account: I am agree to delete my account, need confirmation on mail" approved="yes">
         <source>phraseanet::account: I am agree to delete my account, need confirmation on mail</source>
         <target state="translated">Ich bin damit einverstanden, mein Konto zu löschen, und ich möchte eine E-Mail Bestätigung</target>
-        <jms:reference-file line="283">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="276">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="121aa945bfcb3565989acc06a1ccda5b36be6bf0" resname="phraseanet::account: List of data to be deleted" approved="yes">
         <source>phraseanet::account: List of data to be deleted</source>
         <target state="translated">Liste der zu löschenden Daten</target>
-        <jms:reference-file line="254">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="247">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d168955d9cfb26df27fbdcb4f83bbfe78654703" resname="phraseanet::account: My phraseanet account" approved="yes">
         <source>phraseanet::account: My phraseanet account</source>
         <target state="translated">Mein Phraseanet Benutzerkonto</target>
-        <jms:reference-file line="274">web/account/account.html.twig</jms:reference-file>
+        <jms:reference-file line="267">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9628f29074afd5c9bb42bb0b4c896f8bc32c192e" resname="phraseanet::chargement" approved="yes">
         <source>phraseanet::chargement</source>
@@ -11596,12 +11616,12 @@
         <target state="translated">Mailserver-Ausfall</target>
         <jms:reference-file line="123">Controller/Root/AccountController.php</jms:reference-file>
         <jms:reference-file line="344">Controller/Root/AccountController.php</jms:reference-file>
-        <jms:reference-file line="543">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="541">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="60ae97c7ab0fb3923682a785ff0348958e308d4a" resname="phraseanet::error: failed to revoke some user access" approved="yes">
         <source>phraseanet::error: failed to revoke some user access</source>
         <target state="translated">Fehler beim Widerruf von Nutzerrechten</target>
-        <jms:reference-file line="532">Controller/Root/AccountController.php</jms:reference-file>
+        <jms:reference-file line="530">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a5db6bf8928d23c54b13277fa7d5289a1f52744" resname="phraseanet::jours:: dimanche" approved="yes">
         <source>phraseanet::jours:: dimanche</source>

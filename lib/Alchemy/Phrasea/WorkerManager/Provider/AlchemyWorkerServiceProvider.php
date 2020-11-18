@@ -20,6 +20,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\PullAssetsWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
 use Alchemy\Phrasea\WorkerManager\Worker\SubdefCreationWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubtitleWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\ValidationReminderWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\WebhookWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
@@ -150,6 +151,10 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::FTP_TYPE, new CallableWorkerFactory(function () use ($app) {
             return new FtpWorker($app);
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::VALIDATION_REMINDER_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new ValidationReminderWorker($app);
         }));
     }
 

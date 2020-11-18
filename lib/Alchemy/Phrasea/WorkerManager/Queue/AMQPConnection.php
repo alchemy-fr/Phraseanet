@@ -27,13 +27,14 @@ class AMQPConnection
         MessagePublisher::WEBHOOK_TYPE          => MessagePublisher::WEBHOOK_QUEUE,
         MessagePublisher::ASSETS_INGEST_TYPE    => MessagePublisher::ASSETS_INGEST_QUEUE,
         MessagePublisher::CREATE_RECORD_TYPE    => MessagePublisher::CREATE_RECORD_QUEUE,
-        MessagePublisher::PULL_QUEUE            => MessagePublisher::PULL_QUEUE,
+        MessagePublisher::PULL_ASSETS_TYPE      => MessagePublisher::PULL_QUEUE,
         MessagePublisher::POPULATE_INDEX_TYPE   => MessagePublisher::POPULATE_INDEX_QUEUE,
         MessagePublisher::DELETE_RECORD_TYPE    => MessagePublisher::DELETE_RECORD_QUEUE,
         MessagePublisher::MAIN_QUEUE_TYPE       => MessagePublisher::MAIN_QUEUE,
         MessagePublisher::SUBTITLE_TYPE         => MessagePublisher::SUBTITLE_QUEUE,
         MessagePublisher::EXPOSE_UPLOAD_TYPE    => MessagePublisher::EXPOSE_UPLOAD_QUEUE,
-        MessagePublisher::FTP_TYPE              => MessagePublisher::FTP_QUEUE
+        MessagePublisher::FTP_TYPE              => MessagePublisher::FTP_QUEUE,
+        MessagePublisher::VALIDATION_REMINDER_TYPE => MessagePublisher::VALIDATION_REMINDER_QUEUE,
     ];
 
     //  the corresponding worker queues and retry queues, loop queue
@@ -46,7 +47,8 @@ class AMQPConnection
         MessagePublisher::CREATE_RECORD_QUEUE   => MessagePublisher::RETRY_CREATE_RECORD_QUEUE,
         MessagePublisher::POPULATE_INDEX_QUEUE  => MessagePublisher::RETRY_POPULATE_INDEX_QUEUE,
         MessagePublisher::PULL_QUEUE            => MessagePublisher::LOOP_PULL_QUEUE,
-        MessagePublisher::FTP_QUEUE             => MessagePublisher::RETRY_FTP_QUEUE
+        MessagePublisher::FTP_QUEUE             => MessagePublisher::RETRY_FTP_QUEUE,
+        MessagePublisher::VALIDATION_REMINDER_QUEUE => MessagePublisher::LOOP_VALIDATION_REMINDER_QUEUE
     ];
 
     public static $defaultFailedQueues = [
@@ -63,6 +65,11 @@ class AMQPConnection
     public static $defaultDelayedQueues = [
         MessagePublisher::METADATAS_QUEUE  => MessagePublisher::DELAYED_METADATAS_QUEUE,
         MessagePublisher::SUBDEF_QUEUE     => MessagePublisher::DELAYED_SUBDEF_QUEUE
+    ];
+
+    public static $defaultLoopTypes = [
+        MessagePublisher::PULL_ASSETS_TYPE,
+        MessagePublisher::VALIDATION_REMINDER_TYPE
     ];
 
     // default message TTL in retry queue in millisecond
@@ -271,6 +278,18 @@ class AMQPConnection
             isset($config['pull_assets']['pullInterval']) ) {
                     // convert in milli second
             return (int)($config['pull_assets']['pullInterval']) * 1000;
+        } elseif ($routing == MessagePublisher::VALIDATION_REMINDER_QUEUE) {
+
+            if (isset($config['validationReminder']) &&
+                isset($config['validationReminder']['interval'])) {
+
+                // convert in milli second
+                return (int)($config['validationReminder']['interval']) * 1000;
+            }
+
+            // default value to 2 hour if not set
+            return (int) 7200 * 1000;
+
         } elseif (isset($config['retry_queue']) &&
             isset($config['retry_queue'][array_search($routing, AMQPConnection::$defaultQueues)])) {
 

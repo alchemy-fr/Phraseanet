@@ -2588,7 +2588,7 @@ var leafletMap = function leafletMap(services) {
         if (editable) {
             $noticeButton = (0, _jquery2.default)('<button id="map-info-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
 
-            $noticeBox = (0, _jquery2.default)('<div id="notice-info-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("prod:mapboxgl: title info") + '</span></span><span class="notice-desc">' + localeService.t("prod:mapboxgl: description info : right click to add position") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+            $noticeBox = (0, _jquery2.default)('<div id="notice-info-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("mapboxgl title info") + '</span></span><span class="notice-desc">' + localeService.t("mapboxgl description info") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
 
             controlContainerEdit.append($noticeButton);
             controlContainerEdit.append($noticeBox);
@@ -2628,7 +2628,7 @@ var leafletMap = function leafletMap(services) {
         if (drawable) {
             $noticeButtonJs = (0, _jquery2.default)('<button id="map-noticeJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
 
-            $noticeBoxJs = (0, _jquery2.default)('<div id="noticeJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("prod:mapboxjs: title notice") + '</span></span><span class="notice-desc">' + localeService.t("prod:mapboxjs: description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+            $noticeBoxJs = (0, _jquery2.default)('<div id="noticeJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("mapboxjs title notice") + '</span></span><span class="notice-desc">' + localeService.t("mapboxjs description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
 
             controlContainerSearch.append($noticeButtonJs);
             controlContainerSearch.append($noticeBoxJs);
@@ -2637,7 +2637,7 @@ var leafletMap = function leafletMap(services) {
         if (editable) {
             $noticeButtonJs = (0, _jquery2.default)('<button id="map-infoJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
 
-            $noticeBoxJs = (0, _jquery2.default)('<div id="notice-infoJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("prod:mapboxjs: title info") + '</span></span><span class="notice-desc">' + localeService.t("prod:mapboxjs: description info : right click to add position") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+            $noticeBoxJs = (0, _jquery2.default)('<div id="notice-infoJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("mapboxjs title info") + '</span></span><span class="notice-desc">' + localeService.t("mapboxjs description info") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
 
             controlContainerEdit.append($noticeButtonJs);
             controlContainerEdit.append($noticeBoxJs);
@@ -50602,8 +50602,20 @@ var markerGLCollection = function markerGLCollection(services) {
     };
 
     var setPoint = function setPoint(marker) {
+        var markerId = marker.properties.recordIndex;
 
-        var markerElement = getMarker(marker.properties._rid);
+        if (marker.properties._rid !== undefined) {
+            markerId = marker.properties._rid;
+        }
+
+        var markerElement = getMarker(markerId);
+
+        if (markerElement === undefined) {
+            var el = document.createElement('div');
+            el.className = 'mapboxGl-phrasea-marker';
+
+            markerElement = markerGl[markerId] = new mapboxgl.Marker(el);
+        }
 
         markerElement.feature = {
             properties: {
@@ -50682,7 +50694,6 @@ var markerGLCollection = function markerGLCollection(services) {
 
             markerSelected.togglePopup();
 
-            cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
             resetMarkerPosition($content, markerSelected);
         });
     };
