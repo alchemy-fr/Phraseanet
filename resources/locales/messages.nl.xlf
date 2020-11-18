@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-11-13T12:16:26Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-11-17T07:44:45Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9144,7 +9144,27 @@
       <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error">
         <source>admin::workermanager: Rabbit config error</source>
         <target state="new">admin::workermanager: Rabbit config error</target>
-        <jms:reference-file line="95">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="101">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second">
+        <source>admin::workermanager:tab:Reminder: Interval in second</source>
+        <target state="new">admin::workermanager:tab:Reminder: Interval in second</target>
+        <jms:reference-file line="6">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2595e37b2158ece0ddfb2640ced15109f959a811" resname="admin::workermanager:tab:Reminder: Start">
+        <source>admin::workermanager:tab:Reminder: Start</source>
+        <target state="new">admin::workermanager:tab:Reminder: Start</target>
+        <jms:reference-file line="12">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f1170f88a845b046b9a67610a9ca5cf16df5c206" resname="admin::workermanager:tab:Reminder: Stop">
+        <source>admin::workermanager:tab:Reminder: Stop</source>
+        <target state="new">admin::workermanager:tab:Reminder: Stop</target>
+        <jms:reference-file line="14">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af1fc0b0c903fd4213684e7e7f3e374044a5b417" resname="admin::workermanager:tab:Reminder: description">
+        <source>admin::workermanager:tab:Reminder: description</source>
+        <target state="new">admin::workermanager:tab:Reminder: description</target>
+        <jms:reference-file line="1">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c137c6545a114ff1d71be2eb1f50c8414b411a41" resname="admin::workermanager:tab:configuration: title">
         <source>admin::workermanager:tab:configuration: title</source>
@@ -9229,6 +9249,11 @@
       <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title">
         <source>admin::workermanager:tab:queueMonitor: title</source>
         <target state="new">admin::workermanager:tab:queueMonitor: title</target>
+        <jms:reference-file line="45">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="15a2a28d354353ef62c87266c96a8586ea6d7f00" resname="admin::workermanager:tab:reminder: title">
+        <source>admin::workermanager:tab:reminder: title</source>
+        <target state="new">admin::workermanager:tab:reminder: title</target>
         <jms:reference-file line="40">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63a8b1bbfa2d0540ba6a71541aa941c1b8b62e6" resname="admin::workermanager:tab:searchengine: Databox to populate">
@@ -9605,7 +9630,7 @@
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error">
         <source>admin:worker Retrieve configuration error</source>
         <target state="new">admin:worker Retrieve configuration error</target>
-        <jms:reference-file line="88">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="94">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert">
         <source>alert</source>
