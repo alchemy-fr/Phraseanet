@@ -150,6 +150,11 @@ class BuildPermalinks extends Command
         $this->prune              = $input->getOption('prune') ? true : false;
         $this->names              = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
 
+        if(!$this->create && !$this->force_create && !$this->prune) {
+            $output->writeln(sprintf("<error>Spercifiy at least one action : --prune, --create, --force_create</error>"));
+            $argsOK = false;
+        }
+
         if($this->dry && $this->force_create) {
             $output->writeln(sprintf("<error>--dry can't be used with --force_create</error>"));
             $argsOK = false;
@@ -282,7 +287,14 @@ class BuildPermalinks extends Command
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $record_id = $row['record_id'];
                     $subdef_ids = $row['subdef_ids'];
-                    $record = $this->databox->get_record($record_id);
+
+                    $record = null;
+                    try {
+                        $record = $this->databox->get_record($record_id);
+                    }
+                    catch(\Exception $e) {
+                        $output->writeln(sprintf("Failed to get record %s, skip.", $record_id ));
+                    }
 
                     if($record) {
                         try {
@@ -306,6 +318,7 @@ class BuildPermalinks extends Command
                         $lmax = max($lmax, strlen($msg = sprintf("rid: %-6s %4.1f\r", $record_id, $n_created / $duration)));
                         $output->write($msg, $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE);
                     }
+
                 }
                 $stmt->closeCursor();
 
