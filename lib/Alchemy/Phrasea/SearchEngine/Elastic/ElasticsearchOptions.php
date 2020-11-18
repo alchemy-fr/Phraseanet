@@ -60,7 +60,7 @@ class ElasticsearchOptions
             'replicas' => 0,
             'minScore' => 4,
             'highlight' => true,
-            'max_result_window'  => 500000,
+            'maxResultWindow'    => 500000,
             'populate_order'     => self::POPULATE_ORDER_RID,
             'populate_direction' => self::POPULATE_DIRECTION_DESC,
             'activeTab' => null,
@@ -76,7 +76,7 @@ class ElasticsearchOptions
         $self->setReplicas($options['replicas']);
         $self->setMinScore($options['minScore']);
         $self->setHighlight($options['highlight']);
-        $self->setMaxResultWindow($options['max_result_window']);
+        $self->setMaxResultWindow($options['maxResultWindow']);
         $self->setPopulateOrder($options['populate_order']);
         $self->setPopulateDirection($options['populate_direction']);
         $self->setActiveTab($options['activeTab']);
