@@ -272,12 +272,18 @@ class AMQPConnection
             isset($config['pull_assets']['pullInterval']) ) {
                     // convert in milli second
             return (int)($config['pull_assets']['pullInterval']) * 1000;
-        } elseif ($routing == MessagePublisher::VALIDATION_REMINDER_QUEUE &&
-            isset($config['validationReminder']) &&
-            isset($config['validationReminder']['interval'])) {
+        } elseif ($routing == MessagePublisher::VALIDATION_REMINDER_QUEUE) {
 
-            // convert in milli second
-            return (int)($config['validationReminder']['interval']) * 1000;
+            if (isset($config['validationReminder']) &&
+                isset($config['validationReminder']['interval'])) {
+
+                // convert in milli second
+                return (int)($config['validationReminder']['interval']) * 1000;
+            }
+
+            // default value to 2 hour if not set
+            return (int) 7200 * 1000;
+
         } elseif (isset($config['retry_queue']) &&
             isset($config['retry_queue'][array_search($routing, AMQPConnection::$defaultQueues)])) {
 
