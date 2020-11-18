@@ -17,6 +17,7 @@ use Databox;
 use databox_subdef;
 use DateTime;
 use Doctrine\DBAL\Connection;
+use media_Permalink_Adapter;
 use PDO;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -275,6 +276,7 @@ class BuildPermalinks extends Command
                 $duration = 0.0;
                 $n_created = 0;
                 $lmax = 0;  // max length of msg (displayed on same line), useful to clear the line after run
+                $app = $this->getContainer();
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $record_id = $row['record_id'];
                     $subdef_id = $row['subdef_id'];
@@ -289,10 +291,11 @@ class BuildPermalinks extends Command
                              * really this will create the plink if it does not exists...
                              * ... so we can't test existance that way.
                              */
-                            $record->get_subdef($name)->get_permalink();
+                            //$record->get_subdef($name)->get_permalink();
                             /*
                              * todo : use permalink adapter
                              */
+                            media_Permalink_Adapter::createFromRecord($app, $record, $subdef_id);
                             $n_created++;
                         }
                         catch (\Exception $e) {
@@ -305,10 +308,9 @@ class BuildPermalinks extends Command
                         $lmax = max($lmax, strlen($msg = sprintf("rid: %-6s %-20s %10.1f\r", $record_id, $name, $n_created / $duration)));
                         $output->write($msg, $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE);
                     }
-
-                    // usleep(10000);
                 }
                 $stmt->closeCursor();
+
                 $output->write(str_repeat(' ', $lmax) . "\r");    // clear the line
                 $duration = max(.000001, $duration);  // avoid division by 0 (anyway n_created is 0 in this case)
                 $output->writeln(sprintf("%s permalinks created in %.2f seconds : %.1f p/s", $n_created, $duration, $n_created / $duration ));
