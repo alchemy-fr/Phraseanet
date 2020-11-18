@@ -1193,6 +1193,8 @@ const recordEditorService = services => {
         if (options.newrepresent !== false) {
             params.newrepresent = options.newrepresent;
         }
+        // close modal before saving to avoid blocked window
+        closeModal();
 
         $.ajax({
             url: `${url}prod/records/edit/apply/`,
@@ -1204,7 +1206,7 @@ const recordEditorService = services => {
                         basketId: 'current'
                     });
                 }
-                closeModal();
+
                 // $('#Edit_copyPreset_dlg').remove();
                 // $('#EDITWINDOW').hide();
                 // $editorContainer.find('*').addBack().off();

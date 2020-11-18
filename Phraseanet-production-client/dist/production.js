@@ -20315,6 +20315,8 @@ var recordEditorService = function recordEditorService(services) {
         if (options.newrepresent !== false) {
             params.newrepresent = options.newrepresent;
         }
+        // close modal before saving to avoid blocked window
+        closeModal();
 
         _jquery2.default.ajax({
             url: url + 'prod/records/edit/apply/',
@@ -20326,7 +20328,7 @@ var recordEditorService = function recordEditorService(services) {
                         basketId: 'current'
                     });
                 }
-                closeModal();
+
                 // $('#Edit_copyPreset_dlg').remove();
                 // $('#EDITWINDOW').hide();
                 // $editorContainer.find('*').addBack().off();
