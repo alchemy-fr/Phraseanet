@@ -150,6 +150,10 @@ class BuildPermalinks extends Command
         $this->prune              = $input->getOption('prune') ? true : false;
         $this->names              = $this->getOptionAsArray($input, 'name', self::OPTION_DISTINT_VALUES);
 
+        if($this->dry && $this->force_create) {
+            $output->writeln(sprintf("<error>--dry can't be used with --force_create</error>"));
+            $argsOK = false;
+        }
         if($this->force_create) {
             $this->clear_cache = true;
         }
