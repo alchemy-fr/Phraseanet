@@ -212,7 +212,7 @@ class AdminConfigurationController extends Controller
 
     public function validationReminderAction(PhraseaApplication $app, Request $request)
     {
-        $interval = $app['conf']->get(['workers', 'validationReminder', 'interval'], 10);
+        $interval = $app['conf']->get(['workers', 'validationReminder', 'interval'], 7200);
 
         if ($request->getMethod() == 'POST') {
             $reminderInterval = (int)$request->request->get('worker_reminder_interval');
