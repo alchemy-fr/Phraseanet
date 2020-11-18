@@ -9,19 +9,19 @@ use Psr\Log\LoggerInterface;
 
 class MessagePublisher
 {
-    const EXPORT_MAIL_TYPE       = 'exportMail';
-    const SUBDEF_CREATION_TYPE   = 'subdefCreation';
-    const WRITE_METADATAS_TYPE   = 'writeMetadatas';
-    const ASSETS_INGEST_TYPE     = 'assetsIngest';
-    const CREATE_RECORD_TYPE     = 'createRecord';
-    const DELETE_RECORD_TYPE     = 'deleteRecord';
-    const WEBHOOK_TYPE           = 'webhook';
-    const POPULATE_INDEX_TYPE    = 'populateIndex';
-    const PULL_ASSETS_TYPE       = 'pullAssets';
-    const SUBTITLE_TYPE          = 'subtitle';
-    const MAIN_QUEUE_TYPE        = 'mainQueue';
+    const EXPORT_MAIL_TYPE     = 'exportMail';
+    const SUBDEF_CREATION_TYPE = 'subdefCreation';
+    const WRITE_METADATAS_TYPE = 'writeMetadatas';
+    const ASSETS_INGEST_TYPE   = 'assetsIngest';
+    const CREATE_RECORD_TYPE   = 'createRecord';
+    const DELETE_RECORD_TYPE   = 'deleteRecord';
+    const WEBHOOK_TYPE         = 'webhook';
+    const POPULATE_INDEX_TYPE  = 'populateIndex';
+    const PULL_ASSETS_TYPE     = 'pullAssets';
+    const VALIDATION_REMINDER_TYPE  = 'validationReminder';
+    const SUBTITLE_TYPE        = 'subtitle';
+    const MAIN_QUEUE_TYPE      = 'mainQueue';
     const EXPOSE_UPLOAD_TYPE     = 'exposeUpload';
-
 
     const MAIN_QUEUE           = 'main-queue';
     const SUBTITLE_QUEUE       = 'subtitle-queue';
@@ -36,6 +36,7 @@ class MessagePublisher
     const DELETE_RECORD_QUEUE  = 'deleterecord-queue';
     const POPULATE_INDEX_QUEUE = 'populateindex-queue';
     const PULL_QUEUE           = 'pull-queue';
+    const VALIDATION_REMINDER_QUEUE     = 'validationReminder-queue';
     const EXPOSE_UPLOAD_QUEUE  = 'exposeupload-queue';
 
     // retry queue
@@ -47,8 +48,9 @@ class MessagePublisher
     const RETRY_ASSETS_INGEST_QUEUE  = 'retry-ingest-queue';
     const RETRY_CREATE_RECORD_QUEUE  = 'retry-createrecord-queue';
     const RETRY_POPULATE_INDEX_QUEUE = 'retry-populateindex-queue';
-    // use this queue to make a loop on a consumer
-    const LOOP_PULL_QUEUE            = 'loop-pull-queue';
+    // use those queue to make a loop on a consumer
+    const LOOP_PULL_QUEUE                   = 'loop-pull-queue';
+    const LOOP_VALIDATION_REMINDER_QUEUE    = 'loop-validationReminder-queue';
 
     // all failed queue, if message is treated over 3 times it goes to the failed queue
     const FAILED_EXPORT_QUEUE         = 'failed-export-queue';
@@ -118,16 +120,16 @@ class MessagePublisher
         return true;
     }
 
-    public function initializePullAssets()
+    public function initializeLoopQueue($type)
     {
         $payload = [
-            'message_type' => self::PULL_ASSETS_TYPE,
+            'message_type' => $type,
             'payload' => [
                 'initTimestamp' => new \DateTime('now', new \DateTimeZone('UTC'))
             ]
         ];
 
-        $this->publishMessage($payload, self::PULL_QUEUE);
+        $this->publishMessage($payload, AMQPConnection::$defaultQueues[$type]);
     }
 
     public function connectionClose()
