@@ -32,6 +32,7 @@ class AMQPConnection
         MessagePublisher::DELETE_RECORD_TYPE    => MessagePublisher::DELETE_RECORD_QUEUE,
         MessagePublisher::MAIN_QUEUE_TYPE       => MessagePublisher::MAIN_QUEUE,
         MessagePublisher::SUBTITLE_TYPE         => MessagePublisher::SUBTITLE_QUEUE,
+        MessagePublisher::FTP_TYPE              => MessagePublisher::FTP_QUEUE,
         MessagePublisher::VALIDATION_REMINDER_TYPE => MessagePublisher::VALIDATION_REMINDER_QUEUE,
         MessagePublisher::EXPOSE_UPLOAD_TYPE    => MessagePublisher::EXPOSE_UPLOAD_QUEUE,
         MessagePublisher::RECORD_EDIT_TYPE      => MessagePublisher::RECORD_EDIT_QUEUE
@@ -47,6 +48,7 @@ class AMQPConnection
         MessagePublisher::CREATE_RECORD_QUEUE   => MessagePublisher::RETRY_CREATE_RECORD_QUEUE,
         MessagePublisher::POPULATE_INDEX_QUEUE  => MessagePublisher::RETRY_POPULATE_INDEX_QUEUE,
         MessagePublisher::PULL_QUEUE            => MessagePublisher::LOOP_PULL_QUEUE,
+        MessagePublisher::FTP_QUEUE             => MessagePublisher::RETRY_FTP_QUEUE,
         MessagePublisher::VALIDATION_REMINDER_QUEUE => MessagePublisher::LOOP_VALIDATION_REMINDER_QUEUE
     ];
 
@@ -57,7 +59,8 @@ class AMQPConnection
         MessagePublisher::WEBHOOK_TYPE          => MessagePublisher::FAILED_WEBHOOK_QUEUE,
         MessagePublisher::ASSETS_INGEST_TYPE    => MessagePublisher::FAILED_ASSETS_INGEST_QUEUE,
         MessagePublisher::CREATE_RECORD_TYPE    => MessagePublisher::FAILED_CREATE_RECORD_QUEUE,
-        MessagePublisher::POPULATE_INDEX_TYPE   => MessagePublisher::FAILED_POPULATE_INDEX_QUEUE
+        MessagePublisher::POPULATE_INDEX_TYPE   => MessagePublisher::FAILED_POPULATE_INDEX_QUEUE,
+        MessagePublisher::FTP_TYPE              => MessagePublisher::FAILED_FTP_QUEUE
     ];
 
     public static $defaultDelayedQueues = [
@@ -72,6 +75,9 @@ class AMQPConnection
 
     // default message TTL in retry queue in millisecond
     const RETRY_DELAY =  10000;
+
+    // default message TTL for some retry queue , 3 minute
+    const RETRY_LARGE_DELAY = 180000;
 
     // default message TTL in delayed queue in millisecond
     const DELAY = 5000;
@@ -291,7 +297,11 @@ class AMQPConnection
             return (int)($config['retry_queue'][array_search($routing, AMQPConnection::$defaultQueues)]);
         }
 
-        return self::RETRY_DELAY;
+        if ($routing == MessagePublisher::FTP_QUEUE) {
+            return self::RETRY_LARGE_DELAY;
+        } else {
+            return self::RETRY_DELAY;
+        }
     }
 
     private function getTtlDelayedPerRouting($routing)
