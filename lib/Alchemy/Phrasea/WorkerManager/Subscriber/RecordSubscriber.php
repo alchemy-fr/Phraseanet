@@ -12,6 +12,7 @@ use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
 use Alchemy\Phrasea\WorkerManager\Event\StoryCreateCoverEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
@@ -288,6 +289,21 @@ class RecordSubscriber implements EventSubscriberInterface
 
     }
 
+    public function onRecordEditInWorker(RecordEditInWorkerEvent $event)
+    {
+        //  publish payload to queue
+        $payload = [
+            'message_type' => MessagePublisher::RECORD_EDIT_TYPE,
+            'payload' => [
+                'mdsParams'      => $event->getMdsParams(),
+                'elementKeys'    => $event->getElementKeys(),
+                'databoxId'      => $event->getDataboxId()
+            ]
+        ];
+
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::RECORD_EDIT_QUEUE);
+    }
+
     public static function getSubscribedEvents()
     {
         return [
@@ -297,7 +313,8 @@ class RecordSubscriber implements EventSubscriberInterface
             WorkerEvents::SUBDEFINITION_CREATION_FAILURE      => 'onSubdefinitionCreationFailure',
             RecordEvents::METADATA_CHANGED                    => 'onMetadataChanged',
             WorkerEvents::STORY_CREATE_COVER                  => 'onStoryCreateCover',
-            WorkerEvents::SUBDEFINITION_WRITE_META            => 'onSubdefinitionWritemeta'
+            WorkerEvents::SUBDEFINITION_WRITE_META            => 'onSubdefinitionWritemeta',
+            WorkerEvents::RECORD_EDIT_IN_WORKER               => 'onRecordEditInWorker'
         ];
     }
 
