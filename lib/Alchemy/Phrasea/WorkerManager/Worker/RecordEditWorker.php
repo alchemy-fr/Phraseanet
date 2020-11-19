@@ -49,7 +49,7 @@ class RecordEditWorker implements WorkerInterface
                     ->setDataboxId($payload['databoxId'])
                     ->setWork(MessagePublisher::RECORD_EDIT_TYPE)
                     ->setWorkOn("record")
-//                    ->setPayload($message)
+                    ->setPayload($message)
                     ->setPublished($date->setTimestamp($payload['published']))
                     ->setStatus(WorkerRunningJob::RUNNING)
                 ;
