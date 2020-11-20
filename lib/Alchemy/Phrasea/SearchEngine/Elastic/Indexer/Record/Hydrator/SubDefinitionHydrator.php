@@ -76,7 +76,7 @@ SQL;
 
             $name = $subdef['name'];
             $records[$subdef['record_id']]['subdefs'][$name] = array(
-                // 'path' => $subdef['path'],
+                'path' => $subdef['path'],
                 'width' => $subdef['width'],
                 'height' => $subdef['height'],
                 'permalink' => array_key_exists($name, $pls) ? $pls[$name] : null
