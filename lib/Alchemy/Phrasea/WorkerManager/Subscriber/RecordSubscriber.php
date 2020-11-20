@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\StoryCreateCoverEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
@@ -143,59 +144,60 @@ class RecordSubscriber implements EventSubscriberInterface
         ));
     }
 
-    public function onMetadataChanged(MetadataChangedEvent $event)
+    public function onRecordsWriteMeta(RecordsWriteMetaEvent $event)
     {
-        $databoxId = $event->getRecord()->getDataboxId();
-        $recordId = $event->getRecord()->getRecordId();
+        $databoxId = $event->getDataboxId();
+        $recordIds = $event->getRecordIds();
 
-        $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
-        $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$recordId]);
+        foreach ($recordIds as $recordId) {
+            $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
+            $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$recordId]);
 
-        $databox = $this->getApplicationBox()->get_databox($databoxId);
-        $record  = $databox->get_record($recordId);
-        $type    = $record->getType();
+            $databox = $this->getApplicationBox()->get_databox($databoxId);
+            $record  = $databox->get_record($recordId);
+            $type    = $record->getType();
 
-        foreach ($mediaSubdefs as $subdef) {
-            // check subdefmetadatarequired  from the subview setup in admin
-            if ( $subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
-                if ($subdef->is_physically_present()) {
-                    $payload = [
-                        'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                        'payload' => [
-                            'recordId'      => $recordId,
-                            'databoxId'     => $databoxId,
-                            'subdefName'    => $subdef->get_name()
-                        ]
-                    ];
+            foreach ($mediaSubdefs as $subdef) {
+                // check subdefmetadatarequired  from the subview setup in admin
+                if ( $subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+                    if ($subdef->is_physically_present()) {
+                        $payload = [
+                            'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
+                            'payload' => [
+                                'recordId'      => $recordId,
+                                'databoxId'     => $databoxId,
+                                'subdefName'    => $subdef->get_name()
+                            ]
+                        ];
 
-                    $this->messagePublisher->publishMessage($payload, MessagePublisher::METADATAS_QUEUE);
-                } else {
-                    $payload = [
-                        'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                        'payload' => [
-                            'recordId'      => $recordId,
-                            'databoxId'     => $databoxId,
-                            'subdefName'    => $subdef->get_name()
-                        ]
-                    ];
+                        $this->messagePublisher->publishMessage($payload, MessagePublisher::METADATAS_QUEUE);
+                    } else {
+                        $payload = [
+                            'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
+                            'payload' => [
+                                'recordId'      => $recordId,
+                                'databoxId'     => $databoxId,
+                                'subdefName'    => $subdef->get_name()
+                            ]
+                        ];
 
-                    $logMessage = sprintf("Subdef %s is not physically present! to be passed in the %s !  payload  >>> %s",
-                        $subdef->get_name(),
-                        MessagePublisher::RETRY_METADATAS_QUEUE,
+                        $logMessage = sprintf("Subdef %s is not physically present! to be passed in the %s !  payload  >>> %s",
+                            $subdef->get_name(),
+                            MessagePublisher::RETRY_METADATAS_QUEUE,
                             json_encode($payload)
-                    );
-                    $this->messagePublisher->pushLog($logMessage);
+                        );
+                        $this->messagePublisher->pushLog($logMessage);
 
-                    $this->messagePublisher->publishMessage(
-                        $payload,
-                        MessagePublisher::RETRY_METADATAS_QUEUE,
-                        2,
-                        'Subdef is not physically present!'
-                    );
+                        $this->messagePublisher->publishMessage(
+                            $payload,
+                            MessagePublisher::RETRY_METADATAS_QUEUE,
+                            2,
+                            'Subdef is not physically present!'
+                        );
+                    }
                 }
             }
         }
-
     }
 
     public function onStoryCreateCover(StoryCreateCoverEvent $event)
@@ -311,7 +313,7 @@ class RecordSubscriber implements EventSubscriberInterface
             RecordEvents::SUBDEFINITION_CREATE                => 'onSubdefinitionCreate',
             RecordEvents::DELETE                              => 'onDelete',
             WorkerEvents::SUBDEFINITION_CREATION_FAILURE      => 'onSubdefinitionCreationFailure',
-            RecordEvents::METADATA_CHANGED                    => 'onMetadataChanged',
+            WorkerEvents::RECORDS_WRITE_META                  => 'onRecordsWriteMeta',
             WorkerEvents::STORY_CREATE_COVER                  => 'onStoryCreateCover',
             WorkerEvents::SUBDEFINITION_WRITE_META            => 'onSubdefinitionWritemeta',
             WorkerEvents::RECORD_EDIT_IN_WORKER               => 'onRecordEditInWorker'

@@ -23,6 +23,8 @@ use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
 use Alchemy\Phrasea\Border\MetadataBag;
 use Alchemy\Phrasea\Border\MetaFieldsBag;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
@@ -1065,6 +1067,10 @@ class ArchiveJob extends AbstractJob
         if ($metaFields) {
             $story->set_metadatas($metaFields->toMetadataArray($metadatasStructure), true);
         }
+
+        // order to write meta in file
+        $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+            new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
 
         $story->setStatus(\databox_status::operation_or($stat0, $stat1));
 

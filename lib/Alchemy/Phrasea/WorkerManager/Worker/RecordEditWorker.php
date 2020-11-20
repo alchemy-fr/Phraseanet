@@ -8,6 +8,8 @@ use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -126,6 +128,11 @@ class RecordEditWorker implements WorkerInterface
                         ->log($record, \Session_Logger::EVENT_EDIT, '', '');
                 }
             }
+
+            // order to write metas for those records
+            $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent(array_column($payload['mdsParams'], 'record_id'), $payload['databoxId'])
+            );
 
             // tell that we have finished to work on edit
             $this->repoWorker->reconnect();

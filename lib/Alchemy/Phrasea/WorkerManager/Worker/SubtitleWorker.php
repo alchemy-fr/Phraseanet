@@ -6,8 +6,11 @@ use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SubtitleWorker implements WorkerInterface
 {
@@ -24,12 +27,15 @@ class SubtitleWorker implements WorkerInterface
     /** @var WorkerJobRepository  $repoWorkerJob*/
     private $repoWorkerJob;
 
-    public function __construct(WorkerJobRepository $repoWorkerJob, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger)
+    private $dispatcher;
+
+    public function __construct(WorkerJobRepository $repoWorkerJob, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger, EventDispatcherInterface $dispatcher)
     {
         $this->repoWorkerJob = $repoWorkerJob;
         $this->conf          = $conf;
         $this->appboxLocator = $appboxLocator;
         $this->logger        = $logger;
+        $this->dispatcher    = $dispatcher;
     }
 
     public function process(array $payload)
@@ -188,6 +194,10 @@ class SubtitleWorker implements WorkerInterface
 
             try {
                 $record->set_metadatas($metadatas);
+
+                // order to write meta in file
+                $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                    new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
                 $this->jobFinished($workerJob);
@@ -258,6 +268,10 @@ class SubtitleWorker implements WorkerInterface
 
             try {
                 $record->set_metadatas($metadatas);
+
+                // order to write meta in file
+                $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                    new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
                 $this->jobFinished($workerJob);
