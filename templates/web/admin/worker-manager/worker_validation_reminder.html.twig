@@ -1,0 +1,45 @@
+<h1>{{ 'admin::workermanager:tab:Reminder: description' |trans }}</h1>
+
+<form name="worker_validation_reminder" method="post" action="/admin/worker-manager/validation-reminder">
+    <div class="control-group">
+        <div>
+            <label for="worker_reminder_interval" class="required">{{ "admin::workermanager:tab:Reminder: Interval in second"|trans }}</label>
+            <input type="text" id="worker_reminder_interval" name="worker_reminder_interval" required="required" value="{{ interval }}">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <button class="btn btn-primary start-validation-reminder">{{ "admin::workermanager:tab:Reminder: Start"|trans }}</button>
+
+        <button class="btn btn-danger stop-validation-reminder">{{ 'admin::workermanager:tab:Reminder: Stop' | trans }}</button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $("#worker-reminder").on('click', '.stop-validation-reminder', function(e) {
+        e.preventDefault();
+        if (confirm("Warning! You are about to stop validation Reminder!")) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/worker-manager/purge-queue",
+                dataType: 'json',
+                data : {
+                    queueName : "validationReminder-queue"
+                },
+                success: function (data) {
+                    $('#tree li.selected a').trigger('click');
+                    console.log(data);
+
+                    return false;
+                }
+            });
+        }
+    });
+
+    $("#worker-reminder").on('click', '.start-validation-reminder', function(e) {
+        e.preventDefault();
+        $('form[name="worker_validation_reminder"]').submit();
+    });
+
+</script>
+

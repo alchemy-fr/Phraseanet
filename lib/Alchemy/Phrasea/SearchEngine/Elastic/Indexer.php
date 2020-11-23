@@ -108,6 +108,7 @@ class Indexer
                     'number_of_shards'   => $this->index->getOptions()->getShards(),
                     'number_of_replicas' => $this->index->getOptions()->getReplicas(),
                     'index.mapping.total_fields.limit' => $this->index->getOptions()->getTotalFieldsLimit(),
+                    'max_result_window'  => $this->index->getOptions()->getMaxResultWindow(),
                     'analysis'           => $this->index->getAnalysis()
                 ],
                 'mappings' => [

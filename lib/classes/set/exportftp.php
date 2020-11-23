@@ -29,7 +29,7 @@ class set_exportftp extends set_export
      *
      * @return boolean
      */
-    public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)
+    public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile, $returnNewExportId = false)
     {
         $email_dest = '';
         if ($usr_to) {
@@ -54,7 +54,7 @@ class set_exportftp extends set_export
             . "\n";
 
         $export = new FtpExport();
-        $export->setNbretry(((int) $retry * 1) > 0 ? (int) $retry : 5)
+        $export->setNbretry(((int) $retry * 1) > 0 ? (int) $retry : 3)
             ->setMail($email_dest)
             ->setLogfile($logfile)
             ->setFoldertocreate($makedirectory)
@@ -92,6 +92,10 @@ class set_exportftp extends set_export
 
         $this->app['orm.em']->flush();
 
-        return true;
+        if ($returnNewExportId) {
+            return $export->getId();
+        } else {
+            return true;
+        }
     }
 }

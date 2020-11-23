@@ -77,12 +77,20 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET|POST')
             ->bind('worker_admin_metadata');
 
+        $controllers->match('/ftp',  'controller.worker.admin.configuration:ftpAction')
+            ->method('GET|POST')
+            ->bind('worker_admin_ftp');
+
         $controllers->get('/populate-status',  'controller.worker.admin.configuration:populateStatusAction')
             ->bind('worker_admin_populate_status');
 
         $controllers->match('/pull-assets',  'controller.worker.admin.configuration:pullAssetsAction')
             ->method('GET|POST')
             ->bind('worker_admin_pullAssets');
+
+        $controllers->match('/validation-reminder',  'controller.worker.admin.configuration:validationReminderAction')
+            ->method('GET|POST')
+            ->bind('worker_admin_validationReminder');
 
         $controllers->match('/queue-monitor',  'controller.worker.admin.configuration:queueMonitorAction')
             ->method('GET')

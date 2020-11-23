@@ -22,6 +22,12 @@
       <span>{% trans %}Setup{% endtrans %}</span>
     </a>
   </li>
+    <li>
+      <a target="right" href="{{ path('ps_admin') }}" class="ajax">
+        <img width="16" src="/assets/admin/images/toolbox-solid.svg" />
+        <span>{{ 'admin:: Phraseanet service setting (beta)' | trans }}</span>
+      </a>
+    </li>
   <li>
     <a target="right" href="{{ path('admin_searchengine_form') }}">
       <img width="16" src="/assets/admin/images/searchengin.svg" />

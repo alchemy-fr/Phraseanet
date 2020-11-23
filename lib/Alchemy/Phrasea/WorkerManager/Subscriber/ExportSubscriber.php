@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\ExportMailEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
+use Alchemy\Phrasea\WorkerManager\Event\ExportFtpEvent;
 use Alchemy\Phrasea\WorkerManager\Event\ExportMailFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
@@ -54,11 +55,27 @@ class ExportSubscriber implements EventSubscriberInterface
         );
     }
 
+    public function onExportFtp(ExportFtpEvent $event)
+    {
+        $payload = [
+            'message_type' => MessagePublisher::FTP_TYPE,
+            'payload' => [
+                'ftpExportId'  => $event->getFtpExportId(),
+            ]
+        ];
+
+        $this->messagePublisher->publishMessage(
+            $payload,
+            MessagePublisher::FTP_QUEUE
+        );
+    }
+
     public static function getSubscribedEvents()
     {
         return [
             PhraseaEvents::EXPORT_MAIL_CREATE   => 'onExportMailCreate',
-            WorkerEvents::EXPORT_MAIL_FAILURE   => 'onExportMailFailure'
+            WorkerEvents::EXPORT_MAIL_FAILURE   => 'onExportMailFailure',
+            WorkerEvents::EXPORT_FTP            => 'onExportFtp'
         ];
     }
 }

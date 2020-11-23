@@ -7439,8 +7439,31 @@ dans l'onglet thesaurus : arbres, menus contextuels
   padding: 0 5px;
 }
 
+#idFrameC #baskets_wrapper {
+  top: 88px !important;
+}
+
+#idFrameC #expose_tabs #baskets {
+  top: 44px;
+}
+
+#idFrameC #expose_tabs.ui-tabs .ui-tabs-nav .expose_li {
+  height: 44px;
+}
+
+#idFrameC #expose_tabs.ui-tabs .ui-tabs-nav .expose_li a {
+  padding: 11px 10px;
+  font-size: 13px;
+  font-weight: bold;
+  min-width: 154px;
+}
+
+#idFrameC #expose_tabs.ui-tabs .ui-tabs-nav .expose_li.ui-state-active a {
+  border-bottom: 1px solid #076882;
+}
+
 #idFrameC #baskets {
-  top: 86px !important;
+  top: 86px;
   border-top: 1px solid #838383;
 }
 
@@ -7857,6 +7880,96 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .bottom .captionRolloverTips {
   padding-top: 4px;
+}
+
+#idFrameC .basketTips.expose_basket_item {
+  background: #d1d1d1;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid #d1d1d1;
+  box-sizing: border-box;
+}
+
+#idFrameC .basketTips.expose_basket_item .top_block {
+  position: relative;
+  padding-left: 40px;
+  display: inline-block;
+}
+
+#idFrameC .basketTips.expose_basket_item .top_block:before {
+  content: "\F054";
+  font-family: fontawesome;
+  font-size: 23px;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: 0.3s all;
+}
+
+#idFrameC .basketTips.expose_basket_item .top_block.open:before {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+#idFrameC .expose_item_deployed {
+  height: 0;
+  max-height: 0;
+  transition: max-height 0.3s;
+  overflow: hidden;
+}
+
+#idFrameC .expose_item_deployed.open {
+  height: auto;
+  max-height: 100vh;
+  min-height: 130px;
+}
+
+#idFrameC .top_image {
+  width: 100px;
+  height: 60px;
+  object-fit: contain;
+}
+
+#idFrameC .expose_item_title {
+  display: flex;
+  padding: 0px 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  flex-wrap: wrap;
+  height: 40px;
+}
+
+#idFrameC .expose_item_top {
+  position: relative;
+  padding-right: 48px;
+}
+
+#idFrameC .edit_expose {
+  position: absolute;
+  right: 12px;
+  top: 5px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#idFrameC .expose_item_bottom {
+  max-height: 500px;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#idFrameC .expose_item_bottom .expose_drag_drop {
+  min-height: 120px;
+  padding: 10px;
+  display: inline-block;
+  width: 100%;
+}
+
+#idFrameC .expose_item_bottom .load_more_asset {
+  text-align: center;
 }
 
 /******* PROPOSALS ************************************************************/
@@ -8428,6 +8541,105 @@ TABLE.explain3 TR TD {
   BORDER-TOP: #87ceeb 1px solid;
   BORDER-LEFT: #87ceeb 1px solid;
   BORDER-BOTTOM: #87ceeb 1px solid;
+}
+
+.expose-edit-wrapper {
+  padding: 12px 20px 0 10px;
+}
+
+.expose-edit-wrapper .ui-widget {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.expose-edit-wrapper .ui-widget > label {
+  width: 28%;
+}
+
+.expose-edit-wrapper .ui-widget label {
+  padding-top: 6px;
+  padding-right: 10px;
+}
+
+.expose-edit-wrapper .available-widget {
+  display: inline-flex;
+  padding-right: 10px;
+}
+
+.expose-edit-wrapper input[type=text],
+.expose-edit-wrapper select {
+  margin-bottom: 10px;
+}
+
+.expose-edit-wrapper .switch {
+  position: relative;
+  width: 60px;
+  /* Rounded sliders */
+}
+
+.expose-edit-wrapper .switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  width: 43px;
+  height: 18px;
+}
+
+.expose-edit-wrapper .switch .slider:before {
+  position: absolute;
+  content: "";
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 0;
+  bottom: 0;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.expose-edit-wrapper .switch input:checked + .slider {
+  background-color: #2196f3;
+}
+
+.expose-edit-wrapper .switch input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+.expose-edit-wrapper .switch input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.expose-edit-wrapper .switch .slider.round {
+  border-radius: 34px;
+}
+
+.expose-edit-wrapper .switch .slider.round:before {
+  border-radius: 50%;
+}
+
+.expose-edit-wrapper .switch input {
+  margin-left: 10px;
+  margin-top: -8px;
+}
+
+.expose-edit-wrapper .ui-dialog-buttonset {
+  display: inline-flex;
+}
+
+.expose-edit-wrapper button.ui-button {
+  display: inline-block;
+  text-align: center;
 }
 
 #PREVIEWBOX,

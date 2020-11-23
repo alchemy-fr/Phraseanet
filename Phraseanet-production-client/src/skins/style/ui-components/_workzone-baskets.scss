@@ -8,8 +8,30 @@
             padding: 0 5px;
         }
     }
+    #baskets_wrapper {
+        top: 88px!important;
+    }
+    #expose_tabs {
+        #baskets {
+            top: 44px;
+        }
+        &.ui-tabs .ui-tabs-nav {
+            .expose_li {
+                height: 44px;
+                a {
+                    padding: 11px 10px;
+                    font-size: 13px;
+                    font-weight: bold;
+                    min-width: 154px;
+                }
+                &.ui-state-active a {
+                    border-bottom: 1px solid #076882;
+                }
+            }
+        }
+    }
     #baskets {
-        top: $tabHeight !important;
+        top: $tabHeight ;
         border-top: 1px solid $darkBorderColor;
         > div {
             // border-top: 1px solid $mediumBorderColor;

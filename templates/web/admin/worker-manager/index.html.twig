@@ -25,6 +25,11 @@
                     {{ 'admin::workermanager:tab:pullassets: title' |trans }}
                 </a>
             </li>
+            <li class="worker-ftp" role="presentation">
+                <a href="#worker-ftp" aria-controls="worker-ftp" role="tab" data-toggle="tab" data-url="/admin/worker-manager/ftp">
+                    {{ 'admin::workermanager:tab:ftp: title' |trans }}
+                </a>
+            </li>
             <li class="worker-subview" role="presentation">
                 <a href="#worker-subview" aria-controls="worker-subview" role="tab" data-toggle="tab" data-url="/admin/worker-manager/subview">
                     {{ 'admin::workermanager:tab:subview: title' |trans }}
@@ -33,6 +38,11 @@
             <li class="worker-metadata" role="presentation">
                 <a href="#worker-metadata" aria-controls="worker-metadata" role="tab" data-toggle="tab" data-url="/admin/worker-manager/metadata">
                     {{ 'admin::workermanager:tab:metadata: title' |trans }}
+                </a>
+            </li>
+            <li class="worker-reminder" role="presentation">
+                <a href="#worker-reminder" aria-controls="worker-reminder" role="tab" data-toggle="tab" data-url="/admin/worker-manager/validation-reminder">
+                    {{ 'admin::workermanager:tab:reminder: title' |trans }}
                 </a>
             </li>
             <li class="worker-queue-monitor" role="presentation">
@@ -51,8 +61,10 @@
             </div>
             <div role="tabpanel" class="tab-pane fade" id="worker-searchengine"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-pull-assets"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-ftp"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-subview"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-metadata"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-reminder"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-queue-monitor"></div>
         </div>
     </div>

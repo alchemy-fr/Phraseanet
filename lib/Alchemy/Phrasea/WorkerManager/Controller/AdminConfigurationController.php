@@ -10,6 +10,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
+use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
@@ -210,6 +211,47 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
+    public function ftpAction(PhraseaApplication $app, Request $request)
+    {
+        $ftpConfig = $this->getFtpConfiguration();
+        $form = $app->form(new WorkerFtpType(), $ftpConfig);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            // save new ftp config
+            $app['conf']->set(['workers', 'ftp'], array_merge($ftpConfig, $form->getData()));
+
+            return $app->redirectPath('worker_admin');
+        }
+
+        return $this->render('admin/worker-manager/worker_ftp.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    public function validationReminderAction(PhraseaApplication $app, Request $request)
+    {
+        $interval = $app['conf']->get(['workers', 'validationReminder', 'interval'], 7200);
+
+        if ($request->getMethod() == 'POST') {
+            $reminderInterval = (int)$request->request->get('worker_reminder_interval');
+            // save the period interval in second
+            $app['conf']->set(['workers', 'validationReminder', 'interval'], $reminderInterval);
+
+            /** @var AMQPConnection $serverConnection */
+            $serverConnection = $this->app['alchemy_worker.amqp.connection'];
+            // reinitialize the validation reminder queues
+            $serverConnection->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_QUEUE]);
+            $this->app['alchemy_worker.message.publisher']->initializeLoopQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
+
+            return $app->redirectPath('worker_admin');
+        }
+
+        return $this->render('admin/worker-manager/worker_validation_reminder.html.twig', [
+            'interval' => $interval
+        ]);
+    }
+
     public function populateStatusAction(PhraseaApplication $app, Request $request)
     {
         $databoxIds = $request->get('sbasIds');
@@ -236,7 +278,7 @@ class AdminConfigurationController extends Controller
 
             // reinitialize the pull queues
             $serverConnection->reinitializeQueue([MessagePublisher::PULL_QUEUE]);
-            $this->app['alchemy_worker.message.publisher']->initializePullAssets();
+            $this->app['alchemy_worker.message.publisher']->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
 
             return $app->redirectPath('worker_admin');
         }
@@ -282,6 +324,11 @@ class AdminConfigurationController extends Controller
     private function getPullAssetsConfiguration()
     {
         return $this->app['conf']->get(['workers', 'pull_assets'], []);
+    }
+
+    private function getFtpConfiguration()
+    {
+        return $this->app['conf']->get(['workers', 'ftp'], []);
     }
 
     private function getRetryQueueConfiguration()
