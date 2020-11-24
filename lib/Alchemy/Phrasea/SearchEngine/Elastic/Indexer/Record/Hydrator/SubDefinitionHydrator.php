@@ -32,55 +32,38 @@ class SubDefinitionHydrator implements HydratorInterface
 
     public function hydrateRecords(array &$records)
     {
-        $sql = <<<SQL
-            SELECT
-              s.record_id,
-              s.name,
-              s.height,
-              s.width,
-              CONCAT(TRIM(TRAILING '/' FROM s.path), '/', s.file) AS path
-            FROM subdef s
-            WHERE s.record_id IN (?)
-            ORDER BY s.record_id
-SQL;
-        $statement = $this->databox->get_connection()->executeQuery($sql,
-            array(array_keys($records)),
-            array(Connection::PARAM_INT_ARRAY)
-        );
+        foreach(array_keys($records) as $rid) {
+            try {
+                $subdefs = $this->databox->getRecordRepository()->find($rid)->get_subdefs();
+                $pls = array_map(
+                    /** media_Permalink_Adapter|null $plink */
+                    function($plink) {
+                        return $plink ? ((string) $plink->get_url()) : null;
+                    },
+                    media_Permalink_Adapter::getMany($this->app, $subdefs, false) // false: don't create missing plinks
+                );
 
-        $current_rid = null;
-        $record = null;
-        $pls = [];
-        while ($subdef = $statement->fetch()) {
-
-            // too bad : to get permalinks we must instantiate a recordadapter
-            if($subdef['record_id'] !== $current_rid) {
-                // sql is ordered by rid so we won't find the same record twice.
-                $current_rid = $subdef['record_id'];
-
-                // getting all subdefs once is faster than getting subdef one by one in the main loop
-                $pls = [];  // permalinks, by subdef name
-                try {
-                    $subdefs = $this->databox->getRecordRepository()->find($current_rid)->get_subdefs();
-                    $pls = array_map(
-                        function(media_Permalink_Adapter $plink) {
-                            return (string) $plink->get_url();
-                        },
-                        media_Permalink_Adapter::getMany($this->app, $subdefs)
+                foreach($subdefs as $subdef) {
+                    $name = $subdef->get_name();
+                    if(substr(($path = $subdef->get_path()), -1) !== '/') {
+                        $path .= '/';
+                    }
+                    $records[$rid]['subdefs'][$name] = array(
+                        'path' => $path . $subdef->get_file(),
+                        'width' => $subdef->get_width(),
+                        'height' => $subdef->get_height(),
+                        'size' => $subdef->get_size(),
+                        'mime' => $subdef->get_mime(),
+                        'permalink' => array_key_exists($name, $pls) ? $pls[$name] : null
                     );
-                }
-                catch (\Exception $e) {
-                    // cant get record ? ignore
+
                 }
             }
+            catch (\Exception $e) {
+                // cant get record ? ignore
+            }
 
-            $name = $subdef['name'];
-            $records[$subdef['record_id']]['subdefs'][$name] = array(
-                'path' => $subdef['path'],
-                'width' => $subdef['width'],
-                'height' => $subdef['height'],
-                'permalink' => array_key_exists($name, $pls) ? $pls[$name] : null
-            );
         }
     }
+
 }
