@@ -160,27 +160,18 @@ class RecordSubscriber implements EventSubscriberInterface
             foreach ($mediaSubdefs as $subdef) {
                 // check subdefmetadatarequired  from the subview setup in admin
                 if ( $subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
-                    if ($subdef->is_physically_present()) {
-                        $payload = [
-                            'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                            'payload' => [
-                                'recordId'      => $recordId,
-                                'databoxId'     => $databoxId,
-                                'subdefName'    => $subdef->get_name()
-                            ]
-                        ];
+                    $payload = [
+                        'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
+                        'payload' => [
+                            'recordId'    => $recordId,
+                            'databoxId'   => $databoxId,
+                            'subdefName'  => $subdef->get_name()
+                        ]
+                    ];
 
+                    if ($subdef->is_physically_present()) {
                         $this->messagePublisher->publishMessage($payload, MessagePublisher::METADATAS_QUEUE);
                     } else {
-                        $payload = [
-                            'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
-                            'payload' => [
-                                'recordId'      => $recordId,
-                                'databoxId'     => $databoxId,
-                                'subdefName'    => $subdef->get_name()
-                            ]
-                        ];
-
                         $logMessage = sprintf("Subdef %s is not physically present! to be passed in the %s !  payload  >>> %s",
                             $subdef->get_name(),
                             MessagePublisher::RETRY_METADATAS_QUEUE,

@@ -73,12 +73,6 @@ class StoryController extends Controller
         }
 
         $recordAdapter = $story->set_metadatas($metadatas);
-        // order to write meta in file
-        $this->dispatch(WorkerEvents::RECORDS_WRITE_META,
-            new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
-
-        // tell phraseanet to rebuild subdef
-        $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($recordAdapter));
 
         $storyWZ = new StoryWZ();
         $storyWZ->setUser($this->getAuthenticatedUser());
