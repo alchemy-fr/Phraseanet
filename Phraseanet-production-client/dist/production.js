@@ -2249,7 +2249,8 @@ var leafletMap = function leafletMap(services) {
         if (activeProvider.accessToken === undefined) {
             return;
         }
-        var selection = params.selection;
+        var selection = params.selection,
+            selectionPos = params.selectionPos;
 
 
         if (map != null) {
@@ -19634,7 +19635,8 @@ var recordEditorService = function recordEditorService(services) {
         });
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: loadSelectedRecords()
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
         });
     }
 
@@ -20257,7 +20259,8 @@ var recordEditorService = function recordEditorService(services) {
         }
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: loadSelectedRecords()
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
         });
 
         /**trigger select all checkbox**/
@@ -21569,6 +21572,10 @@ var preview = function preview(services) {
 
         $container.empty();
 
+        if (currentRecord === false) {
+            return false;
+        }
+
         switch (currentRecord.type) {
             case 'video':
             case 'audio':
@@ -21635,11 +21642,17 @@ var preview = function preview(services) {
      * @param params
      */
     function onSelectionChange(params) {
-        var selection = params.selection;
+        var selection = params.selection,
+            selectionPos = params.selectionPos;
 
-        if (selection.length === 1) {
+        if (selectionPos.length === 1) {
             renderPreview({
-                recordIndex: selection[0]
+                recordIndex: selectionPos[0]
+            });
+        } else {
+            // no preview to display
+            renderPreview({
+                recordIndex: null
             });
         }
     }
@@ -65387,7 +65400,8 @@ var previewRecordService = function previewRecordService(services) {
                 options.current.captions = data.recordCaptions;
 
                 recordPreviewEvents.emit('recordSelection.changed', {
-                    selection: [data.recordCaptions]
+                    selection: [data.recordCaptions],
+                    selectionPos: [relativePos]
                 });
 
                 if ((0, _jquery2.default)('#PREVIEWBOX img.record.zoomable').length > 0) {
