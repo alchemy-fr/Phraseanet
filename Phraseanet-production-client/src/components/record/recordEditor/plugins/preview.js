@@ -116,6 +116,10 @@ const preview = services => {
 
         $container.empty();
 
+        if (currentRecord === false) {
+            return false;
+        }
+
         switch (currentRecord.type) {
             case 'video':
             case 'audio':
@@ -184,10 +188,15 @@ const preview = services => {
      * @param params
      */
     function onSelectionChange(params) {
-        let { selection } = params;
-        if (selection.length === 1) {
+        let { selection, selectionPos } = params;
+        if (selectionPos.length === 1) {
             renderPreview({
-                recordIndex: selection[0]
+                recordIndex: selectionPos[0]
+            });
+        } else {
+            // no preview to display
+            renderPreview({
+                recordIndex: null
             });
         }
     }

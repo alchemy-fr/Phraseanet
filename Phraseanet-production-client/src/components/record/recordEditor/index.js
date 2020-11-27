@@ -396,7 +396,8 @@ const recordEditorService = services => {
         });
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: loadSelectedRecords()
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
         });
     }
 
@@ -1131,7 +1132,8 @@ const recordEditorService = services => {
         }
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: loadSelectedRecords()
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
         });
 
         /**trigger select all checkbox**/
