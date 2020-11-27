@@ -19432,7 +19432,8 @@ var recordEditorService = function recordEditorService(services) {
         }).on('change', '#idEditZDateArea', function (e) {
             var dateText = (0, _jquery2.default)(this).val();
 
-            if (dateText !== undefined && dateText.match(/\d{4}[/]\d{2}[/]\d{2}$/) !== null) {
+            // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss
+            if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$/) !== null) {
                 options.fieldLastValue = $editDateArea.val();
                 options.textareaIsDirty = true;
             }
