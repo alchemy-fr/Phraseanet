@@ -104,12 +104,12 @@ class AMQPConnection
         MessagePublisher::FTP_TYPE                 => [
             'with'        => self::WITH_RETRY,
             'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => 180 * 1000,
+            'ttl_retry'   => self::RETRY_LARGE_DELAY,
         ],
         MessagePublisher::VALIDATION_REMINDER_TYPE => [
             'with'        => self::WITH_LOOP,
             'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => 7200 * 1000,
+            'ttl_retry'   => 7200*1000,
         ],
     ];
 
@@ -190,18 +190,10 @@ class AMQPConnection
         }
     }
 
-//    private function addQueue(string $name, string $Qtype, string $exchange, string $baseq=null)
-//    {
-//        $this->queues[$name]['Name']     = $name;
-//        $this->queues[$name]['QType']    = $Qtype;
-//        $this->queues[$name]['Exchange'] = $exchange;
-//        $this->queues[$name]['BaseQ']    = $baseq;        // link  back to baseq
-//    }
-
-//    public function getQueueNames()
-//    {
-//        return array_keys($this->queues);
-//    }
+    public function getQueueNames()
+    {
+        return array_keys($this->queues);
+    }
 
     public function getBaseQueueNames()
     {
@@ -426,14 +418,7 @@ class AMQPConnection
             $this->getChannel();
             $this->declareExchange();
         }
-
         foreach ($queueNames as $queueName) {
-            // re-inject conf values (some may have changed)
-            $settings = $this->conf->get(['workers', 'queues', $queueName], []);
-            if(array_key_exists($queueName, $this->queues)) {
-                $this->queues[$queueName] = array_merge($this->queues[$queueName], $settings);
-            }
-
             if(array_key_exists($queueName, self::MESSAGES)) {
                 // base-q
                 $this->channel->queue_purge($queueName);
@@ -454,21 +439,6 @@ class AMQPConnection
     }
 
     /**
-     *  delete a queue
-     *
-     * @param $queueName
-     */
-    public function deleteQueue($queueName)
-    {
-        if (!isset($this->channel)) {
-            $this->getChannel();
-            $this->declareExchange();
-        }
-
-        $this->channel->queue_delete($queueName);
-    }
-
-    /**
      * Get queueName, messageCount, consumerCount  of queues
      * @return array
      * @throws Exception
@@ -482,7 +452,7 @@ class AMQPConnection
             $this->setQueue($name);     // todo : BASE_QUEUE_WITH_RETRY will set both BASE and RETRY Q, so we should skip one of 2
 
             list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($name, true);
-            $queuesStatus[$queueName] = [
+            $queuesStatus[] = [
                 'queueName'     => $queueName,
                 'messageCount'  => $messageCount,
                 'consumerCount' => $consumerCount

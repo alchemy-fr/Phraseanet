@@ -6,7 +6,7 @@
 <p>{{ 'admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)' |trans }}</p>
 {{ form_start(form, {'action': path('worker_admin_configuration')}) }}
 
-{{ form_widget(form) }}
+{{ form(form) }}
 
 {{ form_end(form) }}
 

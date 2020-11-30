@@ -25,48 +25,37 @@ class WorkerConfigurationType extends AbstractType
         foreach($this->AMQPConnection->getBaseQueueNames() as $baseQueueName) {
             $g = null;
             if($this->AMQPConnection->hasRetryQueue($baseQueueName)) {
-                $g = $g ?? $this->createFormGroup($builder, $baseQueueName);
+                $g = $g ?? $builder->create($baseQueueName, FormType::class);
                 $g->add('max_retry', TextType::class, [
-                    'label' => 'admin::workermanager:tab:workerconfig:max retry',
-                    'required' => false,
+                    'label' => 'admin::workermanager:tab:workerconfig: '.$baseQueueName.' max retry',
                     'attr' => [
                         'placeholder' => $this->AMQPConnection->getMaxRetry($baseQueueName)
                     ]
                 ]);
                 $g->add('ttl_retry', TextType::class, [
-                    'label' => 'admin::workermanager:tab:workerconfig:retry delay in ms',
-                    'required' => false,
+                    'label' => 'admin::workermanager:tab:workerconfig: '.$baseQueueName.' retry delay in ms',
                     'attr' => [
                        'placeholder' => $this->AMQPConnection->getTTLRetry($baseQueueName)
                     ]
                 ]);
             }
             if($this->AMQPConnection->hasDelayedQueue($baseQueueName)) {
-                $g = $g ?? $this->createFormGroup($builder, $baseQueueName);
+                $g = $g ?? $builder->create($baseQueueName, FormType::class);
                 $g->add('ttl_delayed', TextType::class, [
-                    'label' => 'admin::workermanager:tab:workerconfig:delayed delay in ms',
-                    'required' => false,
+                    'label' => 'admin::workermanager:tab:workerconfig: '.$baseQueueName.' delayed delay in ms',
                     'attr' => [
                         'placeholder' => $this->AMQPConnection->getTTLDelayed($baseQueueName)
                     ]
                 ]);
             }
             if($g) {
-//                $builder->add($g);
+                $builder->add($g);
             }
-            $f = new QueueSettingsType($this->AMQPConnection, $baseQueueName);
-            $builder->add($baseQueueName, $f, ['attr'=>['class'=>'norow'], 'block_name'=>'queue']);
         }
         $builder->add("boutton::appliquer", SubmitType::class,
         [
             'label' => "boutton::appliquer"
         ]);
-    }
-
-    private function createFormGroup(FormBuilderInterface $builder, string $name)
-    {
-        // todo : fix form render : one horizontal block per queue
-        return $builder->create($name, FormType::class, ['attr'=>['class'=>'form-row']]);
     }
 
     public function getName()

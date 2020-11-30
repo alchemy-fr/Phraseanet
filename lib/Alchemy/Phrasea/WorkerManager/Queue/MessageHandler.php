@@ -107,7 +107,7 @@ class MessageHandler
         };
 
         $prefetchCount = $maxProcesses ? $maxProcesses : ProcessPool::MAX_PROCESSES;
-        foreach($AMQPConnection->getBaseQueueNames() as $queueName) {
+        foreach($AMQPConnection->getQueueNames() as $queueName) {
             if (!$argQueueNames || in_array($queueName, $argQueueNames)) {
                 $this->runConsumer($queueName, $AMQPConnection, $channel, $prefetchCount, $callback);
             }

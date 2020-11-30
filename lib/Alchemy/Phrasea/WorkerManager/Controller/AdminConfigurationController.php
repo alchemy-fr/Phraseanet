@@ -23,12 +23,11 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 class AdminConfigurationController extends Controller
 {
-    public function indexAction(PhraseaApplication $app, Request $request)
+    public function indexAction(PhraseaApplication $app)
     {
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
@@ -43,10 +42,9 @@ class AdminConfigurationController extends Controller
         $workerRunningJob = $repoWorker->findByStatus($filterStatus);
 
         return $this->render('admin/worker-manager/index.html.twig', [
-            'isConnected'       => ($this->getAMQPConnection()->getChannel() != null) ? true : false,
-            'workerRunningJob'  => $workerRunningJob,
-            'reload'            => false,
-            '_fragment'         => $request->get('_fragment') ?? 'worker-configuration',
+            'isConnected'       => $this->getAMQPConnection()->getChannel() != null,
+            'workerRunningJob'  => $repoWorker->findAll(),
+            'reload'            => false
         ]);
     }
 
@@ -57,29 +55,16 @@ class AdminConfigurationController extends Controller
      */
     public function configurationAction(PhraseaApplication $app, Request $request)
     {
-        $AMQPConnection = $this->getAMQPConnection();
+        $retryQueueConfig = $this->getQueuesConfiguration();
 
-        $conf =  $this->getConf()->get(['workers', 'queues'], []);
-        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $conf);
+        $AMQPConnection = $this->getAMQPConnection();
+        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $retryQueueConfig);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            // save config
-            // too bad we must remove null entries from data to not save in conf
-            $data = $form->getData();
-            array_walk(
-                $data,
-                function(&$qSettings, $qName) {
-                    $qSettings = array_filter(
-                        $qSettings,
-                        function($setting) {
-                            return $setting !== null;
-                        }
-                    );
-                }
-            );
-            $app['conf']->set(['workers', 'queues'], $data);
+            // save config in file
+            $app['conf']->set(['workers', 'queues'], $form->getData());
 
             /*
              * todo : reinitialize q can't depend on form content :
@@ -92,9 +77,7 @@ class AdminConfigurationController extends Controller
             $AMQPConnection->reinitializeQueue($retryQueuesToReset);
             $AMQPConnection->reinitializeQueue(AMQPConnection::$defaultDelayedQueues);
             */
-
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-configuration']);
+            return $app->redirectPath('worker_admin');
         }
 
         return $this->render('admin/worker-manager/worker_configuration.html.twig', [
@@ -188,27 +171,13 @@ class AdminConfigurationController extends Controller
         return $this->app->json(['success' => true]);
     }
 
-    public function deleteQueueAction(PhraseaApplication $app, Request $request)
-    {
-        $queueName = $request->request->get('queueName');
-
-        if (empty($queueName)) {
-            return $this->app->json(['success' => false]);
-        }
-
-        $this->getAMQPConnection()->deleteQueue($queueName);
-
-        return $this->app->json(['success' => true]);
-    }
-
     public function truncateTableAction(PhraseaApplication $app)
     {
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
         $repoWorker->truncateWorkerTable();
 
-        // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-        return $app->redirectPath('worker_admin', ['_fragment'=>'worker-info']);
+        return $app->redirectPath('worker_admin');
     }
 
     public function deleteFinishedAction(PhraseaApplication $app)
@@ -217,8 +186,7 @@ class AdminConfigurationController extends Controller
         $repoWorker = $app['repo.worker-running-job'];
         $repoWorker->deleteFinishedWorks();
 
-        // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-        return $app->redirectPath('worker_admin', ['_fragment'=>'worker-info']);
+        return $app->redirectPath('worker_admin');
     }
 
     public function searchengineAction(PhraseaApplication $app, Request $request)
@@ -234,8 +202,7 @@ class AdminConfigurationController extends Controller
 
             $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
 
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-searchengine']);
+            return $app->redirectPath('worker_admin');
         }
 
         return $this->render('admin/worker-manager/worker_searchengine.html.twig', [
@@ -245,12 +212,14 @@ class AdminConfigurationController extends Controller
 
     public function subviewAction()
     {
-        return $this->render('admin/worker-manager/worker_subview.html.twig', [ ]);
+        return $this->render('admin/worker-manager/worker_subview.html.twig', [
+        ]);
     }
 
     public function metadataAction()
     {
-        return $this->render('admin/worker-manager/worker_metadata.html.twig', [ ]);
+        return $this->render('admin/worker-manager/worker_metadata.html.twig', [
+        ]);
     }
 
     public function ftpAction(PhraseaApplication $app, Request $request)
@@ -263,8 +232,7 @@ class AdminConfigurationController extends Controller
             // save new ftp config
             $app['conf']->set(['workers', 'ftp'], array_merge($ftpConfig, $form->getData()));
 
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-ftp']);
+            return $app->redirectPath('worker_admin');
         }
 
         return $this->render('admin/worker-manager/worker_ftp.html.twig', [
@@ -296,7 +264,6 @@ class AdminConfigurationController extends Controller
                         $data['ttl_retry'] *= 1000;
                     }
                     $app['conf']->set(['workers', 'queues', MessagePublisher::VALIDATION_REMINDER_TYPE], $data);
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_TYPE]);
                     break;
                 case 'start':
                     // reinitialize the validation reminder queues
@@ -309,24 +276,12 @@ class AdminConfigurationController extends Controller
                     break;
             }
 
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-reminder']);
+
+            return $app->redirectPath('worker_admin');
         }
 
-        // guess if the q is "running" = check if there are pending message on Q or loop-Q
-        $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
-        foreach([
-                    MessagePublisher::VALIDATION_REMINDER_TYPE,
-                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::VALIDATION_REMINDER_TYPE)
-                ] as $qName) {
-            if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
-                $running = true;
-            }
-        }
         return $this->render('admin/worker-manager/worker_validation_reminder.html.twig', [
-            'form' => $form->createView(),
-            'running' => $running
+            'form' => $form->createView()
         ]);
     }
 
@@ -357,8 +312,7 @@ class AdminConfigurationController extends Controller
             $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
             $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
 
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-pull-assets']);
+            return $app->redirectPath('worker_admin');
         }
 
         return $this->render('admin/worker-manager/worker_pull_assets.html.twig', [
@@ -419,20 +373,17 @@ class AdminConfigurationController extends Controller
         return $this->getConf()->get(['workers', 'ftp'], []);
     }
 
+    private function getQueuesConfiguration()
+    {
+        return $this->getConf()->get(['workers', 'queues'], []);
+    }
+
     /**
      * @return AMQPConnection
      */
     private function getAMQPConnection()
     {
         return $this->app['alchemy_worker.amqp.connection'];
-    }
-
-    /**
-     * @return UrlGeneratorInterface
-     */
-    private function getUrlGenerator()
-    {
-        return $this->app['url_generator'];
     }
 
 }
