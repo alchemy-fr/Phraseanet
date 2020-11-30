@@ -88,6 +88,7 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET|POST')
             ->bind('worker_admin_pullAssets');
 
+        /** @uses AdminConfigurationController::validationReminderAction */
         $controllers->match('/validation-reminder',  'controller.worker.admin.configuration:validationReminderAction')
             ->method('GET|POST')
             ->bind('worker_admin_validationReminder');

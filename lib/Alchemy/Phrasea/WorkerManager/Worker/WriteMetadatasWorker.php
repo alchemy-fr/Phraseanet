@@ -73,7 +73,7 @@ class WriteMetadatasWorker implements WorkerInterface
             if (!$canWriteMeta) {
                 // the file is in used to generate subdef
 
-                $this->messagePublisher->publishMessage($message, MessagePublisher::DELAYED_METADATAS_QUEUE);
+                $this->messagePublisher->publishDeleyedMessage($message, MessagePublisher::WRITE_METADATAS_TYPE);
 
                 return ;
             }

@@ -80,7 +80,7 @@ class AssetsIngestWorker implements WorkerInterface
                 'commit_id'  => $payload['commit_id']
             ];
 
-            $this->messagePublisher->publishMessage($createRecordMessage, MessagePublisher::CREATE_RECORD_QUEUE);
+            $this->messagePublisher->publishMessage($createRecordMessage, MessagePublisher::CREATE_RECORD_TYPE);
 
             /** @var WorkerRunningJob $workerRunningJob */
             $workerRunningJob =  $this->repoWorkerJob->findOneBy([

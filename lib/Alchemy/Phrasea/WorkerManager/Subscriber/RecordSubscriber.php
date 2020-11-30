@@ -67,7 +67,7 @@ class RecordSubscriber implements EventSubscriberInterface
                         ]
                     ];
 
-                    $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_QUEUE);
+                    $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
                 }
             }
         }
@@ -87,7 +87,7 @@ class RecordSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::DELETE_RECORD_QUEUE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::DELETE_RECORD_TYPE);
     }
 
     public function onSubdefinitionCreationFailure(SubdefinitionCreationFailureEvent $event)
@@ -128,9 +128,9 @@ class RecordSubscriber implements EventSubscriberInterface
             }
         }
 
-        $this->messagePublisher->publishMessage(
+        $this->messagePublisher->publishRetryMessage(
             $payload,
-            MessagePublisher::RETRY_SUBDEF_QUEUE,
+            MessagePublisher::SUBDEF_CREATION_TYPE,
             $event->getCount(),
             $event->getWorkerMessage()
         );
@@ -170,18 +170,19 @@ class RecordSubscriber implements EventSubscriberInterface
                     ];
 
                     if ($subdef->is_physically_present()) {
-                        $this->messagePublisher->publishMessage($payload, MessagePublisher::METADATAS_QUEUE);
-                    } else {
-                        $logMessage = sprintf("Subdef %s is not physically present! to be passed in the %s !  payload  >>> %s",
+                        $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
+                    }
+                    else {
+                        $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
                             $subdef->get_name(),
-                            MessagePublisher::RETRY_METADATAS_QUEUE,
+                            MessagePublisher::WRITE_METADATAS_TYPE,
                             json_encode($payload)
                         );
                         $this->messagePublisher->pushLog($logMessage);
 
-                        $this->messagePublisher->publishMessage(
+                        $this->messagePublisher->publishRetryMessage(
                             $payload,
-                            MessagePublisher::RETRY_METADATAS_QUEUE,
+                            MessagePublisher::WRITE_METADATAS_TYPE,
                             2,
                             'Subdef is not physically present!'
                         );
@@ -215,10 +216,10 @@ class RecordSubscriber implements EventSubscriberInterface
                 ]
             ];
 
-            $logMessage = sprintf("Subdef %s write meta failed, error : %s ! to be passed in the %s !  payload  >>> %s",
+            $logMessage = sprintf('Subdef "%s" write meta failed, error : "%s" ! to be passed in the retry q of "%s" !  payload  >>> %s',
                 $event->getSubdefName(),
                 $event->getWorkerMessage(),
-                MessagePublisher::RETRY_METADATAS_QUEUE,
+                MessagePublisher::WRITE_METADATAS_TYPE,
                 json_encode($payload)
             );
             $this->messagePublisher->pushLog($logMessage);
@@ -248,9 +249,9 @@ class RecordSubscriber implements EventSubscriberInterface
                 }
             }
 
-            $this->messagePublisher->publishMessage(
+            $this->messagePublisher->publishRetryMessage(
                 $payload,
-                MessagePublisher::RETRY_METADATAS_QUEUE,
+                MessagePublisher::WRITE_METADATAS_TYPE,
                 $event->getCount(),
                 $event->getWorkerMessage()
             );
@@ -276,7 +277,7 @@ class RecordSubscriber implements EventSubscriberInterface
                     ]
                 ];
 
-                $this->messagePublisher->publishMessage($payload, MessagePublisher::METADATAS_QUEUE);
+                $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
             }
         }
 

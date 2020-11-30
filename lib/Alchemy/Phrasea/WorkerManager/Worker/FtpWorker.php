@@ -371,9 +371,9 @@ class FtpWorker implements WorkerInterface
                 'payload'       => $payload
             ];
 
-            $this->app['alchemy_worker.message.publisher']->publishMessage(
+            $this->getMessagePublisher()->publishRetryMessage(
                 $fullPayload,
-                MessagePublisher::RETRY_FTP_QUEUE,
+                MessagePublisher::FTP_TYPE,
                 $count,
                 $workerMessage
             );
@@ -503,4 +503,13 @@ class FtpWorker implements WorkerInterface
     {
         return $this->app['repo.ftp-exports'];
     }
+
+    /**
+     * @return MessagePublisher
+     */
+    private function getMessagePublisher()
+    {
+        return $this->app['alchemy_worker.message.publisher'];
+    }
+
 }

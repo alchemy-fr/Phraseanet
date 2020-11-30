@@ -29,9 +29,9 @@ class WebhookSubscriber implements EventSubscriberInterface
                 ]
             ];
 
-            $this->messagePublisher->publishMessage(
+            $this->messagePublisher->publishRetryMessage(
                 $payload,
-                MessagePublisher::RETRY_WEBHOOK_QUEUE,
+                MessagePublisher::WEBHOOK_TYPE,
                 $event->getCount(),
                 $event->getWorkerMessage()
             );
