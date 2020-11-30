@@ -24,6 +24,8 @@ use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Repositories\PresetRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
+use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -332,67 +334,10 @@ class EditController extends Controller
             return $this->app->json(['message' => '', 'error'   => false]);
         }
 
-        $elements = $records->toArray();
-
-        foreach ($request->request->get('mds') as $rec) {
-            try {
-                $record = $databox->get_record($rec['record_id']);
-            } catch (\Exception $e) {
-                continue;
-            }
-
-            $key = $record->getId();
-
-            if (!array_key_exists($key, $elements)) {
-                continue;
-            }
-
-            $statbits = $rec['status'];
-            $editDirty = $rec['edit'];
-
-            if ($editDirty == '0') {
-                $editDirty = false;
-            } else {
-                $editDirty = true;
-            }
-
-            if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
-                $record->set_metadatas($rec['metadatas']);
-                $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
-            }
-
-            if (isset($rec['technicalsdatas']) && is_array($rec['technicalsdatas'])){
-                $record->insertOrUpdateTechnicalDatas($rec['technicalsdatas']);
-            }
-
-            $newstat = $record->getStatus();
-            $statbits = ltrim($statbits, 'x');
-            if (!in_array($statbits, ['', 'null'])) {
-                $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
-                if ($mask_and != '') {
-                    $newstat = \databox_status::operation_and_not($newstat, $mask_and);
-                }
-
-                $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
-
-                if ($mask_or != '') {
-                    $newstat = \databox_status::operation_or($newstat, $mask_or);
-                }
-
-                $record->setStatus($newstat);
-            }
-
-            $record->write_metas();
-
-            if ($statbits != '') {
-                $this->getDataboxLogger($databox)
-                    ->log($record, \Session_Logger::EVENT_STATUS, '', '');
-            }
-            if ($editDirty) {
-                $this->getDataboxLogger($databox)
-                    ->log($record, \Session_Logger::EVENT_EDIT, '', '');
-            }
-        }
+        // order the worker to save values in fields
+        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
+            new RecordEditInWorkerEvent($request->request->get('mds'), array_keys($records->toArray()), $databox->get_sbas_id())
+        );
 
         return $this->app->json(['success' => true]);
     }

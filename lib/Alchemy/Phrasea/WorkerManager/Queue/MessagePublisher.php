@@ -17,6 +17,7 @@ class MessagePublisher
     const FTP_TYPE             = 'ftp';
     const POPULATE_INDEX_TYPE  = 'populateIndex';
     const PULL_ASSETS_TYPE     = 'pullAssets';
+    const RECORD_EDIT_TYPE     = 'recordEdit';
     const SUBDEF_CREATION_TYPE = 'subdefCreation';
     const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const WRITE_METADATAS_TYPE = 'writeMetadatas';
@@ -25,6 +26,7 @@ class MessagePublisher
     // *** by main queue *** \\
     const SUBTITLE_TYPE        = 'subtitle';
     const MAIN_QUEUE_TYPE      = 'mainQueue';
+
 
     const MAIN_QUEUE           = 'main-queue';
     const SUBTITLE_QUEUE       = 'subtitle-queue';
@@ -40,9 +42,11 @@ class MessagePublisher
     const METADATAS_QUEUE      = 'metadatas-queue';
     const POPULATE_INDEX_QUEUE = 'populateindex-queue';
     const PULL_QUEUE           = 'pull-queue';
+    const RECORD_EDIT_QUEUE    = 'recordedit-queue';
     const SUBDEF_QUEUE         = 'subdef-queue';
     const VALIDATION_REMINDER_QUEUE     = 'validationReminder-queue';
     const WEBHOOK_QUEUE        = 'webhook-queue';
+
 
     // retry queue
     // we can use these retry queue with TTL, so when message expires it is requeued to the corresponding worker queue

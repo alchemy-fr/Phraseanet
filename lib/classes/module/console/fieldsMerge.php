@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -204,6 +206,11 @@ class module_console_fieldsMerge extends Command
 
                 unset($record);
             }
+
+            // order to write metas for those records
+            $this->container['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id'))
+            );
 
             $start += $quantity;
         } while (count($results) > 0);
