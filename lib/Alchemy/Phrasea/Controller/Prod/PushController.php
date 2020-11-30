@@ -146,7 +146,7 @@ class PushController extends Controller
 
                     $this->getDataboxLogger($element->getDatabox())->log(
                         $element,
-                        Session_Logger::EVENT_VALIDATE,
+                        Session_Logger::EVENT_PUSH,
                         $user_receiver->getId(),
                         ''
                     );
@@ -386,7 +386,7 @@ class PushController extends Controller
 
                     $this->getDataboxLogger($basketElement->getRecord($this->app)->getDatabox())->log(
                         $basketElement->getRecord($this->app),
-                        Session_Logger::EVENT_PUSH,
+                        Session_Logger::EVENT_VALIDATE,
                         $participantUser->getId(),
                         ''
                     );
