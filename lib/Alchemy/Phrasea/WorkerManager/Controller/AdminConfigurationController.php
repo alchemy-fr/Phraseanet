@@ -235,11 +235,13 @@ class AdminConfigurationController extends Controller
 
         if ($request->getMethod() == 'POST') {
             $reminderInterval = (int)$request->request->get('worker_reminder_interval');
-            // save the period interval in second
-            $app['conf']->set(['workers', 'validationReminder', 'interval'], $reminderInterval);
 
             /** @var AMQPConnection $serverConnection */
             $serverConnection = $this->app['alchemy_worker.amqp.connection'];
+            $serverConnection->setQueue(MessagePublisher::VALIDATION_REMINDER_QUEUE);
+
+            // save the period interval in second
+            $app['conf']->set(['workers', 'validationReminder', 'interval'], $reminderInterval);
             // reinitialize the validation reminder queues
             $serverConnection->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_QUEUE]);
             $this->app['alchemy_worker.message.publisher']->initializeLoopQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
