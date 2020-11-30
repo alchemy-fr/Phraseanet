@@ -19299,6 +19299,7 @@ var recordEditorService = function recordEditorService(services) {
     var $editorContainer = null;
     var $ztextStatus = void 0;
     var $editTextArea = void 0;
+    var $editDateArea = void 0;
     var $editMonoValTextArea = void 0;
     var $editMultiValTextArea = void 0;
     var $toolsTabs = void 0;
@@ -19321,6 +19322,7 @@ var recordEditorService = function recordEditorService(services) {
 
         $ztextStatus = (0, _jquery2.default)('#ZTextStatus', options.$container);
         $editTextArea = (0, _jquery2.default)('#idEditZTextArea', options.$container);
+        $editDateArea = (0, _jquery2.default)('#idEditZDateArea', options.$container);
         $editMonoValTextArea = (0, _jquery2.default)('#ZTextMonoValued', options.$container);
         $editMultiValTextArea = (0, _jquery2.default)('#EditTextMultiValued', options.$container);
         $toolsTabs = (0, _jquery2.default)('#EDIT_MID_R .tabs', options.$container);
@@ -19427,6 +19429,14 @@ var recordEditorService = function recordEditorService(services) {
                     _onTextareaKeyDown(event);
                     break;
                 default:
+            }
+        }).on('change', '#idEditZDateArea', function (e) {
+            var dateText = (0, _jquery2.default)(this).val();
+
+            // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss
+            if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$/) !== null) {
+                options.fieldLastValue = $editDateArea.val();
+                options.textareaIsDirty = true;
             }
         });
     };
@@ -19565,11 +19575,11 @@ var recordEditorService = function recordEditorService(services) {
             changeMonth: true,
             dateFormat: 'yy/mm/dd',
             onSelect: function onSelect(dateText, inst) {
-                var lval = $editTextArea.val();
+                var lval = $editDateArea.val();
                 if (lval !== dateText) {
                     options.fieldLastValue = lval;
-                    $editTextArea.val(dateText);
-                    $editTextArea.trigger('keyup.maxLength');
+                    $editDateArea.val(dateText);
+                    $editDateArea.trigger('keyup.maxLength');
                     options.textareaIsDirty = true;
                     validateFieldChanges(null, 'ok');
                 }
@@ -19730,7 +19740,11 @@ var recordEditorService = function recordEditorService(services) {
                                 var t = $editTextArea.val();
                                 $editTextArea.val(t + (t ? ' ; ' : '') + (0, _jquery2.default)(this).val());
                             } else {
-                                $editTextArea.val((0, _jquery2.default)(this).val());
+                                if (field.type === 'date') {
+                                    $editDateArea.val((0, _jquery2.default)(this).val());
+                                } else {
+                                    $editTextArea.val((0, _jquery2.default)(this).val());
+                                }
                             }
                             $editTextArea.trigger('keyup.maxLength');
                             options.textareaIsDirty = true;
@@ -19797,10 +19811,13 @@ var recordEditorService = function recordEditorService(services) {
                     (0, _jquery2.default)('.editDiaButtons', options.$container).hide();
 
                     if (field.type === 'date') {
-                        $editTextArea.css('height', '16px');
+                        $editTextArea.hide();
+                        $editDateArea.show();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).show();
                     } else {
+                        $editDateArea.hide();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).hide();
+                        $editTextArea.show();
                         $editTextArea.css('height', '100%');
                     }
 
@@ -19815,8 +19832,12 @@ var recordEditorService = function recordEditorService(services) {
                         (0, _jquery2.default)('#idDivButtons', options.$container).show(); // valeurs h�t�rog�nes : les 3 boutons remplacer/ajouter/annuler
                     } else {
                         // homogene
-                        $editTextArea.val(options.fieldLastValue = field._value);
-                        $editTextArea.removeClass('hetero');
+                        if (field.type === 'date') {
+                            $editDateArea.val(options.fieldLastValue = field._value);
+                        } else {
+                            $editTextArea.val(options.fieldLastValue = field._value);
+                            $editTextArea.removeClass('hetero');
+                        }
 
                         (0, _jquery2.default)('#idDivButtons', options.$container).hide(); // valeurs homog�nes
                         if (field.type === 'date') {
@@ -20115,7 +20136,12 @@ var recordEditorService = function recordEditorService(services) {
 
         if (action === 'cancel') {
             // on restore le contenu du champ
-            $editTextArea.val(options.fieldLastValue);
+            if (currentField.type === 'date') {
+                $editDateArea.val(options.fieldLastValue);
+            } else {
+                $editTextArea.val(options.fieldLastValue);
+            }
+
             $editTextArea.trigger('keyup.maxLength');
             options.textareaIsDirty = false;
             return true;
@@ -20128,6 +20154,11 @@ var recordEditorService = function recordEditorService(services) {
         var o = document.getElementById('idEditField_' + fieldIndex);
         if (o !== undefined) {
             var t = $editTextArea.val();
+
+            if (currentField.type === 'date') {
+                t = $editDateArea.val();
+            }
+
             for (var recordIndex in records) {
                 var record = options.recordCollection.getRecordByIndex(recordIndex);
                 if (!record._selected) {

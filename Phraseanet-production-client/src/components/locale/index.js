@@ -16,7 +16,7 @@ class LocaleService {
         }
 
         if (options.locale === undefined) {
-            options.locale = 'fr';
+            options.locale = $('html').attr('lang') || 'fr';
         }
         this.locale = options.locale;
         this.isCached = false;
