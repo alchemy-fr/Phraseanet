@@ -2463,7 +2463,7 @@ var LocaleService = function () {
         }
 
         if (options.locale === undefined) {
-            options.locale = 'fr';
+            options.locale = (0, _jquery2.default)('html').attr('lang') || 'fr';
         }
         this.locale = options.locale;
         this.isCached = false;
