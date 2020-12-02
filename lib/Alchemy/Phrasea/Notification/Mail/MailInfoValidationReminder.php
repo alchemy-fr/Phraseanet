@@ -57,12 +57,8 @@ class MailInfoValidationReminder extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        if (!$this->timeLeft) {
-            throw new LogicException('You must set timeLeft before calling getSubject');
-        }
-
         return $this->app->trans('Il ne vous reste plus que %timeLeft% pour terminer votre validation', [
-            '%timeLeft%' => $this->timeLeft
+            '%timeLeft%' => isset($this->timeLeft)? $this->timeLeft : ''
         ]);
     }
 
