@@ -117,7 +117,7 @@ class RegistryFormManipulator
             ],
             'actions' => [
                 'download-max-size' => 120,
-                'validation-reminder-days' => 2,
+                'validation-reminder-time-left-percent' => 20,
                 'validation-expiration-days' => 10,
                 'auth-required-for-export' => true,
                 'tou-validation-required-for-export' => false,
