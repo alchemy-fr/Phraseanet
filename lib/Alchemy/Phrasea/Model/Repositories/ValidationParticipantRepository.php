@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
@@ -27,6 +28,7 @@ class ValidationParticipantRepository extends EntityRepository
      * @param $today DateTime               fake "today" to allow to get past/future events
      *                                      (used by SendValidationRemindersCommand.php to debug with --dry)
      * @return ValidationParticipant[]
+     * @throws \Exception
      */
     public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, DateTime $today=null)
     {
@@ -34,16 +36,37 @@ class ValidationParticipantRepository extends EntityRepository
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\ValidationParticipant', 'p');
         $selectClause = $rsm->generateSelectClause();
 
-        $sql = '
-            SELECT ' . $selectClause . '
-            FROM ValidationParticipants p
-            INNER JOIN ValidationSessions s on p.validation_session_id = s.id
-            INNER JOIN Baskets b on b.id = s.basket_id
-            WHERE p.is_confirmed = 0
-            AND p.reminded IS NULL
-            AND s.expires > '. ($today===null ? 'CURRENT_TIMESTAMP()' : ':today') . '
-            AND DATE_SUB(s.expires, INTERVAL FLOOR((TO_SECONDS(s.expires) -  TO_SECONDS(s.created)) * :percent) SECOND) <= '. ($today===null ? 'CURRENT_TIMESTAMP()' : ':today')
-        ;
+        switch($this->_em->getConnection()->getDriver()->getName()) {
+            case 'pdo_mysql':
+                $sql = '
+                    SELECT ' . $selectClause . '
+                    FROM ValidationParticipants p
+                    INNER JOIN ValidationSessions s on p.validation_session_id = s.id
+                    INNER JOIN Baskets b on b.id = s.basket_id
+                    WHERE p.is_confirmed = 0
+                    AND p.reminded IS NULL
+                    AND s.expires > '. ($today===null ? 'CURRENT_TIMESTAMP()' : ':today') . '
+                    AND DATE_SUB(s.expires, INTERVAL FLOOR((TO_SECONDS(s.expires) -  TO_SECONDS(s.created)) * :percent) SECOND) <= '. ($today===null ? 'CURRENT_TIMESTAMP()' : ':today')
+                ;
+
+                break;
+            case 'pdo_sqlite':
+                $sql = '
+                    SELECT ' . $selectClause . '
+                    FROM ValidationParticipants p
+                    INNER JOIN ValidationSessions s on p.validation_session_id = s.id
+                    INNER JOIN Baskets b on b.id = s.basket_id
+                    WHERE p.is_confirmed = 0
+                    AND p.reminded IS NULL
+                    AND s.expires > '. ($today===null ? 'strftime("%s","now")' : 'strftime("%s", :today)') . '
+                    AND (strftime("%s", s.expires) - ((strftime("%s", s.expires) -  strftime("%s", s.created)) * :percent)  )<= '. ($today===null ? 'strftime("%s","now")' : 'strftime("%s", :today)')
+                ;
+
+                break;
+            default:
+                throw new Exception('Unused PDO!, if necessary define the query for this PDO');
+
+        }
 
         $q = $this->_em->createNativeQuery($sql, $rsm);
         $q->setParameter('percent', (float)($timeLeftPercent/100));
