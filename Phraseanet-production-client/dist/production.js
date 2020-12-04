@@ -19300,6 +19300,7 @@ var recordEditorService = function recordEditorService(services) {
     var $ztextStatus = void 0;
     var $editTextArea = void 0;
     var $editDateArea = void 0;
+    var $editTimeArea = void 0;
     var $editMonoValTextArea = void 0;
     var $editMultiValTextArea = void 0;
     var $toolsTabs = void 0;
@@ -19323,6 +19324,7 @@ var recordEditorService = function recordEditorService(services) {
         $ztextStatus = (0, _jquery2.default)('#ZTextStatus', options.$container);
         $editTextArea = (0, _jquery2.default)('#idEditZTextArea', options.$container);
         $editDateArea = (0, _jquery2.default)('#idEditZDateArea', options.$container);
+        $editTimeArea = (0, _jquery2.default)('#idEditTimeArea', options.$container);
         $editMonoValTextArea = (0, _jquery2.default)('#ZTextMonoValued', options.$container);
         $editMultiValTextArea = (0, _jquery2.default)('#EditTextMultiValued', options.$container);
         $toolsTabs = (0, _jquery2.default)('#EDIT_MID_R .tabs', options.$container);
@@ -19430,14 +19432,34 @@ var recordEditorService = function recordEditorService(services) {
                     break;
                 default:
             }
-        }).on('change', '#idEditZDateArea', function (e) {
+        }).on('change mouseup mousedown keyup keydown', '#idEditZDateArea', function (e) {
             var dateText = (0, _jquery2.default)(this).val();
 
-            // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss
-            if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$/) !== null) {
+            if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
+                $editDateArea.css('width', 167);
+                $editTimeArea.show();
+            } else {
+                $editTimeArea.hide();
+                $editDateArea.css('width', 210);
+            }
+
+            // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+            if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
                 options.fieldLastValue = $editDateArea.val();
                 options.textareaIsDirty = true;
             }
+        }).on('change', '#idEditTimeArea', function (e) {
+            var date = $editDateArea.val();
+            $editDateArea.val(date + ' ' + (0, _jquery2.default)(this).val());
+            var dateText = $editDateArea.val();
+
+            // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+            if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
+                options.fieldLastValue = $editDateArea.val();
+                options.textareaIsDirty = true;
+            }
+            $editTimeArea.hide();
+            $editDateArea.css('width', 210);
         });
     };
 
@@ -19814,8 +19836,24 @@ var recordEditorService = function recordEditorService(services) {
                         $editTextArea.hide();
                         $editDateArea.show();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).show();
+                        $editDateArea.val(field._value);
+
+                        var dateText = $editDateArea.val();
+
+                        if (dateText === '') {
+                            dateText = field._value;
+                        }
+
+                        if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
+                            $editDateArea.css('width', 167);
+                            $editTimeArea.show();
+                        } else {
+                            $editTimeArea.hide();
+                            $editDateArea.css('width', 210);
+                        }
                     } else {
                         $editDateArea.hide();
+                        $editTimeArea.hide();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).hide();
                         $editTextArea.show();
                         $editTextArea.css('height', '100%');
