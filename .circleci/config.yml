@@ -5,6 +5,8 @@ executors:
   docker_build:
     machine:
       docker_layer_caching: true
+      php:
+        version: 7.0.4
 jobs:
     build:
         working_directory: ~/alchemy-fr/Phraseanet
