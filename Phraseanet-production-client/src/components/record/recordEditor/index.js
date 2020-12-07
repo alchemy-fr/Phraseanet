@@ -31,10 +31,12 @@ const recordEditorService = services => {
     let $ztextStatus;
     let $editTextArea;
     let $editDateArea;
+    let $editTimeArea;
     let $editMonoValTextArea;
     let $editMultiValTextArea;
     let $toolsTabs;
     let $idExplain;
+    let $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
 
     const initialize = params => {
         let initWith = ({ $container, recordConfig } = params);
@@ -52,6 +54,7 @@ const recordEditorService = services => {
         $ztextStatus = $('#ZTextStatus', options.$container);
         $editTextArea = $('#idEditZTextArea', options.$container);
         $editDateArea = $('#idEditZDateArea', options.$container);
+        $editTimeArea = $('#idEditTimeArea', options.$container);
         $editMonoValTextArea = $('#ZTextMonoValued', options.$container);
         $editMultiValTextArea = $('#EditTextMultiValued', options.$container);
         $toolsTabs = $('#EDIT_MID_R .tabs', options.$container);
@@ -177,13 +180,37 @@ const recordEditorService = services => {
                     default:
                 }
             })
-            .on('change', '#idEditZDateArea', function (e) {
+            .on('change mouseup mousedown keyup keydown', '#idEditZDateArea', function (e) {
                 let dateText = $(this).val();
 
-                // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss
-                if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$/) !== null) {
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                    $editDateArea.css('width',167);
+                    $editTimeArea.show();
+                } else {
+                    $editTimeArea.hide();
+                    $editDateArea.css('width',210);
+                }
+
+                // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
                     options.fieldLastValue = $editDateArea.val();
                     options.textareaIsDirty = true;
+                }
+            })
+            .on('change', '#idEditTimeArea', function (e) {
+                let date = $editDateArea.val();
+                date = date.split(' ');
+                // retrieve the date and add the time to it
+                $editDateArea.val(date[0] + ' ' + $(this).val() + ':00');
+                let dateText = $editDateArea.val();
+
+                // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                    options.fieldLastValue = $editDateArea.val();
+                    options.textareaIsDirty = true;
+                } else {
+                    $editTimeArea.hide();
+                    $editDateArea.css('width',210);
                 }
             })
         ;
@@ -595,8 +622,24 @@ const recordEditorService = services => {
                         $editTextArea.hide();
                         $editDateArea.show();
                         $('#idEditDateZone', options.$container).show();
+                        $editDateArea.val(field._value);
+
+                        let dateText= $editDateArea.val();
+
+                        if (dateText === '') {
+                            dateText = field._value;
+                        }
+
+                        if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                            $editDateArea.css('width',167);
+                            $editTimeArea.show();
+                        } else {
+                            $editTimeArea.hide();
+                            $editDateArea.css('width',210);
+                        }
                     } else {
                         $editDateArea.hide();
+                        $editTimeArea.hide();
                         $('#idEditDateZone', options.$container).hide();
                         $editTextArea.show();
                         $editTextArea.css('height', '100%');
