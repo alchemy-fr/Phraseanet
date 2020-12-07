@@ -115,11 +115,6 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('POST')
             ->bind('worker_admin_purge_queue');
 
-        /** @uses AdminConfigurationController::deleteQueueAction */
-        $controllers->match('/delete-queue',  'controller.worker.admin.configuration:deleteQueueAction')
-            ->method('POST')
-            ->bind('worker_admin_delete_queue');
-
         /** @uses AdminConfigurationController::changeStatusAction */
         $controllers->match('/{workerId}/change-status',  'controller.worker.admin.configuration:changeStatusAction')
             ->method('POST')

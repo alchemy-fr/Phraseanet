@@ -25,24 +25,27 @@ class WorkerConfigurationType extends AbstractType
         foreach($this->AMQPConnection->getBaseQueueNames() as $baseQueueName) {
             $g = null;
             if($this->AMQPConnection->hasRetryQueue($baseQueueName)) {
-                $g = $g ?? $builder->create($baseQueueName, FormType::class);
+                $g = $g ?? $this->createFormGroup($builder, $baseQueueName);
                 $g->add('max_retry', TextType::class, [
-                    'label' => 'admin::workermanager:tab:workerconfig: '.$baseQueueName.' max retry',
+                    'label' => 'admin::workermanager:tab:workerconfig:max retry',
+                    'required' => false,
                     'attr' => [
                         'placeholder' => $this->AMQPConnection->getMaxRetry($baseQueueName)
                     ]
                 ]);
                 $g->add('ttl_retry', TextType::class, [
-                    'label' => 'admin::workermanager:tab:workerconfig: '.$baseQueueName.' retry delay in ms',
+                    'label' => 'admin::workermanager:tab:workerconfig:retry delay in ms',
+                    'required' => false,
                     'attr' => [
                        'placeholder' => $this->AMQPConnection->getTTLRetry($baseQueueName)
                     ]
                 ]);
             }
             if($this->AMQPConnection->hasDelayedQueue($baseQueueName)) {
-                $g = $g ?? $builder->create($baseQueueName, FormType::class);
+                $g = $g ?? $this->createFormGroup($builder, $baseQueueName);
                 $g->add('ttl_delayed', TextType::class, [
-                    'label' => 'admin::workermanager:tab:workerconfig: '.$baseQueueName.' delayed delay in ms',
+                    'label' => 'admin::workermanager:tab:workerconfig:delayed delay in ms',
+                    'required' => false,
                     'attr' => [
                         'placeholder' => $this->AMQPConnection->getTTLDelayed($baseQueueName)
                     ]
@@ -56,6 +59,12 @@ class WorkerConfigurationType extends AbstractType
         [
             'label' => "boutton::appliquer"
         ]);
+    }
+
+    private function createFormGroup(FormBuilderInterface $builder, string $name)
+    {
+        // todo : fix form render : one horizontal block per queue
+        return $builder->create($name, FormType::class, ['attr'=>['class'=>'form-row']]);
     }
 
     public function getName()
