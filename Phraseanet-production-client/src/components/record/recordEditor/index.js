@@ -36,6 +36,7 @@ const recordEditorService = services => {
     let $editMultiValTextArea;
     let $toolsTabs;
     let $idExplain;
+    let $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
 
     const initialize = params => {
         let initWith = ({ $container, recordConfig } = params);
@@ -182,7 +183,7 @@ const recordEditorService = services => {
             .on('change mouseup mousedown keyup keydown', '#idEditZDateArea', function (e) {
                 let dateText = $(this).val();
 
-                if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
                     $editDateArea.css('width',167);
                     $editTimeArea.show();
                 } else {
@@ -191,23 +192,26 @@ const recordEditorService = services => {
                 }
 
                 // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
-                if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
                     options.fieldLastValue = $editDateArea.val();
                     options.textareaIsDirty = true;
                 }
             })
             .on('change', '#idEditTimeArea', function (e) {
                 let date = $editDateArea.val();
-                $editDateArea.val(date+' '+$(this).val());
+                date = date.split(' ');
+                // retrieve the date and add the time to it
+                $editDateArea.val(date[0] + ' ' + $(this).val() + ':00');
                 let dateText = $editDateArea.val();
 
                 // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
-                if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
                     options.fieldLastValue = $editDateArea.val();
                     options.textareaIsDirty = true;
+                } else {
+                    $editTimeArea.hide();
+                    $editDateArea.css('width',210);
                 }
-                $editTimeArea.hide();
-                $editDateArea.css('width',210);
             })
         ;
     };
@@ -626,7 +630,7 @@ const recordEditorService = services => {
                             dateText = field._value;
                         }
 
-                        if (dateText !== undefined && dateText.match(/^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2}$/) !== null) {
+                        if (dateText !== undefined && dateText.match($dateFormat) !== null) {
                             $editDateArea.css('width',167);
                             $editTimeArea.show();
                         } else {
