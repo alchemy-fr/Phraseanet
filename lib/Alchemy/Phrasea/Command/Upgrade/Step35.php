@@ -12,6 +12,8 @@
 namespace Alchemy\Phrasea\Command\Upgrade;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -187,6 +189,10 @@ class Step35 implements DatasUpgraderInterface
         }
 
         $record->set_metadatas($metadatas, true);
+
+        // order to write meta in file
+        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+            new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
     }
 
     /**

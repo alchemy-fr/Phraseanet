@@ -112,13 +112,13 @@ class MessageHandler
 
     private function runConsumer($queueName, AMQPConnection $serverConnection, AMQPChannel $channel, $prefetchCount, $callback)
     {
+        $serverConnection->setQueue($queueName);
+
         // initialize validation reminder when starting consumer
         if ($queueName == MessagePublisher::VALIDATION_REMINDER_QUEUE) {
             $serverConnection->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_QUEUE]);
             $this->messagePublisher->initializeLoopQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
         }
-
-        $serverConnection->setQueue($queueName);
 
         //  give prefetch message to a worker consumer at a time
         $channel->basic_qos(null, $prefetchCount, null);

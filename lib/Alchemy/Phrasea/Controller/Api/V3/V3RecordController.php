@@ -17,6 +17,8 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use caption_field;
 use databox_field;
 use Doctrine\DBAL\DBALException;
@@ -411,6 +413,10 @@ class V3RecordController extends Controller
         }
 
         $record->set_metadatas($metadatas_ops, true);
+
+        // order to write meta in file
+        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+            new RecordsWriteMetaEvent([$record->getRecordId()],  $record->getDataboxId()));
 
         return $metadatas_ops;
     }
