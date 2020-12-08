@@ -20,6 +20,7 @@ jobs:
         - checkout
         - run: phpenv versions
         - run: phpenv global 7.0.7
+        - run: php -v
         - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
         - run:
             working_directory: ~/alchemy-fr/Phraseanet
