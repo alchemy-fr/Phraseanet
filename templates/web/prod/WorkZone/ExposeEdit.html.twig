@@ -113,6 +113,72 @@
                     </div>
                 </form>
 
+                <h3>Permission</h3>
+
+                <div style="border: 1px solid #ada9a9;padding: 5px;">
+                    <form id="permission-user">
+                        <div class="ui-widget">
+                            <label>User </label>
+                            <div class="ui-widget">
+                                <select id="user-list" name="" tabindex="-1" aria-hidden="true"
+                                        class="">
+                                    <option value="">Select an user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="ui-widget">
+                            <label style="width:10%;!important">View : </label>
+                            <label style="width:10%;!important">
+                                <input type="checkbox" name="user-view">
+                            </label>
+                            <label style="width:10%;!important">Edit : </label>
+                            <label style="width:10%;!important">
+                                <input type="checkbox" name="user-edit">
+                            </label>
+                            <label style="width:10%;!important">Delete : </label>
+                            <label style="width:10%;!important">
+                                <input type="checkbox" name="user-delete">
+                            </label>
+                            <button id="save-permission-user" type="submit">Save</button>
+
+                        </div>
+
+                        <p id="user-permission-success" class="hidden alert alert-success text-center"></p>
+                        <p id="user-permission-error" class="hidden alert alert-error text-center"></p>
+                    </form>
+
+                    <form id="permission-group">
+                        <div class="ui-widget" style="margin-top:50px;">
+                            <label>Groups </label>
+                            <div id="" class="ui-widget">
+                                <select id="group-list" name="" tabindex="-1" aria-hidden="true"
+                                        class="">
+                                    <option value="">Select a Group</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="ui-widget">
+                            <label style="width:10%;!important">View : </label>
+                            <label style="width:10%;!important">
+                                <input type="checkbox" name="group-view">
+                            </label>
+                            <label style="width:10%;!important">Edit : </label>
+                            <label style="width:10%;!important">
+                                <input type="checkbox" name="group-edit">
+                            </label>
+                            <label style="width:10%;!important">Delete : </label>
+                            <label style="width:10%;!important">
+                                <input type="checkbox" name="group-delete">
+                            </label>
+                            <button id="save-permission-group" type="submit">Save</button>
+                        </div>
+                        <p id="group-permission-success" class="hidden alert alert-success text-center"></p>
+                        <p id="group-permission-error" class="hidden alert alert-error text-center"></p>
+                    </form>
+                </div>
+
                 <form name="publication-json" id="publication-json" class="text-center">
                     <div id="advancedSettingBlock">
                         <h3 class="toggleSetting">Advanced setting</h3>
@@ -155,7 +221,17 @@
         var publicationForm = publicationEdit.find("#publication-data-form");
         var publicationParent = publicationEdit.find("#publication_parent");
         var profileField = publicationEdit.find("#profile-field");
+        var userList = publicationEdit.find("#user-list");
+        var groupList = publicationEdit.find("#group-list");
         var advancedSetting = publicationEdit.find("#advancedSetting");
+
+        var userView = publicationEdit.find('input[name=user-view]');
+        var userEdit = publicationEdit.find('input[name=user-edit]');
+        var userDelete = publicationEdit.find('input[name=user-delete]');
+
+        var groupView = publicationEdit.find('input[name=group-view]');
+        var groupEdit = publicationEdit.find('input[name=group-edit]');
+        var groupDelete = publicationEdit.find('input[name=group-delete]');
 
         var publicationFieldClass = publicationEdit.find(".publication-field");
 
@@ -207,7 +283,7 @@
                 url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
                 success: function (data) {
                     profileField.empty().html('<option value="">Select Profile</option>');
-                    for (i = 0; i < data.profiles.length; i++) {
+                    for (let i = 0; i < data.profiles.length; i++) {
                         let selected = '';
                         if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
                             selected = 'selected="selected"';
@@ -220,6 +296,36 @@
                         );
                     }
 
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/list/users?exposeName={{ exposeName }}`,
+                success: function (data) {
+                    userList.empty().html('<option value="">Select an User</option>');
+                    for (i = 0; i < data.list.length; i++) {
+                        userList.append('<option ' +
+                            'value=' + data.list[i].id +' >'
+                            + data.list[i].username +
+                            '</option>'
+                        );
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/list/users?groups=1&exposeName={{ exposeName }}`,
+                success: function (data) {
+                    groupList.empty().html('<option value="">Select a Group</option>');
+                    for (i = 0; i < data.list.length; i++) {
+                        groupList.append('<option ' +
+                            'value=' + data.list[i].id +' >'
+                            + data.list[i].name +
+                            '</option>'
+                        );
+                    }
                 }
             });
 
@@ -370,6 +476,102 @@
                 });
             } else {
                 publicationEdit.find("#pub-error").removeClass("hidden").text("No changed!");
+            }
+
+        });
+
+        publicationEdit.find('#permission-user').on('submit', function (e) {
+            e.preventDefault();
+            let mask = 0;
+
+            if (userView.is(':checked')) {
+                mask = mask | 1;
+            }
+
+            if (userEdit.is(':checked')) {
+                mask = mask | 4;
+            }
+
+            if (userDelete.is(':checked')) {
+                mask = mask | 8;
+            }
+
+            if (userList.val() !== '') {
+                publicationEdit.find("#user-permission-error").addClass("hidden");
+                publicationEdit.find("#user-permission-success").addClass("hidden");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/prod/expose/publication/permission/update",
+                    dataType: 'json',
+                    data: {
+                        exposeName: "{{ exposeName }}",
+                        jsonData: {
+                            userType: "user",
+                            userId: userList.val(),
+                            objectType: "publication",
+                            objectId: "{{ publication.id }}",
+                            mask: mask
+                        }
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            publicationEdit.find("#user-permission-error").addClass("hidden");
+                            publicationEdit.find("#user-permission-success").removeClass("hidden").html(data.message);
+                        } else {
+                            publicationEdit.find("#user-permission-success").addClass("hidden");
+                            publicationEdit.find("#user-permission-error").removeClass("hidden").html(data.message);
+                        }
+                    }
+                });
+            }
+
+        });
+
+        publicationEdit.find('#permission-group').on('submit', function (e) {
+            e.preventDefault();
+            let mask = 0;
+
+            if (groupView.is(':checked')) {
+                mask = mask | 1;
+            }
+
+            if (groupEdit.is(':checked')) {
+                mask = mask | 4;
+            }
+
+            if (groupDelete.is(':checked')) {
+                mask = mask | 8;
+            }
+
+            if (groupList.val() !== '') {
+                publicationEdit.find("#group-permission-error").addClass("hidden");
+                publicationEdit.find("#group-permission-success").addClass("hidden");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/prod/expose/publication/permission/update",
+                    dataType: 'json',
+                    data: {
+                        exposeName: "{{ exposeName }}",
+                        jsonData: {
+                            userType: "group",
+                            userId: groupList.val(),
+                            objectType: "publication",
+                            objectId: "{{ publication.id }}",
+                            mask: mask
+                        }
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            publicationEdit.find("#group-permission-error").addClass("hidden");
+                            publicationEdit.find("#group-permission-success").removeClass("hidden").html(data.message);
+                        } else {
+                            publicationEdit.find("#group-permission-success").addClass("hidden");
+                            publicationEdit.find("#group-permission-error").removeClass("hidden").html(data.message);
+                        }
+                    }
+                });
             }
 
         });
