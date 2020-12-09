@@ -27,7 +27,7 @@ class SubDefinitionHydrator implements HydratorInterface
     /** @var  boolean */
     private $populatePermalinks;
 
-    public function __construct(Application $app, databox $databox, boolean $populatePermalinks)
+    public function __construct(Application $app, databox $databox, $populatePermalinks)
     {
         $this->app = $app;
         $this->databox = $databox;
