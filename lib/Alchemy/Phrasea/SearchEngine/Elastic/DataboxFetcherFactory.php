@@ -46,7 +46,7 @@ class DataboxFetcherFactory
     /** @var  ElasticsearchOptions */
     private $options;
 
-    /** @var  bool */
+    /** @var  boolean */
     private $populatePermalinks;
 
     /**
