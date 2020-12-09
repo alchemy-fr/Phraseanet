@@ -46,6 +46,9 @@ class DataboxFetcherFactory
     /** @var  ElasticsearchOptions */
     private $options;
 
+    /** @var  bool */
+    private $populatePermalinks;
+
     /**
      * @param PropertyAccess $conf
      * @param RecordHelper $recordHelper
@@ -62,6 +65,7 @@ class DataboxFetcherFactory
         $this->app          = $app;
         $this->structureKey = $structureKey;
         $this->thesaurusKey = $thesaurusKey;
+        $this->populatePermalinks = $conf->get(['main', 'search-engine', 'options', 'populate_permalinks'], false) ;
     }
 
     /**
@@ -83,7 +87,7 @@ class DataboxFetcherFactory
                 new MetadataHydrator($this->conf, $connection, $this->getStructure(), $this->recordHelper),
                 new FlagHydrator($this->getStructure(), $databox),
                 new ThesaurusHydrator($this->getStructure(), $this->getThesaurus(), $candidateTerms),
-                new SubDefinitionHydrator($this->app, $databox)
+                new SubDefinitionHydrator($this->app, $databox, $this->populatePermalinks)
             ],
             $fetcherDelegate
         );

@@ -24,10 +24,14 @@ class SubDefinitionHydrator implements HydratorInterface
     /** @var databox */
     private $databox;
 
-    public function __construct(Application $app, databox $databox)
+    /** @var  bool */
+    private $populatePermalinks;
+
+    public function __construct(Application $app, databox $databox, bool $populatePermalinks)
     {
         $this->app = $app;
         $this->databox = $databox;
+        $this->populatePermalinks = $populatePermalinks;
     }
 
     public function hydrateRecords(array &$records)
@@ -35,13 +39,16 @@ class SubDefinitionHydrator implements HydratorInterface
         foreach(array_keys($records) as $rid) {
             try {
                 $subdefs = $this->databox->getRecordRepository()->find($rid)->get_subdefs();
-                $pls = array_map(
+                $pls = [];
+                if ($this->populatePermalinks) {
+                    $pls = array_map(
                     /** media_Permalink_Adapter|null $plink */
-                    function($plink) {
-                        return $plink ? ((string) $plink->get_url()) : null;
-                    },
-                    media_Permalink_Adapter::getMany($this->app, $subdefs, false) // false: don't create missing plinks
-                );
+                        function($plink) {
+                            return $plink ? ((string) $plink->get_url()) : null;
+                        },
+                        media_Permalink_Adapter::getMany($this->app, $subdefs, false) // false: don't create missing plinks
+                    );
+                }
 
                 foreach($subdefs as $subdef) {
                     $name = $subdef->get_name();
