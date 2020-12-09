@@ -86,8 +86,13 @@ class patch_413 implements patchInterface
         }
 
         // if not exist add maxResultWindow key
-        if (!$app['conf']->has(['main', 'search-engine', 'maxResultWindow'])) {
-            $app['conf']->set(['main', 'search-engine', 'maxResultWindow'], 500000);
+        if (!$app['conf']->has(['main', 'search-engine', 'options', 'maxResultWindow'])) {
+            $app['conf']->set(['main', 'search-engine', 'options', 'maxResultWindow'], 500000);
+        }
+
+        // if not exist add populate_permalinks key
+        if (!$app['conf']->has(['main', 'search-engine', 'options', 'populate_permalinks'])) {
+            $app['conf']->set(['main', 'search-engine', 'options', 'populate_permalinks'], false);
         }
 
         return true;
