@@ -1,6 +1,9 @@
 <?php
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+
 
 class patch_413 implements patchInterface
 {
@@ -8,7 +11,7 @@ class patch_413 implements patchInterface
     private $release = '4.1.3';
 
     /** @var array */
-    private $concern = [base::DATA_BOX];
+    private $concern = [base::APPLICATION_BOX, base::DATA_BOX];
 
     /**
      * {@inheritdoc}
@@ -45,7 +48,97 @@ class patch_413 implements patchInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(base $databox, Application $app)
+    public function apply(base $base, Application $app)
+    {
+        if ($base->get_base_type() === base::DATA_BOX) {
+            $this->patch_databox($base, $app);
+        }
+        elseif ($base->get_base_type() === base::APPLICATION_BOX) {
+            $this->patch_appbox($base, $app);
+        }
+
+        return true;
+    }
+
+
+    const OLDQ2NEWQ_ttl_retry = [
+        'assetsIngest'       => MessagePublisher::ASSETS_INGEST_TYPE,
+        'createRecord'       => MessagePublisher::CREATE_RECORD_TYPE,
+        'deleteRecord'       => MessagePublisher::DELETE_RECORD_TYPE,
+        'exportMail'         => MessagePublisher::EXPORT_MAIL_TYPE,
+        'exposeUpload'       => MessagePublisher::EXPOSE_UPLOAD_TYPE,
+        'ftp'                => MessagePublisher::FTP_TYPE,
+        'populateIndex'      => MessagePublisher::POPULATE_INDEX_TYPE,
+        'pullAssets'         => MessagePublisher::PULL_ASSETS_TYPE,
+        'recordEdit'         => MessagePublisher::RECORD_EDIT_TYPE,
+        'subdefCreation'     => MessagePublisher::SUBDEF_CREATION_TYPE,
+        'validationReminder' => MessagePublisher::VALIDATION_REMINDER_TYPE,
+        'writeMetadatas'     => MessagePublisher::WRITE_METADATAS_TYPE,
+        'webhook'            => MessagePublisher::WEBHOOK_TYPE,
+    ];
+    const OLDQ2NEWQ_ttl_delayed = [
+        'delayedSubdef'      => MessagePublisher::SUBDEF_CREATION_TYPE,
+        'delayedWriteMeta'   => MessagePublisher::WRITE_METADATAS_TYPE,
+    ];
+
+    private function patch_appbox(base $databox, Application $app)
+    {
+        /** @var PropertyAccess $conf */
+        $conf = $app['conf'];
+
+        //----------------------------------------------
+        // patch for reminder validation key, default value to 20
+        //
+        //----------------------------------------------
+
+        $conf->remove(['registry', 'actions', 'validation-reminder-days']);
+        $conf->set(['registry', 'actions', 'validation-reminder-time-left-percent'], 20);
+
+        // if not exist add maxResultWindow key
+        if (!$conf->has(['main', 'search-engine', 'options', 'maxResultWindow'])) {
+            $conf->set(['main', 'search-engine', 'options', 'maxResultWindow'], 500000);
+        }
+
+        // if not exist add populate_permalinks key
+        if (!$conf->has(['main', 'search-engine', 'options', 'populate_permalinks'])) {
+            $conf->set(['main', 'search-engine', 'options', 'populate_permalinks'], false);
+        }
+
+
+        // --------------------------------------------
+        // PHRAS-3282_refacto-some-code-on-workers_MASTER
+        // patch workers settings
+        // --------------------------------------------
+
+        $confWorkers = $conf->get(['workers']);
+
+        foreach(self::OLDQ2NEWQ_ttl_retry as $old=>$new) {
+            if(($v = $confWorkers->get(['retry_queue', $old], null)) !== null) {
+                $confWorkers->set(['queues', $new, 'ttl_retry'], $v);
+            }
+        }
+
+        foreach(self::OLDQ2NEWQ_ttl_delayed as $old=>$new) {
+            if(($v = $confWorkers->get(['retry_queue', $old], null)) !== null) {
+                $confWorkers->set(['queues', $new, 'ttl_delayed'], $v);
+            }
+        }
+
+        if(($v = $confWorkers->get(['pull_assets', 'pullInterval'], null)) !== null) {
+            $confWorkers->set(['queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], $v * 1000);
+        }
+
+        if(($v = $confWorkers->get(['validationReminder', 'interval'], null)) !== null) {
+            $confWorkers->set(['queues', MessagePublisher::VALIDATION_REMINDER_TYPE, 'ttl_retry'], $v * 1000);
+        }
+
+        $confWorkers->remove(['retry_queue']);
+        $confWorkers->remove(['pull_assets']);
+        $confWorkers->remove(['validationReminder']);
+
+    }
+
+    private function patch_databox(base $databox, Application $app)
     {
         // patch to invert push and validation action in log_docs
 
@@ -75,26 +168,5 @@ class patch_413 implements patchInterface
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
-
-        // patch for reminder validation key, default value to 20
-
-        if ($app['conf']->has(['registry', 'actions', 'validation-reminder-days'])) {
-            $app['conf']->remove(['registry', 'actions', 'validation-reminder-days']);
-            $app['conf']->set(['registry', 'actions', 'validation-reminder-time-left-percent'], 20);
-        } else {
-            $app['conf']->set(['registry', 'actions', 'validation-reminder-time-left-percent'], 20);
-        }
-
-        // if not exist add maxResultWindow key
-        if (!$app['conf']->has(['main', 'search-engine', 'options', 'maxResultWindow'])) {
-            $app['conf']->set(['main', 'search-engine', 'options', 'maxResultWindow'], 500000);
-        }
-
-        // if not exist add populate_permalinks key
-        if (!$app['conf']->has(['main', 'search-engine', 'options', 'populate_permalinks'])) {
-            $app['conf']->set(['main', 'search-engine', 'options', 'populate_permalinks'], false);
-        }
-
-        return true;
     }
 }
