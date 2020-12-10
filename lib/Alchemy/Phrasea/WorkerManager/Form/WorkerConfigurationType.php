@@ -52,8 +52,10 @@ class WorkerConfigurationType extends AbstractType
                 ]);
             }
             if($g) {
-                $builder->add($g);
+//                $builder->add($g);
             }
+            $f = new QueueSettingsType($this->AMQPConnection, $baseQueueName);
+            $builder->add($baseQueueName, $f, ['attr'=>['class'=>'norow'], 'block_name'=>'queue']);
         }
         $builder->add("boutton::appliquer", SubmitType::class,
         [

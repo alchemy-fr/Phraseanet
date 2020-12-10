@@ -99,17 +99,19 @@ class AMQPConnection
             'with'        => self::WITH_NOTHING,
         ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
-            'with'        => self::WITH_NOTHING,
+            'with'        => self::WITH_RETRY,
+            'max_retry'   => self::MAX_RETRY,
+            'ttl_retry'   => 600 * 1000,
         ],
         MessagePublisher::FTP_TYPE                 => [
             'with'        => self::WITH_RETRY,
             'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_LARGE_DELAY,
+            'ttl_retry'   => 180 * 1000,
         ],
         MessagePublisher::VALIDATION_REMINDER_TYPE => [
             'with'        => self::WITH_LOOP,
             'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => 7200*1000,
+            'ttl_retry'   => 7200 * 1000,
         ],
     ];
 

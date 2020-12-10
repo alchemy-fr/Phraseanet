@@ -47,16 +47,29 @@ class AdminConfigurationController extends Controller
      */
     public function configurationAction(PhraseaApplication $app, Request $request)
     {
-        $retryQueueConfig = $this->getQueuesConfiguration();
-
         $AMQPConnection = $this->getAMQPConnection();
-        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $retryQueueConfig);
+
+        $conf =  $this->getConf()->get(['workers', 'queues'], []);
+        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $conf);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            // save config in file
-            $app['conf']->set(['workers', 'queues'], $form->getData());
+            // save config
+            // too bad we must remove null entries from data to not save in conf
+            $data = $form->getData();
+            array_walk(
+                $data,
+                function(&$qSettings, $qName) {
+                    $qSettings = array_filter(
+                        $qSettings,
+                        function($setting) {
+                            return $setting !== null;
+                        }
+                    );
+                }
+            );
+            $app['conf']->set(['workers', 'queues'], $data);
 
             /*
              * todo : reinitialize q can't depend on form content :
@@ -381,11 +394,6 @@ class AdminConfigurationController extends Controller
     private function getFtpConfiguration()
     {
         return $this->getConf()->get(['workers', 'ftp'], []);
-    }
-
-    private function getQueuesConfiguration()
-    {
-        return $this->getConf()->get(['workers', 'queues'], []);
     }
 
     /**
