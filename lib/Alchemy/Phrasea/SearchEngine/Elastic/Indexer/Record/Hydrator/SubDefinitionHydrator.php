@@ -36,19 +36,26 @@ class SubDefinitionHydrator implements HydratorInterface
 
     public function hydrateRecords(array &$records)
     {
+        if ($this->populatePermalinks) {
+            $this->hydrateRecordsWithPermalinks($records);
+        } else {
+            $this->hydrateRecordsWithoutPermalinks($records);
+        }
+    }
+
+    private function hydrateRecordsWithPermalinks(&$records)
+    {
         foreach(array_keys($records) as $rid) {
             try {
                 $subdefs = $this->databox->getRecordRepository()->find($rid)->get_subdefs();
-                $pls = [];
-                if ($this->populatePermalinks) {
-                    $pls = array_map(
-                    /** media_Permalink_Adapter|null $plink */
-                        function($plink) {
-                            return $plink ? ((string) $plink->get_url()) : null;
-                        },
-                        media_Permalink_Adapter::getMany($this->app, $subdefs, false) // false: don't create missing plinks
-                    );
-                }
+
+                $pls = array_map(
+                /** media_Permalink_Adapter|null $plink */
+                    function($plink) {
+                        return $plink ? ((string) $plink->get_url()) : null;
+                    },
+                    media_Permalink_Adapter::getMany($this->app, $subdefs, false) // false: don't create missing plinks
+                );
 
                 foreach($subdefs as $subdef) {
                     $name = $subdef->get_name();
@@ -73,4 +80,38 @@ class SubDefinitionHydrator implements HydratorInterface
         }
     }
 
+    private function hydrateRecordsWithoutPermalinks(&$records)
+    {
+        $sql = <<<SQL
+            SELECT
+              s.record_id,
+              s.name,
+              s.height,
+              s.width,
+              s.size,
+              s.mime,
+              CONCAT(TRIM(TRAILING '/' FROM s.path), '/', s.file) AS path
+            FROM subdef s
+            WHERE s.record_id IN (?)
+            ORDER BY s.record_id
+SQL;
+        $statement = $this->databox->get_connection()->executeQuery($sql,
+            array(array_keys($records)),
+            array(Connection::PARAM_INT_ARRAY)
+        );
+
+        $current_rid = null;
+        $record = null;
+        while ($subdef = $statement->fetch()) {
+            $name = $subdef['name'];
+            $records[$subdef['record_id']]['subdefs'][$name] = array(
+                'path' => $subdef['path'],
+                'width' => $subdef['width'],
+                'height' => $subdef['height'],
+                'size'   => $subdef['size'],
+                'mime'   => $subdef['mime'],
+                'permalink' => null
+            );
+        }
+    }
 }
