@@ -70,10 +70,6 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('POST')
             ->bind('ps_expose_publication_add_assets');
 
-        $controllers->match('/list/users', 'controller.ps.expose:listUsersAction')
-            ->method('GET')
-            ->bind('ps_expose_list_users');
-
         $controllers->match('/publication/permission/update', 'controller.ps.expose:updatePublicationPermissionAction')
             ->method('POST')
             ->bind('ps_expose_publication_permission_update');

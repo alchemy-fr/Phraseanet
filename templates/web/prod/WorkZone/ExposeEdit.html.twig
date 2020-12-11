@@ -1,218 +1,284 @@
-        <div class="expose-edit-wrapper">
-            <div class="expose-edit-wrapper" style="margin-top: 100px">
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <form id="publication-data-form" >
-                    <div class="edit-publication-block">
-                        <div class="ui-widget">
-                            <label>Name </label>
-                            <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
-                        </div>
-                        <div class="ui-widget">
-                            <label>Slug: </label>
-                            <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/><input type="button"
-                                                                                                            class="blue_button"
-                                                                                                            value="check slug availability">
-                        </div>
-                        <div class="ui-widget">
-                            <label>Parent publication </label>
-                            <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
-                                {% if publication.parent.id %}
-                                    {% set parentId =  publication.parent.id %}
-                                {% endif %}
-                                <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
-                                        class="publication-field">
-                                    <option value="">Select a parent publication</option>
-                                    {% if publication.parent %}
-                                        <option value="{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
-                                    {% endif %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="ui-widget profile-wrapper hide">
-                            <label>Profile </label>
-                            {% set nbProfile =  publication.profile|length %}
+{% block css %}
+    <style type="text/css">
+        #permission-editing td, #permission-editing th {
+            min-width: 200px;
+            text-align: center;
+            height: 50px;
+        }
+    </style>
+{% endblock %}
 
-                            <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
+<div id="publication-tabs" class=" PNB10 expose-edit-wrapper" >
+    <ul>
+        <li>
+            <a href="#publication-editing">
+               Editing
+            </a>
+        </li>
+        <li>
+            <a href="#permission-editing">
+                Permission
+            </a>
+        </li>
+    </ul>
+
+    <div id="publication-editing">
+        <div class="expose-edit-wrapper">
+            <br/>
+            <form id="publication-data-form" >
+                <div class="edit-publication-block">
+                    <div class="ui-widget">
+                        <label>Name </label>
+                        <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
+                    </div>
+                    <div class="ui-widget">
+                        <label>Slug: </label>
+                        <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/><input type="button"
+                                                                                                                              class="blue_button"
+                                                                                                                              value="check slug availability">
+                    </div>
+                    <div class="ui-widget">
+                        <label>Parent publication </label>
+                        <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
+                            {% if publication.parent.id %}
+                                {% set parentId =  publication.parent.id %}
+                            {% endif %}
+                            <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="">Select Profile</option>
-                                {% if nbProfile %}
-                                    <option value="{{ publication.profile.id }}">{{ publication.profile.name }}</option>
+                                <option value="">Select a parent publication</option>
+                                {% if publication.parent %}
+                                    <option value="{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
                                 {% endif %}
-                            </select>
-                        </div>
-                        <div class="ui-widget">
-                            <label>Enabled </label>
-                            <label class="switch">
-                                <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled"
-                                       {% if publication.enabled == 1 %} checked {% endif %}
-                                >
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="ui-widget available-wrapper">
-                            <label>Available (leave blank for permanent publication): </label>
-                            <div class="available-widget">
-                                <label>From </label>
-                                <input type="text" value="{{ publication.config.beginsAt }}" name="beginsAt" class="use-datepicker publication-field"/>
-                            </div>
-                            <div class="available-widget">
-                                <label>To </label>
-                                <input type="text" value="{{ publication.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
-                            </div>
-                        </div>
-                        <div class="ui-widget">
-                            <label>Publicity listing </label>
-                            <label class="switch">
-                                <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed"
-                                {% if publication.publiclyListed == 1 %} checked {% endif %}
-                                >
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                        <div class="ui-widget access-wrapper available-wrapper">
-                            <label>Access rules </label>
-                            <div class="available-widget">
-                                <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
-                                        class="publication-field">
-                                    <option value="">open access</option>
-                                    <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>password</option>
-                                    <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>users</option>
-                                </select>
-                            </div>
-                            <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
-                                <input class="publication-field" type="text" name="password" placeholder="Password"
-                                       id="publication_password"/>
-                            </div>
-                            <div class="available-widget ui-widget publication_securityMethod_error hidden"
-                                 id="publication_securityMethod_error">
-                                <p class="error form-error alert alert-error">Not implemented</p>
-                            </div>
-                        </div>
-                        <div class="ui-widget">
-                            <label>Layout </label>
-                            <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
-                                    class="publication-field">
-                                <option value="">Select Layout</option>
-                                <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>Gallery</option>
-                                <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>Mapbox</option>
-                                <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>Download</option>
-                            </select>
-                        </div>
-                        <div class="ui-widget">
-                            <label>Theme </label>
-                            <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
-                                    class="publication-field">
-                                <option value="">Select Theme</option>
-                                <option value="light" {% if publication.theme == 'light'%} selected="selected" {% endif %}>Light</option>
-                                <option value="dark" {% if publication.theme == 'dark'%} selected="selected" {% endif %}>Dark</option>
                             </select>
                         </div>
                     </div>
-                </form>
+                    <div class="ui-widget profile-wrapper hide">
+                        <label>Profile </label>
+                        {% set nbProfile =  publication.profile|length %}
 
-                <h3>Permission</h3>
-
-                <div style="border: 1px solid #ada9a9;padding: 5px;">
-                    <form id="permission-user">
-                        <div class="ui-widget">
-                            <label>User </label>
-                            <div class="ui-widget">
-                                <select id="user-list" name="" tabindex="-1" aria-hidden="true"
-                                        class="">
-                                    <option value="">Select an user</option>
-                                </select>
-                            </div>
+                        <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
+                                class="publication-field">
+                            <option value="">Select Profile</option>
+                            {% if nbProfile %}
+                                <option value="{{ publication.profile.id }}">{{ publication.profile.name }}</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="ui-widget">
+                        <label>Enabled </label>
+                        <label class="switch">
+                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled"
+                                    {% if publication.enabled == 1 %} checked {% endif %}
+                            >
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="ui-widget available-wrapper">
+                        <label>Available (leave blank for permanent publication): </label>
+                        <div class="available-widget">
+                            <label>From </label>
+                            <input type="text" value="{{ publication.config.beginsAt }}" name="beginsAt" class="use-datepicker publication-field"/>
                         </div>
-
-                        <div class="ui-widget">
-                            <label style="width:10%;!important">View : </label>
-                            <label style="width:10%;!important">
-                                <input type="checkbox" name="user-view">
-                            </label>
-                            <label style="width:10%;!important">Edit : </label>
-                            <label style="width:10%;!important">
-                                <input type="checkbox" name="user-edit">
-                            </label>
-                            <label style="width:10%;!important">Delete : </label>
-                            <label style="width:10%;!important">
-                                <input type="checkbox" name="user-delete">
-                            </label>
-                            <button id="save-permission-user" type="submit">Save</button>
-
+                        <div class="available-widget">
+                            <label>To </label>
+                            <input type="text" value="{{ publication.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
-
-                        <p id="user-permission-success" class="hidden alert alert-success text-center"></p>
-                        <p id="user-permission-error" class="hidden alert alert-error text-center"></p>
-                    </form>
-
-                    <form id="permission-group">
-                        <div class="ui-widget" style="margin-top:50px;">
-                            <label>Groups </label>
-                            <div id="" class="ui-widget">
-                                <select id="group-list" name="" tabindex="-1" aria-hidden="true"
-                                        class="">
-                                    <option value="">Select a Group</option>
-                                </select>
-                            </div>
+                    </div>
+                    <div class="ui-widget">
+                        <label>Publicity listing </label>
+                        <label class="switch">
+                            <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed"
+                                    {% if publication.publiclyListed == 1 %} checked {% endif %}
+                            >
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="ui-widget access-wrapper available-wrapper">
+                        <label>Access rules </label>
+                        <div class="available-widget">
+                            <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">open access</option>
+                                <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>password</option>
+                                <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>users</option>
+                            </select>
                         </div>
-
-                        <div class="ui-widget">
-                            <label style="width:10%;!important">View : </label>
-                            <label style="width:10%;!important">
-                                <input type="checkbox" name="group-view">
-                            </label>
-                            <label style="width:10%;!important">Edit : </label>
-                            <label style="width:10%;!important">
-                                <input type="checkbox" name="group-edit">
-                            </label>
-                            <label style="width:10%;!important">Delete : </label>
-                            <label style="width:10%;!important">
-                                <input type="checkbox" name="group-delete">
-                            </label>
-                            <button id="save-permission-group" type="submit">Save</button>
+                        <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
+                            <input class="publication-field" type="text" name="password" placeholder="Password"
+                                   id="publication_password"/>
                         </div>
-                        <p id="group-permission-success" class="hidden alert alert-success text-center"></p>
-                        <p id="group-permission-error" class="hidden alert alert-error text-center"></p>
-                    </form>
+                        <div class="available-widget ui-widget publication_securityMethod_error hidden"
+                             id="publication_securityMethod_error">
+                            <p class="error form-error alert alert-error">Not implemented</p>
+                        </div>
+                    </div>
+                    <div class="ui-widget">
+                        <label>Layout </label>
+                        <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
+                                class="publication-field">
+                            <option value="">Select Layout</option>
+                            <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>Gallery</option>
+                            <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>Mapbox</option>
+                            <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>Download</option>
+                        </select>
+                    </div>
+                    <div class="ui-widget">
+                        <label>Theme </label>
+                        <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
+                                class="publication-field">
+                            <option value="">Select Theme</option>
+                            <option value="light" {% if publication.theme == 'light'%} selected="selected" {% endif %}>Light</option>
+                            <option value="dark" {% if publication.theme == 'dark'%} selected="selected" {% endif %}>Dark</option>
+                        </select>
+                    </div>
                 </div>
+            </form>
 
-                <form name="publication-json" id="publication-json" class="text-center">
-                    <div id="advancedSettingBlock">
-                        <h3 class="toggleSetting">Advanced setting</h3>
-                        <div id="advancedSettingInner" class="hidden">
-                            <div>
+            <form name="publication-json" id="publication-json" class="text-center">
+                <div id="advancedSettingBlock">
+                    <h3 class="toggleSetting">Advanced setting</h3>
+                    <div id="advancedSettingInner" class="hidden">
+                        <div>
                                     <textarea name="advancedSetting" id="advancedSetting" cols="100"
                                               rows="11"></textarea></div>
 
+                    </div>
+                </div>
+                <div class="publication-btn-container submit-blockr">
+                    <p class="text-center"><span id="pub-error" class="hidden alert alert-error"></span></p>
+                    <p class="text-center"><span id="pub-success" class="hidden alert alert-success"></span></p>
+                    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                        <div class="ui-dialog-buttonset">
+                            <button type="button"
+                                    class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                    role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
+                            </button>
+                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="update-publication">
+                                Update publication
+                            </button>
+
                         </div>
                     </div>
-                    <div class="publication-btn-container submit-blockr">
-                        <p class="text-center"><span id="pub-error" class="hidden alert alert-error"></span></p>
-                        <p class="text-center"><span id="pub-success" class="hidden alert alert-success"></span></p>
-                        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-                            <div class="ui-dialog-buttonset">
-                                <button type="button"
-                                        class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                        role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
-                                </button>
-                                <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="update-publication">
-                                    Update publication
-                                </button>
+                </div>
 
-                            </div>
-                        </div>
-                    </div>
-
-                </form>
-
-
-            </div>
+            </form>
 
 
         </div>
+    </div>
+
+    <div id="permission-editing">
+        <div>
+            <h3 style="display:inline-block">Permission</h3>
+            <div style="float:right;margin:10px;">
+                <p id="permission-success" class="hidden alert alert-success text-center"></p>
+                <p id="permission-error" class="hidden alert alert-error text-center"></p>
+            </div>
+
+        </div>
+        <div style="padding: 10px;">
+            <div class="ui-widget">
+                <select id="user-list" name="" tabindex="-1" aria-hidden="true"
+                        class="">
+                    <option value="">Select an user</option>
+                    {% for user in listUsers %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            User
+                        </th>
+                        <th>
+                            View
+                        </th>
+                        <th>
+                            Edit
+                        </th>
+                        <th>
+                            Delete
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="user-permission-list">
+                    {% for permission in permissions %}
+                        {% if permission.userType == 'user' %}
+                        <tr data-user-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
+                            <td>
+                                {{ permission.username }}
+                            </td>
+                            <td>
+                                <input class="user-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %}/>
+                            </td>
+                            <td>
+                                <input class="user-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
+                            </td>
+                            <td>
+                                <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <br/>
+            <br/>
+            <div class="ui-widget">
+                <select id="group-list" name="" tabindex="-1" aria-hidden="true"
+                        class="">
+                    <option value="">Select a group</option>
+                    {% for group in listGroups %}
+                        <option value="{{ group.id }}">{{ group.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        Group
+                    </th>
+                    <th>
+                        View
+                    </th>
+                    <th>
+                        Edit
+                    </th>
+                    <th>
+                        Delete
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="group-permission-list">
+                {% for permission in permissions %}
+                    {% if permission.userType == 'group' %}
+                        <tr data-group-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
+                            <td>
+                                {{ permission.name }}
+                            </td>
+                            <td>
+                                <input class="group-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %} />
+                            </td>
+                            <td>
+                                <input class="group-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
+                            </td>
+                            <td>
+                                <input class="group-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
     <script type="text/javascript">
 
@@ -225,14 +291,8 @@
         var groupList = publicationEdit.find("#group-list");
         var advancedSetting = publicationEdit.find("#advancedSetting");
 
-        var userView = publicationEdit.find('input[name=user-view]');
-        var userEdit = publicationEdit.find('input[name=user-edit]');
-        var userDelete = publicationEdit.find('input[name=user-delete]');
-
-        var groupView = publicationEdit.find('input[name=group-view]');
-        var groupEdit = publicationEdit.find('input[name=group-edit]');
-        var groupDelete = publicationEdit.find('input[name=group-delete]');
-
+        var userPermissionList = publicationEdit.find('#user-permission-list');
+        var groupPermissionList = publicationEdit.find('#group-permission-list');
         var publicationFieldClass = publicationEdit.find(".publication-field");
 
         $.datepicker.regional['default'] = {
@@ -255,6 +315,8 @@
 
         //generate publication list
         $(document).ready(function () {
+            $( "#publication-tabs" ).tabs();
+
             publicationEdit.find('.toggleSetting').on('click', function (e) {
                 $(this).toggleClass('open');
                 $(this).next("div").toggleClass('hidden');
@@ -299,37 +361,224 @@
                 }
             });
 
-            $.ajax({
-                type: "GET",
-                url: `/prod/expose/list/users?exposeName={{ exposeName }}`,
-                success: function (data) {
-                    userList.empty().html('<option value="">Select an User</option>');
-                    for (i = 0; i < data.list.length; i++) {
-                        userList.append('<option ' +
-                            'value=' + data.list[i].id +' >'
-                            + data.list[i].username +
-                            '</option>'
-                        );
-                    }
-                }
-            });
+        });
 
-            $.ajax({
-                type: "GET",
-                url: `/prod/expose/list/users?groups=1&exposeName={{ exposeName }}`,
-                success: function (data) {
-                    groupList.empty().html('<option value="">Select a Group</option>');
-                    for (i = 0; i < data.list.length; i++) {
-                        groupList.append('<option ' +
-                            'value=' + data.list[i].id +' >'
-                            + data.list[i].name +
-                            '</option>'
-                        );
+        bindCheckboxEvent();
+
+        publicationFieldClass.on('keyup change', function (e) {
+            try {
+                publicationEdit.find("#pub-success").addClass("hidden");
+                publicationEdit.find("#pub-error").addClass("hidden");
+                jQuery.parseJSON(JSON.stringify($(this).val()));
+            } catch (err) {
+                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
+            }
+
+            removeSecurityField();
+        });
+
+        publicationEdit.find('#publication-json').on('submit', function (e) {
+            e.preventDefault();
+
+            try {
+                publicationEdit.find("#pub-error").addClass("hidden");
+
+            } catch (err) {
+                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
+                return;
+            }
+            if (advancedSetting.val() !== '') {
+                $.ajax({
+                    type: "PUT",
+                    url: "/prod/expose/update-publication/{{ publication.id }}",
+                    dataType: 'json',
+                    data: {
+                        exposeName: "{{ exposeName }}",
+                        publicationData: advancedSetting.val()
+                    },
+                    success: function (data) {console.log(data.success);
+                        if (data.success) {
+                            publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
+                            document.getElementById("publication-data-form").reset();
+                            setTimeout(function(){
+                                    $('#DIALOG-expose-edit').dialog('close');
+                                }
+                                , 2000
+                            );
+                        } else {
+                            publicationEdit.find("#pub-error").removeClass("hidden").text(data.message);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                publicationEdit.find("#pub-error").removeClass("hidden").text("No changed!");
+            }
 
         });
+
+        userList.on('change', function () {
+            let userId = $(this).val();
+
+            if (userId !== '') {
+                let userName = $("#user-list option:selected").text();
+
+                let permissionLine = '<tr data-user-id="'+ userId +'" data-mask="0">\n' +
+                    '                <td>\n' + userName +
+                    '                </td>\n' +
+                    '                <td>\n' +
+                    '                <input class="user-view" type="checkbox" />\n' +
+                    '            </td>\n' +
+                    '            <td>\n' +
+                    '            <input class="user-edit" type="checkbox" />\n' +
+                    '            </td>\n' +
+                    '            <td>\n' +
+                    '            <input class="user-delete" type="checkbox" />\n' +
+                    '            </td>\n' +
+                    '            </tr>'
+                ;
+
+                userPermissionList.append(permissionLine);
+
+                // new permission
+                updatePermission(null, userId, 0, 1, 'user', true);
+            }
+
+        });
+
+        groupList.on('change', function() {
+            let groupId = $(this).val();
+
+            if (groupId !== '') {
+                let groupName = $("#group-list option:selected").text();
+
+                let permissionLine = '<tr data-group-id="'+ groupId +'" data-mask="0">\n' +
+                    '                <td>\n' + groupName +
+                    '                </td>\n' +
+                    '                <td>\n' +
+                    '                <input class="group-view" type="checkbox" />\n' +
+                    '            </td>\n' +
+                    '            <td>\n' +
+                    '            <input class="group-edit" type="checkbox" />\n' +
+                    '            </td>\n' +
+                    '            <td>\n' +
+                    '            <input class="group-delete" type="checkbox" />\n' +
+                    '            </td>\n' +
+                    '            </tr>'
+                ;
+
+                groupPermissionList.append(permissionLine);
+
+                // new permission
+                updatePermission(null, groupId, 0, 1, 'group', true);
+            }
+        });
+
+        function bindCheckboxEvent() {
+            // user right
+            userPermissionList.on('change', '.user-view', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    1,
+                    'user'
+                );
+            });
+
+            userPermissionList.on('change', '.user-edit', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    4,
+                    'user'
+                );
+            });
+
+            userPermissionList.on('change', '.user-delete', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-user-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    8,
+                    'user'
+                );
+            });
+
+            // group right
+            groupPermissionList.on('change', '.group-view', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    1,
+                    'group'
+                );
+            });
+
+            groupPermissionList.on('change', '.group-edit', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    4,
+                    'group'
+                );
+            });
+
+            groupPermissionList.on('change', '.group-delete', function () {
+                updatePermission(
+                    $(this),
+                    $(this).parents('tr').attr('data-group-id'),
+                    $(this).parents('tr').attr('data-mask'),
+                    8,
+                    'group'
+                );
+            });
+        }
+
+        function updatePermission(checkboxSelector, userId, mask, singleMask, userType, isNew = false) {
+            hideInfo();
+
+            if ( !isNew ) {
+                if (checkboxSelector.is(':checked')) {
+                    mask = mask | singleMask;
+                } else {
+                    mask = mask & (~singleMask);
+                }
+                checkboxSelector.parents('tr').attr('data-mask', mask);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/prod/expose/publication/permission/update",
+                dataType: 'json',
+                data: {
+                    exposeName: "{{ exposeName }}",
+                    jsonData: {
+                        userType: userType,
+                        userId: userId,
+                        objectType: "publication",
+                        objectId: "{{ publication.id }}",
+                        mask: mask
+                    }
+                },
+                success: function (data) {
+                    if (data.success) {
+                        publicationEdit.find("#permission-error").addClass("hidden");
+                        publicationEdit.find("#permission-success").removeClass("hidden").html(data.message);
+                    } else {
+                        publicationEdit.find("#permission-success").addClass("hidden");
+                        publicationEdit.find("#permission-error").removeClass("hidden").html(data.message);
+                    }
+                }
+            });
+        }
+
+        function hideInfo() {
+            publicationEdit.find("#permission-error").addClass("hidden");
+            publicationEdit.find("#permission-success").addClass("hidden");
+        }
 
         /**convert Object data  to Json**/
         function booleanizeObject(obj) {
@@ -428,153 +677,6 @@
             console.log(JSON.stringify(datavalueMinus, undefined, 4));
 
         }
-
-        publicationFieldClass.on('keyup change', function (e) {
-            try {
-                publicationEdit.find("#pub-success").addClass("hidden");
-                publicationEdit.find("#pub-error").addClass("hidden");
-                jQuery.parseJSON(JSON.stringify($(this).val()));
-            } catch (err) {
-                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
-            }
-
-            removeSecurityField();
-        });
-
-        publicationEdit.find('#publication-json').on('submit', function (e) {
-            e.preventDefault();
-
-            try {
-                publicationEdit.find("#pub-error").addClass("hidden");
-
-            } catch (err) {
-                publicationEdit.find("#pub-error").removeClass("hidden").text(err.message);
-                return;
-            }
-            if (advancedSetting.val() !== '') {
-                $.ajax({
-                    type: "PUT",
-                    url: "/prod/expose/update-publication/{{ publication.id }}",
-                    dataType: 'json',
-                    data: {
-                        exposeName: "{{ exposeName }}",
-                        publicationData: advancedSetting.val()
-                    },
-                    success: function (data) {console.log(data.success);
-                        if (data.success) {
-                            publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
-                            document.getElementById("publication-data-form").reset();
-                            setTimeout(function(){
-                                    $('#DIALOG-expose-edit').dialog('close');
-                                }
-                                , 2000
-                            );
-                        } else {
-                            publicationEdit.find("#pub-error").removeClass("hidden").text(data.message);
-                        }
-                    }
-                });
-            } else {
-                publicationEdit.find("#pub-error").removeClass("hidden").text("No changed!");
-            }
-
-        });
-
-        publicationEdit.find('#permission-user').on('submit', function (e) {
-            e.preventDefault();
-            let mask = 0;
-
-            if (userView.is(':checked')) {
-                mask = mask | 1;
-            }
-
-            if (userEdit.is(':checked')) {
-                mask = mask | 4;
-            }
-
-            if (userDelete.is(':checked')) {
-                mask = mask | 8;
-            }
-
-            if (userList.val() !== '') {
-                publicationEdit.find("#user-permission-error").addClass("hidden");
-                publicationEdit.find("#user-permission-success").addClass("hidden");
-
-                $.ajax({
-                    type: "POST",
-                    url: "/prod/expose/publication/permission/update",
-                    dataType: 'json',
-                    data: {
-                        exposeName: "{{ exposeName }}",
-                        jsonData: {
-                            userType: "user",
-                            userId: userList.val(),
-                            objectType: "publication",
-                            objectId: "{{ publication.id }}",
-                            mask: mask
-                        }
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            publicationEdit.find("#user-permission-error").addClass("hidden");
-                            publicationEdit.find("#user-permission-success").removeClass("hidden").html(data.message);
-                        } else {
-                            publicationEdit.find("#user-permission-success").addClass("hidden");
-                            publicationEdit.find("#user-permission-error").removeClass("hidden").html(data.message);
-                        }
-                    }
-                });
-            }
-
-        });
-
-        publicationEdit.find('#permission-group').on('submit', function (e) {
-            e.preventDefault();
-            let mask = 0;
-
-            if (groupView.is(':checked')) {
-                mask = mask | 1;
-            }
-
-            if (groupEdit.is(':checked')) {
-                mask = mask | 4;
-            }
-
-            if (groupDelete.is(':checked')) {
-                mask = mask | 8;
-            }
-
-            if (groupList.val() !== '') {
-                publicationEdit.find("#group-permission-error").addClass("hidden");
-                publicationEdit.find("#group-permission-success").addClass("hidden");
-
-                $.ajax({
-                    type: "POST",
-                    url: "/prod/expose/publication/permission/update",
-                    dataType: 'json',
-                    data: {
-                        exposeName: "{{ exposeName }}",
-                        jsonData: {
-                            userType: "group",
-                            userId: groupList.val(),
-                            objectType: "publication",
-                            objectId: "{{ publication.id }}",
-                            mask: mask
-                        }
-                    },
-                    success: function (data) {
-                        if (data.success) {
-                            publicationEdit.find("#group-permission-error").addClass("hidden");
-                            publicationEdit.find("#group-permission-success").removeClass("hidden").html(data.message);
-                        } else {
-                            publicationEdit.find("#group-permission-success").addClass("hidden");
-                            publicationEdit.find("#group-permission-error").removeClass("hidden").html(data.message);
-                        }
-                    }
-                });
-            }
-
-        });
 
     </script>
     <style>

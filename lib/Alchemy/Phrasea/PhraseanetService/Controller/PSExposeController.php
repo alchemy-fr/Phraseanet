@@ -69,44 +69,6 @@ class PSExposeController extends Controller
     }
 
     /**
-     * Get list of user or group if param "groups" defined
-     *
-     * @param PhraseaApplication $app
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     *
-     */
-    public function listUsersAction(PhraseaApplication $app, Request $request)
-    {
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
-
-        $userOrGroup = 'users';
-        if ($request->get('groups')) {
-            $userOrGroup = 'groups';
-        }
-
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
-
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
-
-        $response = $exposeClient->get('/permissions/' . $userOrGroup, [
-            'headers' => [
-                'Authorization' => 'Bearer '. $accessToken
-            ]
-        ]);
-
-        $list = [];
-        if ($response->getStatusCode() == 200) {
-            $list = json_decode($response->getBody()->getContents(),true);
-        }
-
-        return $app->json([
-            'list' => $list
-        ]);
-    }
-
-    /**
      * Add or update access control entry (ACE) for a publication
      *
      * @param PhraseaApplication $app
@@ -231,6 +193,10 @@ class PSExposeController extends Controller
         $accessToken = $this->getAndSaveToken($exposeConfiguration);
 
         $publication = [];
+        $permissions = [];
+        $listUsers = [];
+        $listGroups = [];
+
         $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') , [
             'headers' => [
                 'Authorization' => 'Bearer '. $accessToken,
@@ -256,9 +222,52 @@ class PSExposeController extends Controller
             ]);
         }
 
+        $resPermission = $exposeClient->get('/permissions/aces?objectType=publication&objectId=' . $request->get('publicationId') , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken
+            ]
+        ]);
+
+        if ($resPermission->getStatusCode() == 200) {
+            $permissions = json_decode($resPermission->getBody()->getContents(),true);
+        }
+
+        $resUsers = $exposeClient->get('/permissions/users', [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken
+            ]
+        ]);
+
+        if ($resUsers->getStatusCode() == 200) {
+            $listUsers = json_decode($resUsers->getBody()->getContents(),true);
+        }
+
+        $resGroups = $exposeClient->get('/permissions/groups', [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken
+            ]
+        ]);
+
+        if ($resGroups->getStatusCode() == 200) {
+            $listGroups = json_decode($resGroups->getBody()->getContents(),true);
+        }
+
+        foreach ($permissions as &$permission) {
+            if ($permission['userType'] == 'user') {
+                $key = array_search($permission['userId'], array_column($listUsers, 'id'));
+                $permission = array_merge($permission, $listUsers[$key]);
+            } elseif ($permission['userType'] == 'group') {
+                $key = array_search($permission['userId'], array_column($listGroups, 'id'));
+                $permission = array_merge($permission, $listGroups[$key]);
+            }
+        }
+
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
             'publication' => $publication,
-            'exposeName'  => $request->get('exposeName')
+            'exposeName'  => $request->get('exposeName'),
+            'permissions' => $permissions,
+            'listUsers'   => $listUsers,
+            'listGroups'  => $listGroups
         ]);
     }
 
