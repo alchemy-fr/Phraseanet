@@ -39,7 +39,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
     {
         $from = $data['from'];
         $ssel_id = $data['ssel_id'];
-        $timeLeft = $data['time_left'];
+
+        // for the old notifications
+        $timeLeft =  '2 days';
+        if (isset($data['time_left'])) {
+            $timeLeft = $data['time_left'];
+        }
 
         if (null === $user = $this->app['repo.users']->find($from)) {
             return [];
