@@ -23,4 +23,8 @@ final class WorkerEvents
     const WEBHOOK_DELIVER_FAILURE           = 'webhook.deliver_failure';
 
     const EXPOSE_UPLOAD_ASSETS              = 'expose.upload_assets';
+
+    const RECORD_EDIT_IN_WORKER             = 'record.edit_in_worker';
+
+    const RECORDS_WRITE_META                = 'records.write_meta';
 }

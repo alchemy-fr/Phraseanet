@@ -276,7 +276,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
      * @param media_subdef[] $subdefs
      * @return media_Permalink_Adapter[]
      */
-    public static function getMany(Application $app, $subdefs)
+    public static function getMany(Application $app, $subdefs, $createIfMissing = true)
     {
         Assertion::allIsInstanceOf($subdefs, media_subdef::class);
 
@@ -303,18 +303,20 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
             $missing = array_diff_key($media_subdefs, $data);
 
-            if ($missing) {
+            if($missing && $createIfMissing) {
                 self::createMany($app, $databox, $missing);
                 $data = array_replace($data, self::fetchData($databox, array_diff_key($subdefIds, $data)));
             }
 
             foreach ($media_subdefs as $index => $subdef) {
-                if (!isset($data[$index])) {
+                if ($createIfMissing && !isset($data[$index])) {
                     throw new \RuntimeException('Could not fetch some data. Should never happen');
                 }
-
-                $permalinks[$index] = new self($app, $databox, $subdef, $data[$index]);
+                if(isset($data[$index])) {
+                    $permalinks[$index] = new self($app, $databox, $subdef, $data[$index]);
+                }
             }
+
         }
 
         return $permalinks;
@@ -397,6 +399,11 @@ class media_Permalink_Adapter implements cache_cacheableInterface
         $insk = ", 1, NOW(), NOW(), " . $connection->quote(self::cleanLabel($unicode, $record->get_title(['removeExtension' => true])));
         // multiple rows
         foreach($subdef_ids as $subdef_id) {
+            // fake subdefs (icons substitution) for thumb/prev are hardcoded.
+            // since there is no subdef entry, we cant generate a plink
+            if($subdef_id === 0) {
+                continue;
+            }
             $inserts .= ($inserts ? ',' : '') . '('
                 . $connection->quote($subdef_id) . ', '
                 . $connection->quote($generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS))
@@ -420,16 +427,25 @@ class media_Permalink_Adapter implements cache_cacheableInterface
      * @param Application $app
      * @param databox $databox
      * @param media_subdef[] $subdefs
-     * @throws \InvalidArgumentException|Exception
+     * @throws InvalidArgumentException|Exception
      */
     public static function createMany(Application $app, databox $databox, $subdefs)
     {
+        /** @var unicode $unicode */
+        $unicode = $app['unicode'];
+
         $databoxId = $databox->get_sbas_id();
         $recordIds = [];
         /** @var media_subdef[] $uniqSubdefs */
         $uniqSubdefs = [];
 
         foreach ($subdefs as $media_subdef) {
+            // fake subdefs (icons substitution) for thumb/prev are hardcoded.
+            // since there is no subdef entry, we cant generate a plink
+            if($media_subdef->get_subdef_id() === 0) {
+                continue;
+            }
+
             if ($media_subdef->get_sbas_id() !== $databoxId) {
                 throw new InvalidArgumentException(sprintf(
                     'All subdefs should be from databox %d, got %d',
@@ -469,7 +485,10 @@ class media_Permalink_Adapter implements cache_cacheableInterface
             $data[] = [
                 'subdef_id' => $media_subdef->get_subdef_id(),
                 'token' => $generator->generateString(64, TokenManipulator::LETTERS_AND_NUMBERS),
-                'label' => $records[$media_subdef->get_record_id()]->get_title(['removeExtension' => true]),
+                'label' => self::cleanLabel(
+                    $unicode,
+                    $records[$media_subdef->get_record_id()]->get_title(['removeExtension' => true])
+                ),
             ];
         }
 

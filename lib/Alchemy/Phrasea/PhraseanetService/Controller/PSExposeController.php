@@ -69,6 +69,87 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Get list of user or group if param "groups" defined
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
+     */
+    public function listUsersAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
+
+        $userOrGroup = 'users';
+        if ($request->get('groups')) {
+            $userOrGroup = 'groups';
+        }
+
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+
+        $response = $exposeClient->get('/permissions/' . $userOrGroup, [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken
+            ]
+        ]);
+
+        $list = [];
+        if ($response->getStatusCode() == 200) {
+            $list = json_decode($response->getBody()->getContents(),true);
+        }
+
+        return $app->json([
+            'list' => $list
+        ]);
+    }
+
+    /**
+     * Add or update access control entry (ACE) for a publication
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function updatePublicationPermissionAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
+        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+
+        try {
+            $response = $exposeClient->put('/permissions/ace', [
+                'headers' => [
+                    'Authorization' => 'Bearer '. $accessToken,
+                    'Content-Type'  => 'application/json'
+                ],
+                'json' => $request->get('jsonData')
+            ]);
+        } catch(\Exception $e) {
+            return $this->app->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        if ($response->getStatusCode() !== 200) {
+            return $this->app->json([
+                'success' => false,
+                'message' => 'Status code: '. $response->getStatusCode()
+            ]);
+        }
+
+        return $this->app->json([
+            'success' => true,
+            'message' => 'Permission successfully updated!'
+        ]);
+    }
+
+    /**
      *  Get list of publication
      *  Use param "format=json" to retrieve a json
      *

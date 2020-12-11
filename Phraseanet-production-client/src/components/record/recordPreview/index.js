@@ -379,7 +379,8 @@ const previewRecordService = services => {
                 options.current.captions = data.recordCaptions;
 
                 recordPreviewEvents.emit('recordSelection.changed', {
-                    selection: [data.recordCaptions]
+                    selection: [data.recordCaptions],
+                    selectionPos: [relativePos]
                 });
 
                 if ($('#PREVIEWBOX img.record.zoomable').length > 0) {

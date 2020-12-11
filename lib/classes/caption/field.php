@@ -10,6 +10,8 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\DBAL\Driver\Statement;
 
 class caption_field implements cache_cacheableInterface
@@ -313,6 +315,11 @@ class caption_field implements cache_cacheableInterface
                 }
             }
 
+            // order to write metas for those records
+            $app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id())
+            );
+
             $n += $increment;
         }
     }
@@ -360,6 +367,11 @@ class caption_field implements cache_cacheableInterface
 
                 }
             }
+
+            // order to write metas for those records
+            $app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent(array_column($rs, 'record_id'), $databox_field->get_databox()->get_sbas_id())
+            );
 
             $n += $increment;
         }
