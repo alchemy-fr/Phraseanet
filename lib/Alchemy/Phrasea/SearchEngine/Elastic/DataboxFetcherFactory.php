@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Delegate\FetcherDelegateInterface;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Fetcher;
@@ -23,9 +24,9 @@ class DataboxFetcherFactory
     private $conf;
 
     /**
-     * @var \ArrayAccess
+     * @var Application
      */
-    private $container;
+    private $app;
 
     /**
      * @var string
@@ -45,22 +46,26 @@ class DataboxFetcherFactory
     /** @var  ElasticsearchOptions */
     private $options;
 
+    /** @var  boolean */
+    private $populatePermalinks;
+
     /**
      * @param PropertyAccess $conf
      * @param RecordHelper $recordHelper
      * @param ElasticsearchOptions $options
-     * @param \ArrayAccess $container
+     * @param Application $app
      * @param string $structureKey
      * @param string $thesaurusKey
      */
-    public function __construct(PropertyAccess $conf, RecordHelper $recordHelper, ElasticsearchOptions $options, \ArrayAccess $container, $structureKey, $thesaurusKey)
+    public function __construct(PropertyAccess $conf, RecordHelper $recordHelper, ElasticsearchOptions $options, Application $app, $structureKey, $thesaurusKey)
     {
         $this->conf         = $conf;
         $this->recordHelper = $recordHelper;
         $this->options      = $options;
-        $this->container    = $container;
+        $this->app          = $app;
         $this->structureKey = $structureKey;
         $this->thesaurusKey = $thesaurusKey;
+        $this->populatePermalinks = $conf->get(['main', 'search-engine', 'options', 'populate_permalinks'], false) ;
     }
 
     /**
@@ -82,7 +87,7 @@ class DataboxFetcherFactory
                 new MetadataHydrator($this->conf, $connection, $this->getStructure(), $this->recordHelper),
                 new FlagHydrator($this->getStructure(), $databox),
                 new ThesaurusHydrator($this->getStructure(), $this->getThesaurus(), $candidateTerms),
-                new SubDefinitionHydrator($databox)
+                new SubDefinitionHydrator($this->app, $databox, $this->populatePermalinks)
             ],
             $fetcherDelegate
         );
@@ -100,7 +105,7 @@ class DataboxFetcherFactory
      */
     private function getStructure()
     {
-        return $this->container[$this->structureKey];
+        return $this->app[$this->structureKey];
     }
 
     /**
@@ -108,6 +113,6 @@ class DataboxFetcherFactory
      */
     private function getThesaurus()
     {
-        return $this->container[$this->thesaurusKey];
+        return $this->app[$this->thesaurusKey];
     }
 }

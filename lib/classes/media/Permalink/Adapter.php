@@ -276,7 +276,7 @@ class media_Permalink_Adapter implements cache_cacheableInterface
      * @param media_subdef[] $subdefs
      * @return media_Permalink_Adapter[]
      */
-    public static function getMany(Application $app, $subdefs)
+    public static function getMany(Application $app, $subdefs, $createIfMissing = true)
     {
         Assertion::allIsInstanceOf($subdefs, media_subdef::class);
 
@@ -303,18 +303,20 @@ class media_Permalink_Adapter implements cache_cacheableInterface
 
             $missing = array_diff_key($media_subdefs, $data);
 
-            if ($missing) {
+            if($missing && $createIfMissing) {
                 self::createMany($app, $databox, $missing);
                 $data = array_replace($data, self::fetchData($databox, array_diff_key($subdefIds, $data)));
             }
 
             foreach ($media_subdefs as $index => $subdef) {
-                if (!isset($data[$index])) {
+                if ($createIfMissing && !isset($data[$index])) {
                     throw new \RuntimeException('Could not fetch some data. Should never happen');
                 }
-
-                $permalinks[$index] = new self($app, $databox, $subdef, $data[$index]);
+                if(isset($data[$index])) {
+                    $permalinks[$index] = new self($app, $databox, $subdef, $data[$index]);
+                }
             }
+
         }
 
         return $permalinks;
