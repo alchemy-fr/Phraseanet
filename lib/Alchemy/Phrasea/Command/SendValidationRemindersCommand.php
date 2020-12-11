@@ -56,7 +56,7 @@ class SendValidationRemindersCommand extends Command
 
         $this->setDescription('Send validation reminders. <comment>(experimental)</comment>');
         $this->addOption('dry',null, InputOption::VALUE_NONE,'dry run, list but don\'t act');
-        $this->addOption('now', null,InputArgument::OPTIONAL, 'fake today');
+        $this->addOption('now', null,InputArgument::OPTIONAL, 'fake today as "yyy/mm/dd", "yyyy-mm-dd" or "yyyy-mm-dd hh:mm:ss"');
         $this->addOption('p', null,InputArgument::OPTIONAL, 'overwrite Validation-reminder-time-left-percent');
     }
 
