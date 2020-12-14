@@ -176,58 +176,9 @@
             </div>
 
         </div>
+
         <div style="padding: 10px;">
-            <div class="ui-widget">
-                <select id="user-list" name="" tabindex="-1" aria-hidden="true"
-                        class="">
-                    <option value="">Select an user</option>
-                    {% for user in listUsers %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                    {% endfor %}
-                </select>
-            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            User
-                        </th>
-                        <th>
-                            View
-                        </th>
-                        <th>
-                            Edit
-                        </th>
-                        <th>
-                            Delete
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="user-permission-list">
-                    {% for permission in permissions %}
-                        {% if permission.userType == 'user' %}
-                        <tr data-user-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
-                            <td>
-                                {{ permission.username }}
-                            </td>
-                            <td>
-                                <input class="user-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %}/>
-                            </td>
-                            <td>
-                                <input class="user-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
-                            </td>
-                            <td>
-                                <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
-                            </td>
-                        </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <br/>
-            <br/>
             <div class="ui-widget">
                 <select id="group-list" name="" tabindex="-1" aria-hidden="true"
                         class="">
@@ -274,6 +225,59 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
+                </tbody>
+            </table>
+
+
+            <br/>
+            <br/>
+
+            <div class="ui-widget">
+                <select id="user-list" name="" tabindex="-1" aria-hidden="true"
+                        class="">
+                    <option value="">Select an user</option>
+                    {% for user in listUsers %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            User
+                        </th>
+                        <th>
+                            View
+                        </th>
+                        <th>
+                            Edit
+                        </th>
+                        <th>
+                            Delete
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="user-permission-list">
+                    {% for permission in permissions %}
+                        {% if permission.userType == 'user' %}
+                        <tr data-user-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
+                            <td>
+                                {{ permission.username }}
+                            </td>
+                            <td>
+                                <input class="user-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %}/>
+                            </td>
+                            <td>
+                                <input class="user-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
+                            </td>
+                            <td>
+                                <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
