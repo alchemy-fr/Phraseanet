@@ -5,7 +5,7 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 
 
-class patch_413 implements patchInterface
+class patch_413_PHRAS_3278 implements patchInterface
 {
     /** @var string */
     private $release = '4.1.3';
@@ -60,37 +60,12 @@ class patch_413 implements patchInterface
         return true;
     }
 
-
-    const OLDQ2NEWQ_ttl_retry = [
-        'assetsIngest'       => MessagePublisher::ASSETS_INGEST_TYPE,
-        'createRecord'       => MessagePublisher::CREATE_RECORD_TYPE,
-        'deleteRecord'       => MessagePublisher::DELETE_RECORD_TYPE,
-        'exportMail'         => MessagePublisher::EXPORT_MAIL_TYPE,
-        'exposeUpload'       => MessagePublisher::EXPOSE_UPLOAD_TYPE,
-        'ftp'                => MessagePublisher::FTP_TYPE,
-        'populateIndex'      => MessagePublisher::POPULATE_INDEX_TYPE,
-        'pullAssets'         => MessagePublisher::PULL_ASSETS_TYPE,
-        'recordEdit'         => MessagePublisher::RECORD_EDIT_TYPE,
-        'subdefCreation'     => MessagePublisher::SUBDEF_CREATION_TYPE,
-        'validationReminder' => MessagePublisher::VALIDATION_REMINDER_TYPE,
-        'writeMetadatas'     => MessagePublisher::WRITE_METADATAS_TYPE,
-        'webhook'            => MessagePublisher::WEBHOOK_TYPE,
-    ];
-    const OLDQ2NEWQ_ttl_delayed = [
-        'delayedSubdef'      => MessagePublisher::SUBDEF_CREATION_TYPE,
-        'delayedWriteMeta'   => MessagePublisher::WRITE_METADATAS_TYPE,
-    ];
-
     private function patch_appbox(base $databox, Application $app)
     {
         /** @var PropertyAccess $conf */
         $conf = $app['conf'];
 
-        //----------------------------------------------
         // patch for reminder validation key, default value to 20
-        //
-        //----------------------------------------------
-
         $conf->remove(['registry', 'actions', 'validation-reminder-days']);
         $conf->set(['registry', 'actions', 'validation-reminder-time-left-percent'], 20);
 
@@ -103,39 +78,6 @@ class patch_413 implements patchInterface
         if (!$conf->has(['main', 'search-engine', 'options', 'populate_permalinks'])) {
             $conf->set(['main', 'search-engine', 'options', 'populate_permalinks'], false);
         }
-
-
-        // --------------------------------------------
-        // PHRAS-3282_refacto-some-code-on-workers_MASTER
-        // patch workers settings
-        // --------------------------------------------
-
-        $confWorkers = $conf->get(['workers']);
-
-        foreach(self::OLDQ2NEWQ_ttl_retry as $old=>$new) {
-            if(($v = $confWorkers->get(['retry_queue', $old], null)) !== null) {
-                $confWorkers->set(['queues', $new, 'ttl_retry'], $v);
-            }
-        }
-
-        foreach(self::OLDQ2NEWQ_ttl_delayed as $old=>$new) {
-            if(($v = $confWorkers->get(['retry_queue', $old], null)) !== null) {
-                $confWorkers->set(['queues', $new, 'ttl_delayed'], $v);
-            }
-        }
-
-        if(($v = $confWorkers->get(['pull_assets', 'pullInterval'], null)) !== null) {
-            $confWorkers->set(['queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], $v * 1000);
-        }
-
-        if(($v = $confWorkers->get(['validationReminder', 'interval'], null)) !== null) {
-            $confWorkers->set(['queues', MessagePublisher::VALIDATION_REMINDER_TYPE, 'ttl_retry'], $v * 1000);
-        }
-
-        $confWorkers->remove(['retry_queue']);
-        $confWorkers->remove(['pull_assets']);
-        $confWorkers->remove(['validationReminder']);
-
     }
 
     private function patch_databox(base $databox, Application $app)
