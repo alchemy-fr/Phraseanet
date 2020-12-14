@@ -1,7 +1,7 @@
 {% block css %}
     <style type="text/css">
         #permission-editing td, #permission-editing th {
-            min-width: 200px;
+            min-width: 150px;
             text-align: center;
             height: 50px;
         }
@@ -177,115 +177,13 @@
 
         </div>
 
-        <div style="padding: 10px;">
-
-            <div class="ui-widget">
-                <select id="group-list" name="" tabindex="-1" aria-hidden="true"
-                        class="">
-                    <option value="">Select a group</option>
-                    {% for group in listGroups %}
-                        <option value="{{ group.id }}">{{ group.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <table>
-                <thead>
-                <tr>
-                    <th>
-                        Group
-                    </th>
-                    <th>
-                        View
-                    </th>
-                    <th>
-                        Edit
-                    </th>
-                    <th>
-                        Delete
-                    </th>
-                </tr>
-                </thead>
-                <tbody id="group-permission-list">
-                {% for permission in permissions %}
-                    {% if permission.userType == 'group' %}
-                        <tr data-group-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
-                            <td>
-                                {{ permission.name }}
-                            </td>
-                            <td>
-                                <input class="group-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %} />
-                            </td>
-                            <td>
-                                <input class="group-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
-                            </td>
-                            <td>
-                                <input class="group-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-
-
-            <br/>
-            <br/>
-
-            <div class="ui-widget">
-                <select id="user-list" name="" tabindex="-1" aria-hidden="true"
-                        class="">
-                    <option value="">Select an user</option>
-                    {% for user in listUsers %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>
-                            User
-                        </th>
-                        <th>
-                            View
-                        </th>
-                        <th>
-                            Edit
-                        </th>
-                        <th>
-                            Delete
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="user-permission-list">
-                    {% for permission in permissions %}
-                        {% if permission.userType == 'user' %}
-                        <tr data-user-id="{{ permission.userId }}" data-mask="{{ permission.mask }}">
-                            <td>
-                                {{ permission.username }}
-                            </td>
-                            <td>
-                                <input class="user-view" type="checkbox" {% if (permission.mask b-and 1) != 0  %} checked {% endif %}/>
-                            </td>
-                            <td>
-                                <input class="user-edit" type="checkbox" {% if (permission.mask b-and 4) != 0  %} checked {% endif %}/>
-                            </td>
-                            <td>
-                                <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
-                            </td>
-                        </tr>
-                        {% endif %}
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div id="permission-list" style="padding: 10px;">
+            {% include 'prod/WorkZone/ExposePermission.html.twig' %}
         </div>
     </div>
 </div>
 
     <script type="text/javascript">
-
         var publicationEdit = $(document).find("#DIALOG-expose-edit");
 
         var publicationForm = publicationEdit.find("#publication-data-form");
@@ -295,9 +193,8 @@
         var groupList = publicationEdit.find("#group-list");
         var advancedSetting = publicationEdit.find("#advancedSetting");
 
-        var userPermissionList = publicationEdit.find('#user-permission-list');
-        var groupPermissionList = publicationEdit.find('#group-permission-list');
         var publicationFieldClass = publicationEdit.find(".publication-field");
+        var permissionList = publicationEdit.find("#permission-list");
 
         $.datepicker.regional['default'] = {
             closeText: "Close",
@@ -312,7 +209,6 @@
             altField: ".alternate",
             altFormat: "yy-mm-dd",
             minDate: 0
-
         };
 
         $(".use-datepicker").datepicker($.datepicker.regional['default']);
@@ -367,7 +263,7 @@
 
         });
 
-        bindCheckboxEvent();
+        bindEvent();
 
         publicationFieldClass.on('keyup change', function (e) {
             try {
@@ -420,66 +316,80 @@
 
         });
 
-        userList.on('change', function () {
-            let userId = $(this).val();
+        permissionList.on('change', '#input-user-list', function () {
+            let optionSelected = permissionList.find('#user-list option[value="'+this.value+'"]');
 
-            if (userId !== '') {
-                let userName = $("#user-list option:selected").text();
+            if (optionSelected.length !== 0) {
+                let userId = optionSelected.text();
 
-                let permissionLine = '<tr data-user-id="'+ userId +'" data-mask="0">\n' +
-                    '                <td>\n' + userName +
-                    '                </td>\n' +
-                    '                <td>\n' +
-                    '                <input class="user-view" type="checkbox" />\n' +
-                    '            </td>\n' +
-                    '            <td>\n' +
-                    '            <input class="user-edit" type="checkbox" />\n' +
-                    '            </td>\n' +
-                    '            <td>\n' +
-                    '            <input class="user-delete" type="checkbox" />\n' +
-                    '            </td>\n' +
-                    '            </tr>'
-                ;
+                if (userId !== '') {
+                    optionSelected.attr('disabled','disabled');
 
-                userPermissionList.append(permissionLine);
+                    let userName = this.value;
 
-                // new permission
-                updatePermission(null, userId, 0, 1, 'user', true);
+                    let permissionLine = '<tr data-user-id="'+ userId +'" data-mask="0">\n' +
+                        '                <td>\n' + userName +
+                        '                </td>\n' +
+                        '                <td>\n' +
+                        '                <input class="user-view" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="user-edit" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="user-delete" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '<td><button class="btn-danger btn-mini delete-user-permission" >Delete</button></td>\n'+
+                        '            </tr>'
+                    ;
+
+                    permissionList.find("#user-permission-list").append(permissionLine);
+
+                    // new permission
+                    updatePermission(null, userId, 0, 1, 'user', true);
+                }
             }
 
         });
 
-        groupList.on('change', function() {
-            let groupId = $(this).val();
+        permissionList.on('change', '#input-group-list', function() {
+            let optionSelected = permissionList.find('#group-list option[value="'+this.value+'"]');
 
-            if (groupId !== '') {
-                let groupName = $("#group-list option:selected").text();
+            if (optionSelected.length !== 0) {
+                let groupId = optionSelected.text();
 
-                let permissionLine = '<tr data-group-id="'+ groupId +'" data-mask="0">\n' +
-                    '                <td>\n' + groupName +
-                    '                </td>\n' +
-                    '                <td>\n' +
-                    '                <input class="group-view" type="checkbox" />\n' +
-                    '            </td>\n' +
-                    '            <td>\n' +
-                    '            <input class="group-edit" type="checkbox" />\n' +
-                    '            </td>\n' +
-                    '            <td>\n' +
-                    '            <input class="group-delete" type="checkbox" />\n' +
-                    '            </td>\n' +
-                    '            </tr>'
-                ;
+                if (groupId !== '') {
+                    optionSelected.attr('disabled','disabled');
 
-                groupPermissionList.append(permissionLine);
+                    let groupName = this.value;
 
-                // new permission
-                updatePermission(null, groupId, 0, 1, 'group', true);
+                    let permissionLine = '<tr data-group-id="'+ groupId +'" data-mask="0">\n' +
+                        '                <td>\n' + groupName +
+                        '                </td>\n' +
+                        '                <td>\n' +
+                        '                <input class="group-view" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="group-edit" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '            <td>\n' +
+                        '            <input class="group-delete" type="checkbox" />\n' +
+                        '            </td>\n' +
+                        '<td><button class="btn-danger btn-mini delete-group-permission">Delete</button></td>\n'+
+                        '            </tr>'
+                    ;
+
+                    permissionList.find("#group-permission-list").append(permissionLine);
+
+                    // new permission
+                    updatePermission(null, groupId, 0, 1, 'group', true);
+                }
             }
         });
 
-        function bindCheckboxEvent() {
+        function bindEvent() {
             // user right
-            userPermissionList.on('change', '.user-view', function () {
+            permissionList.on('change', '.user-view', function () {
                 updatePermission(
                     $(this),
                     $(this).parents('tr').attr('data-user-id'),
@@ -489,7 +399,7 @@
                 );
             });
 
-            userPermissionList.on('change', '.user-edit', function () {
+            permissionList.on('change', '.user-edit', function () {
                 updatePermission(
                     $(this),
                     $(this).parents('tr').attr('data-user-id'),
@@ -499,7 +409,7 @@
                 );
             });
 
-            userPermissionList.on('change', '.user-delete', function () {
+            permissionList.on('change', '.user-delete', function () {
                 updatePermission(
                     $(this),
                     $(this).parents('tr').attr('data-user-id'),
@@ -507,10 +417,15 @@
                     8,
                     'user'
                 );
+            });
+
+            permissionList.on('click', '.delete-user-permission', function () {
+                deletePermission('user', $(this).parents('tr').attr('data-user-id'));
+
             });
 
             // group right
-            groupPermissionList.on('change', '.group-view', function () {
+            permissionList.on('change', '.group-view', function () {
                 updatePermission(
                     $(this),
                     $(this).parents('tr').attr('data-group-id'),
@@ -520,7 +435,7 @@
                 );
             });
 
-            groupPermissionList.on('change', '.group-edit', function () {
+            permissionList.on('change', '.group-edit', function () {
                 updatePermission(
                     $(this),
                     $(this).parents('tr').attr('data-group-id'),
@@ -530,7 +445,7 @@
                 );
             });
 
-            groupPermissionList.on('change', '.group-delete', function () {
+            permissionList.on('change', '.group-delete', function () {
                 updatePermission(
                     $(this),
                     $(this).parents('tr').attr('data-group-id'),
@@ -538,6 +453,10 @@
                     8,
                     'group'
                 );
+            });
+
+            permissionList.on('click', '.delete-group-permission', function () {
+                deletePermission('group', $(this).parents('tr').attr('data-group-id'));
             });
         }
 
@@ -565,12 +484,52 @@
                         objectType: "publication",
                         objectId: "{{ publication.id }}",
                         mask: mask
-                    }
+                    },
+                    action: "update"
                 },
                 success: function (data) {
                     if (data.success) {
                         publicationEdit.find("#permission-error").addClass("hidden");
                         publicationEdit.find("#permission-success").removeClass("hidden").html(data.message);
+                    } else {
+                        publicationEdit.find("#permission-success").addClass("hidden");
+                        publicationEdit.find("#permission-error").removeClass("hidden").html(data.message);
+                    }
+                }
+            });
+        }
+
+        function deletePermission(userType, userId) {
+            hideInfo();
+
+            $.ajax({
+                type: "POST",
+                url: "/prod/expose/publication/permission/update",
+                dataType: 'json',
+                data: {
+                    exposeName: "{{ exposeName }}",
+                    jsonData: {
+                        userType: userType,
+                        userId: userId,
+                        objectType: "publication",
+                        objectId: "{{ publication.id }}"
+                    },
+                    action: "delete"
+                },
+                success: function (data) {
+                    if (data.success) {
+                        publicationEdit.find("#permission-error").addClass("hidden");
+                        publicationEdit.find("#permission-success").removeClass("hidden").html(data.message);
+
+                        $.ajax({
+                            type: "GET",
+                            url: "/prod/expose/publication/permission/list?exposeName={{ exposeName }}&publicationId={{ publication.id }}",
+                            success: function (data) {
+                                permissionList.empty().append(data);
+                                // bindCheckboxEvent();
+                            }
+                        });
+
                     } else {
                         publicationEdit.find("#permission-success").addClass("hidden");
                         publicationEdit.find("#permission-error").removeClass("hidden").html(data.message);
