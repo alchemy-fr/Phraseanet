@@ -1,5 +1,5 @@
 <div class="ui-widget">
-    <input id="input-group-list" placeholder="Group name" list="group-list">
+    <input id="input-group-list" placeholder="{{ 'prod:expose:publication:permission:Group Name'| trans }}" list="group-list">
     <datalist id="group-list" tabindex="-1" aria-hidden="true"
             class="">
         {% for group in listGroups %}
@@ -56,7 +56,7 @@
 <br/>
 
 <div class="ui-widget">
-    <input id="input-user-list" placeholder="User name" list="user-list">
+    <input id="input-user-list" placeholder="{{ 'prod:expose:publication:permission:User Name'| trans }}" list="user-list">
     <datalist id="user-list" tabindex="-1" aria-hidden="true"
               class="">
         {% for user in listUsers %}

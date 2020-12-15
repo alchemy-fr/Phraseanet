@@ -99,8 +99,8 @@
                             <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
                                 <option value="">{{ 'prod:expose:publication:Open access' | trans }}</option>
-                                <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Users' | trans }}</option>
-                                <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>users</option>
+                                <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Password' | trans }}</option>
+                                <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Users' | trans }}</option>
                             </select>
                         </div>
                         <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">

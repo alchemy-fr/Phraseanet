@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-12-15T13:52:35Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2020-12-15T14:24:57Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -12531,6 +12531,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="d190364e0bc239d60124d5a906249199fcedbcf7" resname="prod:expose:publication:Password">
         <source>prod:expose:publication:Password</source>
         <target state="new">prod:expose:publication:Password</target>
+        <jms:reference-file line="102">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="67">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37fc20596092e78e7c9f232b1d5a1792c3338286" resname="prod:expose:publication:Permission">
@@ -12606,8 +12607,18 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="b74f6e47a7bbe1f0b8d486f5f87344e29e15599f" resname="prod:expose:publication:Users">
         <source>prod:expose:publication:Users</source>
         <target state="new">prod:expose:publication:Users</target>
-        <jms:reference-file line="102">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="103">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="68">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9664183fc801100081920a8c1dc3cd7e48d7e304" resname="prod:expose:publication:permission:Group Name">
+        <source>prod:expose:publication:permission:Group Name</source>
+        <target state="new">prod:expose:publication:permission:Group Name</target>
+        <jms:reference-file line="2">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f79c912b02c8e1ff29d30eff397e286e9e4187f7" resname="prod:expose:publication:permission:User Name">
+        <source>prod:expose:publication:permission:User Name</source>
+        <target state="new">prod:expose:publication:permission:User Name</target>
+        <jms:reference-file line="59">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="03cf46374a19f99e46f79eb7a7d58b996c4411bb" resname="prod:expose:publication:permission:list:Delete">
         <source>prod:expose:publication:permission:list:Delete</source>
