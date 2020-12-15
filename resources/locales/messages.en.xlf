@@ -12527,9 +12527,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="needs-translation">Parent Publication</target>
         <jms:reference-file line="10">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c162525b8fdc627534400ea776bbee9c3090c49" resname="prod:expose:publication:Parent publication">
+      <trans-unit id="3c162525b8fdc627534400ea776bbee9c3090c49" resname="prod:expose:publication:Parent publication" approved="no">
         <source>prod:expose:publication:Parent publication</source>
-        <target state="new">prod:expose:publication:Parent publication</target>
+        <target state="needs-translation">Parent publication</target>
         <jms:reference-file line="41">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="21">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
