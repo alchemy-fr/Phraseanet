@@ -12476,7 +12476,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="27a3d37e05caa995cb1a7b58c36fe1936b00f866" resname="prod:expose:publication:Enabled" approved="no">
         <source>prod:expose:publication:Enabled</source>
-        <target state="needs-translation">Autorisé</target>
+        <target state="needs-translation">Actif</target>
         <jms:reference-file line="68">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="37">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
@@ -12553,7 +12553,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="055d4b2c4be0a43224479c371b7e0c4da2719756" resname="prod:expose:publication:Publicly listing" approved="no">
         <source>prod:expose:publication:Publicly listing</source>
-        <target state="needs-translation">Listing public</target>
+        <target state="needs-translation">Lister publiquement</target>
         <jms:reference-file line="88">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="55">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
