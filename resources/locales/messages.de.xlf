@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-12-07T08:53:04Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2020-12-15T13:52:35Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -5428,12 +5428,12 @@
       <trans-unit id="113e4c4573bc36248145d74e8d235a10dbec320d" resname="Rappel : Il vous reste %timeLeft% pour valider %title% de %user%">
         <source>Rappel : Il vous reste %timeLeft% pour valider %title% de %user%</source>
         <target state="new">Rappel : Il vous reste %timeLeft% pour valider %title% de %user%</target>
-        <jms:reference-file line="61">eventsmanager/notify/validationreminder.php</jms:reference-file>
+        <jms:reference-file line="66">eventsmanager/notify/validationreminder.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aba19c22de9ce4775ec46aebd783d496329ceee7" resname="Rappel pour une demande de validation" approved="yes">
         <source>Rappel pour une demande de validation</source>
         <target state="translated">Erinnerung für eine Bestätigungsanfrage</target>
-        <jms:reference-file line="83">eventsmanager/notify/validationreminder.php</jms:reference-file>
+        <jms:reference-file line="88">eventsmanager/notify/validationreminder.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aafcf684757a5a4e1bf1630db0821e75f47a2d08" resname="Rapport de Validation" approved="yes">
         <source>Rapport de Validation</source>
@@ -5599,16 +5599,6 @@
         <source>Records type</source>
         <target state="translated">Datensätze Typ</target>
         <jms:reference-file line="20">actions/Property/index.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="56e3badc4e6c5cc95e0ea5a9a878b9bd09f319d4" resname="Refresh">
-        <source>Refresh</source>
-        <target state="needs-translation">Aktualisieren</target>
-        <jms:reference-file line="487">prod/WorkZone/Macros.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="8341fb596e80ccb2c214adc31d72bcd66f02dac8" resname="Refresh Publication">
-        <source>Refresh Publication</source>
-        <target state="needs-translation">Veröffentlichung aktualisieren</target>
-        <jms:reference-file line="3">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
         <source>Refus d'elements de commande</source>
@@ -7114,8 +7104,8 @@
         <target state="translated">eine Auswahl ohne Titel</target>
         <jms:reference-file line="51">eventsmanager/notify/validate.php</jms:reference-file>
         <jms:reference-file line="53">eventsmanager/notify/validate.php</jms:reference-file>
-        <jms:reference-file line="52">eventsmanager/notify/validationreminder.php</jms:reference-file>
-        <jms:reference-file line="54">eventsmanager/notify/validationreminder.php</jms:reference-file>
+        <jms:reference-file line="57">eventsmanager/notify/validationreminder.php</jms:reference-file>
+        <jms:reference-file line="59">eventsmanager/notify/validationreminder.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bb7d1104896554f9308dee9aef38ea55899ba1ab" resname="Unhandled Error" approved="yes">
         <source>Unhandled Error</source>
@@ -7340,7 +7330,7 @@
         <jms:reference-file line="78">eventsmanager/notify/validate.php</jms:reference-file>
         <jms:reference-file line="23">eventsmanager/notify/validationdone.php</jms:reference-file>
         <jms:reference-file line="20">eventsmanager/notify/validationreminder.php</jms:reference-file>
-        <jms:reference-file line="74">eventsmanager/notify/validationreminder.php</jms:reference-file>
+        <jms:reference-file line="79">eventsmanager/notify/validationreminder.php</jms:reference-file>
         <jms:reference-file line="86">lightbox/IE6/validate.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="83da6b62512e6597a104cf295a8f050cd9799a6d" resname="Validation from %user%" approved="yes">
@@ -11972,16 +11962,6 @@
         <jms:reference-file line="258">actions/Tools/index.html.twig</jms:reference-file>
         <jms:reference-file line="308">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="07ac659e68701b8add70118c3b1d8979ac594f90" resname="prod:: workzone:expose: Add publication">
-        <source>prod:: workzone:expose: Add publication</source>
-        <target state="needs-translation">Eine Veröffentlichung hinzufügen</target>
-        <jms:reference-file line="484">prod/WorkZone/Macros.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="ff7a621abf41f26fa3db20540a94c532051f2dc4" resname="prod:: workzone:expose: select expose">
-        <source>prod:: workzone:expose: select expose</source>
-        <target state="needs-translation">Eine Expose auswählen</target>
-        <jms:reference-file line="474">prod/WorkZone/Macros.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="f63658cad863dee4a5876278e836472380183ade" resname="prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble" approved="yes">
         <source>prod::Les enregistrements ne provienent pas tous de la meme base et ne peuvent donc etre traites ensemble</source>
         <target state="translated">Achtung: Die ausgewählten Dokumente kommen nicht alle aus der selben Datenbank und können nicht zusammen bearbeitet werden</target>
@@ -12406,6 +12386,271 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>prod:edit: video-editor</source>
         <target state="translated">Video Tools</target>
         <jms:reference-file line="116">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication">
+        <source>prod:expose:Add publication</source>
+        <target state="new">prod:expose:Add publication</target>
+        <jms:reference-file line="484">prod/WorkZone/Macros.html.twig</jms:reference-file>
+        <jms:reference-file line="485">prod/WorkZone/Macros.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9f37a39537149886c8fd492dfdbdc596f01e09fd" resname="prod:expose:Refresh">
+        <source>prod:expose:Refresh</source>
+        <target state="new">prod:expose:Refresh</target>
+        <jms:reference-file line="487">prod/WorkZone/Macros.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="37a8c50528409fa7c358d659ea11c3eb3252760b" resname="prod:expose:connection:Auth connexion">
+        <source>prod:expose:connection:Auth connexion</source>
+        <target state="new">prod:expose:connection:Auth connexion</target>
+        <jms:reference-file line="2">prod/WorkZone/ExposeOauthLogin.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="94ed9c45e3cbaef64547b6fddc9b244b9c0955df" resname="prod:expose:connection:Password">
+        <source>prod:expose:connection:Password</source>
+        <target state="new">prod:expose:connection:Password</target>
+        <jms:reference-file line="11">prod/WorkZone/ExposeOauthLogin.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1417edde7a5adc20001a2352757bb87ff607b1c5" resname="prod:expose:connection:Sign in">
+        <source>prod:expose:connection:Sign in</source>
+        <target state="new">prod:expose:connection:Sign in</target>
+        <jms:reference-file line="15">prod/WorkZone/ExposeOauthLogin.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1a923a2bcaea92b6d38dfae378552c932df0a592" resname="prod:expose:connection:Username">
+        <source>prod:expose:connection:Username</source>
+        <target state="new">prod:expose:connection:Username</target>
+        <jms:reference-file line="7">prod/WorkZone/ExposeOauthLogin.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="324e7cea705016a31d01d0bde3ee526a92ea881c" resname="prod:expose:publication:Access rules">
+        <source>prod:expose:publication:Access rules</source>
+        <target state="new">prod:expose:publication:Access rules</target>
+        <jms:reference-file line="97">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="62">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af3ad24004cd69b0254f1c8c2e5089d35b3844da" resname="prod:expose:publication:Advanced setting">
+        <source>prod:expose:publication:Advanced setting</source>
+        <target state="new">prod:expose:publication:Advanced setting</target>
+        <jms:reference-file line="139">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="104">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="551db59cb8c5b618adffe5719f791fc5c07a63cd" resname="prod:expose:publication:Available (leave blank for permanet publication)">
+        <source>prod:expose:publication:Available (leave blank for permanet publication)</source>
+        <target state="new">prod:expose:publication:Available (leave blank for permanet publication)</target>
+        <jms:reference-file line="77">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="44">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="03fa83cecf49d9c7a3813b4a019c6d2d2ff50c30" resname="prod:expose:publication:Cancel">
+        <source>prod:expose:publication:Cancel</source>
+        <target state="new">prod:expose:publication:Cancel</target>
+        <jms:reference-file line="154">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="119">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fdeebeeec3860ccbd6f36b4aeaf7cb77ce7312b1" resname="prod:expose:publication:Create publication">
+        <source>prod:expose:publication:Create publication</source>
+        <target state="new">prod:expose:publication:Create publication</target>
+        <jms:reference-file line="122">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="829875af60c25eadba563170b4f9e5f8db2ba688" resname="prod:expose:publication:Dark">
+        <source>prod:expose:publication:Dark</source>
+        <target state="new">prod:expose:publication:Dark</target>
+        <jms:reference-file line="131">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="96">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8e6332dde288968d262020d7f1d0679a0a8bcb8d" resname="prod:expose:publication:Delete">
+        <source>prod:expose:publication:Delete</source>
+        <target state="new">prod:expose:publication:Delete</target>
+        <jms:reference-file line="7">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download">
+        <source>prod:expose:publication:Download</source>
+        <target state="new">prod:expose:publication:Download</target>
+        <jms:reference-file line="122">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="87">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3ca4394264a3c86daf2d088f072dca679d82bb6a" resname="prod:expose:publication:Editing">
+        <source>prod:expose:publication:Editing</source>
+        <target state="new">prod:expose:publication:Editing</target>
+        <jms:reference-file line="15">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="27a3d37e05caa995cb1a7b58c36fe1936b00f866" resname="prod:expose:publication:Enabled">
+        <source>prod:expose:publication:Enabled</source>
+        <target state="new">prod:expose:publication:Enabled</target>
+        <jms:reference-file line="68">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="37">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1964c90b5229b7aed8e0e4cead60cd6f0cd49b76" resname="prod:expose:publication:From">
+        <source>prod:expose:publication:From</source>
+        <target state="new">prod:expose:publication:From</target>
+        <jms:reference-file line="79">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="46">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="22b12bdabd78e4c9dfcd2a3c202a7ed02af28746" resname="prod:expose:publication:Gallery">
+        <source>prod:expose:publication:Gallery</source>
+        <target state="new">prod:expose:publication:Gallery</target>
+        <jms:reference-file line="120">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="85">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="879311e23dbb4491b0144ce49a6d66e83bd660e7" resname="prod:expose:publication:Layout">
+        <source>prod:expose:publication:Layout</source>
+        <target state="new">prod:expose:publication:Layout</target>
+        <jms:reference-file line="116">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="81">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="123400d6203202f86844b765e6f85509f6ebb1f6" resname="prod:expose:publication:Light">
+        <source>prod:expose:publication:Light</source>
+        <target state="new">prod:expose:publication:Light</target>
+        <jms:reference-file line="130">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="95">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0a35952e92e77bf6a762055c17aab923e4dc3a46" resname="prod:expose:publication:Mapbox">
+        <source>prod:expose:publication:Mapbox</source>
+        <target state="new">prod:expose:publication:Mapbox</target>
+        <jms:reference-file line="121">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="86">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="85dffecce40b9a951d2e11cb518280dcce7ee31a" resname="prod:expose:publication:Name">
+        <source>prod:expose:publication:Name</source>
+        <target state="new">prod:expose:publication:Name</target>
+        <jms:reference-file line="31">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="11">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ca3d77bf1e62e1cf39bf5b8a3a161ab17b28f375" resname="prod:expose:publication:Open access">
+        <source>prod:expose:publication:Open access</source>
+        <target state="new">prod:expose:publication:Open access</target>
+        <jms:reference-file line="101">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="66">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a2a8888f67982de346cedbe03b5884757de77925" resname="prod:expose:publication:Parent Publication">
+        <source>prod:expose:publication:Parent Publication</source>
+        <target state="new">prod:expose:publication:Parent Publication</target>
+        <jms:reference-file line="10">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3c162525b8fdc627534400ea776bbee9c3090c49" resname="prod:expose:publication:Parent publication">
+        <source>prod:expose:publication:Parent publication</source>
+        <target state="new">prod:expose:publication:Parent publication</target>
+        <jms:reference-file line="41">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="21">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d190364e0bc239d60124d5a906249199fcedbcf7" resname="prod:expose:publication:Password">
+        <source>prod:expose:publication:Password</source>
+        <target state="new">prod:expose:publication:Password</target>
+        <jms:reference-file line="67">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="37fc20596092e78e7c9f232b1d5a1792c3338286" resname="prod:expose:publication:Permission">
+        <source>prod:expose:publication:Permission</source>
+        <target state="new">prod:expose:publication:Permission</target>
+        <jms:reference-file line="20">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="172">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6e4586d5715234b05a5637d7232d42289efd54e3" resname="prod:expose:publication:Profile">
+        <source>prod:expose:publication:Profile</source>
+        <target state="new">prod:expose:publication:Profile</target>
+        <jms:reference-file line="56">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="30">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="055d4b2c4be0a43224479c371b7e0c4da2719756" resname="prod:expose:publication:Publicly listing">
+        <source>prod:expose:publication:Publicly listing</source>
+        <target state="new">prod:expose:publication:Publicly listing</target>
+        <jms:reference-file line="88">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="55">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2a1795f494a3d378d7e089f44aaba611d2840f96" resname="prod:expose:publication:Refresh Publication">
+        <source>prod:expose:publication:Refresh Publication</source>
+        <target state="new">prod:expose:publication:Refresh Publication</target>
+        <jms:reference-file line="3">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f0ee6ea23eac8f7db8e39a77d3027629342b0e10" resname="prod:expose:publication:Select Layout">
+        <source>prod:expose:publication:Select Layout</source>
+        <target state="new">prod:expose:publication:Select Layout</target>
+        <jms:reference-file line="119">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="84">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="14a842c2a43ef10eec62cc59c8e3c151ca99c660" resname="prod:expose:publication:Select Profile">
+        <source>prod:expose:publication:Select Profile</source>
+        <target state="new">prod:expose:publication:Select Profile</target>
+        <jms:reference-file line="61">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="33">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a55b57125f0703c7fe2393a15ee3ae4e9882763e" resname="prod:expose:publication:Select Theme">
+        <source>prod:expose:publication:Select Theme</source>
+        <target state="new">prod:expose:publication:Select Theme</target>
+        <jms:reference-file line="129">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="94">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="89bd08c42543705b2b8ec5046cf43e26cc7a85b1" resname="prod:expose:publication:Select a parent publication">
+        <source>prod:expose:publication:Select a parent publication</source>
+        <target state="new">prod:expose:publication:Select a parent publication</target>
+        <jms:reference-file line="48">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="25">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="77e197ee00b2da0b378e08f9717e9029907dde6d" resname="prod:expose:publication:Slug">
+        <source>prod:expose:publication:Slug</source>
+        <target state="new">prod:expose:publication:Slug</target>
+        <jms:reference-file line="35">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="15">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="09e31f070644dc5cdce690efdd861868fbe36c8a" resname="prod:expose:publication:Theme">
+        <source>prod:expose:publication:Theme</source>
+        <target state="new">prod:expose:publication:Theme</target>
+        <jms:reference-file line="126">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="91">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="26b15d28f92ef84be6ca70cbe4b3cf12cb418ac0" resname="prod:expose:publication:To">
+        <source>prod:expose:publication:To</source>
+        <target state="new">prod:expose:publication:To</target>
+        <jms:reference-file line="83">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="50">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7665e294abb20f03a6664346b679992539de9e77" resname="prod:expose:publication:Update Publication">
+        <source>prod:expose:publication:Update Publication</source>
+        <target state="new">prod:expose:publication:Update Publication</target>
+        <jms:reference-file line="157">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b74f6e47a7bbe1f0b8d486f5f87344e29e15599f" resname="prod:expose:publication:Users">
+        <source>prod:expose:publication:Users</source>
+        <target state="new">prod:expose:publication:Users</target>
+        <jms:reference-file line="102">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="68">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="03cf46374a19f99e46f79eb7a7d58b996c4411bb" resname="prod:expose:publication:permission:list:Delete">
+        <source>prod:expose:publication:permission:list:Delete</source>
+        <target state="new">prod:expose:publication:permission:list:Delete</target>
+        <jms:reference-file line="24">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+        <jms:reference-file line="81">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f50ce78ba045b720d82f8abd2977529258dbd508" resname="prod:expose:publication:permission:list:Edit">
+        <source>prod:expose:publication:permission:list:Edit</source>
+        <target state="new">prod:expose:publication:permission:list:Edit</target>
+        <jms:reference-file line="21">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+        <jms:reference-file line="78">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9e90d5e52babd373d6190296c8e2b474a2c5c8bf" resname="prod:expose:publication:permission:list:Group">
+        <source>prod:expose:publication:permission:list:Group</source>
+        <target state="new">prod:expose:publication:permission:list:Group</target>
+        <jms:reference-file line="15">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ff194a1339b1676517802c3877619000be921bb5" resname="prod:expose:publication:permission:list:Remove Group">
+        <source>prod:expose:publication:permission:list:Remove Group</source>
+        <target state="new">prod:expose:publication:permission:list:Remove Group</target>
+        <jms:reference-file line="104">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="debf785d635c1ed519e0eddce2a28e89ef3cf0ef" resname="prod:expose:publication:permission:list:Remove User">
+        <source>prod:expose:publication:permission:list:Remove User</source>
+        <target state="new">prod:expose:publication:permission:list:Remove User</target>
+        <jms:reference-file line="47">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c5d834a3c4b5c49acf6a973d759fe6c7319331bf" resname="prod:expose:publication:permission:list:User">
+        <source>prod:expose:publication:permission:list:User</source>
+        <target state="new">prod:expose:publication:permission:list:User</target>
+        <jms:reference-file line="72">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="42ff6e6031a42375b44ede6daa880b539b706b1c" resname="prod:expose:publication:permission:list:View">
+        <source>prod:expose:publication:permission:list:View</source>
+        <target state="new">prod:expose:publication:permission:list:View</target>
+        <jms:reference-file line="18">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+        <jms:reference-file line="75">prod/WorkZone/ExposePermission.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d92238599ea91a94089177e8ecf239302fae86fe" resname="prod:expose:select expose">
+        <source>prod:expose:select expose</source>
+        <target state="new">prod:expose:select expose</target>
+        <jms:reference-file line="474">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e6f012d49cfe36080713edf24ad202a1d4de16d" resname="prod:mapbox Change position">
         <source>prod:mapbox Change position</source>
@@ -14395,127 +14640,127 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="ecbe1590a62c751a6bafe631fc5d05158d0962b4" resname="workzone:datepicker:april" approved="yes">
         <source>workzone:datepicker:april</source>
         <target state="translated">April</target>
-        <jms:reference-file line="167">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="205">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="23ed9061fbf1a184658e05e57a121a72474b54eb" resname="workzone:datepicker:august" approved="yes">
         <source>workzone:datepicker:august</source>
         <target state="translated">August</target>
-        <jms:reference-file line="168">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="206">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7e55bc758f272d38198385584d6f50c2dd0eae13" resname="workzone:datepicker:december" approved="yes">
         <source>workzone:datepicker:december</source>
         <target state="translated">Dezember</target>
-        <jms:reference-file line="168">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="206">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="db178b383e47bbe58670afd6a67528a4712444d7" resname="workzone:datepicker:february" approved="yes">
         <source>workzone:datepicker:february</source>
         <target state="translated">Februar</target>
-        <jms:reference-file line="167">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="205">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a4e3f12ef1defef487381a8339ea49840666414a" resname="workzone:datepicker:friday" approved="yes">
         <source>workzone:datepicker:friday</source>
         <target state="translated">Freitag</target>
-        <jms:reference-file line="169">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="207">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="93f6bd6902114b73c225005188bce87569a3ac9c" resname="workzone:datepicker:january" approved="yes">
         <source>workzone:datepicker:january</source>
         <target state="translated">Januar</target>
-        <jms:reference-file line="167">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="205">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0f1d297c3d3d9bc7cd800a9bd1a938904f4440ab" resname="workzone:datepicker:july" approved="yes">
         <source>workzone:datepicker:july</source>
         <target state="translated">Juli</target>
-        <jms:reference-file line="168">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="206">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d860a667674628da86b76fb3be676370a61893c" resname="workzone:datepicker:june" approved="yes">
         <source>workzone:datepicker:june</source>
         <target state="translated">Juni</target>
-        <jms:reference-file line="167">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="205">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2242d17f28dc262529688d688b5c2e128813ad8b" resname="workzone:datepicker:march" approved="yes">
         <source>workzone:datepicker:march</source>
         <target state="translated">März</target>
-        <jms:reference-file line="167">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="205">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ce30e1185f0f46df340ca727d4d9d89f42b6f5b" resname="workzone:datepicker:may" approved="yes">
         <source>workzone:datepicker:may</source>
         <target state="translated">Mai</target>
-        <jms:reference-file line="167">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="205">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a7199e82486037293a2cfb17003ed9a30e2cfb2" resname="workzone:datepicker:monday" approved="yes">
         <source>workzone:datepicker:monday</source>
         <target state="translated">Montag</target>
-        <jms:reference-file line="169">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="207">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText" approved="yes">
         <source>workzone:datepicker:nextText</source>
         <target state="translated">nächste</target>
-        <jms:reference-file line="165">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="203">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="165">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november" approved="yes">
         <source>workzone:datepicker:november</source>
         <target state="translated">November</target>
-        <jms:reference-file line="168">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="206">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="46727c5b9b3455e2cec4fc761568262af710f119" resname="workzone:datepicker:october" approved="yes">
         <source>workzone:datepicker:october</source>
         <target state="translated">Oktober</target>
-        <jms:reference-file line="168">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="206">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText" approved="yes">
         <source>workzone:datepicker:prevText</source>
         <target state="translated">vorherige</target>
-        <jms:reference-file line="164">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="202">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="164">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday" approved="yes">
         <source>workzone:datepicker:saturday</source>
         <target state="translated">Samstag</target>
-        <jms:reference-file line="169">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="207">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8aa1e4c6df39f7365a4fab8f3c70d3d8d4757ee" resname="workzone:datepicker:september" approved="yes">
         <source>workzone:datepicker:september</source>
         <target state="translated">September</target>
-        <jms:reference-file line="168">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="206">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd48f23064201336fafcab46a34c085d5a886cb6" resname="workzone:datepicker:sunday" approved="yes">
         <source>workzone:datepicker:sunday</source>
         <target state="translated">Sonntag</target>
-        <jms:reference-file line="169">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="207">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de522dc0285d55c95bb9af4aa39020ac35548353" resname="workzone:datepicker:thursday" approved="yes">
         <source>workzone:datepicker:thursday</source>
         <target state="translated">Donnerstag</target>
-        <jms:reference-file line="169">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="207">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d274289f8c48bcb43c06efe9386967b7f8fb56df" resname="workzone:datepicker:tuesday" approved="yes">
         <source>workzone:datepicker:tuesday</source>
         <target state="translated">Dienstag</target>
-        <jms:reference-file line="169">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="207">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="423742b6f616f9847ea24afec03e24b15f3ff10f" resname="workzone:datepicker:wednesday" approved="yes">
         <source>workzone:datepicker:wednesday</source>
         <target state="translated">Mittwoch</target>
-        <jms:reference-file line="169">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+        <jms:reference-file line="207">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="169">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed" approved="yes">
