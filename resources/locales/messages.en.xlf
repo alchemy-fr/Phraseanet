@@ -3690,7 +3690,7 @@
       </trans-unit>
       <trans-unit id="8c2b3e33fa9361614a69fd94f5e0f0a4882f7d18" resname="Il ne vous reste plus que %timeLeft% pour terminer votre validation" approved="no">
         <source>Il ne vous reste plus que %timeLeft% pour terminer votre validation</source>
-        <target state="needs-translation">You have only %timeLeft% to end your feedback</target>
+        <target state="needs-translation">You have only %timeLeft% left to end your feedback</target>
         <jms:reference-file line="60">Notification/Mail/MailInfoValidationReminder.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e730f5633a67f2c86d20b9263e271582684558b" resname="Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes" approved="yes">
@@ -9125,7 +9125,7 @@
       </trans-unit>
       <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second" approved="no">
         <source>admin::workermanager:tab:Reminder: Interval in second</source>
-        <target state="needs-translation">Feedback Reminder Interval in second</target>
+        <target state="needs-translation">Feedback reminder interval in seconds</target>
         <jms:reference-file line="6">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2595e37b2158ece0ddfb2640ced15109f959a811" resname="admin::workermanager:tab:Reminder: Start" approved="no">
@@ -12392,9 +12392,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="translated">Video tools</target>
         <jms:reference-file line="116">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication">
+      <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="no">
         <source>prod:expose:Add publication</source>
-        <target state="new">prod:expose:Add publication</target>
+        <target state="needs-translation">Add publication</target>
         <jms:reference-file line="484">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="485">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -12465,7 +12465,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download" approved="no">
         <source>prod:expose:publication:Download</source>
-        <target state="needs-translation">prod:expose:publication:Download layout</target>
+        <target state="needs-translation">Download layout</target>
         <jms:reference-file line="122">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="87">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
@@ -12480,9 +12480,9 @@ Warning: The current values will be overwritten by these new values</target>
         <jms:reference-file line="68">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="37">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1964c90b5229b7aed8e0e4cead60cd6f0cd49b76" resname="prod:expose:publication:From">
+      <trans-unit id="1964c90b5229b7aed8e0e4cead60cd6f0cd49b76" resname="prod:expose:publication:From" approved="no">
         <source>prod:expose:publication:From</source>
-        <target state="new">prod:expose:publication:From</target>
+        <target state="needs-translation">From</target>
         <jms:reference-file line="79">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="46">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
@@ -12665,7 +12665,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="d92238599ea91a94089177e8ecf239302fae86fe" resname="prod:expose:select expose" approved="no">
         <source>prod:expose:select expose</source>
-        <target state="needs-translation">Chose Expose</target>
+        <target state="needs-translation">Choose Expose</target>
         <jms:reference-file line="474">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e6f012d49cfe36080713edf24ad202a1d4de16d" resname="prod:mapbox Change position">
