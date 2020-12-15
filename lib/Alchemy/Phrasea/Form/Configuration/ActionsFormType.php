@@ -22,8 +22,8 @@ class ActionsFormType extends AbstractType
             'label'        => 'Maximum megabytes allowed for download',
             'help_message' => 'If request is bigger, then mail is still available',
         ]);
-        $builder->add('validation-reminder-days', 'integer', [
-            'label'       => 'Number of days before the end of the validation to send a reminder email',
+        $builder->add('validation-reminder-time-left-percent', 'integer', [
+            'label'       => 'Percent of the time left before the end of the validation to send a reminder email',
         ]);
         $builder->add('validation-expiration-days', 'integer', [
             'label'        => 'Default validation links duration',

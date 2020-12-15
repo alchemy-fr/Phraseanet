@@ -594,7 +594,7 @@ class LoginController extends Controller
     // move this in an event
     public function postAuthProcess(Request $request, User $user)
     {
-        $date = new DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-days']) . ' days');
+        $date = new DateTime('+' . (int) $this->getConf()->get(['registry', 'actions', 'validation-reminder-time-left-percent']) . ' days');
         $manager = $this->getEntityManager();
 
         /*
