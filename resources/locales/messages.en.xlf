@@ -11312,9 +11312,9 @@
         <target state="translated">per month</target>
         <jms:reference-file line="62">web/admin/editusers_quotas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8" resname="password">
+      <trans-unit id="5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8" resname="password" approved="no">
         <source>password</source>
-        <target state="new">password</target>
+        <target state="needs-translation">Password</target>
         <jms:reference-file line="32">PhraseanetService/Form/PSExposeConnectionType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ead5a6379197deb9163d2101354822e6caaa30eb" resname="personalize logo" approved="yes">
