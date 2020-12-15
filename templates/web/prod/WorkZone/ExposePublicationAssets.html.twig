@@ -1,13 +1,13 @@
 {% if page == 1 %}
     <div class="expose_item_top">
-        <button class="btn-success refresh-publication pull-right" data-publication-id="{{ publicationId }}">{{ 'Refresh Publication' | trans }}</button>
+        <button class="btn-success refresh-publication pull-right" data-publication-id="{{ publicationId }}">{{ 'prod:expose:publication:Refresh Publication' | trans }}</button>
         <span class="green_button edit_expose" data-id="{{ publicationId }}"><i class="fa fa-edit"></i></span>
         {% if pubAssets[0].publication.children|length == 0 %}
             <button type="button" class="delete-publication btn-danger" data-publication-id="{{ publicationId }}">
-                <i class="fa fa-trash"></i> Delete
+                <i class="fa fa-trash"></i> {{ 'prod:expose:publication:Delete' | trans }}
             </button>
         {% else  %}
-            <span>Parent publication</span>
+            <span>{{ 'prod:expose:publication:Parent Publication' | trans }}</span>
         {% endif %}
     </div>
 
