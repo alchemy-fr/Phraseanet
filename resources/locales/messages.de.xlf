@@ -12519,12 +12519,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="a2a8888f67982de346cedbe03b5884757de77925" resname="prod:expose:publication:Parent Publication" approved="no">
         <source>prod:expose:publication:Parent Publication</source>
-        <target state="needs-translation">übergeordnete Veröffentlichung</target>
+        <target state="needs-translation">Übergeordnete Veröffentlichung</target>
         <jms:reference-file line="10">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c162525b8fdc627534400ea776bbee9c3090c49" resname="prod:expose:publication:Parent publication" approved="no">
         <source>prod:expose:publication:Parent publication</source>
-        <target state="needs-translation">zugeordnete Veröffentlichung</target>
+        <target state="needs-translation">Zugeordnete Veröffentlichung</target>
         <jms:reference-file line="41">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="21">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
@@ -12548,7 +12548,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="055d4b2c4be0a43224479c371b7e0c4da2719756" resname="prod:expose:publication:Publicly listing" approved="no">
         <source>prod:expose:publication:Publicly listing</source>
-        <target state="needs-translation">öffentliche Liste</target>
+        <target state="needs-translation">öffentlich auflisten</target>
         <jms:reference-file line="88">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="55">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
