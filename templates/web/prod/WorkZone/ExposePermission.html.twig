@@ -12,16 +12,16 @@
     <thead>
     <tr>
         <th>
-            Group
+            {{ 'prod:expose:publication:permission:list:Group'| trans }}
         </th>
         <th>
-            View
+            {{ 'prod:expose:publication:permission:list:View'| trans }}
         </th>
         <th>
-            Edit
+            {{ 'prod:expose:publication:permission:list:Edit'| trans }}
         </th>
         <th>
-            Delete
+            {{ 'prod:expose:publication:permission:list:Delete'| trans }}
         </th>
         <th>
         </th>
@@ -44,7 +44,7 @@
                     <input class="group-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
-                    <button class="btn-danger btn-mini delete-group-permission" >Delete</button>
+                    <button class="btn-danger btn-mini delete-group-permission" >{{ 'prod:expose:publication:permission:list:Remove User'| trans }}</button>
                 </td>
             </tr>
         {% endif %}
@@ -69,16 +69,16 @@
     <thead>
     <tr>
         <th>
-            User
+            {{ 'prod:expose:publication:permission:list:User'| trans }}
         </th>
         <th>
-            View
+            {{ 'prod:expose:publication:permission:list:View'| trans }}
         </th>
         <th>
-            Edit
+            {{ 'prod:expose:publication:permission:list:Edit'| trans }}
         </th>
         <th>
-            Delete
+            {{ 'prod:expose:publication:permission:list:Delete'| trans }}
         </th>
         <th>
         </th>
@@ -101,7 +101,7 @@
                     <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
-                    <button class="btn-danger btn-mini delete-user-permission" >Delete</button>
+                    <button class="btn-danger btn-mini delete-user-permission" >{{ 'prod:expose:publication:permission:list:Remove Group'| trans }}</button>
                 </td>
             </tr>
         {% endif %}
