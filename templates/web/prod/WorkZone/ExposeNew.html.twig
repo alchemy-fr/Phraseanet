@@ -217,7 +217,7 @@
             var datavalueMinus = extractData();
 
             if ($('#DIALOG-expose-add').find('input[name="slug"]').val() === '') {
-                delete datavalueMinus['slug'];
+                datavalueMinus['slug'] = null;
             }
 
             if ($("#DIALOG-expose-add #publication_parent").val() == "") {

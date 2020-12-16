@@ -629,7 +629,7 @@
             var datavalueMinus = buildData();
 
             if (publicationEdit.find('input[name="slug"]').val() === '') {
-                delete datavalueMinus['slug'];
+                datavalueMinus['slug'] = null;
             }
 
             if (publicationParent.val() == "") {
