@@ -12549,7 +12549,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="055d4b2c4be0a43224479c371b7e0c4da2719756" resname="prod:expose:publication:Publicly listing" approved="no">
         <source>prod:expose:publication:Publicly listing</source>
-        <target state="needs-translation">Publicly listing (Publication listed on expose landing page)</target>
+        <target state="needs-translation">Publicly listing (Publication listed on Expose landing page)</target>
         <jms:reference-file line="88">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="55">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
