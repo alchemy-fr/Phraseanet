@@ -38,7 +38,7 @@
                                                                                                                               value="check slug availability">
                     </div>
                     <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Parent publication' | trans }}</label>
+                        <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
                         <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
                             {% if publication.parent.id %}
                                 {% set parentId =  publication.parent.id %}
@@ -627,6 +627,10 @@
 
         function removeSecurityField() {
             var datavalueMinus = buildData();
+
+            if (publicationEdit.find('input[name="slug"]').val() === '') {
+                delete datavalueMinus['slug'];
+            }
 
             if (publicationParent.val() == "") {
                 delete datavalueMinus['parentId'];

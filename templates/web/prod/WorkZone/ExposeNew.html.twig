@@ -18,7 +18,7 @@
                                                                                                   value="check slug availability">
                     </div>
                     <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Parent publication' | trans }}</label>
+                        <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
                         <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
                             <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
@@ -215,6 +215,10 @@
 
         function removeSecurityFieldDialogAdd() {
             var datavalueMinus = extractData();
+
+            if ($('#DIALOG-expose-add').find('input[name="slug"]').val() === '') {
+                delete datavalueMinus['slug'];
+            }
 
             if ($("#DIALOG-expose-add #publication_parent").val() == "") {
                 delete datavalueMinus['parentId'];
