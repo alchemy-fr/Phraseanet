@@ -33,10 +33,20 @@ class AdminConfigurationController extends Controller
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
 
+        $filterStatus = [
+            WorkerRunningJob::RUNNING,
+            WorkerRunningJob::FINISHED,
+            WorkerRunningJob::ERROR,
+            WorkerRunningJob::INTERRUPT
+        ];
+
+        $workerRunningJob = $repoWorker->findByStatus($filterStatus);
+
         return $this->render('admin/worker-manager/index.html.twig', [
             'isConnected'       => ($this->getAMQPConnection()->getChannel() != null) ? true : false,
-            'workerRunningJob'  => $repoWorker->findAll(),
-            '_fragment' => $request->get('_fragment') ?? 'worker-info',
+            'workerRunningJob'  => $workerRunningJob,
+            'reload'            => false,
+            '_fragment'         => $request->get('_fragment') ?? 'worker-info',
         ]);
     }
 
