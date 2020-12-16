@@ -99,9 +99,7 @@ class AMQPConnection
             'with'        => self::WITH_NOTHING,
         ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
-            'with'        => self::WITH_RETRY,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => 600 * 1000,
+            'with'        => self::WITH_NOTHING,
         ],
         MessagePublisher::FTP_TYPE                 => [
             'with'        => self::WITH_RETRY,
