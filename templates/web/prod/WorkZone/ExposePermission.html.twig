@@ -1,5 +1,5 @@
 <div class="ui-widget">
-    <input id="input-group-list" placeholder="Group name" list="group-list">
+    <input id="input-group-list" placeholder="{{ 'prod:expose:publication:permission:Group Name'| trans }}" list="group-list">
     <datalist id="group-list" tabindex="-1" aria-hidden="true"
             class="">
         {% for group in listGroups %}
@@ -12,16 +12,16 @@
     <thead>
     <tr>
         <th>
-            Group
+            {{ 'prod:expose:publication:permission:list:Group'| trans }}
         </th>
         <th>
-            View
+            {{ 'prod:expose:publication:permission:list:View'| trans }}
         </th>
         <th>
-            Edit
+            {{ 'prod:expose:publication:permission:list:Edit'| trans }}
         </th>
         <th>
-            Delete
+            {{ 'prod:expose:publication:permission:list:Delete'| trans }}
         </th>
         <th>
         </th>
@@ -44,7 +44,7 @@
                     <input class="group-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
-                    <button class="btn-danger btn-mini delete-group-permission" >Delete</button>
+                    <button class="btn-danger btn-mini delete-group-permission" >{{ 'prod:expose:publication:permission:list:Remove User'| trans }}</button>
                 </td>
             </tr>
         {% endif %}
@@ -56,7 +56,7 @@
 <br/>
 
 <div class="ui-widget">
-    <input id="input-user-list" placeholder="User name" list="user-list">
+    <input id="input-user-list" placeholder="{{ 'prod:expose:publication:permission:User Name'| trans }}" list="user-list">
     <datalist id="user-list" tabindex="-1" aria-hidden="true"
               class="">
         {% for user in listUsers %}
@@ -69,16 +69,16 @@
     <thead>
     <tr>
         <th>
-            User
+            {{ 'prod:expose:publication:permission:list:User'| trans }}
         </th>
         <th>
-            View
+            {{ 'prod:expose:publication:permission:list:View'| trans }}
         </th>
         <th>
-            Edit
+            {{ 'prod:expose:publication:permission:list:Edit'| trans }}
         </th>
         <th>
-            Delete
+            {{ 'prod:expose:publication:permission:list:Delete'| trans }}
         </th>
         <th>
         </th>
@@ -101,7 +101,7 @@
                     <input class="user-delete" type="checkbox" {% if (permission.mask b-and 8) != 0  %} checked {% endif %}/>
                 </td>
                 <td>
-                    <button class="btn-danger btn-mini delete-user-permission" >Delete</button>
+                    <button class="btn-danger btn-mini delete-user-permission" >{{ 'prod:expose:publication:permission:list:Remove Group'| trans }}</button>
                 </td>
             </tr>
         {% endif %}

@@ -12,12 +12,12 @@
     <ul>
         <li>
             <a href="#publication-editing">
-               Editing
+                {{ 'prod:expose:publication:Editing' | trans }}
             </a>
         </li>
         <li>
             <a href="#permission-editing">
-                Permission
+                {{ 'prod:expose:publication:Permission' | trans }}
             </a>
         </li>
     </ul>
@@ -28,24 +28,24 @@
             <form id="publication-data-form" >
                 <div class="edit-publication-block">
                     <div class="ui-widget">
-                        <label>Name </label>
+                        <label>{{ 'prod:expose:publication:Name' | trans }}</label>
                         <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
                     </div>
                     <div class="ui-widget">
-                        <label>Slug: </label>
+                        <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
                         <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/><input type="button"
                                                                                                                               class="blue_button"
                                                                                                                               value="check slug availability">
                     </div>
                     <div class="ui-widget">
-                        <label>Parent publication </label>
+                        <label>{{ 'prod:expose:publication:Parent publication' | trans }}</label>
                         <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
                             {% if publication.parent.id %}
                                 {% set parentId =  publication.parent.id %}
                             {% endif %}
                             <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="">Select a parent publication</option>
+                                <option value="">{{ 'prod:expose:publication:Select a parent publication' | trans }}</option>
                                 {% if publication.parent %}
                                     <option value="{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
                                 {% endif %}
@@ -53,19 +53,19 @@
                         </div>
                     </div>
                     <div class="ui-widget profile-wrapper hide">
-                        <label>Profile </label>
+                        <label>{{ 'prod:expose:publication:Profile' | trans }}</label>
                         {% set nbProfile =  publication.profile|length %}
 
                         <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
-                            <option value="">Select Profile</option>
+                            <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
                             {% if nbProfile %}
                                 <option value="{{ publication.profile.id }}">{{ publication.profile.name }}</option>
                             {% endif %}
                         </select>
                     </div>
                     <div class="ui-widget">
-                        <label>Enabled </label>
+                        <label>{{ 'prod:expose:publication:Enabled' | trans }} </label>
                         <label class="switch">
                             <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled"
                                     {% if publication.enabled == 1 %} checked {% endif %}
@@ -74,18 +74,18 @@
                         </label>
                     </div>
                     <div class="ui-widget available-wrapper">
-                        <label>Available (leave blank for permanent publication): </label>
+                        <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
-                            <label>From </label>
+                            <label>{{ 'prod:expose:publication:From' | trans }}</label>
                             <input type="text" value="{{ publication.config.beginsAt }}" name="beginsAt" class="use-datepicker publication-field"/>
                         </div>
                         <div class="available-widget">
-                            <label>To </label>
+                            <label>{{ 'prod:expose:publication:To' | trans }} </label>
                             <input type="text" value="{{ publication.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
                     </div>
                     <div class="ui-widget">
-                        <label>Publicity listing </label>
+                        <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
                         <label class="switch">
                             <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed"
                                     {% if publication.publiclyListed == 1 %} checked {% endif %}
@@ -94,13 +94,13 @@
                         </label>
                     </div>
                     <div class="ui-widget access-wrapper available-wrapper">
-                        <label>Access rules </label>
+                        <label>{{ 'prod:expose:publication:Access rules' | trans }}</label>
                         <div class="available-widget">
                             <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="">open access</option>
-                                <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>password</option>
-                                <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>users</option>
+                                <option value="">{{ 'prod:expose:publication:Open access' | trans }}</option>
+                                <option value="password" {% if publication.securityMethod == 'password'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Password' | trans }}</option>
+                                <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Users' | trans }}</option>
                             </select>
                         </div>
                         <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
@@ -113,22 +113,22 @@
                         </div>
                     </div>
                     <div class="ui-widget">
-                        <label>Layout </label>
+                        <label>{{ 'prod:expose:publication:Layout' | trans }} </label>
                         <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
-                            <option value="">Select Layout</option>
-                            <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>Gallery</option>
-                            <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>Mapbox</option>
-                            <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>Download</option>
+                            <option value="">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
+                            <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                            <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Mapbox' | trans }}</option>
+                            <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Download' | trans }}</option>
                         </select>
                     </div>
                     <div class="ui-widget">
-                        <label>Theme </label>
+                        <label>{{ 'prod:expose:publication:Theme' | trans }} </label>
                         <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
-                            <option value="">Select Theme</option>
-                            <option value="light" {% if publication.theme == 'light'%} selected="selected" {% endif %}>Light</option>
-                            <option value="dark" {% if publication.theme == 'dark'%} selected="selected" {% endif %}>Dark</option>
+                            <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
+                            <option value="light" {% if publication.theme == 'light'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Light' | trans }}</option>
+                            <option value="dark" {% if publication.theme == 'dark'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Dark' | trans }}</option>
                         </select>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
 
             <form name="publication-json" id="publication-json" class="text-center">
                 <div id="advancedSettingBlock">
-                    <h3 class="toggleSetting">Advanced setting</h3>
+                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>
                     <div id="advancedSettingInner" class="hidden">
                         <div>
                                     <textarea name="advancedSetting" id="advancedSetting" cols="100"
@@ -151,10 +151,10 @@
                         <div class="ui-dialog-buttonset">
                             <button type="button"
                                     class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                    role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
+                                    role="button" aria-disabled="false"><span class="ui-button-text">{{ 'prod:expose:publication:Cancel'| trans }}</span>
                             </button>
                             <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="update-publication">
-                                Update publication
+                                {{ 'prod:expose:publication:Update Publication'| trans }}
                             </button>
 
                         </div>
@@ -169,7 +169,7 @@
 
     <div id="permission-editing">
         <div>
-            <h3 style="display:inline-block">Permission</h3>
+            <h3 style="display:inline-block">{{ 'prod:expose:publication:Permission'| trans }}</h3>
             <div style="float:right;margin:10px;">
                 <p id="permission-success" class="hidden alert alert-success text-center"></p>
                 <p id="permission-error" class="hidden alert alert-error text-center"></p>
@@ -188,6 +188,7 @@
 
         var publicationForm = publicationEdit.find("#publication-data-form");
         var publicationParent = publicationEdit.find("#publication_parent");
+        var securityMethod = publicationEdit.find("#publication_securityMethod");
         var profileField = publicationEdit.find("#profile-field");
         var userList = publicationEdit.find("#user-list");
         var groupList = publicationEdit.find("#group-list");
@@ -263,9 +264,17 @@
 
         });
 
-        bindEvent();
+        bindPermissionEvent();
 
         publicationFieldClass.on('keyup change', function (e) {
+            if ($(this).attr('id') === 'publication_securityMethod') {
+                if ($(this).val() === 'password') {
+                    $(".securityOptions_wrapper").removeClass('visibility-hidden');
+                } else {
+                    publicationEdit.find("#publication_password").val('');
+                    $(".securityOptions_wrapper").addClass('visibility-hidden');
+                }
+            }
             try {
                 publicationEdit.find("#pub-success").addClass("hidden");
                 publicationEdit.find("#pub-error").addClass("hidden");
@@ -387,7 +396,7 @@
             }
         });
 
-        function bindEvent() {
+        function bindPermissionEvent() {
             // user right
             permissionList.on('change', '.user-view', function () {
                 updatePermission(

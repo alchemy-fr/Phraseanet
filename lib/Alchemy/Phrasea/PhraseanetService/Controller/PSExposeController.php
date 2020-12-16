@@ -741,12 +741,6 @@ class PSExposeController extends Controller
 
     private function removeAssetPublication(Client $exposeClient, $publicationId, $assetId, $token)
     {
-        $exposeClient->delete('/publication-assets/'.$publicationId.'/'.$assetId, [
-            'headers' => [
-                'Authorization' => 'Bearer '. $token
-            ]
-        ]);
-
         return $exposeClient->delete('/assets/'. $assetId, [
             'headers' => [
                 'Authorization' => 'Bearer '. $token
