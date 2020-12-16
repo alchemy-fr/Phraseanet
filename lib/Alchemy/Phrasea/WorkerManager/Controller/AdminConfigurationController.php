@@ -36,7 +36,7 @@ class AdminConfigurationController extends Controller
         return $this->render('admin/worker-manager/index.html.twig', [
             'isConnected'       => ($this->getAMQPConnection()->getChannel() != null) ? true : false,
             'workerRunningJob'  => $repoWorker->findAll(),
-            '_fragment' => $request->get('_fragment') ?? 'worker-info',
+            '_fragment' => $request->get('_fragment') ?? 'worker-configuration',
         ]);
     }
 
