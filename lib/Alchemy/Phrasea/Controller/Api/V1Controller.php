@@ -433,7 +433,7 @@ class V1Controller extends Controller
                     'autoRegister' => $conf->get(['registry', 'registration', 'auto-register-enabled']),
                 ],
                 'push'              => [
-                    'validationReminder' => $conf->get(['registry', 'actions', 'validation-reminder-days']),
+                    'validationReminder' => $conf->get(['registry', 'actions', 'validation-reminder-time-left-percent']),
                     'expirationValue'    => $conf->get(['registry', 'actions', 'validation-expiration-days']),
                 ],
             ],
