@@ -36,6 +36,7 @@ main:
             highlight: true
             populate_order: RECORD_ID
             populate_direction: DESC
+            populate_permalinks: false
             activeTab: ''
             facets:
                 _base:

@@ -467,11 +467,11 @@
 
 {% macro make_expose_bloc(app, WorkZone) %}
     <div id="expose_workzone" class="expose_workzone">
-        <div id="expose_sel" class="custom_select_dark" style="display: inline-block;">
+        <div id="expose_sel" class="custom_select_dark" style="display: inline-block;padding:10px;">
             {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
 
             <select id="expose_list" name="expose_list" class="expose_list">
-                <option value="">{{ 'prod:: workzone:expose: select expose' | trans }}</option>
+                <option value="">{{ 'prod:expose:select expose' | trans }}</option>
                 {% for key in expose_list|keys %}
                     {% if expose_list[key].activate_expose %}
                         <option value="{{ key }}">{{ key }}</option>
@@ -479,12 +479,12 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="add_expose_block">
+        <div class="add_expose_block" style="padding:10px;">
             <a id="add_publication" class="add_publication" href="#" >
-                <span>{{ 'prod:: workzone:expose: Add publication' | trans }}</span>
-                <img src="/assets/common/images/icons/Basket-New.png" title="New Expose">
+                <span>{{ 'prod:expose:Add publication' | trans }}</span>
+                <img src="/assets/common/images/icons/Basket-New.png" title="{{ 'prod:expose:Add publication' | trans }}">
             </a>
-            <button class="btn-success refresh-list" style="margin-bottom: 5px;">{{ 'Refresh' | trans }}</button>
+            <button class="btn-success refresh-list" style="margin-bottom: 5px;">{{ 'prod:expose:Refresh' | trans }}</button>
 
             <button class="btn display-tree pull-right" style="padding-bottom: 2px;padding-top: 2px;">
                 <img src="/assets/common/images/icons/tree-icon.png" title="Display hierarchical">
