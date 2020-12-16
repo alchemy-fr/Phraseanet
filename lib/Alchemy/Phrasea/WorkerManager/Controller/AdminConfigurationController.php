@@ -46,7 +46,7 @@ class AdminConfigurationController extends Controller
             'isConnected'       => ($this->getAMQPConnection()->getChannel() != null) ? true : false,
             'workerRunningJob'  => $workerRunningJob,
             'reload'            => false,
-            '_fragment'         => $request->get('_fragment') ?? 'worker-info',
+            '_fragment'         => $request->get('_fragment') ?? 'worker-configuration',
         ]);
     }
 
