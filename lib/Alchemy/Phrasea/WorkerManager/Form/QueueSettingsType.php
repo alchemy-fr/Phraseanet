@@ -4,7 +4,8 @@ namespace Alchemy\Phrasea\WorkerManager\Form;
 
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+uuse Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -23,7 +24,7 @@ class QueueSettingsType extends AbstractType
     {
         parent::buildForm($builder, $options);
 
-        $builder->add('n_workers', IntegerType::class, [
+        $builder->add('n_workers', HiddenType::class, [
             'label'    => 'admin::workermanager:tab:workerconfig:n_workers',
             'required' => false,
             'attr' => [
