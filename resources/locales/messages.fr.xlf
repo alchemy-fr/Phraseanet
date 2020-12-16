@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2020-12-16T08:31:21Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9634,9 +9634,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Ajouter un utilisateur</target>
         <jms:reference-file line="62">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e34f0393cdcc4561b6d749d15e9892a4990d81c0" resname="admin:phrasea-service-setting:tab:expose:: connection test">
+      <trans-unit id="e34f0393cdcc4561b6d749d15e9892a4990d81c0" resname="admin:phrasea-service-setting:tab:expose:: connection test" approved="no">
         <source>admin:phrasea-service-setting:tab:expose:: connection test</source>
-        <target state="needs-translation">Tester la connexion</target>
+        <target state="needs-translation">Test de connexion avec Expose (non implémenté)</target>
         <jms:reference-file line="69">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error" approved="yes">
@@ -12547,9 +12547,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="56">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="30">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="055d4b2c4be0a43224479c371b7e0c4da2719756" resname="prod:expose:publication:Publicly listing">
+      <trans-unit id="055d4b2c4be0a43224479c371b7e0c4da2719756" resname="prod:expose:publication:Publicly listing" approved="no">
         <source>prod:expose:publication:Publicly listing</source>
-        <target state="needs-translation">Lister publiquement</target>
+        <target state="needs-translation">Lister publiquement (Publication listée sur la page d'accueil d'Expose)</target>
         <jms:reference-file line="88">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="55">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
