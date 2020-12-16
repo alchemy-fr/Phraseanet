@@ -456,6 +456,21 @@ class AMQPConnection
     }
 
     /**
+     *  delete a queue
+     *
+     * @param $queueName
+     */
+    public function deleteQueue($queueName)
+    {
+        if (!isset($this->channel)) {
+            $this->getChannel();
+            $this->declareExchange();
+        }
+
+        $this->channel->queue_delete($queueName);
+    }
+
+    /**
      * Get queueName, messageCount, consumerCount  of queues
      * @return array
      * @throws Exception

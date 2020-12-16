@@ -178,6 +178,19 @@ class AdminConfigurationController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+    public function deleteQueueAction(PhraseaApplication $app, Request $request)
+    {
+        $queueName = $request->request->get('queueName');
+
+        if (empty($queueName)) {
+            return $this->app->json(['success' => false]);
+        }
+
+        $this->getAMQPConnection()->deleteQueue($queueName);
+
+        return $this->app->json(['success' => true]);
+    }
+
     public function truncateTableAction(PhraseaApplication $app)
     {
         /** @var WorkerRunningJobRepository $repoWorker */
