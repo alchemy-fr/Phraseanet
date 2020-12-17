@@ -52,7 +52,7 @@
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: record_id' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: work_on' | trans }}</th>
-        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: payload' | trans }}</th>
+{#        <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: payload' | trans }}</th>#}
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: published' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: created' | trans }}</th>
         <th class="sortable">{{ 'admin::workermanager:tab:workerinfo: finished' | trans }}</th>
@@ -75,7 +75,7 @@
         <td>{{ workerRow.recordId }}</td>
         <td>{{ workerRow.work }}</td>
         <td>{{ workerRow.workOn }}</td>
-        <td>{{ workerRow.payload| json_encode }}</td>
+{#        <td>{{ workerRow.payload| json_encode }}</td>#}
         <td>{{ workerRow.published|date('Y-m-d H:i:s') }}</td>
         <td>{{ workerRow.created|date('Y-m-d H:i:s') }}</td>
         <td>
