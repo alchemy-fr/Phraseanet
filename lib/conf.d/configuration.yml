@@ -321,6 +321,38 @@ workers:
             user: ''
             password: ''
             vhost: /
+    queues:
+        validationReminder:
+            ttl_retry: 120000
+        writeMetadatas:
+            max_retry: 3
+            ttl_retry: 30000
+            ttl_delayed: 30000
+        subdefCreation:
+            max_retry: 3
+            ttl_retry: 30000
+            ttl_delayed: 30000
+        exportMail:
+            max_retry: 3
+            ttl_retry: 30000
+        webhook:
+            max_retry: 3
+            ttl_retry: 120000
+        assetsIngest:
+            max_retry: 3
+            ttl_retry: 30000
+        createRecord:
+            max_retry: 3
+            ttl_retry: 30000
+        populateIndex:
+            max_retry: 1
+            ttl_retry: 30000
+        ftp:
+            max_retry: 3
+            ttl_retry: 600000
+        exposeUpload:
+            max_retry: 3
+            ttl_retry: 600000
 
 externalservice:
     ginger:
