@@ -182,9 +182,6 @@
                 }else{
                     config = {...config, publiclyListed: false};
                 }
-                if (dataValue.securityMethod != '') {
-                    config = {...config, securityMethod: dataValue.securityMethod};
-                }
                 if (dataValue.password) {
                     config = {...config, password: dataValue.password};
                 }
@@ -199,6 +196,8 @@
                 if (dataValue.theme) {
                     config = {...config, theme: dataValue.theme};
                 }
+
+                config = {...config, securityMethod: dataValue.securityMethod};
 
                 dataValue = {...dataValue, config};
 
