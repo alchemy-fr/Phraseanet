@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 
 class ExposeUploadWorker implements WorkerInterface
@@ -130,6 +131,9 @@ class ExposeUploadWorker implements WorkerInterface
 
             if ($response->getStatusCode() !==201) {
                 $this->messagePublisher->pushLog("An error occurred when creating asset: status-code " . $response->getStatusCode());
+                $this->finishedJob($workerRunningJob, $em);
+
+                return ;
             }
 
             $assetsResponse = json_decode($response->getBody(),true);
@@ -168,21 +172,11 @@ class ExposeUploadWorker implements WorkerInterface
             $this->messagePublisher->pushLog("Asset ID :". $assetsResponse['id'] ." successfully uploaded! ");
         } catch (\Exception $e) {
             $this->messagePublisher->pushLog("An error occurred when creating asset!: ". $e->getMessage());
+            $this->finishedJob($workerRunningJob, $em);
         }
 
         // tell that the upload is finished
-        $this->repoWorker->reconnect();
-        $em->getConnection()->beginTransaction();
-        try {
-            $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-            $workerRunningJob->setFinished(new \DateTime('now'));
-            $em->persist($workerRunningJob);
-            $em->flush();
-            $em->commit();
-        } catch (\Exception $e) {
-            $this->messagePublisher->pushLog("Error when wanting to update database :" . $e->getMessage());
-            $em->rollback();
-        }
+        $this->finishedJob($workerRunningJob, $em);
     }
 
     private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false)
@@ -209,16 +203,40 @@ class ExposeUploadWorker implements WorkerInterface
 
         if ($response->getStatusCode() !==201) {
             $this->messagePublisher->pushLog("An error occurred when adding sub-definition: status-code " . $response->getStatusCode());
+
+            return ;
         }
 
         $subDefResponse = json_decode($response->getBody(),true);
 
         $uploadUrl = new Client();
-        $uploadUrl->put($subDefResponse['uploadURL'], [
+        $res = $uploadUrl->put($subDefResponse['uploadURL'], [
             'headers' => [
                 'Content-Type' => 'application/binary'
             ],
             'body' => fopen($subdef->getRealPath(), 'r')
         ]);
+
+        if ($res->getStatusCode() !==200) {
+            $this->messagePublisher->pushLog("An error occurred when sending file, status-code : " . $response->getStatusCode());
+
+            return ;
+        }
+    }
+
+    private function finishedJob(WorkerRunningJob $workerRunningJob, EntityManager $em)
+    {
+        $this->repoWorker->reconnect();
+        $em->getConnection()->beginTransaction();
+        try {
+            $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+            $workerRunningJob->setFinished(new \DateTime('now'));
+            $em->persist($workerRunningJob);
+            $em->flush();
+            $em->commit();
+        } catch (\Exception $e) {
+            $this->messagePublisher->pushLog("Error when wanting to update database :" . $e->getMessage());
+            $em->rollback();
+        }
     }
 }
