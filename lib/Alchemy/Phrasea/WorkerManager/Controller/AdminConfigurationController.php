@@ -44,7 +44,7 @@ class AdminConfigurationController extends Controller
 
         return $this->render('admin/worker-manager/index.html.twig', [
             'isConnected'       => $this->getAMQPConnection()->getChannel() != null,
-            'workerRunningJob'  => $repoWorker->findAll(),
+            'workerRunningJob'  => $workerRunningJob,
             'reload'            => false,
             '_fragment' => $request->get('_fragment') ?? 'worker-configuration',
         ]);
@@ -316,18 +316,30 @@ class AdminConfigurationController extends Controller
 
     public function pullAssetsAction(PhraseaApplication $app, Request $request)
     {
-        $pullAssetsConfig = $this->getPullAssetsConfiguration();
+        $pullAssetsConfig = $this->getConf()->get(['workers', 'pull_assets'], []);
+        // the "pullInterval" comes from the ttl_retry
+        $ttl_retry = $this->getConf()->get(['workers','queues', 'pullAssets', 'ttl_retry'], null);
+        if(!is_null($ttl_retry)) {
+            $ttl_retry /= 1000;     // form is in sec
+        }
+        $pullAssetsConfig['pullInterval'] = $ttl_retry;
+
         $form = $app->form(new WorkerPullAssetsType(), $pullAssetsConfig);
 
         $form->handleRequest($request);
         if ($form->isValid()) {
 
-            // save new pull config
-            $app['conf']->set(['workers', 'pull_assets'], array_merge($pullAssetsConfig, $form->getData()));
-
-            $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
+            // save new pull config in 2 places
+            $form_data = $form->getData();
+            $ttl_retry = $form_data['pullInterval'];
+            unset($form_data['pullInterval'], $pullAssetsConfig['pullInterval']);
+            $app['conf']->set(['workers', 'pull_assets'], array_merge($pullAssetsConfig, $form_data));
+            if(!is_null($ttl_retry)) {
+                $this->getConf()->set(['workers','queues', 'pullAssets', 'ttl_retry'], 1000 * (int)$ttl_retry);
+            }
 
             // reinitialize the pull queues
+            $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
             $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
             $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
 
@@ -381,11 +393,6 @@ class AdminConfigurationController extends Controller
         $data['databoxIds'] = $form->getExtraData()['sbas'];
 
         return $data;
-    }
-
-    private function getPullAssetsConfiguration()
-    {
-        return $this->getConf()->get(['workers', 'pull_assets'], []);
     }
 
     private function getFtpConfiguration()

@@ -23,8 +23,9 @@ class WorkerConfigurationType extends AbstractType
         parent::buildForm($builder, $options);
 
         foreach($this->AMQPConnection->getBaseQueueNames() as $baseQueueName) {
+            /*
             $g = null;
-            if($this->AMQPConnection->hasRetryQueue($baseQueueName)) {
+            if($this->AMQPConnection->hasRetryQueue($baseQueueName) || $this->AMQPConnection->hasLoopQueue($baseQueueName)) {
                 $g = $g ?? $this->createFormGroup($builder, $baseQueueName);
                 $g->add('max_retry', TextType::class, [
                     'label' => 'admin::workermanager:tab:workerconfig:max retry',
@@ -52,7 +53,15 @@ class WorkerConfigurationType extends AbstractType
                 ]);
             }
             if($g) {
-                $builder->add($g);
+//                $builder->add($g);
+            }
+            */
+            if($this->AMQPConnection->hasRetryQueue($baseQueueName)
+                || $this->AMQPConnection->hasLoopQueue($baseQueueName)
+                || $this->AMQPConnection->hasDelayedQueue($baseQueueName)
+            ) {
+                $f = new QueueSettingsType($this->AMQPConnection, $baseQueueName);
+                $builder->add($baseQueueName, $f, ['attr' => ['class' => 'norow'], 'block_name' => 'queue']);
             }
         }
         $builder->add("boutton::appliquer", SubmitType::class,

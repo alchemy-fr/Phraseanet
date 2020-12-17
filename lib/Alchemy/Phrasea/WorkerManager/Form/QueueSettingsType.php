@@ -31,7 +31,7 @@ class QueueSettingsType extends AbstractType
                 'placeholder' => 1
             ]
         ]);
-        if($this->AMQPConnection->hasRetryQueue($this->baseQueueName)) {
+        if($this->AMQPConnection->hasRetryQueue($this->baseQueueName) || $this->AMQPConnection->hasLoopQueue($this->baseQueueName)) {
             $builder
                 ->add('max_retry', IntegerType::class, [
                     'label'    => 'admin::workermanager:tab:workerconfig:max retry',

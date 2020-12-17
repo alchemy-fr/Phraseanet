@@ -104,12 +104,12 @@ class AMQPConnection
         MessagePublisher::FTP_TYPE                 => [
             'with'        => self::WITH_RETRY,
             'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_LARGE_DELAY,
+            'ttl_retry'   => 180 * 1000,
         ],
         MessagePublisher::VALIDATION_REMINDER_TYPE => [
             'with'        => self::WITH_LOOP,
             'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => 7200*1000,
+            'ttl_retry'   => 7200 * 1000,
         ],
     ];
 
@@ -205,7 +205,9 @@ class AMQPConnection
 
     public function getBaseQueueNames()
     {
-        return array_keys(self::MESSAGES);
+        $keys = array_keys(self::MESSAGES);
+        asort($keys);
+        return $keys;
     }
 
     public function isBaseQueue(string $queueName)
@@ -436,20 +438,59 @@ class AMQPConnection
 
             if(array_key_exists($queueName, self::MESSAGES)) {
                 // base-q
-                $this->channel->queue_purge($queueName);
+                $this->purgeQueue($queueName);
+
                 if($this->hasRetryQueue($queueName)) {
-                    $this->channel->queue_delete($this->getRetryQueueName($queueName));
+                    $this->deleteQueue($this->getRetryQueueName($queueName));
                 }
                 if($this->hasLoopQueue($queueName)) {
-                    $this->channel->queue_delete($this->getLoopQueueName($queueName));
+                    $this->deleteQueue($this->getLoopQueueName($queueName));
                 }
             }
             else {
                 // retry, delayed, loop, ... q
-                $this->channel->queue_delete($queueName);
+                $this->deleteQueue($queueName);
             }
 
             $this->setQueue($queueName);
+        }
+    }
+
+    /**
+     *  delete a queue, fails silently if the q does not exists
+     *
+     * @param $queueName
+     */
+    public function deleteQueue($queueName)
+    {
+        if (!isset($this->channel)) {
+            $this->getChannel();
+            $this->declareExchange();
+        }
+        try {
+            $this->channel->queue_delete($queueName);
+        }
+        catch(\Exception $e) {
+            // no-op
+        }
+    }
+
+    /**
+     *  purge a queue, fails silently if the q does not exists
+     *
+     * @param $queueName
+     */
+    public function purgeQueue($queueName)
+    {
+        if (!isset($this->channel)) {
+            $this->getChannel();
+            $this->declareExchange();
+        }
+        try {
+            $this->channel->queue_purge($queueName);
+        }
+        catch(\Exception $e) {
+            // no-op
         }
     }
 
@@ -473,6 +514,8 @@ class AMQPConnection
                 'consumerCount' => $consumerCount
             ];
         }
+
+        ksort($queuesStatus);
 
         return $queuesStatus;
     }
