@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2020-12-15T14:27:29Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2020-12-16T08:32:13Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -12529,13 +12529,9 @@
       <trans-unit id="a2a8888f67982de346cedbe03b5884757de77925" resname="prod:expose:publication:Parent Publication">
         <source>prod:expose:publication:Parent Publication</source>
         <target state="new">prod:expose:publication:Parent Publication</target>
-        <jms:reference-file line="10">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="3c162525b8fdc627534400ea776bbee9c3090c49" resname="prod:expose:publication:Parent publication">
-        <source>prod:expose:publication:Parent publication</source>
-        <target state="new">prod:expose:publication:Parent publication</target>
         <jms:reference-file line="41">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
         <jms:reference-file line="21">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="10">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d190364e0bc239d60124d5a906249199fcedbcf7" resname="prod:expose:publication:Password">
         <source>prod:expose:publication:Password</source>
