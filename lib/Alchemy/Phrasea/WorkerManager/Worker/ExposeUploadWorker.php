@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 
 class ExposeUploadWorker implements WorkerInterface
@@ -102,60 +103,56 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
-            $multipartData = [
-                [
-                    'name'      => 'file',
-                    'contents'  => fopen($record->get_subdef('document')->getRealPath(), 'r')
-                ],
-                [
-                    'name'      => 'publication_id',
-                    'contents'  => $payload['publicationId'],
+            $requestBody = [
+                'publication_id' => $payload['publicationId'],
+                'description'    => $description,
+                'upload' => [
+                    'type' => $record->getMimeType(),
+                    'size' => $record->getSize(),
+                    'name' => $record->getOriginalName()
 
-                ],
-                [
-                    'name'      => 'slug',
-                    'contents'  => 'asset_'. $record->getId()
-                ],
-                [
-                    'name'      => 'description',
-                    'contents'  => $description
                 ]
             ];
 
             if ($lat !== null) {
-                array_push($multipartData, [
-                    'name'      => 'lat',
-                    'contents'  => $lat
-                ]);
+                $requestBody['lat'] = $lat;
             }
 
             if ($lng !== null) {
-                array_push($multipartData, [
-                    'name'      => 'lng',
-                    'contents'  => $lng
-                ]);
+                $requestBody['lng'] = $lng;
             }
 
             $response = $exposeClient->post('/assets', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $payload['accessToken']
                 ],
-                'multipart' => $multipartData
+                'json' => $requestBody
             ]);
 
             if ($response->getStatusCode() !==201) {
                 $this->messagePublisher->pushLog("An error occurred when creating asset: status-code " . $response->getStatusCode());
+                $this->finishedJob($workerRunningJob, $em);
+
+                return ;
             }
 
             $assetsResponse = json_decode($response->getBody(),true);
+
+            $uploadUrl = new Client();
+            $uploadUrl->put($assetsResponse['uploadURL'], [
+                'headers' => [
+                    'Content-Type' => 'application/binary'
+                ],
+                'body' => fopen($record->get_subdef('document')->getRealPath(), 'r')
+            ]);
 
             // add preview sub-definition
 
             $this->postSubDefinition(
                 $exposeClient,
                 $payload['accessToken'],
-                $record->get_subdef('preview')->getRealPath(),
                 $assetsResponse['id'],
+                $record->get_subdef('preview'),
                 'preview',
                 true
             );
@@ -165,19 +162,70 @@ class ExposeUploadWorker implements WorkerInterface
             $this->postSubDefinition(
                 $exposeClient,
                 $payload['accessToken'],
-                $record->get_subdef('thumbnail')->getRealPath(),
                 $assetsResponse['id'],
+                $record->get_subdef('thumbnail'),
                 'thumbnail',
                 false,
                 true
             );
 
-
+            $this->messagePublisher->pushLog("Asset ID :". $assetsResponse['id'] ." successfully uploaded! ");
         } catch (\Exception $e) {
-            $this->messagePublisher->pushLog("An error occurred when creating asset!");
+            $this->messagePublisher->pushLog("An error occurred when creating asset!: ". $e->getMessage());
+            $this->finishedJob($workerRunningJob, $em);
         }
 
         // tell that the upload is finished
+        $this->finishedJob($workerRunningJob, $em);
+    }
+
+    private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false)
+    {
+        $requestBody = [
+            'asset_id' => $assetId,
+            'name'     => $subdefName,
+            'use_as_preview'    => $isPreview,
+            'use_as_thumbnail'  => $isThumbnail,
+            'upload' => [
+                'type' => $subdef->get_mime(),
+                'size' => $subdef->get_size(),
+                'name' => $subdef->get_file()
+
+            ]
+        ];
+
+        $response = $exposeClient->post('/sub-definitions', [
+            'headers' => [
+                'Authorization' => 'Bearer ' .$token
+            ],
+            'json'  => $requestBody
+        ]);
+
+        if ($response->getStatusCode() !==201) {
+            $this->messagePublisher->pushLog("An error occurred when adding sub-definition: status-code " . $response->getStatusCode());
+
+            return ;
+        }
+
+        $subDefResponse = json_decode($response->getBody(),true);
+
+        $uploadUrl = new Client();
+        $res = $uploadUrl->put($subDefResponse['uploadURL'], [
+            'headers' => [
+                'Content-Type' => 'application/binary'
+            ],
+            'body' => fopen($subdef->getRealPath(), 'r')
+        ]);
+
+        if ($res->getStatusCode() !==200) {
+            $this->messagePublisher->pushLog("An error occurred when sending file, status-code : " . $response->getStatusCode());
+
+            return ;
+        }
+    }
+
+    private function finishedJob(WorkerRunningJob $workerRunningJob, EntityManager $em)
+    {
         $this->repoWorker->reconnect();
         $em->getConnection()->beginTransaction();
         try {
@@ -190,37 +238,5 @@ class ExposeUploadWorker implements WorkerInterface
             $this->messagePublisher->pushLog("Error when wanting to update database :" . $e->getMessage());
             $em->rollback();
         }
-    }
-
-    private function postSubDefinition(Client $exposeClient, $token, $path, $assetId, $subdefName, $isPreview = false, $isThumbnail = false)
-    {
-        return $exposeClient->post('/sub-definitions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' .$token
-            ],
-            'multipart' => [
-                [
-                    'name'      => 'file',
-                    'contents'  => fopen($path, 'r')
-                ],
-                [
-                    'name'      => 'asset_id',
-                    'contents'  => $assetId,
-
-                ],
-                [
-                    'name'      => 'name',
-                    'contents'  => $subdefName
-                ],
-                [
-                    'name'      => 'use_as_preview',
-                    'contents'  => $isPreview
-                ],
-                [
-                    'name'      => 'use_as_thumbnail',
-                    'contents'  => $isThumbnail
-                ]
-            ]
-        ]);
     }
 }
