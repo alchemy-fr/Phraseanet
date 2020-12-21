@@ -323,14 +323,23 @@ geocoding-providers:
         provincefields: Province
         countryfields: Country, Pays
 workers:
-  queue:
-    worker-queue:
-      registry: alchemy_worker.queue_registry
-      host: localhost
-      port: 5672
-      user: guest
-      password: guest
-      vhost: /
+    queue:
+        worker-queue:
+          registry: alchemy_worker.queue_registry
+          host: localhost
+          port: 5672
+          user: guest
+          password: guest
+          vhost: /
+    queues:
+        writeMetadatas:           # this Q is "delayable" in case of record is locked
+            ttl_retry: 1500         # overwrite 1000 ms default delay
+            ttl_delayed: 10000      # overwrite 5000 ms default delay
+        subdefCreation:           # this Q is "delayable" in case of record is locked
+            ttl_delayed: 10000      # overwrite 5000 ms default delay
+        pullAssets:
+            ttl_retry: 5000
+            max_retry : 5
 
 externalservice:
     ginger:

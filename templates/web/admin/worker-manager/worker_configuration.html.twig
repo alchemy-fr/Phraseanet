@@ -6,53 +6,7 @@
 <p>{{ 'admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)' |trans }}</p>
 {{ form_start(form, {'action': path('worker_admin_configuration')}) }}
 
-<div class="control-group">
-    {{ form_row(form.assetsIngest) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.createRecord) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.subdefCreation) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.writeMetadatas) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.webhook) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.exportMail) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.populateIndex) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.ftp) }}
-</div>
-
-<h3> {{ 'admin::workermanager:tab:workerconfig: Config Worker queue delayed' |trans }}</h3>
-<p> {{ 'admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond' |trans }}</p>
-
-<div class="control-group">
-    {{ form_row(form.delayedSubdef) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.delayedWriteMeta) }}
-</div>
-
-
-<div class="control-group">
-    <input type="submit" class="btn btn-primary" value={{ "admin::workermanager:tab:workerconfig:Apply in queue"|trans }} />
-</div>
-
+{{ form_widget(form) }}
 
 {{ form_end(form) }}
+

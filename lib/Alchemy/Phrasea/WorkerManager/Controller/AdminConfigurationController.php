@@ -13,19 +13,22 @@ use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
+use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 
 class AdminConfigurationController extends Controller
 {
-    public function indexAction(PhraseaApplication $app)
+    public function indexAction(PhraseaApplication $app, Request $request)
     {
-        /** @var AMQPConnection $serverConnection */
-        $serverConnection = $this->app['alchemy_worker.amqp.connection'];
-
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
 
@@ -39,9 +42,10 @@ class AdminConfigurationController extends Controller
         $workerRunningJob = $repoWorker->findByStatus($filterStatus);
 
         return $this->render('admin/worker-manager/index.html.twig', [
-            'isConnected'       => ($serverConnection->getChannel() != null) ? true : false,
+            'isConnected'       => $this->getAMQPConnection()->getChannel() != null,
             'workerRunningJob'  => $workerRunningJob,
-            'reload'            => false
+            'reload'            => false,
+            '_fragment' => $request->get('_fragment') ?? 'worker-configuration',
         ]);
     }
 
@@ -52,26 +56,44 @@ class AdminConfigurationController extends Controller
      */
     public function configurationAction(PhraseaApplication $app, Request $request)
     {
-        $retryQueueConfig = $this->getRetryQueueConfiguration();
+        $AMQPConnection = $this->getAMQPConnection();
 
-        $form = $app->form(new WorkerConfigurationType(), $retryQueueConfig);
+        $conf =  $this->getConf()->get(['workers', 'queues'], []);
+        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $conf);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            // save config in file
-            $app['conf']->set(['workers', 'retry_queue'], $form->getData());
+            // save config
+            // too bad we must remove null entries from data to not save in conf
+            $data = $form->getData();
+            array_walk(
+                $data,
+                function(&$qSettings, $qName) {
+                    $qSettings = array_filter(
+                        $qSettings,
+                        function($setting) {
+                            return $setting !== null;
+                        }
+                    );
+                }
+            );
+            $app['conf']->set(['workers', 'queues'], $data);
 
+            /*
+             * todo : reinitialize q can't depend on form content :
+             * e.g. if a ttl_retry is blank in form, the value should go back to default, so the q should be reinit.
+             *
             $queues = array_intersect_key(AMQPConnection::$defaultQueues, $retryQueueConfig);
             $retryQueuesToReset = array_intersect_key(AMQPConnection::$defaultRetryQueues, array_flip($queues));
 
-            /** @var AMQPConnection $serverConnection */
-            $serverConnection = $this->app['alchemy_worker.amqp.connection'];
             // change the queue TTL
-            $serverConnection->reinitializeQueue($retryQueuesToReset);
-            $serverConnection->reinitializeQueue(AMQPConnection::$defaultDelayedQueues);
+            $AMQPConnection->reinitializeQueue($retryQueuesToReset);
+            $AMQPConnection->reinitializeQueue(AMQPConnection::$defaultDelayedQueues);
+            */
 
-            return $app->redirectPath('worker_admin');
+            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
+            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-configuration']);
         }
 
         return $this->render('admin/worker-manager/worker_configuration.html.twig', [
@@ -84,7 +106,7 @@ class AdminConfigurationController extends Controller
         /** @var WorkerRunningJobRepository $repoWorker */
         $repoWorker = $app['repo.worker-running-job'];
 
-        $reload = ($request->query->get('reload')) == 1 ? true : false ;
+        $reload = ($request->query->get('reload') == 1);
 
         $workerRunningJob = [];
         $filterStatus = [];
@@ -114,8 +136,8 @@ class AdminConfigurationController extends Controller
     /**
      * @param Request $request
      * @param $workerId
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return JsonResponse
+     * @throws OptimisticLockException
      */
     public function changeStatusAction(Request $request, $workerId)
     {
@@ -140,13 +162,11 @@ class AdminConfigurationController extends Controller
 
     public function queueMonitorAction(PhraseaApplication $app, Request $request)
     {
-        $reload = ($request->query->get('reload')) == 1 ? true : false ;
+        $reload = ($request->query->get('reload') == 1);
 
-        /** @var  AMQPConnection $serverConnection */
-        $serverConnection = $app['alchemy_worker.amqp.connection'];
-        $serverConnection->getChannel();
-        $serverConnection->declareExchange();
-        $queuesStatus = $serverConnection->getQueuesStatus();
+        $this->getAMQPConnection()->getChannel();
+        $this->getAMQPConnection()->declareExchange();
+        $queuesStatus = $this->getAMQPConnection()->getQueuesStatus();
 
         return $this->render('admin/worker-manager/worker_queue_monitor.html.twig', [
             'queuesStatus' => $queuesStatus,
@@ -162,10 +182,20 @@ class AdminConfigurationController extends Controller
             return $this->app->json(['success' => false]);
         }
 
-        /** @var AMQPConnection $serverConnection */
-        $serverConnection = $this->app['alchemy_worker.amqp.connection'];
+        $this->getAMQPConnection()->reinitializeQueue([$queueName]);
 
-        $serverConnection->reinitializeQueue([$queueName]);
+        return $this->app->json(['success' => true]);
+    }
+
+    public function deleteQueueAction(PhraseaApplication $app, Request $request)
+    {
+        $queueName = $request->request->get('queueName');
+
+        if (empty($queueName)) {
+            return $this->app->json(['success' => false]);
+        }
+
+        $this->getAMQPConnection()->deleteQueue($queueName);
 
         return $this->app->json(['success' => true]);
     }
@@ -176,7 +206,8 @@ class AdminConfigurationController extends Controller
         $repoWorker = $app['repo.worker-running-job'];
         $repoWorker->truncateWorkerTable();
 
-        return $app->redirectPath('worker_admin');
+        // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
+        return $app->redirectPath('worker_admin', ['_fragment'=>'worker-info']);
     }
 
     public function deleteFinishedAction(PhraseaApplication $app)
@@ -185,7 +216,8 @@ class AdminConfigurationController extends Controller
         $repoWorker = $app['repo.worker-running-job'];
         $repoWorker->deleteFinishedWorks();
 
-        return $app->redirectPath('worker_admin');
+        // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
+        return $app->redirectPath('worker_admin', ['_fragment'=>'worker-info']);
     }
 
     public function searchengineAction(PhraseaApplication $app, Request $request)
@@ -201,7 +233,8 @@ class AdminConfigurationController extends Controller
 
             $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
 
-            return $app->redirectPath('worker_admin');
+            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
+            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-searchengine']);
         }
 
         return $this->render('admin/worker-manager/worker_searchengine.html.twig', [
@@ -211,14 +244,12 @@ class AdminConfigurationController extends Controller
 
     public function subviewAction()
     {
-        return $this->render('admin/worker-manager/worker_subview.html.twig', [
-        ]);
+        return $this->render('admin/worker-manager/worker_subview.html.twig', [ ]);
     }
 
     public function metadataAction()
     {
-        return $this->render('admin/worker-manager/worker_metadata.html.twig', [
-        ]);
+        return $this->render('admin/worker-manager/worker_metadata.html.twig', [ ]);
     }
 
     public function ftpAction(PhraseaApplication $app, Request $request)
@@ -231,7 +262,8 @@ class AdminConfigurationController extends Controller
             // save new ftp config
             $app['conf']->set(['workers', 'ftp'], array_merge($ftpConfig, $form->getData()));
 
-            return $app->redirectPath('worker_admin');
+            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
+            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-ftp']);
         }
 
         return $this->render('admin/worker-manager/worker_ftp.html.twig', [
@@ -241,26 +273,59 @@ class AdminConfigurationController extends Controller
 
     public function validationReminderAction(PhraseaApplication $app, Request $request)
     {
-        $interval = $app['conf']->get(['workers', 'validationReminder', 'interval'], 7200);
+        // nb : the "interval" for a loop-q is the ttl.
+        // so the setting is stored into the "queues" settings in conf.
+        // here only the "ttl_retry" can be set/changed in conf
+        $config = $this->getConf()->get(['workers', 'queues', MessagePublisher::VALIDATION_REMINDER_TYPE], []);
+        if(isset($config['ttl_retry'])) {
+            // all settings are in msec, but into the form we want large numbers in sec.
+            $config['ttl_retry'] /= 1000;
+        }
+        /** @var Form $form */
+        $form = $app->form(new WorkerValidationReminderType($this->getAMQPConnection()), $config);
 
-        if ($request->getMethod() == 'POST') {
-            $reminderInterval = (int)$request->request->get('worker_reminder_interval');
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            switch($data['act']) {
+                case 'save' :   // save the form content (settings)
+                    unset($data['act']);    // don't save this
+                    // the interval was displayed in sec. in form, convert back to msec
+                    if(isset($data['ttl_retry'])) {
+                        $data['ttl_retry'] *= 1000;
+                    }
+                    $app['conf']->set(['workers', 'queues', MessagePublisher::VALIDATION_REMINDER_TYPE], $data);
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_TYPE]);
+                    break;
+                case 'start':
+                    // reinitialize the validation reminder queues
+                    $this->getAMQPConnection()->setQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_TYPE]);
+                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
+                    break;
+                case 'stop':
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_TYPE]);
+                    break;
+            }
 
-            /** @var AMQPConnection $serverConnection */
-            $serverConnection = $this->app['alchemy_worker.amqp.connection'];
-            $serverConnection->setQueue(MessagePublisher::VALIDATION_REMINDER_QUEUE);
-
-            // save the period interval in second
-            $app['conf']->set(['workers', 'validationReminder', 'interval'], $reminderInterval);
-            // reinitialize the validation reminder queues
-            $serverConnection->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_QUEUE]);
-            $this->app['alchemy_worker.message.publisher']->initializeLoopQueue(MessagePublisher::VALIDATION_REMINDER_TYPE);
-
-            return $app->redirectPath('worker_admin');
+            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
+            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-reminder']);
         }
 
+        // guess if the q is "running" = check if there are pending message on Q or loop-Q
+        $running = false;
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        foreach([
+                    MessagePublisher::VALIDATION_REMINDER_TYPE,
+                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::VALIDATION_REMINDER_TYPE)
+                ] as $qName) {
+            if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
+                $running = true;
+            }
+        }
         return $this->render('admin/worker-manager/worker_validation_reminder.html.twig', [
-            'interval' => $interval
+            'form' => $form->createView(),
+            'running' => $running
         ]);
     }
 
@@ -276,28 +341,50 @@ class AdminConfigurationController extends Controller
 
     public function pullAssetsAction(PhraseaApplication $app, Request $request)
     {
-        $pullAssetsConfig = $this->getPullAssetsConfiguration();
+        $pullAssetsConfig = $this->getConf()->get(['workers', 'pull_assets'], []);
+        // the "pullInterval" comes from the ttl_retry
+        $ttl_retry = $this->getConf()->get(['workers','queues', 'pullAssets', 'ttl_retry'], null);
+        if(!is_null($ttl_retry)) {
+            $ttl_retry /= 1000;     // form is in sec
+        }
+        $pullAssetsConfig['pullInterval'] = $ttl_retry;
+
         $form = $app->form(new WorkerPullAssetsType(), $pullAssetsConfig);
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            /** @var AMQPConnection $serverConnection */
-            $serverConnection = $this->app['alchemy_worker.amqp.connection'];
-            $serverConnection->setQueue(MessagePublisher::PULL_QUEUE);
 
-            // save new pull config
-            $app['conf']->set(['workers', 'pull_assets'], array_merge($pullAssetsConfig, $form->getData()));
+            // save new pull config in 2 places
+            $form_data = $form->getData();
+            $ttl_retry = $form_data['pullInterval'];
+            unset($form_data['pullInterval'], $pullAssetsConfig['pullInterval']);
+            $app['conf']->set(['workers', 'pull_assets'], array_merge($pullAssetsConfig, $form_data));
+            if(!is_null($ttl_retry)) {
+                $this->getConf()->set(['workers','queues', 'pullAssets', 'ttl_retry'], 1000 * (int)$ttl_retry);
+            }
 
             // reinitialize the pull queues
-            $serverConnection->reinitializeQueue([MessagePublisher::PULL_QUEUE]);
-            $this->app['alchemy_worker.message.publisher']->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
+            $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
+            $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
+            $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
 
-            return $app->redirectPath('worker_admin');
+            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
+            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-pull-assets']);
         }
 
         return $this->render('admin/worker-manager/worker_pull_assets.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+
+
+    /**
+     * @return MessagePublisher
+     */
+    private function getMessagePublisher()
+    {
+        return $this->app['alchemy_worker.message.publisher'];
     }
 
     /**
@@ -333,18 +420,25 @@ class AdminConfigurationController extends Controller
         return $data;
     }
 
-    private function getPullAssetsConfiguration()
-    {
-        return $this->app['conf']->get(['workers', 'pull_assets'], []);
-    }
-
     private function getFtpConfiguration()
     {
-        return $this->app['conf']->get(['workers', 'ftp'], []);
+        return $this->getConf()->get(['workers', 'ftp'], []);
     }
 
-    private function getRetryQueueConfiguration()
+    /**
+     * @return AMQPConnection
+     */
+    private function getAMQPConnection()
     {
-        return $this->app['conf']->get(['workers', 'retry_queue'], []);
+        return $this->app['alchemy_worker.amqp.connection'];
     }
+
+    /**
+     * @return UrlGeneratorInterface
+     */
+    private function getUrlGenerator()
+    {
+        return $this->app['url_generator'];
+    }
+
 }
