@@ -21,6 +21,8 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Factory\WorkerFactoryInterface;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
+use databox;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordSubscriber implements EventSubscriberInterface
@@ -122,7 +124,7 @@ class RecordSubscriber implements EventSubscriberInterface
                 $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $em->rollback();
             }
         }
@@ -243,7 +245,7 @@ class RecordSubscriber implements EventSubscriberInterface
                     $em->persist($workerRunningJob);
                     $em->flush();
                     $em->commit();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $em->rollback();
                 }
             }
@@ -294,19 +296,27 @@ class RecordSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::RECORD_EDIT_QUEUE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::RECORD_EDIT_TYPE);
     }
 
     public static function getSubscribedEvents()
     {
         return [
+            /** @uses onRecordCreated */
             RecordEvents::CREATED                             => 'onRecordCreated',
+            /** @uses onSubdefinitionCreate */
             RecordEvents::SUBDEFINITION_CREATE                => 'onSubdefinitionCreate',
+            /** @uses onDelete */
             RecordEvents::DELETE                              => 'onDelete',
+            /** @uses onSubdefinitionCreationFailure */
             WorkerEvents::SUBDEFINITION_CREATION_FAILURE      => 'onSubdefinitionCreationFailure',
+            /** @uses onRecordsWriteMeta */
             WorkerEvents::RECORDS_WRITE_META                  => 'onRecordsWriteMeta',
+            /** @uses onStoryCreateCover */
             WorkerEvents::STORY_CREATE_COVER                  => 'onStoryCreateCover',
+            /** @uses onSubdefinitionWritemeta */
             WorkerEvents::SUBDEFINITION_WRITE_META            => 'onSubdefinitionWritemeta',
+            /** @uses onRecordEditInWorker */
             WorkerEvents::RECORD_EDIT_IN_WORKER               => 'onRecordEditInWorker'
         ];
     }
@@ -322,12 +332,12 @@ class RecordSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param \databox $databox
+     * @param databox $databox
      * @param string $subdefType
      * @param string $subdefName
      * @return bool
      */
-    private function isSubdefMetadataUpdateRequired(\databox $databox, $subdefType, $subdefName)
+    private function isSubdefMetadataUpdateRequired(databox $databox, $subdefType, $subdefName)
     {
         if ($databox->get_subdef_structure()->hasSubdef($subdefType, $subdefName)) {
             return $databox->get_subdef_structure()->get_subdef($subdefType, $subdefName)->isMetadataUpdateRequired();
