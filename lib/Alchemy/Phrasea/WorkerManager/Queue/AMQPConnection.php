@@ -22,16 +22,13 @@ class AMQPConnection
     private $conf;
 
     // default message TTL in retry queue in millisecond
-    const RETRY_DELAY =  10000;
-
-    // default message TTL for some retry queue , 3 minute
-    const RETRY_LARGE_DELAY = 180000;
+    const DEFAULT_RETRY_DELAY_VALUE =  10000;
 
     // default message TTL in delayed queue in millisecond
-    const DELAY = 5000;
+    const DEFAULT_DELAYED_DELAY_VALUE = 5000;
 
     // max number of retry before a message goes in failed
-    const MAX_RETRY = 3;
+    const DEFAULT_MAX_RETRY_VALUE = 3;
 
     const WITH_NOTHING = 0;
     const WITH_RETRY   = 1;
@@ -46,70 +43,75 @@ class AMQPConnection
     const FAILED_QUEUE           = 'failed_q';
     const DELAYED_QUEUE          = 'delayed_q';
 
-   const MESSAGES = [
+    // settings names
+    const MAX_RETRY = 'max_retry';
+    const TTL_RETRY = 'ttl_retry';
+    const TTL_DELAYED = 'ttl_delayed';
+
+    const MESSAGES = [
         MessagePublisher::WRITE_METADATAS_TYPE     => [
-            'with'        => self::WITH_RETRY | self::WITH_DELAYED,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
-            'ttl_delayed' => self::DELAY
+            'with'            => self::WITH_RETRY | self::WITH_DELAYED,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+            self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
         ],
         MessagePublisher::SUBDEF_CREATION_TYPE     => [
-            'with'        => self::WITH_RETRY | self::WITH_DELAYED,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
-            'ttl_delayed' => self::DELAY
+            'with'            => self::WITH_RETRY | self::WITH_DELAYED,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+            self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
         ],
         MessagePublisher::EXPORT_MAIL_TYPE         => [
-            'with'        => self::WITH_RETRY,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::WEBHOOK_TYPE             => [
-            'with'        => self::WITH_RETRY,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::ASSETS_INGEST_TYPE       => [
-            'with'        => self::WITH_RETRY,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::CREATE_RECORD_TYPE       => [
-            'with'        => self::WITH_RETRY,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::PULL_ASSETS_TYPE         => [
-            'with'        => self::WITH_LOOP,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
+            'with'            => self::WITH_LOOP,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::POPULATE_INDEX_TYPE      => [
-            'with'        => self::WITH_RETRY,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => self::RETRY_DELAY,
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::DELETE_RECORD_TYPE       => [
-            'with'        => self::WITH_NOTHING,
+            'with'            => self::WITH_NOTHING,
         ],
         MessagePublisher::MAIN_QUEUE_TYPE          => [
-            'with'        => self::WITH_NOTHING,
+            'with'            => self::WITH_NOTHING,
         ],
         MessagePublisher::SUBTITLE_TYPE            => [
-            'with'        => self::WITH_NOTHING,
+            'with'            => self::WITH_NOTHING,
         ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
-            'with'        => self::WITH_NOTHING,
+            'with'            => self::WITH_NOTHING,
         ],
         MessagePublisher::FTP_TYPE                 => [
-            'with'        => self::WITH_RETRY,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => 180 * 1000,
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => 180 * 1000,
         ],
         MessagePublisher::VALIDATION_REMINDER_TYPE => [
-            'with'        => self::WITH_LOOP,
-            'max_retry'   => self::MAX_RETRY,
-            'ttl_retry'   => 7200 * 1000,
+            'with'            => self::WITH_LOOP,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => 7200 * 1000,
         ],
     ];
 
@@ -130,55 +132,64 @@ class AMQPConnection
 
         // fill list of type attributes
         foreach (self::MESSAGES as $name => $attr) {
-            $this->queues[$name] = $attr;   // default q
-            $this->queues[$name]['Name']     = $name;
-            $this->queues[$name]['QType']    = self::BASE_QUEUE;
-            $this->queues[$name]['Exchange'] = self::ALCHEMY_EXCHANGE;
+            $settings = $attr;
+            unset($settings['with']);
+            $this->queues[$name] = [
+                'Name'             => $name,
+                'QType'            => self::BASE_QUEUE,
+                'default_settings' => $settings,   // to be displayed as placeholder
+                'settings'         => $settings,   // settings belongs only to base_q
+                'Exchange'         => self::ALCHEMY_EXCHANGE,
+            ];
 
             // a q with retry can fail (after n retry) or loop
             if($attr['with'] & self::WITH_RETRY) {
                 $this->queues[$name]['QType'] = self::BASE_QUEUE_WITH_RETRY;    // todo : avoid changing qtype ?
 
                 // declare the retry q, cross-link with base q
-                $retry_name = 'retry_' . $name;
+                $retry_name = $name . '_retry';
                 $this->queues[$name]['RetryQ'] = $retry_name;       // link baseq to retryq
-                $this->queues[$retry_name] = $attr;
-                $this->queues[$retry_name]['Name']     = $retry_name;
-                $this->queues[$retry_name]['QType']    = self::RETRY_QUEUE;
-                $this->queues[$retry_name]['Exchange'] = self::RETRY_ALCHEMY_EXCHANGE;
-                $this->queues[$retry_name]['BaseQ']    = $name;        // link retryq back to baseq
+                $this->queues[$retry_name] = [
+                    'Name'     => $retry_name,
+                    'QType'    => self::RETRY_QUEUE,
+                    'Exchange' => self::RETRY_ALCHEMY_EXCHANGE,
+                    'BaseQ'    => $name,        // link retryq back to baseq
+                ];
 
                 // declare the failed q, cross-link with base q
-                $failed_name = 'failed_' . $name;
+                $failed_name = $name . '_failed';
                 $this->queues[$name]['FailedQ'] = $failed_name;       // link baseq to failedq
-                $this->queues[$failed_name] = $attr;
-                $this->queues[$failed_name]['Name']     = $failed_name;
-                $this->queues[$failed_name]['QType']    = self::FAILED_QUEUE;
-                $this->queues[$failed_name]['Exchange'] = self::RETRY_ALCHEMY_EXCHANGE;
-                $this->queues[$failed_name]['BaseQ']    = $name;        // link failedq back to baseq
+                $this->queues[$failed_name] = [
+                    'Name'     => $failed_name,
+                    'QType'    => self::FAILED_QUEUE,
+                    'Exchange' => self::RETRY_ALCHEMY_EXCHANGE,
+                    'BaseQ'    => $name,        // link failedq back to baseq
+                ];
             }
             // a q can be "delayed" to solve "work in progress" lock on records
             if($attr['with'] & self::WITH_DELAYED) {
                 // declare the delayed q, cross-link with base q
-                $delayed_name = 'delayed_' . $name;
+                $delayed_name = $name . '_delayed';
                 $this->queues[$name]['DelayedQ'] = $delayed_name;       // link baseq to delayedq
-                $this->queues[$delayed_name] = $attr;
-                $this->queues[$delayed_name]['Name']     = $delayed_name;
-                $this->queues[$delayed_name]['QType']    = self::DELAYED_QUEUE;
-                $this->queues[$delayed_name]['Exchange'] = self::RETRY_ALCHEMY_EXCHANGE;
-                $this->queues[$delayed_name]['BaseQ']    = $name;        // link delayedq back to baseq
+                $this->queues[$delayed_name] = [
+                    'Name'     => $delayed_name,
+                    'QType'    => self::DELAYED_QUEUE,
+                    'Exchange' => self::RETRY_ALCHEMY_EXCHANGE,
+                    'BaseQ'    => $name,        // link delayedq back to baseq
+                ];
             }
             if($attr['with'] & self::WITH_LOOP) {
                 $this->queues[$name]['QType'] = self::BASE_QUEUE_WITH_LOOP;    // todo : avoid changing qtype ?
 
                 // declare the loop q, cross-link with base q
-                $loop_name = 'loop_' . $name;
+                $loop_name = $name . '_loop';
                 $this->queues[$name]['LoopQ'] = $loop_name;       // link baseq to loopq
-                $this->queues[$loop_name] = $attr;
-                $this->queues[$loop_name]['Name']     = $loop_name;
-                $this->queues[$loop_name]['QType']    = self::LOOP_QUEUE;
-                $this->queues[$loop_name]['Exchange'] = self::RETRY_ALCHEMY_EXCHANGE;
-                $this->queues[$loop_name]['BaseQ']    = $name;        // link loopq back to baseq
+                $this->queues[$loop_name] = [
+                    'Name'     => $loop_name,
+                    'QType'    => self::LOOP_QUEUE,
+                    'Exchange' => self::RETRY_ALCHEMY_EXCHANGE,
+                    'BaseQ'    => $name,        // link loopq back to baseq
+                ];
             }
         }
         // inject conf values
@@ -186,22 +197,9 @@ class AMQPConnection
             if(!isset($this->queues[$name])) {
                 throw new Exception(sprintf('undefined queue "%s" in conf', $name));
             }
-            $this->queues[$name] = array_merge($this->queues[$name], $settings);
+            $this->queues[$name]['settings'] = array_merge($this->queues[$name]['settings'], $settings);
         }
     }
-
-//    private function addQueue(string $name, string $Qtype, string $exchange, string $baseq=null)
-//    {
-//        $this->queues[$name]['Name']     = $name;
-//        $this->queues[$name]['QType']    = $Qtype;
-//        $this->queues[$name]['Exchange'] = $exchange;
-//        $this->queues[$name]['BaseQ']    = $baseq;        // link  back to baseq
-//    }
-
-//    public function getQueueNames()
-//    {
-//        return array_keys($this->queues);
-//    }
 
     public function getBaseQueueNames()
     {
@@ -233,16 +231,16 @@ class AMQPConnection
         return $q['Name'];
     }
 
-    public function getMaxRetry(string $baseQueueName)
+    public function getSetting(string $baseQueueName, string $settingName)
     {
         $q = $this->getQueue($baseQueueName);
-        return $q['max_retry'];
+        return $q['settings'][$settingName];
     }
 
-    public function getTTLRetry(string $baseQueueName)
+    public function getDefaultSetting(string $baseQueueName, string $settingName)
     {
         $q = $this->getQueue($baseQueueName);
-        return $q['ttl_retry'];
+        return $q['default_settings'][$settingName];
     }
 
     public function hasDelayedQueue(string $baseQueueName)
@@ -255,12 +253,6 @@ class AMQPConnection
     {
         $q = $this->getQueue($baseQueueName, 'DelayedQ');
         return $q['Name'];
-    }
-
-    public function getTTLDelayed(string $baseQueueName)
-    {
-        $q = $this->getQueue($baseQueueName);
-        return $q['ttl_delayed'];
     }
 
     public function getFailedQueueName(string $baseQueueName)
@@ -381,14 +373,14 @@ class AMQPConnection
                 $this->queue_declare_and_bind($queueName, self::RETRY_ALCHEMY_EXCHANGE, [
                     'x-dead-letter-exchange'    => self::ALCHEMY_EXCHANGE,
                     'x-dead-letter-routing-key' => $queue['BaseQ'],
-                    'x-message-ttl'             => $this->queues[$queue['BaseQ']]['ttl_retry']
+                    'x-message-ttl'             => $this->queues[$queue['BaseQ']]['settings'][self::TTL_RETRY]
                 ]);
                 break;
             case self::DELAYED_QUEUE:
                 $this->queue_declare_and_bind($queueName, self::RETRY_ALCHEMY_EXCHANGE, [
                     'x-dead-letter-exchange'    => self::ALCHEMY_EXCHANGE,
                     'x-dead-letter-routing-key' => $queue['BaseQ'],
-                    'x-message-ttl'             => $this->queues[$queue['BaseQ']]['ttl_delayed']
+                    'x-message-ttl'             => $this->queues[$queue['BaseQ']]['settings'][self::TTL_DELAYED]
                 ]);
                 break;
             case self::FAILED_QUEUE:
@@ -398,7 +390,7 @@ class AMQPConnection
                 $this->queue_declare_and_bind($queueName, self::ALCHEMY_EXCHANGE);
                 break;
             default:
-                throw new \Exception(sprintf('undefined q type "%s', $queueName));
+                throw new Exception(sprintf('undefined q type "%s', $queueName));
                 break;
         }
 
@@ -407,12 +399,24 @@ class AMQPConnection
 
     private function queue_declare_and_bind(string $name, string $exchange, array $arguments = null)
     {
-        $this->channel->queue_declare(
-            $name,
-            false, true, false, false, false,
-            $arguments ? new AMQPTable($arguments) : null
-        );
-        $this->channel->queue_bind($name, $exchange, $name);
+        try {
+            $this->channel->queue_declare(
+                $name,
+                false, true, false, false, false,
+                $arguments ? new AMQPTable($arguments) : null
+            );
+            $this->channel->queue_bind($name, $exchange, $name);
+        }
+        catch (Exception $e) {
+            // the q exists and arguments don't match, fallback.
+            // Happens when we try to get the number of messages (getQueueStatus)
+            // after the settings (e.g. ttl) was changed and the q was not yet re-created
+            $this->getConnection();
+            if (isset($this->connection)) {
+                $this->channel = $this->connection->channel();
+            }
+            $this->channel->queue_declare($name,true);
+        }
     }
 
     /**
@@ -433,7 +437,7 @@ class AMQPConnection
             // re-inject conf values (some may have changed)
             $settings = $this->conf->get(['workers', 'queues', $queueName], []);
             if(array_key_exists($queueName, $this->queues)) {
-                $this->queues[$queueName] = array_merge($this->queues[$queueName], $settings);
+                $this->queues[$queueName]['settings'] = array_merge($this->queues[$queueName]['settings'], $settings);
             }
 
             if(array_key_exists($queueName, self::MESSAGES)) {
@@ -470,7 +474,7 @@ class AMQPConnection
         try {
             $this->channel->queue_delete($queueName);
         }
-        catch(\Exception $e) {
+        catch(Exception $e) {
             // no-op
         }
     }
@@ -489,7 +493,7 @@ class AMQPConnection
         try {
             $this->channel->queue_purge($queueName);
         }
-        catch(\Exception $e) {
+        catch(Exception $e) {
             // no-op
         }
     }
@@ -505,14 +509,31 @@ class AMQPConnection
         $queuesStatus = [];
 
         foreach($this->queues as $name => $queue) {
+
             $this->setQueue($name);     // todo : BASE_QUEUE_WITH_RETRY will set both BASE and RETRY Q, so we should skip one of 2
 
-            list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($name, true);
-            $queuesStatus[$queueName] = [
-                'queueName'     => $queueName,
-                'messageCount'  => $messageCount,
-                'consumerCount' => $consumerCount
-            ];
+            $this->getConnection();
+            if (isset($this->connection)) {
+                $this->channel = $this->connection->channel();
+            }
+            try {
+                list($queueName, $messageCount, $consumerCount) = $this->channel->queue_declare($name, true);
+                $queuesStatus[$queueName] = [
+                    'queueName'     => $queueName,
+                    'exists'        => true,
+                    'messageCount'  => $messageCount,
+                    'consumerCount' => $consumerCount
+                ];
+            }
+            catch (Exception $e) {
+                // should not happen since "setQueue()" was called
+                $queuesStatus[$name] = [
+                    'queueName'     => $name,
+                    'exists'        => false,
+                    'messageCount'  => -1,
+                    'consumerCount' => -1
+                ];
+            }
         }
 
         ksort($queuesStatus);

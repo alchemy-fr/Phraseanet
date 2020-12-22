@@ -78,6 +78,7 @@ class AdminConfigurationController extends Controller
                     );
                 }
             );
+            ksort($data);
             $app['conf']->set(['workers', 'queues'], $data);
 
             /*
@@ -294,6 +295,7 @@ class AdminConfigurationController extends Controller
                     if(isset($data['ttl_retry'])) {
                         $data['ttl_retry'] *= 1000;
                     }
+                    $data = array_merge($config, $data);
                     $app['conf']->set(['workers', 'queues', MessagePublisher::VALIDATION_REMINDER_TYPE], $data);
                     $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::VALIDATION_REMINDER_TYPE]);
                     break;
@@ -341,39 +343,61 @@ class AdminConfigurationController extends Controller
 
     public function pullAssetsAction(PhraseaApplication $app, Request $request)
     {
-        $pullAssetsConfig = $this->getConf()->get(['workers', 'pull_assets'], []);
+        $config = $this->getConf()->get(['workers', 'pull_assets'], []);
         // the "pullInterval" comes from the ttl_retry
-        $ttl_retry = $this->getConf()->get(['workers','queues', 'pullAssets', 'ttl_retry'], null);
+        $ttl_retry = $this->getConf()->get(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], null);
         if(!is_null($ttl_retry)) {
             $ttl_retry /= 1000;     // form is in sec
         }
-        $pullAssetsConfig['pullInterval'] = $ttl_retry;
+        $config['pullInterval'] = $ttl_retry;
 
-        $form = $app->form(new WorkerPullAssetsType(), $pullAssetsConfig);
+        $form = $app->form(new WorkerPullAssetsType(), $config);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            // save new pull config in 2 places
-            $form_data = $form->getData();
-            $ttl_retry = $form_data['pullInterval'];
-            unset($form_data['pullInterval'], $pullAssetsConfig['pullInterval']);
-            $app['conf']->set(['workers', 'pull_assets'], array_merge($pullAssetsConfig, $form_data));
-            if(!is_null($ttl_retry)) {
-                $this->getConf()->set(['workers','queues', 'pullAssets', 'ttl_retry'], 1000 * (int)$ttl_retry);
+            $data = $form->getData();
+            switch($data['act']) {
+                case 'save' :   // save the form content (settings) in 2 places
+                    $ttl_retry = $data['pullInterval'];
+                    unset($data['act'], $data['pullInterval'], $config['pullInterval']);
+                    // save most data under workers/pull_assets
+                    $app['conf']->set(['workers', 'pull_assets'], array_merge($config, $data));
+                    // save ttl in the q settings
+                    if(!is_null($ttl_retry)) {
+                        $this->getConf()->set(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], 1000 * (int)$ttl_retry);
+                    }
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
+                    break;
+                case 'start':
+                    // reinitialize the validation reminder queues
+                    $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
+                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
+                    break;
+                case 'stop':
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
+                    break;
             }
-
-            // reinitialize the pull queues
-            $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
-            $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-            $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
 
             // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
             return $app->redirectPath('worker_admin', ['_fragment'=>'worker-pull-assets']);
         }
 
+        // guess if the q is "running" = check if there are pending message on Q or loop-Q
+        $running = false;
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        foreach([
+                    MessagePublisher::PULL_ASSETS_TYPE,
+                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::PULL_ASSETS_TYPE)
+                ] as $qName) {
+            if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
+                $running = true;
+            }
+        }
         return $this->render('admin/worker-manager/worker_pull_assets.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'running' => $running
         ]);
     }
 

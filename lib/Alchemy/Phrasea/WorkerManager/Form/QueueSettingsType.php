@@ -36,7 +36,7 @@ class QueueSettingsType extends AbstractType
                     'label'    => 'admin::workermanager:tab:workerconfig:max retry',
                     'required' => false,
                     'attr' => [
-                        'placeholder' => $this->AMQPConnection->getMaxRetry($this->baseQueueName),
+                        'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::MAX_RETRY),
                         //'class'=>'col'
                     ]
                 ])
@@ -44,7 +44,7 @@ class QueueSettingsType extends AbstractType
                     'label'    => 'admin::workermanager:tab:workerconfig:retry delay in ms',
                     'required' => false,
                     'attr' => [
-                        'placeholder' => $this->AMQPConnection->getTTLRetry($this->baseQueueName),
+                        'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_RETRY),
                         //'class'=>'col'
                     ]
                 ]);
@@ -54,7 +54,7 @@ class QueueSettingsType extends AbstractType
                 'label'    => 'admin::workermanager:tab:workerconfig:delayed delay in ms',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => $this->AMQPConnection->getTTLDelayed($this->baseQueueName),
+                    'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_DELAYED),
                     //'class'=>'col'
                 ]
             ]);

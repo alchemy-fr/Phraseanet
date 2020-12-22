@@ -6,24 +6,14 @@
 <br/>
 <br/>
 <div class="control-group">
-    <button type="submit" value="start" class="btn btn-primary start-validation-reminder">{{ "Start"|trans }}</button>
-
+    {% if(running) %}
     <button type="submit" value="stop" class="btn btn-danger stop-validation-reminder">{{ 'Stop' | trans }}</button>
+    {% else %}
+    <button type="submit" value="start" class="btn btn-primary start-validation-reminder">{{ "Start"|trans }}</button>
+    {% endif %}
 </div>
 {{ form_end(form) }}
 
-
-<!--
-<form name="worker_validation_reminder" method="post" action="/admin/worker-manager/validation-reminder">
-    <div class="control-group">
-        <div>
-            <label for="worker_reminder_interval" class="required">{{ "admin::workermanager:tab:Reminder: Interval in second"|trans }}</label>
-            <input type="text" id="worker_reminder_interval" name="worker_reminder_interval" required="required" value="{{ interval }}">
-        </div>
-    </div>
-
-</form>
--->
 <script type="text/javascript">
     $("#worker-reminder").on('click', 'BUTTON[type=submit]', function(e, z) {
         e.preventDefault();
@@ -35,7 +25,7 @@
         {% if(running) %}
         if(button.val() === 'save') {
             // saving will empty the queue, "stopping"
-            ok = confirm("Warning! Changing the ttl will stop validation Reminder!")
+            ok = confirm("Warning! Changing the settings will stop validation Reminder!")
         }
         {% endif %}
         if(button.val() === 'stop') {
@@ -46,40 +36,6 @@
         if(ok) {
             form.submit();
         }
-        // $('form[name="worker_validation_reminder"]').submit();
     });
-
-    {% if(running) %}
-    $("#worker-reminder .start-validation-reminder").hide();
-    $("#worker-reminder .stop-validation-reminder").show();
-    {% else %}
-    $("#worker-reminder .start-validation-reminder").show();
-    $("#worker-reminder .stop-validation-reminder").hide();
-    {% endif %}
-    // $("#worker-reminder").on('click', '.stop-validation-reminder', function(e) {
-    //     e.preventDefault();
-    //     if (confirm("Warning! You are about to stop validation Reminder!")) {
-    //         $.ajax({
-    //             type: "POST",
-    //             url: "/admin/worker-manager/purge-queue",
-    //             dataType: 'json',
-    //             data : {
-    //                 queueName : "validationReminder-queue"
-    //             },
-    //             success: function (data) {
-    //                 $('#tree li.selected a').trigger('click');
-    //                 console.log(data);
-    //
-    //                 return false;
-    //             }
-    //         });
-    //     }
-    // });
-    //
-    // $("#worker-reminder").on('click', '.start-validation-reminder', function(e) {
-    //     e.preventDefault();
-    //     $('form[name="worker_validation_reminder"]').submit();
-    // });
-
 </script>
 

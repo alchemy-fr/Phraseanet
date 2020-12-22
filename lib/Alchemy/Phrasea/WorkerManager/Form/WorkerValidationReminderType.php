@@ -34,12 +34,12 @@ class WorkerValidationReminderType extends AbstractType
             ]);
 
         // every ttl is in msec, we display this large one (loop q) in sec in form.
-        $interval = $this->AMQPConnection->getTTLRetry(MessagePublisher::VALIDATION_REMINDER_TYPE) / 1000;
+        $defaultInterval = $this->AMQPConnection->getDefaultSetting(MessagePublisher::VALIDATION_REMINDER_TYPE, AMQPConnection::TTL_RETRY) / 1000;
         $builder
             ->add('ttl_retry', TextType::class, [
                 'label' => 'admin::workermanager:tab:Reminder: Interval in second',
                 'attr' => [
-                    'placeholder' => $interval
+                    'placeholder' => $defaultInterval
                 ]
             ]);
         $builder

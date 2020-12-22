@@ -73,7 +73,7 @@ class MessageHandler
 
             $msgType = $data['message_type'];
 
-            if($count > $AMQPConnection->getMaxRetry($msgType) && !$AMQPConnection->hasLoopQueue($msgType)) {
+            if($count > $AMQPConnection->getSetting($msgType, AMQPConnection::MAX_RETRY) && !$AMQPConnection->hasLoopQueue($msgType)) {
                 $publisher->publishFailedMessage($data['payload'], $headers, $data['message_type']);
 
                 $logMessage = sprintf("Rabbit message executed %s times, it's to be saved in %s , payload >>> %s",
