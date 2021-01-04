@@ -93,18 +93,23 @@ class AMQPConnection
         ],
         MessagePublisher::RECORD_EDIT_TYPE       => [
             'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
         ],
         MessagePublisher::DELETE_RECORD_TYPE       => [
             'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
         ],
         MessagePublisher::MAIN_QUEUE_TYPE          => [
             'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
         ],
         MessagePublisher::SUBTITLE_TYPE            => [
             'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
         ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
             'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
         ],
         MessagePublisher::FTP_TYPE                 => [
             'with'            => self::WITH_RETRY,
