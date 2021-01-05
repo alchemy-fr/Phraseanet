@@ -373,7 +373,7 @@ const workzone = (services) => {
     });
 
     function WorkZoneElementRemover(el, confirm) {
-        var context = el.data('context');
+        var context = $(el).data('context');
 
         if (confirm !== true && $(el).hasClass('groupings') && warnOnRemove) {
             var buttons = {};
