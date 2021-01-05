@@ -49,28 +49,6 @@ class AMQPConnection
     const TTL_DELAYED = 'ttl_delayed';
 
     const MESSAGES = [
-        MessagePublisher::WRITE_METADATAS_TYPE     => [
-            'with'            => self::WITH_RETRY | self::WITH_DELAYED,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
-            self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
-        ],
-        MessagePublisher::SUBDEF_CREATION_TYPE     => [
-            'with'            => self::WITH_RETRY | self::WITH_DELAYED,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
-            self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
-        ],
-        MessagePublisher::EXPORT_MAIL_TYPE         => [
-            'with'            => self::WITH_RETRY,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
-        ],
-        MessagePublisher::WEBHOOK_TYPE             => [
-            'with'            => self::WITH_RETRY,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
-        ],
         MessagePublisher::ASSETS_INGEST_TYPE       => [
             'with'            => self::WITH_RETRY,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
@@ -81,31 +59,14 @@ class AMQPConnection
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
-        MessagePublisher::PULL_ASSETS_TYPE         => [
-            'with'            => self::WITH_LOOP,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
-        ],
-        MessagePublisher::POPULATE_INDEX_TYPE      => [
-            'with'            => self::WITH_RETRY,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
-        ],
-        MessagePublisher::RECORD_EDIT_TYPE       => [
-            'with'            => self::WITH_NOTHING,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-        ],
         MessagePublisher::DELETE_RECORD_TYPE       => [
             'with'            => self::WITH_NOTHING,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
         ],
-        MessagePublisher::MAIN_QUEUE_TYPE          => [
-            'with'            => self::WITH_NOTHING,
+        MessagePublisher::EXPORT_MAIL_TYPE         => [
+            'with'            => self::WITH_RETRY,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
-        ],
-        MessagePublisher::SUBTITLE_TYPE            => [
-            'with'            => self::WITH_NOTHING,
-            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
             'with'            => self::WITH_NOTHING,
@@ -116,10 +77,49 @@ class AMQPConnection
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => 180 * 1000,
         ],
+        MessagePublisher::MAIN_QUEUE_TYPE          => [
+            'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+        ],
+        MessagePublisher::POPULATE_INDEX_TYPE      => [
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+        ],
+        MessagePublisher::PULL_ASSETS_TYPE         => [
+            'with'            => self::WITH_LOOP,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+        ],
+        MessagePublisher::RECORD_EDIT_TYPE       => [
+            'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+        ],
+        MessagePublisher::SUBDEF_CREATION_TYPE     => [
+            'with'            => self::WITH_RETRY | self::WITH_DELAYED,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+            self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
+        ],
+        MessagePublisher::SUBTITLE_TYPE            => [
+            'with'            => self::WITH_NOTHING,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+        ],
         MessagePublisher::VALIDATION_REMINDER_TYPE => [
             'with'            => self::WITH_LOOP,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => 7200 * 1000,
+        ],
+        MessagePublisher::WEBHOOK_TYPE             => [
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+        ],
+        MessagePublisher::WRITE_METADATAS_TYPE     => [
+            'with'            => self::WITH_RETRY | self::WITH_DELAYED,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+            self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
         ],
     ];
 
@@ -381,14 +381,14 @@ class AMQPConnection
                 $this->queue_declare_and_bind($queueName, self::RETRY_ALCHEMY_EXCHANGE, [
                     'x-dead-letter-exchange'    => self::ALCHEMY_EXCHANGE,
                     'x-dead-letter-routing-key' => $queue['BaseQ'],
-                    'x-message-ttl'             => $this->queues[$queue['BaseQ']]['settings'][self::TTL_RETRY]
+                    'x-message-ttl'             => (int)$this->queues[$queue['BaseQ']]['settings'][self::TTL_RETRY]
                 ]);
                 break;
             case self::DELAYED_QUEUE:
                 $this->queue_declare_and_bind($queueName, self::RETRY_ALCHEMY_EXCHANGE, [
                     'x-dead-letter-exchange'    => self::ALCHEMY_EXCHANGE,
                     'x-dead-letter-routing-key' => $queue['BaseQ'],
-                    'x-message-ttl'             => $this->queues[$queue['BaseQ']]['settings'][self::TTL_DELAYED]
+                    'x-message-ttl'             => (int)$this->queues[$queue['BaseQ']]['settings'][self::TTL_DELAYED]
                 ]);
                 break;
             case self::FAILED_QUEUE:

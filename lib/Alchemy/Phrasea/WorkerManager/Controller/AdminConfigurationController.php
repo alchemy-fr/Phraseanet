@@ -58,26 +58,35 @@ class AdminConfigurationController extends Controller
     {
         $AMQPConnection = $this->getAMQPConnection();
 
-        $conf =  $this->getConf()->get(['workers', 'queues'], []);
-        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $conf);
+        $conf =  ['queues' => $this->getConf()->get(['workers', 'queues'], [])];
+        // ttl's are saved in conf in ms, display in form as sec.
+        foreach($conf['queues'] as $qname => $settings) {
+            foreach ($settings as $k=>$v) {
+                if(in_array($k, [AMQPConnection::TTL_RETRY, AMQPConnection::TTL_DELAYED])) {
+                    $conf['queues'][$qname][$k] /= 1000.0;
+                }
+            }
+        }
 
+        $form = $app->form(new WorkerConfigurationType($AMQPConnection), $conf);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             // save config
             // too bad we must remove null entries from data to not save in conf
-            $data = $form->getData();
-            array_walk(
-                $data,
-                function(&$qSettings, $qName) {
-                    $qSettings = array_filter(
-                        $qSettings,
-                        function($setting) {
-                            return $setting !== null;
+            $_data = $form->getData();
+            $data = $conf['queues'];    // we will save a patched conf (not only data) so custom settings will be preserved
+            foreach($_data['queues'] as $qname => $settings) {
+                $data[$qname] = [];
+                foreach ($settings as $k=>$v) {
+                    if(!is_null($v)) {     // ignore null values from form
+                        if(in_array($k, [AMQPConnection::TTL_RETRY, AMQPConnection::TTL_DELAYED])) {
+                            $v = (int)(1000 * (float)$v);
                         }
-                    );
+                        $data[$qname][$k] = $v;
+                    }
                 }
-            );
+            }
             ksort($data);
             $app['conf']->set(['workers', 'queues'], $data);
 

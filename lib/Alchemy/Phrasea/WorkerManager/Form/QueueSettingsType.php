@@ -41,20 +41,20 @@ class QueueSettingsType extends AbstractType
                     ]
                 ])
                 ->add('ttl_retry', IntegerType::class, [
-                    'label'    => 'admin::workermanager:tab:workerconfig:retry delay in ms',
+                    'label'    => 'admin::workermanager:tab:workerconfig:retry delay in seconds',
                     'required' => false,
                     'attr' => [
-                        'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_RETRY),
+                        'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_RETRY) / 1000.0,
                         //'class'=>'col'
                     ]
                 ]);
         }
         if($this->AMQPConnection->hasDelayedQueue($this->baseQueueName)) {
             $builder->add('ttl_delayed', IntegerType::class, [
-                'label'    => 'admin::workermanager:tab:workerconfig:delayed delay in ms',
+                'label'    => 'admin::workermanager:tab:workerconfig:delayed delay in seconds',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_DELAYED),
+                    'placeholder' => $this->AMQPConnection->getDefaultSetting($this->baseQueueName, AMQPConnection::TTL_DELAYED) / 1000.0,
                     //'class'=>'col'
                 ]
             ]);
