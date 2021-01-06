@@ -500,7 +500,9 @@ const workzone = (services) => {
 
                 uiactive.addClass('ui-state-focus active');
 
+                // reset selection when opening a basket type
                 workzoneOptions.selection.empty();
+                appEvents.emit('broadcast.workzoneResultSelection', {asArray:[], serialized:""});
 
                 getContent(uiactive);
 
