@@ -214,11 +214,11 @@ const workzone = (services) => {
             selection: new Selectable(services, $('#baskets'), {selector: '.CHIM'}),
             refresh: refreshBaskets,
             addElementToBasket: function (options) {
-                let {sbas_id, record_id, event, singleSelection} = options;
+                let {dbId, recordId, event, singleSelection} = options;
                 singleSelection = !!singleSelection || false;
 
                 if ($('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, $('#IMGT_' + sbas_id + '_' + record_id), $('#baskets .SSTT.active'), singleSelection);
+                    return dropOnBask(event, $('#IMGT_' + dbId + '_' + recordId), $('#baskets .SSTT.active'), singleSelection);
                 } else {
                     humane.info(localeService.t('noActiveBasket'));
                 }
@@ -373,7 +373,7 @@ const workzone = (services) => {
     });
 
     function WorkZoneElementRemover(el, confirm) {
-        var context = el.data('context');
+        var context = $(el).data('context');
 
         if (confirm !== true && $(el).hasClass('groupings') && warnOnRemove) {
             var buttons = {};
@@ -500,7 +500,9 @@ const workzone = (services) => {
 
                 uiactive.addClass('ui-state-focus active');
 
+                // reset selection when opening a basket type
                 workzoneOptions.selection.empty();
+                appEvents.emit('broadcast.workzoneResultSelection', {asArray:[], serialized:""});
 
                 getContent(uiactive);
 
@@ -1129,26 +1131,29 @@ const workzone = (services) => {
             let publicationId = destKey.attr('data-publication-id');
             let exposeName = $('#expose_list').val();
             let assetsContainer = destKey.find('.expose_item_deployed');
-            assetsContainer.empty().addClass('loading');
 
-            $.ajax({
-                type: 'POST',
-                url: '/prod/expose/publication/add-assets',
-                data: {
-                    publicationId: publicationId,
-                    exposeName: exposeName,
-                    lst: data.lst
-                },
-                dataType: 'json',
-                success: function (data) {
-                    setTimeout(function(){
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                        }
-                        , 6000);
+            if (publicationId !== undefined) {
+                assetsContainer.empty().addClass('loading');
 
-                    console.log(data.message);
-                }
-            });
+                $.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/add-assets',
+                    data: {
+                        publicationId: publicationId,
+                        exposeName: exposeName,
+                        lst: data.lst
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        setTimeout(function(){
+                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                            }
+                            , 6000);
+
+                        console.log(data.message);
+                    }
+                });
+            }
         }
     }
 

@@ -10230,15 +10230,15 @@ var workzone = function workzone(services) {
             selection: new _selectable2.default(services, (0, _jquery2.default)('#baskets'), { selector: '.CHIM' }),
             refresh: refreshBaskets,
             addElementToBasket: function addElementToBasket(options) {
-                var sbas_id = options.sbas_id,
-                    record_id = options.record_id,
+                var dbId = options.dbId,
+                    recordId = options.recordId,
                     event = options.event,
                     singleSelection = options.singleSelection;
 
                 singleSelection = !!singleSelection || false;
 
                 if ((0, _jquery2.default)('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, (0, _jquery2.default)('#IMGT_' + sbas_id + '_' + record_id), (0, _jquery2.default)('#baskets .SSTT.active'), singleSelection);
+                    return dropOnBask(event, (0, _jquery2.default)('#IMGT_' + dbId + '_' + recordId), (0, _jquery2.default)('#baskets .SSTT.active'), singleSelection);
                 } else {
                     humane.info(localeService.t('noActiveBasket'));
                 }
@@ -10397,7 +10397,7 @@ var workzone = function workzone(services) {
     });
 
     function WorkZoneElementRemover(el, confirm) {
-        var context = el.data('context');
+        var context = (0, _jquery2.default)(el).data('context');
 
         if (confirm !== true && (0, _jquery2.default)(el).hasClass('groupings') && warnOnRemove) {
             var buttons = {};
@@ -10519,7 +10519,9 @@ var workzone = function workzone(services) {
 
                 uiactive.addClass('ui-state-focus active');
 
+                // reset selection when opening a basket type
                 workzoneOptions.selection.empty();
+                appEvents.emit('broadcast.workzoneResultSelection', { asArray: [], serialized: "" });
 
                 getContent(uiactive);
             },
@@ -11125,25 +11127,28 @@ var workzone = function workzone(services) {
             var publicationId = destKey.attr('data-publication-id');
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var assetsContainer = destKey.find('.expose_item_deployed');
-            assetsContainer.empty().addClass('loading');
 
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: '/prod/expose/publication/add-assets',
-                data: {
-                    publicationId: publicationId,
-                    exposeName: exposeName,
-                    lst: data.lst
-                },
-                dataType: 'json',
-                success: function success(data) {
-                    setTimeout(function () {
-                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                    }, 6000);
+            if (publicationId !== undefined) {
+                assetsContainer.empty().addClass('loading');
 
-                    console.log(data.message);
-                }
-            });
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/add-assets',
+                    data: {
+                        publicationId: publicationId,
+                        exposeName: exposeName,
+                        lst: data.lst
+                    },
+                    dataType: 'json',
+                    success: function success(data) {
+                        setTimeout(function () {
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                        }, 6000);
+
+                        console.log(data.message);
+                    }
+                });
+            }
         }
     }
 
@@ -63419,7 +63424,7 @@ var addToBasket = function addToBasket(services) {
             var dbId = $el.data('db-id');
             var recordId = $el.data('record-id');
             appEvents.emit('workzone.doAddToBasket', {
-                dbId: dbId, recordId: recordId, event: event.currentTarget
+                dbId: dbId, recordId: recordId, event: event.currentTarget, singleSelection: true
             });
         });
     };
