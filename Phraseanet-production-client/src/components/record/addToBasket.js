@@ -11,7 +11,7 @@ const addToBasket = (services) => {
             let dbId = $el.data('db-id');
             let recordId = $el.data('record-id');
             appEvents.emit('workzone.doAddToBasket', {
-                dbId, recordId, event: event.currentTarget
+                dbId, recordId, event: event.currentTarget, singleSelection: true
             });
         });
     };

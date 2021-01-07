@@ -45,7 +45,7 @@ class WorkerExecuteCommand extends Command
         if ($channel == null) {
             $output->writeln("Can't connect to rabbit, check configuration!");
 
-            return;
+            return 1;
         }
 
         $serverConnection->declareExchange();
@@ -56,7 +56,7 @@ class WorkerExecuteCommand extends Command
         if ($input->getOption('max-processes') != null && $maxProcesses == 0) {
             $output->writeln('<error>Invalid max-processes option.Need an integer</error>');
 
-            return;
+            return 1;
         } elseif($maxProcesses) {
             $workerInvoker->setMaxProcessPoolValue($maxProcesses);
         }
