@@ -76,11 +76,6 @@
                 <tr>
                   <td>
                     <div class="context-menu context-menu-theme-vista">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
-                        </div>
-                      </div>
                         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                           <div title="" class="context-menu-item menu3-custom-item">
                             <div  data-kind="basket" data-id="{{basket.getId()}}"
@@ -174,15 +169,6 @@
                 <tr>
                   <td>
                     <div class="context-menu context-menu-theme-flat">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                             data-kind="basket" data-id="{{basket.getId()}}">
-                            <a href="#">
-                              <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
-                            <span>{{ 'action::exporter' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">
@@ -279,15 +265,6 @@
                 <tr>
                   <td>
                     <div class="context-menu context-menu-theme-flat">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                          data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">
-                          <a href="#">
-                            <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
-                            <span>{{ 'action::exporter' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
                       {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner edit-record-action"
