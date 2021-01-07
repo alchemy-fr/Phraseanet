@@ -134,6 +134,9 @@ class WriteMetadatasWorker implements WorkerInterface
                     $em->commit();
                 } catch (Exception $e) {
                     $em->rollback();
+                    $this->logger->error("Error persisting WorkerRunningJob !");
+
+                    return ;
                 }
             }
 
