@@ -1044,10 +1044,9 @@ const workzone = (services) => {
         }
 
         switch (action) {
-            // Comments this to  copy by default PHRAS-3326
-            // case 'CHU2CHU' :
-                // if (!appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
-                // break;
+            case 'CHU2CHU' :
+                if (appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
+                break;
             case 'IMGT2REG':
             case 'CHU2REG' :
             case 'REG2REG':

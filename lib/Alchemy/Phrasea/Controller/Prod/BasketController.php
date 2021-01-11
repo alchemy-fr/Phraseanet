@@ -13,6 +13,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -253,6 +254,21 @@ class BasketController extends Controller
 
             $basket_element->getBasket()->removeElement($basket_element);
             $basket->addElement($basket_element);
+
+            //  for basket type feedback
+            if (($validationSession = $basket->getValidation()) !== null) {
+
+                $participants = $validationSession->getParticipants();
+
+                foreach ($participants as $participant) {
+                    $validationData = new ValidationData();
+                    $validationData->setParticipant($participant);
+                    $validationData->setBasketElement($basket_element);
+
+                    $this->getEntityManager()->persist($validationData);
+                }
+            }
+
             $n++;
         }
 
