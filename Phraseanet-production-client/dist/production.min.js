@@ -10900,9 +10900,9 @@ var workzone = function workzone(services) {
                     },
                     drag: function drag(event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || (0, _jquery2.default)(this).closest('.content').hasClass('grouping')) {
-                            (0, _jquery2.default)('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
-                        } else {
                             (0, _jquery2.default)('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                        } else {
+                            (0, _jquery2.default)('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
                     }
                 });

@@ -252,11 +252,13 @@ class BasketController extends Controller
                 continue;
             }
 
-            $basket_element->getBasket()->removeElement($basket_element);
+            $oldBasket = $basket_element->getBasket();
+
+            $oldBasket->removeElement($basket_element);
             $basket->addElement($basket_element);
 
-            //  for basket type feedback
-            if (($validationSession = $basket->getValidation()) !== null) {
+            //  configure participant when moving from other type of basket to basket type feedback
+            if ($oldBasket->getValidation() == null &&  ($validationSession = $basket->getValidation()) !== null) {
 
                 $participants = $validationSession->getParticipants();
 

@@ -893,9 +893,9 @@ const workzone = (services) => {
                     },
                     drag: function (event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping')) {
-                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
-                        } else {
                             $('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                        } else {
+                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
 
                     }
