@@ -876,6 +876,10 @@ const workzone = (services) => {
                         left: -20
                     },
                     start: function (event, ui) {
+                        if (!$(this).hasClass('selected')) {
+                            return false;
+                        }
+
                         var baskets = $('#baskets');
                         baskets.append('<div class="top-scroller"></div>' +
                             '<div class="bottom-scroller"></div>');
@@ -897,7 +901,6 @@ const workzone = (services) => {
                         } else {
                             $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
-
                     }
                 });
                 window.workzoneOptions = workzoneOptions;

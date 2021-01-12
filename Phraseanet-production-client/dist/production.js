@@ -10886,6 +10886,10 @@ var workzone = function workzone(services) {
                         left: -20
                     },
                     start: function start(event, ui) {
+                        if (!(0, _jquery2.default)(this).hasClass('selected')) {
+                            return false;
+                        }
+
                         var baskets = (0, _jquery2.default)('#baskets');
                         baskets.append('<div class="top-scroller"></div>' + '<div class="bottom-scroller"></div>');
                         (0, _jquery2.default)('.bottom-scroller', baskets).bind('mousemove', function () {
