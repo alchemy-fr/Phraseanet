@@ -876,6 +876,10 @@ const workzone = (services) => {
                         left: -20
                     },
                     start: function (event, ui) {
+                        if (!$(this).hasClass('selected')) {
+                            return false;
+                        }
+
                         var baskets = $('#baskets');
                         baskets.append('<div class="top-scroller"></div>' +
                             '<div class="bottom-scroller"></div>');
@@ -893,11 +897,10 @@ const workzone = (services) => {
                     },
                     drag: function (event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping')) {
-                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
-                        } else {
                             $('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                        } else {
+                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
-
                     }
                 });
                 window.workzoneOptions = workzoneOptions;
@@ -1045,7 +1048,7 @@ const workzone = (services) => {
 
         switch (action) {
             case 'CHU2CHU' :
-                if (!appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
+                if (appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
                 break;
             case 'IMGT2REG':
             case 'CHU2REG' :
