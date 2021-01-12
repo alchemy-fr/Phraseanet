@@ -118,6 +118,18 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         && make distclean \
     ) \
     && rm -rf /tmp/ffmpeg \
+    && mkdir /tmp/swftools \
+    && curl -s http://www.swftools.org/swftools-0.9.2.tar.gz | tar zxf - -C /tmp/swftools \
+    && ( \
+        cd /tmp/swftools/swftools-0.9.2 \
+        && ./configure \
+            --prefix=/usr/local \
+        && sed -e 's/-o -L/#-o -L/' -i swfs/Makefile \
+        && make \
+        && make install \
+        && make distclean \
+    ) \
+    && rm -rf /tmp/swftools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && mkdir /entrypoint /var/alchemy \
