@@ -9303,14 +9303,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Réglages Généraux des Workers</target>
         <jms:reference-file line="5">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="yes">
+      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="no">
         <source>admin::workermanager:tab:workerconfig: warning</source>
-        <target state="translated">Il est nécessaire de détruire les files de message pour la prise en compte des nouveaux intervalles.</target>
+        <target state="needs-translation">Il est nécessaire de détruire les files de message pour la prise en compte des nouveaux intervalles - Cette actions peux être effectué dans l'onglet queues.</target>
         <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds" approved="no">
         <source>admin::workermanager:tab:workerconfig:delayed delay in seconds</source>
-        <target state="needs-translation">Intervalle entre les tentatives d’exécution pour les messages retardés</target>
+        <target state="needs-translation">Intervalle (en secondes) entre les tentatives d’exécution pour les messages retardés</target>
         <jms:reference-file line="54">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry" approved="no">
