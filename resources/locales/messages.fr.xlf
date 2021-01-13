@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-01-13T11:03:16Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2021-01-13T14:28:04Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -394,6 +394,11 @@
         <source>*Phraseanet Navigator* is a smartphone application that allow user to connect on this instance</source>
         <target state="translated">*Phraseanet Navigator* est une application mobile permettant à des utilisateurs de se connecter sur cette instance Phraseanet.</target>
         <jms:reference-file line="28">Form/Configuration/APIClientsFormType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="356a192b7913b04c54574d18c28d46e6395428ab" resname="1">
+        <source>1</source>
+        <target state="new">1</target>
+        <jms:reference-file line="30">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7400a82d671391e91d83ed4a0227a3a5aff6f929" resname="1 record" approved="yes">
         <source>1 record</source>
@@ -2451,7 +2456,7 @@
       <trans-unit id="ec52b98c45f63139a4bee23fa7d177838f2b3628" resname="Des difficultes ont ete rencontres a la connection au serveur distant" approved="yes">
         <source>Des difficultes ont ete rencontres a la connection au serveur distant</source>
         <target state="translated">Des difficultés ont été rencontrées lors de la connexion au serveur distant</target>
-        <jms:reference-file line="451">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="450">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="377">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="55f8ebc805e65b5b71ddafdae390e3be2bcd69af" resname="Description" approved="yes">
@@ -3912,7 +3917,7 @@
       <trans-unit id="6f16ba73379400f5465d624690a333f732ba02a5" resname="La connection vers le serveur distant est OK" approved="yes">
         <source>La connection vers le serveur distant est OK</source>
         <target state="translated">Connexion réussie vers le serveur distant</target>
-        <jms:reference-file line="453">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="452">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="379">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8800d5df3b53bfc0802922b08f11199af469392" resname="La sous resolution n'est pas disponible pour les documents suivants" approved="yes">
@@ -6300,6 +6305,8 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="952f375412e89ff213a8aca383d18e5691354347" resname="Start" approved="yes">
         <source>Start</source>
         <target state="translated">Démarrer</target>
+        <jms:reference-file line="12">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+        <jms:reference-file line="12">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
         <jms:reference-file line="15">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="54">admin/task-manager/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -6349,6 +6356,8 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Arrêter</target>
         <jms:reference-file line="8">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="10">prod/upload/lazaret.html.twig</jms:reference-file>
+        <jms:reference-file line="10">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+        <jms:reference-file line="10">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
         <jms:reference-file line="20">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="59">admin/task-manager/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -6933,13 +6942,13 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="ad22588b357de16914f78be458f2cf55b1a18137" resname="Transfert Annule" approved="yes">
         <source>Transfert Annule</source>
         <target state="translated">Transfert Annulé</target>
-        <jms:reference-file line="445">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="444">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="371">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cdbda343d33d6b398cdcb28b94d97fd7f92377e3" resname="Transfert OK" approved="yes">
         <source>Transfert OK</source>
         <target state="translated">Transfert terminé</target>
-        <jms:reference-file line="436">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="435">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="362">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9764c016bb5a296069109116fa95c49815dcba82" resname="Transmited files" approved="yes">
@@ -9112,22 +9121,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error" approved="yes">
         <source>admin::workermanager: Rabbit config error</source>
         <target state="translated">Erreur dans la configuration du gestionnaire de messages</target>
-        <jms:reference-file line="107">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="109">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second">
         <source>admin::workermanager:tab:Reminder: Interval in second</source>
         <target state="needs-translation">Intervalle de temps pour le rappel du Feedback (en secondes)</target>
-        <jms:reference-file line="6">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="2595e37b2158ece0ddfb2640ced15109f959a811" resname="admin::workermanager:tab:Reminder: Start">
-        <source>admin::workermanager:tab:Reminder: Start</source>
-        <target state="needs-translation">Débuter le processus pour le rappel</target>
-        <jms:reference-file line="12">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="f1170f88a845b046b9a67610a9ca5cf16df5c206" resname="admin::workermanager:tab:Reminder: Stop">
-        <source>admin::workermanager:tab:Reminder: Stop</source>
-        <target state="needs-translation">Arrêter le processus pour le rappel</target>
-        <jms:reference-file line="14">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
+        <jms:reference-file line="40">WorkerManager/Form/WorkerValidationReminderType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="af1fc0b0c903fd4213684e7e7f3e374044a5b417" resname="admin::workermanager:tab:Reminder: description">
         <source>admin::workermanager:tab:Reminder: description</source>
@@ -9142,22 +9141,22 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="b86a82cd52e1ca2780268cc4bb55a4717bc803d5" resname="admin::workermanager:tab:ftp: Proxy">
         <source>admin::workermanager:tab:ftp: Proxy</source>
         <target state="needs-translation">Proxy FTP</target>
-        <jms:reference-file line="16">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+        <jms:reference-file line="17">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ff5b2560444ada591d1a50002dd643478c417eb3" resname="admin::workermanager:tab:ftp: Proxy password">
         <source>admin::workermanager:tab:ftp: Proxy password</source>
         <target state="needs-translation">Mot de passe Proxy</target>
-        <jms:reference-file line="28">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+        <jms:reference-file line="29">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="eaa6bd4a71b0c08571e8cfc22777ca4a1675759f" resname="admin::workermanager:tab:ftp: Proxy port">
         <source>admin::workermanager:tab:ftp: Proxy port</source>
         <target state="needs-translation">Port Proxy</target>
-        <jms:reference-file line="20">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+        <jms:reference-file line="21">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4e356839c679500e767416a96bbf1c83d39c5ae1" resname="admin::workermanager:tab:ftp: Proxy user">
         <source>admin::workermanager:tab:ftp: Proxy user</source>
         <target state="new">admin::workermanager:tab:ftp: Proxy user</target>
-        <jms:reference-file line="24">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
+        <jms:reference-file line="25">WorkerManager/Form/WorkerFtpType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8888d55f2a4b362322b1ef934c5af4efa9426522" resname="admin::workermanager:tab:ftp: description">
         <source>admin::workermanager:tab:ftp: description</source>
@@ -9182,32 +9181,22 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="f3dd0c965b1c04116efbd7a5eb85615b35c20a09" resname="admin::workermanager:tab:pullassets: Client ID" approved="yes">
         <source>admin::workermanager:tab:pullassets: Client ID</source>
         <target state="translated">Client ID</target>
-        <jms:reference-file line="22">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
+        <jms:reference-file line="35">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a2cfc1080c9feff1c0de4f8aacc60dc8918a24fb" resname="admin::workermanager:tab:pullassets: Client secret" approved="yes">
         <source>admin::workermanager:tab:pullassets: Client secret</source>
         <target state="translated">Client secret</target>
-        <jms:reference-file line="19">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
+        <jms:reference-file line="32">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="020826ff58f6e456ee0cc1e3980c4c2fe6d91e4d" resname="admin::workermanager:tab:pullassets: Fetching interval in second" approved="yes">
         <source>admin::workermanager:tab:pullassets: Fetching interval in second</source>
         <target state="translated">Intervalle de récupération, en secondes</target>
-        <jms:reference-file line="25">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="9db21fc54db3f6ccdd1874f586bd509e247d27cc" resname="admin::workermanager:tab:pullassets: Initialize pull assets" approved="yes">
-        <source>admin::workermanager:tab:pullassets: Initialize pull assets</source>
-        <target state="translated">Lancer le processus</target>
-        <jms:reference-file line="22">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="dd8f6390304c7e3ef23622ca634ff8e2c5e56a2f" resname="admin::workermanager:tab:pullassets: Stop pull assets">
-        <source>admin::workermanager:tab:pullassets: Stop pull assets</source>
-        <target state="needs-translation">Stopper la récupération des assets (stop pull asset)</target>
-        <jms:reference-file line="24">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
+        <jms:reference-file line="38">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ad2a78767b3542baec93331285da8ad19a0799b2" resname="admin::workermanager:tab:pullassets: Uploader api base uri" approved="yes">
         <source>admin::workermanager:tab:pullassets: Uploader api base uri</source>
         <target state="translated">Uploader API base URI, URI de base de l'api uploader, exemple http://api-uploader.phrasea.io</target>
-        <jms:reference-file line="16">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
+        <jms:reference-file line="29">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9a17534cde9de89833e6580833e109da28ff217" resname="admin::workermanager:tab:pullassets: description" approved="yes">
         <source>admin::workermanager:tab:pullassets: description</source>
@@ -9224,6 +9213,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Nombre de worker</target>
         <jms:reference-file line="13">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="bfea3fab9c34fa90510ec79992638e3ed724ac32" resname="admin::workermanager:tab:queueMonitor: Delete Queue">
+        <source>admin::workermanager:tab:queueMonitor: Delete Queue</source>
+        <target state="new">admin::workermanager:tab:queueMonitor: Delete Queue</target>
+        <jms:reference-file line="30">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="6bd82564d60fb7faeb1d8e28222e935d50beb64a" resname="admin::workermanager:tab:queueMonitor: Message count" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Message count</source>
         <target state="translated">Nombre de Message</target>
@@ -9232,7 +9226,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="06a4df374fcd16d27a5efb5326fbf3107f65ed20" resname="admin::workermanager:tab:queueMonitor: Purge Queue">
         <source>admin::workermanager:tab:queueMonitor: Purge Queue</source>
         <target state="needs-translation">Purger la file d'attente</target>
-        <jms:reference-file line="26">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
+        <jms:reference-file line="27">admin/worker-manager/worker_queue_monitor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="73d359d1a1e0e03079a24a8774d49232684629da" resname="admin::workermanager:tab:queueMonitor: Refresh list" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: Refresh list</source>
@@ -9262,17 +9256,17 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="e948590a23c114afd7da0c33ceedad6ea4c63407" resname="admin::workermanager:tab:searchengine: Elasticsearch index name" approved="yes">
         <source>admin::workermanager:tab:searchengine: Elasticsearch index name</source>
         <target state="translated">Nom de l'index Elasticsearch</target>
-        <jms:reference-file line="30">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
+        <jms:reference-file line="32">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8bf5909677c8810b2014406b24c6e7951ca4cfa" resname="admin::workermanager:tab:searchengine: Elasticsearch server host" approved="yes">
         <source>admin::workermanager:tab:searchengine: Elasticsearch server host</source>
         <target state="translated">Adresse du serveur Elasticsearch (sans http ou https)</target>
-        <jms:reference-file line="19">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
+        <jms:reference-file line="21">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="40ffed0a60a2e090a390677ce1580a3fbc1c474d" resname="admin::workermanager:tab:searchengine: Elasticsearch service port" approved="yes">
         <source>admin::workermanager:tab:searchengine: Elasticsearch service port</source>
         <target state="translated">Port du serveur Elasticsearch</target>
-        <jms:reference-file line="23">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
+        <jms:reference-file line="25">WorkerManager/Form/WorkerSearchengineType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="efa86c50f13ab5fb26889c4e1c8762ca2def6ac0" resname="admin::workermanager:tab:searchengine: Populate" approved="yes">
         <source>admin::workermanager:tab:searchengine: Populate</source>
@@ -9304,85 +9298,35 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Sous-définition</target>
         <jms:reference-file line="35">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="777439dc521881595ca9123ff7cb56db26c2a1b8" resname="admin::workermanager:tab:workerconfig: Config Worker queue delayed" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Config Worker queue delayed</source>
-        <target state="translated">Configuration des temps dans les files d'attente</target>
-        <jms:reference-file line="41">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="35e859a404c0f84b72fc273c41659ae86d6fcf91" resname="admin::workermanager:tab:workerconfig: Create record retry delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Create record retry delay in ms</source>
-        <target state="translated">Création d'un enregistrement, en ms (valeur par défaut: 30 sec)</target>
-        <jms:reference-file line="20">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="51e2911f424ff1a3472baa486eb9fb4263dc1cf3" resname="admin::workermanager:tab:workerconfig: Export mail retry delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Export mail retry delay in ms</source>
-        <target state="translated">Export par email, en ms (valeur par défaut: 30 sec)</target>
-        <jms:reference-file line="32">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="5bca71e20f1344ceb5dfd4be62d80e9eff2bca51" resname="admin::workermanager:tab:workerconfig: Ftp retry delay in ms (default 3 min)">
-        <source>admin::workermanager:tab:workerconfig: Ftp retry delay in ms (default 3 min)</source>
-        <target state="new">admin::workermanager:tab:workerconfig: Ftp retry delay in ms (default 3 min)</target>
-        <jms:reference-file line="38">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="03326b4399bdce5ed1e809c3845317e18b84f2e1" resname="admin::workermanager:tab:workerconfig: Ingest retry delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Ingest retry delay in ms</source>
-        <target state="translated">Upload en mode Push, en ms (valeur par défaut: 30 sec)</target>
-        <jms:reference-file line="17">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="d9b268d7b1f09a04d29b1421118ab9915dfe8583" resname="admin::workermanager:tab:workerconfig: Metadatas retry delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Metadatas retry delay in ms</source>
-        <target state="translated">Ecriture de métadonnées, en ms (valeur par défaut: 30 sec)</target>
-        <jms:reference-file line="26">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="e362643b539ba54c5e7885a31db20eae59a3fa88" resname="admin::workermanager:tab:workerconfig: Populate Index retry delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Populate Index retry delay in ms</source>
-        <target state="translated">Indexation, en ms (valeur par défaut: 30 sec)</target>
-        <jms:reference-file line="35">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="37a3098343fa24f4c20b89a4b01febf29649eda2" resname="admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Set up the delay between two attempts per queue! (if not set, default 10000 millisecond)</source>
-        <target state="translated">Délai d'attente entre deux essais quand l'opération échoue suite à une erreur</target>
-        <jms:reference-file line="6">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="c99847578748bbe14ddea343324481a3196934bb" resname="admin::workermanager:tab:workerconfig: Subdef delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Subdef delay in ms</source>
-        <target state="translated">Délai sous-définition, en ms (valeur par défaut: 20 sec).</target>
-        <jms:reference-file line="41">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="3f244e6e83373721615f3c7d2f43415ff6280596" resname="admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Subdefinition retry delay in ms</source>
-        <target state="translated">Sous définition, en ms (valeur par défaut: 30 sec)</target>
-        <jms:reference-file line="23">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="f786b1c8e061a9c7cf2a35b136c53f027a42aca8" resname="admin::workermanager:tab:workerconfig: Webhook retry delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Webhook retry delay in ms</source>
-        <target state="translated">Emission d'un Webhook, en ms (valeur par défaut: 30 sec)</target>
-        <jms:reference-file line="29">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="87c14bab2a63a1a1d5b397bc7557570d98cba203" resname="admin::workermanager:tab:workerconfig: Write meta delay in ms" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: Write meta delay in ms</source>
-        <target state="translated">Délai d'écriture des métadonnées en ms (valeur par défaut: 20 sec)</target>
-        <jms:reference-file line="44">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="af7b7ed1fa5c279ad2ccdf6cd06a4c15a07c63a8" resname="admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond" approved="yes">
-        <source>admin::workermanager:tab:workerconfig: if not set ,default 5000 millisecond</source>
-        <target state="translated">Intervalle d'attente quand le fichier est bloqué par un autre processus</target>
-        <jms:reference-file line="42">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="9ae3bef299692debcc3d058857bf2258cbf150a4" resname="admin::workermanager:tab:workerconfig: title" approved="yes">
         <source>admin::workermanager:tab:workerconfig: title</source>
         <target state="translated">Réglages Généraux des Workers</target>
-        <jms:reference-file line="1">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+        <jms:reference-file line="5">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="yes">
         <source>admin::workermanager:tab:workerconfig: warning</source>
         <target state="translated">Il est nécessaire de détruire les files de message pour la prise en compte des nouveaux intervalles.</target>
-        <jms:reference-file line="3">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+        <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1bd245ee491c4fa77d7ede38c6ea4c36e00cbde4" resname="admin::workermanager:tab:workerconfig:Apply in queue" approved="yes">
-        <source>admin::workermanager:tab:workerconfig:Apply in queue</source>
-        <target state="translated">Appliquer aux files de messages</target>
-        <jms:reference-file line="54">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
+      <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds">
+        <source>admin::workermanager:tab:workerconfig:delayed delay in seconds</source>
+        <target state="new">admin::workermanager:tab:workerconfig:delayed delay in seconds</target>
+        <jms:reference-file line="54">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry">
+        <source>admin::workermanager:tab:workerconfig:max retry</source>
+        <target state="new">admin::workermanager:tab:workerconfig:max retry</target>
+        <jms:reference-file line="36">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="789f4de86070d382232e79c2f04f4d29e62cf0e2" resname="admin::workermanager:tab:workerconfig:n_workers">
+        <source>admin::workermanager:tab:workerconfig:n_workers</source>
+        <target state="new">admin::workermanager:tab:workerconfig:n_workers</target>
+        <jms:reference-file line="27">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds">
+        <source>admin::workermanager:tab:workerconfig:retry delay in seconds</source>
+        <target state="new">admin::workermanager:tab:workerconfig:retry delay in seconds</target>
+        <jms:reference-file line="44">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display error work</source>
@@ -9628,7 +9572,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error" approved="yes">
         <source>admin:worker Retrieve configuration error</source>
         <target state="translated">Erreur lors de la récupération de la configuration des workers</target>
-        <jms:reference-file line="100">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="98">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert" approved="yes">
         <source>alert</source>
@@ -9698,20 +9642,10 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Ré-indexer la base maintenant (selon le nombre de documents, cette opération peut durer plusieurs heures)</target>
         <jms:reference-file line="142">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="59980ed59a64a74d6ebb6aaad71bdc83095d595f" resname="basket::Documents are being to moved !">
-        <source>basket::Documents are being to moved !</source>
-        <target state="new">basket::Documents are being to moved !</target>
+      <trans-unit id="eb622a9da2b6f2e91ea532b094fd1ad3756ae1c2" resname="basket:: Items are being to moved !">
+        <source>basket:: Items are being to moved !</source>
+        <target state="new">basket:: Items are being to moved !</target>
         <jms:reference-file line="67">Controller/Prod/LanguageController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="3516d5f6342a2a93fd52aa0ce4d17a45df7ab5f0" resname="basket::Warning!You are about to delete one record from a feedback, please confirm your action">
-        <source>basket::Warning!You are about to delete one record from a feedback, please confirm your action</source>
-        <target state="new">basket::Warning!You are about to delete one record from a feedback, please confirm your action</target>
-        <jms:reference-file line="66">Controller/Prod/LanguageController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="fe40d5a80ac8bce918b890d249a351cd269e81f4" resname="basket:Delete one record">
-        <source>basket:Delete one record</source>
-        <target state="new">basket:Delete one record</target>
-        <jms:reference-file line="62">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2c1d05cc230f0bd66de9600c3304eaf374ffa24" resname="basket:action:delete record form basket" approved="yes">
         <source>basket:action:delete record form basket</source>
@@ -9724,6 +9658,16 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Supprimer l'enregistrement de la base</target>
         <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="75">prod/WorkZone/Basket.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item">
+        <source>basket:feedback Delete item</source>
+        <target state="new">basket:feedback Delete item</target>
+        <jms:reference-file line="62">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action">
+        <source>basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action</source>
+        <target state="new">basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action</target>
+        <jms:reference-file line="66">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="05661ba3e118de7262e3acc7b6ffe75be8b98cdd" resname="be notified when a document is placed in quarantine" approved="yes">
         <source>be notified when a document is placed in quarantine</source>
@@ -9786,6 +9730,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="c6f716e883e5747e4bc8a8afc7a0ec1ccf44e0b5" resname="boutton::appliquer" approved="yes">
         <source>boutton::appliquer</source>
         <target state="translated">Appliquer</target>
+        <jms:reference-file line="40">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
+        <jms:reference-file line="47">WorkerManager/Form/WorkerValidationReminderType.php</jms:reference-file>
+        <jms:reference-file line="43">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
         <jms:reference-file line="77">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb7084f3be2ac7d8cf870a9bb83df976dc65ad5b" resname="boutton::chercher" approved="yes">
@@ -13841,19 +13788,19 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="b209118220972d780ce7d6c1ba4777be551244d4" resname="task::ftp:Certains documents n'ont pas pu etre tranferes" approved="yes">
         <source>task::ftp:Certains documents n'ont pas pu etre tranferes</source>
         <target state="translated">Certains fichiers n'ont pu être transférés</target>
-        <jms:reference-file line="446">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="445">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="372">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0727fa8b2d7c54ef13bd42f18f9246af2f3dcb2a" resname="task::ftp:Details des fichiers" approved="yes">
         <source>task::ftp:Details des fichiers</source>
         <target state="translated">Détails des fichiers:</target>
-        <jms:reference-file line="464">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="463">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="390">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c28528f993cb07c3716f88b03f1235750bfc6055" resname="task::ftp:Etat d'envoi FTP vers le serveur &quot;%server%&quot; avec le compte &quot;%username%&quot; et pour destination le dossier : &quot;%directory%&quot;" approved="yes">
         <source>task::ftp:Etat d'envoi FTP vers le serveur "%server%" avec le compte "%username%" et pour destination le dossier : "%directory%"</source>
         <target state="translated">Etat de l'envoi FTP vers le serveur "%server%" avec le compte "%username%" et ayant pour destination le répertoire : "%directory%"</target>
-        <jms:reference-file line="132">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="131">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="111">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c9c22d9454175a7d9635068f39d78d100642f6ad" resname="task::ftp:FTP Pull" approved="yes">
@@ -13864,14 +13811,14 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="45e13d4a98d29746203b8174e32db990b6860b06" resname="task::ftp:File &quot;%file%&quot; (record %record_id%) de la base &quot;%basename%&quot; (Export du Document) : Transfert cancelled (le document n'existe plus)" approved="yes">
         <source>task::ftp:File "%file%" (record %record_id%) de la base "%basename%" (Export du Document) : Transfert cancelled (le document n'existe plus)</source>
         <target state="translated">Transfert annulé pour le fichier "%file%" (recordid %record_id%) de la base "%basename%" (Export du Document) : le document n'existe plus</target>
-        <jms:reference-file line="277">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="276">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="256">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="80a29136ce99f9c32aba5f2118e942909b9c2014" resname="task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%" approved="yes">
         <source>task::ftp:Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</source>
         <target state="translated">Record %recordid% - %filename% de la base (%databoxname% - %collectionname%) - %subdefname%</target>
-        <jms:reference-file line="430">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
-        <jms:reference-file line="439">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="429">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="438">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="356">TaskManager/Job/FtpJob.php</jms:reference-file>
         <jms:reference-file line="365">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
@@ -13884,13 +13831,13 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="3442bca4992e5cd06a67f05beebf5721383d1653" resname="task::ftp:TENTATIVE no %number%, %date%" approved="yes">
         <source>task::ftp:TENTATIVE no %number%, %date%</source>
         <target state="translated">Tentative %number% - %date%</target>
-        <jms:reference-file line="141">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="140">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="120">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0c408a4355fd00097aba861dd9bb650acdff3d96" resname="task::ftp:Tous les documents ont ete transferes avec succes" approved="yes">
         <source>task::ftp:Tous les documents ont ete transferes avec succes</source>
         <target state="translated">Tous les fichiers ont été transférés</target>
-        <jms:reference-file line="425">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
+        <jms:reference-file line="424">WorkerManager/Worker/FtpWorker.php</jms:reference-file>
         <jms:reference-file line="351">TaskManager/Job/FtpJob.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f0dea9613c9721ad0a2afadccba858183856338b" resname="task::ftp:chemin distant" approved="yes">
