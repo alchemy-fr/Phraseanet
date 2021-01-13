@@ -135,7 +135,7 @@ services:
     - LC_CTYPE=C.UTF-8
     - LC_TIME=C.UTF-8
     - LC_NAME=C.UTF-8
-    - PHRASEANET_WORKER_explode  
+    - PHRASEANET_EXPLODE_WORKER  
     - PHRASEANET_WORKER_assetsIngest
     - PHRASEANET_WORKER_createRecord
     - PHRASEANET_WORKER_deleteRecord
