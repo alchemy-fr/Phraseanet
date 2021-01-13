@@ -375,7 +375,7 @@ const workzone = (services) => {
     function WorkZoneElementRemover(el, confirm) {
         var context = $(el).data('context');
 
-        if (confirm !== true && $(el).hasClass('groupings') && warnOnRemove) {
+        if (confirm !== true && ($(el).hasClass('groupings') || $(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
@@ -387,9 +387,18 @@ const workzone = (services) => {
                 $('#DIALOG-baskets').dialog('close').remove();
             };
 
-            var texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
+            var texte = '';
+            var title = '';
+            if ($(el).hasClass('groupings')) {
+                texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
+                title = localeService.t('removeTitle');
+            } else {
+                texte = '<p>' + localeService.t('confirmRemoveFeedBack') + '</p>';
+                title = localeService.t('removeRecordFeedbackTitle');
+            }
+
             $('body').append('<div id="DIALOG-baskets"></div>');
-            $('#DIALOG-baskets').attr('title', localeService.t('removeTitle'))
+            $('#DIALOG-baskets').attr('title', title)
                 .empty()
                 .append(texte)
                 .dialog({
@@ -897,7 +906,7 @@ const workzone = (services) => {
                     },
                     drag: function (event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping')) {
-                            $('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                            $('#dragDropCursor div').empty().append(workzoneOptions.selection.length() + ', ' + localeService.t('movedRecord'));
                         } else {
                             $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
