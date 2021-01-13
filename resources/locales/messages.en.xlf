@@ -9305,7 +9305,7 @@
       </trans-unit>
       <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="no">
         <source>admin::workermanager:tab:workerconfig: warning</source>
-        <target state="needs-translation">Queues need to be destroyed to take into account new time intervals - this action can be perform in "queues" Tab.</target>
+        <target state="needs-translation">Queues need to be destroyed to take into account new time intervals - this action can be performed in the "queues" tab.</target>
         <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds" approved="no">
