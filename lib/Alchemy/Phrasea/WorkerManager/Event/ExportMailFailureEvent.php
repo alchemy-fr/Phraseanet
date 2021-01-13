@@ -13,7 +13,7 @@ class ExportMailFailureEvent extends SfEvent
     private $workerMessage;
     private $count;
 
-    public function __construct($emitterUserId, $tokenValue, $destinationMails, $params, $workerMessage = '', $count = 2)
+    public function __construct($emitterUserId, $tokenValue, $destinationMails, $params, $workerMessage, $count)
     {
         $this->emitterUserId    = $emitterUserId;
         $this->tokenValue       = $tokenValue;

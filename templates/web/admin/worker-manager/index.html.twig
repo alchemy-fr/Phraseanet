@@ -10,7 +10,7 @@
                     {{ "admin::workermanager:tab:configuration: title" | trans }}
                 </a>
             </li>
-            <li class="worker-info active" role="presentation">
+            <li class="worker-info" role="presentation">
                 <a href="#worker-info" aria-controls="worker-info" role="tab" data-toggle="tab" data-url="/admin/worker-manager/info">
                     {{ 'admin::workermanager:tab:workerinfo: title' |trans }}
                 </a>
@@ -56,9 +56,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane fade" id="worker-configuration"></div>
-            <div role="tabpanel" class="tab-pane fade in active" id="worker-info">
-                {% include "admin/worker-manager/worker_info.html.twig" %}
-            </div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-info"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-searchengine"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-pull-assets"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-ftp"></div>
@@ -101,6 +99,10 @@
                 });
             }
         });
+
+        var sel = '#configurationTabs li.{{ _fragment }} a';
+        $(sel).click();
+
     </script>
 {% else %}
     <h1 class="alert alert-danger">

@@ -33,7 +33,7 @@ class AssetsIngestSubscriber implements EventSubscriberInterface
             'payload'       => array_merge($event->getData(), ['type' => WorkerRunningJob::TYPE_PUSH])
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::ASSETS_INGEST_QUEUE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::ASSETS_INGEST_TYPE);
     }
 
     public function onAssetsCreationFailure(AssetsCreationFailureEvent $event)
@@ -43,9 +43,9 @@ class AssetsIngestSubscriber implements EventSubscriberInterface
             'payload'       => $event->getPayload()
         ];
 
-        $this->messagePublisher->publishMessage(
+        $this->messagePublisher->publishRetryMessage(
             $payload,
-            MessagePublisher::RETRY_ASSETS_INGEST_QUEUE,
+            MessagePublisher::ASSETS_INGEST_TYPE,
             $event->getCount(),
             $event->getWorkerMessage()
         );
@@ -84,9 +84,9 @@ class AssetsIngestSubscriber implements EventSubscriberInterface
             }
         }
 
-        $this->messagePublisher->publishMessage(
+        $this->messagePublisher->publishRetryMessage(
             $payload,
-            MessagePublisher::RETRY_CREATE_RECORD_QUEUE,
+            MessagePublisher::CREATE_RECORD_TYPE,     // todo
             $event->getCount(),
             $event->getWorkerMessage()
         );
