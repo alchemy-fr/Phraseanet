@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class WorkerFtpType extends AbstractType
@@ -12,19 +13,19 @@ class WorkerFtpType extends AbstractType
         parent::buildForm($builder, $options);
 
         $builder
-            ->add('proxy', 'text', [
+            ->add('proxy', TextType::class, [
                 'label' => 'admin::workermanager:tab:ftp: Proxy',
                 'required' => false
             ])
-            ->add('proxyPort', 'text', [
+            ->add('proxyPort', TextType::class, [
                 'label' => 'admin::workermanager:tab:ftp: Proxy port',
                 'required' => false
             ])
-            ->add('proxyUser', 'text', [
+            ->add('proxyUser', TextType::class, [
                 'label' => 'admin::workermanager:tab:ftp: Proxy user',
                 'required' => false
             ])
-            ->add('proxyPassword', 'text', [
+            ->add('proxyPassword', TextType::class, [
                 'label' => 'admin::workermanager:tab:ftp: Proxy password',
                 'required' => false
             ])
