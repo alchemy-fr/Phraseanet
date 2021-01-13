@@ -9303,14 +9303,14 @@
         <target state="translated">Workers main settings</target>
         <jms:reference-file line="5">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="yes">
+      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="no">
         <source>admin::workermanager:tab:workerconfig: warning</source>
-        <target state="translated">Queues need to be destroyed to take into account new time intervals</target>
+        <target state="needs-translation">Queues need to be destroyed to take into account new time intervals - this action can be perform in "queues" Tab.</target>
         <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds" approved="no">
         <source>admin::workermanager:tab:workerconfig:delayed delay in seconds</source>
-        <target state="needs-translation">Delay between attempts for delayed messages</target>
+        <target state="needs-translation">Delay between attempts for delayed messages (sec)</target>
         <jms:reference-file line="54">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry" approved="no">
@@ -9325,7 +9325,7 @@
       </trans-unit>
       <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds" approved="no">
         <source>admin::workermanager:tab:workerconfig:retry delay in seconds</source>
-        <target state="needs-translation">Delay for retry</target>
+        <target state="needs-translation">Delay for retry (sec)</target>
         <jms:reference-file line="44">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
