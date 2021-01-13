@@ -29,7 +29,7 @@ class MainQueueWorker implements WorkerInterface
 
         switch ($payload['type']) {
             case MessagePublisher::SUBTITLE_TYPE:
-                $queue = MessagePublisher::SUBTITLE_QUEUE;
+                $queue = MessagePublisher::SUBTITLE_TYPE;
                 $messageType = $payload['type'];
                 unset($payload['type']);
 

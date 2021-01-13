@@ -10,7 +10,7 @@ class AssetsCreationFailureEvent extends SfEvent
     private $workerMessage;
     private $count;
 
-    public function __construct($payload, $workerMessage, $count = 2)
+    public function __construct($payload, $workerMessage, $count)
     {
         $this->payload          = $payload;
         $this->workerMessage    = $workerMessage;
