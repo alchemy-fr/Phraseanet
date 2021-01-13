@@ -12,7 +12,7 @@ class SubdefinitionCreationFailureEvent extends RecordEvent
     private $count;
     private $workerJobId;
 
-    public function __construct(RecordInterface $record, $subdefName, $workerMessage = '', $count = 2, $workerJobId = 0)
+    public function __construct(RecordInterface $record, $subdefName, $workerMessage, $count, $workerJobId)
     {
         parent::__construct($record);
 

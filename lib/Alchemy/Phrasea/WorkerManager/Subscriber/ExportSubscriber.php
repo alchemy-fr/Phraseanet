@@ -32,7 +32,7 @@ class ExportSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::EXPORT_QUEUE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::EXPORT_MAIL_TYPE);
     }
 
     public function onExportMailFailure(ExportMailFailureEvent $event)
@@ -47,9 +47,9 @@ class ExportSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage(
+        $this->messagePublisher->publishRetryMessage(
             $payload,
-            MessagePublisher::RETRY_EXPORT_QUEUE,
+            MessagePublisher::EXPORT_MAIL_TYPE,
             $event->getCount(),
             $event->getWorkerMessage()
         );
@@ -66,7 +66,7 @@ class ExportSubscriber implements EventSubscriberInterface
 
         $this->messagePublisher->publishMessage(
             $payload,
-            MessagePublisher::FTP_QUEUE
+            MessagePublisher::FTP_TYPE
         );
     }
 
