@@ -9664,9 +9664,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="new">basket:feedback Delete item</target>
         <jms:reference-file line="62">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action" approved="yes">
+      <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action" approved="no">
         <source>basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action</source>
-        <target state="translated">Attention ! Vous êtes en train de supprimer un document d'une validation, merci de confirmer votre action</target>
+        <target state="needs-translation">Vous êtes en train de supprimer un item d'une validation, vous perdrez tout les Votes associé cet item, merci de confirmer votre action</target>
         <jms:reference-file line="66">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="05661ba3e118de7262e3acc7b6ffe75be8b98cdd" resname="be notified when a document is placed in quarantine" approved="yes">
