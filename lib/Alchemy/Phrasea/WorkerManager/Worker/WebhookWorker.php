@@ -170,7 +170,11 @@ class WebhookWorker implements WorkerInterface
             $this->messagePublisher->pushLog($workerMessage);
 
             // count = 0  mean do not retry because no api application defined
-            $this->dispatch(WorkerEvents::WEBHOOK_DELIVER_FAILURE, new WebhookDeliverFailureEvent($webhookevent->getId(), $workerMessage, 0));
+            $this->dispatch(WorkerEvents::WEBHOOK_DELIVER_FAILURE, new WebhookDeliverFailureEvent(
+                $webhookevent->getId(),
+                $workerMessage,
+                0)
+            );
 
             return;
         }
@@ -235,7 +239,7 @@ class WebhookWorker implements WorkerInterface
             $this->messagePublisher->publishFailedMessage(
                 $payload,
                 new AMQPTable(['worker-message' => $e->getMessage()]),
-                MessagePublisher::FAILED_WEBHOOK_QUEUE
+                MessagePublisher::WEBHOOK_TYPE
             );
         }
     }

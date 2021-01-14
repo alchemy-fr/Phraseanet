@@ -75,7 +75,7 @@ class SubdefCreationWorker implements WorkerInterface
                 if (!$canCreateSubdef) {
                     // the file is in used to write meta
 
-                    $this->messagePublisher->publishMessage($message, MessagePublisher::DELAYED_SUBDEF_QUEUE);
+                    $this->messagePublisher->publishDelayedMessage($message, MessagePublisher::SUBDEF_CREATION_TYPE);
 
                     return ;
                 }
@@ -178,7 +178,10 @@ class SubdefCreationWorker implements WorkerInterface
                 // checking ended
 
                 // order to write meta for the subdef if needed
-                $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent($record, $payload['subdefName']));
+                $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                    $record,
+                    $payload['subdefName'])
+                );
 
                 $this->subdefGenerator->setLogger($oldLogger);
 

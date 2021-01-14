@@ -1,53 +1,40 @@
 <h1>{{ 'admin::workermanager:tab:pullassets: description' |trans }}</h1>
 
 {{ form_start(form, {'action': path('worker_admin_pullAssets')}) }}
-
+{{ form_widget(form) }}
+<br/>
+<br/>
+<br/>
 <div class="control-group">
-    {{ form_row(form.UploaderApiBaseUri) }}
+{% if(running) %}
+    <button type="submit" value="stop" class="btn btn-danger stop-pull-assets">{{ 'Stop' | trans }}</button>
+{% else %}
+    <button type="submit" value="start" class="btn btn-primary start-pull-assets">{{ "Start"|trans }}</button>
+{% endif %}
 </div>
-
-<div class="control-group">
-    {{ form_row(form.clientSecret) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.clientId) }}
-</div>
-
-<div class="control-group">
-    {{ form_row(form.pullInterval) }}
-</div>
-
-<div class="control-group">
-    <button class="btn btn-primary start-pull-mode">{{ "admin::workermanager:tab:pullassets: Initialize pull assets"|trans }}</button>
-
-    <button class="btn btn-danger stop-pull-mode">{{ 'admin::workermanager:tab:pullassets: Stop pull assets' | trans }}</button>
-</div>
-
 {{ form_end(form) }}
 
 <script type="text/javascript">
-    $("#worker-pull-assets").on('click', '.stop-pull-mode', function(e) {
+    $("#worker-pull-assets").on('click', 'BUTTON[type=submit]', function(e, z) {
         e.preventDefault();
-        if (confirm("Warning! You are about to stop pull mode!")) {
-            $.ajax({
-                type: "POST",
-                url: "/admin/worker-manager/purge-queue",
-                dataType: 'json',
-                data : {
-                    queueName : "pull-queue"
-                },
-                success: function (data) {
-                    console.log(data);
-                    return false;
-                }
-            });
+        var button = $(e.target);
+        var form = button.closest("FORM");
+        $("INPUT.act", form).val(button.val());     // "save", "start" or "stop"
+
+        var ok = true;
+        {% if(running) %}
+        if(button.val() === 'save') {
+            // saving will empty the queue, "stopping"
+            ok = confirm("Warning! Changing the settings will stop pulling assets!")
+        }
+        {% endif %}
+        if(button.val() === 'stop') {
+            // saving will empty the queue, "stopping"
+            ok = confirm("Warning! You are about to stop pulling assets!")
+        }
+
+        if(ok) {
+            form.submit();
         }
     });
-
-    $("#worker-pull-assets").on('click', '.start-pull-mode', function(e) {
-        e.preventDefault();
-        $('form[name="worker_pullAssets"]').submit();
-    });
-
 </script>
