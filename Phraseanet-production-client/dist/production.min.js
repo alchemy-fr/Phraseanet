@@ -10399,7 +10399,7 @@ var workzone = function workzone(services) {
     function WorkZoneElementRemover(el, confirm) {
         var context = (0, _jquery2.default)(el).data('context');
 
-        if (confirm !== true && (0, _jquery2.default)(el).hasClass('groupings') && warnOnRemove) {
+        if (confirm !== true && ((0, _jquery2.default)(el).hasClass('groupings') || (0, _jquery2.default)(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
@@ -10411,9 +10411,18 @@ var workzone = function workzone(services) {
                 (0, _jquery2.default)('#DIALOG-baskets').dialog('close').remove();
             };
 
-            var texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
+            var texte = '';
+            var title = '';
+            if ((0, _jquery2.default)(el).hasClass('groupings')) {
+                texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
+                title = localeService.t('removeTitle');
+            } else {
+                texte = '<p>' + localeService.t('confirmRemoveFeedBack') + '</p>';
+                title = localeService.t('removeRecordFeedbackTitle');
+            }
+
             (0, _jquery2.default)('body').append('<div id="DIALOG-baskets"></div>');
-            (0, _jquery2.default)('#DIALOG-baskets').attr('title', localeService.t('removeTitle')).empty().append(texte).dialog({
+            (0, _jquery2.default)('#DIALOG-baskets').attr('title', title).empty().append(texte).dialog({
                 autoOpen: false,
                 closeOnEscape: true,
                 resizable: false,
@@ -10904,7 +10913,7 @@ var workzone = function workzone(services) {
                     },
                     drag: function drag(event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || (0, _jquery2.default)(this).closest('.content').hasClass('grouping')) {
-                            (0, _jquery2.default)('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                            (0, _jquery2.default)('#dragDropCursor div').empty().append(workzoneOptions.selection.length() + ', ' + localeService.t('movedRecord'));
                         } else {
                             (0, _jquery2.default)('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
