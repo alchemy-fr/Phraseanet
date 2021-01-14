@@ -45,7 +45,8 @@ if [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
     do
       sleep $WORKER_LOOP_VALUE
       nb_process=`ps faux | grep "worker:execute" | grep php | wc -l`
-      echo $nb_process running workers
+      date_time_process=`date +"%Y-%m-%d %H:%M:%S"`
+      echo $date_time_process "-" $nb_process "running workers"
       if [ $nb_process -lt $WORKER_NB_QUEUES ]
         then
           exit 1
