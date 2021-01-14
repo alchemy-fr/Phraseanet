@@ -81,20 +81,14 @@ const previewRecordService = services => {
                 closePreview();
             })
             .on('dblclick', '.open-preview-action', event => {
-                let $el = $(event.currentTarget);
-                // env, pos, contId, reload
-                let reload = $el.data('reload') === true ? true : false;
-                _openPreview(
-                    event.currentTarget,
-                    $el.data('kind'),
-                    $el.data('position'),
-                    $el.data('id'),
-                    $el.data('kind')
-                );
+                let $element = $(event.currentTarget);
+                openPreview($element);
+
             })
             .on('click', '.to-open-preview-action', event => {
                 event.preventDefault();
-                $( '.open-preview-action' ).trigger( "dblclick" );
+                let $element = $(event.currentTarget);
+                openPreview($element);
             })
         ;
         $previewContainer
@@ -464,6 +458,18 @@ const previewRecordService = services => {
         }
         $("iframe", $sel).css('width', NW).css('height', NH);
 
+    }
+
+    function openPreview($element) {
+        let reload = $element.data('reload') === true ? true : false;
+        // env, pos, contId, reload
+        _openPreview(
+            event.currentTarget,
+            $element.data('kind'),
+            $element.data('position'),
+            $element.data('id'),
+            reload
+        );
     }
 
     function closePreview() {
