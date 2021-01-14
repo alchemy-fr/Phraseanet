@@ -49,7 +49,7 @@ if [ -f "$FILE" ]; then
     if [[ -n ${PHRASEANET_ADMIN_ACCOUNT_ID} && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
        bin/console user:password --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
     fi
-
+    echo "config/configuration.yml update by Phraseanet entrypoint.sh Finished !"
 else
     echo "$FILE doesn't exist, entering setup..."
 
@@ -62,6 +62,7 @@ else
         datas
 
     runuser app -c docker/phraseanet/auto-install.sh
+   echo "End of Phraseanet Installation"
 fi
 
 if [ ${XDEBUG_ENABLED} == "1" ]; then
@@ -88,3 +89,4 @@ fi
 chown -R app:app datas &
 
 bash -e docker-php-entrypoint $@
+echo "Finished runnning Phraseanet entrypoint.sh"
