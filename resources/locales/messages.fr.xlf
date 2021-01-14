@@ -9659,14 +9659,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="75">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item">
+      <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item" approved="no">
         <source>basket:feedback Delete item</source>
-        <target state="new">basket:feedback Delete item</target>
+        <target state="needs-translation">Retirer un enregistrement</target>
         <jms:reference-file line="62">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action" approved="no">
         <source>basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action</source>
-        <target state="needs-translation">Vous êtes en train de supprimer un item d'une validation, vous perdrez tout les Votes associé cet item, merci de confirmer votre action</target>
+        <target state="needs-translation">Attention ! Vous êtes en train de supprimer un enregistrement d'une validation. Vous perdrez tous les votes associés à ce média, merci de confirmer votre action</target>
         <jms:reference-file line="66">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="05661ba3e118de7262e3acc7b6ffe75be8b98cdd" resname="be notified when a document is placed in quarantine" approved="yes">
