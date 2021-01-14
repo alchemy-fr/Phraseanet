@@ -70,7 +70,8 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
 fi
 
 ./docker/phraseanet/plugins/console init
-#rm -Rf cache/
+rm -Rf cache/*
+chmod 600 config/configuration.yml
 
 chown -R app:app \
     cache \
