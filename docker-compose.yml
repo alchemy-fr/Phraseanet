@@ -119,6 +119,7 @@ services:
     - redis
     - rabbitmq
     - elasticsearch
+    - phraseanet
     environment:
     - PHRASEANET_PROJECT_NAME
     - PHRASEANET_TRUSTED_PROXIES
