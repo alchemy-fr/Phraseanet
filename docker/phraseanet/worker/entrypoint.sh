@@ -54,7 +54,7 @@ if [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
       fi
     done  ' >> bin/run-worker.sh
 else
-  command="bin/console worker:execute --queue-name=$queue_name"
+  command="bin/console worker:execute"
   echo $command >> bin/run-worker.sh
 fi
 
