@@ -30,7 +30,7 @@ if [ -f /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then
 fi
 
 rm -rf bin/run-worker.sh
-if [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
+if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
   for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
    do
       queue_name="$(echo $i | cut -d'_' -f3)"
