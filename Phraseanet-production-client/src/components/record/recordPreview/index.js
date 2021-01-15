@@ -81,20 +81,14 @@ const previewRecordService = services => {
                 closePreview();
             })
             .on('dblclick', '.open-preview-action', event => {
-                let $el = $(event.currentTarget);
-                // env, pos, contId, reload
-                let reload = $el.data('reload') === true ? true : false;
-                _openPreview(
-                    event.currentTarget,
-                    $el.data('kind'),
-                    $el.data('position'),
-                    $el.data('id'),
-                    $el.data('kind')
-                );
+                let $element = $(event.currentTarget);
+                openPreview($element);
+
             })
             .on('click', '.to-open-preview-action', event => {
                 event.preventDefault();
-                $( '.open-preview-action' ).trigger( "dblclick" );
+                let $element = $(event.currentTarget);
+                openPreview($element);
             })
         ;
         $previewContainer
@@ -387,7 +381,18 @@ const previewRecordService = services => {
                     $('#PREVIEWBOX img.record.zoomable').draggable();
                 }
 
-                $('#SPANTITLE').empty().append(data.title);
+                let basketIcon = '';
+                if (data.containerType !== null ) {
+                    if (data.containerType === 'feedback') {
+                        basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else if (data.containerType === 'push') {
+                            basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else {
+                        basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    }
+                }
+
+                $('#SPANTITLE').empty().append(basketIcon + data.title);
                 $('#PREVIEWTITLE_COLLLOGO')
                     .empty()
                     .append(data.collection_logo);
@@ -464,6 +469,18 @@ const previewRecordService = services => {
         }
         $("iframe", $sel).css('width', NW).css('height', NH);
 
+    }
+
+    function openPreview($element) {
+        let reload = $element.data('reload') === true ? true : false;
+        // env, pos, contId, reload
+        _openPreview(
+            event.currentTarget,
+            $element.data('kind'),
+            $element.data('position'),
+            $element.data('id'),
+            reload
+        );
     }
 
     function closePreview() {
