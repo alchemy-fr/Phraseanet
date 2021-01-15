@@ -38,7 +38,7 @@ if [ -f "$FILE" ]; then
     if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
         bin/setup system:config set registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
-        bin/setup system:config set registry.email.smtp-auth-secure-mode $PHRASEANET_SMTP_SECURE_MODE
+        bin/setup system:config set registry.email.smtp-secure-mode $PHRASEANET_SMTP_SECURE_MODE
         bin/setup system:config set registry.email.smtp-host $PHRASEANET_SMTP_HOST
         bin/setup system:config set registry.email.smtp-port $PHRASEANET_SMTP_PORT
         bin/setup system:config set registry.email.smtp-user $PHRASEANET_SMTP_USER
@@ -49,7 +49,7 @@ if [ -f "$FILE" ]; then
     if [[ -n ${PHRASEANET_ADMIN_ACCOUNT_ID} && $PHRASEANET_ADMIN_ACCOUNT_ID =~ ^[0-9]+$ ]]; then
        bin/console user:password --user_id=$PHRASEANET_ADMIN_ACCOUNT_ID --password $PHRASEANET_ADMIN_ACCOUNT_PASSWORD -y
     fi
-
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - config/configuration.yml update by Phraseanet entrypoint.sh Finished !"
 else
     echo "$FILE doesn't exist, entering setup..."
 
@@ -62,6 +62,7 @@ else
         datas
 
     runuser app -c docker/phraseanet/auto-install.sh
+   echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet Installation"
 fi
 
 if [ ${XDEBUG_ENABLED} == "1" ]; then
@@ -70,7 +71,8 @@ if [ ${XDEBUG_ENABLED} == "1" ]; then
 fi
 
 ./docker/phraseanet/plugins/console init
-#rm -Rf cache/
+rm -Rf cache/*
+chmod 600 config/configuration.yml
 
 chown -R app:app \
     cache \
@@ -84,6 +86,7 @@ if [ -d "plugins/" ];then
 chown -R app:app plugins;
 fi
 
-chown -R app:app datas &
+chown -R app:app datas && echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished chown on datas by entreypoint" &
+echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished runnning Phraseanet entrypoint.sh"
 
 bash -e docker-php-entrypoint $@

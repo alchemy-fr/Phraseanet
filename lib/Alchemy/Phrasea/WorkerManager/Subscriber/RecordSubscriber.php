@@ -5,7 +5,6 @@ namespace Alchemy\Phrasea\WorkerManager\Subscriber;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
-use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
@@ -22,6 +21,8 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Factory\WorkerFactoryInterface;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
+use databox;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordSubscriber implements EventSubscriberInterface
@@ -67,7 +68,7 @@ class RecordSubscriber implements EventSubscriberInterface
                         ]
                     ];
 
-                    $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_QUEUE);
+                    $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
                 }
             }
         }
@@ -87,7 +88,7 @@ class RecordSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::DELETE_RECORD_QUEUE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::DELETE_RECORD_TYPE);
     }
 
     public function onSubdefinitionCreationFailure(SubdefinitionCreationFailureEvent $event)
@@ -123,14 +124,14 @@ class RecordSubscriber implements EventSubscriberInterface
                 $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $em->rollback();
             }
         }
 
-        $this->messagePublisher->publishMessage(
+        $this->messagePublisher->publishRetryMessage(
             $payload,
-            MessagePublisher::RETRY_SUBDEF_QUEUE,
+            MessagePublisher::SUBDEF_CREATION_TYPE,
             $event->getCount(),
             $event->getWorkerMessage()
         );
@@ -170,18 +171,19 @@ class RecordSubscriber implements EventSubscriberInterface
                     ];
 
                     if ($subdef->is_physically_present()) {
-                        $this->messagePublisher->publishMessage($payload, MessagePublisher::METADATAS_QUEUE);
-                    } else {
-                        $logMessage = sprintf("Subdef %s is not physically present! to be passed in the %s !  payload  >>> %s",
+                        $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
+                    }
+                    else {
+                        $logMessage = sprintf('Subdef "%s" is not physically present! to be passed in the retry q of "%s" !  payload  >>> %s',
                             $subdef->get_name(),
-                            MessagePublisher::RETRY_METADATAS_QUEUE,
+                            MessagePublisher::WRITE_METADATAS_TYPE,
                             json_encode($payload)
                         );
                         $this->messagePublisher->pushLog($logMessage);
 
-                        $this->messagePublisher->publishMessage(
+                        $this->messagePublisher->publishRetryMessage(
                             $payload,
-                            MessagePublisher::RETRY_METADATAS_QUEUE,
+                            MessagePublisher::WRITE_METADATAS_TYPE,
                             2,
                             'Subdef is not physically present!'
                         );
@@ -215,10 +217,10 @@ class RecordSubscriber implements EventSubscriberInterface
                 ]
             ];
 
-            $logMessage = sprintf("Subdef %s write meta failed, error : %s ! to be passed in the %s !  payload  >>> %s",
+            $logMessage = sprintf('Subdef "%s" write meta failed, error : "%s" ! to be passed in the retry q of "%s" !  payload  >>> %s',
                 $event->getSubdefName(),
                 $event->getWorkerMessage(),
-                MessagePublisher::RETRY_METADATAS_QUEUE,
+                MessagePublisher::WRITE_METADATAS_TYPE,
                 json_encode($payload)
             );
             $this->messagePublisher->pushLog($logMessage);
@@ -243,14 +245,14 @@ class RecordSubscriber implements EventSubscriberInterface
                     $em->persist($workerRunningJob);
                     $em->flush();
                     $em->commit();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $em->rollback();
                 }
             }
 
-            $this->messagePublisher->publishMessage(
+            $this->messagePublisher->publishRetryMessage(
                 $payload,
-                MessagePublisher::RETRY_METADATAS_QUEUE,
+                MessagePublisher::WRITE_METADATAS_TYPE,
                 $event->getCount(),
                 $event->getWorkerMessage()
             );
@@ -276,7 +278,7 @@ class RecordSubscriber implements EventSubscriberInterface
                     ]
                 ];
 
-                $this->messagePublisher->publishMessage($payload, MessagePublisher::METADATAS_QUEUE);
+                $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
             }
         }
 
@@ -294,19 +296,27 @@ class RecordSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::RECORD_EDIT_QUEUE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::RECORD_EDIT_TYPE);
     }
 
     public static function getSubscribedEvents()
     {
         return [
+            /** @uses onRecordCreated */
             RecordEvents::CREATED                             => 'onRecordCreated',
+            /** @uses onSubdefinitionCreate */
             RecordEvents::SUBDEFINITION_CREATE                => 'onSubdefinitionCreate',
+            /** @uses onDelete */
             RecordEvents::DELETE                              => 'onDelete',
+            /** @uses onSubdefinitionCreationFailure */
             WorkerEvents::SUBDEFINITION_CREATION_FAILURE      => 'onSubdefinitionCreationFailure',
+            /** @uses onRecordsWriteMeta */
             WorkerEvents::RECORDS_WRITE_META                  => 'onRecordsWriteMeta',
+            /** @uses onStoryCreateCover */
             WorkerEvents::STORY_CREATE_COVER                  => 'onStoryCreateCover',
+            /** @uses onSubdefinitionWritemeta */
             WorkerEvents::SUBDEFINITION_WRITE_META            => 'onSubdefinitionWritemeta',
+            /** @uses onRecordEditInWorker */
             WorkerEvents::RECORD_EDIT_IN_WORKER               => 'onRecordEditInWorker'
         ];
     }
@@ -322,12 +332,12 @@ class RecordSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param \databox $databox
+     * @param databox $databox
      * @param string $subdefType
      * @param string $subdefName
      * @return bool
      */
-    private function isSubdefMetadataUpdateRequired(\databox $databox, $subdefType, $subdefName)
+    private function isSubdefMetadataUpdateRequired(databox $databox, $subdefType, $subdefName)
     {
         if ($databox->get_subdef_structure()->hasSubdef($subdefType, $subdefName)) {
             return $databox->get_subdef_structure()->get_subdef($subdefType, $subdefName)->isMetadataUpdateRequired();
