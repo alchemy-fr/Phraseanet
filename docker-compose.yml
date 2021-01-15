@@ -119,6 +119,7 @@ services:
     - redis
     - rabbitmq
     - elasticsearch
+    - phraseanet
     environment:
     - PHRASEANET_PROJECT_NAME
     - PHRASEANET_TRUSTED_PROXIES
@@ -135,6 +136,22 @@ services:
     - LC_CTYPE=C.UTF-8
     - LC_TIME=C.UTF-8
     - LC_NAME=C.UTF-8
+    - PHRASEANET_EXPLODE_WORKER  
+    - PHRASEANET_WORKER_assetsIngest
+    - PHRASEANET_WORKER_createRecord
+    - PHRASEANET_WORKER_deleteRecord
+    - PHRASEANET_WORKER_exportMail
+    - PHRASEANET_WORKER_exposeUpload
+    - PHRASEANET_WORKER_ftp
+    - PHRASEANET_WORKER_mainQueue
+    - PHRASEANET_WORKER_populateIndex
+    - PHRASEANET_WORKER_pullAssets
+    - PHRASEANET_WORKER_recordEdit
+    - PHRASEANET_WORKER_subdefCreation
+    - PHRASEANET_WORKER_subtitle
+    - PHRASEANET_WORKER_validationReminder
+    - PHRASEANET_WORKER_webhook
+    - PHRASEANET_WORKER_writeMetadatas
     - IMAGEMAGICK_POLICY_VERSION
     - IMAGEMAGICK_POLICY_WIDTH
     - IMAGEMAGICK_POLICY_HEIGHT
