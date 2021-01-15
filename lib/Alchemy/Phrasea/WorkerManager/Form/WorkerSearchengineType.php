@@ -3,6 +3,8 @@
 namespace Alchemy\Phrasea\WorkerManager\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -15,18 +17,18 @@ class WorkerSearchengineType extends AbstractType
         parent::buildForm($builder, $options);
 
         $builder
-            ->add('host', 'text', [
+            ->add('host', TextType::class, [
                 'label' => 'admin::workermanager:tab:searchengine: Elasticsearch server host',
                 'constraints' => new NotBlank(),
             ])
-            ->add('port', 'integer', [
+            ->add('port', IntegerType::class, [
                 'label' => 'admin::workermanager:tab:searchengine: Elasticsearch service port',
                 'constraints' => [
                     new Range(['min' => 1, 'max' => 65535]),
                     new NotBlank()
                 ]
             ])
-            ->add('indexName', 'text', [
+            ->add('indexName', TextType::class, [
                 'label' => 'admin::workermanager:tab:searchengine: Elasticsearch index name',
                 'constraints' => new NotBlank(),
                 'attr' =>['data-class'=>'inline']

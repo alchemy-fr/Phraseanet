@@ -18,6 +18,9 @@ class MailInfoValidationReminder extends AbstractMailWithLink
     /** @var string */
     private $title;
 
+    /** @var string */
+    private $timeLeft;
+
     /**
      * Sets the title of the validation to remind
      *
@@ -26,6 +29,15 @@ class MailInfoValidationReminder extends AbstractMailWithLink
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     *  Sets time left before the validation expires
+     * @param $timeLeft
+     */
+    public function setTimeLeft($timeLeft)
+    {
+        $this->timeLeft = $timeLeft;
     }
 
     /**
@@ -45,8 +57,8 @@ class MailInfoValidationReminder extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return $this->app->trans('Il ne vous reste plus que %quantity% jours pour terminer votre validation', [
-            '%quantity%' => $this->app['conf']->get(['registry', 'actions', 'validation-reminder-days'])
+        return $this->app->trans('Il ne vous reste plus que %timeLeft% pour terminer votre validation', [
+            '%timeLeft%' => isset($this->timeLeft)? $this->timeLeft : ''
         ]);
     }
 

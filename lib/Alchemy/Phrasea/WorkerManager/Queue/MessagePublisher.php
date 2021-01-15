@@ -2,6 +2,8 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Queue;
 
+use DateTime;
+use DateTimeZone;
 use Monolog\Logger;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
@@ -28,107 +30,96 @@ class MessagePublisher
     const MAIN_QUEUE_TYPE      = 'mainQueue';
 
 
-    const MAIN_QUEUE           = 'main-queue';
-    const SUBTITLE_QUEUE       = 'subtitle-queue';
-    // **   ** \\
-
-    // worker queue  to be consumed, when no ack , it is requeued to the retry queue
-    const ASSETS_INGEST_QUEUE  = 'ingest-queue';
-    const CREATE_RECORD_QUEUE  = 'createrecord-queue';
-    const DELETE_RECORD_QUEUE  = 'deleterecord-queue';
-    const EXPORT_QUEUE         = 'export-queue';
-    const EXPOSE_UPLOAD_QUEUE  = 'exposeupload-queue';
-    const FTP_QUEUE            = 'ftp-queue';
-    const METADATAS_QUEUE      = 'metadatas-queue';
-    const POPULATE_INDEX_QUEUE = 'populateindex-queue';
-    const PULL_QUEUE           = 'pull-queue';
-    const RECORD_EDIT_QUEUE    = 'recordedit-queue';
-    const SUBDEF_QUEUE         = 'subdef-queue';
-    const VALIDATION_REMINDER_QUEUE     = 'validationReminder-queue';
-    const WEBHOOK_QUEUE        = 'webhook-queue';
-
-
-    // retry queue
-    // we can use these retry queue with TTL, so when message expires it is requeued to the corresponding worker queue
-    const RETRY_ASSETS_INGEST_QUEUE  = 'retry-ingest-queue';
-    const RETRY_CREATE_RECORD_QUEUE  = 'retry-createrecord-queue';
-    const RETRY_EXPORT_QUEUE         = 'retry-export-queue';
-    const RETRY_FTP_QUEUE            = 'retry-ftp-queue';
-    const RETRY_METADATAS_QUEUE      = 'retry-metadatas-queue';
-    const RETRY_POPULATE_INDEX_QUEUE = 'retry-populateindex-queue';
-    const RETRY_SUBDEF_QUEUE         = 'retry-subdef-queue';
-    const RETRY_WEBHOOK_QUEUE        = 'retry-webhook-queue';
-
-    // use those queue to make a loop on a consumer
-    const LOOP_PULL_QUEUE                   = 'loop-pull-queue';
-    const LOOP_VALIDATION_REMINDER_QUEUE    = 'loop-validationReminder-queue';
-
-
-    // all failed queue, if message is treated over 3 times it goes to the failed queue
-    const FAILED_ASSETS_INGEST_QUEUE  = 'failed-ingest-queue';
-    const FAILED_CREATE_RECORD_QUEUE  = 'failed-createrecord-queue';
-    const FAILED_EXPORT_QUEUE         = 'failed-export-queue';
-    const FAILED_FTP_QUEUE            = 'failed-ftp-queue';
-    const FAILED_METADATAS_QUEUE      = 'failed-metadatas-queue';
-    const FAILED_POPULATE_INDEX_QUEUE = 'failed-populateindex-queue';
-    const FAILED_SUBDEF_QUEUE         = 'failed-subdef-queue';
-    const FAILED_WEBHOOK_QUEUE        = 'failed-webhook-queue';
-
-
-    // delayed queue when record is locked
-    const DELAYED_SUBDEF_QUEUE    = 'delayed-subdef-queue';
-    const DELAYED_METADATAS_QUEUE = 'delayed-metadatas-queue';
-
     const NEW_RECORD_MESSAGE   = 'newrecord';
 
 
-    /** @var AMQPConnection $serverConnection */
-    private $serverConnection;
+    /** @var AMQPConnection $AMQPConnection */
+    private $AMQPConnection;
 
     /** @var  Logger */
     private $logger;
 
-    public function __construct(AMQPConnection $serverConnection, LoggerInterface $logger)
+    public function __construct(AMQPConnection $AMQPConnection, LoggerInterface $logger)
     {
-        $this->serverConnection = $serverConnection;
-        $this->logger           = $logger;
+        $this->AMQPConnection = $AMQPConnection;
+        $this->logger         = $logger;
     }
 
-    public function publishMessage(array $payload, $queueName, $retryCount = null, $workerMessage = '')
+    public function publishMessage(array $payload, $queueName)
     {
-        // add published timestamp to all message payload
-        $payload['payload']['published'] = time();
-        $msg = new AMQPMessage(json_encode($payload));
-        $routing = array_search($queueName, AMQPConnection::$defaultRetryQueues);
+        $this->AMQPConnection->getBaseQueueName($queueName);    // just to throw an exception if q is undefined
 
-        if (count($retryCount) && $routing != false) {
+        $this->_publishMessage($payload, $queueName);
+    }
+
+    public function publishRetryMessage(array $payload, string $baseQueueName, $retryCount, $workerMessage)
+    {
+        $retryQ = $this->AMQPConnection->getRetryQueueName($baseQueueName);
+
+        $headers = null;
+        if(!is_null($retryCount)) {
             // add a message header information
             $headers = new AMQPTable([
                 'x-death' => [
                     [
                         'count'         => $retryCount,
                         'exchange'      => AMQPConnection::ALCHEMY_EXCHANGE,
-                        'queue'         => $routing,
-                        'routing-keys'  => $routing,
+                        'queue'         => $baseQueueName,
+                        'routing-keys'  => $baseQueueName,
                         'reason'        => 'rejected',   // rejected is sended like nack
-                        'time'          => new \DateTime('now', new \DateTimeZone('UTC'))
+                        'time'          => new DateTime('now', new DateTimeZone('UTC'))
                     ]
                 ],
                 'worker-message' => $workerMessage
             ]);
+        }
+        $this->_publishMessage($payload, $retryQ, $headers);
+    }
 
+    public function publishDelayedMessage(array $payload, string $baseQueueName)
+    {
+        $delayedQ = $this->AMQPConnection->getDelayedQueueName($baseQueueName);
+
+        $this->_publishMessage($payload, $delayedQ);
+    }
+
+    public function publishFailedMessage(array $payload, AMQPTable $headers, $baseQueueName)
+    {
+        $FailedQ = $this->AMQPConnection->getFailedQueueName($baseQueueName);
+
+        $msg = new AMQPMessage(json_encode($payload));
+        $msg->set('application_headers', $headers);
+
+        $channel = $this->AMQPConnection->setQueue($FailedQ);
+        if ($channel == null) {
+            $this->pushLog("Can't connect to rabbit, check configuration!", "error");
+
+            return ;
+        }
+
+        $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $FailedQ);
+
+        $this->_publishMessage($payload, $FailedQ, $headers);
+    }
+
+    private function _publishMessage(array $payload, $queueName, $headers = null)
+    {
+        // add published timestamp to all message payload
+        $payload['payload']['published'] = time();
+        $msg = new AMQPMessage(json_encode($payload));
+
+        if (!is_null($headers)) {
+            // add a message header information
             $msg->set('application_headers', $headers);
         }
 
-        $channel = $this->serverConnection->setQueue($queueName);
-
-        if ($channel == null) {
+        if (is_null( ($channel = $this->AMQPConnection->setQueue($queueName)) )) {
             $this->pushLog("Can't connect to rabbit, check configuration!", "error");
 
             return true;
         }
 
-        $exchange = in_array($queueName, AMQPConnection::$defaultQueues) ? AMQPConnection::ALCHEMY_EXCHANGE : AMQPConnection::RETRY_ALCHEMY_EXCHANGE;
+        $exchange = $this->AMQPConnection->getExchange($queueName); //  in_array($queueName, AMQPConnection::$defaultQueues) ? AMQPConnection::ALCHEMY_EXCHANGE : AMQPConnection::RETRY_ALCHEMY_EXCHANGE;
         $channel->basic_publish($msg, $exchange, $queueName);
 
         return true;
@@ -139,16 +130,16 @@ class MessagePublisher
         $payload = [
             'message_type' => $type,
             'payload' => [
-                'initTimestamp' => new \DateTime('now', new \DateTimeZone('UTC'))
+                'initTimestamp' => new DateTime('now', new DateTimeZone('UTC'))
             ]
         ];
 
-        $this->publishMessage($payload, AMQPConnection::$defaultQueues[$type]);
+        $this->publishMessage($payload, $type);
     }
 
     public function connectionClose()
     {
-        $this->serverConnection->connectionClose();
+        $this->AMQPConnection->connectionClose();
     }
 
     /**
@@ -163,18 +154,4 @@ class MessagePublisher
         call_user_func(array($this->logger, $method), $message, $context);
     }
 
-    public function publishFailedMessage(array $payload, AMQPTable $headers, $queueName)
-    {
-        $msg = new AMQPMessage(json_encode($payload));
-        $msg->set('application_headers', $headers);
-
-        $channel = $this->serverConnection->setQueue($queueName);
-        if ($channel == null) {
-            $this->pushLog("Can't connect to rabbit, check configuration!", "error");
-
-            return ;
-        }
-
-        $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $queueName);
-    }
 }

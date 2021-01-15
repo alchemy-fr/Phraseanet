@@ -319,7 +319,8 @@ class LegacyRecordRepository implements RecordRepository
                 . $userFilter
                 . "    WHERE g.rid_parent IN ( :storyIds )\n"
                 . "    ORDER BY g.rid_parent, g.ord ASC\n"
-                . ") r\n"
+                . ") r \n"
+                . "ORDER BY r.rid_parent, r.ord ASC\n"
             ;
         }
 

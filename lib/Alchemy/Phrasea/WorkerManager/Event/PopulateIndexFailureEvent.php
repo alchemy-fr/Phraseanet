@@ -14,7 +14,7 @@ class PopulateIndexFailureEvent extends SfEvent
     private $count;
     private $workerJobId;
 
-    public function __construct($host, $port, $indexName, $databoxId, $workerMessage = '', $count = 2, $workerJobId = 0)
+    public function __construct($host, $port, $indexName, $databoxId, $workerMessage, $count, $workerJobId)
     {
         $this->host             = $host;
         $this->port             = $port;
