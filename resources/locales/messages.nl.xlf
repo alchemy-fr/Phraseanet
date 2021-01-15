@@ -13404,9 +13404,9 @@
         <target state="translated">Connecties</target>
         <jms:reference-file line="42">module/report/connexion.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6145ae65d96ba6a8b531e8a73226066024bc6866" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box ">
-        <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box </source>
-        <target state="new">report::Demande de validation vers %n_user% utilisateurs depuis lapplication box </target>
+      <trans-unit id="6145ae65d96ba6a8b531e8a73226066024bc6866" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box">
+        <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box</source>
+        <target state="new">report::Demande de validation vers %n_user% utilisateurs depuis lapplication box</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8fc6702f9d21db51a5cad24125d58e5d19e869" resname="report::Edition des meta-donnees" approved="yes">
@@ -13454,9 +13454,9 @@
         <target state="translated">Publicatie van %dest%</target>
         <jms:reference-file line="33">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2be59e02d9abf445a12bac223e5d4701b0b45ea2" resname="report::Push vers %n_user% utilisateurs depuis lapplication box ">
-        <source>report::Push vers %n_user% utilisateurs depuis lapplication box </source>
-        <target state="new">report::Push vers %n_user% utilisateurs depuis lapplication box </target>
+      <trans-unit id="2be59e02d9abf445a12bac223e5d4701b0b45ea2" resname="report::Push vers %n_user% utilisateurs depuis lapplication box">
+        <source>report::Push vers %n_user% utilisateurs depuis lapplication box</source>
+        <target state="new">report::Push vers %n_user% utilisateurs depuis lapplication box</target>
         <jms:reference-file line="13">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="006fe40054b1e40e52a475778d2cca84f3af7fa9" resname="report::Substitution de %dest%" approved="yes">

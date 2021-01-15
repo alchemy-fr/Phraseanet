@@ -13406,8 +13406,8 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Connexions</target>
         <jms:reference-file line="42">module/report/connexion.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6145ae65d96ba6a8b531e8a73226066024bc6866" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box " approved="yes">
-        <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box </source>
+      <trans-unit id="6145ae65d96ba6a8b531e8a73226066024bc6866" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box" approved="yes">
+        <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box</source>
         <target state="translated">Validation à %n_user% utilisateur(s)</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
@@ -13456,8 +13456,8 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Publication de %dest%</target>
         <jms:reference-file line="33">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2be59e02d9abf445a12bac223e5d4701b0b45ea2" resname="report::Push vers %n_user% utilisateurs depuis lapplication box " approved="yes">
-        <source>report::Push vers %n_user% utilisateurs depuis lapplication box </source>
+      <trans-unit id="2be59e02d9abf445a12bac223e5d4701b0b45ea2" resname="report::Push vers %n_user% utilisateurs depuis lapplication box" approved="yes">
+        <source>report::Push vers %n_user% utilisateurs depuis lapplication box</source>
         <target state="translated">Push à %n_user% utilisateur(s)</target>
         <jms:reference-file line="13">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
