@@ -270,8 +270,7 @@ class record_preview extends record_adapter
                 $this->title .= parent::get_title($options);
                 break;
             case "BASK":
-                $this->title .= $this->name . ' - ' . parent::get_title($options)
-                    . ' (' . $this->getNumber() . '/' . $this->total . ') ';
+                $this->title .= $this->name . ' (' . $this->getNumber() . '/' . $this->total . ') - ' . parent::get_title($options);
                 break;
             case "REG":
                 $title = parent::get_title($options);
