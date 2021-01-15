@@ -381,7 +381,18 @@ const previewRecordService = services => {
                     $('#PREVIEWBOX img.record.zoomable').draggable();
                 }
 
-                $('#SPANTITLE').empty().append(data.title);
+                let basketIcon = '';
+                if (data.containerType !== null ) {
+                    if (data.containerType === 'feedback') {
+                        basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else if (data.containerType === 'push') {
+                            basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else {
+                        basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    }
+                }
+
+                $('#SPANTITLE').empty().append(basketIcon + data.title);
                 $('#PREVIEWTITLE_COLLLOGO')
                     .empty()
                     .append(data.collection_logo);
