@@ -86,7 +86,7 @@ if [ -d "plugins/" ];then
 chown -R app:app plugins;
 fi
 
-chown -R app:app datas &
+chown -R app:app datas && echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished chown on datas by entreypoint" &
+echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished runnning Phraseanet entrypoint.sh"
 
 bash -e docker-php-entrypoint $@
-echo `date +"%Y-%m-%d %H:%M:%S"` " - Finished runnning Phraseanet entrypoint.sh"
