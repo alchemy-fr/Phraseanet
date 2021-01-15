@@ -103,6 +103,18 @@ class RecordController extends Controller
             $recordTitle = htmlspecialchars($record->get_title());
         }
 
+        $containerType = null;
+
+        if ($env === 'BASK') {
+            if ($record->get_container()->getValidation()) {
+                $containerType = 'feedback';
+            } elseif ($record->get_container()->getPusher()) {
+                $containerType = 'push';
+            } else {
+                $containerType = 'basket';
+            }
+        }
+
         return $this->app->json([
             "desc"            => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
@@ -131,6 +143,7 @@ class RecordController extends Controller
             ]),
             "pos"             => $record->getNumber(),
             "title"           => $recordTitle,
+            "containerType"   => $containerType,
             "databox_name"    => $record->getDatabox()->get_dbname(),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
