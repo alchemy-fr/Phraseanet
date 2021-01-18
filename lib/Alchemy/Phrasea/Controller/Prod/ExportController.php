@@ -22,6 +22,8 @@ use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailRecordsExport;
 use Alchemy\Phrasea\Notification\Receiver;
+use Alchemy\Phrasea\WorkerManager\Event\ExportFtpEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -119,18 +121,21 @@ class ExportController extends Controller
                 $request->request->get('businessfields')
             );
 
-            $download->export_ftp(
+            $exportFtpId = $download->export_ftp(
                 $request->request->get('user_dest'),
                 $request->request->get('address'),
                 $request->request->get('login'),
                 $request->request->get('password', ''),
                 $request->request->get('ssl'),
-                $request->request->get('max_retry'),
+                3,
                 $request->request->get('passive'),
                 $request->request->get('dest_folder'),
                 $request->request->get('prefix_folder'),
-                $request->request->get('logfile')
+                $request->request->get('logfile'),
+                true
             );
+
+            $this->dispatch(WorkerEvents::EXPORT_FTP, new ExportFtpEvent($exportFtpId));
 
             return $this->app->json([
                 'success' => true,
@@ -139,7 +144,7 @@ class ExportController extends Controller
         } catch (\Exception $e) {
             return $this->app->json([
                 'success' => false,
-                'message' => $this->app->trans('Something went wrong')
+                'message' => $e->getMessage()//$this->app->trans('Something went wrong')
             ]);
         }
     }

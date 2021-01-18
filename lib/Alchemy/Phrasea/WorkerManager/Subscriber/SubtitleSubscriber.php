@@ -65,7 +65,7 @@ class SubtitleSubscriber implements EventSubscriberInterface
                 'payload' => $data
             ];
 
-            $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE);
+            $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
         } catch (\Exception $e) {
             $em->rollback();
         }

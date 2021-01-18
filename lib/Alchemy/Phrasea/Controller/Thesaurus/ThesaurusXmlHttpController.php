@@ -12,6 +12,8 @@ namespace Alchemy\Phrasea\Controller\Thesaurus;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\Preset;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use caption_field;
 use caption_Field_Value;
 use databox;
@@ -1402,6 +1404,11 @@ class ThesaurusXmlHttpController extends Controller
                         continue;
                     }
                 }
+
+                // order to write metas for those records
+                $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                    new RecordsWriteMetaEvent($sbas['trids'], $sbas['sbas_id'])
+                );
 
                 foreach ($sbas['tvals'] as $tval) {
                     foreach ($tval as $sy) {

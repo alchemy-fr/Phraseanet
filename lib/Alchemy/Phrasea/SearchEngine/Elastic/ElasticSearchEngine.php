@@ -21,11 +21,14 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field AS ESField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\SearchEngine\SearchEngineStructure;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Closure;
 use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
@@ -60,13 +63,13 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @param Application $app
-     * @param Structure $structure
+     * @param GlobalStructure $structure
      * @param Client $client
      * @param QueryContextFactory $context_factory
-     * @param callable $facetsResponseFactory
+     * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
      */
-    public function __construct(Application $app, Structure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -76,7 +79,14 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->options = $options;
 
         $this->indexName = $options->getIndexName();
+    }
 
+    /**
+     * @return Structure
+     */
+    public function getStructure()
+    {
+        return $this->structure;
     }
 
     public function getIndexName()
@@ -128,7 +138,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableDateFields()
     {
         // TODO Use limited structure
-        return array_keys($this->structure->getDateFields());
+        return array_keys($this->getStructure()->getDateFields());
     }
 
     /**
@@ -329,6 +339,78 @@ class ElasticSearchEngine implements SearchEngineInterface
             $this->indexName,
             $facets
         );
+    }
+
+    public function queryraw($queryText, SearchEngineOptions $options)
+    {
+        $stopwatch = new Stopwatch("es");
+
+        $context = $this->context_factory->createContext($options);
+
+        /** @var QueryCompiler $query_compiler */
+        $query_compiler = $this->app['query_compiler'];
+        $queryAST      = $query_compiler->parse($queryText)->dump();
+
+        $stopwatch->lap("query parse");
+
+        $queryCompiled = $query_compiler->compile($queryText, $context);
+
+        $stopwatch->lap("query compile");
+
+        $queryESLib = $this->createRecordQueryParams($queryCompiled, $options, null);
+
+        $stopwatch->lap("createRecordQueryParams");
+
+        // ask ES to return field _version (incremental version number of document)
+        $queryESLib['body']['version'] = true;
+
+        $queryESLib['body']['from'] = $options->getFirstResult();
+        $queryESLib['body']['size'] = $options->getMaxResults();
+        if($this->options->getHighlight()) {
+            $queryESLib['body']['highlight'] = $this->buildHighlightRules($context);
+        }
+
+        $stopwatch->lap("buildHighlightRules");
+
+        $aggs = $this->getAggregationQueryParams($options);
+        if ($aggs) {
+            $queryESLib['body']['aggs'] = $aggs;
+        }
+
+        $stopwatch->lap("getAggregationQueryParams");
+
+        $res = $this->client->search($queryESLib);
+
+        $stopwatch->lap("es client search");
+
+        // return $res;
+
+        $results = [];
+        foreach ($res['hits']['hits'] as $hit) {
+            // remove "path" from subdefs
+            foreach($hit['_source']['subdefs'] as $name=>$subdef) {
+                unset($hit['_source']['subdefs'][$name]['path']);
+            }
+            $results[] = $hit;
+        }
+
+        $stopwatch->lap("copy hits to results");
+
+        /** @var FacetsResponse $facets */
+        $facets = $this->facetsResponseFactory->__invoke($res)->toArray();
+
+        $stopwatch->lap("build facets");
+
+        $stopwatch->stop();
+
+        return [
+            '__stopwatch__' => $stopwatch,
+            'results' => $results,
+            'took' => $res['took'],   // duration
+            'count' => count($res['hits']['hits']),  // available
+            'total' => $res['hits']['total'],  // total
+            'facets' => $facets
+        ];
     }
 
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)

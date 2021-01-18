@@ -442,8 +442,7 @@ class AccountController extends Controller
             'form_loginFTP',
             'form_pwdFTP',
             'form_destFTP',
-            'form_prefixFTPfolder',
-            'form_retryFTP'
+            'form_prefixFTPfolder'
         ];
 
         $service = $this->app['accounts.service'];
@@ -483,7 +482,6 @@ class AccountController extends Controller
             $command->setPassiveMode($request->request->get("form_passifFTP"));
             $command->setFolder($request->request->get("form_destFTP"));
             $command->setFolderPrefix($request->request->get("form_prefixFTPfolder"));
-            $command->setRetries($request->request->get("form_retryFTP"));
 
             $service->updateFtpSettings($command);
 

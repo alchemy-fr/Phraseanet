@@ -215,7 +215,7 @@ CMD ["php-fpm", "-F"]
 
 FROM phraseanet-fpm as phraseanet-worker
 ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
-CMD ["bin/console", "worker:execute"]
+CMD ["/bin/bash", "bin/run-worker.sh"]
 
 #########################################################################
 # phraseanet-nginx

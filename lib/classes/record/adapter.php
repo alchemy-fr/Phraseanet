@@ -35,6 +35,8 @@ use Alchemy\Phrasea\Record\RecordReference;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator\GpsPosition;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
@@ -876,6 +878,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
         }
 
+        // order to write metas
+        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+            new RecordsWriteMetaEvent([$this->getRecordId()], $this->getDataboxId())
+        );
+
         $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW(), originalname = :originalname WHERE record_id = :record_id',
             ['originalname' => $original_name, 'record_id' => $this->getRecordId()]
@@ -1557,7 +1564,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();
 
-        $sql = "DELETE FROM permalinks WHERE subdef_id IN (SELECT subdef_id FROM subdef WHERE record_id=:record_id)";
+        $sql = "DELETE permalinks FROM subdef INNER JOIN permalinks USING(subdef_id) WHERE record_id=:record_id";
         $stmt = $connection->prepare($sql);
         $stmt->execute([':record_id' => $this->getRecordId()]);
         $stmt->closeCursor();

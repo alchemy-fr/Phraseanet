@@ -76,9 +76,9 @@
     margin-top: 0;
 }
 
-.mapboxgl-popup-content {
+.mapboxgl-popup-content, .leaflet-popup-content {
     background: #555555;
-    width: 200px;
+    min-width: 200px;
     font-size: 15px;
 }
 
@@ -190,6 +190,65 @@
     display: none;
 }
 
+#map-info-btn {
+    position: absolute;
+    bottom: 0px;
+    left: 110px;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    display: none;
+}
+
+#map-noticeJs-btn {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    display: none;
+}
+
+#map-infoJs-btn {
+    position: absolute;
+    bottom: 0px;
+    left: 6px;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    display: none;
+}
+
+#map-info-btn:focus {
+    outline: 0;
+}
+
+#notice-info-box {
+    display: block;
+    position: absolute;
+    bottom: 5px;
+    left: 125px;
+    width: 305px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border: solid 1px #8f8f8f;
+    padding: 4px 5px 5px 6px;
+}
+
 #map-notice-btn:focus {
     outline: 0;
 }
@@ -198,6 +257,32 @@
     display: block;
     position: absolute;
     top: 6px;
+    left: 6px;
+    width: 305px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border: solid 1px #8f8f8f;
+    padding: 4px 5px 5px 6px;
+}
+
+#noticeJs-box {
+    display: block;
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    width: 305px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border: solid 1px #8f8f8f;
+    padding: 4px 5px 5px 6px;
+}
+
+#notice-infoJs-box {
+    display: block;
+    position: absolute;
+    bottom: 5px;
     left: 6px;
     width: 305px;
     border-radius: 6px;
@@ -276,4 +361,22 @@
 
 .map-dropdown-content.show {
     display: block;
+}
+
+/* mapbox Gl search */
+@media screen and (min-width: 640px) {
+    .mapboxgl-ctrl-geocoder--input {
+        height: 36px !important;
+        padding: 6px 35px !important;
+        margin-bottom: 0px !important;
+    }
+}
+
+.mapboxGl-phrasea-marker {
+    background-image: url('/assets/common/images/icons/marker_icon.png');
+    background-size: cover;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
 }

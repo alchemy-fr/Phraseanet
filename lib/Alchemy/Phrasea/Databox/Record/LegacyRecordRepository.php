@@ -239,7 +239,7 @@ class LegacyRecordRepository implements RecordRepository
             . "    GROUP BY g.rid_parent\n"
         ;
 
-        $r = array_fill_keys($storyIds, -1);
+        $r = array_fill_keys($storyIds, 0);
         foreach($connection->fetchAll($sql, $parmValues, $parmTypes) as $row) {
             $r[$row['story_id']] = (int)$row['n_children'];
         }
@@ -319,7 +319,8 @@ class LegacyRecordRepository implements RecordRepository
                 . $userFilter
                 . "    WHERE g.rid_parent IN ( :storyIds )\n"
                 . "    ORDER BY g.rid_parent, g.ord ASC\n"
-                . ") r\n"
+                . ") r \n"
+                . "ORDER BY r.rid_parent, r.ord ASC\n"
             ;
         }
 

@@ -10,14 +10,18 @@ use Alchemy\Phrasea\WorkerManager\Worker\AssetsIngestWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\DeleteRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExportMailWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\ExposeUploadWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Factory\CallableWorkerFactory;
+use Alchemy\Phrasea\WorkerManager\Worker\FtpWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\MainQueueWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\PopulateIndexWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\PullAssetsWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordEditWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
 use Alchemy\Phrasea\WorkerManager\Worker\SubdefCreationWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubtitleWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\ValidationReminderWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\WebhookWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
 use Alchemy\Phrasea\WorkerManager\Worker\WriteMetadatasWorker;
@@ -131,14 +135,34 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
                 ->setApplicationBox($app['phraseanet.appbox']);
         }));
 
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EXPOSE_UPLOAD_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return (new ExposeUploadWorker($app))
+                ->setApplicationBox($app['phraseanet.appbox']);
+        }));
+
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SUBTITLE_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new SubtitleWorker($app['repo.worker-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger']))
+            return (new SubtitleWorker($app['repo.worker-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger'], $app['dispatcher']))
                 ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setTemporaryFileSystemLocator(new LazyLocator($app, 'temporary-filesystem'));
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::MAIN_QUEUE_TYPE, new CallableWorkerFactory(function () use ($app) {
             return new MainQueueWorker($app['alchemy_worker.message.publisher'], $app['repo.worker-job']);
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::FTP_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new FtpWorker($app);
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::VALIDATION_REMINDER_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new ValidationReminderWorker($app);
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::RECORD_EDIT_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return (new RecordEditWorker($app['repo.worker-running-job'], $app['dispatcher']))
+                   ->setApplicationBox($app['phraseanet.appbox'])
+                   ->setDataboxLoggerLocator($app['phraseanet.logger'])
+                ;
         }));
     }
 

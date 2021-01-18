@@ -23,6 +23,8 @@ use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
 use Alchemy\Phrasea\Record\RecordWasRotated;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DataURI\Parser;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\MediaVorus;
@@ -441,6 +443,11 @@ class ToolsController extends Controller
         ];
         try {
             $record->set_metadatas($metadatas);
+
+            // order to write meta in file
+            $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
+
         }
         catch (\Exception $e) {
             return $this->app->json(['success' => false, 'errorMessage' => $e->getMessage()]);

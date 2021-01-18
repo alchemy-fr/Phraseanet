@@ -40,6 +40,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
         $from = $data['from'];
         $ssel_id = $data['ssel_id'];
 
+        // for the old notifications
+        $timeLeft =  '2 days';
+        if (isset($data['time_left'])) {
+            $timeLeft = $data['time_left'];
+        }
+
         if (null === $user = $this->app['repo.users']->find($from)) {
             return [];
         }
@@ -57,7 +63,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             . $basket_name . '</a>';
 
         $ret = [
-            'text'  => $this->app->trans('Rappel : Il vous reste %number% jours pour valider %title% de %user%', ['%number%' => $this->app['conf']->get(['registry', 'actions', 'validation-reminder-days']), '%title%' => $bask_link, '%user%' => $sender])
+            'text'  => $this->app->trans('Rappel : Il vous reste %timeLeft% pour valider %title% de %user%', ['%timeLeft%' => $timeLeft, '%title%' => $bask_link, '%user%' => $sender])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 

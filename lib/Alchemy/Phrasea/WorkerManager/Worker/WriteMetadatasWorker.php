@@ -12,6 +12,8 @@ use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use DateTime;
+use Exception;
 use Monolog\Logger;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Metadata\MetadataBag;
@@ -21,6 +23,7 @@ use PHPExiftool\Driver\Value\Multi;
 use PHPExiftool\Exception\TagUnknown;
 use PHPExiftool\Writer;
 use Psr\Log\LoggerInterface;
+use record_adapter;
 
 class WriteMetadatasWorker implements WorkerInterface
 {
@@ -73,7 +76,7 @@ class WriteMetadatasWorker implements WorkerInterface
             if (!$canWriteMeta) {
                 // the file is in used to generate subdef
 
-                $this->messagePublisher->publishMessage($message, MessagePublisher::DELAYED_METADATAS_QUEUE);
+                $this->messagePublisher->publishDelayedMessage($message, MessagePublisher::WRITE_METADATAS_TYPE);
 
                 return ;
             }
@@ -113,7 +116,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 $em->beginTransaction();
 
                 try {
-                    $date = new \DateTime();
+                    $date = new DateTime();
                     $workerRunningJob = new WorkerRunningJob();
                     $workerRunningJob
                         ->setDataboxId($databoxId)
@@ -129,14 +132,17 @@ class WriteMetadatasWorker implements WorkerInterface
                     $em->flush();
 
                     $em->commit();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $em->rollback();
+                    $this->logger->error("Error persisting WorkerRunningJob !");
+
+                    return ;
                 }
             }
 
             try {
                 $subdef = $record->get_subdef($payload['subdefName']);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $workerMessage = "Exception catched when try to get subdef " .$payload['subdefName']. " from DB for the recordID: " .$recordId;
                 $this->logger->error($workerMessage);
 
@@ -221,7 +227,7 @@ class WriteMetadatasWorker implements WorkerInterface
                                 try {
                                     $value = self::fixDate($value); // will return NULL if the date is not valid
                                 }
-                                catch (\Exception $e) {
+                                catch (Exception $e) {
                                     $value = null;    // do NOT write back to iptc
                                 }
                             }
@@ -230,7 +236,7 @@ class WriteMetadatasWorker implements WorkerInterface
                                 $value = new Mono($value);
                             }
                         }
-                    } catch(\Exception $e) {
+                    } catch(Exception $e) {
                         // the field is not set in the record, erase it
                         if ($fieldStructure->is_multi()) {
                             $value = new Multi(array(''));
@@ -260,8 +266,8 @@ class WriteMetadatasWorker implements WorkerInterface
                     $this->writer->write($subdef->getRealPath(), $metadata);
 
                     $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
-                } catch (\Exception $e) {
-                    $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
+                } catch (Exception $e) {
+                    $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
                     $this->logger->error($workerMessage);
 
                     $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
@@ -297,11 +303,11 @@ class WriteMetadatasWorker implements WorkerInterface
             $em->beginTransaction();
             try {
                 $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-                $workerRunningJob->setFinished(new \DateTime('now'));
+                $workerRunningJob->setFinished(new DateTime('now'));
                 $em->persist($workerRunningJob);
                 $em->flush();
                 $em->commit();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $em->rollback();
             }
 
@@ -314,7 +320,7 @@ class WriteMetadatasWorker implements WorkerInterface
         return str_replace("\0", "", $value);
     }
 
-    private function updateJeton(\record_adapter $record)
+    private function updateJeton(record_adapter $record)
     {
         $connection = $record->getDatabox()->get_connection();
 
@@ -344,16 +350,16 @@ class WriteMetadatasWorker implements WorkerInterface
             $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
             switch (count($a)) {
                 case 3:     // yyyy;mm;dd
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2]);
                     $date = $date->format('Y-m-d H:i:s');
                     break;
                 case 6:     // yyyy;mm;dd;hh;mm;ss
-                    $date = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
+                    $date = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]);
                     $date = $date->format('Y-m-d H:i:s');
                     break;
             }
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             $date = null;
         }
 

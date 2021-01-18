@@ -106,6 +106,7 @@ class Indexer
                 'settings' => [
                     'number_of_shards'   => $this->index->getOptions()->getShards(),
                     'number_of_replicas' => $this->index->getOptions()->getReplicas(),
+                    'max_result_window'  => $this->index->getOptions()->getMaxResultWindow(),
                     'analysis'           => $this->index->getAnalysis()
                 ],
                 'mappings' => [
@@ -279,11 +280,11 @@ class Indexer
         );
 
         // Optimize index
-        $this->client->indices()->optimize(
-            [
-                'index' => $this->index->getName()
-            ]
-        );
+//        $this->client->indices()->optimize(
+//            [
+//                'index' => $this->index->getName()
+//            ]
+//        );
 
         $event = $stopwatch->stop('populate');
 
