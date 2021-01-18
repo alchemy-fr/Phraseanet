@@ -118,6 +118,7 @@ class record_preview extends record_adapter
 
                 $this->container = new record_adapter($app, $sbas_id, $record_id);
                 $this->original_item = $this->container;
+                $this->name = $this->container->get_title();
                 if ($pos == 0) {
                     $number = 0;
                 } else {
@@ -273,14 +274,14 @@ class record_preview extends record_adapter
                 $this->title .= $this->name . ' (' . $this->getNumber() . '/' . $this->total . ') - ' . parent::get_title($options);
                 break;
             case "REG":
-                $title = parent::get_title($options);
-                if ($this->getNumber() == 0) {
-                    $this->title .= $title;
-                } else {
+                $this->title .= $this->name;
+
+                if ($this->getNumber() != 0) {
                     $this->title .= sprintf(
-                        '%s %s', $title, $this->getNumber() . '/' . $this->total
+                        ' (%s) - %s',$this->getNumber() . '/' . $this->total, parent::get_title($options)
                     );
                 }
+
                 break;
             default:
                 $this->title .= parent::get_title($options);

@@ -113,6 +113,8 @@ class RecordController extends Controller
             } else {
                 $containerType = 'basket';
             }
+        } elseif ($env === 'REG') {
+            $containerType = 'regroup';
         }
 
         return $this->app->json([
