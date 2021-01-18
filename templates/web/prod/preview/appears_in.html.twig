@@ -7,8 +7,14 @@
         data-position="0"
         data-id="{{par.get_serialize_key()}}"
         data-reload="true"
-        class="otherRegToolTip open-preview-action" {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : par.get_sbas_id(), 'record_id' : par.get_record_id(), 'context' : 'basket' }) }}" {% endif %}>
-      <img src="{{par.get_thumbnail().get_url()}}" style="width:25px;height:25px;"/>
+        class="otherRegToolTip to-open-preview-action" {% if app['conf'].get(['registry', 'classic', 'stories-preview']) %}tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : par.get_sbas_id(), 'record_id' : par.get_record_id(), 'context' : 'basket' }) }}" {% endif %}>
+
+        {% if par.get_thumbnail().is_physically_present() %}
+          <img src="{{par.get_thumbnail().get_url()}}" style="width:25px;height:25px;"/>
+        {% else %}
+          <img src="/assets/common/images/icons/story.png" style="width:25px;height:25px;"/>
+        {% endif %}
+
       <span class="title" title="{{ par.get_title() }}"> {{ par.get_title() }} </span>
     </li>
   {% endfor %}
