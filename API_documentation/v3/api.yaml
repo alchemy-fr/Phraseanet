@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
     description: >
-        This is a demonstration of Phraseanet API (v3)
-        [https://alpha.preprod.alchemyasp.com/api/v3](https://alpha.preprod.alchemyasp.com/api/v3).
+        This is the documentation of Phraseanet API (v3)
+#        [https://alpha.preprod.alchemyasp.com/api/v3](https://alpha.preprod.alchemyasp.com/api/v3).
     version: "1.0.0-oas3"
     title: Phraseanet API
     # todo : fix url
@@ -12,26 +12,26 @@ info:
     license:
         name: GNU GPL V3
         url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
-servers:
-    - url: https://alpha.preprod.alchemyasp.com/api/v3
-      description: Phraseanet alpha (dev)
-    - url: https://beta.preprod.alchemyasp.com/api/v3
-      description: Phraseanet beta
-security:
-    - api_key: []
-    - oAuth2Password: []
+#servers:
+#    - url: https://alpha.preprod.alchemyasp.com/api/v3
+#      description: Phraseanet alpha (dev)
+#    - url: https://beta.preprod.alchemyasp.com/api/v3
+#      description: Phraseanet beta
+#security:
+#    - api_key: []
+#    - oAuth2Password: []
 components:
-    securitySchemes:
-        api_key:
-            type: apiKey
-            name: oauth_token
-            in: query
-        oAuth2Password:
-            type: oauth2
-            description: This API uses OAuth 2 with the password grant flow. [More info](https://api.example.com/docs/auth)
-            flows:
-                password:   # <-- OAuth flow(authorizationCode, implicit, password or clientCredentials)
-                    tokenUrl: azea
+#    securitySchemes:
+#        api_key:
+#            type: apiKey
+#            name: oauth_token
+#            in: query
+#        oAuth2Password:
+#            type: oauth2
+#            description: This API uses OAuth 2 with the password grant flow. [More info](https://api.example.com/docs/auth)
+#            flows:
+#                password:   # <-- OAuth flow(authorizationCode, implicit, password or clientCredentials)
+#                    tokenUrl: azea
     parameters:
         offsetParam:
             name: offset
@@ -52,7 +52,20 @@ components:
                 minimum: 1
                 maximum: 100
                 default: 10
-
+        sbas_id:
+            name: sbas_id
+            in: path
+            description: ID of the databox
+            required: true
+            schema:
+                $ref: schemas.yaml#/ID
+        record_id:
+            name: record_id
+            in: path
+            description: ID of the record
+            required: true
+            schema:
+                $ref: schemas.yaml#/ID
 paths:
     '/me':
         get:
@@ -200,8 +213,8 @@ paths:
                                 $ref: schemas.yaml#/ApiResponse_record
                 default:
                     $ref: 'responses.yaml#/error_response'
-            security:
-                - api_key: []
+#            security:
+#                - api_key: []
     '/records/{sbas_id}/{record_id}':
         get:
             tags:
@@ -210,18 +223,8 @@ paths:
             description: Returns a single record
             operationId: getRecordById
             parameters:
-                - name: sbas_id
-                  in: path
-                  description: ID of the databox
-                  required: true
-                  schema:
-                      $ref: schemas.yaml#/ID
-                - name: record_id
-                  in: path
-                  description: ID of the record
-                  required: true
-                  schema:
-                      $ref: schemas.yaml#/ID
+                - $ref: '#/components/parameters/sbas_id'
+                - $ref: '#/components/parameters/record_id'
             responses:
                 200:
                     description: ok
@@ -239,20 +242,10 @@ paths:
                 - story
             summary: Returns uri of each record (child) contained in the story ; Optional pagination
             description: Returns children of a story
-            operationId: getRecordById
+            operationId: getStoryChildren
             parameters:
-                - name: sbas_id
-                  in: path
-                  description: ID of the databox
-                  required: true
-                  schema:
-                      $ref: schemas.yaml#/ID
-                - name: record_id
-                  in: path
-                  description: ID of the story record
-                  required: true
-                  schema:
-                      $ref: schemas.yaml#/ID
+                - $ref: '#/components/parameters/sbas_id'
+                - $ref: '#/components/parameters/record_id'
                 - name: page
                   in: query
                   description: page number (default 1)
