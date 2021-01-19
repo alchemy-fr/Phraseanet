@@ -2,7 +2,6 @@ openapi: 3.0.0
 info:
   description: |
     This is the documentation of Phraseanet API (v3)
-    push from  swagger to github tryout 1
   version: 1.0.0-oas3
   title: Phraseanet API
   termsOfService: 'http://phraseanet.com/terms/'
