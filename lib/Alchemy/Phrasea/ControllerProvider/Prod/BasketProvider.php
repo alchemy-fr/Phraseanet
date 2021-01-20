@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Prod;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Prod\BasketController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -24,7 +25,8 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
     public function register(Application $app)
     {
         $app['controller.prod.basket'] = $app->share(function (PhraseaApplication $app) {
-            return new BasketController($app);
+            return (new BasketController($app))
+                ->setDelivererLocator(new LazyLocator($app, 'notification.deliverer'));
         });
     }
 
@@ -44,6 +46,14 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->get('/{basket}/', 'controller.prod.basket:displayBasket')
             ->bind('prod_baskets_basket')
+            ->assert('basket', '\d+');
+
+        $controllers->get('/{basket}/reminder/', 'controller.prod.basket:displayReminder')
+            ->bind('prod_baskets_reminder')
+            ->assert('basket', '\d+');
+
+        $controllers->post('/{basket}/reminder/', 'controller.prod.basket:doReminder')
+            ->bind('prod_baskets_do_reminder')
             ->assert('basket', '\d+');
 
         $controllers->post('/', 'controller.prod.basket:createBasket')
