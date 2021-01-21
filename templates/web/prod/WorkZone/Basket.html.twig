@@ -89,6 +89,7 @@
         {% endif %}
     </div>
     {% if basket.getValidation() %}
+        <button class="btn feedback-reminder" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 5px;">{{ 'prod::workzone:manual feedback reminder button' | trans }}</button>
         <div class="feedback-info">
             {% set nb_records = basket.getElements()|length %}
             {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}

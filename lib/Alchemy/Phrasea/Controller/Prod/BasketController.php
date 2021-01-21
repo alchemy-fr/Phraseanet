@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Model\Entities\Basket;
@@ -16,6 +17,10 @@ use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
+use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Mail\MailInfoReminderFeedback;
+use Alchemy\Phrasea\Notification\Receiver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -23,6 +28,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BasketController extends Controller
 {
+    use NotifierAware;
+
     public function displayBasket(Request $request, Basket $basket)
     {
         if ($basket->isRead() === false) {
@@ -47,6 +54,58 @@ class BasketController extends Controller
                 'actionbar' => $filter('workzone.basket.actionbar'),
             ],
         ]);
+    }
+
+    public function displayReminder(Request $request, Basket $basket)
+    {
+        if ($basket->getValidation()) {
+            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
+                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+                $this->getEntityManager()->flush();
+            }
+        }
+
+        return $this->render('prod/WorkZone/Reminder.html.twig', [
+            'basket' => $basket,
+        ]);
+    }
+
+    public function doReminder(Request $request, Basket $basket)
+    {
+        $userFrom = $basket->getValidation()->getInitiator();
+
+        $emitter = Emitter::fromUser($userFrom);
+
+        $params = $request->request->all();
+        $message = $params['reminder-message'];
+
+        $usersId = array_map(function ($value) {
+            $t = explode("_", $value);
+
+            return $t[1];
+        }, preg_grep('/^participant/', array_keys($params)));
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+
+        $arguments = [
+            'basket' => $basket->getId(),
+        ];
+
+        $url = $this->app->url('lightbox_validation', $arguments);
+
+        foreach ($usersId as $userId) {
+            $userTo = $userRepository->find($userId);
+
+            $receiver = Receiver::fromUser($userTo);
+            $mail = MailInfoReminderFeedback::create($this->app, $receiver, $emitter, $message);
+            $mail->setTitle($basket->getName());
+            $mail->setButtonUrl($url);
+
+            $this->deliver($mail);
+        }
+
+        return $this->app->json(["success" => true]);
     }
 
     /**
