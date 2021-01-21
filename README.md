@@ -18,7 +18,7 @@ Phraseanet is licensed under GPL-v3 license.
 
 https://docs.phraseanet.com/
 
-For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel/index.html
+For development with Phraseanet API see https://docs.phraseanet.com/4.1/en/Devel/index.html
 
 # Installation :
 
@@ -26,7 +26,7 @@ You can download a packaged version here: :
 
 https://www.phraseanet.com/download/
 
-And follow the install steps described at https://docs.phraseanet.com/4.0/en/Admin/Install.html
+And follow the install steps described at https://docs.phraseanet.com/4.1/en/Admin/Install.html
 
 # Phraseanet with Docker:
 
