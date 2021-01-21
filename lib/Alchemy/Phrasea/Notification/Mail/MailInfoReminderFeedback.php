@@ -44,6 +44,7 @@ class MailInfoReminderFeedback extends AbstractMailWithLink
      */
     public function getButtonText()
     {
+        return $this->app->trans('Start validation');
     }
 
     /**

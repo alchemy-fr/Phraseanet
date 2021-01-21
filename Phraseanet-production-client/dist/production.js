@@ -18514,6 +18514,13 @@ var feedbackReminder = function feedbackReminder(services) {
 
         var $dialog = _dialog2.default.get(1);
 
+        $doReminderForm.find(".participant").change(function (e) {
+            var allParticipant = $doReminderForm.find("#all-participant").prop('checked');
+            if (allParticipant) {
+                $doReminderForm.find(".participant[value!=0]").prop('checked', true);
+            }
+        });
+
         var buttons = {};
 
         buttons[localeService.t('send')] = function () {

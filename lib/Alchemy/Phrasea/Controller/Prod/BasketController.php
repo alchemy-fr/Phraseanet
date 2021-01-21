@@ -88,12 +88,19 @@ class BasketController extends Controller
         /** @var UserRepository $userRepository */
         $userRepository = $this->app['repo.users'];
 
+        $arguments = [
+            'basket' => $basket->getId(),
+        ];
+
+        $url = $this->app->url('lightbox_validation', $arguments);
+
         foreach ($usersId as $userId) {
             $userTo = $userRepository->find($userId);
 
             $receiver = Receiver::fromUser($userTo);
             $mail = MailInfoReminderFeedback::create($this->app, $receiver, $emitter, $message);
             $mail->setTitle($basket->getName());
+            $mail->setButtonUrl($url);
 
             $this->deliver($mail);
         }

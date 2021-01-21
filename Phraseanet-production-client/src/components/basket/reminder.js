@@ -30,6 +30,13 @@ const feedbackReminder = (services) => {
 
         let $dialog = dialog.get(1);
 
+        $doReminderForm.find(".participant").change(function (e) {
+            let allParticipant = $doReminderForm.find("#all-participant").prop('checked');
+            if (allParticipant) {
+                $doReminderForm.find(".participant[value!=0]").prop('checked', true);
+            }
+        });
+
         let  buttons = {};
 
         buttons[localeService.t('send')] = function () {
