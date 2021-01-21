@@ -10,10 +10,10 @@
        <div class="history-block history-{{action}}">
         {% if action == 'push' %}
           {% set n_user = done['final']|length %}
-          {% trans with {'%n_user%' : n_user } %}report::Push vers %n_user% utilisateurs depuis lapplication box {% endtrans %}
+          {% trans with {'%n_user%' : n_user } %}report::Push vers %n_user% utilisateurs depuis lapplication box{% endtrans %}
         {% elseif action == 'validate' %}
           {% set n_user = done['final']|length %}
-          {% trans with {'%n_user%' : n_user } %}report::Demande de validation vers %n_user% utilisateurs depuis lapplication box {% endtrans %}
+          {% trans with {'%n_user%' : n_user } %}report::Demande de validation vers %n_user% utilisateurs depuis lapplication box{% endtrans %}
         {% elseif action == 'edit' %}
           {{ 'report::Edition des meta-donnees' | trans }}
         {% elseif action == 'collection' %}
