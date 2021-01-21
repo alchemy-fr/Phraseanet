@@ -1,0 +1,487 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is the documentation of Phraseanet API (v3)
+  version: 1.0.0-oas3
+  title: Phraseanet API
+  termsOfService: 'http://phraseanet.com/terms/'
+  contact:
+    email: support@alchemy.fr
+  license:
+    name: GNU GPL V3
+    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+components:
+  parameters:
+    offsetParam:
+      name: offset
+      in: query
+      description: offset in records count
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    limitParam:
+      name: limit
+      in: query
+      description: number of results
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    sbas_id:
+      name: sbas_id
+      in: path
+      description: ID of the databox
+      required: true
+      schema:
+        type: integer
+    record_id:
+      name: record_id
+      in: path
+      description: ID of the record
+      required: true
+      schema:
+        $ref: '#/components/parameters/sbas_id/schema'
+paths:
+  /me:
+    get:
+      description: blabla
+      servers:
+        - url: 'https://alpha.preprod.alchemyasp.com/api/v1'
+      responses:
+        '200':
+          description: successful operation
+        default:
+          description: Any error
+  /search:
+    post:
+      tags:
+        - search
+      description: |
+        Fulltext search for records or stories.
+
+        - pagination: use (offset/limit) OR (page/per_page)
+      parameters:
+        - name: query
+          in: query
+          description: The fulltext query (<empty> = search all)
+          required: false
+          schema:
+            type: string
+            example: dogs OR cats
+            default: ''
+        - name: search_type
+          in: query
+          description: 0 to search for records ; 1 to search for stories
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+            default: 0
+        - name: page
+          in: query
+          description: 'page number, from 1. Use along with "per_page"'
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: number of results per page. Use along with "page"
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          description: 'offset in records count, from 0. Use along with "limit"'
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: number of results. Use along with "offset"
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: story_children_limit
+          in: query
+          description: 'For each story in result, include N children'
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 10
+            default: '0'
+        - name: include
+          in: query
+          description: Suplemental elements to be included in response
+          required: false
+          schema:
+            type: array
+            uniqueItems: false
+            items:
+              type: string
+              enum:
+                - facets
+                - result.stories.children
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties:
+                      api_version:
+                        type: string
+                      request:
+                        type: string
+                      response_time:
+                        type: string
+                        format: date-time
+                      http_code:
+                        type: integer
+                        format: int32
+                      error_type:
+                        type: string
+                      error_message:
+                        type: string
+                  response:
+                    type: object
+                    properties:
+                      offset:
+                        type: integer
+                        description: The pagination offset as passed (or computed from "page/per_page") in request
+                      limit:
+                        type: integer
+                        description: The pagination limit as passed in request
+                      count:
+                        type: integer
+                        description: 'The number of results in this page [0...limit]'
+                      total:
+                        type: integer
+                        description: The total number of results
+                        minimum: 1
+                      results:
+                        type: object
+                        properties:
+                          stories:
+                            type: array
+                            items:
+                              allOf:
+                                - $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/response/allOf/0'
+                                - type: object
+                                  properties:
+                                    children_offset:
+                                      type: integer
+                                      description: The children pagination offset ; Always 0
+                                    children_limit:
+                                      type: integer
+                                      description: The children pagination limit ; Equal to "story_children_limit" passed in request
+                                    children_count:
+                                      type: integer
+                                      description: 'The number of children in "children" array ; [0...limit]'
+                                    children_total:
+                                      type: integer
+                                      description: The total number of -visibles for user- children in this story
+                                    children:
+                                      type: array
+                                      items:
+                                        type: object
+                                        items:
+                                          $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/response'
+                          records:
+                            type: array
+                            items:
+                              $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/response'
+                      facets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: The unique internal name (=key) for the facet
+                              example: _base
+                            field:
+                              type: string
+                              description: 'Source field (from db structure). Can be also virtual field like "database" '
+                              example: database
+                            values:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  value:
+                                    type: string
+                                    description: Human readable value for the value
+                                    example: Demo
+                                  raw_value:
+                                    type: string
+                                    description: 'Real value, to be used to query'
+                                    example: db_demo
+                                  count:
+                                    type: integer
+                                    description: Number of items matching this value
+                                  query:
+                                    type: string
+                                    description: Formulated query to search items matching this facet
+                                    example: 'database:db_demo'
+        default:
+          description: Any (other) error
+  '/records/{base_id}':
+    post:
+      tags:
+        - record
+      summary: Creates a record
+      description: 'Creates a single record, including document and/or data.'
+      operationId: createRecord
+      parameters:
+        - name: base_id
+          in: path
+          description: ID of the base
+          required: true
+          schema:
+            $ref: '#/components/parameters/sbas_id/schema'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              description: to create a record with a file (document)
+              type: object
+              properties:
+                body:
+                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/requestBody/content/application~1json/schema/allOf/0'
+                file:
+                  description: uploaded file
+                  type: string
+                  format: binary
+          application/json:
+            schema:
+              description: to create a record without file (document)
+              allOf:
+                - description: 'Metadata, status, collection, etc to be set for a record'
+                  type: object
+                  properties:
+                    metadatas:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          field_name:
+                            type: string
+                          meta_struct_id:
+                            $ref: '#/components/parameters/sbas_id/schema'
+                          action:
+                            type: string
+                            enum:
+                              - set
+                              - add
+                              - delete
+                              - replace
+                          value:
+                            type: string
+                    status:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - bit
+                          - state
+                        properties:
+                          bit:
+                            type: integer
+                            minimum: 4
+                            maximum: 31
+                          state:
+                            type: boolean
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/paths/~1search/post/responses/200/content/application~1json/schema/properties/meta'
+                  response:
+                    allOf:
+                      - type: object
+                        properties:
+                          databox_id:
+                            $ref: '#/components/parameters/sbas_id/schema'
+                          record_id:
+                            $ref: '#/components/parameters/sbas_id/schema'
+                          title:
+                            type: string
+                          original_name:
+                            type: string
+                          updated_on:
+                            type: string
+                            format: date-time
+                          created_on:
+                            type: string
+                            format: date-time
+                          collection_id:
+                            $ref: '#/components/parameters/sbas_id/schema'
+                          base_id:
+                            $ref: '#/components/parameters/sbas_id/schema'
+                          thumbnail:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              permalink:
+                                type: object
+                                properties:
+                                  created_on:
+                                    type: string
+                                    format: date-time
+                                  id:
+                                    $ref: '#/components/parameters/sbas_id/schema'
+                                  is_activated:
+                                    type: boolean
+                                  label:
+                                    type: string
+                                  updated_on:
+                                    type: string
+                                    format: date-time
+                                  page_url:
+                                    type: string
+                                  download_url:
+                                    type: string
+                                  url:
+                                    type: string
+                              height:
+                                type: integer
+                              width:
+                                type: integer
+                              filesize:
+                                type: integer
+                              devices:
+                                type: array
+                                items:
+                                  type: string
+                                  enum:
+                                    - screen
+                                    - printer ?
+                              player_type:
+                                type: string
+                                enum:
+                                  - IMAGE
+                              mime_type:
+                                type: string
+                              substituted:
+                                type: boolean
+                              created_on:
+                                type: string
+                                format: date-time
+                              updated_on:
+                                type: string
+                                format: date-time
+                              url:
+                                type: string
+                              url_ttl:
+                                type: integer
+                          uuid:
+                            type: string
+                      - type: object
+                        properties:
+                          mime_type:
+                            type: string
+                          technical_informations:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                value:
+                                  type: string
+                          sha256:
+                            type: string
+                          phrasea_type:
+                            type: string
+                            enum:
+                              - image
+                              - video
+        default:
+          $ref: '#/paths/~1search/post/responses/default'
+  '/records/{sbas_id}/{record_id}':
+    get:
+      tags:
+        - record
+      summary: Find record by sbas_id and record_id
+      description: Returns a single record
+      operationId: getRecordById
+      parameters:
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema'
+        '404':
+          description: Record not found
+        default:
+          $ref: '#/paths/~1search/post/responses/default'
+  '/stories/{sbas_id}/{record_id}/children':
+    get:
+      tags:
+        - story
+      summary: Returns uri of each record (child) contained in the story ; Optional pagination
+      description: Returns children of a story
+      operationId: getStoryChildren
+      parameters:
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
+        - name: page
+          in: query
+          description: page number (default 1)
+          required: false
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          description: number of children (records uri) per page (default 10)
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/paths/~1search/post/responses/200/content/application~1json/schema/properties/meta'
+                  response:
+                    type: array
+                    items:
+                      type: string
+                      example: /api/v3/records/1/48
+        '404':
+          description: Story (record) not found
+        default:
+          $ref: '#/paths/~1search/post/responses/default'
