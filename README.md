@@ -22,7 +22,7 @@ For development with Phraseanet API see https://docs.phraseanet.com/4.0/en/Devel
 
 # Installation :
 
-You **must** not download the source from GitHub, but download a packaged version here :
+You can download a packaged version here: :
 
 https://www.phraseanet.com/download/
 
