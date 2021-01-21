@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-01-21T07:37:37Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2021-01-21T09:03:45Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4296,6 +4296,11 @@
         <target state="translated">Mandatory fields</target>
         <jms:reference-file line="60">web/login/register-provider.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'">
+        <source>Manual feedback Reminder : '%title%'</source>
+        <target state="new">Manual feedback Reminder : '%title%'</target>
+        <jms:reference-file line="31">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="6c06116dd4028e455f3551a282e43361db9848f6" resname="Masks" approved="yes">
         <source>Masks</source>
         <target state="translated">Masks</target>
@@ -5654,11 +5659,6 @@
         <source>Remember me</source>
         <target state="translated">Remember me</target>
         <jms:reference-file line="51">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="2392f9c96234d302e93ac6973843a6c114c80424" resname="Reminder : '%title%'">
-        <source>Reminder : '%title%'</source>
-        <target state="new">Reminder : '%title%'</target>
-        <jms:reference-file line="31">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8005b356e3a4dba94a532df1deec4ebce882d13" resname="Reminder : validate '%title%'" approved="yes">
         <source>Reminder : validate '%title%'</source>
@@ -13435,7 +13435,7 @@ It is possible to place several search areas</target>
         <target state="translated">Connections</target>
         <jms:reference-file line="42">module/report/connexion.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6145ae65d96ba6a8b531e8a73226066024bc6866" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box" approved="yes">
+      <trans-unit id="f7cd73fdf0f60afd1ce9636526a60a84640b5368" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box" approved="yes">
         <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box</source>
         <target state="translated">Feedback to %n_user% user(s)</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
@@ -13485,7 +13485,7 @@ It is possible to place several search areas</target>
         <target state="translated">Publication(s) from %dest%</target>
         <jms:reference-file line="33">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2be59e02d9abf445a12bac223e5d4701b0b45ea2" resname="report::Push vers %n_user% utilisateurs depuis lapplication box" approved="yes">
+      <trans-unit id="73e486b6a0a0e0c8adc0f0d8b0e0f17ba59c53e7" resname="report::Push vers %n_user% utilisateurs depuis lapplication box" approved="yes">
         <source>report::Push vers %n_user% utilisateurs depuis lapplication box</source>
         <target state="translated">Push to %n_user% user(s)</target>
         <jms:reference-file line="13">prod/preview/short_history.html.twig</jms:reference-file>
