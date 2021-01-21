@@ -1,14 +1,14 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-01-21T09:04:37Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2021-01-21T12:29:57Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -248,12 +248,12 @@
         <source>%quantity% records added</source>
         <target state="translated">%quantity% enregistrements ajoutés</target>
         <jms:reference-file line="137">Controller/Prod/StoryController.php</jms:reference-file>
-        <jms:reference-file line="290">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="301">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="24927cf9f90bef4e8f7333ff97f602c0fcce6c8d" resname="%quantity% records moved" approved="yes">
         <source>%quantity% records moved</source>
         <target state="translated">%quantity% enregistrements déplacés</target>
-        <jms:reference-file line="338">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="349">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d7c38bf41291d1f920c6e0b56a1c4a1cfc0b6743" resname="%quantity% selected files" approved="yes">
         <source>%quantity% selected files</source>
@@ -967,7 +967,7 @@
         <jms:reference-file line="218">Controller/Prod/StoryController.php</jms:reference-file>
         <jms:reference-file line="176">Controller/Prod/ToolsController.php</jms:reference-file>
         <jms:reference-file line="257">Controller/Prod/LazaretController.php</jms:reference-file>
-        <jms:reference-file line="233">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="244">Controller/Prod/BasketController.php</jms:reference-file>
         <jms:reference-file line="186">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="226">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="267">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -1039,7 +1039,7 @@
         <source>An error occurred</source>
         <target state="translated">Une erreur est survenue</target>
         <jms:reference-file line="77">Order/Controller/ProdOrderController.php</jms:reference-file>
-        <jms:reference-file line="205">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="216">Controller/Prod/BasketController.php</jms:reference-file>
         <jms:reference-file line="2081">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="2527">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="126">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -1466,27 +1466,27 @@
       <trans-unit id="d2d90e7ff1dfbf3b3fc83a0f5b30add947f86c96" resname="Basket created" approved="yes">
         <source>Basket created</source>
         <target state="translated">Panier créé</target>
-        <jms:reference-file line="136">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="147">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d3c33c793b8edf6c3a6ff82c1de2f5ef5bab6766" resname="Basket has been archived" approved="yes">
         <source>Basket has been archived</source>
         <target state="translated">Le panier a été archivé</target>
-        <jms:reference-file line="264">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="275">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="93880f367625b1e2aa74d662dbdae1aaa9b92146" resname="Basket has been deleted" approved="yes">
         <source>Basket has been deleted</source>
         <target state="translated">Le panier a été supprimé</target>
-        <jms:reference-file line="162">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="173">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5d9753b9d394d1ebacb6be649a46b959bb8a79d" resname="Basket has been unarchived" approved="yes">
         <source>Basket has been unarchived</source>
         <target state="translated">Le panier est disponible dans la fenêtre des paniers</target>
-        <jms:reference-file line="266">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="277">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5f88f54fcd76b26d78fb4994d336e75a2e20f41c" resname="Basket has been updated" approved="yes">
         <source>Basket has been updated</source>
         <target state="translated">Le panier a été mis à jour</target>
-        <jms:reference-file line="199">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="210">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="83602366c2bc77de4a17181cf566da428eaee78e" resname="Basket is not found" approved="yes">
         <source>Basket is not found</source>
@@ -1496,7 +1496,7 @@
       <trans-unit id="f149359beace4d242ac47578384e4cb7e001b9e7" resname="Basket updated" approved="yes">
         <source>Basket updated</source>
         <target state="translated">Paniers mis à jour</target>
-        <jms:reference-file line="246">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="257">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="15df8ed745621447f2a6335f48173649ec29dd82" resname="Binary data" approved="yes">
         <source>Binary data</source>
@@ -4293,7 +4293,7 @@
         <target state="translated">Champs obligatoires</target>
         <jms:reference-file line="60">web/login/register-provider.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="no">
+      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'">
         <source>Manual feedback Reminder : '%title%'</source>
         <target state="needs-translation">Rappel pour la validation : '%title%'</target>
         <jms:reference-file line="31">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
@@ -4333,7 +4333,7 @@
         <target state="translated">Message</target>
         <jms:reference-file line="96">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="157">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="19">prod/WorkZone/Reminder.html.twig</jms:reference-file>
+        <jms:reference-file line="28">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cbcbdf92e7a47c81ec1719f03f00d8e6c5b5f5ef" resname="Message automatique de Phraseanet" approved="yes">
         <source>Message automatique de Phraseanet</source>
@@ -5586,7 +5586,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="ef0112aa634cbad5a586b72e4befe1ab1a39e73f" resname="Record removed from basket" approved="yes">
         <source>Record removed from basket</source>
         <target state="translated">L'enregistrement a été supprimé du panier</target>
-        <jms:reference-file line="178">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="189">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0a10e48d87332985ab5d267f0a5aaae0a9b87b00" resname="Record removed from story" approved="yes">
         <source>Record removed from story</source>
@@ -6737,7 +6737,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="91b95f84f2af8fb0b20dac4719184cec6805ef31" resname="The requested basket does not exist" approved="yes">
         <source>The requested basket does not exist</source>
         <target state="translated">La panier demandé n'existe pas</target>
-        <jms:reference-file line="201">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="212">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d29ae57dd01be0f4c5b2e1993379c00443a9c937" resname="The task status" approved="yes">
         <source>The task status</source>
@@ -7812,7 +7812,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="97188aa994ca91d6fd389a9a6d282aff57695836" resname="You do not have access to this basket" approved="yes">
         <source>You do not have access to this basket</source>
         <target state="translated">Vous n'avez pas accès à ce panier</target>
-        <jms:reference-file line="203">Controller/Prod/BasketController.php</jms:reference-file>
+        <jms:reference-file line="214">Controller/Prod/BasketController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0c3a299c1d0f52a5043bb5979ee26e60a37df414" resname="You do not have enough rights to access quarantine" approved="yes">
         <source>You do not have enough rights to access quarantine</source>
@@ -9330,7 +9330,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">n_workers</target>
         <jms:reference-file line="27">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds" approved="no">
+      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds">
         <source>admin::workermanager:tab:workerconfig:retry delay in seconds</source>
         <target state="needs-translation">Délai (en secondes) entre deux tentatives</target>
         <jms:reference-file line="44">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
@@ -12307,30 +12307,35 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="2">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="2">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button" approved="no">
+      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
         <source>prod::workzone:manual feedback reminder button</source>
         <target state="needs-translation">Envoyer un rappel par email</target>
         <jms:reference-file line="92">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="no">
+      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!">
         <source>prod::workzone:manual feedback reminder provide a message!</source>
         <target state="needs-translation">Ajouter un message!</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!" approved="no">
+      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!">
         <source>prod::workzone:manual feedback reminder select a participant!</source>
         <target state="needs-translation">Sélectionner au moins un destinataires pour ce rappel !</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant" approved="no">
+      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant">
         <source>prod::workzone:manual feedback reminder select all participant</source>
         <target state="needs-translation">Sélectionner tout les participants</target>
-        <jms:reference-file line="5">prod/WorkZone/Reminder.html.twig</jms:reference-file>
+        <jms:reference-file line="10">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="no">
+      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title">
         <source>prod::workzone:manual feedback reminder title</source>
         <target state="needs-translation">Envois d'un rappel de validation</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send">
+        <source>prod::workzone:manual feedback report send</source>
+        <target state="new">prod::workzone:manual feedback report send</target>
+        <jms:reference-file line="21">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
         <source>prod:app trash: record-move-to-trash</source>

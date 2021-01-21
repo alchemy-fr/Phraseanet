@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
+use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoReminderFeedback;
@@ -88,14 +89,24 @@ class BasketController extends Controller
         /** @var UserRepository $userRepository */
         $userRepository = $this->app['repo.users'];
 
-        $arguments = [
-            'basket' => $basket->getId(),
-        ];
-
-        $url = $this->app->url('lightbox_validation', $arguments);
-
         foreach ($usersId as $userId) {
             $userTo = $userRepository->find($userId);
+
+            // find the token if exists
+            // nb : a validation may have not generated tokens if forcing auth was required upon creation
+            $token = null;
+            try {
+                $token = $this->getTokenRepository()->findValidationToken($basket, $userTo);
+            }
+            catch (\Exception $e) {
+                // not unique token ? should not happen
+            }
+
+            if(!is_null($token)) {
+                $url = $this->app->url('lightbox_validation', ['basket' => $basket->getId(), 'LOG' => $token->getValue()]);
+            } else {
+                $url = $this->app->url('lightbox_validation', ['basket' => $basket->getId()]);
+            }
 
             $receiver = Receiver::fromUser($userTo);
             $mail = MailInfoReminderFeedback::create($this->app, $receiver, $emitter, $message);
@@ -347,5 +358,13 @@ class BasketController extends Controller
     public function displayCreateForm()
     {
         return $this->render('prod/Baskets/Create.html.twig');
+    }
+
+    /**
+     * @return TokenRepository
+     */
+    private function getTokenRepository()
+    {
+        return $this->app['repo.tokens'];
     }
 }
