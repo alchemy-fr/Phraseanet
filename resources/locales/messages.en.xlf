@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-01-21T09:03:45Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -9310,19 +9310,19 @@
         <target state="translated">Workers main settings</target>
         <jms:reference-file line="5">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning">
+      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="yes">
         <source>admin::workermanager:tab:workerconfig: warning</source>
-        <target state="needs-translation">Queues need to be destroyed to take into account new time intervals - this action can be performed in the "queues" tab.</target>
+        <target state="translated">Queues need to be destroyed to take into account new time intervals - this action can be performed in the "queues" tab.</target>
         <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds">
+      <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds" approved="no">
         <source>admin::workermanager:tab:workerconfig:delayed delay in seconds</source>
-        <target state="needs-translation">Delay between attempts for delayed messages (sec)</target>
+        <target state="needs-translation">Delay (in seconds) between attempts for delayed messages</target>
         <jms:reference-file line="54">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry">
+      <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry" approved="yes">
         <source>admin::workermanager:tab:workerconfig:max retry</source>
-        <target state="needs-translation">Maximum number of retries</target>
+        <target state="translated">Maximum number of retries</target>
         <jms:reference-file line="36">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="789f4de86070d382232e79c2f04f4d29e62cf0e2" resname="admin::workermanager:tab:workerconfig:n_workers">
@@ -9330,9 +9330,9 @@
         <target state="needs-translation">n_workers</target>
         <jms:reference-file line="27">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds">
+      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds" approved="no">
         <source>admin::workermanager:tab:workerconfig:retry delay in seconds</source>
-        <target state="needs-translation">Delay for retry (sec)</target>
+        <target state="needs-translation">Delay (in seconds) for retry</target>
         <jms:reference-file line="44">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
@@ -9666,14 +9666,14 @@
         <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="75">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item">
+      <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item" approved="yes">
         <source>basket:feedback Delete item</source>
-        <target state="needs-translation">Remove record</target>
+        <target state="translated">Remove record</target>
         <jms:reference-file line="62">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action">
+      <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action" approved="yes">
         <source>basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action</source>
-        <target state="needs-translation">Warning ! You are about to delete a record from a feedback. You will lost all votes linked to this asset, please confirm your action</target>
+        <target state="translated">Warning ! You are about to delete a record from a feedback. You will lost all votes linked to this asset, please confirm your action</target>
         <jms:reference-file line="69">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="05661ba3e118de7262e3acc7b6ffe75be8b98cdd" resname="be notified when a document is placed in quarantine" approved="yes">
@@ -12307,9 +12307,9 @@ Warning: The current values will be overwritten by these new values</target>
         <jms:reference-file line="2">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="2">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
+      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button" approved="no">
         <source>prod::workzone:manual feedback reminder button</source>
-        <target state="new">prod::workzone:manual feedback reminder button</target>
+        <target state="needs-translation">Send a reminder by email</target>
         <jms:reference-file line="92">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!">
@@ -12317,19 +12317,19 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="new">prod::workzone:manual feedback reminder provide a message!</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!">
+      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!" approved="no">
         <source>prod::workzone:manual feedback reminder select a participant!</source>
-        <target state="new">prod::workzone:manual feedback reminder select a participant!</target>
+        <target state="needs-translation">You need to select a participant!</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant">
+      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant" approved="no">
         <source>prod::workzone:manual feedback reminder select all participant</source>
-        <target state="new">prod::workzone:manual feedback reminder select all participant</target>
+        <target state="needs-translation">Select all participants</target>
         <jms:reference-file line="5">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title">
+      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="no">
         <source>prod::workzone:manual feedback reminder title</source>
-        <target state="new">prod::workzone:manual feedback reminder title</target>
+        <target state="needs-translation">Send a Feedback reminder</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
