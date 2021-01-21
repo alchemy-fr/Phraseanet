@@ -12317,19 +12317,19 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="needs-translation">Vous devez ajouter un message !</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!">
+      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!" approved="no">
         <source>prod::workzone:manual feedback reminder select a participant!</source>
-        <target state="needs-translation">Sélectionner au moins un destinataires pour ce rappel !</target>
+        <target state="needs-translation">Sélectionner au moins un destinataire pour ce rappel !</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant">
+      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant" approved="no">
         <source>prod::workzone:manual feedback reminder select all participant</source>
-        <target state="needs-translation">Sélectionner tout les participants</target>
+        <target state="needs-translation">Sélectionner tous les participants</target>
         <jms:reference-file line="10">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="no">
         <source>prod::workzone:manual feedback reminder title</source>
-        <target state="needs-translation">Envois d'un email de rappel</target>
+        <target state="needs-translation">Envoi d'un email de rappel</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send" approved="no">
