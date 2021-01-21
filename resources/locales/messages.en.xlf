@@ -13442,7 +13442,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="f7cd73fdf0f60afd1ce9636526a60a84640b5368" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box" approved="no">
         <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box</source>
-        <target state="needs-translation">Feedback send to %n_user% user(s)</target>
+        <target state="needs-translation">Feedback sent to %n_user% user(s)</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8fc6702f9d21db51a5cad24125d58e5d19e869" resname="report::Edition des meta-donnees" approved="yes">
