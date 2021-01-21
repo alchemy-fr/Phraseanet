@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-01-21T12:29:08Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -4296,9 +4296,9 @@
         <target state="translated">Mandatory fields</target>
         <jms:reference-file line="60">web/login/register-provider.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'">
+      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="no">
         <source>Manual feedback Reminder : '%title%'</source>
-        <target state="new">Manual feedback Reminder : '%title%'</target>
+        <target state="needs-translation">Feedback Reminder for : '%title%'</target>
         <jms:reference-file line="31">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6c06116dd4028e455f3551a282e43361db9848f6" resname="Masks" approved="yes">
@@ -9315,9 +9315,9 @@
         <target state="translated">Queues need to be destroyed to take into account new time intervals - this action can be performed in the "queues" tab.</target>
         <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds">
+      <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds" approved="yes">
         <source>admin::workermanager:tab:workerconfig:delayed delay in seconds</source>
-        <target state="needs-translation">Delay (in seconds) between attempts for delayed messages</target>
+        <target state="translated">Delay (in seconds) between attempts for delayed messages</target>
         <jms:reference-file line="54">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry" approved="yes">
@@ -12312,9 +12312,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="needs-translation">Send a reminder by email</target>
         <jms:reference-file line="92">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!">
+      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="no">
         <source>prod::workzone:manual feedback reminder provide a message!</source>
-        <target state="new">prod::workzone:manual feedback reminder provide a message!</target>
+        <target state="needs-translation">Please provide a message!</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!">
@@ -12332,9 +12332,9 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="needs-translation">Send a Feedback reminder</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send">
+      <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send" approved="no">
         <source>prod::workzone:manual feedback report send</source>
-        <target state="new">prod::workzone:manual feedback report send</target>
+        <target state="needs-translation">Feedback report already sent</target>
         <jms:reference-file line="21">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
@@ -13440,9 +13440,9 @@ It is possible to place several search areas</target>
         <target state="translated">Connections</target>
         <jms:reference-file line="42">module/report/connexion.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f7cd73fdf0f60afd1ce9636526a60a84640b5368" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box" approved="yes">
+      <trans-unit id="f7cd73fdf0f60afd1ce9636526a60a84640b5368" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box" approved="no">
         <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box</source>
-        <target state="translated">Feedback to %n_user% user(s)</target>
+        <target state="needs-translation">Feedback send to %n_user% user(s)</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8fc6702f9d21db51a5cad24125d58e5d19e869" resname="report::Edition des meta-donnees" approved="yes">
