@@ -9310,9 +9310,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Réglages Généraux des Workers</target>
         <jms:reference-file line="5">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="yes">
+      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="no">
         <source>admin::workermanager:tab:workerconfig: warning</source>
-        <target state="translated">Il est nécessaire de détruire les files de messages pour la prise en compte des nouveaux intervalles - Cette action peut être effectuée dans l'onglet queues.</target>
+        <target state="needs-translation">Il est nécessaire de détruire les files de messages pour la prise en compte des nouveaux intervalles - Cette action peut être effectuée dans l'onglet "files de messages".</target>
         <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds">
