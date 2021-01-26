@@ -499,7 +499,7 @@ Feedback.prototype = {
         });
     },
     appendBadge: function (badge) {
-        $('.user_content .badges', this.container).append(badge);
+        $('.user_content .badges', this.container).prepend(badge);
     },
     addUser: function (options) {
         let {$userForm, callback} = options;

@@ -19138,6 +19138,20 @@ var toolbar = function toolbar(services) {
 
             _triggerModal(event, (0, _feedback2.default)(services).openModal);
         });
+
+        /**
+         * workzone > feedback
+         */
+        $container.on('click', '.feedback-user', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var params = {};
+            params.ssel = $el.data('basket-id');
+            params.action = 'adduser';
+
+            (0, _feedback2.default)(services).openModal(params);
+        });
+
         /**
          * tools > Tools
          */
@@ -60413,7 +60427,7 @@ Feedback.prototype = {
         });
     },
     appendBadge: function appendBadge(badge) {
-        (0, _jquery2.default)('.user_content .badges', this.container).append(badge);
+        (0, _jquery2.default)('.user_content .badges', this.container).prepend(badge);
     },
     addUser: function addUser(options) {
         var $userForm = options.$userForm,
