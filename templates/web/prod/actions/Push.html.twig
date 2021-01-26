@@ -180,11 +180,9 @@
                     {% endif %}
                 {% endif %}
             </div>
-            <div>
-                <span style="font-size: 21px;font-family: Roboto;margin-left: 30px;font-weight: 700; {% if context == 'Push' %}color: #2196f3;{% else %}color: #8bc34a;{% endif %}">
+            <span style="font-size: 21px;font-family: Roboto;margin-left: 30px;font-weight: 700; {% if context == 'Push' %}color: #2196f3;{% else %}color: #8bc34a;{% endif %}">
                     {% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}
-                </span>
-            </div>
+            </span>
             <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
             <div id="info-box" style="display: none">
                 <p>
@@ -244,7 +242,7 @@
                     <textarea name="message" style="display:none;"></textarea>
                     <input type="hidden" name="duration" value=""/>
                     <input type="checkbox" value="1" name="recept" style="display:none;"/>
-                    <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
+                    <input type="checkbget_original_basketox" value="1" name="force_authentication" style="display:none;"/>
                     <div class="PNB10 badges">
                         {% if context == 'Feedback' %}
                             {% for participant in participants | sort | reverse if participant.getCanAgree() %}
