@@ -238,7 +238,7 @@
                     <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />
                     <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
                     <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
-                    <input name="action" type="hidden" value="{{ action }}" />
+                    <input name="feedbackAction" type="hidden" value="{{ feedbackAction }}" />
                     <textarea name="message" style="display:none;"></textarea>
                     <input type="hidden" name="duration" value=""/>
                     <input type="checkbox" value="1" name="recept" style="display:none;"/>
@@ -322,7 +322,7 @@
                     {% if context == 'Push' %}
                         <button class="FeedbackSend">{{ "Send" | trans }}</button>
                     {% else %}
-                        <button class="FeedbackSend validation">{{ "Send" | trans }}</button>
+                        <button class="FeedbackSend validation" data-feedback-action={{ feedbackAction }} >{{ "Send" | trans }}</button>
                     {% endif %}
                 </div>
             </div>

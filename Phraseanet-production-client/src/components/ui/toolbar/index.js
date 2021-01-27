@@ -210,7 +210,7 @@ const toolbar = (services) => {
             let $el = $(event.currentTarget);
             let params = {};
             params.ssel = $el.data('basket-id');
-            params.action = 'adduser';
+            params.feedbackaction = 'adduser';
 
             recordFeedbackModal(services).openModal(params);
         });

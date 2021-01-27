@@ -319,9 +319,9 @@ class PushController extends Controller
             }
 
             // used to check participant to be removed
-            $action = $request->request->get('action');
+            $feedbackAction = $request->request->get('feedbackAction');
             $remainingParticipantsUserId = [];
-            if ($action == 'adduser') {
+            if ($feedbackAction == 'adduser') {
                 $remainingParticipantsUserId = $Validation->getListParticipantsUserId();
             }
 
@@ -341,7 +341,7 @@ class PushController extends Controller
                 try {
                     /** @var User $participantUser */
                     $participantUser = $this->getUserRepository()->find($participant['usr_id']);
-                    if ($action == 'adduser') {
+                    if ($feedbackAction == 'adduser') {
                         $remainingParticipantsUserId = array_diff($remainingParticipantsUserId, [$participant['usr_id']]);
                     }
 
@@ -450,7 +450,7 @@ class PushController extends Controller
                 );
             }
 
-            if ($action == 'adduser') {
+            if ($feedbackAction == 'adduser') {
                 foreach ($remainingParticipantsUserId as $userIdToRemove) {
                     try {
                         /** @var  User $participantUser */
@@ -883,10 +883,10 @@ class PushController extends Controller
     {
         $push = $this->getPushFromRequest($request);
 
-        $action = $request->request->get('action');
+        $feedbackaction = $request->request->get('feedbackaction');
         $participants = [];
 
-        if ($action === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
+        if ($feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
             $participants = $push->get_original_basket()->getValidation()->getParticipants();
         }
 
@@ -902,7 +902,7 @@ class PushController extends Controller
                 'context'          => $context,
                 'RecommendedUsers' => $recommendedUsers,
                 'participants'     => $participants,
-                'action'           => $action
+                'feedbackAction'   => $feedbackaction
             ]
         );
     }
