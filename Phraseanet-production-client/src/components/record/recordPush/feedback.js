@@ -219,22 +219,27 @@ const Feedback = function (services, options) {
         };
 
         buttons[localeService.t('send')] = function () {
-            if ($.trim($('input[name="name"]', $dialog.getDomElement()).val()) === '') {
-                var options = {
-                    size: 'Alert',
-                    closeButton: true,
-                    title: localeService.t('warning')
-                };
-                var $dialogAlert = dialog.create(services, options, 3);
-                $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
+            if ($el.data('feedback-action') !== 'adduser') {
+                if ($.trim($('input[name="name"]', $dialog.getDomElement()).val()) === '') {
+                    var options = {
+                        size: 'Alert',
+                        closeButton: true,
+                        title: localeService.t('warning')
+                    };
+                    var $dialogAlert = dialog.create(services, options, 3);
+                    $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
 
-                return false;
+                    return false;
+                }
             }
 
             $dialog.close();
 
-            $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
-            $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
+            if ($el.data('feedback-action') !== 'adduser') {
+                $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
+                $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
+            }
+
             $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
             $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
@@ -267,7 +272,13 @@ const Feedback = function (services, options) {
 
         var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
-        var html = _.template($('#feedback_sendform_tpl').html());
+        var html = '';
+        // if the window is just for adding/removing user
+        if ($el.data('feedback-action') === 'adduser') {
+            html = _.template($('#feedback_adduser_sendform_tpl').html());
+        } else {
+            html = _.template($('#feedback_sendform_tpl').html());
+        }
 
         $dialog.setContent(html);
 
@@ -279,7 +290,10 @@ const Feedback = function (services, options) {
             $('input[name="name"]').attr("placeholder", pushTitle);
         }
 
-        $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
+        if ($el.data('feedback-action') !== 'adduser') {
+            $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
+        }
+
         $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
         $('.' + $this.Context, $dialog.getDomElement()).show();
 
@@ -499,7 +513,7 @@ Feedback.prototype = {
         });
     },
     appendBadge: function (badge) {
-        $('.user_content .badges', this.container).append(badge);
+        $('.user_content .badges', this.container).prepend(badge);
     },
     addUser: function (options) {
         let {$userForm, callback} = options;

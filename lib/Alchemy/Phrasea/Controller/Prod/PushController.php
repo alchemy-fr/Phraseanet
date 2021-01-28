@@ -318,6 +318,13 @@ class PushController extends Controller
                 ];
             }
 
+            // used to check participant to be removed
+            $feedbackAction = $request->request->get('feedbackAction');
+            $remainingParticipantsUserId = [];
+            if ($feedbackAction == 'adduser') {
+                $remainingParticipantsUserId = $Validation->getListParticipantsUserId();
+            }
+
             // add participants to the validationSession
             //
             foreach ($participants as $key => $participant) {
@@ -334,6 +341,10 @@ class PushController extends Controller
                 try {
                     /** @var User $participantUser */
                     $participantUser = $this->getUserRepository()->find($participant['usr_id']);
+                    if ($feedbackAction == 'adduser') {
+                        $remainingParticipantsUserId = array_diff($remainingParticipantsUserId, [$participant['usr_id']]);
+                    }
+
                 }
                 catch (Exception $e) {
                     throw new ControllerException(
@@ -437,6 +448,23 @@ class PushController extends Controller
                         (int)$request->request->get('duration')
                     )
                 );
+            }
+
+            if ($feedbackAction == 'adduser') {
+                foreach ($remainingParticipantsUserId as $userIdToRemove) {
+                    try {
+                        /** @var  User $participantUser */
+                        $participantUser = $this->getUserRepository()->find($userIdToRemove);
+                    } catch (Exception $e) {
+                        throw new ControllerException(
+                            $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
+                        );
+                    }
+
+                    $validationParticipant = $Validation->getParticipant($participantUser);
+                    $Validation->removeParticipant($validationParticipant);
+                    $manager->remove($validationParticipant);
+                }
             }
 
             $manager->merge($basket);
@@ -855,6 +883,13 @@ class PushController extends Controller
     {
         $push = $this->getPushFromRequest($request);
 
+        $feedbackaction = $request->request->get('feedbackaction');
+        $participants = [];
+
+        if ($feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
+            $participants = $push->get_original_basket()->getValidation()->getParticipants();
+        }
+
         $repository = $this->getUserListRepository();
         $recommendedUsers = $this->getUsersInSelectionExtractor($push->get_elements());
 
@@ -866,6 +901,8 @@ class PushController extends Controller
                 'lists'            => $repository->findUserLists($this->getAuthenticatedUser()),
                 'context'          => $context,
                 'RecommendedUsers' => $recommendedUsers,
+                'participants'     => $participants,
+                'feedbackAction'   => $feedbackaction
             ]
         );
     }
