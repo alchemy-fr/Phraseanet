@@ -3362,9 +3362,9 @@
         <target state="translated">Longueur de focale</target>
         <jms:reference-file line="110">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication" approved="yes">
+      <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication" approved="no">
         <source>Force authentication</source>
-        <target state="translated">Forcer l'authentification</target>
+        <target state="needs-translation">Forcer l'authentification</target>
         <jms:reference-file line="171">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c7dbc1bf5eabb170eb6a0597a076723db79ec064" resname="Force sending of the document ?" approved="yes">
