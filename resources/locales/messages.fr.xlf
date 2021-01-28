@@ -12316,7 +12316,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user" approved="no">
         <source>prod::workzone:feedback add user</source>
-        <target state="needs-translation">Editer les Utilisateurs</target>
+        <target state="needs-translation">Editer l'utilisateur</target>
         <jms:reference-file line="93">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
