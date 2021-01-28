@@ -19138,6 +19138,20 @@ var toolbar = function toolbar(services) {
 
             _triggerModal(event, (0, _feedback2.default)(services).openModal);
         });
+
+        /**
+         * workzone > feedback
+         */
+        $container.on('click', '.feedback-user', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var params = {};
+            params.ssel = $el.data('basket-id');
+            params.feedbackaction = 'adduser';
+
+            (0, _feedback2.default)(services).openModal(params);
+        });
+
         /**
          * tools > Tools
          */
@@ -60138,22 +60152,27 @@ var Feedback = function Feedback(services, options) {
         };
 
         buttons[localeService.t('send')] = function () {
-            if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
-                var options = {
-                    size: 'Alert',
-                    closeButton: true,
-                    title: localeService.t('warning')
-                };
-                var $dialogAlert = _dialog2.default.create(services, options, 3);
-                $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
+            if ($el.data('feedback-action') !== 'adduser') {
+                if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
+                    var options = {
+                        size: 'Alert',
+                        closeButton: true,
+                        title: localeService.t('warning')
+                    };
+                    var $dialogAlert = _dialog2.default.create(services, options, 3);
+                    $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
 
-                return false;
+                    return false;
+                }
             }
 
             $dialog.close();
 
-            (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
-            (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
+            if ($el.data('feedback-action') !== 'adduser') {
+                (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
+            }
+
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
@@ -60184,7 +60203,13 @@ var Feedback = function Feedback(services, options) {
 
         var $FeedBackForm = (0, _jquery2.default)('form[name="FeedBackForm"]', $container);
 
-        var html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+        var html = '';
+        // if the window is just for adding/removing user
+        if ($el.data('feedback-action') === 'adduser') {
+            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html());
+        } else {
+            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+        }
 
         $dialog.setContent(html);
 
@@ -60196,7 +60221,10 @@ var Feedback = function Feedback(services, options) {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
         }
 
-        (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        if ($el.data('feedback-action') !== 'adduser') {
+            (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        }
+
         (0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val((0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val());
         (0, _jquery2.default)('.' + $this.Context, $dialog.getDomElement()).show();
 
@@ -60413,7 +60441,7 @@ Feedback.prototype = {
         });
     },
     appendBadge: function appendBadge(badge) {
-        (0, _jquery2.default)('.user_content .badges', this.container).append(badge);
+        (0, _jquery2.default)('.user_content .badges', this.container).prepend(badge);
     },
     addUser: function addUser(options) {
         var $userForm = options.$userForm,
