@@ -12,7 +12,7 @@ FILE=config/configuration.yml
 
 if [ -f "$FILE" ]; then
     echo "$FILE exists, skip setup."
-    if [[ $PHRASEANET_PROJECT_NAME ]]; then
+    if [[ $PHRASEANET_PROJECT_NAME && $PHRASEANET_ALLOW_PROJET_NAME_SETUP == 0 ]]; then
         bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
     fi
     if [[ -n $PHRASEANET_TRUSTED_PROXIES ]]; then
@@ -35,7 +35,7 @@ if [ -f "$FILE" ]; then
     bin/setup system:config set registry.api-clients.api-auth-token-header-only $PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
 
 
-    if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true ]]; then
+    if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true && $PHRASEANET_ALLOW_EMAIL_SETUP == 0 ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
         bin/setup system:config set registry.email.smtp-auth-enabled $PHRASEANET_SMTP_AUTH_ENABLED
         bin/setup system:config set registry.email.smtp-secure-mode $PHRASEANET_SMTP_SECURE_MODE
