@@ -7,6 +7,7 @@ import basketUpdate from './../../../basket/update';
 import basketBrowse from './../../../basket/browse';
 import basketReorderContent from './../../../basket/reorderContent';
 import storyReorderContent from './../../../story/reorderContent';
+import * as appCommons from './../../../../phraseanet-common';
 
 const workzoneBaskets = (services) => {
     const { configService, localeService, appEvents } = services;
@@ -37,6 +38,8 @@ const workzoneBaskets = (services) => {
                         basketId: 'current',
                         sort: $el.data('sort')
                     });
+
+                    appCommons.userModule.setPref('workzone_order', $el.data('sort'));
                 }
 
             })

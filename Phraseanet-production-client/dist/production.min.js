@@ -16941,6 +16941,12 @@ var _reorderContent3 = __webpack_require__(113);
 
 var _reorderContent4 = _interopRequireDefault(_reorderContent3);
 
+var _phraseanetCommon = __webpack_require__(11);
+
+var appCommons = _interopRequireWildcard(_phraseanetCommon);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var workzoneBaskets = function workzoneBaskets(services) {
@@ -16974,6 +16980,8 @@ var workzoneBaskets = function workzoneBaskets(services) {
                     basketId: 'current',
                     sort: $el.data('sort')
                 });
+
+                appCommons.userModule.setPref('workzone_order', $el.data('sort'));
             }
         }).on('click', '.basket-preferences-action', function (event) {
             event.preventDefault();
