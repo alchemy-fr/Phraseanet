@@ -146,7 +146,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
         $this->assertNull($token->getData());
         $this->assertSame(self::$DI['user'], $token->getUser());
         $this->assertSame(TokenManipulator::TYPE_PASSWORD, $token->getType());
-        $this->assertDateNear('+1 day', $token->getExpiration());
+        $this->assertDateNear('+3 day', $token->getExpiration());
     }
 
     public function testUpdate()
