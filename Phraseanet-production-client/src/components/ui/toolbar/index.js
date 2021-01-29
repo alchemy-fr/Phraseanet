@@ -201,6 +201,20 @@ const toolbar = (services) => {
 
             _triggerModal(event, recordFeedbackModal(services).openModal);
         });
+
+        /**
+         * workzone > feedback
+         */
+        $container.on('click', '.feedback-user', function (event) {
+            event.preventDefault();
+            let $el = $(event.currentTarget);
+            let params = {};
+            params.ssel = $el.data('basket-id');
+            params.feedbackaction = 'adduser';
+
+            recordFeedbackModal(services).openModal(params);
+        });
+
         /**
          * tools > Tools
          */
