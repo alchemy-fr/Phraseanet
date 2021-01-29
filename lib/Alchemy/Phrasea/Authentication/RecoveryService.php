@@ -128,7 +128,7 @@ class RecoveryService
             $mail = MailRequestPasswordUpdate::create($this->application, $receiver);
             $mail->setLogin($user->getLogin());
             $mail->setButtonUrl($url);
-            $mail->setExpiration(new \DateTime('+1 day'));
+            $mail->setExpiration($token->getExpiration());
 
             $this->mailer->deliver($mail);
         }
