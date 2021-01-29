@@ -2901,9 +2901,9 @@
         <target state="translated">Enable FTP for users</target>
         <jms:reference-file line="26">Form/Configuration/FtpExportFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="25b38d3df5918f72187522a9cf74625c729ac6ad" resname="Enable Forcing authentication to see push content" approved="yes">
+      <trans-unit id="25b38d3df5918f72187522a9cf74625c729ac6ad" resname="Enable Forcing authentication to see push content" approved="no">
         <source>Enable Forcing authentication to see push content</source>
-        <target state="translated">Enable the force authentication option for Pushes and Feedbacks sessions</target>
+        <target state="needs-translation">Enable the force authentication option for Pushes and Feedbacks sessions</target>
         <jms:reference-file line="51">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4e2edcbbb1c6aa26ccce6fbf04bec121c904dcec" resname="Enable H264 stream mode" approved="yes">
@@ -4296,9 +4296,9 @@
         <target state="translated">Mandatory fields</target>
         <jms:reference-file line="60">web/login/register-provider.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'">
+      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="yes">
         <source>Manual feedback Reminder : '%title%'</source>
-        <target state="needs-translation">Feedback Reminder for : '%title%'</target>
+        <target state="translated">Feedback Reminder for : '%title%'</target>
         <jms:reference-file line="31">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6c06116dd4028e455f3551a282e43361db9848f6" resname="Masks" approved="yes">
