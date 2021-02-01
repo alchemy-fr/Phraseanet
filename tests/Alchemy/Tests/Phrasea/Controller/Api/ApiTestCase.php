@@ -725,7 +725,7 @@ abstract class ApiTestCase extends \PhraseanetWebTestCase
             $this->assertArrayHasKey('labels', $meta);
             $this->assertTrue(is_array($meta['labels']));
 
-            $this->assertEquals(['fr', 'en', 'de', 'nl'], array_keys($meta['labels']));
+            $this->assertEquals(['fr', 'en', 'de', 'nl', 'es'], array_keys($meta['labels']));
 
             if (is_array($meta['value'])) {
                 foreach ($meta['value'] as $val) {
