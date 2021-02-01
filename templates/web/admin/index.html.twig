@@ -22,8 +22,8 @@
     <script type="text/javascript" src="/assets/vendors/jquery-test-paths/jquery.test-paths{% if not app.debug %}.min{% endif %}.js"></script>
     {# note: Tinymce must be include here without minify else URL resolution for tinymce plugins will fail #}
     <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/admin/js/admin{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/admin/js/admin{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
     <script type="text/javascript">
         var p4 = p4 || {};
         p4.users = {sel:[]};
