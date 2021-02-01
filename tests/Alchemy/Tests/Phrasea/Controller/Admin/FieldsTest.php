@@ -220,6 +220,7 @@ class FieldsTest extends \PhraseanetAuthenticatedWebTestCase
                 'fr' => 'Libellé',
                 'de' => null,
                 'nl' => null,
+                'es' => null,
             ],
             'separator' => '=;',
             'readonly' => false,

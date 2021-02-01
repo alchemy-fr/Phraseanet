@@ -736,7 +736,7 @@ class ApiJsonTest extends ApiTestCase
             $this->assertTrue((strlen($metadatas['name']) > 0));
             $this->assertTrue(is_string($metadatas['separator']));
 
-            $this->assertEquals(['fr', 'en', 'de', 'nl'], array_keys($metadatas['labels']));
+            $this->assertEquals(['fr', 'en', 'de', 'nl', 'es'], array_keys($metadatas['labels']));
 
             if ($metadatas['multivalue']) {
                 $this->assertTrue((strlen($metadatas['separator']) > 0));

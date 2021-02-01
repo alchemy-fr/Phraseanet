@@ -5,6 +5,7 @@ languages:
         - en
         - de
         - nl
+        - es
     default: 'fr'
 main:
     maintenance: false

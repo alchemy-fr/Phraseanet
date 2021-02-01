@@ -45,7 +45,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $statement = $this->prophesize(Statement::class);
         $this->connection
-            ->prepare('SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id')
+            ->prepare('SELECT ord, viewname, label_en, label_fr, label_de, label_nl, label_es FROM sbas WHERE sbas_id = :id')
             ->willReturn($statement->reveal());
         $statement->execute(['id' => 42])
             ->shouldBeCalled();
@@ -64,7 +64,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $statement = $this->prophesize(Statement::class);
         $this->connection
-            ->prepare('SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id')
+            ->prepare('SELECT ord, viewname, label_en, label_fr, label_de, label_nl, label_es FROM sbas WHERE sbas_id = :id')
             ->willReturn($statement->reveal());
         $statement->execute(['id' => 42])
             ->shouldBeCalled();
@@ -85,7 +85,7 @@ final class DbalDataboxRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $statement = $this->prophesize(Statement::class);
         $this->connection
-            ->prepare('SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas')
+            ->prepare('SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl, label_es FROM sbas')
             ->willReturn($statement->reveal());
         $statement->execute()
             ->shouldBeCalled();

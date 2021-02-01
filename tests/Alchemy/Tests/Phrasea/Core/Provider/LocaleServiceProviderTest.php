@@ -35,6 +35,7 @@ class LocaleServiceProviderTest extends \PhraseanetTestCase
         $original = Application::getAvailableLanguages();
         unset($original['en']);
         unset($original['nl']);
+        unset($original['es']);
 
         $this->assertEquals($original, $app['locales.available']);
 
