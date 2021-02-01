@@ -1513,6 +1513,7 @@ class databox extends base implements ThumbnailedElement
             'label_fr' => $this->labels['fr'],
             'label_de' => $this->labels['de'],
             'label_nl' => $this->labels['nl'],
+            'label_es' => $this->labels['es'],
         ];
     }
 
@@ -1611,5 +1612,6 @@ class databox extends base implements ThumbnailedElement
         $this->labels['en'] = $row['label_en'];
         $this->labels['de'] = $row['label_de'];
         $this->labels['nl'] = $row['label_nl'];
+        $this->labels['es'] = $row['label_es'];
     }
 }

@@ -85,6 +85,7 @@ class RecordTransformer extends TransformerAbstract
                     'en' => $databox_field->get_label('en'),
                     'de' => $databox_field->get_label('de'),
                     'nl' => $databox_field->get_label('nl'),
+                    'es' => $databox_field->get_label('es'),
                 ],
             ];
 

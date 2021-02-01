@@ -155,7 +155,7 @@ class databox_field implements cache_cacheableInterface
         $this->on_error = false;             // lazy calculated on this->is_on_error()
         $this->vocabulary_control = false;   // lazy loaded
 
-        foreach (['en', 'fr', 'de', 'nl'] as $code) {
+        foreach (['en', 'fr', 'de', 'nl', 'es'] as $code) {
             $this->labels[$code] = $row['label_' . $code];
         }
 
@@ -322,7 +322,8 @@ class databox_field implements cache_cacheableInterface
           `label_en` = :label_en,
           `label_fr` = :label_fr,
           `label_de` = :label_de,
-          `label_nl` = :label_nl
+          `label_nl` = :label_nl,
+          `label_es` = :label_es
           WHERE id = :id';
 
         $params = [
@@ -349,7 +350,8 @@ class databox_field implements cache_cacheableInterface
             ':label_en'              => isset($this->labels['en']) ? $this->labels['en'] : null,
             ':label_fr'              => isset($this->labels['fr']) ? $this->labels['fr'] : null,
             ':label_de'              => isset($this->labels['de']) ? $this->labels['de'] : null,
-            ':label_nl'              => isset($this->labels['nl']) ? $this->labels['nl'] : null
+            ':label_nl'              => isset($this->labels['nl']) ? $this->labels['nl'] : null,
+            ':label_es'              => isset($this->labels['es']) ? $this->labels['es'] : null
         ];
 
         $stmt = $connbas->prepare($sql);

@@ -183,6 +183,7 @@ class phrasea
                         'en' => $databox->get_label('en'),
                         'de' => $databox->get_label('de'),
                         'nl' => $databox->get_label('nl'),
+                        'es' => $databox->get_label('es'),
                     ];
                 }
                 $app->getApplicationBox()->set_data_to_cache(self::$_sbas_labels, self::CACHE_SBAS_LABELS);

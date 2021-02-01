@@ -19,13 +19,13 @@ use Doctrine\DBAL\Connection;
 class DbalCollectionRepository implements CollectionRepository
 {
 
-    private static $selectQuery = 'SELECT coll_id, asciiname, label_en, label_fr, label_de, label_nl, prefs, logo, majLogo, pub_wm
+    private static $selectQuery = 'SELECT coll_id, asciiname, label_en, label_fr, label_de, label_nl, label_es, prefs, logo, majLogo, pub_wm
                                 FROM coll';
 
     private static $insertQuery = 'INSERT INTO coll (asciiname, prefs, logo) VALUES (:name, :preferences, :logo)';
 
     private static $updateQuery = 'UPDATE coll SET asciiname = :name, label_en = :labelEn, label_fr = :labelFr,
-                                label_de = :labelDe, label_nl = :labelNl, prefs = :preferences, logo = :logo,
+                                label_de = :labelDe, label_nl = :labelNl, label_es = :labelEs, prefs = :preferences, logo = :logo,
                                 majLogo = :logoTimestamp, pub_wm = :publicWatermark WHERE coll_id = :collectionId';
 
     private static $deleteQuery = 'DELETE FROM coll WHERE coll_id = :collectionId';
@@ -155,6 +155,7 @@ class DbalCollectionRepository implements CollectionRepository
             $parameters['labelFr'] = $collection->getLabel('fr', false);
             $parameters['labelDe'] = $collection->getLabel('de', false);
             $parameters['labelNl'] = $collection->getLabel('nl', false);
+            $parameters['labelEs'] = $collection->getLabel('es', false);
             $parameters['logoTimestamp'] = $collection->getLogoUpdatedAt();
             $parameters['publicWatermark'] = $collection->getPublicWatermark();
 

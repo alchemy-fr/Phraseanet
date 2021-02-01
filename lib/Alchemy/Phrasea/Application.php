@@ -137,6 +137,7 @@ class Application extends SilexApplication
     protected static $availableLanguages = [
         'de' => 'Deutsch',
         'en' => 'English',
+        'es' => 'Spanish',
         'fr' => 'Français',
         'nl' => 'Dutch',
     ];

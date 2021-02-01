@@ -744,6 +744,16 @@ class PDFRecords extends PDF
                 $date_formated = $fmt->format($date);
                 break;
 
+            case 'es':
+                $fmt = new DateFormatter(
+                    'es_ES',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+
             default:
                 $fmt = new DateFormatter(
                     'en_EN',

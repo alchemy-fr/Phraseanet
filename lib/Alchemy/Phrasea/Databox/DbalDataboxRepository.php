@@ -73,7 +73,7 @@ final class DbalDataboxRepository implements DataboxRepository
      */
     private function fetchRow($id)
     {
-        $query = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas WHERE sbas_id = :id';
+        $query = 'SELECT ord, viewname, label_en, label_fr, label_de, label_nl, label_es FROM sbas WHERE sbas_id = :id';
         $statement = $this->connection->prepare($query);
         $statement->execute(['id' => $id]);
         $row = $statement->fetch(\PDO::FETCH_ASSOC);
@@ -88,7 +88,7 @@ final class DbalDataboxRepository implements DataboxRepository
      */
     private function fetchRows()
     {
-        $query = 'SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl FROM sbas';
+        $query = 'SELECT sbas_id, ord, viewname, label_en, label_fr, label_de, label_nl, label_es FROM sbas';
         $statement = $this->connection->prepare($query);
         $statement->execute();
         $rows = [];

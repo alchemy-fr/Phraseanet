@@ -78,7 +78,8 @@ EOT;
             'en' => '',
             'fr' => '',
             'de' => '',
-            'nl' => ''
+            'nl' => '',
+            'es' => ''
         );
         $this->publicWatermark = '';
     }

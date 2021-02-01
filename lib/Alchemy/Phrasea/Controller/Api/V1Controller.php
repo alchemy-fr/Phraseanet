@@ -474,6 +474,7 @@ class V1Controller extends Controller
                 'de' => $databox->get_label('de'),
                 'fr' => $databox->get_label('fr'),
                 'nl' => $databox->get_label('nl'),
+                'es' => $databox->get_label('es'),
             ],
             'version'    => $databox->get_version(),
         ];
@@ -538,6 +539,7 @@ class V1Controller extends Controller
                 'en' => $collection->get_label('en'),
                 'de' => $collection->get_label('de'),
                 'nl' => $collection->get_label('nl'),
+                'es' => $collection->get_label('es')
             ],
             'record_amount' => $collection->get_record_amount(),
             'order_managers' => $orderMasters
@@ -572,6 +574,7 @@ class V1Controller extends Controller
                     'fr' => $status['labels_on_i18n']['fr'],
                     'de' => $status['labels_on_i18n']['de'],
                     'nl' => $status['labels_on_i18n']['nl'],
+                    'es' => $status['labels_on_i18n']['es']
                 ],
                 'img_on' => $status['img_on'],
                 'img_off' => $status['img_off'],
@@ -618,6 +621,7 @@ class V1Controller extends Controller
                     'en' => $databox_field->get_label('en'),
                     'de' => $databox_field->get_label('de'),
                     'nl' => $databox_field->get_label('nl'),
+                    'es' => $databox_field->get_label('es')
                 ],
                 'separator'        => $databox_field->get_separator(),
                 'thesaurus_branch' => $databox_field->get_tbranch(),
@@ -1818,6 +1822,7 @@ class V1Controller extends Controller
                     'en' => $databox_field->get_label('en'),
                     'de' => $databox_field->get_label('de'),
                     'nl' => $databox_field->get_label('nl'),
+                    'es' => $databox_field->get_label('es'),
                 ],
             ];
 
@@ -2853,6 +2858,7 @@ class V1Controller extends Controller
                     'en' => $databox_field->get_label('en'),
                     'de' => $databox_field->get_label('de'),
                     'nl' => $databox_field->get_label('nl'),
+                    'es' => $databox_field->get_label('es'),
                   ],
                 ];
                 $ret[] = $data;
@@ -2921,6 +2927,7 @@ class V1Controller extends Controller
                         'en' => $sub->get_label('en'),
                         'de' => $sub->get_label('de'),
                         'nl' => $sub->get_label('nl'),
+                        'es' => $sub->get_label('es'),
                       ],
                     ];
                     $options = $sub->getOptions();
@@ -2973,6 +2980,7 @@ class V1Controller extends Controller
                     'en' => $base->get_label('en'),
                     'de' => $base->get_label('de'),
                     'nl' => $base->get_label('nl'),
+                    'es' => $base->get_label('es'),
                 ],
                 'rights'        => $baseGrants,
                 'statuses'      => $statusMapper->getRestrictedStatuses($base->get_base_id())

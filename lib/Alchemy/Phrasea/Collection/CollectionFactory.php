@@ -47,6 +47,7 @@ class CollectionFactory
         $collection->setLabel('fr', $row['label_fr']);
         $collection->setLabel('de', $row['label_de']);
         $collection->setLabel('nl', $row['label_nl']);
+        $collection->setLabel('es', $row['label_es']);
         $collection->setLogo($row['logo']);
         $collection->setPreferences($row['prefs']);
         $collection->setPublicWatermark($row['pub_wm']);

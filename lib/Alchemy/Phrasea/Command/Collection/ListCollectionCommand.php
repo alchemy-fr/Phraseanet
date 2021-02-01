@@ -78,7 +78,8 @@ class ListCollectionCommand extends Command
             'en: '   . $collection->get_label('en') .
             ', de: ' . $collection->get_label('de') .
             ', fr: ' . $collection->get_label('fr') .
-            ', nl: ' . $collection->get_label('nl'),
+            ', nl: ' . $collection->get_label('nl') .
+            ', es: ' . $collection->get_label('es'),
             ($collection->is_active()) ? 'enabled' : 'disabled',
             $collection->get_record_amount()
         ];
