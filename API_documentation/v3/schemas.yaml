@@ -64,6 +64,45 @@ ApiResponse_record:
         response:
             $ref: '#/Record'
 
+# -------------------- searchraw ---------------
+ApiResponse_searchraw:
+    type: object
+    properties:
+        meta:
+            $ref: '#/ApiResponse_meta'
+        response:
+            $ref: '#/ApiResponse_searchraw_response'
+ApiResponse_searchraw_response:
+    type: object
+    properties:
+        results:
+            type: array
+            items:
+                $ref: '#/ESRecord'
+        took:
+            type: integer
+            description: 'Search duration in msec'
+            example:
+                12
+        #        offset:
+#            type: integer
+#            description: 'Pagination offset as passed (or computed from "page/per_page") in request'
+#        limit:
+#            type: integer
+#            description: 'Pagination limit as passed in request'
+        count:
+            type: integer
+            description: 'Number of results in this page [0...limit]'
+            example:
+                1
+        total:
+            type: integer
+            description: 'Total number of results'
+            example:
+                1
+        facets:
+            $ref: '#/FacetsArray'
+
 # -------------------- search ---------------
 ApiResponse_search:
     type: object
@@ -77,16 +116,16 @@ ApiResponse_search_response:
     properties:
         offset:
             type: integer
-            description: 'The pagination offset as passed (or computed from "page/per_page") in request'
+            description: 'Pagination offset as passed (or computed from "page/per_page") in request'
         limit:
             type: integer
-            description: 'The pagination limit as passed in request'
+            description: 'Pagination limit as passed in request'
         count:
             type: integer
-            description: 'The number of results in this page [0...limit]'
+            description: 'Number of results in this page [0...limit]'
         total:
             type: integer
-            description: 'The total number of results'
+            description: 'Total number of results'
             minimum: 1
         results:
             type: object
@@ -100,44 +139,12 @@ ApiResponse_search_response:
                     items:
                         $ref: '#/Record'
         facets:
-            type: array
-            items:
-                type: object
-                properties:
-                    name:
-                        type: string
-                        description: 'The unique internal name (=key) for the facet'
-                        example: '_base'
-                    field:
-                        type: string
-                        description: 'Source field (from db structure). Can be also virtual field like "database" '
-                        example: 'database'
-                    values:
-                        type: array
-                        items:
-                            type: object
-                            properties:
-                                value:
-                                    type: string
-                                    description: 'Human readable value for the value'
-                                    example: 'Demo'
-                                raw_value:
-                                    type: string
-                                    description: 'Real value, to be used to query'
-                                    example: 'db_demo'
-                                count:
-                                    type: integer
-                                    description: 'Number of items matching this value'
-                                query:
-                                    type: string
-                                    description: 'Formulated query to search items matching this facet'
-                                    example: 'database:db_demo'
-
-
+            $ref: '#/FacetsArray'
 
 
 ID:
     type: integer
+
 Permalink:
     type: object
     properties:
@@ -159,6 +166,7 @@ Permalink:
             type: string
         url:
             type: string
+
 Subdef:
     type: object
     properties:
@@ -197,6 +205,7 @@ Subdef:
             type: string
         url_ttl:
             type: integer
+
 TechnicalInformation:
     type: object
     properties:
@@ -230,6 +239,149 @@ _Record_:
         uuid:
             type: string
 
+ESRecordsArray:
+    type: array
+    items:
+        $ref: '#/ESRecord'
+ESRecord:
+    description: 'Raw response from es search on "record" index/mapping'
+    type: object
+    properties:
+        _index:
+            type: string
+            description: 'ES index'
+            example:
+                'phraseanet_dxmpcw3y8td68f+h_20201124161735.910647'
+        _type:
+            type: string
+            description: 'Data type'
+            example:
+                'record'
+        _id:
+            type: string
+            description: 'unique id of document (sbas_id + "_" + record_id)'
+            example:
+                '1_555'
+        _version:
+            type: integer
+            description: 'auto-increment at each indexation of the document'
+            example:
+                1
+        _score:
+            type: number
+            description: 'score of the document related to a whole resultset'
+            example:
+                1
+        _source:
+            $ref: '#/ESRecordSource'
+
+ESRecordSource:
+    type: object
+    properties:
+        record_id:
+            $ref: '#/ID'
+        collection_id:
+            $ref: '#/ID'
+        uuid:
+            type: string
+            example:
+                'dcee40ea-ee26-4d8b-b0c2-d61305b03bc0'
+        flags_bitfield:
+            type: integer
+        sha256:
+            type: string
+            example:
+                '7fad283de349b903c850548cda65cf2d86d24c4e3856cdc2b97e47430494b8c8'
+        original_name:
+            type: string
+            example:
+                'test001.jpg'
+        mime:
+            type: string
+            example:
+                'image/jpeg'
+        type:
+            type: string
+            example:
+                'image'
+        created_on:
+            type: string
+            format: date-time
+            example:
+                '2020-12-07 09:48:01'
+        updated_on:
+            type: string
+            format: date-time
+            example:
+                '2021-01-01 15:30:00'
+        coll_id:
+            $ref: '#/ID'
+        collection_name:
+            type: string
+            example:
+                'collection de test'
+        witdh:
+            type: integer
+            example:
+                300
+        height:
+            type: integer
+            example:
+                401
+        size:
+            type: integer
+            example:
+                31266
+        base_id:
+            $ref: '#/ID'
+        databox_id:
+            $ref: '#/ID'
+        databox_name:
+            type: string
+            example:
+                'db_databox1'
+        record_type:
+            enum:
+                - 'record'
+                - 'story'
+        metadata_tags:
+            type: object
+            properties:
+                Channels:
+                    type: integer
+                    example:
+                        3
+                ColorDepth:
+                    type: integer
+                    example:
+                        8
+                ColorSpace:
+                    type: integer
+                    example:
+                        0
+                FileSize:
+                    type: integer
+                    example:
+                        31266
+                Height:
+                    type: integer
+                    example:
+                        401
+                MimeType:
+                    type: string
+                    example:
+                        'image/jpeg'
+                Width:
+                    type: integer
+                    example:
+                        300
+        flags:
+            type: object
+            properties:
+                _a_flag_name_:
+                    type: boolean
+                _another_flag_name_:
+                    type: boolean
 Record:
     allOf:     # Combines the basic _Record_ and the records-only properties
         - $ref: '#/_Record_'
@@ -256,23 +408,22 @@ Story:
           properties:
             children_offset:
                 type: integer
-                description: 'The children pagination offset ; Always 0'
+                description: 'Children pagination offset ; Always 0'
             children_limit:
                 type: integer
-                description: 'The children pagination limit ; Equal to "story_children_limit" passed in request'
+                description: 'Children pagination limit ; Equal to "story_children_limit" passed in request'
             children_count:
                 type: integer
-                description: 'The number of children in "children" array ; [0...limit]'
+                description: 'Number of children in "children" array ; [0...limit]'
             children_total:
                 type: integer
-                description: 'The total number of -visibles for user- children in this story'
+                description: 'Total number of -visibles for user- children in this story'
             children:
                 type: array
                 items:
                     type: object
                     items:
                         $ref: '#/Record'
-
 
 RecordUri:
     type: string
@@ -290,3 +441,39 @@ ApiResponse_RecordsUriArray:
             $ref: '#/ApiResponse_meta'
         response:
             $ref: '#/RecordsUriArray'
+
+Facet:
+    type: object
+    properties:
+        name:
+            type: string
+            description: 'Unique internal name (=key) for the facet'
+            example: '_base'
+        field:
+            type: string
+            description: 'Source field (from db structure). Can be also virtual field like "database" '
+            example: 'database'
+        values:
+            type: array
+            items:
+                type: object
+                properties:
+                    value:
+                        type: string
+                        description: 'Human readable value for the value'
+                        example: 'Demo'
+                    raw_value:
+                        type: string
+                        description: 'Real value, to be used to query'
+                        example: 'db_demo'
+                    count:
+                        type: integer
+                        description: 'Number of items matching this value'
+                    query:
+                        type: string
+                        description: 'Formulated query to search items matching this facet'
+                        example: 'database:db_demo'
+FacetsArray:
+    type: array
+    items:
+        $ref: '#/Facet'

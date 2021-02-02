@@ -67,7 +67,7 @@ paths:
       parameters:
         - name: query
           in: query
-          description: The fulltext query (<empty> = search all)
+          description: Fulltext query (<empty> = search all)
           required: false
           schema:
             type: string
@@ -166,16 +166,16 @@ paths:
                     properties:
                       offset:
                         type: integer
-                        description: The pagination offset as passed (or computed from "page/per_page") in request
+                        description: Pagination offset as passed (or computed from "page/per_page") in request
                       limit:
                         type: integer
-                        description: The pagination limit as passed in request
+                        description: Pagination limit as passed in request
                       count:
                         type: integer
-                        description: 'The number of results in this page [0...limit]'
+                        description: 'Number of results in this page [0...limit]'
                       total:
                         type: integer
-                        description: The total number of results
+                        description: Total number of results
                         minimum: 1
                       results:
                         type: object
@@ -189,16 +189,16 @@ paths:
                                   properties:
                                     children_offset:
                                       type: integer
-                                      description: The children pagination offset ; Always 0
+                                      description: Children pagination offset ; Always 0
                                     children_limit:
                                       type: integer
-                                      description: The children pagination limit ; Equal to "story_children_limit" passed in request
+                                      description: Children pagination limit ; Equal to "story_children_limit" passed in request
                                     children_count:
                                       type: integer
-                                      description: 'The number of children in "children" array ; [0...limit]'
+                                      description: 'Number of children in "children" array ; [0...limit]'
                                     children_total:
                                       type: integer
-                                      description: The total number of -visibles for user- children in this story
+                                      description: Total number of -visibles for user- children in this story
                                     children:
                                       type: array
                                       items:
@@ -216,7 +216,7 @@ paths:
                           properties:
                             name:
                               type: string
-                              description: The unique internal name (=key) for the facet
+                              description: Unique internal name (=key) for the facet
                               example: _base
                             field:
                               type: string
@@ -244,6 +244,208 @@ paths:
                                     example: 'database:db_demo'
         default:
           description: Any (other) error
+  /searchraw:
+    post:
+      tags:
+        - searchraw
+      description: |
+        Fulltext search for records or stories; Returns raw es
+
+        - pagination: use (offset/limit) OR (page/per_page)
+      parameters:
+        - name: query
+          in: query
+          description: The fulltext query (<empty> = search all)
+          required: false
+          schema:
+            type: string
+            example: dogs OR cats
+            default: ''
+        - name: search_type
+          in: query
+          description: 0 to search for records ; 1 to search for stories
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+            default: 0
+        - name: page
+          in: query
+          description: 'page number, from 1. Use along with "per_page"'
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: number of results per page. Use along with "page"
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+        - name: offset
+          in: query
+          description: 'offset in records count, from 0. Use along with "limit"'
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          description: number of results. Use along with "offset"
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/paths/~1search/post/responses/200/content/application~1json/schema/properties/meta'
+                  response:
+                    type: object
+                    properties:
+                      results:
+                        type: array
+                        items:
+                          description: Raw response from es search on "record" index/mapping
+                          type: object
+                          properties:
+                            _index:
+                              type: string
+                              description: ES index
+                              example: phraseanet_dxmpcw3y8td68f+h_20201124161735.910647
+                            _type:
+                              type: string
+                              description: Data type
+                              example: record
+                            _id:
+                              type: string
+                              description: unique id of document (sbas_id + "_" + record_id)
+                              example: '1_555'
+                            _version:
+                              type: integer
+                              description: auto-increment at each indexation of the document
+                              example: 1
+                            _score:
+                              type: number
+                              description: score of the document related to a whole resultset
+                              example: 1
+                            _source:
+                              type: object
+                              properties:
+                                record_id:
+                                  $ref: '#/components/parameters/sbas_id/schema'
+                                collection_id:
+                                  $ref: '#/components/parameters/sbas_id/schema'
+                                uuid:
+                                  type: string
+                                  example: dcee40ea-ee26-4d8b-b0c2-d61305b03bc0
+                                flags_bitfield:
+                                  type: integer
+                                sha256:
+                                  type: string
+                                  example: 7fad283de349b903c850548cda65cf2d86d24c4e3856cdc2b97e47430494b8c8
+                                original_name:
+                                  type: string
+                                  example: test001.jpg
+                                mime:
+                                  type: string
+                                  example: image/jpeg
+                                type:
+                                  type: string
+                                  example: image
+                                created_on:
+                                  type: string
+                                  format: date-time
+                                  example: '2020-12-07 09:48:01'
+                                updated_on:
+                                  type: string
+                                  format: date-time
+                                  example: '2021-01-01 15:30:00'
+                                coll_id:
+                                  $ref: '#/components/parameters/sbas_id/schema'
+                                collection_name:
+                                  type: string
+                                  example: collection de test
+                                witdh:
+                                  type: integer
+                                  example: 300
+                                height:
+                                  type: integer
+                                  example: 401
+                                size:
+                                  type: integer
+                                  example: 31266
+                                base_id:
+                                  $ref: '#/components/parameters/sbas_id/schema'
+                                databox_id:
+                                  $ref: '#/components/parameters/sbas_id/schema'
+                                databox_name:
+                                  type: string
+                                  example: db_databox1
+                                record_type:
+                                  enum:
+                                    - record
+                                    - story
+                                metadata_tags:
+                                  type: object
+                                  properties:
+                                    Channels:
+                                      type: integer
+                                      example: 3
+                                    ColorDepth:
+                                      type: integer
+                                      example: 8
+                                    ColorSpace:
+                                      type: integer
+                                      example: 0
+                                    FileSize:
+                                      type: integer
+                                      example: 31266
+                                    Height:
+                                      type: integer
+                                      example: 401
+                                    MimeType:
+                                      type: string
+                                      example: image/jpeg
+                                    Width:
+                                      type: integer
+                                      example: 300
+                                flags:
+                                  type: object
+                                  properties:
+                                    _a_flag_name_:
+                                      type: boolean
+                                    _another_flag_name_:
+                                      type: boolean
+                      took:
+                        type: integer
+                        description: Search duration in msec
+                        example: 12
+                      count:
+                        type: integer
+                        description: 'Number of results in this page [0...limit]'
+                        example: 1
+                      total:
+                        type: integer
+                        description: Total number of results
+                        example: 1
+                      facets:
+                        $ref: '#/paths/~1search/post/responses/200/content/application~1json/schema/properties/response/properties/facets'
+        default:
+          $ref: '#/paths/~1search/post/responses/default'
   '/records/{base_id}':
     post:
       tags:
