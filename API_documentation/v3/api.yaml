@@ -78,7 +78,7 @@ paths:
                 default:
                     description: Any error
 
-# ---------------- search ----------------
+    # ---------------- search ----------------
     '/search':
         post:
             tags:
@@ -90,7 +90,7 @@ paths:
             parameters:
                 - name: query
                   in: query
-                  description: 'The fulltext query (<empty> = search all)'
+                  description: 'Fulltext query (<empty> = search all)'
                   required: false
                   schema:
                       type: string
@@ -170,6 +170,77 @@ paths:
                                 $ref: 'schemas.yaml#/ApiResponse_search'
                 default:
                     $ref: 'responses.yaml#/error_response'
+    # ---------------- searchraw ----------------
+    '/searchraw':
+        post:
+            tags:
+                - searchraw
+            description: |
+                Fulltext search for records or stories; Returns raw es
+
+                - pagination: use (offset/limit) OR (page/per_page)
+            parameters:
+                - name: query
+                  in: query
+                  description: 'The fulltext query (<empty> = search all)'
+                  required: false
+                  schema:
+                      type: string
+                      example: 'dogs OR cats'
+                      default: ''
+                - name: search_type
+                  in: query
+                  description: 0 to search for records ; 1 to search for stories
+                  required: false
+                  schema:
+                      type: integer
+                      enum:
+                          - 0
+                          - 1
+                      default: 0
+                - name: page
+                  in: query
+                  description: page number, from 1. Use along with "per_page"
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 1
+                      default: 1
+                - name: per_page
+                  in: query
+                  description: number of results per page. Use along with "page"
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 1
+                      maximum: 100
+                      default: 10
+                - name: offset
+                  in: query
+                  description: offset in records count, from 0. Use along with "limit"
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 0
+                      # default: 0
+                - name: limit
+                  in: query
+                  description: number of results. Use along with "offset"
+                  required: false
+                  schema:
+                      type: integer
+                      minimum: 1
+                      maximum: 100
+                      # default: 10
+            responses:
+                200:
+                    description: ok
+                    content:
+                        application/json:
+                            schema:
+                                $ref: 'schemas.yaml#/ApiResponse_searchraw'
+                default:
+                    $ref: 'responses.yaml#/error_response'
 
 # ------------ record -----------
     '/records/{base_id}':
@@ -213,8 +284,9 @@ paths:
                                 $ref: schemas.yaml#/ApiResponse_record
                 default:
                     $ref: 'responses.yaml#/error_response'
-#            security:
-#                - api_key: []
+            # security:
+            #   - api_key: []
+
     '/records/{sbas_id}/{record_id}':
         get:
             tags:
