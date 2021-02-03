@@ -18,7 +18,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return $this->app->trans('Email successfully confirmed');
+        return $this->app->trans('Email successfully confirmed', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -26,7 +26,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        return $this->app->trans('login::register: merci d\'avoir confirme votre adresse email');
+        return $this->app->trans('login::register: merci d\'avoir confirme votre adresse email', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -34,7 +34,7 @@ class MailSuccessEmailConfirmationRegistered extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Your access on %application%', ['%application%' => $this->app['conf']->get(['registry', 'general', 'title'])]);
+        return $this->app->trans('Your access on %application%', ['%application%' => $this->app['conf']->get(['registry', 'general', 'title'])], 'messages', $this->getLocale());
     }
 
     /**

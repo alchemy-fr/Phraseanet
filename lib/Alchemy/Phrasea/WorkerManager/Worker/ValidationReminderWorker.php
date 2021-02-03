@@ -144,6 +144,12 @@ class ValidationReminderWorker implements WorkerInterface
                 $mail->setButtonUrl($params['url']);
                 $mail->setTitle($title);
 
+                if (($locale = $userTo->getLocale()) != null) {
+                    $mail->setLocale($locale);
+                } elseif (($locale1 = $userFrom->getLocale()) != null) {
+                    $mail->setLocale($locale1);
+                }
+
                 $this->deliver($mail);
                 $mailed = true;
 
