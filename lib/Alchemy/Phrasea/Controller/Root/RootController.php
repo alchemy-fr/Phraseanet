@@ -43,9 +43,13 @@ class RootController extends Controller
 
         // if connected, update user locale
         if ($authenticatedUser !== null) {
-            $authenticatedUser->setLocale($locale);
+            try {
+                $authenticatedUser->setLocale($locale);
 
-            $this->getEntityManager()->flush();
+                $this->getEntityManager()->flush();
+            } catch (\Exception $e) {
+                // invalid locale
+            }
         }
 
         return $response;
