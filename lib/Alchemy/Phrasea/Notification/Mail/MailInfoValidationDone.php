@@ -56,7 +56,7 @@ class MailInfoValidationDone extends AbstractMailWithLink
         return $this->app->trans('push::mail:: Rapport de validation de %user% pour %title%', [
             '%user%'  => $this->user->getDisplayName(),
             '%title%' => $this->title,
-        ]);
+        ], 'messages', $this->getLocale());
     }
 
     /**
@@ -70,7 +70,7 @@ class MailInfoValidationDone extends AbstractMailWithLink
 
         return $this->app->trans('%user% has just sent its validation report, you can now see it', [
             '%user%' => $this->user->getDisplayName(),
-        ]);
+        ], 'messages', $this->getLocale());
     }
 
     /**
@@ -78,7 +78,7 @@ class MailInfoValidationDone extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('See validation results');
+        return $this->app->trans('See validation results', [], 'messages', $this->getLocale());
     }
 
     /**

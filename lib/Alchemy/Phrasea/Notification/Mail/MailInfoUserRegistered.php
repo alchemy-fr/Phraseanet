@@ -34,7 +34,7 @@ class MailInfoUserRegistered extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans('admin::register: demande d\'inscription sur %application%', ['%application%' => $this->getPhraseanetTitle()]);
+        return $this->app->trans('admin::register: demande d\'inscription sur %application%', ['%application%' => $this->getPhraseanetTitle()], 'messages', $this->getLocale());
     }
 
     /**
@@ -46,7 +46,7 @@ class MailInfoUserRegistered extends AbstractMail
             throw new LogicException('You must set a user before calling getMessage');
         }
 
-        return $this->app->trans('admin::register: un utilisateur a fait une demande d\'inscription')
+        return $this->app->trans('admin::register: un utilisateur a fait une demande d\'inscription', [], 'messages', $this->getLocale())
         . "\n\n" .  sprintf('%s %s',$this->registeredUser->getFirstName(),  $this->registeredUser->getLastName())
         . "\n\n" .  sprintf('%s %s',$this->registeredUser->getJob(),  $this->registeredUser->getCompany());
     }
@@ -56,7 +56,7 @@ class MailInfoUserRegistered extends AbstractMail
      */
     public function getButtonText()
     {
-        return $this->app->trans('Process the registration');
+        return $this->app->trans('Process the registration', [], 'messages', $this->getLocale());
     }
 
     /**

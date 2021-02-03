@@ -76,6 +76,7 @@ class BasketController extends Controller
         $userFrom = $basket->getValidation()->getInitiator();
 
         $emitter = Emitter::fromUser($userFrom);
+        $localeFrom = $userFrom->getLocale();
 
         $params = $request->request->all();
         $message = $params['reminder-message'];
@@ -112,6 +113,12 @@ class BasketController extends Controller
             $mail = MailInfoReminderFeedback::create($this->app, $receiver, $emitter, $message);
             $mail->setTitle($basket->getName());
             $mail->setButtonUrl($url);
+
+            if (($locale = $userTo->getLocale()) != null) {
+                $mail->setLocale($locale);
+            } elseif ($localeFrom != null) {
+                $mail->setLocale($localeFrom);
+            }
 
             $this->deliver($mail);
         }

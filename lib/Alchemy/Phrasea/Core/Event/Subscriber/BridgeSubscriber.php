@@ -46,6 +46,11 @@ class BridgeSubscriber extends AbstractNotificationSubscriber
                 $mail = MailInfoBridgeUploadFailed::create($this->app, $receiver);
                 $mail->setAdapter($account->get_api()->get_connector()->get_name());
                 $mail->setReason($params['reason']);
+
+                if (($locale = $user->getLocale()) != null) {
+                    $mail->setlocale($locale);
+                }
+
                 $this->deliver($mail);
                 $mailed = true;
             }
