@@ -68028,7 +68028,7 @@ var searchForm = function searchForm(services) {
             loading: false,
             closeCallback: function closeCallback(dialog) {
                 // move back search form
-                $container.appendTo($searchFormContainer);
+                $container.prependTo($searchFormContainer);
 
                 // toggle advanced search options
                 (0, _jquery2.default)('.adv_trigger', $container).show();
