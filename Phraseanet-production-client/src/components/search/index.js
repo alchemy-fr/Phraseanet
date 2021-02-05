@@ -257,6 +257,9 @@ const search = services => {
                     $('#PREV_PAGE').unbind('click');
                 }
 
+                // emptying the facets filter in search zone
+                $('#facet_filter_in_search').empty();
+
                 updateHiddenFacetsListInPrefsScreen();
                 appEvents.emit('search.doAfterSearch');
                 appEvents.emit('search.updateFacetData');
