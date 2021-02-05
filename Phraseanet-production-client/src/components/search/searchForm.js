@@ -134,7 +134,7 @@ const searchForm = (services) => {
             loading: false,
             closeCallback: function (dialog) {
                 // move back search form
-                $container.appendTo($searchFormContainer);
+                $container.prependTo($searchFormContainer);
 
                 // toggle advanced search options
                 $('.adv_trigger', $container).show();
