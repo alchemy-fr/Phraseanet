@@ -49,7 +49,7 @@ class MailInfoValidationReminder extends AbstractMailWithLink
             throw new LogicException('You must set an title before calling getSubject');
         }
 
-        return $this->app->trans("Reminder : validate '%title%'", ['%title%' => $this->title]);
+        return $this->app->trans("Reminder : validate '%title%'", ['%title%' => $this->title], 'messages', $this->getLocale());
     }
 
     /**
@@ -59,7 +59,7 @@ class MailInfoValidationReminder extends AbstractMailWithLink
     {
         return $this->app->trans('Il ne vous reste plus que %timeLeft% pour terminer votre validation', [
             '%timeLeft%' => isset($this->timeLeft)? $this->timeLeft : ''
-        ]);
+        ], 'messages', $this->getLocale());
     }
 
     /**
@@ -67,7 +67,7 @@ class MailInfoValidationReminder extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Start validation');
+        return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
     }
 
     /**

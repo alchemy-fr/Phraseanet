@@ -19,6 +19,8 @@ abstract class AbstractMail implements MailInterface
 {
     const MAIL_SKIN = 'default';
 
+    /** @var string| null */
+    protected $locale = null;
     /** @var Application */
     protected $app;
     /** @var EmitterInterface */
@@ -62,6 +64,7 @@ abstract class AbstractMail implements MailInterface
             'buttonUrl'         => $this->getButtonURL(),
             'buttonText'        => $this->getButtonText(),
             'mailSkin'          => $this->getMailSkin(),
+            'emailLocale'       => $this->getLocale()
         ]);
     }
 
@@ -79,6 +82,16 @@ abstract class AbstractMail implements MailInterface
     public function getPhraseanetURL()
     {
         return $this->app->url('root');
+    }
+
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
     }
 
     /**

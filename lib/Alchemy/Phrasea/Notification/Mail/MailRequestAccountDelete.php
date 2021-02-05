@@ -36,7 +36,7 @@ class MailRequestAccountDelete extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return $this->app->trans('Email:deletion:request:subject Delete account confirmation');
+        return $this->app->trans('Email:deletion:request:subject Delete account confirmation', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -57,7 +57,7 @@ class MailRequestAccountDelete extends AbstractMailWithLink
             '%lastName%' => $this->user->getLastName(),
             '%urlInstance%' => '<a href="'.$this->getPhraseanetURL().'">'.$this->getPhraseanetURL().'</a>',
             '%resetPassword%' => '<a href="'.$this->app->url('reset_password').'">'.$this->app->url('reset_password').'</a>',
-        ]);
+        ], 'messages', $this->getLocale());
     }
 
     /**
@@ -65,7 +65,7 @@ class MailRequestAccountDelete extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Email:deletion:request:textButton Delete my account');
+        return $this->app->trans('Email:deletion:request:textButton Delete my account', [], 'messages', $this->getLocale());
     }
 
     /**

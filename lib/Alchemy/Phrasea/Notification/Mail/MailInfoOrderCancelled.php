@@ -46,7 +46,7 @@ class MailInfoOrderCancelled extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans('push::mail:: Refus d\'elements de votre commande');
+        return $this->app->trans('push::mail:: Refus d\'elements de votre commande', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -64,7 +64,7 @@ class MailInfoOrderCancelled extends AbstractMail
         return $this->app->trans('%user% a refuse %quantity% elements de votre commande', [
             '%user%' => $this->deliverer->getDisplayName(),
             '%quantity%' => $this->quantity,
-        ]);
+        ], 'messages', $this->getLocale());
     }
 
     /**
@@ -72,7 +72,7 @@ class MailInfoOrderCancelled extends AbstractMail
      */
     public function getButtonText()
     {
-        return $this->app->trans('See my order');
+        return $this->app->trans('See my order', [], 'messages', $this->getLocale());
     }
 
     /**
