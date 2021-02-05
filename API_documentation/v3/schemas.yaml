@@ -84,7 +84,7 @@ ApiResponse_searchraw_response:
             description: 'Search duration in msec'
             example:
                 12
-        #        offset:
+#        offset:
 #            type: integer
 #            description: 'Pagination offset as passed (or computed from "page/per_page") in request'
 #        limit:
@@ -239,10 +239,6 @@ _Record_:
         uuid:
             type: string
 
-ESRecordsArray:
-    type: array
-    items:
-        $ref: '#/ESRecord'
 ESRecord:
     description: 'Raw response from es search on "record" index/mapping'
     type: object
@@ -295,7 +291,7 @@ ESRecordSource:
         original_name:
             type: string
             example:
-                'test001.jpg'
+                '1134340545.jpg'
         mime:
             type: string
             example:
@@ -323,15 +319,15 @@ ESRecordSource:
         witdh:
             type: integer
             example:
-                300
+                5616
         height:
             type: integer
             example:
-                401
+                3744
         size:
             type: integer
             example:
-                31266
+                5618218
         base_id:
             $ref: '#/ID'
         databox_id:
@@ -341,47 +337,84 @@ ESRecordSource:
             example:
                 'db_databox1'
         record_type:
-            enum:
-                - 'record'
-                - 'story'
+            type: string
+            enum: ['record','story']
+        title:
+            type: object
+            description: 'key->value list, where (key) is the lng, and (value) the title in this lng.'
+            additionalProperties: true
+            example:
+                fr: 'titre en Français'
+                en: 'title in english'
+                '': 'undefined-lng title ? To be fixed'
         metadata_tags:
             type: object
-            properties:
-                Channels:
-                    type: integer
-                    example:
-                        3
-                ColorDepth:
-                    type: integer
-                    example:
-                        8
-                ColorSpace:
-                    type: integer
-                    example:
-                        0
-                FileSize:
-                    type: integer
-                    example:
-                        31266
-                Height:
-                    type: integer
-                    example:
-                        401
-                MimeType:
-                    type: string
-                    example:
-                        'image/jpeg'
-                Width:
-                    type: integer
-                    example:
-                        300
-        flags:
+            description: 'key->value list, where (key) is the name of the metadata, and (value) the value.'
+            additionalProperties: true
+            example:
+                Channels: 3
+                ColorDepth: 8
+                ColorSpace: 0
+                FileSize: 5618218
+                Height: 3744
+                MimeType: 'image/jpeg'
+                Width: 5616
+        caption:
             type: object
-            properties:
-                _a_flag_name_:
-                    type: boolean
-                _another_flag_name_:
-                    type: boolean
+            description: >
+                'key->value list, where (key) is the field name, and (value) the value(s).'
+
+                'nb: mono-valued field value is a 1 element array.'
+            additionalProperties:
+                type: array
+                items:
+                    type: string
+            example:
+                Artist: ['Bob']
+                Title: ['Cropped Hand Of Person Holding Computer Mouse']
+                Keywords: ['Hand', 'Mouse (computer)']
+        caption_all:
+            type: array
+            items:
+                type: string
+            description: >
+                'all fields values in a single array'
+            example: ['Bob','Cropped Hand Of Person Holding Computer Mouse','Hand','Mouse (computer)']
+        flags:
+            $ref: '#/Flags'
+        subdefs:
+            type: object
+            description: 'key->value list, where (key) is the name of the subdef, and (value) is the subdef object.'
+            additionalProperties:
+                type: object
+            example:
+                document:
+                    type: object
+                    properties:
+                        width: 5616
+                        height: 3744
+                        size: 5618218
+                        mime: 'image/jpeg'
+                        permalink: 'http://localhost/permalink/v1/2/34/document/1134340545.jpg?token=xrdMnK6peB...'
+                thumbnail:
+                    type: object
+                    properties:
+                        width: 1024
+                        height: 683
+                        size: 20011
+                        mime: 'image/jpeg'
+                        permalink: 'http://localhost/permalink/v1/2/34/preview/1134340545.jpg?token=E5aSbXQTmAz...'
+
+Flags:
+    type: object
+    description: 'key->value list, where (key) is the name of the flag (=status bit), and (value) is the boolean value.'
+    additionalProperties:
+        type: boolean
+    example:
+        public: true
+        color_checked: true
+        embargo: false
+
 Record:
     allOf:     # Combines the basic _Record_ and the records-only properties
         - $ref: '#/_Record_'
