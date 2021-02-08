@@ -68492,7 +68492,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
 
         // if one filter shows danger, show it on the query
         /* if (danger) {*/
-        if ((0, _jquery2.default)('#ADVSRCH_DATE_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SB_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SBAS_ZONE', adv_box).hasClass('danger')) {
+        if ((0, _jquery2.default)('#ADVSRCH_DATE_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SB_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SBAS_ZONE', adv_box).hasClass('danger')) {
             (0, _jquery2.default)('#EDIT_query').addClass('danger');
         } else {
             (0, _jquery2.default)('#EDIT_query').removeClass('danger');
