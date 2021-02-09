@@ -1,3 +1,4 @@
+$proposalFacetColor: #FFF !default;
 /******* FORMULAIRE DE RECHERCHE **********************************************/
 form.phrasea_query input.query {
     padding-left: 6px;
@@ -10,13 +11,134 @@ form.phrasea_query input.query {
 }
 
 .searchFormWrapper {
-    margin: 30px 0 0 5px;
+    margin: 20px 0 0 5px;
     line-height: 30px;
+}
+
+#facet_filter_in_search {
+    .facetFilter_AND {
+        font-weight: normal;
+        position: relative;
+        width: 127px;
+        height: 25px;
+        line-height: 25px;
+        vertical-align: middle;
+        border-radius: 4px;
+        //right: 28px;
+        background-color: $proposalColor_AND;
+        color: $proposalFacetColor;
+        padding-left: 13px;
+        padding-right: 13px;
+        display: inline-block;
+        margin: 2px 0px;
+        margin-right: 10px;
+        //margin-top: 11px;
+        overflow: hidden;
+        .buttons-span {
+            background-color: $proposalColor_AND;
+            max-width: 86px;
+            left: 67px;
+            :hover{
+                display: block;
+            }
+        }
+        .facetFilter-inverse {
+            background: url('#{$iconsPath}inverse-negative.png') 10px 2px no-repeat;
+        }
+        &:hover {
+            .facetFilter-label {
+                color: transparent;
+            }
+        }
+    }
+
+    .facetFilter_EXCEPT {
+        font-weight: normal;
+        position: relative;
+        width: 127px;
+        height: 25px;
+        line-height: 25px;
+        vertical-align: middle;
+        border-radius: 4px;
+        //right: 28px;
+        background-color: $proposalColor_EXCEPT;
+        color: $proposalFacetColor;
+        padding-left: 13px;
+        padding-right: 13px;
+        //margin-top: 11px;
+        display: inline-block;
+        margin: 2px 0px;
+        float: right;
+        margin-right: 10px;
+        overflow: hidden;
+        .buttons-span {
+            background-color: $proposalColor_EXCEPT;
+            max-width: 86px;
+            left: 67px;
+        }
+        .facetFilter-inverse {
+            background: url('#{$iconsPath}inverse-positive.png') 10px 2px no-repeat;
+        }
+        &:hover {
+            .facetFilter-label {
+                color: transparent;
+            }
+        }
+    }
+
+    .facetFilter-label {
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        line-height: 25px;
+        display: inline-block;
+        min-width: 54px;
+        .color-dot {
+            height: 16px;
+            width: 16px;
+        }
+    }
+
+    .facetFilter-gradient {
+        position: absolute;
+        width: 20px;
+        right: 0;
+    }
+
+    .buttons-span {
+        position: absolute;
+        top: 2px;
+        bottom: 2px;
+        left: 0;
+        right: 0;
+        margin: 0;
+        display: none;
+    }
+
+    .facetFilter-closer {
+        position: absolute;
+        right: 4px;
+        cursor: pointer;
+        background: url('#{$iconsPath}bgd_facetFilter.png') 12px 4px no-repeat;
+        height: 21px;
+        width: 37px;
+        border-left: 1px solid #FFF;
+    }
+
+    .facetFilter-inverse {
+        position: absolute;
+        right: 42px;
+        cursor: pointer;
+        height: 21px;
+        width: 37px;
+        border-left: 1px solid #FFF;
+    }
 }
 
 #searchForm {
     width: 100%;
     float: left;
+    margin-bottom: 0px;
     .input-append {
         float: left;
         width: 50%;

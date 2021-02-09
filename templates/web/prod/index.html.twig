@@ -82,8 +82,8 @@
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
 
     <script type="text/javascript">
 
@@ -643,6 +643,8 @@
                             </table>
                         </div>
                     </form>
+                    <div id="facet_filter_in_search" style="width:100%;height:40px;overflow-y: scroll;">
+                    </div>
                 </div>
             </div>
 

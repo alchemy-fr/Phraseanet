@@ -187,6 +187,10 @@ class UserCreateCommand extends Command
         $mail->setButtonUrl('http://'.$servername.'/login/renew-password/?token='.$token->getValue());
         $mail->setLogin($user->getLogin());
 
+        if (($locale = $user->getLocale()) != null) {
+            $mail->setLocale($locale);
+        }
+
         $this->deliver($mail);
     }
 
@@ -204,6 +208,10 @@ class UserCreateCommand extends Command
         $servername = $this->container['conf']->get('servername');
         $mail->setButtonUrl('http://'.$servername.'/login/register-confirm/?code='.$token->getValue());
         $mail->setExpiration($token->getExpiration());
+
+        if (($locale = $user->getLocale()) != null) {
+            $mail->setLocale($locale);
+        }
 
         $this->deliver($mail);
     }

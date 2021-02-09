@@ -679,6 +679,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             if ($oldReceiver) {
                 $mailOldAddress = MailSuccessEmailUpdate::create($this->app, $oldReceiver, null, $this->app->trans('You will now receive notifications at %new_email%', ['%new_email%' => $new_email]));
+
+                if (($locale = $user->getLocale()) != null) {
+                    $mailOldAddress->setLocale($locale);
+                }
+
                 $this->deliver($mailOldAddress);
             }
 
@@ -690,6 +695,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
             if ($newReceiver) {
                 $mailNewAddress = MailSuccessEmailUpdate::create($this->app, $newReceiver, null, $this->app->trans('You will no longer receive notifications at %old_email%', ['%old_email%' => $old_email]));
+
+                if (($locale = $user->getLocale()) != null) {
+                    $mailNewAddress->setLocale($locale);
+                }
+
                 $this->deliver($mailNewAddress);
             }
         }

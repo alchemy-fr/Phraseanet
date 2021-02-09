@@ -172,6 +172,10 @@ class UserPasswordCommand extends Command
         $mail->setLogin($user->getLogin());
         $mail->setExpiration(new \DateTime('+1 day'));
 
+        if (($locale = $user->getLocale()) != null) {
+            $mail->setLocale($locale);
+        }
+
         $this->deliver($mail);
     }
 

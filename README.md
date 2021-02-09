@@ -134,6 +134,8 @@ Pull images before launch docker-compose
 
 Etc..
 
+```nightly``` : Development version, the latest version with successful automated tests. Built and published every night
+
 
 ## Development mode
 

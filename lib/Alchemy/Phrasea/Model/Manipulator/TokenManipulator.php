@@ -220,7 +220,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createResetPasswordToken(User $user)
     {
-        return $this->create($user, self::TYPE_PASSWORD, new DateTime('+1 day'));
+        return $this->create($user, self::TYPE_PASSWORD, new DateTime('+3 day'));
     }
 
     /**
