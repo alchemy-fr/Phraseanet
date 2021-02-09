@@ -13,9 +13,11 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        var referrersValues = [], statistics = null;
-        statistics = {{ record.getStatistics(30)|json_encode()|raw }};
-        if(statistics != null) {
+        var referrersValues = [];
+        // return false|array
+        var statistics = {{ record.getStatistics(30)|json_encode()|raw }};
+
+        if(statistics !== false) {
             var arrayViews = [], arrayDownloads = [], arrayReferrers = [];
 
             var statisticsArrayByDay = $.map(statistics.by_day, function(value, index) {
