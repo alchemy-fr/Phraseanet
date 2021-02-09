@@ -103,6 +103,7 @@ class record_preview extends record_adapter
                 if ($results->getResults()->isEmpty()) {
                     throw new Exception('Record introuvable');
                 }
+                $this->total = $results->getTotal();
                 foreach ($results->getResults() as $record) {
                     $number = $pos;
                     $this->original_item = $record;
@@ -267,8 +268,8 @@ class record_preview extends record_adapter
         switch ($this->env) {
 
             case "RESULT":
-                $this->title .= $this->app->trans('resultat numero %number%', ['%number%' => '<span id="current_result_n">' . ($this->getNumber() + 1) . '</span> : ']);
-                $this->title .= parent::get_title($options);
+                $this->title .= $this->app->trans('Resultat %number%/%total%', ['%number%' => '<span id="current_result_n">' . ($this->getNumber() + 1) . '</span>', '%total%' => $this->total]);
+                $this->title .= ' - ' . parent::get_title($options);
                 break;
             case "BASK":
                 $this->title .= $this->name . ' (' . $this->getNumber() . '/' . $this->total . ') - ' . parent::get_title($options);
