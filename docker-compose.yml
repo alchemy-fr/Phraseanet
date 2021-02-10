@@ -24,6 +24,8 @@ services:
     - GATEWAY_FASTCGI_TIMEOUT
     ports:
       - ${PHRASEANET_APP_PORT}:80
+    networks:
+      - internal
 
   phraseanet:
     build:
@@ -95,6 +97,9 @@ services:
     - LC_TIME=C.UTF-8
     - LC_NAME=C.UTF-8
 
+    networks:
+      - internal
+
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -160,6 +165,10 @@ services:
     - IMAGEMAGICK_POLICY_AREA
     - IMAGEMAGICK_POLICY_DISK
     - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+
+    networks:
+      - internal
+
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -176,6 +185,10 @@ services:
     environment:
     - MYSQL_ROOT_PASSWORD
     - MYSQL_MAX_ALLOWED_PACKET
+
+    networks:
+      - internal
+
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql
 
@@ -185,10 +198,14 @@ services:
     environment:
     - RABBITMQ_DEFAULT_USER
     - RABBITMQ_DEFAULT_PASS
+    networks:
+      - internal
 
   redis:
     image: redis
     restart: on-failure
+    networks:
+      - internal
 
   elasticsearch:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
@@ -196,13 +213,22 @@ services:
     restart: on-failure
     volumes:
     - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data
+    networks:
+      - internal
 
   mailhog:
     image: mailhog/mailhog
     ports:
     - 1025:1025
     - 8025:8025
+    networks:
+      - internal
 
+networks:
+  internal:
+    ipam:
+      config:
+        - subnet: $PHRASEANET_SUBNET_IPS
 volumes:
   config_vol:
     driver: local
