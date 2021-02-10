@@ -12,4 +12,4 @@ record_response:
         404:
             description: Record not found
 error_response:
-        description: Any (other) error
+        description: Any other error

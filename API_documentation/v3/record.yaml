@@ -1,0 +1,119 @@
+  _Record_:
+    type: object
+    properties:
+      databox_id:
+        $ref: 'common.yaml#/ID'
+      record_id:
+        $ref: 'common.yaml#/ID'
+      title:
+        type: string
+      original_name:
+        type: string
+      updated_on:
+        type: string
+        format: date-time
+      created_on:
+        type: string
+        format: date-time
+      collection_id:
+        $ref: 'common.yaml#/ID'
+      base_id:
+        $ref: 'common.yaml#/ID'
+      thumbnail:
+        $ref: '#/Subdef'
+      uuid:
+        type: string
+
+  Record:
+    allOf:     # Combines the basic _Record_ and the records-only properties
+      - $ref: '#/_Record_'
+      - type: object
+        properties:
+          mime_type:
+            type: string
+          technical_informations:
+            type: array
+            items:
+              $ref: '#/TechnicalInformation'
+          sha256:
+            type: string
+          phrasea_type:
+            type: string
+            enum:
+              - image
+              - video
+
+  Story:
+    allOf:     # Combines the basic _Record_ and the stories-only properties
+      - $ref: '#/_Record_'
+      - type: object
+        properties:
+          children_offset:
+            type: integer
+            description: 'Children pagination offset ; Always 0'
+            example: 0
+          children_limit:
+            type: integer
+            description: 'Children pagination limit ; Equal to "story_children_limit" passed in request'
+            example: 10
+          children_count:
+            type: integer
+            description: 'Number of children in "children" array ; [0...limit]'
+            example: 5
+          children_total:
+            type: integer
+            description: 'Total number of __visibles for user__ children in this story'
+            example: 5
+          children:
+            type: array
+            items:
+              type: object
+              items:
+                $ref: '#/Record'
+
+  TechnicalInformation:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+
+  Subdef:
+    type: object
+    properties:
+      name:
+        type: string
+      permalink:
+        $ref: 'common.yaml#/PermalinkObject'
+      height:
+        type: integer
+      width:
+        type: integer
+      filesize:
+        type: integer
+      devices:
+        type: array
+        items:
+          type: string
+          enum:
+            - screen
+            - printer ?
+      player_type:
+        type: string
+        enum:
+          - IMAGE
+      mime_type:
+        type: string
+      substituted:
+        type: boolean
+      created_on:
+        type: string
+        format: date-time
+      updated_on:
+        type: string
+        format: date-time
+      url:
+        type: string
+      url_ttl:
+        type: integer
