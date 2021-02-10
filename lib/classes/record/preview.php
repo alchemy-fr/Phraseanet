@@ -270,7 +270,7 @@ class record_preview extends record_adapter
             case "RESULT":
                 $this->title = '<span style="color:#27bbe2;">';
                 $this->title .= $this->app->trans('Resultat %number%/%total%', ['%number%' => '<span id="current_result_n">' . ($this->getNumber() + 1) . '</span>', '%total%' => $this->total]);
-                $this->title .= ':</span> ' . parent::get_title($options);
+                $this->title .= ' : </span> ' . parent::get_title($options);
                 break;
             case "BASK":
                 $this->title .= $this->name . ' (' . $this->getNumber() . '/' . $this->total . ') - ' . parent::get_title($options);
