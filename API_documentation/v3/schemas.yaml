@@ -4,7 +4,7 @@ RecordPatch_metadata:
         field_name:
             type: string
         meta_struct_id:
-            $ref: '#/ID'
+            $ref: 'common.yaml#/ID'
         action:
             type: string
             enum:
@@ -64,46 +64,16 @@ ApiResponse_record:
         meta:
             $ref: '#/ApiResponse_meta'
         response:
-            $ref: '#/Record'
-
-# -------------------- searchraw ---------------
-ApiResponse_searchraw:
+            $ref: 'record.yaml#/Record'
+ApiResponse_story:
     type: object
     properties:
         meta:
             $ref: '#/ApiResponse_meta'
         response:
-            $ref: '#/ApiResponse_searchraw_response'
-ApiResponse_searchraw_response:
-    type: object
-    properties:
-        results:
-            type: array
-            items:
-                $ref: '#/ESRecord'
-        took:
-            type: integer
-            description: 'Search duration in msec'
-            example:
-                12
-#        offset:
-#            type: integer
-#            description: 'Pagination offset as passed (or computed from "page/per_page") in request'
-#        limit:
-#            type: integer
-#            description: 'Pagination limit as passed in request'
-        count:
-            type: integer
-            description: 'Number of results in this page [0...limit]'
-            example:
-                1
-        total:
-            type: integer
-            description: 'Total number of results'
-            example:
-                1
-        facets:
-            $ref: '#/FacetsArray'
+            $ref: 'record.yaml#/Story'
+
+# -------------------- searchraw ---------------
 
 # -------------------- search ---------------
 ApiResponse_search:
@@ -135,330 +105,15 @@ ApiResponse_search_response:
                 stories:
                     type: array
                     items:
-                        $ref: '#/Story'
+                        $ref: 'record.yaml#/Story'
                 records:
                     type: array
                     items:
-                        $ref: '#/Record'
+                        $ref: 'record.yaml#/Record'
         facets:
-            $ref: '#/FacetsArray'
+            $ref: 'common.yaml#/FacetsArray'
 
 
-ID:
-    type: integer
-
-Permalink:
-    type: object
-    properties:
-        created_on:
-            type: string
-            format: date-time
-        id:
-            $ref: '#/ID'
-        is_activated:
-            type: boolean
-        label:
-            type: string
-        updated_on:
-            type: string
-            format: date-time
-        page_url:
-            type: string
-        download_url:
-            type: string
-        url:
-            type: string
-
-Subdef:
-    type: object
-    properties:
-        name:
-            type: string
-        permalink:
-            $ref: '#/Permalink'
-        height:
-            type: integer
-        width:
-            type: integer
-        filesize:
-            type: integer
-        devices:
-            type: array
-            items:
-                type: string
-                enum:
-                    - screen
-                    - printer ?
-        player_type:
-            type: string
-            enum:
-                - IMAGE
-        mime_type:
-            type: string
-        substituted:
-            type: boolean
-        created_on:
-            type: string
-            format: date-time
-        updated_on:
-            type: string
-            format: date-time
-        url:
-            type: string
-        url_ttl:
-            type: integer
-
-TechnicalInformation:
-    type: object
-    properties:
-        name:
-            type: string
-        value:
-            type: string
-_Record_:
-    type: object
-    properties:
-        databox_id:
-            $ref: '#/ID'
-        record_id:
-            $ref: '#/ID'
-        title:
-            type: string
-        original_name:
-            type: string
-        updated_on:
-            type: string
-            format: date-time
-        created_on:
-            type: string
-            format: date-time
-        collection_id:
-            $ref: '#/ID'
-        base_id:
-            $ref: '#/ID'
-        thumbnail:
-            $ref: '#/Subdef'
-        uuid:
-            type: string
-
-ESRecord:
-    description: 'Raw response from es search on "record" index/mapping'
-    type: object
-    properties:
-        _index:
-            type: string
-            description: 'ES index'
-            example:
-                'phraseanet_dxmpcw3y8td68f+h_20201124161735.910647'
-        _type:
-            type: string
-            description: 'Data type'
-            example:
-                'record'
-        _id:
-            type: string
-            description: 'unique id of document (sbas_id + "_" + record_id)'
-            example:
-                '1_555'
-        _version:
-            type: integer
-            description: 'auto-increment at each indexation of the document'
-            example:
-                1
-        _score:
-            type: number
-            description: 'score of the document related to a whole resultset'
-            example:
-                1
-        _source:
-            $ref: '#/ESRecordSource'
-
-ESRecordSource:
-    type: object
-    properties:
-        record_id:
-            $ref: '#/ID'
-        collection_id:
-            $ref: '#/ID'
-        uuid:
-            type: string
-            example:
-                'dcee40ea-ee26-4d8b-b0c2-d61305b03bc0'
-        flags_bitfield:
-            type: integer
-        sha256:
-            type: string
-            example:
-                '7fad283de349b903c850548cda65cf2d86d24c4e3856cdc2b97e47430494b8c8'
-        original_name:
-            type: string
-            example:
-                '1134340545.jpg'
-        mime:
-            type: string
-            example:
-                'image/jpeg'
-        type:
-            type: string
-            example:
-                'image'
-        created_on:
-            type: string
-            format: date-time
-            example:
-                '2020-12-07 09:48:01'
-        updated_on:
-            type: string
-            format: date-time
-            example:
-                '2021-01-01 15:30:00'
-        coll_id:
-            $ref: '#/ID'
-        collection_name:
-            type: string
-            example:
-                'collection de test'
-        witdh:
-            type: integer
-            example:
-                5616
-        height:
-            type: integer
-            example:
-                3744
-        size:
-            type: integer
-            example:
-                5618218
-        base_id:
-            $ref: '#/ID'
-        databox_id:
-            $ref: '#/ID'
-        databox_name:
-            type: string
-            example:
-                'db_databox1'
-        record_type:
-            type: string
-            enum: ['record','story']
-        title:
-            type: object
-            description: 'key->value list, where (key) is the lng, and (value) the title in this lng.'
-            additionalProperties: true
-            example:
-                fr: 'titre en Français'
-                en: 'title in english'
-                '': 'undefined-lng title ? To be fixed'
-        metadata_tags:
-            type: object
-            description: 'key->value list, where (key) is the name of the metadata, and (value) the value.'
-            additionalProperties: true
-            example:
-                Channels: 3
-                ColorDepth: 8
-                ColorSpace: 0
-                FileSize: 5618218
-                Height: 3744
-                MimeType: 'image/jpeg'
-                Width: 5616
-        caption:
-            type: object
-            description: >
-                'key->value list, where (key) is the field name, and (value) the value(s).'
-
-                'nb: mono-valued field value is a 1 element array.'
-            additionalProperties:
-                type: array
-                items:
-                    type: string
-            example:
-                Artist: ['Bob']
-                Title: ['Cropped Hand Of Person Holding Computer Mouse']
-                Keywords: ['Hand', 'Mouse (computer)']
-        caption_all:
-            type: array
-            items:
-                type: string
-            description: >
-                'all fields values in a single array'
-            example: ['Bob','Cropped Hand Of Person Holding Computer Mouse','Hand','Mouse (computer)']
-        flags:
-            $ref: '#/Flags'
-        subdefs:
-            type: object
-            description: 'key->value list, where (key) is the name of the subdef, and (value) is the subdef object.'
-            additionalProperties:
-                type: object
-            example:
-                document:
-                    type: object
-                    properties:
-                        width: 5616
-                        height: 3744
-                        size: 5618218
-                        mime: 'image/jpeg'
-                        permalink: 'http://localhost/permalink/v1/2/34/document/1134340545.jpg?token=xrdMnK6peB...'
-                thumbnail:
-                    type: object
-                    properties:
-                        width: 1024
-                        height: 683
-                        size: 20011
-                        mime: 'image/jpeg'
-                        permalink: 'http://localhost/permalink/v1/2/34/preview/1134340545.jpg?token=E5aSbXQTmAz...'
-
-Flags:
-    type: object
-    description: 'key->value list, where (key) is the name of the flag (=status bit), and (value) is the boolean value.'
-    additionalProperties:
-        type: boolean
-    example:
-        public: true
-        color_checked: true
-        embargo: false
-
-Record:
-    allOf:     # Combines the basic _Record_ and the records-only properties
-        - $ref: '#/_Record_'
-        - type: object
-          properties:
-            mime_type:
-                type: string
-            technical_informations:
-                type: array
-                items:
-                    $ref: '#/TechnicalInformation'
-            sha256:
-                type: string
-            phrasea_type:
-                type: string
-                enum:
-                    - image
-                    - video
-
-Story:
-    allOf:     # Combines the basic _Record_ and the stories-only properties
-        - $ref: '#/_Record_'
-        - type: object
-          properties:
-            children_offset:
-                type: integer
-                description: 'Children pagination offset ; Always 0'
-            children_limit:
-                type: integer
-                description: 'Children pagination limit ; Equal to "story_children_limit" passed in request'
-            children_count:
-                type: integer
-                description: 'Number of children in "children" array ; [0...limit]'
-            children_total:
-                type: integer
-                description: 'Total number of -visibles for user- children in this story'
-            children:
-                type: array
-                items:
-                    type: object
-                    items:
-                        $ref: '#/Record'
 
 RecordUri:
     type: string
@@ -477,38 +132,3 @@ ApiResponse_RecordsUriArray:
         response:
             $ref: '#/RecordsUriArray'
 
-Facet:
-    type: object
-    properties:
-        name:
-            type: string
-            description: 'Unique internal name (=key) for the facet'
-            example: '_base'
-        field:
-            type: string
-            description: 'Source field (from db structure). Can be also virtual field like "database" '
-            example: 'database'
-        values:
-            type: array
-            items:
-                type: object
-                properties:
-                    value:
-                        type: string
-                        description: 'Human readable value for the value'
-                        example: 'Demo'
-                    raw_value:
-                        type: string
-                        description: 'Real value, to be used to query'
-                        example: 'db_demo'
-                    count:
-                        type: integer
-                        description: 'Number of items matching this value'
-                    query:
-                        type: string
-                        description: 'Formulated query to search items matching this facet'
-                        example: 'database:db_demo'
-FacetsArray:
-    type: array
-    items:
-        $ref: '#/Facet'

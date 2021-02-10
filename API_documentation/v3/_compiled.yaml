@@ -10,47 +10,10 @@ info:
   license:
     name: GNU GPL V3
     url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
-components:
-  parameters:
-    offsetParam:
-      name: offset
-      in: query
-      description: offset in records count
-      required: false
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-    limitParam:
-      name: limit
-      in: query
-      description: number of results
-      required: false
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
-    sbas_id:
-      name: sbas_id
-      in: path
-      description: ID of the databox
-      required: true
-      schema:
-        type: integer
-    record_id:
-      name: record_id
-      in: path
-      description: ID of the record
-      required: true
-      schema:
-        $ref: '#/components/parameters/sbas_id/schema'
 paths:
   /me:
     get:
-      description: blabla
-      servers:
-        - url: 'https://alpha.preprod.alchemyasp.com/api/v1'
+      description: todo
       responses:
         '200':
           description: successful operation
@@ -63,7 +26,42 @@ paths:
       description: |
         Fulltext search for records or stories.
 
-        - pagination: use (offset/limit) OR (page/per_page)
+        ## About pagination
+
+        * offset / limit
+
+            offset starts at 0, the unit is "record"
+        * page / per_page
+
+            the first page is 1, per_page is the number of "records" per page.
+
+        so (page=4 ; per_page=5) <===> (offset=15 ; limit=5)
+
+        use (offset/limit) __OR__ (page/per_page)
+
+        ## About "story_children_limit"
+
+        This parameter asks __for each story in the resultset__ to get the __N first__ children (records) of the story.
+
+        example with __N=5__ :
+
+        * If a story contains __3__ children, the story will expose :
+            * children_offset = 0 (always 0 since only first children are returned
+            * children_limit = 5 (copy of the story_children_limit parameter)
+            * children_count = 3 (number or children returned)
+            * children_total = 3 (total number of children in the story)
+
+        * If a story contains __7__ children, the story will expose :
+            * children_offset = 0 (always 0 since only first children are returned
+            * children_limit = 5 (copy of the story_children_limit parameter)
+            * children_count = 5 (number or children returned)
+            * children_total = 7 (total number of children in the story)
+
+        ## About "include(s)"
+
+        To get smaller / faster response, facets and stories children are ommited by default.
+
+        Add _include_ parameters to get those if needed.
       parameters:
         - name: query
           in: query
@@ -83,7 +81,9 @@ paths:
               - 1
             default: 0
           description: |
-            * `0` - search for records * `1` - search for stories
+            search for records or stories
+              * `0` - search for records
+              * `1` - search for stories
         - name: page
           in: query
           description: 'page number, from 1. Use along with "per_page"'
@@ -184,28 +184,7 @@ paths:
                           stories:
                             type: array
                             items:
-                              allOf:
-                                - $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/response/allOf/0'
-                                - type: object
-                                  properties:
-                                    children_offset:
-                                      type: integer
-                                      description: Children pagination offset ; Always 0
-                                    children_limit:
-                                      type: integer
-                                      description: Children pagination limit ; Equal to "story_children_limit" passed in request
-                                    children_count:
-                                      type: integer
-                                      description: 'Number of children in "children" array ; [0...limit]'
-                                    children_total:
-                                      type: integer
-                                      description: Total number of -visibles for user- children in this story
-                                    children:
-                                      type: array
-                                      items:
-                                        type: object
-                                        items:
-                                          $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/response'
+                              $ref: '#/paths/~1stories~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/responses/200/content/application~1json/schema/properties/response'
                           records:
                             type: array
                             items:
@@ -244,68 +223,24 @@ paths:
                                     description: Formulated query to search items matching this facet
                                     example: 'database:db_demo'
         default:
-          description: Any (other) error
+          description: Any other error
   /searchraw:
     post:
       tags:
         - searchraw
       description: |
-        Fulltext search for records or stories; Returns raw es
-        - pagination: use (offset/limit) OR (page/per_page)
+        Fulltext search for records or stories; Returns __raw es documents__
+
+        Stories children are not returned, use route _stories/.../.../children_
+
+        see pagination description in route _search_
       parameters:
-        - name: query
-          in: query
-          description: Fulltext query (<empty> = search all)
-          required: false
-          schema:
-            type: string
-            example: dogs OR cats
-            default: ''
-        - name: search_type
-          in: query
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
-            default: 0
-          description: |
-            search for records or stories
-              * `0` - search for records
-              * `1` - search for stories
-        - name: page
-          in: query
-          description: 'page number, from 1. Use along with "per_page"'
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: number of results per page. Use along with "page"
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-        - name: offset
-          in: query
-          description: 'offset in records count, from 0. Use along with "limit"'
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-        - name: limit
-          in: query
-          description: number of results. Use along with "offset"
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
+        - $ref: '#/paths/~1search/post/parameters/0'
+        - $ref: '#/paths/~1search/post/parameters/1'
+        - $ref: '#/paths/~1search/post/parameters/2'
+        - $ref: '#/paths/~1search/post/parameters/3'
+        - $ref: '#/paths/~1search/post/parameters/4'
+        - $ref: '#/paths/~1search/post/parameters/5'
       responses:
         '200':
           description: ok
@@ -349,9 +284,9 @@ paths:
                               type: object
                               properties:
                                 record_id:
-                                  $ref: '#/components/parameters/sbas_id/schema'
+                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                                 collection_id:
-                                  $ref: '#/components/parameters/sbas_id/schema'
+                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                                 uuid:
                                   type: string
                                   example: dcee40ea-ee26-4d8b-b0c2-d61305b03bc0
@@ -378,7 +313,7 @@ paths:
                                   format: date-time
                                   example: '2021-01-01 15:30:00'
                                 coll_id:
-                                  $ref: '#/components/parameters/sbas_id/schema'
+                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                                 collection_name:
                                   type: string
                                   example: collection de test
@@ -392,9 +327,9 @@ paths:
                                   type: integer
                                   example: 5618218
                                 base_id:
-                                  $ref: '#/components/parameters/sbas_id/schema'
+                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                                 databox_id:
-                                  $ref: '#/components/parameters/sbas_id/schema'
+                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                                 databox_name:
                                   type: string
                                   example: db_databox1
@@ -503,11 +438,22 @@ paths:
       tags:
         - record
       summary: Find record by sbas_id and record_id
-      description: Returns a single record
+      description: |
+        Returns a single record, which can be a real record or a story (check `is_story`)
       operationId: getRecordById
       parameters:
-        - $ref: '#/components/parameters/sbas_id'
-        - $ref: '#/components/parameters/record_id'
+        - name: sbas_id
+          in: path
+          description: ID of the databox
+          required: true
+          schema:
+            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+        - name: record_id
+          in: path
+          description: ID of the record
+          required: true
+          schema:
+            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
       responses:
         '200':
           description: ok
@@ -545,7 +491,13 @@ paths:
           description: ID of the base
           required: true
           schema:
-            $ref: '#/components/parameters/sbas_id/schema'
+            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+        - name: base_id
+          in: path
+          description: ID of the base
+          required: true
+          schema:
+            type: integer
       requestBody:
         content:
           multipart/form-data:
@@ -574,7 +526,7 @@ paths:
                           field_name:
                             type: string
                           meta_struct_id:
-                            $ref: '#/components/parameters/sbas_id/schema'
+                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                           action:
                             type: string
                             enum:
@@ -607,15 +559,30 @@ paths:
                 type: object
                 properties:
                   meta:
-                    $ref: '#/paths/~1search/post/responses/200/content/application~1json/schema/properties/meta'
+                    type: object
+                    properties:
+                      api_version:
+                        type: string
+                      request:
+                        type: string
+                      response_time:
+                        type: string
+                        format: date-time
+                      http_code:
+                        type: integer
+                        format: int32
+                      error_type:
+                        type: string
+                      error_message:
+                        type: string
                   response:
                     allOf:
                       - type: object
                         properties:
                           databox_id:
-                            $ref: '#/components/parameters/sbas_id/schema'
+                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                           record_id:
-                            $ref: '#/components/parameters/sbas_id/schema'
+                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                           title:
                             type: string
                           original_name:
@@ -627,9 +594,9 @@ paths:
                             type: string
                             format: date-time
                           collection_id:
-                            $ref: '#/components/parameters/sbas_id/schema'
+                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                           base_id:
-                            $ref: '#/components/parameters/sbas_id/schema'
+                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                           thumbnail:
                             type: object
                             properties:
@@ -642,7 +609,7 @@ paths:
                                     type: string
                                     format: date-time
                                   id:
-                                    $ref: '#/components/parameters/sbas_id/schema'
+                                    $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
                                   is_activated:
                                     type: boolean
                                   label:
@@ -1059,18 +1026,8 @@ paths:
         ```
       operationId: patchRecord
       parameters:
-        - name: sbas_id
-          in: path
-          description: ID of the sbas
-          required: true
-          schema:
-            $ref: '#/components/parameters/sbas_id/schema'
-        - name: record_id
-          in: path
-          description: ID of the record
-          required: true
-          schema:
-            $ref: '#/components/parameters/sbas_id/schema'
+        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/0'
+        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/1'
       requestBody:
         content:
           application/json:
@@ -1086,6 +1043,60 @@ paths:
                 $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema'
         default:
           $ref: '#/paths/~1search/post/responses/default'
+  '/stories/{sbas_id}/{record_id}':
+    get:
+      tags:
+        - story
+      summary: Find a story (record) by sbas_id and record_id
+      description: |
+        Returns a single story
+
+        This is the __same__ parameters / result as _/records/..._, except that here the record __must__ be a story else 404 is returned
+      operationId: getRecordById
+      parameters:
+        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/0'
+        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/1'
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/meta'
+                  response:
+                    allOf:
+                      - $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/response/allOf/0'
+                      - type: object
+                        properties:
+                          children_offset:
+                            type: integer
+                            description: Children pagination offset ; Always 0
+                            example: 0
+                          children_limit:
+                            type: integer
+                            description: Children pagination limit ; Equal to "story_children_limit" passed in request
+                            example: 10
+                          children_count:
+                            type: integer
+                            description: 'Number of children in "children" array ; [0...limit]'
+                            example: 5
+                          children_total:
+                            type: integer
+                            description: Total number of __visibles for user__ children in this story
+                            example: 5
+                          children:
+                            type: array
+                            items:
+                              type: object
+                              items:
+                                $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/response'
+        '404':
+          description: Story not found (
+        default:
+          $ref: '#/paths/~1search/post/responses/default'
   '/stories/{sbas_id}/{record_id}/children':
     get:
       tags:
@@ -1094,8 +1105,8 @@ paths:
       description: Returns children of a story
       operationId: getStoryChildren
       parameters:
-        - $ref: '#/components/parameters/sbas_id'
-        - $ref: '#/components/parameters/record_id'
+        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/0'
+        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/1'
         - name: page
           in: query
           description: page number (default 1)
@@ -1117,7 +1128,7 @@ paths:
                 type: object
                 properties:
                   meta:
-                    $ref: '#/paths/~1search/post/responses/200/content/application~1json/schema/properties/meta'
+                    $ref: '#/paths/~1records~1%7Bbase_id%7D/post/responses/200/content/application~1json/schema/properties/meta'
                   response:
                     type: array
                     items:
