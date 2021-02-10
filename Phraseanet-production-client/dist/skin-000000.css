@@ -2049,7 +2049,7 @@ div#PREVIEWTITLEWRAPPER {
 }
 
 div#PREVIEWTITLEWRAPPER span {
-  line-height: 45px;
+  line-height: 30px;
 }
 
 .PNB10 {
@@ -8765,7 +8765,6 @@ TABLE.explain3 TR TD {
 }
 
 #PREVIEWBOX #PREVIEWTITLE_COLLLOGO img {
-  width: 16px;
   height: 16px;
 }
 
