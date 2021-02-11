@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   description: >
     This is the documentation of Phraseanet API (v3)
@@ -82,7 +82,7 @@ components:
     per_page:
       name: per_page
       in: query
-      description: number of results per page. Use along with "page"
+      description: number of items per page. Use along with "page"
       required: false
       schema:
         type: integer
@@ -93,7 +93,7 @@ components:
     offset:
       name: offset
       in: query
-      description: offset in records count, from 0. Use along with "limit"
+      description: offset in items unit count, from 0. Use along with "limit"
       required: false
       schema:
         type: integer
@@ -103,7 +103,7 @@ components:
     limit:
       name: limit
       in: query
-      description: number of results. Use along with "offset"
+      description: number of items. Use along with "offset"
       required: false
       schema:
         type: integer
@@ -213,7 +213,7 @@ paths:
               schema:
                 $ref: 'search.yaml#/ApiResponse_search'
         default:
-          $ref: 'responses.yaml#/error_response'
+          $ref: 'common.yaml#/error_response'
 
   # ---------------- searchraw ----------------
   '/searchraw':
@@ -241,7 +241,7 @@ paths:
               schema:
                 $ref: 'searchraw.yaml#/ApiResponse_searchraw'
         default:
-          $ref: 'responses.yaml#/error_response'
+          $ref: 'common.yaml#/error_response'
 
   # ------------ record -----------
   '/records/{sbas_id}/{record_id}':
@@ -251,6 +251,15 @@ paths:
       summary: Find record by sbas_id and record_id
       description: |
         Returns a single record, which can be a real record or a story (check `is_story`)
+
+        ## About extended mode
+        passing header `Accept: application/vnd.phraseanet.record-extended+json`
+        will add/populate objects :
+        - subdefs
+        - status
+        - metadata
+        - dces
+
       operationId: getRecordById
       parameters:
         - $ref: '#/components/parameters/sbas_id'
@@ -261,11 +270,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: schemas.yaml#/ApiResponse_record
+                $ref: record.yaml#/ApiResponse_record
+            'application/vnd.phraseanet.record-extended+json':
+              schema:
+                $ref: record.yaml#/ApiResponse_record_extended
         404:
           description: Record not found
         default:
-          $ref: 'responses.yaml#/error_response'
+          $ref: 'common.yaml#/error_response'
 
   '/records/{base_id}':
     post:
@@ -314,9 +326,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: schemas.yaml#/ApiResponse_record
+                $ref: record.yaml#/ApiResponse_record
         default:
-          $ref: 'responses.yaml#/error_response'
+          $ref: 'common.yaml#/error_response'
       # security:
       #   - api_key: []
 
@@ -684,9 +696,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: schemas.yaml#/ApiResponse_record
+                $ref: record.yaml#/ApiResponse_record
         default:
-          $ref: 'responses.yaml#/error_response'
+          $ref: 'common.yaml#/error_response'
 
   '/stories/{sbas_id}/{record_id}':
     get:
@@ -696,7 +708,8 @@ paths:
       description: |
         Returns a single story
 
-        This is the __same__ parameters / result as _/records/..._, except that here the record __must__ be a story else 404 is returned
+        This is the __same__ parameters / result as _/records/..._, (including "extended mode"),
+        except that here the record __must__ be a story else 404 is returned
 
       operationId: getStoryById
       parameters:
@@ -708,11 +721,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: schemas.yaml#/ApiResponse_story
+                $ref: record.yaml#/ApiResponse_story
+            'application/vnd.phraseanet.record-extended+json':
+              schema:
+                $ref: record.yaml#/ApiResponse_story_extended
         404:
           description: Story not found (
         default:
-          $ref: 'responses.yaml#/error_response'
+          $ref: 'common.yaml#/error_response'
 
 
   '/stories/{sbas_id}/{record_id}/children':
@@ -725,26 +741,18 @@ paths:
       parameters:
         - $ref: '#/components/parameters/sbas_id'
         - $ref: '#/components/parameters/record_id'
-        - name: page
-          in: query
-          description: page number (default 1)
-          required: false
-          schema:
-            type: integer
-        - name: per_page
-          in: query
-          description: number of children (records uri) per page (default 10)
-          required: false
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/per_page'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: ok
           content:
             application/json:
               schema:
-                $ref: schemas.yaml#/ApiResponse_RecordsUriArray
+                $ref: record.yaml#/ApiResponse_RecordsUriArray
         404:
           description: Story (record) not found
         default:
-          $ref: 'responses.yaml#/error_response'
+          $ref: 'common.yaml#/error_response'

@@ -41,94 +41,9 @@ RecordPatch:
             type: array
             items:
                 $ref: '#/RecordPatch_status'
-ApiResponse_meta:
-    type: object
-    properties:
-        api_version:
-            type: string
-        request:
-            type: string
-        response_time:
-            type: string
-            format: date-time
-        http_code:
-            type: integer
-            format: int32
-        error_type:
-            type: string
-        error_message:
-            type: string
-ApiResponse_record:
-    type: object
-    properties:
-        meta:
-            $ref: '#/ApiResponse_meta'
-        response:
-            $ref: 'record.yaml#/Record'
-ApiResponse_story:
-    type: object
-    properties:
-        meta:
-            $ref: '#/ApiResponse_meta'
-        response:
-            $ref: 'record.yaml#/Story'
-
 # -------------------- searchraw ---------------
 
 # -------------------- search ---------------
-ApiResponse_search:
-    type: object
-    properties:
-        meta:
-            $ref: '#/ApiResponse_meta'
-        response:
-            $ref: '#/ApiResponse_search_response'
-ApiResponse_search_response:
-    type: object
-    properties:
-        offset:
-            type: integer
-            description: 'Pagination offset as passed (or computed from "page/per_page") in request'
-        limit:
-            type: integer
-            description: 'Pagination limit as passed in request'
-        count:
-            type: integer
-            description: 'Number of results in this page [0...limit]'
-        total:
-            type: integer
-            description: 'Total number of results'
-            minimum: 1
-        results:
-            type: object
-            properties:
-                stories:
-                    type: array
-                    items:
-                        $ref: 'record.yaml#/Story'
-                records:
-                    type: array
-                    items:
-                        $ref: 'record.yaml#/Record'
-        facets:
-            $ref: 'common.yaml#/FacetsArray'
 
 
-
-RecordUri:
-    type: string
-    example:
-        '/api/v3/records/1/48'
-RecordsUriArray:
-    type: array
-    items:
-        $ref: '#/RecordUri'
-
-ApiResponse_RecordsUriArray:
-    type: object
-    properties:
-        meta:
-            $ref: '#/ApiResponse_meta'
-        response:
-            $ref: '#/RecordsUriArray'
 
