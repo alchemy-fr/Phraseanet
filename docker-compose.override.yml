@@ -7,6 +7,8 @@ services:
     - ${PHRASEANET_PHPMYADMIN_PORT}:80
     depends_on:
     - db
+    networks:
+      - internal
 
   gateway:
     volumes:
@@ -75,6 +77,8 @@ services:
     - elasticsearch
     depends_on:
     - elasticsearch
+    networks:
+      - internal
 
   logstash:
     image: logstash:7.6.2
@@ -86,6 +90,8 @@ services:
     depends_on:
     - elasticsearch
     restart: on-failure
+    networks:
+      - internal
 
   filebeat:
     hostname: filebeat
@@ -95,6 +101,8 @@ services:
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:ro
     command: filebeat run -e --strict.perms=false
     restart: on-failure
+    networks:
+      - internal
 
   ftpd-server:
     image: stilliard/pure-ftpd:hardened
@@ -105,9 +113,5 @@ services:
     volumes:
     - ${PHRASEANET_FTP_DIR}:/home/dev
     restart: on-failure
-
-networks:
-  default:
-    ipam:
-      config:
-        - subnet: $PHRASEANET_SUBNET_IPS
+    networks:
+      - internal
