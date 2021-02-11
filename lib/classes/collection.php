@@ -821,22 +821,6 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         return $this->get_databox()->getAutoregisterModel($email);
     }
 
-    /**
-     * Gets terms of use.
-     *
-     * @return null|string
-     */
-    public function getTermsOfUse()
-    {
-        if (false === $xml = simplexml_load_string($this->get_prefs())) {
-            return null;
-        }
-
-        foreach ($xml->xpath('/baseprefs/cgu') as $sbpcgu) {
-            return $sbpcgu->saveXML();
-        }
-    }
-
     public function get_cache_key($option = null)
     {
         return 'collection_' . $this->collectionVO->getCollectionId() . ($option ? '_' . $option : '');
