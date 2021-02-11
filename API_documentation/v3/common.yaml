@@ -1,20 +1,43 @@
+  error_response:
+    description: Any other error
+
   ApiResponse_meta:
     type: object
     properties:
       api_version:
         type: string
+        example:
+          '3.0.0'
       request:
         type: string
+        example:
+          'GET|POST|... /api/v3/....'
       response_time:
         type: string
         format: date-time
+        example:
+          '2021-02-11T14:18:02+00:00'
       http_code:
         type: integer
         format: int32
+        example:
+          200
       error_type:
         type: string
+        example:
+          null
       error_message:
         type: string
+        example:
+          null
+      error_details:
+        type: string
+        example:
+          null
+      charset:
+        type: string
+        example:
+          'UTF-8'
 
   Facet:
     type: object
@@ -77,3 +100,14 @@
 
   ID:
     type: integer
+
+  Metadata_value:
+    type: object
+    properties:
+      meta_id:
+        type: integer
+        example: 1771
+      value:
+        type: string
+        example: value_of_the_field
+
