@@ -10,3 +10,5 @@ services:
     - MYSQL_MAX_ALLOWED_PACKET
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql
+    networks:
+      - internal
