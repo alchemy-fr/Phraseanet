@@ -12,7 +12,7 @@ FILE=config/configuration.yml
 
 if [ -f "$FILE" ]; then
     echo "$FILE exists, skip setup."
-    if [[ $PHRASEANET_PROJECT_NAME ]]; then
+    if [[ $PHRASEANET_PROJECT_NAME && $ENV_SET_PHRASEANET_PROJET_NAME == 1 ]]; then
         bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
     fi
     if [[ -n $PHRASEANET_TRUSTED_PROXIES ]]; then
