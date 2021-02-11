@@ -2063,10 +2063,6 @@ div#PREVIEWTITLEWRAPPER {
   top: 10px;
 }
 
-div#PREVIEWTITLEWRAPPER span {
-  line-height: 45px;
-}
-
 .PNB10 {
   position: absolute;
   top: 10px;
@@ -8780,7 +8776,6 @@ TABLE.explain3 TR TD {
 }
 
 #PREVIEWBOX #PREVIEWTITLE_COLLLOGO img {
-  width: 16px;
   height: 16px;
 }
 
@@ -8917,7 +8912,7 @@ TABLE.explain3 TR TD {
 }
 
 #SPANTITLE {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 25px;
   font-weight: bold;
 }
