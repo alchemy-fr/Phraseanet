@@ -113,5 +113,6 @@ services:
     volumes:
     - ${PHRASEANET_FTP_DIR}:/home/dev
     restart: on-failure
+
     networks:
       - internal
