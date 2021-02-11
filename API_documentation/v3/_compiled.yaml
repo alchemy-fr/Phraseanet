@@ -10,6 +10,88 @@ info:
   license:
     name: GNU GPL V3
     url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+components:
+  parameters:
+    sbas_id:
+      name: sbas_id
+      in: path
+      description: ID of the databox
+      required: true
+      schema:
+        $ref: '#/components/parameters/base_id/schema'
+    base_id:
+      name: base_id
+      in: path
+      description: ID of the base
+      required: true
+      schema:
+        type: integer
+    record_id:
+      name: record_id
+      in: path
+      description: ID of the record
+      required: true
+      schema:
+        $ref: '#/components/parameters/base_id/schema'
+    query:
+      name: query
+      in: query
+      description: Fulltext query (<empty> = search all)
+      required: false
+      schema:
+        type: string
+        example: dogs OR cats
+        default: ''
+    search_type:
+      name: search_type
+      in: query
+      required: false
+      schema:
+        type: integer
+        enum:
+          - 0
+          - 1
+        default: 0
+      description: |
+        search for records or stories
+          * `0` - search for records
+          * `1` - search for stories
+    page:
+      name: page
+      in: query
+      description: 'page number, from 1. Use along with "per_page"'
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    per_page:
+      name: per_page
+      in: query
+      description: number of results per page. Use along with "page"
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    offset:
+      name: offset
+      in: query
+      description: 'offset in records count, from 0. Use along with "limit"'
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+    limit:
+      name: limit
+      in: query
+      description: number of results. Use along with "offset"
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
 paths:
   /me:
     get:
@@ -63,59 +145,12 @@ paths:
 
         Add _include_ parameters to get those if needed.
       parameters:
-        - name: query
-          in: query
-          description: Fulltext query (<empty> = search all)
-          required: false
-          schema:
-            type: string
-            example: dogs OR cats
-            default: ''
-        - name: search_type
-          in: query
-          required: false
-          schema:
-            type: integer
-            enum:
-              - 0
-              - 1
-            default: 0
-          description: |
-            search for records or stories
-              * `0` - search for records
-              * `1` - search for stories
-        - name: page
-          in: query
-          description: 'page number, from 1. Use along with "per_page"'
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            default: 1
-        - name: per_page
-          in: query
-          description: number of results per page. Use along with "page"
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 10
-        - name: offset
-          in: query
-          description: 'offset in records count, from 0. Use along with "limit"'
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-        - name: limit
-          in: query
-          description: number of results. Use along with "offset"
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/per_page'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
         - name: story_children_limit
           in: query
           description: 'For each story in result, include N children'
@@ -235,12 +270,12 @@ paths:
 
         see pagination description in route _search_
       parameters:
-        - $ref: '#/paths/~1search/post/parameters/0'
-        - $ref: '#/paths/~1search/post/parameters/1'
-        - $ref: '#/paths/~1search/post/parameters/2'
-        - $ref: '#/paths/~1search/post/parameters/3'
-        - $ref: '#/paths/~1search/post/parameters/4'
-        - $ref: '#/paths/~1search/post/parameters/5'
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/per_page'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
       responses:
         '200':
           description: ok
@@ -284,9 +319,9 @@ paths:
                               type: object
                               properties:
                                 record_id:
-                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                                  $ref: '#/components/parameters/base_id/schema'
                                 collection_id:
-                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                                  $ref: '#/components/parameters/base_id/schema'
                                 uuid:
                                   type: string
                                   example: dcee40ea-ee26-4d8b-b0c2-d61305b03bc0
@@ -313,7 +348,7 @@ paths:
                                   format: date-time
                                   example: '2021-01-01 15:30:00'
                                 coll_id:
-                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                                  $ref: '#/components/parameters/base_id/schema'
                                 collection_name:
                                   type: string
                                   example: collection de test
@@ -327,9 +362,9 @@ paths:
                                   type: integer
                                   example: 5618218
                                 base_id:
-                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                                  $ref: '#/components/parameters/base_id/schema'
                                 databox_id:
-                                  $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                                  $ref: '#/components/parameters/base_id/schema'
                                 databox_name:
                                   type: string
                                   example: db_databox1
@@ -442,18 +477,8 @@ paths:
         Returns a single record, which can be a real record or a story (check `is_story`)
       operationId: getRecordById
       parameters:
-        - name: sbas_id
-          in: path
-          description: ID of the databox
-          required: true
-          schema:
-            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
-        - name: record_id
-          in: path
-          description: ID of the record
-          required: true
-          schema:
-            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
       responses:
         '200':
           description: ok
@@ -486,18 +511,7 @@ paths:
         see "PATCH" method for examples, apply only relevant "set" operation on just created record with empty data.
       operationId: createRecord
       parameters:
-        - name: base_id
-          in: path
-          description: ID of the base
-          required: true
-          schema:
-            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
-        - name: base_id
-          in: path
-          description: ID of the base
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/base_id'
       requestBody:
         content:
           multipart/form-data:
@@ -526,7 +540,7 @@ paths:
                           field_name:
                             type: string
                           meta_struct_id:
-                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                            $ref: '#/components/parameters/base_id/schema'
                           action:
                             type: string
                             enum:
@@ -580,9 +594,9 @@ paths:
                       - type: object
                         properties:
                           databox_id:
-                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                            $ref: '#/components/parameters/base_id/schema'
                           record_id:
-                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                            $ref: '#/components/parameters/base_id/schema'
                           title:
                             type: string
                           original_name:
@@ -594,9 +608,9 @@ paths:
                             type: string
                             format: date-time
                           collection_id:
-                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                            $ref: '#/components/parameters/base_id/schema'
                           base_id:
-                            $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                            $ref: '#/components/parameters/base_id/schema'
                           thumbnail:
                             type: object
                             properties:
@@ -609,7 +623,7 @@ paths:
                                     type: string
                                     format: date-time
                                   id:
-                                    $ref: '#/paths/~1records~1%7Bbase_id%7D/post/parameters/1/schema'
+                                    $ref: '#/components/parameters/base_id/schema'
                                   is_activated:
                                     type: boolean
                                   label:
@@ -1026,8 +1040,8 @@ paths:
         ```
       operationId: patchRecord
       parameters:
-        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/0'
-        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/1'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
       requestBody:
         content:
           application/json:
@@ -1052,10 +1066,10 @@ paths:
         Returns a single story
 
         This is the __same__ parameters / result as _/records/..._, except that here the record __must__ be a story else 404 is returned
-      operationId: getRecordById
+      operationId: getStoryById
       parameters:
-        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/0'
-        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/1'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
       responses:
         '200':
           description: ok
@@ -1105,8 +1119,8 @@ paths:
       description: Returns children of a story
       operationId: getStoryChildren
       parameters:
-        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/0'
-        - $ref: '#/paths/~1records~1%7Bsbas_id%7D~1%7Brecord_id%7D/get/parameters/1'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
         - name: page
           in: query
           description: page number (default 1)

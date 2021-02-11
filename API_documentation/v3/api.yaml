@@ -20,18 +20,107 @@ info:
 #security:
 #    - api_key: []
 #    - oAuth2Password: []
-#components:
-#    securitySchemes:
-#        api_key:
-#            type: apiKey
-#            name: oauth_token
-#            in: query
-#        oAuth2Password:
-#            type: oauth2
-#            description: This API uses OAuth 2 with the password grant flow. [More info](https://api.example.com/docs/auth)
-#            flows:
-#                password:   # <-- OAuth flow(authorizationCode, implicit, password or clientCredentials)
-#                    tokenUrl: azea
+components:
+  parameters:
+    sbas_id:
+      name: sbas_id
+      in: path
+      description: ID of the databox
+      required: true
+      schema:
+        $ref: common.yaml#/ID
+  
+    base_id:
+      name: base_id
+      in: path
+      description: ID of the base
+      required: true
+      schema:
+        $ref: common.yaml#/ID
+  
+    record_id:
+      name: record_id
+      in: path
+      description: ID of the record
+      required: true
+      schema:
+        $ref: common.yaml#/ID
+  
+    query:
+      name: query
+      in: query
+      description: 'Fulltext query (<empty> = search all)'
+      required: false
+      schema:
+        type: string
+        example: 'dogs OR cats'
+        default: ''
+  
+    search_type:
+      name: search_type
+      in: query
+      required: false
+      schema:
+        type: integer
+        enum: [0,1]
+        default: 0
+      description: >
+        search for records or stories
+          * `0` - search for records
+          * `1` - search for stories
+  
+    page:
+      name: page
+      in: query
+      description: page number, from 1. Use along with "per_page"
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+  
+    per_page:
+      name: per_page
+      in: query
+      description: number of results per page. Use along with "page"
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+  
+    offset:
+      name: offset
+      in: query
+      description: offset in records count, from 0. Use along with "limit"
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        # default: 0
+  
+    limit:
+      name: limit
+      in: query
+      description: number of results. Use along with "offset"
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        # default:
+#  securitySchemes:
+#      api_key:
+#          type: apiKey
+#          name: oauth_token
+#          in: query
+#      oAuth2Password:
+#          type: oauth2
+#          description: This API uses OAuth 2 with the password grant flow. [More info](https://api.example.com/docs/auth)
+#          flows:
+#              password:   # <-- OAuth flow(authorizationCode, implicit, password or clientCredentials)
+#                  tokenUrl: azea
 
 paths:
   '/me':
@@ -89,12 +178,12 @@ paths:
         Add _include_ parameters to get those if needed.
 
       parameters:
-        - $ref: 'parameters.yaml#/query'
-        - $ref: 'parameters.yaml#/search_type'
-        - $ref: 'parameters.yaml#/page'
-        - $ref: 'parameters.yaml#/per_page'
-        - $ref: 'parameters.yaml#/offset'
-        - $ref: 'parameters.yaml#/limit'
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/per_page'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
         - name: story_children_limit
           in: query
           description: For each story in result, include N children
@@ -138,12 +227,12 @@ paths:
 
         see pagination description in route _search_
       parameters:
-        - $ref: 'parameters.yaml#/query'
-        - $ref: 'parameters.yaml#/search_type'
-        - $ref: 'parameters.yaml#/page'
-        - $ref: 'parameters.yaml#/per_page'
-        - $ref: 'parameters.yaml#/offset'
-        - $ref: 'parameters.yaml#/limit'
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/per_page'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
           description: ok
@@ -164,8 +253,8 @@ paths:
         Returns a single record, which can be a real record or a story (check `is_story`)
       operationId: getRecordById
       parameters:
-        - $ref: 'parameters.yaml#/sbas_id'
-        - $ref: 'parameters.yaml#/record_id'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
       responses:
         200:
           description: ok
@@ -200,13 +289,7 @@ paths:
 
       operationId: createRecord
       parameters:
-        - $ref: 'parameters.yaml#/base_id'
-        - name: base_id
-          in: path
-          description: ID of the base
-          required: true
-          schema:
-            $ref: common.yaml#/ID
+        - $ref: '#/components/parameters/base_id'
       requestBody:
         content:
           multipart/form-data:
@@ -586,8 +669,8 @@ paths:
 
       operationId: patchRecord
       parameters:
-        - $ref: 'parameters.yaml#/sbas_id'
-        - $ref: 'parameters.yaml#/record_id'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
 
       requestBody:
         content:
@@ -615,10 +698,10 @@ paths:
 
         This is the __same__ parameters / result as _/records/..._, except that here the record __must__ be a story else 404 is returned
 
-      operationId: getRecordById
+      operationId: getStoryById
       parameters:
-        - $ref: 'parameters.yaml#/sbas_id'
-        - $ref: 'parameters.yaml#/record_id'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
       responses:
         200:
           description: ok
@@ -640,8 +723,8 @@ paths:
       description: Returns children of a story
       operationId: getStoryChildren
       parameters:
-        - $ref: 'parameters.yaml#/sbas_id'
-        - $ref: 'parameters.yaml#/record_id'
+        - $ref: '#/components/parameters/sbas_id'
+        - $ref: '#/components/parameters/record_id'
         - name: page
           in: query
           description: page number (default 1)
