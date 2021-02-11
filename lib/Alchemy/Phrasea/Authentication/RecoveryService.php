@@ -130,6 +130,10 @@ class RecoveryService
             $mail->setButtonUrl($url);
             $mail->setExpiration($token->getExpiration());
 
+            if (($locale = $user->getLocale()) != null) {
+                $mail->setLocale($locale);
+            }
+
             $this->mailer->deliver($mail);
         }
 

@@ -531,6 +531,10 @@ class UserController extends Controller
                     $receiver = new Receiver(null, $user->getEmail());
                     $mail = MailSuccessEmailUpdate::create($this->app, $receiver, null, $message);
 
+                    if (($locale = $user->getLocale()) != null) {
+                        $mail->setLocale($locale);
+                    }
+
                     $this->deliver($mail);
                 }
             }

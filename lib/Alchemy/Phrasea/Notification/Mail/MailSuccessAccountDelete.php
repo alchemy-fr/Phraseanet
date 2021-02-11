@@ -18,7 +18,7 @@ class MailSuccessAccountDelete extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans('Delete account successfull');
+        return $this->app->trans('Delete account successfull', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -26,7 +26,7 @@ class MailSuccessAccountDelete extends AbstractMail
      */
     public function getMessage()
     {
-        return $this->app->trans('Your phraseanet account on %urlInstance% has been deleted!', ['%urlInstance%' => '<a href="'.$this->getPhraseanetURL().'">'.$this->getPhraseanetURL().'</a>']);
+        return $this->app->trans('Your phraseanet account on %urlInstance% has been deleted!', ['%urlInstance%' => '<a href="'.$this->getPhraseanetURL().'">'.$this->getPhraseanetURL().'</a>'], 'messages', $this->getLocale());
     }
 
     /**
