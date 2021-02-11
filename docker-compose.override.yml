@@ -15,7 +15,8 @@ services:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
-
+    networks:
+      - internal
   builder:
     build:
       context: .
@@ -39,6 +40,8 @@ services:
       - dev_vol:/home/app
     environment:
       - PHRASEANET_PROJECT_NAME
+    networks:
+      - internal
 
   phraseanet:
     environment:
@@ -48,27 +51,34 @@ services:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
 
   worker:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
-
+    networks:
+      - internal
 
   rabbitmq:
     ports:
     - ${RABBITMQ_MANAGEMENT_PORT}:15672
-
+    networks:
+      - internal
   db:
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
+    networks:
+      - internal
 
   elasticsearch:
     ports:
     - 9200:9200
     volumes:
     - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data:rw
-
+    networks:
+      - internal
   kibana:
     image: kibana:4.6.6
     ports:
@@ -113,6 +123,5 @@ services:
     volumes:
     - ${PHRASEANET_FTP_DIR}:/home/dev
     restart: on-failure
-
     networks:
       - internal

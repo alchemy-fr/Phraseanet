@@ -1,5 +1,11 @@
 version: "3.4"
 
+networks:
+  internal:
+    ipam:
+      config:
+        - subnet: $PHRASEANET_SUBNET_IPS
+
 services:
   gateway:
     build:
@@ -96,10 +102,6 @@ services:
     - LC_CTYPE=C.UTF-8
     - LC_TIME=C.UTF-8
     - LC_NAME=C.UTF-8
-
-    networks:
-      - internal
-
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -109,6 +111,8 @@ services:
     - ${PHRASEANET_PLUGINS_DIR}:/var/alchemy/Phraseanet/www/plugins:rw
     - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
     - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
 
   worker:
     build:
@@ -165,10 +169,6 @@ services:
     - IMAGEMAGICK_POLICY_AREA
     - IMAGEMAGICK_POLICY_DISK
     - IMAGEMAGICK_POLICY_TEMPORARY_PATH
-
-    networks:
-      - internal
-
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -177,6 +177,8 @@ services:
     - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
     - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
     - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
 
   db:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
@@ -185,12 +187,10 @@ services:
     environment:
     - MYSQL_ROOT_PASSWORD
     - MYSQL_MAX_ALLOWED_PACKET
-
-    networks:
-      - internal
-
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql
+    networks:
+      - internal
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -224,11 +224,6 @@ services:
     networks:
       - internal
 
-networks:
-  internal:
-    ipam:
-      config:
-        - subnet: $PHRASEANET_SUBNET_IPS
 volumes:
   config_vol:
     driver: local
