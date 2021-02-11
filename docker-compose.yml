@@ -131,10 +131,6 @@ services:
     - elasticsearch
     - phraseanet
     environment:
-    - PHRASEANET_PROJECT_NAME
-    - PHRASEANET_TRUSTED_PROXIES
-    - MAX_BODY_SIZE
-    - MAX_INPUT_VARS
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -162,7 +158,6 @@ services:
     - PHRASEANET_WORKER_validationReminder
     - PHRASEANET_WORKER_webhook
     - PHRASEANET_WORKER_writeMetadatas
-    - ENV_SET_PHRASEANET_PROJET_NAME
     - IMAGEMAGICK_POLICY_VERSION
     - IMAGEMAGICK_POLICY_WIDTH
     - IMAGEMAGICK_POLICY_HEIGHT
