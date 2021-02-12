@@ -34,7 +34,7 @@ class MailInfoNewOrder extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans('admin::register: Nouvelle commande sur %application%', ['%application%' => $this->getPhraseanetTitle()]);
+        return $this->app->trans('admin::register: Nouvelle commande sur %application%', ['%application%' => $this->getPhraseanetTitle()], 'messages', $this->getLocale());
     }
 
     /**
@@ -46,7 +46,7 @@ class MailInfoNewOrder extends AbstractMail
             throw new LogicException('You must set a user before calling getMessage()');
         }
 
-        return $this->app->trans('%user% has ordered documents', ['%user%' => $this->user->getDisplayName()]);
+        return $this->app->trans('%user% has ordered documents', ['%user%' => $this->user->getDisplayName()], 'messages', $this->getLocale());
     }
 
     /**
@@ -54,7 +54,7 @@ class MailInfoNewOrder extends AbstractMail
      */
     public function getButtonText()
     {
-        return $this->app->trans('Review order on %website%', ['%website%' => $this->getPhraseanetTitle()]);
+        return $this->app->trans('Review order on %website%', ['%website%' => $this->getPhraseanetTitle()], 'messages', $this->getLocale());
     }
 
     /**

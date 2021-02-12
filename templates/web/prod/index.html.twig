@@ -82,8 +82,8 @@
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
 
     <script type="text/javascript">
 
@@ -643,6 +643,8 @@
                             </table>
                         </div>
                     </form>
+                    <div id="facet_filter_in_search" style="width:100%;height:40px;overflow-y: scroll;">
+                    </div>
                 </div>
             </div>
 
@@ -914,19 +916,19 @@
     </div>
 
     <div id="PREVIEWBOX" class="PNB10 ui-dialog " style="overflow:hidden;">
-        <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
+        <div id="PREVIEWTITLE" style="height:70px;bottom:auto;" class="PNB">
             <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
-                <div style="padding-top: 0px; padding-left: 5px;">
-                    <span id="PREVIEWTITLE_COLLLOGO"> </span>
-                    &nbsp;
-                    <span id="PREVIEWTITLE_COLLNAME"> </span>
-                    &nbsp;
+                <div style="padding-top: 6px; padding-left: 5px;">
                     <span id="SPANTITLE"> </span>
+                    <br/>
+                    <span id="PREVIEWTITLE_COLLNAME"> </span>
+
+                    <span id="PREVIEWTITLE_COLLLOGO" style="margin-left: 10px;"> </span>
                 </div>
             </div>
         </div>
         <div class="PNB" style="right:180px;">
-            <div class="PNB" style="top:55px;">
+            <div class="PNB" style="top:70px;">
                 <div id="PREVIEWLEFT" class="preview_col PNB" style="width:60%;right:auto;overflow:hidden;">
                     <div id="PREVIEWCURRENT" class="ui-corner-bottom PNB10" style="top:11px;height:116px;bottom:auto;">
                         <div id="PREVIEWCURRENTGLOB" style=""></div>
@@ -975,7 +977,7 @@
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
                 </button>
             </div>
-            <div id="PREVIEWOTHERS" style="top:95px;" class="PNB10 ui-corner-all">
+            <div id="PREVIEWOTHERS" style="top:109px;" class="PNB10 ui-corner-all">
             <div id="PREVIEWOTHERSINNER" style=""></div>
             </div>
         </div>

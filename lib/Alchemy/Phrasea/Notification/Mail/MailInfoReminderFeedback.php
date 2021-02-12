@@ -28,7 +28,7 @@ class MailInfoReminderFeedback extends AbstractMailWithLink
             throw new LogicException('You must set an title before calling getSubject');
         }
 
-        return $this->app->trans("Manual feedback Reminder : '%title%'", ['%title%' => $this->title]);
+        return $this->app->trans("Manual feedback Reminder : '%title%'", ['%title%' => $this->title], 'messages', $this->getLocale());
     }
 
     /**
@@ -44,7 +44,7 @@ class MailInfoReminderFeedback extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Start validation');
+        return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
     }
 
     /**

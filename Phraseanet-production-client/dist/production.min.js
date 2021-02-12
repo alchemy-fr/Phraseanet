@@ -4863,6 +4863,7 @@ var workzoneFacets = function workzoneFacets(services) {
                                     s_facet.data('facetLabel', label);
                                     s_facet.data('facetNegated', facetValue.negated);
 
+                                    var newNodeSearch = (0, _jquery2.default)(newNode).clone();
                                     /*add selected facet tooltip*/
                                     // s_facet.attr('title', facetValue.value.value);
 
@@ -4873,6 +4874,19 @@ var workzoneFacets = function workzoneFacets(services) {
                                     });
 
                                     (0, _jquery2.default)('.fancytree-folder .dataNode', data.node.li).append(newNode);
+
+                                    //  begin generating facets filter under search form
+                                    newNodeSearch.css({ "float": "left" });
+
+                                    var labelNewNodeSearch = newNodeSearch.find('.facetFilter-label');
+                                    labelNewNodeSearch.attr('title', data.node.data.label + ' > ' + facetTitle);
+
+                                    var s_facetInSearch = newNodeSearch.find('span').first();
+                                    s_facetInSearch.data('facetField', data.node.data.field);
+                                    s_facetInSearch.data('facetLabel', label);
+                                    s_facetInSearch.data('facetNegated', facetValue.negated);
+
+                                    (0, _jquery2.default)('#facet_filter_in_search').append(newNodeSearch);
                                 });
                             }
                         } else {
@@ -16941,6 +16955,12 @@ var _reorderContent3 = __webpack_require__(113);
 
 var _reorderContent4 = _interopRequireDefault(_reorderContent3);
 
+var _phraseanetCommon = __webpack_require__(11);
+
+var appCommons = _interopRequireWildcard(_phraseanetCommon);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var workzoneBaskets = function workzoneBaskets(services) {
@@ -16974,6 +16994,8 @@ var workzoneBaskets = function workzoneBaskets(services) {
                     basketId: 'current',
                     sort: $el.data('sort')
                 });
+
+                appCommons.userModule.setPref('workzone_order', $el.data('sort'));
             }
         }).on('click', '.basket-preferences-action', function (event) {
             event.preventDefault();
@@ -18941,6 +18963,12 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _underscore = __webpack_require__(2);
+
+var _ = _interopRequireWildcard(_underscore);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var toolbar = function toolbar(services) {
@@ -19138,6 +19166,20 @@ var toolbar = function toolbar(services) {
 
             _triggerModal(event, (0, _feedback2.default)(services).openModal);
         });
+
+        /**
+         * workzone > feedback
+         */
+        $container.on('click', '.feedback-user', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var params = {};
+            params.ssel = $el.data('basket-id');
+            params.feedbackaction = 'adduser';
+
+            (0, _feedback2.default)(services).openModal(params);
+        });
+
         /**
          * tools > Tools
          */
@@ -19213,6 +19255,79 @@ var toolbar = function toolbar(services) {
             } else {
                 _closeActionPanel();
             }
+        });
+
+        // for facets filter under the search form
+        $container.find('#facet_filter_in_search').on('mouseenter', '.facetFilter_AND', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').show();
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseleave', '.facetFilter_AND', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').hide();
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseenter', '.facetFilter_EXCEPT', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').show();
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseleave', '.facetFilter_EXCEPT', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').hide();
+        });
+
+        $container.find('#facet_filter_in_search').on('click', '.facetFilter-closer', function (event) {
+            event.stopPropagation();
+            var $facet = (0, _jquery2.default)(this).parent().parent();
+            var facetField = $facet.data('facetField');
+            var facetLabel = $facet.data('facetLabel');
+            var facetNegated = $facet.data('facetNegated');
+
+            // get the selectedFacets from the facets module
+            var selectedFacets = {};
+            appEvents.emit('facets.getSelectedFacets', function (v) {
+                selectedFacets = v;
+            });
+
+            selectedFacets[facetField].values = _.reject(selectedFacets[facetField].values, function (facetValue) {
+                return facetValue.value.label == facetLabel && facetValue.negated == facetNegated;
+            });
+
+            // restore the selected facets
+            appEvents.emit('facets.setSelectedFacets', selectedFacets);
+
+            appEvents.emit('search.doRefreshState');
+            return false;
+        });
+
+        $container.find('#facet_filter_in_search').on('click', '.facetFilter-inverse', function (event) {
+            event.stopPropagation();
+            var $facet = (0, _jquery2.default)(this).parent().parent();
+            var facetField = $facet.data('facetField');
+            var facetLabel = $facet.data('facetLabel');
+            var facetNegated = $facet.data('facetNegated');
+
+            // get the selectedFacets from the facets module
+            var selectedFacets = {};
+            appEvents.emit('facets.getSelectedFacets', function (v) {
+                selectedFacets = v;
+            });
+
+            var found = _.find(selectedFacets[facetField].values, function (facetValue) {
+                return facetValue.value.label == facetLabel && facetValue.negated == facetNegated;
+            });
+
+            if (found) {
+                var s_class = "facetFilter" + '_' + (found.negated ? "EXCEPT" : "AND");
+                $facet.removeClass(s_class);
+                found.negated = !found.negated;
+                s_class = "facetFilter" + '_' + (found.negated ? "EXCEPT" : "AND");
+                $facet.addClass(s_class);
+
+                // restore the selected facets
+                appEvents.emit('facets.setSelectedFacets', selectedFacets);
+
+                appEvents.emit('search.doRefreshState');
+            }
+            return false;
         });
     };
 
@@ -60138,22 +60253,27 @@ var Feedback = function Feedback(services, options) {
         };
 
         buttons[localeService.t('send')] = function () {
-            if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
-                var options = {
-                    size: 'Alert',
-                    closeButton: true,
-                    title: localeService.t('warning')
-                };
-                var $dialogAlert = _dialog2.default.create(services, options, 3);
-                $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
+            if ($el.data('feedback-action') !== 'adduser') {
+                if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
+                    var options = {
+                        size: 'Alert',
+                        closeButton: true,
+                        title: localeService.t('warning')
+                    };
+                    var $dialogAlert = _dialog2.default.create(services, options, 3);
+                    $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
 
-                return false;
+                    return false;
+                }
             }
 
             $dialog.close();
 
-            (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
-            (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
+            if ($el.data('feedback-action') !== 'adduser') {
+                (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
+            }
+
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
@@ -60184,7 +60304,13 @@ var Feedback = function Feedback(services, options) {
 
         var $FeedBackForm = (0, _jquery2.default)('form[name="FeedBackForm"]', $container);
 
-        var html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+        var html = '';
+        // if the window is just for adding/removing user
+        if ($el.data('feedback-action') === 'adduser') {
+            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html());
+        } else {
+            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+        }
 
         $dialog.setContent(html);
 
@@ -60196,7 +60322,10 @@ var Feedback = function Feedback(services, options) {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
         }
 
-        (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        if ($el.data('feedback-action') !== 'adduser') {
+            (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        }
+
         (0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val((0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val());
         (0, _jquery2.default)('.' + $this.Context, $dialog.getDomElement()).show();
 
@@ -60413,7 +60542,7 @@ Feedback.prototype = {
         });
     },
     appendBadge: function appendBadge(badge) {
-        (0, _jquery2.default)('.user_content .badges', this.container).append(badge);
+        (0, _jquery2.default)('.user_content .badges', this.container).prepend(badge);
     },
     addUser: function addUser(options) {
         var $userForm = options.$userForm,
@@ -67299,6 +67428,9 @@ var search = function search(services) {
                     (0, _jquery2.default)('#PREV_PAGE').unbind('click');
                 }
 
+                // emptying the facets filter in search zone
+                (0, _jquery2.default)('#facet_filter_in_search').empty();
+
                 updateHiddenFacetsListInPrefsScreen();
                 appEvents.emit('search.doAfterSearch');
                 appEvents.emit('search.updateFacetData');
@@ -67896,7 +68028,7 @@ var searchForm = function searchForm(services) {
             loading: false,
             closeCallback: function closeCallback(dialog) {
                 // move back search form
-                $container.appendTo($searchFormContainer);
+                $container.prependTo($searchFormContainer);
 
                 // toggle advanced search options
                 (0, _jquery2.default)('.adv_trigger', $container).show();
@@ -68360,7 +68492,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
 
         // if one filter shows danger, show it on the query
         /* if (danger) {*/
-        if ((0, _jquery2.default)('#ADVSRCH_DATE_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SB_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SBAS_ZONE', adv_box).hasClass('danger')) {
+        if ((0, _jquery2.default)('#ADVSRCH_DATE_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SB_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SBAS_ZONE', adv_box).hasClass('danger')) {
             (0, _jquery2.default)('#EDIT_query').addClass('danger');
         } else {
             (0, _jquery2.default)('#EDIT_query').removeClass('danger');

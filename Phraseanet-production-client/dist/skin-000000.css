@@ -2041,7 +2041,7 @@ EM {
 }
 
 .PNB .ui-corner-top {
-  top: 77px;
+  top: 100px;
 }
 
 div#PREVIEWTITLEWRAPPER {
@@ -2049,7 +2049,7 @@ div#PREVIEWTITLEWRAPPER {
 }
 
 div#PREVIEWTITLEWRAPPER span {
-  line-height: 45px;
+  line-height: 25px;
 }
 
 .PNB10 {
@@ -3795,13 +3795,132 @@ form.phrasea_query input.query {
 }
 
 .searchFormWrapper {
-  margin: 30px 0 0 5px;
+  margin: 20px 0 0 5px;
   line-height: 30px;
+}
+
+#facet_filter_in_search .facetFilter_AND {
+  font-weight: normal;
+  position: relative;
+  width: 127px;
+  height: 25px;
+  line-height: 25px;
+  vertical-align: middle;
+  border-radius: 4px;
+  background-color: #4c5d84;
+  color: #FFF;
+  padding-left: 13px;
+  padding-right: 13px;
+  display: inline-block;
+  margin: 2px 0px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+#facet_filter_in_search .facetFilter_AND .buttons-span {
+  background-color: #4c5d84;
+  max-width: 86px;
+  left: 67px;
+}
+
+#facet_filter_in_search .facetFilter_AND .buttons-span :hover {
+  display: block;
+}
+
+#facet_filter_in_search .facetFilter_AND .facetFilter-inverse {
+  background: url("/assets/common/images/icons/inverse-negative.png") 10px 2px no-repeat;
+}
+
+#facet_filter_in_search .facetFilter_AND:hover .facetFilter-label {
+  color: transparent;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT {
+  font-weight: normal;
+  position: relative;
+  width: 127px;
+  height: 25px;
+  line-height: 25px;
+  vertical-align: middle;
+  border-radius: 4px;
+  background-color: #8a3747;
+  color: #FFF;
+  padding-left: 13px;
+  padding-right: 13px;
+  display: inline-block;
+  margin: 2px 0px;
+  float: right;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT .buttons-span {
+  background-color: #8a3747;
+  max-width: 86px;
+  left: 67px;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT .facetFilter-inverse {
+  background: url("/assets/common/images/icons/inverse-positive.png") 10px 2px no-repeat;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT:hover .facetFilter-label {
+  color: transparent;
+}
+
+#facet_filter_in_search .facetFilter-label {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  line-height: 25px;
+  display: inline-block;
+  min-width: 54px;
+}
+
+#facet_filter_in_search .facetFilter-label .color-dot {
+  height: 16px;
+  width: 16px;
+}
+
+#facet_filter_in_search .facetFilter-gradient {
+  position: absolute;
+  width: 20px;
+  right: 0;
+}
+
+#facet_filter_in_search .buttons-span {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  display: none;
+}
+
+#facet_filter_in_search .facetFilter-closer {
+  position: absolute;
+  right: 4px;
+  cursor: pointer;
+  background: url("/assets/common/images/icons/bgd_facetFilter.png") 12px 4px no-repeat;
+  height: 21px;
+  width: 37px;
+  border-left: 1px solid #FFF;
+}
+
+#facet_filter_in_search .facetFilter-inverse {
+  position: absolute;
+  right: 42px;
+  cursor: pointer;
+  height: 21px;
+  width: 37px;
+  border-left: 1px solid #FFF;
 }
 
 #searchForm {
   width: 100%;
   float: left;
+  margin-bottom: 0px;
 }
 
 #searchForm .input-append {
@@ -8646,7 +8765,6 @@ TABLE.explain3 TR TD {
 }
 
 #PREVIEWBOX #PREVIEWTITLE_COLLLOGO img {
-  width: 16px;
   height: 16px;
 }
 
@@ -8783,7 +8901,7 @@ TABLE.explain3 TR TD {
 }
 
 #SPANTITLE {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 25px;
   font-weight: bold;
 }

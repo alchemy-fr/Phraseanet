@@ -482,18 +482,31 @@ const workzoneFacets = services => {
                                     s_facet.data('facetLabel', label);
                                     s_facet.data('facetNegated', facetValue.negated);
 
+                                    var newNodeSearch = $(newNode).clone();
                                     /*add selected facet tooltip*/
                                    // s_facet.attr('title', facetValue.value.value);
 
                                     s_facet.hover(function () {
                                         $(buttonsSpan).show();
 
-
                                     }, function () {
                                         $(buttonsSpan).hide();
                                     });
 
                                     $('.fancytree-folder .dataNode', data.node.li).append(newNode);
+
+                                    //  begin generating facets filter under search form
+                                    newNodeSearch.css({"float": "left"});
+
+                                    var labelNewNodeSearch = newNodeSearch.find('.facetFilter-label');
+                                    labelNewNodeSearch.attr('title', data.node.data.label + ' > ' + facetTitle);
+
+                                    var s_facetInSearch = newNodeSearch.find('span').first();
+                                    s_facetInSearch.data('facetField', data.node.data.field);
+                                    s_facetInSearch.data('facetLabel', label);
+                                    s_facetInSearch.data('facetNegated', facetValue.negated);
+
+                                    $('#facet_filter_in_search').append(newNodeSearch);
 
                                 });
                             }
