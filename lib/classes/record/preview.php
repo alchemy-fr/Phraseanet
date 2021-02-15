@@ -273,15 +273,20 @@ class record_preview extends record_adapter
                 $this->title .= ' : </span> ' . parent::get_title($options);
                 break;
             case "BASK":
-                $this->title .= $this->name . ' (' . $this->getNumber() . '/' . $this->total . ') - ' . parent::get_title($options);
+                $this->title = '<span style="color:#27bbe2;">';
+                $this->title .= $this->name . ' (' . $this->getNumber() . '/' . $this->total . ') : </span>' . parent::get_title($options);
+
                 break;
             case "REG":
+                $this->title = '<span style="color:#27bbe2;">';
                 $this->title .= $this->name;
 
                 if ($this->getNumber() != 0) {
                     $this->title .= sprintf(
-                        ' (%s) - %s',$this->getNumber() . '/' . $this->total, parent::get_title($options)
+                        ' (%s) : </span> %s',$this->getNumber() . '/' . $this->total, parent::get_title($options)
                     );
+                } else {
+                    $this->title .= '</span>';
                 }
 
                 break;

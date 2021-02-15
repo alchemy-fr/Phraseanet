@@ -2063,6 +2063,10 @@ div#PREVIEWTITLEWRAPPER {
   top: 10px;
 }
 
+div#PREVIEWTITLEWRAPPER span {
+  line-height: 25px;
+}
+
 .PNB10 {
   position: absolute;
   top: 10px;
