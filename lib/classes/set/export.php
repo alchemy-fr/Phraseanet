@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Alchemy\Phrasea\Out\Module\PDFCgu;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Filesystem\Filesystem;
@@ -418,6 +419,7 @@ class set_export extends set_abstract
 
             $files[$id] = [
                 'base_id'       => $download_element->getBaseId(),
+                'databox_id'    => $download_element->getDataboxId(),
                 'record_id'     => $download_element->getRecordId(),
                 'original_name' => '',
                 'export_name'   => '',
@@ -691,6 +693,7 @@ class set_export extends set_abstract
 
         $toRemove = [];
         $archiveFiles = [];
+        $databoxIds = [];
 
         foreach ($files as $record) {
             if (isset($record["subdefs"])) {
@@ -708,6 +711,28 @@ class set_export extends set_abstract
                                 $toRemove[] = dirname($path);
                             }
                             $toRemove[] = $path;
+                        }
+
+                        if (!in_array($record['databox_id'], $databoxIds)) {
+                            // add also the databox cgu in the zip
+                            $databoxIds[] = $record['databox_id'];
+
+                            $databoxCguPath = PDFCgu::getDataboxCguPath($app, $record['databox_id']);
+
+                            if (!is_file($databoxCguPath)) {
+                                try {
+                                    $pdfCgu = new PDFCgu($app, $record['databox_id']);
+                                    $pdfCgu->save();
+
+                                    $databoxCguPath = PDFCgu::getDataboxCguPath($app, $record['databox_id']);
+                                } catch (\Exception $e) {
+                                    $app['logger']->error("Exception occurred when generating cgu pdf : " . $e->getMessage());
+
+                                    continue;
+                                }
+                            }
+
+                            $archiveFiles[$app['unicode']->remove_diacritics($obj["folder"].PDFCgu::getDataboxCguPdfName($app, $record['databox_id']))] = $databoxCguPath;
                         }
                     }
                 }
