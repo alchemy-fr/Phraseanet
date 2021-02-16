@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Application;
 class PDFCgu extends PDF
 {
     private $databoxId;
+    private $htmlContent = '';
 
     public function __construct(Application $app, $databoxId)
     {
@@ -20,15 +21,16 @@ class PDFCgu extends PDF
 
     public function save()
     {
-        $this->pdf->Close();
-        $pathName =  self::getDataboxCguPath($this->app, $this->databoxId);
+        if (!$this->isContentEmpty()) {
+            $this->pdf->Close();
+            $pathName =  self::getDataboxCguPath($this->app, $this->databoxId);
 
-        $this->pdf->Output($pathName, 'F');
+            $this->pdf->Output($pathName, 'F');
+        }
     }
 
     public static function getDataboxCguPath(Application $app, $databoxId)
     {
-
         return \p4string::addEndSlash($app['tmp.download.path']). self::getDataboxCguPdfName($app, $databoxId);
     }
 
@@ -39,6 +41,20 @@ class PDFCgu extends PDF
         return 'cgu_' . $databoxId . '_'. $databox->get_dbname() . '.pdf';
     }
 
+    public static function isDataboxCguEmpty(Application $app, $databoxId)
+    {
+        $databox = $app->findDataboxById($databoxId);
+        $CGUs = $databox->get_cgus();
+
+        foreach ($CGUs as $locale => $tou) {
+            if (trim($tou['value']) !== '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function printCgu()
     {
         $databox = $this->app->findDataboxById($this->databoxId);
@@ -46,15 +62,22 @@ class PDFCgu extends PDF
 
         $CGUs = $databox->get_cgus();
 
-        $html = '';
-
         foreach ($CGUs as $locale => $tou) {
-            $html .= '<h2> '.$this->app->trans('Terms Of Use', [], 'messages', $locale) .'</h2>';
-            $html .= $tou['value'];
+            if (trim($tou['value']) !== '') {
+                $this->htmlContent .= '<h2> '.$this->app->trans('Terms Of Use', [], 'messages', $locale) .'</h2>';
+                $this->htmlContent .= $tou['value'];
+            }
         }
 
-        $this->pdf->AddPage();
+        if (!$this->isContentEmpty()) {
+            $this->pdf->AddPage();
 
-        $this->pdf->writeHTML($html);
+            $this->pdf->writeHTML($this->htmlContent);
+        }
+    }
+
+    private function isContentEmpty()
+    {
+        return (trim($this->htmlContent) === '') ? true : false;
     }
 }
