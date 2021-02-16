@@ -43,7 +43,6 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
@@ -125,7 +124,6 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
