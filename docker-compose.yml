@@ -43,7 +43,6 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
@@ -125,7 +124,6 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
@@ -177,18 +175,6 @@ services:
     networks:
       - internal
 
-  db:
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
-    build: ./docker/db
-    restart: on-failure
-    environment:
-    - MYSQL_ROOT_PASSWORD
-    - MYSQL_MAX_ALLOWED_PACKET
-    volumes:
-    - ${PHRASEANET_DB_DIR}:/var/lib/mysql
-    networks:
-      - internal
-
   rabbitmq:
     image: rabbitmq:3-management
     restart: on-failure
@@ -210,14 +196,6 @@ services:
     restart: on-failure
     volumes:
     - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data
-    networks:
-      - internal
-
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-    - 1025:1025
-    - 8025:8025
     networks:
       - internal
 
