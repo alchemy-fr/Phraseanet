@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Out\Module;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
+use \IntlDateFormatter as DateFormatter;
 
 class PDFCgu extends PDF
 {
@@ -64,10 +65,17 @@ class PDFCgu extends PDF
         $databox->get_dbname();
 
         $CGUs = $databox->get_cgus();
+        $printedDate = new \DateTime();
 
         foreach ($CGUs as $locale => $tou) {
             if (trim($tou['value']) !== '') {
-                $this->htmlContent .= '<h2> '.$this->app->trans('Terms Of Use', [], 'messages', $locale) .'</h2>';
+                $this->htmlContent .= '<h2> ' . $this->app->trans('Terms Of Use', [], 'messages', $locale) . '</h2>';
+                $infoDate = $this->app->trans('CGU::PDF CGU generated on %updated_on% and printed on %printed_on%', [
+                    '%updated_on%' => $this->formatDate(new \DateTime($tou['updated_on']), $locale),
+                    '%printed_on%' => $this->formatDate($printedDate, $locale)
+                ], 'messages', $locale);
+
+                $this->htmlContent .= '<p><strong style="color:#737275;">'. $infoDate . '</strong></p>';
                 $this->htmlContent .= $tou['value'];
             }
         }
@@ -187,5 +195,55 @@ class PDFCgu extends PDF
     private function isContentEmpty()
     {
         return (trim($this->htmlContent) === '') ? true : false;
+    }
+
+    private function formatDate(\DateTime $date, $locale)
+    {
+        switch ($locale) {
+            case 'fr':
+                $fmt = new DateFormatter(
+                    'fr_FR',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+
+            case 'en':
+                $fmt = new DateFormatter(
+                    'en_EN',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+
+            case 'de':
+                $fmt = new DateFormatter(
+                    'de_DE',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+
+            default:
+                $fmt = new DateFormatter(
+                    'en_EN',
+                    DateFormatter::LONG,
+                    DateFormatter::NONE ,
+                    null,
+                    null,
+                    'yyyy/mm/dd'
+                );
+
+                $date_formated = $fmt->format($date);
+                break;
+        }
+
+        return $date_formated;
     }
 }
