@@ -694,6 +694,12 @@ class set_export extends set_abstract
         $toRemove = [];
         $archiveFiles = [];
         $databoxIds = [];
+        $recordIdsPerDatabox = [];
+
+        // group recordId per databoxId
+        foreach ($files as $file) {
+            $recordIdsPerDatabox[$file['databox_id']][] = $file['record_id'];
+        }
 
         foreach ($files as $record) {
             if (isset($record["subdefs"])) {
@@ -717,24 +723,21 @@ class set_export extends set_abstract
                             // add also the databox cgu in the zip
                             $databoxIds[] = $record['databox_id'];
 
-                            // if empty do not add pdf in zip
+                            // if cgu content empty, do not add pdf in zip
                             if (!PDFCgu::isDataboxCguEmpty($app, $record['databox_id'])) {
-                                $databoxCguPath = PDFCgu::getDataboxCguPath($app, $record['databox_id']);
+                                try {
+                                    $pdfCgu = new PDFCgu($app, $record['databox_id'], $recordIdsPerDatabox[$record['databox_id']]);
+                                    $pdfCgu->save();
 
-                                if (!is_file($databoxCguPath)) {
-                                    try {
-                                        $pdfCgu = new PDFCgu($app, $record['databox_id']);
-                                        $pdfCgu->save();
+                                    $databoxCguPath = PDFCgu::getDataboxCguPath($app, $record['databox_id']);
+                                } catch (\Exception $e) {
+                                    $app['logger']->error("Exception occurred when generating cgu pdf : " . $e->getMessage());
 
-                                        $databoxCguPath = PDFCgu::getDataboxCguPath($app, $record['databox_id']);
-                                    } catch (\Exception $e) {
-                                        $app['logger']->error("Exception occurred when generating cgu pdf : " . $e->getMessage());
-
-                                        continue;
-                                    }
+                                    continue;
                                 }
 
                                 $archiveFiles[$app['unicode']->remove_diacritics($obj["folder"].PDFCgu::getDataboxCguPdfName($app, $record['databox_id']))] = $databoxCguPath;
+                                $toRemove[] = $databoxCguPath;
                             }
                         }
                     }

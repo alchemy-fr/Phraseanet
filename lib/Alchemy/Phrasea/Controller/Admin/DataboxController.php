@@ -15,7 +15,6 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
-use Alchemy\Phrasea\Out\Module\PDFCgu;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -245,10 +244,6 @@ class DataboxController extends Controller
             foreach ($request->request->get('TOU', []) as $loc => $terms) {
                 $databox->update_cgus($loc, $terms, !!$request->request->get('valid', false));
             }
-
-            // generate cgu for the databox
-            $pdfCgu = new PDFCgu($this->app, $databox_id);
-            $pdfCgu->save();
         } catch (\Exception $e) {
             return $this->app->redirectPath('admin_database_display_cgus', [
                 'databox_id' => $databox_id,
