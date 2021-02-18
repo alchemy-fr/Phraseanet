@@ -38,10 +38,10 @@ See below for more information about Prerequisites and how to personalize the st
 But in fact if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
 
 
-    ```
+    
     docker-compose build
     docker-compose up -d 
-    ``` 
+     
 
 For installation on your own multi-tenant infrastructure (mysql, elasticsearch, redis, etc) stack, follow the install steps described at 
 
@@ -63,19 +63,20 @@ Note about elasticsearch container, check this link
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-prerequisites
 
 
-What is docker? Read this:   
+### What is docker? Read this:   
 
 https://www.docker.com/get-started
 
-Host requirement:
 
-    Linux : https://hub.docker.com/search?q=&type=edition&offering=community&operating_system=linux
+### Host requirement:
 
-
-    Macintosh : https://hub.docker.com/editions/community/docker-ce-desktop-mac
+Linux : https://hub.docker.com/search?q=&type=edition&offering=community&operating_system=linux
 
 
-    Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
+Macintosh : https://hub.docker.com/editions/community/docker-ce-desktop-mac
+
+
+Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 >Note: All our images are Linux based, so with Macintosh and Windows hosts, the containers run in vm provided by Docker. 
 >For optimal performances, prefer a Linux host.
@@ -85,9 +86,10 @@ Host requirement:
 We provide a Dockerfile docker-compose deployment 
 
 Use ```COMPOSE_FILE``` env variables for composing this deployment.
-By default COMPOSE_FILE is set for deploying a test stack including containers
 
-    ```
+By default COMPOSE_FILE is set for deploying a test stack including containers.
+
+    
     phraseanet_db_1                 
     phraseanet_elasticsearch_1                                                              
     phraseanet_gateway_1                                                            
@@ -96,7 +98,7 @@ By default COMPOSE_FILE is set for deploying a test stack including containers
     phraseanet_rabbitmq_1
     phraseanet_redis_1                                                                                    
     phraseanet_worker_1 
-    ```
+    
 
 At first launch of the stack, Phraseanet container plays install.
 it will restart until it can do this installation: waiting for readiness of all other containers
@@ -135,30 +137,31 @@ function dc() {
 
 You have two choices 
 
-    1 Use the prebuild image from dockerhub, see DockerHub section bellow for more information.
+### Use the prebuild image from dockerhub, see DockerHub section bellow for more information.
  
-        set env var  
-        ```PHRASEANET_DOCKER_REGISTRY```
+set env var  
+```PHRASEANET_DOCKER_REGISTRY```
 
-        i.e:
-        ```bash
-        # Registry from where you pull Docker images
-        PHRASEANET_DOCKER_REGISTRY=alchemyfr
-        ```
-    and launch
+i.e:
+```bash
+# Registry from where you pull Docker images
+PHRASEANET_DOCKER_REGISTRY=alchemyfr
+```
+and launch
 
-    ```docker-compose pull```
+```docker-compose pull```
 
-    Pulling images from dockerhub takes ~ 3 minutes, depending on your bandwith
+> Pulling images from dockerhub takes ~ 3 minutes, depending on your bandwith
 
 
-    2 Build local images 
+### Build local images 
 
-        launch 
+launch 
 
-        ```docker-compose build```
+```docker-compose build```
 
-        The first build takes ~ 30 minutes on host without any Docker building cache, depending on your bandwith and the host capacity.
+
+>The first build takes ~ 30 minutes on host without any Docker building cache, depending on your bandwith and the host capacity.
 
 
 ### Running the application
@@ -189,11 +192,11 @@ Retrieve on Docker Hub prebuilt images for Phraseanet.
 
 #### Tag organization on Docker Hub 
 
-    ```latest``` : latest stable version
+```latest``` : latest stable version
 
-    ```4.1.2``` : Phraseanet version 4.1.2
+```4.1.2``` : Phraseanet version 4.1.2
 
-    ```4.1.1``` : Phraseanet version 4.1.1
+```4.1.1``` : Phraseanet version 4.1.1
 
 
 Etc
