@@ -88,6 +88,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
             'files' => [
                 [
                     'base_id' => self::$DI['record_1']->get_base_id(),
+                    'databox_id' => self::$DI['record_1']->get_sbas_id(),
                     'record_id' => self::$DI['record_1']->get_record_id(),
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
@@ -133,6 +134,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
             'files' => [
                 [
                     'base_id' => self::$DI['record_1']->get_base_id(),
+                    'databox_id' => self::$DI['record_1']->get_sbas_id(),
                     'record_id' => self::$DI['record_1']->get_record_id(),
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
@@ -151,6 +153,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
                 ],
                 [
                     'base_id' => self::$DI['record_2']->get_base_id(),
+                    'databox_id' => self::$DI['record_1']->get_sbas_id(),
                     'record_id' => self::$DI['record_2']->get_record_id(),
                     'export_name' => 'my_downloads2',
                     'original_name' => '0471',
@@ -297,6 +300,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
             'files' => [
                 [
                     'base_id' => 1,
+                    'databox_id' => 1,
                     'record_id' => 1,
                     'export_name' => 'my_downloads',
                     'original_name' => '0470',
@@ -315,6 +319,7 @@ class DoDownloadTest extends \PhraseanetAuthenticatedWebTestCase
                 ],
                 [
                     'base_id' => 1,
+                    'databox_id' => 1,
                     'record_id' => 1,
                     'export_name' => 'my_downloads2',
                     'original_name' => '0471',
