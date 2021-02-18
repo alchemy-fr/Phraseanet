@@ -24,7 +24,7 @@ https://docs.phraseanet.com/
 For development with Phraseanet API see https://docs.phraseanet.com/4.1/en/Devel/index.html
 
 
-# Installation and Quick stack Docker Launch:
+# Installation and Quick Launch:
 
 
 You can download a packaged version here:
@@ -104,7 +104,7 @@ Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 > For optimal performances, prefer a Linux host.
 
 
-## Stack description and customisation.
+## Stack description and customization
 
 We provide a Dockerfile docker-compose deployment 
 
