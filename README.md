@@ -66,13 +66,16 @@ https://www.docker.com/get-started
 
 Host requirement:
 
-Linux : Ubuntu Bionic 
+Linux : https://hub.docker.com/search?q=&type=edition&offering=community&operating_system=linux
+
 
 Macintosh : https://hub.docker.com/editions/community/docker-ce-desktop-mac
+
 
 Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 Note: All our images are Linux based, so with Macintosh and Windows hosts, the containers run in vm provided by Docker. 
+
 
 For optimal performances, prefer a Linux host.
 
