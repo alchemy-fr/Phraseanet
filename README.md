@@ -27,13 +27,12 @@ For development with Phraseanet API see https://docs.phraseanet.com/4.1/en/Devel
 # Installation and Quick stack Docker Launch:
 
 
-You can download a packaged version here: :
+You can download a packaged version here:
 
 https://www.phraseanet.com/en/download/
 
 
-You can also ```git clone``` this repository for dev and/or test 
-
+You can also ```git clone``` this repository for dev and/or test. 
 
 
 In each case, Phraseanet includes Dockerfile for building images and Docker-compose deployment.
@@ -55,9 +54,9 @@ In a terminal from the Phraseanet repositorie launch
 After installation processus, The default parameters allow you to reach the app on : `http://localhost:8082`
 Default see phraseanet credential define in .env file.
 
- ```PHRASEANET_ADMIN_ACCOUNT_EMAIL```
+    PHRASEANET_ADMIN_ACCOUNT_EMAIL
 
- ```PHRASEANET_ADMIN_ACCOUNT_PASSWORD```
+    PHRASEANET_ADMIN_ACCOUNT_PASSWORD
 
 
 > Note : This install will be made with default password for all services.
@@ -161,7 +160,7 @@ function dc() {
 
 You have two choices 
 
-### Use the prebuild image from dockerhub, see DockerHub section bellow for more information.
+#### Use the prebuild image from dockerhub, see DockerHub section bellow for more information.
  
 set env var  
 ```PHRASEANET_DOCKER_REGISTRY```
@@ -178,7 +177,7 @@ and launch
 > Pulling images from Docker Hub takes ~ 3 minutes, depending on your bandwith
 
 
-### Build local images 
+#### Build local images 
 
 launch 
 
