@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-02-09T15:08:37Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -5826,9 +5826,9 @@
         <target state="translated">Download quotas</target>
         <jms:reference-file line="49">web/admin/editusers_quotas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b46ce61c06593df2157d0b37e813e3d4fd005da2" resname="Resultat %number%/%total%">
+      <trans-unit id="b46ce61c06593df2157d0b37e813e3d4fd005da2" resname="Resultat %number%/%total%" approved="no">
         <source>Resultat %number%/%total%</source>
-        <target state="new">Resultat %number%/%total%</target>
+        <target state="needs-translation">Result %number%/%total%</target>
         <jms:reference-file line="271">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5befb1f9671ba7f46a3b9b1f13d7833ff0dce91" resname="Retour" approved="yes">
@@ -6611,9 +6611,9 @@
         <target state="translated">Downloadable</target>
         <jms:reference-file line="417">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d32cbb0b2df6ec0df4b80910498d4ef9ce5f0bb3" resname="Terms Of Use" approved="yes">
+      <trans-unit id="d32cbb0b2df6ec0df4b80910498d4ef9ce5f0bb3" resname="Terms Of Use" approved="no">
         <source>Terms Of Use</source>
-        <target state="translated">Terms of Service</target>
+        <target state="needs-translation">Terms of use</target>
         <jms:reference-file line="2">admin/databox/cgus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="97738411d629b01052974cc98ddb83a2cb4f8182" resname="Terms of Use" approved="yes">
@@ -6622,9 +6622,9 @@
         <jms:reference-file line="62">Form/Login/PhraseaRegisterForm.php</jms:reference-file>
         <jms:reference-file line="501">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a6a1d25b018c9318540556e3fe374fdf8b23aff8" resname="Terms of service" approved="yes">
+      <trans-unit id="a6a1d25b018c9318540556e3fe374fdf8b23aff8" resname="Terms of service" approved="no">
         <source>Terms of service</source>
-        <target state="translated">Terms of service</target>
+        <target state="needs-translation">Terms of use</target>
         <jms:reference-file line="66">actions/Bridge/wrapper.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a069ed1c667c9e5dc357ae198dc0a380968bcca" resname="Terms of use" approved="yes">
@@ -9346,9 +9346,9 @@
         <target state="needs-translation">n_workers</target>
         <jms:reference-file line="27">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds">
+      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds" approved="yes">
         <source>admin::workermanager:tab:workerconfig:retry delay in seconds</source>
-        <target state="needs-translation">Delay (in seconds) for retry</target>
+        <target state="translated">Delay (in seconds) for retry</target>
         <jms:reference-file line="44">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
@@ -12323,9 +12323,9 @@ Warning: The current values will be overwritten by these new values</target>
         <jms:reference-file line="2">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="2">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user">
+      <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user" approved="no">
         <source>prod::workzone:feedback add user</source>
-        <target state="needs-translation">Edit user</target>
+        <target state="needs-translation">Edit users</target>
         <jms:reference-file line="98">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
@@ -12333,29 +12333,29 @@ Warning: The current values will be overwritten by these new values</target>
         <target state="needs-translation">Send a reminder by email</target>
         <jms:reference-file line="97">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!">
+      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="yes">
         <source>prod::workzone:manual feedback reminder provide a message!</source>
-        <target state="needs-translation">Please provide a message!</target>
+        <target state="translated">Please provide a message!</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!">
+      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!" approved="yes">
         <source>prod::workzone:manual feedback reminder select a participant!</source>
-        <target state="needs-translation">You need to select a participant!</target>
+        <target state="translated">You need to select a participant!</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant">
+      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant" approved="yes">
         <source>prod::workzone:manual feedback reminder select all participant</source>
-        <target state="needs-translation">Select all participants</target>
+        <target state="translated">Select all participants</target>
         <jms:reference-file line="10">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title">
+      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="yes">
         <source>prod::workzone:manual feedback reminder title</source>
-        <target state="needs-translation">Send a Feedback reminder</target>
+        <target state="translated">Send a Feedback reminder</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send">
+      <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send" approved="yes">
         <source>prod::workzone:manual feedback report send</source>
-        <target state="needs-translation">Feedback report already sent</target>
+        <target state="translated">Feedback report already sent</target>
         <jms:reference-file line="21">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dcc690970b62ae5d2f6e2bf25213650f69d44ea" resname="prod:app trash: record-move-to-trash" approved="yes">
