@@ -43,11 +43,13 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
     environment:
+    - PHRASEANET_INSTALL
+    - PHRASEANET_SETUP
+    - PHRASEANET_UPGRADE
     - PHRASEANET_PROJECT_NAME
     - PHRASEANET_TRUSTED_PROXIES
     - MAX_BODY_SIZE
@@ -69,6 +71,8 @@ services:
     - INSTALL_APPBOX
     - INSTALL_DATABOX
     - PHRASEANET_SERVER_NAME
+    - PHRASEANET_AVAILABLE_LANGUAGE
+    - PHRASEANET_DEFAULT_LANGUAGE
     - PHRASEANET_RABBITMQ_USER=$RABBITMQ_DEFAULT_USER
     - PHRASEANET_RABBITMQ_PASSWORD=$RABBITMQ_DEFAULT_PASS
     - PHRASEANET_EMITTER_EMAIL
@@ -94,6 +98,7 @@ services:
     - PHRASEANET_API_ENABLED
     - PHRASEANET_API_SSL
     - PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
+    - ENV_SET_PHRASEANET_PROJET_NAME
     - LC_MESSAGES=C.UTF-8
     - LC_COLLATE=C.UTF-8
     - LC_IDENTIFICATION=C.UTF-8
@@ -124,16 +129,11 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
     - phraseanet
     environment:
-    - PHRASEANET_PROJECT_NAME
-    - PHRASEANET_TRUSTED_PROXIES
-    - MAX_BODY_SIZE
-    - MAX_INPUT_VARS
     - OPCACHE_ENABLED
     - SESSION_CACHE_LIMITER
     - PHP_LOG_LEVEL
@@ -180,18 +180,6 @@ services:
     networks:
       - internal
 
-  db:
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
-    build: ./docker/db
-    restart: on-failure
-    environment:
-    - MYSQL_ROOT_PASSWORD
-    - MYSQL_MAX_ALLOWED_PACKET
-    volumes:
-    - ${PHRASEANET_DB_DIR}:/var/lib/mysql
-    networks:
-      - internal
-
   rabbitmq:
     image: rabbitmq:3-management
     restart: on-failure
@@ -213,14 +201,6 @@ services:
     restart: on-failure
     volumes:
     - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data
-    networks:
-      - internal
-
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-    - 1025:1025
-    - 8025:8025
     networks:
       - internal
 

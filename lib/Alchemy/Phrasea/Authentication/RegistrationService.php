@@ -289,7 +289,7 @@ class RegistrationService
      * @param array $selectedCollections
      * @return \collection[]
      */
-    private function getAuthorizedCollections(array $selectedCollections = null)
+    private function getAuthorizedCollections($selectedCollections)
     {
         $inscriptions = $this->registrationManager->getRegistrationSummary();
         $authorizedCollections = [];
@@ -300,7 +300,7 @@ class RegistrationService
                     continue;
                 }
 
-                if (\igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'config', 'collections', $collection->get_base_id(), 'can-register'])) {
+                if (\igorw\get_in($inscriptions, [$databox->get_sbas_id(), 'collections', $collection->get_base_id(), 'can-register'])) {
                     $authorizedCollections[$collection->get_base_id()] = $collection;
                 }
             }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-02-09T15:09:25Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -4296,9 +4296,9 @@
         <target state="translated">Champs obligatoires</target>
         <jms:reference-file line="60">web/login/register-provider.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'">
+      <trans-unit id="d28224dfd9612257b25334f058bedfe2ce118b77" resname="Manual feedback Reminder : '%title%'" approved="yes">
         <source>Manual feedback Reminder : '%title%'</source>
-        <target state="needs-translation">Rappel pour la validation : '%title%'</target>
+        <target state="translated">Rappel pour la validation : '%title%'</target>
         <jms:reference-file line="31">Notification/Mail/MailInfoReminderFeedback.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6c06116dd4028e455f3551a282e43361db9848f6" resname="Masks" approved="yes">
@@ -5825,9 +5825,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Restrictions de téléchargement</target>
         <jms:reference-file line="49">web/admin/editusers_quotas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="b46ce61c06593df2157d0b37e813e3d4fd005da2" resname="Resultat %number%/%total%">
+      <trans-unit id="b46ce61c06593df2157d0b37e813e3d4fd005da2" resname="Resultat %number%/%total%" approved="no">
         <source>Resultat %number%/%total%</source>
-        <target state="new">Resultat %number%/%total%</target>
+        <target state="needs-translation">Résultat %number%/%total%</target>
         <jms:reference-file line="271">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5befb1f9671ba7f46a3b9b1f13d7833ff0dce91" resname="Retour" approved="yes">
@@ -9326,19 +9326,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Réglages Généraux des Workers</target>
         <jms:reference-file line="5">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning">
+      <trans-unit id="2fbce644d9e91f87f70ad9c3057dda728431bf47" resname="admin::workermanager:tab:workerconfig: warning" approved="yes">
         <source>admin::workermanager:tab:workerconfig: warning</source>
-        <target state="needs-translation">Il est nécessaire de détruire les files de messages pour la prise en compte des nouveaux intervalles - Cette action peut être effectuée dans l'onglet "files de messages".</target>
+        <target state="translated">Il est nécessaire de détruire les files de messages pour la prise en compte des nouveaux intervalles - Cette action peut être effectuée dans l'onglet "files de messages".</target>
         <jms:reference-file line="7">admin/worker-manager/worker_configuration.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds">
+      <trans-unit id="5c28ef12acc72b4075317bf3154c576662d1ea22" resname="admin::workermanager:tab:workerconfig:delayed delay in seconds" approved="yes">
         <source>admin::workermanager:tab:workerconfig:delayed delay in seconds</source>
-        <target state="needs-translation">Intervalle (en secondes) entre les tentatives d’exécution pour les messages retardés</target>
+        <target state="translated">Intervalle (en secondes) entre les tentatives d’exécution pour les messages retardés</target>
         <jms:reference-file line="54">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry">
+      <trans-unit id="1e8b611beb6359e11bf7ea480ab63fb4b25110ef" resname="admin::workermanager:tab:workerconfig:max retry" approved="yes">
         <source>admin::workermanager:tab:workerconfig:max retry</source>
-        <target state="needs-translation">Nombre maximum de tentatives</target>
+        <target state="translated">Nombre maximum de tentatives</target>
         <jms:reference-file line="36">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="789f4de86070d382232e79c2f04f4d29e62cf0e2" resname="admin::workermanager:tab:workerconfig:n_workers">
@@ -9346,9 +9346,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">n_workers</target>
         <jms:reference-file line="27">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds">
+      <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds" approved="yes">
         <source>admin::workermanager:tab:workerconfig:retry delay in seconds</source>
-        <target state="needs-translation">Délai (en secondes) entre les tentatives</target>
+        <target state="translated">Délai (en secondes) entre les tentatives</target>
         <jms:reference-file line="44">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
@@ -9682,9 +9682,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="79">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="75">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item">
+      <trans-unit id="c501b5741b2a182f189a0ee99109f2a55fd2aaa8" resname="basket:feedback Delete item" approved="yes">
         <source>basket:feedback Delete item</source>
-        <target state="needs-translation">Retirer un enregistrement</target>
+        <target state="translated">Retirer un enregistrement</target>
         <jms:reference-file line="62">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action" approved="yes">
@@ -12323,34 +12323,34 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="2">prod/WorkZone/Story.html.twig</jms:reference-file>
         <jms:reference-file line="2">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user">
+      <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user" approved="no">
         <source>prod::workzone:feedback add user</source>
-        <target state="needs-translation">Editer l'utilisateur</target>
+        <target state="needs-translation">Gérer les utilisateurs</target>
         <jms:reference-file line="98">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
+      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button" approved="yes">
         <source>prod::workzone:manual feedback reminder button</source>
-        <target state="needs-translation">Envoyer un email de rappel</target>
+        <target state="translated">Envoyer un email de rappel</target>
         <jms:reference-file line="97">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!">
+      <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="yes">
         <source>prod::workzone:manual feedback reminder provide a message!</source>
-        <target state="needs-translation">Vous devez ajouter un message !</target>
+        <target state="translated">Vous devez ajouter un message !</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!">
+      <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!" approved="yes">
         <source>prod::workzone:manual feedback reminder select a participant!</source>
-        <target state="needs-translation">Sélectionner au moins un destinataire pour ce rappel !</target>
+        <target state="translated">Sélectionner au moins un destinataire pour ce rappel !</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant">
+      <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant" approved="yes">
         <source>prod::workzone:manual feedback reminder select all participant</source>
-        <target state="needs-translation">Sélectionner tous les participants</target>
+        <target state="translated">Sélectionner tous les participants</target>
         <jms:reference-file line="10">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title">
+      <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="yes">
         <source>prod::workzone:manual feedback reminder title</source>
-        <target state="needs-translation">Envoi d'un email de rappel</target>
+        <target state="translated">Envoi d'un email de rappel</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send">
@@ -13464,9 +13464,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Connexions</target>
         <jms:reference-file line="42">module/report/connexion.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f7cd73fdf0f60afd1ce9636526a60a84640b5368" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box">
+      <trans-unit id="f7cd73fdf0f60afd1ce9636526a60a84640b5368" resname="report::Demande de validation vers %n_user% utilisateurs depuis lapplication box" approved="yes">
         <source>report::Demande de validation vers %n_user% utilisateurs depuis lapplication box</source>
-        <target state="needs-translation">Validation(s) envoyée(s) à %n_user% utilisateur(s)</target>
+        <target state="translated">Validation(s) envoyée(s) à %n_user% utilisateur(s)</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8fc6702f9d21db51a5cad24125d58e5d19e869" resname="report::Edition des meta-donnees" approved="yes">
