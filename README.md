@@ -3,12 +3,15 @@ Phraseanet 4.1 - Digital Asset Management application
 
 [![CircleCI](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master.svg?style=shield)](https://circleci.com/gh/alchemy-fr/Phraseanet/tree/master)
 
-# Features :
+# Main Features :
 
+ - Several GUI : Prod, Admin, Thesaurus, Lightbox ,Report,    
  - Metadata Management (include Thesaurus and DublinCore Mapping)
  - RestFull APIS
  - Elasticsearch search engine
  - Multiple resolution assets generation
+ - Advanced Rights Management
+ - Rich ecosystem: Plugin for Wordpress, Drupal and Adobe Creative Suite. 
 
 # License :
 
@@ -24,25 +27,67 @@ For development with Phraseanet API see https://docs.phraseanet.com/4.1/en/Devel
 
 You can download a packaged version here: :
 
-https://www.phraseanet.com/download/
+https://www.phraseanet.com/en/download/
 
-And follow the install steps described at https://docs.phraseanet.com/4.1/en/Admin/Install.html
+or git clone this repository for dev and/or test 
+
+In each case, Phraseanet includes Dockerfile for building images and Docker-compose deployment.
+See below for more information about Prerequisites and how to personalize the stack deployment. 
+But in fact if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
+
+
+```
+docker-compose build
+docker-compose up -d 
+``` 
+
+For installation on your own multi-tenant (mysql, elasticsearch, redis, etc) stack, follow the install steps described at https://docs.phraseanet.com/4.1/en/Admin/Install.html
+We do not recommend using this method anymore.
 
 # Phraseanet with Docker:
 
 ## Prerequisites
 
-- docker-compose >=v1.25.4
-- docker >=v18.01-ce
+- docker-compose >=v1.27.4
+- docker >=v19.03.13
 
 Note about elasticsearch container 
 Check this link
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-prerequisites
 
+What is docker? Read this:   
+
+https://www.docker.com/get-started
+
+Host requirement:
+
+Linux : Ubuntu Bionic 
+Macintosh : https://hub.docker.com/editions/community/docker-ce-desktop-mac
+Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
+
+Note: All our images are Linux based, so with Macintosh and Windows hosts, the containers run in vm provided by Docker. 
+For optimal performances, prefer a Linux host.
 ## Get started
 
+We provide a Dockerfile docker-compose deployment 
+
+Use ```COMPOSE_FILE``` env variables for composing this deployment.
+By default COMPOSE_FILE is set for deploying a test stack including containers
+
+phraseanet_db_1                 
+phraseanet_elasticsearch_1                                                              
+phraseanet_gateway_1                                                            
+phraseanet_mailhog_1                                  
+phraseanet_phraseanet_1                                                                       
+phraseanet_rabbitmq_1
+phraseanet_redis_1                                                                                    
+phraseanet_worker_1 
+
+At first launch of the stack, Phraseanet container plays install.
+it will restart until it can do this installation: waiting for readiness of all other containers
+
 You should review the default env variables defined in `.env` file.
-Use `export` to override these values.
+Use `export` method to override these values.
 
 i.e:
 ```bash
@@ -51,8 +96,10 @@ export INSTALL_ACCOUNT_EMAIL=foo@bar.com
 export INSTALL_ACCOUNT_PASSWORD=$3cr3t!
 export PHRASEANET_APP_PORT=8082
 ```
+If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
 
-### Using a env.local (custom .env)
+
+### Using a env.local method for custom .env values
 
 It may be easier to deal with a local file to manage our env variables.
 
@@ -69,35 +116,48 @@ function dc() {
 }
 ```
 
+### Phraseanet Docker Images
+
+You have two choices 
+
+1 Use the prebuild image from dockerhub, see DockerHub section bellow for more information.
+ 
+ set env var  ```PHRASEANET_DOCKER_REGISTRY``
+
+ ```bash
+# Registry from where you pull Docker images
+PHRASEANET_DOCKER_REGISTRY=alchemyfr
+```
+ and launch
+
+```docker-compose pull```
+
+Pulling images from dockerhub takes ~ 3 minutes, depending on your bandwith
+
+
+2 Build local images 
+
+launch 
+
+```docker-compose build```
+
+The first build takes ~ 30 minutes on host without any Docker building cache, depending on your bandwith and the host capacity.
+
+
 ### Running the application
 
-If you are not interested in the development of Phraseanet, you can ignore everything in `.env` after the `DEV Purpose` part.
 
-    docker-compose -f docker-compose.yml up -d
+    docker-compose up -d
 
-Why this option `-f docker-compose.yml`?
-The development and integration concerns are separated using a `docker-compose.override.yml`. By default, `docker-compose` will include this files if it exists.
-If you don't work on phraseanet development, avoiding this `-f docker-compose.yml` parameters will throw errors. So you have to add this options on every `docker-compose` commands to avoid this inclusion.
-
-> You can also delete the `docker-compose.override.yml` to get free from this behavior.
-
-#### Running workers
-
-```bash
-docker-compose -f docker-compose.yml run --rm worker <command>
-```
-
-Where `<command>` can be:
-
-- `bin/console worker:execute -m 2` (default)
-- `bin/console task-manager:scheduler:run`
-- ...
 
 The default parameters allow you to reach the app with : `http://localhost:8082`
 
-### Use Phraseanet images from docker hub
 
-Retrieve on Docker hub prebuilt images for Phraseanet.
+### Phraseanet images from Docker Hub
+
+
+Retrieve on Docker Hub prebuilt images for Phraseanet.
+
 
 https://hub.docker.com/r/alchemyfr/phraseanet-fpm
 
@@ -110,20 +170,7 @@ https://hub.docker.com/repository/docker/alchemyfr/phraseanet-db
 https://hub.docker.com/repository/docker/alchemyfr/phraseanet-elasticsearch
 
 
-
-To use them and not build the images locally, we advise to override the properties in file: env.local
-
-```bash
-# Registry from where you pull Docker images
-PHRASEANET_DOCKER_REGISTRY=alchemyfr
-# Tag of the Docker images
-PHRASEANET_DOCKER_TAG=
-```
-or 
-
-Pull images before launch docker-compose
-
-#### Tag organisation on docker hub 
+#### Tag organization on Docker Hub 
 
 ```latest``` : latest stable version
 
@@ -139,7 +186,12 @@ Etc..
 
 ## Development mode
 
-The development mode uses the `docker-compose-override.yml` file.
+
+The development mode uses the `docker-compose-override.yml` file, so you need to set ```COMPOSE_FILE``` env
+
+```COMPOSE_FILE=docker-compose.yml:docker-compose.db.yml:docker-compose.mailhog.yml:docker-compose.override.yml```
+
+
 
 You can run it with:
 
@@ -151,8 +203,9 @@ This can be made easily from the builder container:
 
     docker-compose run --rm -u app builder make install install_composer_dev
 
-> Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allow the final image to be slim.
+> Please note that the phraseanet image does not contain nor `composer` neither `node` tools. This allows the final image to be light.
 > If you need to use dev tools, ensure you are running the `builder` image!
+
 
 ### Developer shell
 
@@ -220,11 +273,24 @@ export PHRASEANET_SSH_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
 export PHRASEANET_SSH_PRIVATE_KEY=$(openssl rsa -in ~/.ssh/id_rsa -out /tmp/id_rsa_raw && cat /tmp/id_rsa_raw && rm /tmp/id_rsa_raw)
 ```
 
+#### Running workers
+
+```bash
+docker-compose -f docker-compose.yml run --rm worker <command>
+```
+
+Where `<command>` can be:
+
+- `bin/console worker:execute -m 2` (default)
+- `bin/console task-manager:scheduler:run`
+- ...
+
 # Try Phraseanet with Pre installed VM (deprecated)
 
 You can also download a testing pre installed Virtual Machine in OVA format here :
 
 https://www.phraseanet.com/download/
+
 
 # With Vagrant (deprecated)
 
