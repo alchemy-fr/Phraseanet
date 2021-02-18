@@ -32,7 +32,9 @@ https://www.phraseanet.com/en/download/
 or git clone this repository for dev and/or test 
 
 In each case, Phraseanet includes Dockerfile for building images and Docker-compose deployment.
+
 See below for more information about Prerequisites and how to personalize the stack deployment. 
+
 But in fact if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
 
 
@@ -41,7 +43,10 @@ docker-compose build
 docker-compose up -d 
 ``` 
 
-For installation on your own multi-tenant (mysql, elasticsearch, redis, etc) stack, follow the install steps described at https://docs.phraseanet.com/4.1/en/Admin/Install.html
+For installation on your own multi-tenant infrastructure (mysql, elasticsearch, redis, etc) stack, follow the install steps described at 
+
+https://docs.phraseanet.com/4.1/en/Admin/Install.html
+
 We do not recommend using this method anymore.
 
 # Phraseanet with Docker:
@@ -51,8 +56,8 @@ We do not recommend using this method anymore.
 - docker-compose >=v1.27.4
 - docker >=v19.03.13
 
-Note about elasticsearch container 
-Check this link
+Note about elasticsearch container, check this link
+
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-prerequisites
 
 What is docker? Read this:   
@@ -62,11 +67,15 @@ https://www.docker.com/get-started
 Host requirement:
 
 Linux : Ubuntu Bionic 
+
 Macintosh : https://hub.docker.com/editions/community/docker-ce-desktop-mac
+
 Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 Note: All our images are Linux based, so with Macintosh and Windows hosts, the containers run in vm provided by Docker. 
+
 For optimal performances, prefer a Linux host.
+
 ## Get started
 
 We provide a Dockerfile docker-compose deployment 
@@ -74,6 +83,7 @@ We provide a Dockerfile docker-compose deployment
 Use ```COMPOSE_FILE``` env variables for composing this deployment.
 By default COMPOSE_FILE is set for deploying a test stack including containers
 
+```
 phraseanet_db_1                 
 phraseanet_elasticsearch_1                                                              
 phraseanet_gateway_1                                                            
@@ -82,6 +92,7 @@ phraseanet_phraseanet_1
 phraseanet_rabbitmq_1
 phraseanet_redis_1                                                                                    
 phraseanet_worker_1 
+```
 
 At first launch of the stack, Phraseanet container plays install.
 it will restart until it can do this installation: waiting for readiness of all other containers
@@ -122,8 +133,10 @@ You have two choices
 
 1 Use the prebuild image from dockerhub, see DockerHub section bellow for more information.
  
- set env var  ```PHRASEANET_DOCKER_REGISTRY``
+ set env var  
+ ```PHRASEANET_DOCKER_REGISTRY```
 
+ i.e:
  ```bash
 # Registry from where you pull Docker images
 PHRASEANET_DOCKER_REGISTRY=alchemyfr
@@ -179,7 +192,9 @@ https://hub.docker.com/repository/docker/alchemyfr/phraseanet-elasticsearch
 ```4.1.1``` : Phraseanet version 4.1.1
 
 
-Etc..
+Etc
+
+
 
 ```nightly``` : Development version, the latest version with successful automated tests. Built and published every night
 
