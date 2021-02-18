@@ -23,19 +23,24 @@ https://docs.phraseanet.com/
 
 For development with Phraseanet API see https://docs.phraseanet.com/4.1/en/Devel/index.html
 
-# Installation and Quick stack launch:
+
+# Installation and Quick stack Docker Launch:
+
 
 You can download a packaged version here: :
 
 https://www.phraseanet.com/en/download/
 
-or git clone this repository for dev and/or test 
+
+You can also ```git clone``` this repository for dev and/or test 
 
 
 
 In each case, Phraseanet includes Dockerfile for building images and Docker-compose deployment.
 
-See below for more information about Prerequisites and how to personalize the stack deployment. 
+
+See below for more information about Prerequisites and how to personalize the stack deployed. 
+
 
 But in fact if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
 
@@ -46,14 +51,18 @@ In a terminal from the Phraseanet repositorie launch
     docker-compose build
     docker-compose up -d 
      
+
 After installation processus, The default parameters allow you to reach the app on : `http://localhost:8082`
 Default see phraseanet credential define in .env file.
+
  ```PHRASEANET_ADMIN_ACCOUNT_EMAIL```
+
  ```PHRASEANET_ADMIN_ACCOUNT_PASSWORD```
 
 
 > Note : This install will be made with default password for all services.
 > Except for a test, This is VERY important to customise .env file and define your own password.   
+
 
 
 For installation on your own mono-tenant or multi-tenant infrastructure (mysql, elasticsearch, redis, etc) stack,
