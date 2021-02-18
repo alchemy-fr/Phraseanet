@@ -42,7 +42,7 @@ class PDFCgu extends PDF
     {
         $databox = $app->findDataboxById($databoxId);
 
-        return 'cgu_' . $databoxId . '_'. $databox->get_dbname() . '.pdf';
+        return 'cgu_' . $databoxId . '_'. $databox->get_viewname() . '.pdf';
     }
 
     public static function isDataboxCguEmpty(Application $app, $databoxId)
