@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-02-18T14:57:02Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2021-02-19T06:48:05Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1569,6 +1569,11 @@
         <source>By field</source>
         <target state="new">By field</target>
         <jms:reference-file line="468">web/prod/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0a914720aec0221a6fddee9e3a7ef36f633295bc" resname="CGU::PDF CGU generated on %updated_on% and printed on %printed_on%">
+        <source>CGU::PDF CGU generated on %updated_on% and printed on %printed_on%</source>
+        <target state="new">CGU::PDF CGU generated on %updated_on% and printed on %printed_on%</target>
+        <jms:reference-file line="73">Out/Module/PDFCgu.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="48bf97f55c15fa2acb0a283e3a7e3f4f738b781d" resname="CHAMPS" approved="yes">
         <source>CHAMPS</source>
@@ -6621,6 +6626,7 @@
       <trans-unit id="d32cbb0b2df6ec0df4b80910498d4ef9ce5f0bb3" resname="Terms Of Use" approved="yes">
         <source>Terms Of Use</source>
         <target state="translated">Gebruiksvoorwaarden</target>
+        <jms:reference-file line="72">Out/Module/PDFCgu.php</jms:reference-file>
         <jms:reference-file line="2">admin/databox/cgus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="97738411d629b01052974cc98ddb83a2cb4f8182" resname="Terms of Use" approved="yes">
@@ -10396,7 +10402,7 @@
       <trans-unit id="40a92233bac9303de825031d1954e6b109088b38" resname="export::ftp: reglages manuels" approved="yes">
         <source>export::ftp: reglages manuels</source>
         <target state="translated">Manuele instellingen</target>
-        <jms:reference-file line="279">classes/set/export.php</jms:reference-file>
+        <jms:reference-file line="280">classes/set/export.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="076c427ffe1fe647c7c158681b1bbd17cb5e2ad3" resname="export::mail: contenu du mail" approved="yes">
         <source>export::mail: contenu du mail</source>
