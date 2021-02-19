@@ -101,7 +101,7 @@ class TokenManipulatorTest extends \PhraseanetTestCase
         $this->assertSame($data, $token->getData());
         $this->assertSame(self::$DI['user'], $token->getUser());
         $this->assertSame(TokenManipulator::TYPE_DOWNLOAD, $token->getType());
-        $this->assertDateNear('+3 hours', $token->getExpiration());
+        $this->assertDateNear('+24 hours', $token->getExpiration());
     }
 
     public function testCreateEmailExportToken()
