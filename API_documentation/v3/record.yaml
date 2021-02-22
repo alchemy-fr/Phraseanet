@@ -1,0 +1,293 @@
+  _Record_:
+    type: object
+    properties:
+      databox_id:
+        type: integer
+        example:
+          2
+      record_id:
+        type: integer
+        example:
+          34
+      updated_on:
+        type: string
+        format: date-time
+      created_on:
+        type: string
+        format: date-time
+      collection_id:
+        type: integer
+        example:
+          5
+      base_id:
+        type: integer
+        example:
+          14
+      thumbnail:
+        $ref: '#/Thumbnail'
+      uuid:
+        type: string
+        example:
+          '5b079f33-0851-4aec-a978-b7f8d7204e5a'
+
+  _record_extension_:
+    type: object
+    properties:
+      subdefs:
+        type: array
+        items:
+          $ref: '#/Subdef'
+      status:
+        type: array
+        items:
+          type: object
+          properties:
+            bit:
+              type: integer
+              example: 4
+            state:
+              type: boolean
+              example: false
+      metadata:
+        type: array
+        items:
+          type: object
+          properties:
+            meta_structure_id:
+              type: integer
+            name:
+              type: string
+            labels:
+              type: object
+              additionalProperties:
+                type: string
+              example:
+                fr: label_du_champ_en_français
+                en: field_label_in_english
+            value:
+              oneOf:
+                - $ref: 'common.yaml#/Metadata_value'
+                - type: array
+                  items:
+                    $ref: 'common.yaml#/Metadata_value'
+      dces:
+        type: array
+        items:
+          type: string
+          example:
+            '_not_documented_TODO_'
+
+
+  Record:
+    allOf:     # Combines the basic _Record_ and the records-only properties
+      - $ref: '#/_Record_'
+      - type: object
+        properties:
+          mime_type:
+            type: string
+            example:
+              'image/jpeg'
+          title:
+            type: string
+            example:
+              'Sleepy cat'
+          original_name:
+            type: string
+            example:
+              'DSC_12345.jpg'
+          technical_informations:
+            type: array
+            items:
+              $ref: '#/TechnicalInformation'
+          sha256:
+            type: string
+            example:
+              '6f330ac0ae2...'
+          phrasea_type:
+            type: string
+            enum:
+              - image
+              - video
+            example:
+              'image'
+          is_story:
+            type: boolean
+            default: false
+
+  Record_extended:
+    allOf:
+      - $ref: '#/Record'
+      - $ref: '#/_record_extension_'
+
+  Story:
+    allOf:     # Combines the basic _Record_ and the stories-only properties
+      - $ref: '#/_Record_'
+      - type: object
+        properties:
+          mime_type:
+            type: string
+            default: null
+          title:
+            type: string
+            example:
+              'sans-titre'
+          original_name:
+            type: string
+            default: null
+          is_story:
+            type: boolean
+            default: true
+          children_offset:
+            type: integer
+            description: 'Children pagination offset ; Always 0'
+            example: 0
+          children_limit:
+            type: integer
+            description: 'Children pagination limit ; Equal to "story_children_limit" passed in request'
+            example: 10
+          children_count:
+            type: integer
+            description: 'Number of children in "children" array ; [0...limit]'
+            example: 5
+          children_total:
+            type: integer
+            description: 'Total number of __visibles for user__ children in this story'
+            example: 5
+          children:
+            type: array
+            items:
+              type: object
+              items:
+                $ref: '#/Record'
+
+  Story_extended:
+    allOf:
+      - $ref: '#/Story'
+      - $ref: '#/_record_extension_'
+
+
+
+  TechnicalInformation:
+    type: object
+    additionalProperties:
+      type: string
+    example:
+      Aperture: 6.3
+      CameraModel: 'Canon EOS 5D Mark II'
+      Channels: 3
+      ColorSpace: RGB
+      FileSize: 5618218
+
+  Subdef:
+    type: object
+    properties:
+      name:
+        type: string
+      permalink:
+        $ref: 'common.yaml#/PermalinkObject'
+      height:
+        type: integer
+      width:
+        type: integer
+      filesize:
+        type: integer
+      devices:
+        type: array
+        items:
+          type: string
+          enum:
+            - screen
+            - printer ?
+      player_type:
+        type: string
+        enum:
+          - IMAGE
+      mime_type:
+        type: string
+      substituted:
+        type: boolean
+        example: false
+      created_on:
+        type: string
+        format: date-time
+      updated_on:
+        type: string
+        format: date-time
+      url:
+        type: string
+      url_ttl:
+        type: integer
+        example: 7200
+
+  Thumbnail:
+    allOf:
+      - type: object
+        properties:
+          name:
+            example: 'thumbnail'
+          mime_type:
+            example: 'image/jpeg'
+          height:
+            example: 160
+          width:
+            example: 240
+          filesize:
+            example: 2375
+          url:
+            example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+      - $ref: '#/Subdef'
+
+  ApiResponse_record:
+    type: object
+    properties:
+      meta:
+        $ref: 'common.yaml#/ApiResponse_meta'
+      response:
+        $ref: '#/Record'
+
+  ApiResponse_record_extended:
+    type: object
+    properties:
+      meta:
+        $ref: 'common.yaml#/ApiResponse_meta'
+      response:
+        $ref: '#/Record_extended'
+
+  ApiResponse_story:
+    type: object
+    properties:
+      meta:
+        $ref: 'common.yaml#/ApiResponse_meta'
+      response:
+        $ref: '#/Story'
+
+  ApiResponse_story_extended:
+    type: object
+    properties:
+      meta:
+        $ref: 'common.yaml#/ApiResponse_meta'
+      response:
+        $ref: '#/Story_extended'
+
+
+  # for "/stories/{sbas_id}/{record_id}/children"
+  RecordUri:
+    type: string
+    example: '/api/v3/records/1/48'
+
+  RecordsUriArray:
+    type: array
+    items:
+      $ref: '#/RecordUri'
+    example:
+      - '/api/v3/records/1/48'
+      - '/api/v3/records/1/49'
+      - '/api/v3/records/1/50'
+  ApiResponse_RecordsUriArray:
+    type: object
+    properties:
+      meta:
+        $ref: 'common.yaml#/ApiResponse_meta'
+      response:
+        $ref: '#/RecordsUriArray'
+

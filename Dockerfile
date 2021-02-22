@@ -229,3 +229,5 @@ COPY --from=builder /var/alchemy/Phraseanet/www /var/alchemy/Phraseanet/www
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
+HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
+
