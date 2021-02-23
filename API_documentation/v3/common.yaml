@@ -1,0 +1,113 @@
+  error_response:
+    description: Any other error
+
+  ApiResponse_meta:
+    type: object
+    properties:
+      api_version:
+        type: string
+        example:
+          '3.0.0'
+      request:
+        type: string
+        example:
+          'GET|POST|... /api/v3/....'
+      response_time:
+        type: string
+        format: date-time
+        example:
+          '2021-02-11T14:18:02+00:00'
+      http_code:
+        type: integer
+        format: int32
+        example:
+          200
+      error_type:
+        type: string
+        example:
+          null
+      error_message:
+        type: string
+        example:
+          null
+      error_details:
+        type: string
+        example:
+          null
+      charset:
+        type: string
+        example:
+          'UTF-8'
+
+  Facet:
+    type: object
+    properties:
+      name:
+        type: string
+        description: 'Unique internal name (=key) for the facet'
+        example: '_base'
+      field:
+        type: string
+        description: 'Source field (from db structure). Can be also virtual field like "database" '
+        example: 'database'
+      values:
+        type: array
+        items:
+          type: object
+          properties:
+            value:
+              type: string
+              description: 'Human readable value for the value'
+              example: 'Demo'
+            raw_value:
+              type: string
+              description: 'Real value, to be used to query'
+              example: 'db_demo'
+            count:
+              type: integer
+              description: 'Number of items matching this value'
+            query:
+              type: string
+              description: 'Formulated query to search items matching this facet'
+              example: 'database:db_demo'
+
+  PermalinkObject:
+    type: object
+    properties:
+      created_on:
+        type: string
+        format: date-time
+      id:
+        $ref: '#/ID'
+      is_activated:
+        type: boolean
+      label:
+        type: string
+      updated_on:
+        type: string
+        format: date-time
+      page_url:
+        type: string
+      download_url:
+        type: string
+      url:
+        type: string
+
+  FacetsArray:
+    type: array
+    items:
+      $ref: '#/Facet'
+
+  ID:
+    type: integer
+
+  Metadata_value:
+    type: object
+    properties:
+      meta_id:
+        type: integer
+        example: 1771
+      value:
+        type: string
+        example: value_of_the_field
+
