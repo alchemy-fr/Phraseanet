@@ -195,6 +195,7 @@ class DataboxController extends Controller
         if ('json' === $request->getRequestFormat()) {
             return $this->app->json([
                 'success' => $success,
+                'sbas_id' => $databox_id
             ]);
         }
 
