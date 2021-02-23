@@ -553,6 +553,14 @@ class record_preview extends record_adapter
     }
 
     /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return isset($this->total) ? $this->total : 0;
+    }
+
+    /**
      * @return media_adapter
      */
     public function get_view_popularity()
