@@ -55,6 +55,15 @@ class PhraseanetExtension extends \Twig_Extension
         );
     }
 
+    public function getGlobals()
+    {
+        return [
+            // change this version when you change JS file to force the navigation to reload js file
+            'jsFileVersion' => 7
+        ];
+
+    }
+
     /**
      * get localized field's label
      * @param RecordInterface $record

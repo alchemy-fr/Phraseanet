@@ -6,6 +6,7 @@ import workzoneBaskets from './baskets/index';
 import Selectable from '../../utils/selectable';
 import Alerts from '../../utils/alert';
 import dialog from './../../../phraseanet-common/components/dialog';
+import feedbackReminder from "../../basket/reminder";
 const humane = require('humane-js');
 require('./../../../phraseanet-common/components/tooltip');
 require('./../../../phraseanet-common/components/vendors/contextMenu');
@@ -84,6 +85,12 @@ const workzone = (services) => {
                         appEvents.emit('ui.saveWindow');
                     });
             }
+        });
+
+        $container.on('click', '.feedback-reminder', function (event) {
+            event.preventDefault();
+            let $el = $(event.currentTarget);
+            feedbackReminder(services).openModal($el.data('basket-id'));
         });
 
         $('#idFrameC .expose_li').on('click', function (event) {

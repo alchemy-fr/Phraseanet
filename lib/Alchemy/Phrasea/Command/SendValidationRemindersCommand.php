@@ -294,6 +294,12 @@ class SendValidationRemindersCommand extends Command
                     $mail->setButtonUrl($params['url']);
                     $mail->setTitle($title);
 
+                    if (($locale = $user_to->getLocale()) != null) {
+                        $mail->setLocale($locale);
+                    } elseif (($locale1 = $user_from->getLocale()) != null) {
+                        $mail->setLocale($locale1);
+                    }
+
                     $this->deliver($mail);
                     $mailed = true;
 

@@ -115,7 +115,7 @@
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
-                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}{% if basket.getValidation() %}feedbacks-block{% elseif basket.getPusher() %}pushes-block{% else %}baskets-block{% endif %} ">
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}{% if basket.getValidation() %} feedbacks-block {% elseif basket.getPusher() %} pushes-block {% else %} baskets-block {% endif %} ">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
               {% if basket.getValidation() %}

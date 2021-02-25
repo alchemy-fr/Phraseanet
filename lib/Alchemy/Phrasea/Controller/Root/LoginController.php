@@ -369,11 +369,21 @@ class LoginController extends Controller
 
         if (count($this->getAclForUser($user)->get_granted_base()) > 0) {
             $mail = MailSuccessEmailConfirmationRegistered::create($this->app, $receiver);
+
+            if (($locale = $user->getLocale()) != null) {
+                $mail->setLocale($locale);
+            }
+
             $this->deliver($mail);
 
             $this->app->addFlash('success', $this->app->trans('Account has been unlocked, you can now login.'));
         } else {
             $mail = MailSuccessEmailConfirmationUnregistered::create($this->app, $receiver);
+
+            if (($locale = $user->getLocale()) != null) {
+                $mail->setLocale($locale);
+            }
+
             $this->deliver($mail);
 
             $this->app->addFlash('info', $this->app->trans('Account has been unlocked, you still have to wait for admin approval.'));

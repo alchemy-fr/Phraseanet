@@ -386,7 +386,9 @@ const previewRecordService = services => {
                     if (data.containerType === 'feedback') {
                         basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
                     } else if (data.containerType === 'push') {
-                            basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                        basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else if (data.containerType === 'regroup') {
+                        basketIcon = "<img src='/assets/common/images/icons/story.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
                     } else {
                         basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
                     }
@@ -541,11 +543,9 @@ const previewRecordService = services => {
         } else {
             if (options.mode === 'RESULT') {
                 let posAsk = parseInt(options.current.pos, 10) + 1;
-                posAsk =
-                    posAsk >= parseInt(options.navigation.tot, 10) ||
-                    isNaN(posAsk)
-                        ? 0
-                        : posAsk;
+                if (isNaN(posAsk) || posAsk >= parseInt($('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
+                    posAsk = 0;
+                }
                 _openPreview(false, 'RESULT', posAsk, '', false);
             } else {
                 if (!$('#PREVIEWCURRENT li.selected').is(':last-child')) {
@@ -565,13 +565,10 @@ const previewRecordService = services => {
     function getPrevious() {
         if (options.mode === 'RESULT') {
             let posAsk = parseInt(options.current.pos, 10) - 1;
-            if (options.navigation.page === 1) {
-                // may go to last result
                 posAsk =
                     posAsk < 0
-                        ? parseInt(options.navigation.tot, 10) - 1
+                        ? parseInt($('#PREVIEWCURRENTCONT').data('records-count'), 10) - 1
                         : posAsk;
-            }
             _openPreview(false, 'RESULT', posAsk, '', false);
         } else {
             if (!$('#PREVIEWCURRENT li.selected').is(':first-child')) {

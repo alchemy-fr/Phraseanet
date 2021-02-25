@@ -4,8 +4,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 
-
-class patch_413_PHRAS_3282 implements patchInterface
+class patch_413 implements patchInterface
 {
     const OLDQ2NEWQ_ttl_retry = [
         'assetsIngest'       => MessagePublisher::ASSETS_INGEST_TYPE,
@@ -26,6 +25,7 @@ class patch_413_PHRAS_3282 implements patchInterface
         'delayedSubdef'      => MessagePublisher::SUBDEF_CREATION_TYPE,
         'delayedWriteMeta'   => MessagePublisher::WRITE_METADATAS_TYPE,
     ];
+
     /** @var string */
     private $release = '4.1.3';
     /** @var array */
@@ -80,6 +80,34 @@ class patch_413_PHRAS_3282 implements patchInterface
 
     private function patch_databox(base $databox, Application $app)
     {
+        // patch to invert push and validation action in log_docs
+
+        // add a new temp action
+        $sql = "ALTER TABLE log_docs CHANGE action action ENUM('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','to_do','') CHARACTER SET ascii COLLATE ascii_bin NOT NULL";
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = "UPDATE log_docs SET action = 'to_do' where action = 'push'";
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = "UPDATE log_docs SET action = 'push' where action = 'validate'";
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        $sql = "UPDATE log_docs SET action = 'validate' where action = 'to_do'";
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
+
+        // remove temp action
+        $sql = "ALTER TABLE log_docs CHANGE action action ENUM('push','add','validate','edit','collection','status','print','substit','publish','download','mail','ftp','delete','') CHARACTER SET ascii COLLATE ascii_bin NOT NULL";
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
     }
 
     private function patch_appbox(base $databox, Application $app)
@@ -115,5 +143,20 @@ class patch_413_PHRAS_3282 implements patchInterface
         $conf->remove(['workers', 'retry_queue']);
         $conf->remove(['workers', 'pull_assets']);
         $conf->remove(['workers', 'validationReminder']);
+
+        // patch for reminder validation key, default value to 20
+        $conf->remove(['registry', 'actions', 'validation-reminder-days']);
+        $conf->set(['registry', 'actions', 'validation-reminder-time-left-percent'], 20);
+
+        // if not exist add maxResultWindow key
+        if (!$conf->has(['main', 'search-engine', 'options', 'maxResultWindow'])) {
+            $conf->set(['main', 'search-engine', 'options', 'maxResultWindow'], 500000);
+        }
+
+        // if not exist add populate_permalinks key
+        if (!$conf->has(['main', 'search-engine', 'options', 'populate_permalinks'])) {
+            $conf->set(['main', 'search-engine', 'options', 'populate_permalinks'], false);
+        }
     }
+
 }

@@ -818,8 +818,8 @@ form[name=registerForm] .multiselect-container li.active label {
 }
 
 form[name=registerForm] .multiselect b.caret {
-    float: right;
-
+    position: absolute;
+    right: 10px;
 }
 
 form[name=registerForm] .multiselect-group {
@@ -1157,7 +1157,7 @@ h1, h2, h3, h4 {
     border-radius:10px;
     display:inline-block;
     position: relative;
-    top: 0.35rem;
+    top: -15px;
 }
 
 #updatingDemand .icon.active {

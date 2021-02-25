@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Root;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Root\RootController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -25,7 +26,8 @@ class Root implements ControllerProviderInterface, ServiceProviderInterface
     public function register(Application $app)
     {
         $app['controller.root'] = $app->share(function (PhraseaApplication $app) {
-            return (new RootController($app));
+            return (new RootController($app))
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'));
         });
     }
 

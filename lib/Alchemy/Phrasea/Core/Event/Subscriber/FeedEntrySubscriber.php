@@ -79,6 +79,10 @@ class FeedEntrySubscriber extends AbstractNotificationSubscriber
                     $mail->setAuthor($entry->getAuthorName());
                     $mail->setTitle($entry->getTitle());
 
+                    if (($locale = $token->getUser()->getLocale()) != null) {
+                        $mail->setLocale($locale);
+                    }
+
                     $this->deliver($mail);
                     $users_emailed[$token->getUser()->getId()] = true;
                 }

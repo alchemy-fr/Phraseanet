@@ -19,7 +19,7 @@
                 font-weight:900;
             }
         </style>
-        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
         <script type="text/javascript">
             //$('.close-dialog').trigger('click');

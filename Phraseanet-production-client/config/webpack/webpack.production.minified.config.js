@@ -20,7 +20,7 @@ module.exports = Object.assign({}, webpackConfig, {
     output: {
         path: config.distDir,
         filename: '[name].min.js',
-        chunkFilename: 'lazy-[name].min.js',
+        chunkFilename: 'lazy-[name].min.js?v=' + config.jsFileVersion,
         libraryTarget: 'umd',
         library: config._app,
         publicPath: '/assets/production/'

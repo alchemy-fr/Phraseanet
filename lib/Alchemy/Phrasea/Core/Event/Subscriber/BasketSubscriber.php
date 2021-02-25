@@ -45,6 +45,12 @@ class BasketSubscriber extends AbstractNotificationSubscriber
             $mail->setBasket($basket);
             $mail->setPusher($user_from);
 
+            if (($locale = $user_to->getLocale()) != null) {
+                $mail->setLocale($locale);
+            } elseif (($locale1 = $user_from->getLocale()) != null) {
+                $mail->setLocale($locale1);
+            }
+
             $this->deliver($mail, $event->hasReceipt());
 
             $mailed = true;

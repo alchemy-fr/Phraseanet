@@ -113,6 +113,8 @@ class RecordController extends Controller
             } else {
                 $containerType = 'basket';
             }
+        } elseif ($env === 'REG') {
+            $containerType = 'regroup';
         }
 
         return $this->app->json([
@@ -144,7 +146,7 @@ class RecordController extends Controller
             "pos"             => $record->getNumber(),
             "title"           => $recordTitle,
             "containerType"   => $containerType,
-            "databox_name"    => $record->getDatabox()->get_dbname(),
+            "databox_name"    => $record->getDatabox()->get_label($this->app['locale']),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
         ]);

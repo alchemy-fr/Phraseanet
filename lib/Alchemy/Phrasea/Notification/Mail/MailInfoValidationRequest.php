@@ -60,7 +60,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
             throw new LogicException('You must set a title before calling getSubject');
         }
 
-        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title]);
+        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
     }
 
     /**
@@ -70,9 +70,9 @@ class MailInfoValidationRequest extends AbstractMailWithLink
     {
         if (0 < $this->duration) {
             if (1 < $this->duration) {
-                return $this->message . "\n\n" . $this->app->trans("You have %quantity% days to validate the selection.", ['%quantity%' => $this->duration]);
+                return $this->message . "\n\n" . $this->app->trans("You have %quantity% days to validate the selection.", ['%quantity%' => $this->duration], 'messages', $this->getLocale());
             } else {
-                return $this->message . "\n\n" . $this->app->trans("You have 1 day to validate the selection.");
+                return $this->message . "\n\n" . $this->app->trans("You have 1 day to validate the selection.", [], 'messages', $this->getLocale());
             }
         }
 
@@ -84,7 +84,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Start validation');
+        return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
     }
 
     /**

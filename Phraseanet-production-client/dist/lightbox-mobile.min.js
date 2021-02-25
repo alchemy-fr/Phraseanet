@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 257);
+/******/ 	return __webpack_require__(__webpack_require__.s = 258);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -5656,13 +5656,13 @@ var ResourceStore = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 257:
+/***/ 258:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 
-var _bootstrap = __webpack_require__(258);
+var _bootstrap = __webpack_require__(259);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -5729,7 +5729,7 @@ module.exports = lightboxMobileApplication;
 
 /***/ }),
 
-/***/ 258:
+/***/ 259:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5756,7 +5756,7 @@ var _locale = __webpack_require__(20);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _config = __webpack_require__(259);
+var _config = __webpack_require__(260);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -6049,25 +6049,6 @@ var bootstrap = function bootstrap(userConfig) {
 };
 
 exports.default = bootstrap;
-
-/***/ }),
-
-/***/ 259:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var defaultConfig = {
-    locale: 'fr',
-    basePath: '/',
-    translations: '/prod/language/'
-};
-
-exports.default = defaultConfig;
 
 /***/ }),
 
@@ -6374,6 +6355,25 @@ var Translator = function (_EventEmitter) {
 }(__WEBPACK_IMPORTED_MODULE_1__EventEmitter__["a" /* default */]);
 
 /* harmony default export */ __webpack_exports__["a"] = (Translator);
+
+/***/ }),
+
+/***/ 260:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var defaultConfig = {
+    locale: 'fr',
+    basePath: '/',
+    translations: '/prod/language/'
+};
+
+exports.default = defaultConfig;
 
 /***/ }),
 
