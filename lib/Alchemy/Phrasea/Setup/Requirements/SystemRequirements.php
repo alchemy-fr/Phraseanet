@@ -236,12 +236,6 @@ class SystemRequirements extends RequirementCollection implements RequirementInt
             'Install and enable the <strong>zip</strong> extension.'
         );
 
-        $this->addRecommendation(
-             extension_loaded('twig'),
-             'Twig extension is strongly recommended in production',
-             'Install and enable the <strong>twig</strong> extension.'
-        );
-
         $this->addRequirement(
             extension_loaded('zmq'),
             'ZMQ extension is required.',
