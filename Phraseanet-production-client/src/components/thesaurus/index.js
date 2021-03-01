@@ -1,11 +1,13 @@
 import $ from 'jquery';
 import _ from 'underscore';
-import { sprintf } from 'sprintf-js';
+import {sprintf} from 'sprintf-js';
 import * as AppCommons from './../../phraseanet-common';
 import dialog from './../../phraseanet-common/components/dialog';
+
 require('./../../phraseanet-common/components/vendors/contextMenu');
 
 const thesaurusService = services => {
+    console.log("hello from thesaurus !");
     const { configService, localeService, appEvents } = services;
     let options = {};
     let config = {};
@@ -91,6 +93,76 @@ const thesaurusService = services => {
             .on('submit', '.thesaurus-filter-submit-action', event => {
                 event.preventDefault();
                 T_Gfilter(event.currentTarget);
+            });
+
+        $('#THPD_T_tree')
+            .data({ 'drag': {'over': false, 'target':null}})
+            .droppable({
+                accept: function (elem) {
+                    console.log("accept", elem);
+                    // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
+                    //     return true;
+                    // }
+                    $(this).data('dragging_over', false);    // == not yet dragging something over th
+
+                    return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+                },
+                scope: 'objects',
+                hoverClass: 'groupDrop',
+                tolerance: 'pointer',
+                over: function(event, ui) {
+                    console.log("over", event, ui, event.toElement);
+                    const container = $('#THPD_T_tree');
+
+                    const oldTargetId = container.data('drag').targetId;
+                    if(oldTargetId) {
+                        $('#'+oldTargetId, container).removeClass('dragOver');
+                    }
+                    const drag = {'over':true, 'targetId': null};
+                    const target = $(event.toElement);
+                    const sbas_id = target.data('sbas_id');
+                    const tx_term_id = target.data('tx_term_id');
+                    if(sbas_id && tx_term_id) {
+                        drag.targetId = target.attr('id');
+                        target.addClass('dragOver');
+                        console.log("IN : "+drag.targetId);
+                    }
+
+                    container.data({ 'drag': drag }); // == dragging something over th
+                },
+                out: function(event, ui) {
+                    console.log("out", event, ui, event.toElement);
+                    $(this).data({ 'drag': {'over': false, 'targetId':null}});    // == no more dragging something over th
+                },
+                drop: function (event, ui) {
+                    console.log("drop", event, ui);
+                    $(this).data({ 'drag': {'over': false, 'targetId':null}});    // == no more dragging something over th
+                    const  tid = $(event.toElement).data('tx_term_id');
+                    console.log("DROP tid=" + tid);
+                }
+            })
+            .mousemove(function(event) {
+                if($(this).data('drag').over) {
+                    const target = $(event.toElement);
+                    const sbas_id = target.data('sbas_id');
+                    const tx_term_id = target.data('tx_term_id');
+                    const oldTargetId = $(this).data('drag').targetId;
+                    const targetId = (sbas_id && tx_term_id) ? target.attr('id') : null;
+
+                    // console.log("move oldTargetId="+oldTargetId+" , targetId="+targetId+", tx_term_id="+tx_term_id, target);
+
+                    if(oldTargetId && oldTargetId !== targetId) {
+                        $('#' + oldTargetId, $(this)).removeClass('dragOver');
+                        console.log("OUT : " + oldTargetId);
+                    }
+
+                    $(this).data({'drag': {'over': true, 'targetId': targetId }});
+
+                    if(targetId && targetId !== oldTargetId) {
+                        $('#'+targetId, $(this)).addClass('dragOver');
+                        console.log("IN : " + targetId);
+                    }
+                }
             });
 
         searchValue = _.debounce(searchValue, 300);
