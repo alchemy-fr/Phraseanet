@@ -16,7 +16,6 @@ use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use caption_field;
 use caption_Field_Value;
-use databox;
 use DOMElement;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -742,7 +741,7 @@ class ThesaurusXmlHttpController extends Controller
                             $key0 = null; // key of the sy in the current language (or key of the first sy if we can't find good lng)
                             $nts0 = 0;  // count of ts under this term
 
-                            $label = $this->buildBranchLabel($dbname, $lng, $n, $key0, $nts0);
+                            $label = $this->buildBranchLabel($dbname, $sbid, $lng, $n, $key0, $nts0);
 
                             for ($uniq = 0; $uniq < 9999; $uniq++) {
                                 if (!isset($tts[$key0 . '_' . $uniq])) {
@@ -791,7 +790,7 @@ class ThesaurusXmlHttpController extends Controller
                                 $html .= '<div></div>' . "\n";
                             }
 
-                            $html .= '<span>' . $ts['label'] . '</span>';
+                            $html .= sprintf('<span>%s</span>', $ts['label'] );
 
                             $html .= "\n";
 
@@ -822,7 +821,7 @@ class ThesaurusXmlHttpController extends Controller
         ], 'html' => $html]);
     }
 
-    private function buildBranchLabel($dbname, $language, DOMElement $n, &$key0, &$nts0)
+    private function buildBranchLabel($dbname, $sbid, $language, DOMElement $n, &$key0, &$nts0)
     {
         $key0 = null;  // key of the sy in the current language
         // (or key of the first sy if we can't find good lng)
@@ -847,20 +846,28 @@ class ThesaurusXmlHttpController extends Controller
                     $lng = $n2->getAttribute('lng');
                     $t = $n2->getAttribute('v');
                     $key = $n2->getAttribute('w');  // key of the current sy
+                    $tid = $n2->getAttribute('id');
                     if ($k = $n2->getAttribute('k')) {
                         $key .= ' (' . $k . ')';
                     }
                     if (!$key0) {
                         $key0 = $key;
                     }
-                    $class = $n2->getAttribute('bold') ? 'class="h"' : '';
+                    $l = sprintf("<span id='TX_P.%s.%s' class='tx_term%s' data-sbas_id='%s' data-tx_term_id='%s'>%s</span>",
+                        $sbid, $tid,
+                        $n2->getAttribute('bold') ? ' h' : '',
+                        $sbid,
+                        $tid,
+                        $t
+                    );
                     if (!$lngfound && $lng == $language) {
                         $key0 = $key;
                         $lngfound = true;
-
-                        $label = '<span ' . $class . '>' . $t . '</span>' . ($label == '' ? '' : ' <span class="separator">;</span> ') . $label;
+                        // good lng : first position
+                        $label = $l . ($label == '' ? '' : ' <span class="separator">;</span> ') . $label;
                     } else {
-                        $label = $label . ($label == '' ? '' : ' ; ') . '<span ' . $class . '>' . $t . '</span>';
+                        // other lng : in the end
+                        $label = $label . ($label == '' ? '' : ' ; ') . $l;
                     }
                 } elseif ($n2->nodeName == 'te') {
                     $nts0++;
@@ -1539,7 +1546,7 @@ class ThesaurusXmlHttpController extends Controller
                     $nts0 = 0;  // count of ts under this term
 
                     $dbname = \phrasea::sbas_labels($sbid, $this->app);
-                    $label = $this->buildBranchLabel($dbname, $lng, $n, $key0, $nts0);
+                    $label = $this->buildBranchLabel($dbname, $sbid, $lng, $n, $key0, $nts0);
 
                     for ($uniq = 0; $uniq < 9999; $uniq++) {
                         if (!isset($tts[$key0 . '_' . $uniq]))
