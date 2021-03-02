@@ -331,6 +331,7 @@ const previewRecordService = services => {
                 $('#PREVIEWIMGDESCINNER').empty().append(data.desc);
                 $('#HISTORICOPS').empty().append(data.history);
                 $('#popularity').empty().append(data.popularity);
+                $('#NOTICE-INNER').empty().append(data.votingNotice);
 
                 if ($('#popularity .bitly_link').length > 0) {
                     if (

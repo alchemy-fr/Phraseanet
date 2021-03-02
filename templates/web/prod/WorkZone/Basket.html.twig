@@ -96,8 +96,9 @@
 
         <button class="btn feedback-reminder" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 5px;" {{ disabled }}>{{ 'prod::workzone:manual feedback reminder button' | trans }}</button>
         <button class="btn feedback-user" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 5px;" {{ disabled }}>{{ 'prod::workzone:feedback add user' | trans }}</button>
+        <button class="btn feedback-voting-field" data-basket-id="{{ basket.getId() }}">{{ 'prod::workzone:feedback generate vote in field' | trans }}</button>
 
-        <div class="feedback-info">
+    <div class="feedback-info">
             {% set nb_records = basket.getElements()|length %}
             {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}
 

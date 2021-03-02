@@ -12,6 +12,8 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
@@ -124,6 +126,136 @@ class BasketController extends Controller
         }
 
         return $this->app->json(["success" => true]);
+    }
+
+    public function saveVoting(Request $request, Basket $basket)
+    {
+        $return = [
+            "success" => true,
+            "message" =>  ""
+        ];
+
+        if (!$basket->getValidation()) {
+            $return = [
+                "success" => true,
+                "message" =>  "It's not a validation basket!"
+            ];
+        }
+
+        /** @var BasketElement $basketElement */
+        foreach ($basket->getElements() as $basketElement) {
+            $approvedData = [];
+            $refusedData = [];
+            $oldApprovedData = [];
+            $oldRefusedData = [];
+            $metadatas= [];
+            $canSaveRefused = false;
+            $canSaveApproved = false;
+
+            $record = $basketElement->getRecord($this->app);
+            foreach ($basketElement->getValidationDatas() as $choice) {
+                if ($choice->getParticipant()->getCanAgree()) {
+                    if ($choice->getAgreement() === true) {
+                        $approvedData[$basket->getName()][] = [$basket->getName(), $choice->getParticipant()->getUser()->getDisplayName()];
+                    } elseif ($choice->getAgreement() === false) {
+                        $refusedData[$basket->getName()][] = [$basket->getName(), $choice->getParticipant()->getUser()->getDisplayName()];
+                    }
+                }
+            }
+
+            if ($record->getDatabox()->get_meta_structure()->get_element_by_name("ApprovedBy") != null) {
+                $approvedMetaStructId = $record->getDatabox()->get_meta_structure()->get_element_by_name("ApprovedBy")->get_id();
+
+                if ($record->get_caption()->has_field("ApprovedBy")) {
+                    $fieldValues = $record->get_caption()->get_field("ApprovedBy")->get_values();
+                    $fieldValue = array_pop($fieldValues);
+                    $fieldValue = $fieldValue->getValue();
+                    $votePerFeedbacks = [];
+                    if (!empty($fieldValue)) {
+                        $votePerFeedbacks = explode(" ::: ", $fieldValue);
+                    }
+
+                    foreach ($votePerFeedbacks as $votePerFeedback) {
+                        $voteDetails = explode("---", $votePerFeedback);
+                        if (isset($voteDetails[0])) {
+                            $oldApprovedData[$voteDetails[0]][] = $voteDetails;
+                        }
+                    }
+                }
+
+                if (count($approvedData) > 0) {
+                    $canSaveApproved = true;
+
+                    $approvedData = array_merge($oldApprovedData, $approvedData);
+                    $fieldApprovedValue = [];
+                    foreach ($approvedData as $key => $content) {
+                        $datas = [];
+                        foreach ($content as $data) {
+                            $datas[] = implode("---", $data);
+                        }
+                        $fieldApprovedValue[] = implode(" ::: ", $datas);
+                    }
+
+                    $fieldValue = implode(" ::: ", $fieldApprovedValue);
+                    $metadatas[] = [
+                        'meta_struct_id' => (int)$approvedMetaStructId,
+                        'meta_id'        => '',
+                        'value'          => $fieldValue
+                    ];
+                }
+            }
+
+            if ($record->getDatabox()->get_meta_structure()->get_element_by_name("RefusedBy") != null) {
+                $refusedMetaStructId = $record->getDatabox()->get_meta_structure()->get_element_by_name("RefusedBy")->get_id();
+
+                if ($record->get_caption()->has_field("RefusedBy")) {
+                    $fieldValues = $record->get_caption()->get_field("RefusedBy")->get_values();
+                    $fieldValue = array_pop($fieldValues);
+                    $fieldValue = $fieldValue->getValue();
+                    $votePerFeedbacks = [];
+                    if (!empty($fieldValue)) {
+                        $votePerFeedbacks = explode(" ::: ", $fieldValue);
+                    }
+                    foreach ($votePerFeedbacks as $vote) {
+                        $voteDetails = explode("---", $vote);
+                        if (isset($voteDetails[0])) {
+                            $oldRefusedData[$voteDetails[0]][] = $voteDetails;
+                        }
+                    }
+                }
+
+                if (count($refusedData) > 0) {
+                    $canSaveRefused = true;
+                    $refusedData = array_merge($oldRefusedData, $refusedData);
+                    $fieldRefusedValue = [];
+                    foreach ($refusedData as $key => $content) {
+                        $datas = [];
+                        foreach ($content as $data) {
+                            $datas[] = implode("---", $data);
+                        }
+                        $fieldRefusedValue[] = implode(" ::: ", $datas);
+                    }
+
+                    $fieldValue = implode(" ::: ", $fieldRefusedValue);
+                    $metadatas[] = [
+                        'meta_struct_id' => (int)$refusedMetaStructId,
+                        'meta_id'        => '',
+                        'value'          => $fieldValue
+                    ];
+                }
+            }
+
+            if ($canSaveApproved || $canSaveRefused) {
+                try {
+                    $record->set_metadatas($metadatas);
+                    $this->app['dispatcher']->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+                } catch (\Exception $e) {
+                }
+
+            }
+        }
+
+        return $this->app->json($return);
     }
 
     /**

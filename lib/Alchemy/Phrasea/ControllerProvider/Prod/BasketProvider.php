@@ -56,6 +56,10 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
             ->bind('prod_baskets_do_reminder')
             ->assert('basket', '\d+');
 
+        $controllers->post('/{basket}/feedback/save-voting', 'controller.prod.basket:saveVoting')
+            ->bind('prod_baskets_feedback_save_voting')
+            ->assert('basket', '\d+');
+
         $controllers->post('/', 'controller.prod.basket:createBasket')
             ->bind('prod_baskets');
 

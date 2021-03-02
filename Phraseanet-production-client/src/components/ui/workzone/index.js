@@ -93,6 +93,21 @@ const workzone = (services) => {
             feedbackReminder(services).openModal($el.data('basket-id'));
         });
 
+        $container.on('click', '.feedback-voting-field', function (event) {
+            event.preventDefault();
+            let $el = $(event.currentTarget);
+            let basketId = $el.data('basket-id');
+
+            $.ajax({
+                type: 'POST',
+                url: `${url}prod/baskets/${basketId}/feedback/save-voting`,
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+
+        });
+
         $('#idFrameC .expose_li').on('click', function (event) {
             checkActiveBloc(dragBloc);
         });

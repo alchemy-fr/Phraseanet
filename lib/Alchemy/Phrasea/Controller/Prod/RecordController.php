@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
@@ -117,6 +118,9 @@ class RecordController extends Controller
             $containerType = 'regroup';
         }
 
+        $basketElementsRepository = $this->getBasketElementRepository();
+        $feedbackElementDatas = $basketElementsRepository->findElementsDatasByRecord($record);
+
         return $this->app->json([
             "desc"            => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
@@ -142,6 +146,9 @@ class RecordController extends Controller
             ]),
             "tools"           => $this->render('prod/preview/tools.html.twig', [
                 'record'        => $record,
+            ]),
+            "votingNotice"  => $this->render('prod/preview/voting_notice.html.twig', [
+                'feedbackElementDatas' => $feedbackElementDatas
             ]),
             "pos"             => $record->getNumber(),
             "title"           => $recordTitle,

@@ -10127,6 +10127,20 @@ var workzone = function workzone(services) {
             (0, _reminder2.default)(services).openModal($el.data('basket-id'));
         });
 
+        $container.on('click', '.feedback-voting-field', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var basketId = $el.data('basket-id');
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: url + 'prod/baskets/' + basketId + '/feedback/save-voting',
+                success: function success(data) {
+                    console.log(data);
+                }
+            });
+        });
+
         (0, _jquery2.default)('#idFrameC .expose_li').on('click', function (event) {
             checkActiveBloc(dragBloc);
         });
@@ -65715,6 +65729,7 @@ var previewRecordService = function previewRecordService(services) {
                 (0, _jquery2.default)('#PREVIEWIMGDESCINNER').empty().append(data.desc);
                 (0, _jquery2.default)('#HISTORICOPS').empty().append(data.history);
                 (0, _jquery2.default)('#popularity').empty().append(data.popularity);
+                (0, _jquery2.default)('#NOTICE-INNER').empty().append(data.votingNotice);
 
                 if ((0, _jquery2.default)('#popularity .bitly_link').length > 0) {
                     if (window.BitlyCB !== undefined && window.BitlyClient !== undefined) {

@@ -79,6 +79,29 @@ DQL;
         return $query->getResult();
     }
 
+    public function findElementsDatasByRecord(\record_adapter $record)
+    {
+        $dql = <<<'DQL'
+SELECT be
+FROM Phraseanet:BasketElement AS be
+JOIN be.basket b
+INNER JOIN b.validation AS vs
+INNER JOIN vs.participants AS vp
+LEFT JOIN vp.datas AS vd 
+WHERE be.record_id = :record_id
+AND be.sbas_id = :sbas_id
+ORDER BY vs.id, vd.updated
+DQL;
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters([
+            'sbas_id' => $record->getDataboxId(),
+            'record_id' => $record->getRecordId(),
+        ]);
+
+        return $query->getResult();
+    }
+
     /**
      * @param \databox $databox
      * @return BasketElement[]
