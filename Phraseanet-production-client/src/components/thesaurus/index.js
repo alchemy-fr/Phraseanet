@@ -7,13 +7,16 @@ import dialog from './../../phraseanet-common/components/dialog';
 require('./../../phraseanet-common/components/vendors/contextMenu');
 
 const thesaurusService = services => {
-    console.log("hello from thesaurus !");
     const { configService, localeService, appEvents } = services;
     let options = {};
     let config = {};
     let sbas;
     let bas2sbas;
     let trees; // @TODO remove global
+
+    let dragging = false;       // true when an object is dragged over the th zone
+    let dragTarget = null;      // the target where the mouse is over
+
     const initialize = params => {
         let { $container } = params;
 
@@ -31,6 +34,7 @@ const thesaurusService = services => {
         }
 
         startThesaurus();
+        console.log("hello from thesaurus ! container=", $container);
         let cclicks = 0;
         const cDelay = 350;
         let cTimer = null;
@@ -95,72 +99,90 @@ const thesaurusService = services => {
                 T_Gfilter(event.currentTarget);
             });
 
+        /**
+         * drag/drop on terms : we will not set each term as droppable (costly), but the whole tx zone.
+         * so we must track the mouse to know which element was/is over
+         */
         $('#THPD_T_tree')
             .data({ 'drag': {'over': false, 'target':null}})
             .droppable({
-                accept: function (elem) {
+                accept: (elem) => {
                     console.log("accept", elem);
                     // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                     //     return true;
                     // }
-                    $(this).data('dragging_over', false);    // == not yet dragging something over th
+                    dragging = false;    // == not yet dragging something over th
 
+
+                    // the th zone can accet drags only when in front (activated tab)
+                    // 'hash' is set by the 'workzone' js code.
                     return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
                 },
                 scope: 'objects',
                 hoverClass: 'groupDrop',
                 tolerance: 'pointer',
-                over: function(event, ui) {
+                over: (event, ui) => {
                     console.log("over", event, ui, event.toElement);
-                    const container = $('#THPD_T_tree');
 
-                    const oldTargetId = container.data('drag').targetId;
-                    if(oldTargetId) {
-                        $('#'+oldTargetId, container).removeClass('dragOver');
+                    if(dragTarget) {
+                        // something was already hilighted (should no happen)
+                        dragTarget.removeClass('dragOver');
                     }
-                    const drag = {'over':true, 'targetId': null};
+                    dragging = true;            // == dragging something over th
+                    dragTarget = null;
+                    // for now, target can only be a term (which has a sbas_id and tx_term_id props)
                     const target = $(event.toElement);
                     const sbas_id = target.data('sbas_id');
                     const tx_term_id = target.data('tx_term_id');
                     if(sbas_id && tx_term_id) {
-                        drag.targetId = target.attr('id');
-                        target.addClass('dragOver');
-                        console.log("IN : "+drag.targetId);
+                        dragTarget = target;
+                        dragTarget.addClass('dragOver');
+                        console.log("IN : " + dragTarget.attr('id'));
                     }
-
-                    container.data({ 'drag': drag }); // == dragging something over th
                 },
-                out: function(event, ui) {
+                out: (event, ui) => {
                     console.log("out", event, ui, event.toElement);
-                    $(this).data({ 'drag': {'over': false, 'targetId':null}});    // == no more dragging something over th
+                    if(dragTarget) {
+                        // something was hilighted
+                        dragTarget.removeClass('dragOver');
+                    }
+                    dragging = false;    // == no more dragging something over th
+                    dragTarget = null;
                 },
-                drop: function (event, ui) {
+                drop: (event, ui) => {
                     console.log("drop", event, ui);
-                    $(this).data({ 'drag': {'over': false, 'targetId':null}});    // == no more dragging something over th
-                    const  tid = $(event.toElement).data('tx_term_id');
-                    console.log("DROP tid=" + tid);
+                    if(dragTarget) {
+                        // const tid = $(event.toElement).data('tx_term_id');
+                        console.log("DROP ON id=" + dragTarget.attr('id'));
+                        dragTarget.removeClass('dragOver');
+                    }
+                    dragging = false;    // == no more dragging something over th
+                    dragTarget = null;
                 }
             })
-            .mousemove(function(event) {
-                if($(this).data('drag').over) {
+            // track the mouse
+            .mousemove( (event) => {
+                if(dragging) {
                     const target = $(event.toElement);
-                    const sbas_id = target.data('sbas_id');
-                    const tx_term_id = target.data('tx_term_id');
-                    const oldTargetId = $(this).data('drag').targetId;
-                    const targetId = (sbas_id && tx_term_id) ? target.attr('id') : null;
+                    const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                    const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+                    const oldTarget = dragTarget;
+                    dragTarget = (sbas_id && tx_term_id) ? target : null;
 
-                    // console.log("move oldTargetId="+oldTargetId+" , targetId="+targetId+", tx_term_id="+tx_term_id, target);
+                    // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                    // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                    // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
 
-                    if(oldTargetId && oldTargetId !== targetId) {
-                        $('#' + oldTargetId, $(this)).removeClass('dragOver');
-                        console.log("OUT : " + oldTargetId);
+                    if(oldTarget && !oldTarget.is(dragTarget)) {
+                        // the mouse has quit a overed term (oldTargetId)
+                        oldTarget.removeClass('dragOver');
+                        console.log("OUT : " + oldTarget.attr('id'));
                     }
 
-                    $(this).data({'drag': {'over': true, 'targetId': targetId }});
-
-                    if(targetId && targetId !== oldTargetId) {
-                        $('#'+targetId, $(this)).addClass('dragOver');
-                        console.log("IN : " + targetId);
+                    if(dragTarget && !dragTarget.is(oldTarget)) {
+                        // the mouse just overs a new term
+                        dragTarget.addClass('dragOver');
+                        console.log("IN : " + dragTarget.attr('id'));
                     }
                 }
             });

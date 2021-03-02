@@ -40,15 +40,18 @@ $thesaurusTabHeight: $subTabHeight !default;
                 width: 9px;
                 margin-top: 5px;
             }
+
             &:hover {
                 color: $textPrimaryColor;
             }
             span {
                 color: $mediumTextColor;
-                &.h {
-                    color: $thesaurusColor !important;
+                .dragOver {
+                    background-color: $highlightBackgroundColor;
+                    color: $highlightTextColor;
                 }
             }
+
         }
     }
 }
@@ -138,10 +141,19 @@ dans l'onglet thesaurus : arbres, menus contextuels
         }
         span {
             cursor: pointer;
+            color: $mediumTextColor;
             &.h {
-                /* highlighted (filtered) */
-                color: #ffffd0;
+                /* highlighted (filtered as matching the filter input) */
+                color: $thesaurusColor;
                 font-weight: bold;
+            }
+            &:hover {
+                color: $textPrimaryColor;
+            }
+            &.dragOver {
+                /* highlited as a target for dropping */
+                background-color: $highlightBackgroundColor;
+                color: $highlightTextColor;
             }
         }
         i {
@@ -155,7 +167,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
             font-family: courier;
         }
     }
-
+/*
     .treeview LI.selected SPAN {
         background-color: $thesaurusColor !important;
         color: $textPrimaryActiveColor !important;
@@ -172,6 +184,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
     .context-menu-item-disabled {
         background-color: #ff0000;
     }
+
+ */
 }
 #idFrameC .ui-tabs {
     #THPD_C.ui-tabs-panel,
