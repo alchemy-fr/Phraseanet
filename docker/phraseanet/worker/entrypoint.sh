@@ -29,6 +29,20 @@ if [ -f /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml ]; then
   sed -i "s/.*domain=\"resource\" name=\"temporary-path\" value=\".*/<domain=\"resource\" name=\"temporary-path\" value=\"\\$IMAGEMAGICK_POLICY_TEMPORARY_PATH\" \/\>/g" /etc/ImageMagick-$IMAGEMAGICK_POLICY_VERSION/policy.xml
 fi
 
+
+if [[ $NEWRELIC_ENABLED = "true" ]]; then
+  echo `date +"%Y-%m-%d %H:%M:%S"` " - NewRelic daemon and PHP agent setup."
+    sed -i -e "s/REPLACE_WITH_REAL_KEY/$NEWRELIC_LICENSE_KEY/" \
+  -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname=\"$NEWRELIC_APP_NAME\"/" \
+  -e '$anewrelic.distributed_tracing_enabled=true' \
+  $(php -r "echo(PHP_CONFIG_FILE_SCAN_DIR);")/newrelic.ini
+  
+  echo "newrelic.appname = \"$NEWRELIC_APP_NAME\"" > /etc/newrelic/newrelic.cfg
+  echo "newrelic.license = \"$NEWRELIC_LICENSE_KEY\"" >> /etc/newrelic/newrelic.cfg
+  service newrelic-daemon start
+  echo "Newrelic setup of daemon and PHP agent done"
+fi
+
 rm -rf bin/run-worker.sh
 if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
   for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`

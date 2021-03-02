@@ -93,7 +93,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         cd /tmp/ffmpeg/ffmpeg-${FFMPEG_VERSION} \
         && ./configure \
             --enable-gpl \
-            --enable-nonfree \
+           --enable-nonfree \
             --enable-libfdk-aac \
             --enable-libfdk_aac \
             --enable-libgsm \
@@ -117,7 +117,13 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         && make install \
         && make distclean \
     ) \
-    && rm -rf /tmp/ffmpeg \
+    #&& rm -rf /tmp/ffmpeg \
+    && echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
+    && curl -o- https://download.newrelic.com/548C16BF.gpg | apt-key add - \
+    && apt-get update \ 
+    && apt-get install -y newrelic-php5 \ 
+    && NR_INSTALL_SILENT=1 newrelic-install install \
+    && touch /etc/newrelic/newrelic.cfg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && mkdir /entrypoint /var/alchemy \
