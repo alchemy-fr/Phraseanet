@@ -8883,6 +8883,18 @@ TABLE.explain3 TR TD {
   opacity: 0.4;
 }
 
+.feedback-data-list:after {
+  width: 75%;
+  height: 1px;
+  background: #fff;
+  position: absolute;
+  content: '';
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  opacity: 0.4;
+}
+
 #PREVIEWOTHERSINNER li.otherRegToolTip span.title {
   line-height: 25px;
   margin-left: 3px;

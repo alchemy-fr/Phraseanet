@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-03-02T14:48:13Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2021-03-03T14:12:33Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -11745,11 +11745,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Historique</target>
         <jms:reference-file line="953">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="616e71f18468e904dd3ff35c27b76292f78e4d5b" resname="preview:: Notice">
-        <source>preview:: Notice</source>
-        <target state="new">preview:: Notice</target>
-        <jms:reference-file line="954">web/prod/index.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="74e09022ffbf0d295142654902e9d7a007f209a5" resname="preview:: Popularite" approved="yes">
         <source>preview:: Popularite</source>
         <target state="translated">Popularité</target>
@@ -11796,6 +11791,11 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>preview::statistiques de visualisation pour le lien</source>
         <target state="translated">Statistiques de visualisation</target>
         <jms:reference-file line="2">prod/preview/popularity.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2b03b2c44ce1a3c17af6b603d666344f64ebe942" resname="preview::tab:feedback">
+        <source>preview::tab:feedback</source>
+        <target state="new">preview::tab:feedback</target>
+        <jms:reference-file line="954">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b130a62ee72757a562af1398e01cd0fc5aad3d30" resname="preview::visualisation" approved="yes">
         <source>preview::visualisation</source>

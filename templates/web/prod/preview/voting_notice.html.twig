@@ -1,8 +1,8 @@
-<h4>{{ 'preview:: voting list' }}</h4>
+<h4>{{ 'preview::tab:feedback list' }}</h4>
 <br>
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
     {% for basket_element in feedbackElementDatas %}
-        <dl style="margin:0px;">
+        <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
             <dt>{{ basket_element.getBasket().getName() }}</dt>
             {% for choice in basket_element.getValidationDatas() %}
                 {% if choice.getParticipant().getCanAgree() %}
