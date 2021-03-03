@@ -565,7 +565,7 @@ return false;
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
-return false;
+//return false;
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;

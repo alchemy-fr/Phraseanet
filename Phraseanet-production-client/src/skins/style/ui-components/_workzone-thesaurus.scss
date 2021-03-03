@@ -40,7 +40,7 @@ $thesaurusTabHeight: $subTabHeight !default;
                 width: 9px;
                 margin-top: 5px;
             }
-
+/*
             &:hover {
                 color: $textPrimaryColor;
             }
@@ -51,7 +51,7 @@ $thesaurusTabHeight: $subTabHeight !default;
                     color: $highlightTextColor;
                 }
             }
-
+*/
         }
     }
 }
@@ -139,7 +139,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
                 padding-bottom: 5px;
             }
         }
-        span {
+        span.tx_term {
             cursor: pointer;
             color: $mediumTextColor;
             &.h {
@@ -187,6 +187,15 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
  */
 }
+
+#THPD_T_tree.draggingOver {
+    /* something is currently dragged over, we change some hover */
+    span.tx_term:hover {
+        background-color: $highlightBackgroundColor;
+        color: $highlightTextColor;
+    }
+}
+
 #idFrameC .ui-tabs {
     #THPD_C.ui-tabs-panel,
     #THPD_T.ui-tabs-panel {
