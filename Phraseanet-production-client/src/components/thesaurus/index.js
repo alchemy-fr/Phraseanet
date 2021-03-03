@@ -101,12 +101,11 @@ const thesaurusService = services => {
 
         /**
          * drag/drop on terms : we will not set each term as droppable (costly), but the whole tx zone.
-         * so we must track the mouse to know which element was/is over
          */
         $('#THPD_T_tree')
-            .data({ 'drag': {'over': false, 'target':null}})
             .droppable({
-                accept: (elem) => {
+                accept: function(elem) {
+                    $(this).removeClass('draggingOver');
                     console.log("accept", elem);
                     // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                     //     return true;
@@ -121,7 +120,8 @@ const thesaurusService = services => {
                 scope: 'objects',
                 hoverClass: 'groupDrop',
                 tolerance: 'pointer',
-                over: (event, ui) => {
+                over: function(event, ui) {
+                    $(this).addClass('draggingOver');
                     console.log("over", event, ui, event.toElement);
 
                     if(dragTarget) {
@@ -140,7 +140,8 @@ const thesaurusService = services => {
                         console.log("IN : " + dragTarget.attr('id'));
                     }
                 },
-                out: (event, ui) => {
+                out: function(event, ui) {
+                    $(this).removeClass('draggingOver');
                     console.log("out", event, ui, event.toElement);
                     if(dragTarget) {
                         // something was hilighted
@@ -150,11 +151,13 @@ const thesaurusService = services => {
                     dragTarget = null;
                 },
                 drop: (event, ui) => {
+                    $(this).removeClass('draggingOver');
                     console.log("drop", event, ui);
                     if(dragTarget) {
                         // const tid = $(event.toElement).data('tx_term_id');
                         console.log("DROP ON id=" + dragTarget.attr('id'));
                         dragTarget.removeClass('dragOver');
+//                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
                     }
                     dragging = false;    // == no more dragging something over th
                     dragTarget = null;
@@ -162,6 +165,7 @@ const thesaurusService = services => {
             })
             // track the mouse
             .mousemove( (event) => {
+                return;
                 if(dragging) {
                     const target = $(event.toElement);
                     const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
