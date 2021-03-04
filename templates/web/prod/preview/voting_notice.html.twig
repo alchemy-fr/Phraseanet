@@ -12,7 +12,13 @@
                     ( {{ 'preview::tab:feedback open' | trans }} )
                 {% endif %}
             </dt>
-                <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">{{ basket_element.getBasket().getValidation().getValidationStringAndDate(app) }}</dd>
+                <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
+                    {% set initiator = basket_element.getBasket().getValidation().getInitiator().getDisplayName() %}
+                    {% set createdDate = app['date-formatter'].getDateTranslated(basket_element.getBasket().getValidation().getCreated()) %}
+
+                    {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
+                </dd>
+
                 {% for choice in basket_element.getValidationDatas() %}
                     {% if choice.getParticipant().getCanAgree() %}
                         <dd style="margin-bottom: 5px;position:relative;">

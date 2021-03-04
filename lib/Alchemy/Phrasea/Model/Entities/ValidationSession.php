@@ -18,7 +18,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use \IntlDateFormatter as DateFormatter;
 
 /**
  * @ORM\Table(name="ValidationSessions")
@@ -272,16 +271,6 @@ class ValidationSession
         }
     }
 
-    public function getValidationStringAndDate(Application $app)
-    {
-        return $app->trans("Feedback:: Requested by %initiator% on %createdDate%",
-            [
-                '%initiator%'   => $this->getInitiator()->getDisplayName(),
-                '%createdDate%' => $this->formatDate($this->getCreated(), $app['locale'])
-            ]
-        );
-    }
-
     /**
      * Get a participant
      *
@@ -313,55 +302,5 @@ class ValidationSession
         }
 
         return $userIds;
-    }
-
-    private function formatDate(\DateTime $date, $locale)
-    {
-        switch ($locale) {
-            case 'fr':
-                $fmt = new DateFormatter(
-                    'fr_FR',
-                    DateFormatter::LONG,
-                    DateFormatter::NONE
-                );
-
-                $date_formated = $fmt->format($date);
-                break;
-
-            case 'en':
-                $fmt = new DateFormatter(
-                    'en_EN',
-                    DateFormatter::LONG,
-                    DateFormatter::NONE
-                );
-
-                $date_formated = $fmt->format($date);
-                break;
-
-            case 'de':
-                $fmt = new DateFormatter(
-                    'de_DE',
-                    DateFormatter::LONG,
-                    DateFormatter::NONE
-                );
-
-                $date_formated = $fmt->format($date);
-                break;
-
-            default:
-                $fmt = new DateFormatter(
-                    'en_EN',
-                    DateFormatter::LONG,
-                    DateFormatter::NONE ,
-                    null,
-                    null,
-                    'yyyy/mm/dd'
-                );
-
-                $date_formated = $fmt->format($date);
-                break;
-        }
-
-        return $date_formated;
     }
 }

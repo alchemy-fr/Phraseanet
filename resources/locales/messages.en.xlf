@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-03-04T08:46:03Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2021-03-04T11:59:53Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -3235,7 +3235,7 @@
       <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%">
         <source>Feedback:: Requested by %initiator% on %createdDate%</source>
         <target state="new">Feedback:: Requested by %initiator% on %createdDate%</target>
-        <jms:reference-file line="277">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="19">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ffe8e99492ee9b850395d53f6c519938952fde0d" resname="Feeds" approved="yes">
         <source>Feeds</source>
@@ -3917,19 +3917,19 @@
       <trans-unit id="a5efbcf21fb4f967dcf3c54434390038f645d761" resname="L'utilisateur approuve ce document" approved="yes">
         <source>L'utilisateur approuve ce document</source>
         <target state="translated">User approves this document</target>
-        <jms:reference-file line="22">prod/preview/voting_notice.html.twig</jms:reference-file>
+        <jms:reference-file line="28">prod/preview/voting_notice.html.twig</jms:reference-file>
         <jms:reference-file line="419">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f1a075e09cf00ad7f6a7b13f0e7982c01f71b4db" resname="L'utilisateur desapprouve ce document" approved="yes">
         <source>L'utilisateur desapprouve ce document</source>
         <target state="translated">User disapproves this document</target>
-        <jms:reference-file line="26">prod/preview/voting_notice.html.twig</jms:reference-file>
+        <jms:reference-file line="32">prod/preview/voting_notice.html.twig</jms:reference-file>
         <jms:reference-file line="423">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d189e6ca37fc13568fa40c4e089d3c55f1bb26cf" resname="L'utilisateur n'a pas encore donne son avis sur ce document" approved="yes">
         <source>L'utilisateur n'a pas encore donne son avis sur ce document</source>
         <target state="translated">User hasn't decided yet</target>
-        <jms:reference-file line="24">prod/preview/voting_notice.html.twig</jms:reference-file>
+        <jms:reference-file line="30">prod/preview/voting_notice.html.twig</jms:reference-file>
         <jms:reference-file line="421">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f16ba73379400f5465d624690a333f732ba02a5" resname="La connection vers le serveur distant est OK" approved="yes">
@@ -5248,12 +5248,12 @@
       <trans-unit id="1e9881366e0171af30ea532858a0569c171dc2c3" resname="Processus de validation recu de %user%" approved="yes">
         <source>Processus de validation recu de %user%</source>
         <target state="translated">Feedback requested from %user%</target>
-        <jms:reference-file line="271">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="270">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a28669d9391b214077076cbf4f1d662bc2167704" resname="Processus de validation recu de %user% et concernant %n% utilisateurs" approved="yes">
         <source>Processus de validation recu de %user% et concernant %n% utilisateurs</source>
         <target state="translated">Feedback requested from %user% and sent to %n% users</target>
-        <jms:reference-file line="268">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="267">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="644c8d02cf4d365edfeb12f28afdc32c8b1f6b14" resname="Propositions de modifications des tables" approved="yes">
         <source>Propositions de modifications des tables</source>
@@ -7510,7 +7510,7 @@
       <trans-unit id="f53665e212dedb32290a407b376c9094fb0506dc" resname="Vous avez envoye cette demande a %n% utilisateurs" approved="yes">
         <source>Vous avez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">You have asked for feedback to %n% user(s)</target>
-        <jms:reference-file line="265">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="264">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="026481a9062eacd74b454487256e11a12286ad35" resname="Vous avez envoye une demande de validation de document sur ce panier" approved="yes">
         <source>Vous avez envoye une demande de validation de document sur ce panier</source>
@@ -7530,7 +7530,7 @@
       <trans-unit id="48b0edd4b7baadecf72f020e6bc23a8a2118e83f" resname="Vous aviez envoye cette demande a %n% utilisateurs" approved="yes">
         <source>Vous aviez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">You have sent this demand to %n% user(s)</target>
-        <jms:reference-file line="262">Model/Entities/ValidationSession.php</jms:reference-file>
+        <jms:reference-file line="261">Model/Entities/ValidationSession.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7654bd1b49c9d4df25f0b7a1fca600e69587286" resname="Vous devez donner un titre" approved="yes">
         <source>Vous devez donner un titre</source>

@@ -107,7 +107,7 @@
             </p>
             <div class="record-number">  {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}</div>
 
-            {% set dateExpired = app['date-formatter'].getTranslatedDate(basket.getValidation().getExpires()) %}
+            {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getValidation().getExpires()) %}
             <div class="expiredDate">
                 {% if basket.getValidation().getExpires() < date() %}
                     <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
