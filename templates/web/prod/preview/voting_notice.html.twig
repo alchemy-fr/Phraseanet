@@ -3,7 +3,15 @@
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
     {% for basket_element in feedbackElementDatas %}
         <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
-            <dt>{{ basket_element.getBasket().getName() }}</dt>
+            <dt>
+                {{ basket_element.getBasket().getName() }}
+
+                {% if basket_element.getBasket().getValidation().getExpires() < date() %}
+                    ( {{ 'preview::tab:feedback closed' | trans }} )
+                {% else %}
+                    ( {{ 'preview::tab:feedback open' | trans }} )
+                {% endif %}
+            </dt>
                 <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">{{ basket_element.getBasket().getValidation().getValidationStringAndDate(app) }}</dd>
                 {% for choice in basket_element.getValidationDatas() %}
                     {% if choice.getParticipant().getCanAgree() %}
