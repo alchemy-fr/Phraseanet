@@ -124,6 +124,11 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && apt-get install -y newrelic-php5 \ 
     && NR_INSTALL_SILENT=1 newrelic-install install \
     && touch /etc/newrelic/newrelic.cfg \
+    && curl -o- https://packages.blackfire.io/gpg.key |apt-key add - \
+    && echo "deb http://packages.blackfire.io/debian any main" |tee /etc/apt/sources.list.d/blackfire.list \
+    && apt update \
+    && apt install blackfire-agent \
+    && apt install blackfire-php \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists \
     && mkdir /entrypoint /var/alchemy \

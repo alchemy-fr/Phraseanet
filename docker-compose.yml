@@ -111,6 +111,9 @@ services:
     - NEWRELIC_ENABLED
     - NEWRELIC_LICENSE_KEY
     - NEWRELIC_APP_NAME
+    - BLACKFIRE_ENABLED
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -176,6 +179,9 @@ services:
     - NEWRELIC_ENABLED
     - NEWRELIC_LICENSE_KEY
     - NEWRELIC_APP_NAME
+    - BLACKFIRE_ENABLED
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw

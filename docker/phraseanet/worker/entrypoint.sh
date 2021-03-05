@@ -32,15 +32,29 @@ fi
 
 if [[ $NEWRELIC_ENABLED = "true" ]]; then
   echo `date +"%Y-%m-%d %H:%M:%S"` " - NewRelic daemon and PHP agent setup."
-    sed -i -e "s/REPLACE_WITH_REAL_KEY/$NEWRELIC_LICENSE_KEY/" \
+  sed -i -e "s/REPLACE_WITH_REAL_KEY/$NEWRELIC_LICENSE_KEY/" \
   -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname=\"$NEWRELIC_APP_NAME\"/" \
   -e '$anewrelic.distributed_tracing_enabled=true' \
   $(php -r "echo(PHP_CONFIG_FILE_SCAN_DIR);")/newrelic.ini
   
+  echo "setup of Newrelic agent log forward"
   echo "newrelic.appname = \"$NEWRELIC_APP_NAME\"" > /etc/newrelic/newrelic.cfg
   echo "newrelic.license = \"$NEWRELIC_LICENSE_KEY\"" >> /etc/newrelic/newrelic.cfg
   service newrelic-daemon start
   echo "Newrelic setup of daemon and PHP agent done"
+else
+  echo `date +"%Y-%m-%d %H:%M:%S"` " - Newrelic extension deactivation."
+  rm /usr/local/etc/php/conf.d/newrelic.ini 
+fi
+
+if [[ $BLACKFIRE_ENABLED = "true" ]]; then
+  echo `date +"%Y-%m-%d %H:%M:%S"` " - BlackFire setup."
+  blackfire-agent --register --server-id=$BLACKFIRE_SERVER_ID --server-token=$BLACKFIRE_SERVER_TOKEN
+  service blackfire-agent start
+  echo "Blackfire setup done"
+else
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - blackfire extension deactivation."
+    rm /usr/local/etc/php/conf.d/zz-blackfire.ini
 fi
 
 rm -rf bin/run-worker.sh
