@@ -93,7 +93,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         cd /tmp/ffmpeg/ffmpeg-${FFMPEG_VERSION} \
         && ./configure \
             --enable-gpl \
-           --enable-nonfree \
+            --enable-nonfree \
             --enable-libfdk-aac \
             --enable-libfdk_aac \
             --enable-libgsm \
