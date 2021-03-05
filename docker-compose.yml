@@ -108,6 +108,12 @@ services:
     - LC_CTYPE=C.UTF-8
     - LC_TIME=C.UTF-8
     - LC_NAME=C.UTF-8
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    - BLACKFIRE_ENABLED
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -170,6 +176,12 @@ services:
     - IMAGEMAGICK_POLICY_AREA
     - IMAGEMAGICK_POLICY_DISK
     - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    - BLACKFIRE_ENABLED
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
