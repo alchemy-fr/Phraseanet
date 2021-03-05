@@ -2,19 +2,21 @@
 <br>
 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
     {% for basket_element in feedbackElementDatas %}
+        {% set basket = basket_element.getBasket() %}
+        {% set validationSession = basket.getValidation() %}
         <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
             <dt>
-                {{ basket_element.getBasket().getName() }}
+                {{ basket.getName() }}
 
-                {% if basket_element.getBasket().getValidation().getExpires() < date() %}
+                {% if validationSession.getExpires() < date() %}
                     ( {{ 'preview::tab:feedback closed' | trans }} )
                 {% else %}
                     ( {{ 'preview::tab:feedback open' | trans }} )
                 {% endif %}
             </dt>
                 <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
-                    {% set initiator = basket_element.getBasket().getValidation().getInitiator().getDisplayName() %}
-                    {% set createdDate = app['date-formatter'].getDateTranslated(basket_element.getBasket().getValidation().getCreated()) %}
+                    {% set initiator = validationSession.getInitiator().getDisplayName() %}
+                    {% set createdDate = app['date-formatter'].getDateTranslated(validationSession.getCreated()) %}
 
                     {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
                 </dd>
