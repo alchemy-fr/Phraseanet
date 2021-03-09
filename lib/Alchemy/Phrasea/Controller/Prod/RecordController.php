@@ -117,6 +117,9 @@ class RecordController extends Controller
             $containerType = 'regroup';
         }
 
+        $basketElementsRepository = $this->getBasketElementRepository();
+        $feedbackElementDatas = $basketElementsRepository->findElementsDatasByRecord($record);
+
         return $this->app->json([
             "desc"            => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
@@ -142,6 +145,9 @@ class RecordController extends Controller
             ]),
             "tools"           => $this->render('prod/preview/tools.html.twig', [
                 'record'        => $record,
+            ]),
+            "votingNotice"  => $this->render('prod/preview/voting_notice.html.twig', [
+                'feedbackElementDatas' => $feedbackElementDatas
             ]),
             "pos"             => $record->getNumber(),
             "title"           => $recordTitle,
