@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-03-09T15:03:39Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -3229,9 +3229,9 @@
         <jms:reference-file line="19">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="54">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%">
+      <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%" approved="no">
         <source>Feedback:: Requested by %initiator% on %createdDate%</source>
-        <target state="new">Feedback:: Requested by %initiator% on %createdDate%</target>
+        <target state="needs-translation">Demandé par %initiator% le %createdDate%</target>
         <jms:reference-file line="21">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ffe8e99492ee9b850395d53f6c519938952fde0d" resname="Feeds" approved="yes">
@@ -3373,9 +3373,9 @@
         <target state="translated">Longueur de focale</target>
         <jms:reference-file line="110">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication">
+      <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication" approved="no">
         <source>Force authentication</source>
-        <target state="needs-translation">Forcer l'authentification</target>
+        <target state="needs-translation">Obliger les utilisateurs à s'authentifier</target>
         <jms:reference-file line="153">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="206">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -5840,9 +5840,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Restrictions de téléchargement</target>
         <jms:reference-file line="49">web/admin/editusers_quotas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="4ec5e7b40886c233252a8be087b822115b17c193" resname="Resultat %number% / %total%">
+      <trans-unit id="4ec5e7b40886c233252a8be087b822115b17c193" resname="Resultat %number% / %total%" approved="no">
         <source>Resultat %number% / %total%</source>
-        <target state="new">Resultat %number% / %total%</target>
+        <target state="needs-translation">Résultat %number% / %total%</target>
         <jms:reference-file line="272">classes/record/preview.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5befb1f9671ba7f46a3b9b1f13d7833ff0dce91" resname="Retour" approved="yes">
@@ -7411,9 +7411,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Validations envoyées</target>
         <jms:reference-file line="31">WorkZone/Browser/Browser.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0cedbcdb95addc9f8d1b024fcbaf3d87dc6d044b" resname="Validity period of the download links">
+      <trans-unit id="0cedbcdb95addc9f8d1b024fcbaf3d87dc6d044b" resname="Validity period of the download links" approved="no">
         <source>Validity period of the download links</source>
-        <target state="new">Validity period of the download links</target>
+        <target state="needs-translation">Durée de validité des liens de téléchargement</target>
         <jms:reference-file line="61">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db671097785924a80ca79c2a37675116e90899e8" resname="Vers quel API voulez vous vous connecter ?" approved="yes">
@@ -8289,9 +8289,9 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Version</target>
         <jms:reference-file line="48">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d1699958ea09b3eb5a8a9d22737abb8ada40a382" resname="admin::base: Warning Worker is in process to indexing the same databox">
+      <trans-unit id="d1699958ea09b3eb5a8a9d22737abb8ada40a382" resname="admin::base: Warning Worker is in process to indexing the same databox" approved="no">
         <source>admin::base: Warning Worker is in process to indexing the same databox</source>
-        <target state="new">admin::base: Warning Worker is in process to indexing the same databox</target>
+        <target state="needs-translation">Une indexation est déjà en cours sur cette Databox</target>
         <jms:reference-file line="377">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="285dcb366c1405ecd81b005d91efc4ec8413d837" resname="admin::base: arreter la publication de la base" approved="yes">
@@ -11800,19 +11800,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Statistiques de visualisation</target>
         <jms:reference-file line="2">prod/preview/popularity.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2b03b2c44ce1a3c17af6b603d666344f64ebe942" resname="preview::tab:feedback">
+      <trans-unit id="2b03b2c44ce1a3c17af6b603d666344f64ebe942" resname="preview::tab:feedback" approved="no">
         <source>preview::tab:feedback</source>
-        <target state="new">preview::tab:feedback</target>
+        <target state="needs-translation">Validation</target>
         <jms:reference-file line="954">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f7f27fe47e2d3556c660a6fade6ceba7e8e62c4c" resname="preview::tab:feedback closed">
+      <trans-unit id="f7f27fe47e2d3556c660a6fade6ceba7e8e62c4c" resname="preview::tab:feedback closed" approved="no">
         <source>preview::tab:feedback closed</source>
-        <target state="new">preview::tab:feedback closed</target>
+        <target state="needs-translation">Validation fermée</target>
         <jms:reference-file line="12">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open">
+      <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open" approved="no">
         <source>preview::tab:feedback open</source>
-        <target state="new">preview::tab:feedback open</target>
+        <target state="needs-translation">Validation ouverte</target>
         <jms:reference-file line="14">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b130a62ee72757a562af1398e01cd0fc5aad3d30" resname="preview::visualisation" approved="yes">
