@@ -16,7 +16,7 @@ Node `^5.0.0`.
  - make your modification
  - Generate dist ```npm run dist```
  - ```make install_asset``` to copy assets in www/assets folder
- - If features is finished ```dist``` folder is to be commited and increment `jsFileVersion` in `lib/Alchemy/Phrasea/Twig/PhraseanetExtension.php`
+ - If features is finished ```dist``` folder is to be commited and increment `jsFileVersion` in `lib/Alchemy/Phrasea/Twig/PhraseanetExtension.php` and in `Phraseanet-production-client/config/config.js`
 
 ## Available commands
 

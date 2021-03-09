@@ -499,6 +499,7 @@ class QueryController extends Controller
                 'records'  => $record->get_train(),
                 'index' => $index,
                 'selected' => $pos,
+                'recordsTotal' => $record->getTotal()
             ])
         ]);
     }

@@ -269,12 +269,12 @@ class record_preview extends record_adapter
 
             case "RESULT":
                 $this->title = '<span style="color:#27bbe2;">';
-                $this->title .= $this->app->trans('Resultat %number%/%total%', ['%number%' => '<span id="current_result_n">' . ($this->getNumber() + 1) . '</span>', '%total%' => $this->total]);
+                $this->title .= $this->app->trans('Resultat %number% / %total%', ['%number%' => '<span id="current_result_n">' . $this->formatNumber($this->getNumber() + 1) . '</span>', '%total%' => $this->formatNumber($this->total)]);
                 $this->title .= ' : </span> ' . parent::get_title($options);
                 break;
             case "BASK":
                 $this->title = '<span style="color:#27bbe2;">';
-                $this->title .= $this->name . ' (' . $this->getNumber() . '/' . $this->total . ') : </span>' . parent::get_title($options);
+                $this->title .= $this->name . ' (' . $this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total) . ') : </span>' . parent::get_title($options);
 
                 break;
             case "REG":
@@ -283,7 +283,7 @@ class record_preview extends record_adapter
 
                 if ($this->getNumber() != 0) {
                     $this->title .= sprintf(
-                        ' (%s) : </span> %s',$this->getNumber() . '/' . $this->total, parent::get_title($options)
+                        ' (%s) : </span> %s',$this->formatNumber($this->getNumber()) . ' / ' . $this->formatNumber($this->total), parent::get_title($options)
                     );
                 } else {
                     $this->title .= '</span>';
@@ -553,6 +553,14 @@ class record_preview extends record_adapter
     }
 
     /**
+     * @return int
+     */
+    public function getTotal()
+    {
+        return isset($this->total) ? $this->total : 0;
+    }
+
+    /**
      * @return media_adapter
      */
     public function get_view_popularity()
@@ -778,5 +786,10 @@ class record_preview extends record_adapter
         $this->download_popularity = $ret;
 
         return $this->download_popularity;
+    }
+
+    private function formatNumber($number)
+    {
+        return number_format($number, 0, null, ' ');
     }
 }

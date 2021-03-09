@@ -43,13 +43,16 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
     environment:
+    - PHRASEANET_INSTALL
+    - PHRASEANET_SETUP
+    - PHRASEANET_UPGRADE
     - PHRASEANET_PROJECT_NAME
     - PHRASEANET_TRUSTED_PROXIES
+    - PHRASEANET_DEBUG_ALLOWED_IP
     - MAX_BODY_SIZE
     - MAX_INPUT_VARS
     - MAX_EXECUTION_TIME
@@ -69,6 +72,8 @@ services:
     - INSTALL_APPBOX
     - INSTALL_DATABOX
     - PHRASEANET_SERVER_NAME
+    - PHRASEANET_AVAILABLE_LANGUAGE
+    - PHRASEANET_DEFAULT_LANGUAGE
     - PHRASEANET_RABBITMQ_USER=$RABBITMQ_DEFAULT_USER
     - PHRASEANET_RABBITMQ_PASSWORD=$RABBITMQ_DEFAULT_PASS
     - PHRASEANET_EMITTER_EMAIL
@@ -103,6 +108,12 @@ services:
     - LC_CTYPE=C.UTF-8
     - LC_TIME=C.UTF-8
     - LC_NAME=C.UTF-8
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    - BLACKFIRE_ENABLED
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -125,7 +136,6 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
     restart: on-failure
     depends_on:
-    - db
     - redis
     - rabbitmq
     - elasticsearch
@@ -166,6 +176,12 @@ services:
     - IMAGEMAGICK_POLICY_AREA
     - IMAGEMAGICK_POLICY_DISK
     - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    - BLACKFIRE_ENABLED
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -174,18 +190,6 @@ services:
     - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
     - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
     - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
-    networks:
-      - internal
-
-  db:
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
-    build: ./docker/db
-    restart: on-failure
-    environment:
-    - MYSQL_ROOT_PASSWORD
-    - MYSQL_MAX_ALLOWED_PACKET
-    volumes:
-    - ${PHRASEANET_DB_DIR}:/var/lib/mysql
     networks:
       - internal
 
@@ -210,14 +214,6 @@ services:
     restart: on-failure
     volumes:
     - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data
-    networks:
-      - internal
-
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-    - 1025:1025
-    - 8025:8025
     networks:
       - internal
 

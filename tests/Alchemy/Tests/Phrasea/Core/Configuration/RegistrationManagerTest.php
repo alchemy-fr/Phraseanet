@@ -67,7 +67,7 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $databox = current(self::$DI['app']->getDataboxes());
         $collection = current($databox->get_collections());
 
-        $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations']['by-type'][$type]));
+        $this->assertEquals($value, count($rs[$databox->get_sbas_id()]['registrations-by-type'][$type]));
     }
 
     public function userDataProvider()
@@ -81,103 +81,121 @@ class RegistrationManagerTest extends \PhraseanetTestCase
         $rejectedRegistration = new Registration();
         $rejectedRegistration->setBaseId(1);
         $rejectedRegistration->setUser(new User());
-        $rejectedRegistration->setPending(true);
+        $rejectedRegistration->setPending(false);
         $rejectedRegistration->setRejected(true);
+
+        $acceptedRegistration = new Registration();
+        $acceptedRegistration->setBaseId(1);
+        $acceptedRegistration->setUser(new User());
+        $acceptedRegistration->setPending(false);
+        $acceptedRegistration->setRejected(false);
+
+        $registrations = [
+            'pending'  => $pendingRegistration,
+            'accepted' => $acceptedRegistration,
+            'rejected' => $rejectedRegistration,
+            'inactive' => null
+        ];
 
         $databox = current((new \appbox(new Application(Application::ENV_TEST)))->get_databoxes());
         $collection = current($databox->get_collections());
 
-        $noLimitedPendingRegistration = [
-            [
-                $databox->get_sbas_id() => [
-                    $collection->get_base_id() => [
-                        'base-id' => $collection->get_base_id(),
-                        'db-name' => 'toto',
-                        'active' => true,
-                        'time-limited' => false,
-                        'in-time' => null,
-                        'registration' => $pendingRegistration
-                    ]
-                ]
-            ],
-            'pending',
-            1
-        ];
+        $tests = [];
 
-        $rejectedRegistration = [
-            [
-                $databox->get_sbas_id() => [
-                    $collection->get_base_id() => [
-                        'base-id' => $collection->get_base_id(),
-                        'db-name' => 'titi',
-                        'active' => true,
-                        'time-limited' => false,
-                        'in-time' => null,
-                        'registration' => $rejectedRegistration
+        // ====== no access in basusr : result comes only from "registration" ======
+        foreach($registrations as $k=>$registration) {
+            //        pending, accepted, rejected, inactive
+            $tests[] = [
+                [
+                    $databox->get_sbas_id() => [
+                        $collection->get_base_id() => [
+                            'base-id'      => $collection->get_base_id(),
+                            'db-name'      => 'toto',
+                            'active'       => null,
+                            'time-limited' => null,
+                            'in-time'      => null,
+                            'registration' => $registration
+                        ]
                     ]
-                ]
-            ],
-            'rejected',
-            1
-        ];
+                ],
+                $k,
+                1
+            ];
+        }
 
-        $noActiveRegistration = [
-            [
-                $databox->get_sbas_id() => [
-                    $collection->get_base_id() => [
-                        'base-id' => 1,
-                        'db-name' => 'tutu',
-                        'active' => false,
-                        'time-limited' => false,
-                        'in-time' => null,
-                        'registration' => $pendingRegistration
+        // ======= rights with time limit : registration does not matter =======
+        foreach($registrations as $registration) {
+            $tests[] = [
+                [
+                    $databox->get_sbas_id() => [
+                        $collection->get_base_id() => [
+                            'base-id'      => $collection->get_base_id(),
+                            'db-name'      => 'toto',
+                            'active'       => true,
+                            'time-limited' => true,
+                            'in-time'      => true,
+                            'registration' => $registration
+                        ]
                     ]
-                ]
-            ],
-            'inactive',
-            1
-        ];
-
-        $limitedActiveIntimePendingRegistration = [
-            [
-                $databox->get_sbas_id() => [
-                    $collection->get_base_id() => [
-                        'base-id' => $collection->get_base_id(),
-                        'db-name' => 'tata',
-                        'active' => true,
-                        'time-limited' => true,
-                        'in-time' => true,
-                        'registration' => $pendingRegistration
+                ],
+                'in-time',
+                1
+            ];
+            $tests[] = [
+                [
+                    $databox->get_sbas_id() => [
+                        $collection->get_base_id() => [
+                            'base-id'      => $collection->get_base_id(),
+                            'db-name'      => 'toto',
+                            'active'       => true,
+                            'time-limited' => true,
+                            'in-time'      => false,
+                            'registration' => $registration
+                        ]
                     ]
-                ]
-            ],
-            'in-time',
-            1
-        ];
+                ],
+                'out-dated',
+                1
+            ];
+        }
 
-        $limitedActiveOutdatedPendingRegistration = [
-            [
-                $databox->get_sbas_id() => [
-                    $collection->get_base_id() => [
-                        'base-id' => $collection->get_base_id(),
-                        'db-name' => 'toutou',
-                        'active' => true,
-                        'time-limited' => true,
-                        'in-time' => false,
-                        'registration' => $pendingRegistration
+        // ======= rights, no time limit : registration may matter =======
+        foreach($registrations as $k=>$registration) {
+            //        pending, accepted, rejected, inactive
+            $tests[] = [
+                [
+                    $databox->get_sbas_id() => [
+                        $collection->get_base_id() => [
+                            'base-id'      => $collection->get_base_id(),
+                            'db-name'      => 'toto',
+                            'active'       => true,
+                            'time-limited' => false,
+                            'in-time'      => null,
+                            'registration' => $registration
+                        ]
                     ]
-                ]
-            ],
-            'out-dated',
-            1
-        ];
+                ],
+                $k=='accepted' ? 'accepted' : 'active',
+                1
+            ];
+            $tests[] = [
+                [
+                    $databox->get_sbas_id() => [
+                        $collection->get_base_id() => [
+                            'base-id'      => $collection->get_base_id(),
+                            'db-name'      => 'toto',
+                            'active'       => false,
+                            'time-limited' => false,
+                            'in-time'      => null,
+                            'registration' => $registration
+                        ]
+                    ]
+                ],
+                $k=='rejected' ? 'rejected' : 'inactive',
+                1
+            ];
+        }
 
-        return [
-            $noLimitedPendingRegistration,
-            $noActiveRegistration,
-            $limitedActiveIntimePendingRegistration,
-            $limitedActiveOutdatedPendingRegistration,
-            $rejectedRegistration
-        ];
+        return $tests;
     }
 }
