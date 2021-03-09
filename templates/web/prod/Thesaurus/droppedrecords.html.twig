@@ -1,0 +1,122 @@
+{% if error %}
+    {{ error }}
+{% else %}
+    <form id="DroppedOnTH_form">
+        <table>
+            <tr>
+                <th>set value</th>
+                <th/>
+                <th>to field</th>
+                <th class="multiTitle" style="display: none">multi</th>
+            </tr>
+        {% if up_paths|length > 1 %}
+            <tr class="toggleMoreFields">
+                <td colspan="4">
+                    <button>+</button>&nbsp;Other value(s)...
+                </td>
+            </tr>
+        {% endif %}
+        {% set n=1 %}
+        {% for tid,up_path in up_paths %}
+            {% set cl = (n == up_paths|length) ? "" : "class='other' style='display:none'"%}
+            <tr {{ cl|raw }}>
+                <td>
+                    {% if 0 and up_path.synonyms|length == 1 %}
+                        {% set synonym = up_path.synonyms|first %}
+                        <option {{ synonym.selected ? "selected" : "" }}>{{ synonym.value }}</option>
+                    {% else %}
+                    <select>
+                    {% for synonym in up_path.synonyms %}
+                        <option {{ synonym.selected ? "selected" : "" }}>{{ synonym.value }}</option>
+                    {% endfor%}
+                    </select>
+                    {% endif %}
+                </td>
+                <td style="alignment: center; font-size: xx-large">
+                    &rarr;
+                </td>
+                <td>
+                    <select class="fieldSelect" data-n="{{ n }}">
+                        {% set sel="" %}
+                        {% if n == up_paths|length %}
+                            <option data-multi="0">select...</option>
+                            {% if up_path.fields|length == 1 %}
+                                {% set sel="selected" %}
+                            {% endif %}
+                        {% else %}
+                            <option data-multi="0">none</option>
+                        {% endif %}
+                        {% for field in up_path.fields  %}
+                            <option {{ sel }} data-multi="{{ field.is_multi() ? 1 : 0 }}">{{ field.get_name() }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="multiRadio _{{ n }}" style="padding-left:10px; display: none">
+                    <input type="radio" checked>&nbsp;add
+                    &nbsp;&nbsp;
+                    <input type="radio">&nbsp;replace
+                </td>
+            </tr>
+            {% set n = n+1 %}
+        {% endfor %}
+
+        </table>
+    </form>
+{% endif %}
+
+<script type="application/javascript">
+    let $container = $('#DroppedOnTH_form');
+
+    let dlg = dialog.get({{ dlg_level }});
+    dlg.setOption("buttons",
+        [
+            {
+                text: "Ok",
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            {
+                text: "Cancel",
+                click: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        ]
+    );
+
+
+    /**
+     * when a destination field is selected, show/hide the "multi" radio
+     */
+    $(' .fieldSelect', $container)
+        .change(function (event) {
+            let select = $(this);
+            let n = select.data('n');
+            console.log(n);
+            if( $('option:eq(' + select.prop('selectedIndex') + ')', select).data('multi') ) {
+                // this select is on a multi-valued field
+                $(' .multiRadio._'+n, $container).show();
+            }
+            else {
+                // this select is on a mono-valued field
+                $(' .multiRadio._'+n, $container).hide();
+            }
+            // show the column title only if one field is multi
+            if( $(' .multiRadio:visible', $container).length > 0 ) {
+                $(' .multiTitle', $container).show();
+            }
+            else {
+                $(' .multiTitle', $container).hide();
+            }
+        })
+        .change();  // enforce initial update
+
+
+    $(' .toggleMoreFields BUTTON', $container).click(function (event) {
+        $(' .toggleMoreFields', $container).hide();
+        $(' .other').show();
+        return false;
+    })
+
+</script>

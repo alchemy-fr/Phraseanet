@@ -16,6 +16,12 @@ const thesaurusService = services => {
 
     let dragging = false;       // true when an object is dragged over the th zone
     let dragTarget = null;      // the target where the mouse is over
+    let dragUniqueSbid = null;  // will end-up as : null (nothing dragged) ; false (many sbids) ; sbid (same sbid for all)
+    let dragLstRecords = ''     // list or records, format as expected for RecordsRequest::fromRequest
+    const url = configService.get('baseUrl');
+
+    let searchSelection = {asArray: [], serialized: ''};
+
 
     const initialize = params => {
         let { $container } = params;
@@ -105,6 +111,18 @@ const thesaurusService = services => {
         $('#THPD_T_tree')
             .droppable({
                 accept: function(elem) {
+                    let lstbr = searchSelection.asArray;
+                    console.log("lstbr", lstbr);
+
+                    dragUniqueSbid = null;
+                    lstbr.forEach(sbid_rid => {
+                        sbid_rid = sbid_rid.split('_');
+                        let sbid = sbid_rid[0];
+                        let rid = sbid_rid[1];
+                        dragUniqueSbid = (dragUniqueSbid===null) ? sbid : (sbid===dragUniqueSbid ? sbid : false);
+                    });
+                    dragLstRecords = lstbr.join(';');   // a list as expected for RecordsRequest::fromRequest
+
                     $(this).removeClass('draggingOver');
                     console.log("accept", elem);
                     // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
@@ -115,14 +133,36 @@ const thesaurusService = services => {
 
                     // the th zone can accet drags only when in front (activated tab)
                     // 'hash' is set by the 'workzone' js code.
-                    return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+                    // return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+
+                    if($('#idFrameC .tabs').data('hash') !== '#thesaurus_tab') {
+                        return false;   // can't drop on th if the th tab is not front
+                    }
+
+                    // by using classes on both main container AND the (unique) acceptable thesaurus zone
+                    // we can have custom drag/drop css for both ok / reject
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');      // the container
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');   // all thesaurus
+
+                    if(dragUniqueSbid === null || dragUniqueSbid === false) {
+                        // many sbids
+                        // return false;    // don't return false, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                    }
+
+                    return true;
                 },
                 scope: 'objects',
                 hoverClass: 'groupDrop',
                 tolerance: 'pointer',
                 over: function(event, ui) {
-                    $(this).addClass('draggingOver');
                     console.log("over", event, ui, event.toElement);
+
+                    $('#THPD_T_tree', $container).addClass('draggingOver');
+                    if(dragUniqueSbid !== null && dragUniqueSbid !== false) {
+                        $('#TX_P\\.'+dragUniqueSbid+'\\.T', $container).addClass('draggingOver');
+                    }
+                    /*
+                    $(this).addClass('draggingOver');
 
                     if(dragTarget) {
                         // something was already hilighted (should no happen)
@@ -139,28 +179,50 @@ const thesaurusService = services => {
                         dragTarget.addClass('dragOver');
                         console.log("IN : " + dragTarget.attr('id'));
                     }
+                    */
                 },
                 out: function(event, ui) {
-                    $(this).removeClass('draggingOver');
                     console.log("out", event, ui, event.toElement);
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+                    /*
+                    $(this).removeClass('draggingOver');
                     if(dragTarget) {
                         // something was hilighted
                         dragTarget.removeClass('dragOver');
                     }
                     dragging = false;    // == no more dragging something over th
                     dragTarget = null;
+
+                     */
                 },
                 drop: (event, ui) => {
-                    $(this).removeClass('draggingOver');
                     console.log("drop", event, ui);
-                    if(dragTarget) {
-                        // const tid = $(event.toElement).data('tx_term_id');
-                        console.log("DROP ON id=" + dragTarget.attr('id'));
-                        dragTarget.removeClass('dragOver');
-//                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+
+                    const target = $(event.toElement);
+                    const sbas_id = target.data('sbas_id').toString();         // set on html by ThesaurusXmlHttpController.php
+                    const tx_term_id = target.data('tx_term_id').toString();   // set on html by ThesaurusXmlHttpController.php
+
+                    if(sbas_id === dragUniqueSbid) {
+                        dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
                     }
-                    dragging = false;    // == no more dragging something over th
-                    dragTarget = null;
+
+
+
+                        /*
+                        $(this).removeClass('draggingOver');
+                        if(dragTarget) {
+                            // const tid = $(event.toElement).data('tx_term_id');
+                            console.log("DROP ON id=" + dragTarget.attr('id'));
+                            dragTarget.removeClass('dragOver');
+    //                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
+                        }
+                        dragging = false;    // == no more dragging something over th
+                        dragTarget = null;
+
+                         */
                 }
             })
             // track the mouse
@@ -193,6 +255,57 @@ const thesaurusService = services => {
 
         searchValue = _.debounce(searchValue, 300);
     };
+
+
+
+    function dropRecordsOnTerm(sbas_id, tx_term_id, lstRecords) {
+        let dlg = dialog.create(
+            services,
+            {
+                size: 'Custom',
+                customWidth: 770,
+                customHeight: 400,
+                title: localeService.t('add data'),
+                loading: true
+            },
+            0
+        );
+        // dlg.setContent("");
+
+        // let parms = {
+        //     url: '/thesaurus/drop_records.php',
+        //     data: {
+        //         'sbas_id': sbas_id,
+        //         'tx_term_id': tx_term_id,
+        //         'lst': lstRecords
+        //     },
+        //     async: true,
+        //     cache: false,
+        //     dataType: 'json',
+        //     // timeout: 10 * 60 * 1000, // 10 minutes !
+        //     success: function (result, textStatus) {
+        //         dlg.setContent(result);
+        //     }
+        // };
+
+        $.get(
+            `${url}prod/thesaurus/droprecords`,
+            {
+                'dlg_level': 0,
+                'sbas_id': sbas_id,
+                'tx_term_id': tx_term_id,
+                'lst': lstRecords
+            },
+            function (data, textStatus) {
+                dlg.setContent(data);
+            }
+        );
+    }
+
+
+
+
+
 
     function show() {
         // first show of thesaurus
@@ -1461,6 +1574,13 @@ const thesaurusService = services => {
             }
         });
     }
+
+    appEvents.listenAll({
+        'broadcast.searchResultSelection': (selection) => {
+            searchSelection = selection;
+        }
+    });
+
 
     return { initialize, show };
 };

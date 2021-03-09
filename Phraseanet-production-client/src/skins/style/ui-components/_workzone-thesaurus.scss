@@ -189,10 +189,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #THPD_T_tree.draggingOver {
+    //background-color: #FF0000;
     /* something is currently dragged over, we change some hover */
+    &:hover {
+        cursor: not-allowed;
+    }
     span.tx_term:hover {
-        background-color: $highlightBackgroundColor;
-        color: $highlightTextColor;
+        color: $mediumTextColor;    // no more highlight
+        cursor: not-allowed;
+    }
+    LI.draggingOver {
+        //background-color: #00FF00;
+        &:hover {
+            cursor: default;
+        }
+        span.tx_term:hover {
+            background-color: $highlightBackgroundColor;
+            color: $highlightTextColor;
+            cursor: copy;
+        }
     }
 }
 
