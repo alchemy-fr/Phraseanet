@@ -279,60 +279,6 @@ paths:
         default:
           $ref: 'common.yaml#/error_response'
 
-  '/records/{base_id}':
-    post:
-      tags:
-        - record
-      summary: Creates a record
-      description: |
-        Creates a single record, including document and/or data.
-
-        ### To create a record __with__ a file (document)
-
-        _Since multipart is required to pass a file, json data must be passed as a part named "body"_
-
-        ### To create a record __without__ file
-
-        _Since no file is passed, data can be passed as plain body_
-
-        ### metadata / status-bits setting
-
-        see "PATCH" method for examples, apply only relevant "set" operation on just created record with empty data.
-
-      operationId: createRecord
-      parameters:
-        - $ref: '#/components/parameters/base_id'
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              description: to create a record __with__ a file (document)
-              type: object
-              properties:
-                body:
-                  $ref: schemas.yaml#/RecordPatch
-                file:
-                  description : 'uploaded file'
-                  type: string
-                  format: binary
-          application/json:
-            schema:
-              description: To create a record __without__ file
-              allOf:
-                - $ref: schemas.yaml#/RecordPatch
-      responses:
-        200:
-          description: ok
-          content:
-            application/json:
-              schema:
-                $ref: record.yaml#/ApiResponse_record
-        default:
-          $ref: 'common.yaml#/error_response'
-      # security:
-      #   - api_key: []
-
-  '/records/{sbas_id}/{record_id}/setmetadatas':
     patch:
       tags:
         - record
@@ -699,6 +645,59 @@ paths:
                 $ref: record.yaml#/ApiResponse_record
         default:
           $ref: 'common.yaml#/error_response'
+
+  '/records/{base_id}':
+    post:
+      tags:
+        - record
+      summary: Creates a record
+      description: |
+        Creates a single record, including document and/or data.
+
+        ### To create a record __with__ a file (document)
+
+        _Since multipart is required to pass a file, json data must be passed as a part named "body"_
+
+        ### To create a record __without__ file
+
+        _Since no file is passed, data can be passed as plain body_
+
+        ### metadata / status-bits setting
+
+        see "PATCH" method for examples, apply only relevant "set" operation on just created record with empty data.
+
+      operationId: createRecord
+      parameters:
+        - $ref: '#/components/parameters/base_id'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              description: to create a record __with__ a file (document)
+              type: object
+              properties:
+                body:
+                  $ref: schemas.yaml#/RecordPatch
+                file:
+                  description : 'uploaded file'
+                  type: string
+                  format: binary
+          application/json:
+            schema:
+              description: To create a record __without__ file
+              allOf:
+                - $ref: schemas.yaml#/RecordPatch
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: record.yaml#/ApiResponse_record
+        default:
+          $ref: 'common.yaml#/error_response'
+      # security:
+      #   - api_key: []
 
   '/stories/{sbas_id}/{record_id}':
     get:
