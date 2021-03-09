@@ -1516,293 +1516,6 @@ paths:
           description: Record not found
         default:
           description: Any other error
-  '/records/{base_id}':
-    post:
-      tags:
-        - record
-      summary: Creates a record
-      description: |
-        Creates a single record, including document and/or data.
-
-        ### To create a record __with__ a file (document)
-
-        _Since multipart is required to pass a file, json data must be passed as a part named "body"_
-
-        ### To create a record __without__ file
-
-        _Since no file is passed, data can be passed as plain body_
-
-        ### metadata / status-bits setting
-
-        see "PATCH" method for examples, apply only relevant "set" operation on just created record with empty data.
-      operationId: createRecord
-      parameters:
-        - name: base_id
-          in: path
-          description: ID of the base
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              description: to create a record __with__ a file (document)
-              type: object
-              properties:
-                body:
-                  description: 'Metadata, status, collection, etc to be set for a record'
-                  type: object
-                  properties:
-                    metadatas:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          field_name:
-                            type: string
-                          meta_struct_id:
-                            type: integer
-                          action:
-                            type: string
-                            enum:
-                              - set
-                              - add
-                              - delete
-                              - replace
-                          value:
-                            type: string
-                    status:
-                      type: array
-                      items:
-                        type: object
-                        required:
-                          - bit
-                          - state
-                        properties:
-                          bit:
-                            type: integer
-                            minimum: 4
-                            maximum: 31
-                          state:
-                            type: boolean
-                file:
-                  description: uploaded file
-                  type: string
-                  format: binary
-          application/json:
-            schema:
-              description: To create a record __without__ file
-              allOf:
-                - description: 'Metadata, status, collection, etc to be set for a record'
-                  type: object
-                  properties:
-                    metadatas:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          field_name:
-                            type: string
-                          meta_struct_id:
-                            type: integer
-                          action:
-                            type: string
-                            enum:
-                              - set
-                              - add
-                              - delete
-                              - replace
-                          value:
-                            type: string
-                    status:
-                      type: array
-                      items:
-                        type: object
-                        required:
-                          - bit
-                          - state
-                        properties:
-                          bit:
-                            type: integer
-                            minimum: 4
-                            maximum: 31
-                          state:
-                            type: boolean
-      responses:
-        '200':
-          description: ok
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  meta:
-                    type: object
-                    properties:
-                      api_version:
-                        type: string
-                        example: 3.0.0
-                      request:
-                        type: string
-                        example: GET|POST|... /api/v3/....
-                      response_time:
-                        type: string
-                        format: date-time
-                        example: '2021-02-11T14:18:02+00:00'
-                      http_code:
-                        type: integer
-                        format: int32
-                        example: 200
-                      error_type:
-                        type: string
-                        example: null
-                      error_message:
-                        type: string
-                        example: null
-                      error_details:
-                        type: string
-                        example: null
-                      charset:
-                        type: string
-                        example: UTF-8
-                  response:
-                    allOf:
-                      - type: object
-                        properties:
-                          databox_id:
-                            type: integer
-                            example: 2
-                          record_id:
-                            type: integer
-                            example: 34
-                          updated_on:
-                            type: string
-                            format: date-time
-                          created_on:
-                            type: string
-                            format: date-time
-                          collection_id:
-                            type: integer
-                            example: 5
-                          base_id:
-                            type: integer
-                            example: 14
-                          thumbnail:
-                            allOf:
-                              - type: object
-                                properties:
-                                  name:
-                                    example: thumbnail
-                                  mime_type:
-                                    example: image/jpeg
-                                  height:
-                                    example: 160
-                                  width:
-                                    example: 240
-                                  filesize:
-                                    example: 2375
-                                  url:
-                                    example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
-                              - type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  permalink:
-                                    type: object
-                                    properties:
-                                      created_on:
-                                        type: string
-                                        format: date-time
-                                      id:
-                                        type: integer
-                                      is_activated:
-                                        type: boolean
-                                      label:
-                                        type: string
-                                      updated_on:
-                                        type: string
-                                        format: date-time
-                                      page_url:
-                                        type: string
-                                      download_url:
-                                        type: string
-                                      url:
-                                        type: string
-                                  height:
-                                    type: integer
-                                  width:
-                                    type: integer
-                                  filesize:
-                                    type: integer
-                                  devices:
-                                    type: array
-                                    items:
-                                      type: string
-                                      enum:
-                                        - screen
-                                        - printer ?
-                                  player_type:
-                                    type: string
-                                    enum:
-                                      - IMAGE
-                                  mime_type:
-                                    type: string
-                                  substituted:
-                                    type: boolean
-                                    example: false
-                                  created_on:
-                                    type: string
-                                    format: date-time
-                                  updated_on:
-                                    type: string
-                                    format: date-time
-                                  url:
-                                    type: string
-                                  url_ttl:
-                                    type: integer
-                                    example: 7200
-                          uuid:
-                            type: string
-                            example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
-                      - type: object
-                        properties:
-                          mime_type:
-                            type: string
-                            example: image/jpeg
-                          title:
-                            type: string
-                            example: Sleepy cat
-                          original_name:
-                            type: string
-                            example: DSC_12345.jpg
-                          technical_informations:
-                            type: array
-                            items:
-                              type: object
-                              additionalProperties:
-                                type: string
-                              example:
-                                Aperture: 6.3
-                                CameraModel: Canon EOS 5D Mark II
-                                Channels: 3
-                                ColorSpace: RGB
-                                FileSize: 5618218
-                          sha256:
-                            type: string
-                            example: 6f330ac0ae2...
-                          phrasea_type:
-                            type: string
-                            enum:
-                              - image
-                              - video
-                            example: image
-                          is_story:
-                            type: boolean
-                            default: false
-        default:
-          description: Any other error
-  '/records/{sbas_id}/{record_id}/setmetadatas':
     patch:
       tags:
         - record
@@ -2166,6 +1879,292 @@ paths:
         content:
           application/json:
             schema:
+              allOf:
+                - description: 'Metadata, status, collection, etc to be set for a record'
+                  type: object
+                  properties:
+                    metadatas:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          field_name:
+                            type: string
+                          meta_struct_id:
+                            type: integer
+                          action:
+                            type: string
+                            enum:
+                              - set
+                              - add
+                              - delete
+                              - replace
+                          value:
+                            type: string
+                    status:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - bit
+                          - state
+                        properties:
+                          bit:
+                            type: integer
+                            minimum: 4
+                            maximum: 31
+                          state:
+                            type: boolean
+      responses:
+        '200':
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties:
+                      api_version:
+                        type: string
+                        example: 3.0.0
+                      request:
+                        type: string
+                        example: GET|POST|... /api/v3/....
+                      response_time:
+                        type: string
+                        format: date-time
+                        example: '2021-02-11T14:18:02+00:00'
+                      http_code:
+                        type: integer
+                        format: int32
+                        example: 200
+                      error_type:
+                        type: string
+                        example: null
+                      error_message:
+                        type: string
+                        example: null
+                      error_details:
+                        type: string
+                        example: null
+                      charset:
+                        type: string
+                        example: UTF-8
+                  response:
+                    allOf:
+                      - type: object
+                        properties:
+                          databox_id:
+                            type: integer
+                            example: 2
+                          record_id:
+                            type: integer
+                            example: 34
+                          updated_on:
+                            type: string
+                            format: date-time
+                          created_on:
+                            type: string
+                            format: date-time
+                          collection_id:
+                            type: integer
+                            example: 5
+                          base_id:
+                            type: integer
+                            example: 14
+                          thumbnail:
+                            allOf:
+                              - type: object
+                                properties:
+                                  name:
+                                    example: thumbnail
+                                  mime_type:
+                                    example: image/jpeg
+                                  height:
+                                    example: 160
+                                  width:
+                                    example: 240
+                                  filesize:
+                                    example: 2375
+                                  url:
+                                    example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+                              - type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  permalink:
+                                    type: object
+                                    properties:
+                                      created_on:
+                                        type: string
+                                        format: date-time
+                                      id:
+                                        type: integer
+                                      is_activated:
+                                        type: boolean
+                                      label:
+                                        type: string
+                                      updated_on:
+                                        type: string
+                                        format: date-time
+                                      page_url:
+                                        type: string
+                                      download_url:
+                                        type: string
+                                      url:
+                                        type: string
+                                  height:
+                                    type: integer
+                                  width:
+                                    type: integer
+                                  filesize:
+                                    type: integer
+                                  devices:
+                                    type: array
+                                    items:
+                                      type: string
+                                      enum:
+                                        - screen
+                                        - printer ?
+                                  player_type:
+                                    type: string
+                                    enum:
+                                      - IMAGE
+                                  mime_type:
+                                    type: string
+                                  substituted:
+                                    type: boolean
+                                    example: false
+                                  created_on:
+                                    type: string
+                                    format: date-time
+                                  updated_on:
+                                    type: string
+                                    format: date-time
+                                  url:
+                                    type: string
+                                  url_ttl:
+                                    type: integer
+                                    example: 7200
+                          uuid:
+                            type: string
+                            example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
+                      - type: object
+                        properties:
+                          mime_type:
+                            type: string
+                            example: image/jpeg
+                          title:
+                            type: string
+                            example: Sleepy cat
+                          original_name:
+                            type: string
+                            example: DSC_12345.jpg
+                          technical_informations:
+                            type: array
+                            items:
+                              type: object
+                              additionalProperties:
+                                type: string
+                              example:
+                                Aperture: 6.3
+                                CameraModel: Canon EOS 5D Mark II
+                                Channels: 3
+                                ColorSpace: RGB
+                                FileSize: 5618218
+                          sha256:
+                            type: string
+                            example: 6f330ac0ae2...
+                          phrasea_type:
+                            type: string
+                            enum:
+                              - image
+                              - video
+                            example: image
+                          is_story:
+                            type: boolean
+                            default: false
+        default:
+          description: Any other error
+  '/records/{base_id}':
+    post:
+      tags:
+        - record
+      summary: Creates a record
+      description: |
+        Creates a single record, including document and/or data.
+
+        ### To create a record __with__ a file (document)
+
+        _Since multipart is required to pass a file, json data must be passed as a part named "body"_
+
+        ### To create a record __without__ file
+
+        _Since no file is passed, data can be passed as plain body_
+
+        ### metadata / status-bits setting
+
+        see "PATCH" method for examples, apply only relevant "set" operation on just created record with empty data.
+      operationId: createRecord
+      parameters:
+        - name: base_id
+          in: path
+          description: ID of the base
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              description: to create a record __with__ a file (document)
+              type: object
+              properties:
+                body:
+                  description: 'Metadata, status, collection, etc to be set for a record'
+                  type: object
+                  properties:
+                    metadatas:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          field_name:
+                            type: string
+                          meta_struct_id:
+                            type: integer
+                          action:
+                            type: string
+                            enum:
+                              - set
+                              - add
+                              - delete
+                              - replace
+                          value:
+                            type: string
+                    status:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - bit
+                          - state
+                        properties:
+                          bit:
+                            type: integer
+                            minimum: 4
+                            maximum: 31
+                          state:
+                            type: boolean
+                file:
+                  description: uploaded file
+                  type: string
+                  format: binary
+          application/json:
+            schema:
+              description: To create a record __without__ file
               allOf:
                 - description: 'Metadata, status, collection, etc to be set for a record'
                   type: object
