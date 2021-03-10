@@ -1,4 +1,4 @@
-<h4>{{ 'preview::tab:feedback list' }}</h4>
+<h4>{{ 'preview::tab:feedback list' | trans }}</h4>
 <br>
 {% for basket_element in feedbackElementDatas %}
     {% set basket = basket_element.getBasket() %}
@@ -14,16 +14,16 @@
                     ( {{ 'preview::tab:feedback open' | trans }} )
                 {% endif %}
             </dt>
-                <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
-                    {% set initiator = validationSession.getInitiator().getDisplayName() %}
-                    {% set createdDate = app['date-formatter'].getDateTranslated(validationSession.getCreated()) %}
+            <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
+                {% set initiator = validationSession.getInitiator().getDisplayName() %}
+                {% set createdDate = app['date-formatter'].getDateTranslated(validationSession.getCreated()) %}
 
-                    {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
-                </dd>
+                {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
+            </dd>
 
-                {% for choice in basket_element.getValidationDatas() %}
-                    {% if validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() %}
-                        {% if choice.getParticipant().getCanAgree() %}
+            {% for choice in basket_element.getValidationDatas() %}
+                {% if validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() %}
+                    {% if choice.getParticipant().getCanAgree() %}
                         <dd style="margin-bottom: 5px;position:relative;">
                             <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
                             <span style="position: absolute;width:calc(100% - 60px);border-bottom:1px solid #484848;height: 43%;right:30px;left:30px;top:0;"></span>
@@ -35,25 +35,25 @@
                                 <img style="cursor:help;float:right;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
                             {% endif %}
                         </dd>
-                        {% endif %}
-                    {% else %}
-                        {% if choice.getParticipant().getCanAgree() and choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
-                            <dd style="margin-bottom: 5px;position:relative;">
-                                <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
-                                <span style="position: absolute;width:calc(100% - 60px);border-bottom:1px solid #484848;height: 43%;right:30px;left:30px;top:0;"></span>
-                                {% if choice.getAgreement() == true %}
-                                    <img style="cursor:help;float:right;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
-                                {% elseif choice.getAgreement() is null %}
-                                    <img style="cursor:help;float:right;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
-                                {% else %}
-                                    <img style="cursor:help;float:right;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
-                                {% endif %}
-                            </dd>
-                        {% endif %}
-
+                    {% endif %}
+                {% else %}
+                    {% if choice.getParticipant().getCanAgree() and choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
+                        <dd style="margin-bottom: 5px;position:relative;">
+                            <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
+                            <span style="position: absolute;width:calc(100% - 60px);border-bottom:1px solid #484848;height: 43%;right:30px;left:30px;top:0;"></span>
+                            {% if choice.getAgreement() == true %}
+                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                            {% elseif choice.getAgreement() is null %}
+                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
+                            {% else %}
+                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                            {% endif %}
+                        </dd>
                     {% endif %}
 
-                {% endfor %}
+                {% endif %}
+
+            {% endfor %}
         </dl>
     {% endif %}
 {% endfor %}
