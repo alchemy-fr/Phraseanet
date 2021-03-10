@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-03-10T07:16:44Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -2907,9 +2907,9 @@
         <target state="translated">Enable FTP for users</target>
         <jms:reference-file line="26">Form/Configuration/FtpExportFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="25b38d3df5918f72187522a9cf74625c729ac6ad" resname="Enable Forcing authentication to see push content">
+      <trans-unit id="25b38d3df5918f72187522a9cf74625c729ac6ad" resname="Enable Forcing authentication to see push content" approved="no">
         <source>Enable Forcing authentication to see push content</source>
-        <target state="needs-translation">Enable the force authentication option for Pushes and Feedbacks sessions</target>
+        <target state="needs-translation">Enable the force authentication option for Push and Feedback sessions</target>
         <jms:reference-file line="51">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4e2edcbbb1c6aa26ccce6fbf04bec121c904dcec" resname="Enable H264 stream mode" approved="yes">
@@ -8290,9 +8290,9 @@
         <target state="translated">Version</target>
         <jms:reference-file line="48">web/admin/databases.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d1699958ea09b3eb5a8a9d22737abb8ada40a382" resname="admin::base: Warning Worker is in process to indexing the same databox">
+      <trans-unit id="d1699958ea09b3eb5a8a9d22737abb8ada40a382" resname="admin::base: Warning Worker is in process to indexing the same databox" approved="no">
         <source>admin::base: Warning Worker is in process to indexing the same databox</source>
-        <target state="needs-translation">Worker is in process to indexing the same databox</target>
+        <target state="needs-translation">Indexation already in progress on this databox</target>
         <jms:reference-file line="377">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="285dcb366c1405ecd81b005d91efc4ec8413d837" resname="admin::base: arreter la publication de la base" approved="yes">
@@ -11810,9 +11810,9 @@
         <target state="needs-translation">Closed</target>
         <jms:reference-file line="12">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="678d8240bfd591b28479d51678dc15a5ad4e2b80" resname="preview::tab:feedback list">
+      <trans-unit id="678d8240bfd591b28479d51678dc15a5ad4e2b80" resname="preview::tab:feedback list" approved="no">
         <source>preview::tab:feedback list</source>
-        <target state="new">preview::tab:feedback list</target>
+        <target state="needs-translation">Feedback List</target>
         <jms:reference-file line="1">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open">
