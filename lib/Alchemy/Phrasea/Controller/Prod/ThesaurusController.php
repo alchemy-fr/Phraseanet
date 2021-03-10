@@ -9,6 +9,7 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use ACL;
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
@@ -29,20 +30,27 @@ class ThesaurusController extends Controller
     {
         $sbas_id = $request->get('sbas_id');
         $tx_term_id = $request->get('tx_term_id');
-        $records = RecordsRequest::fromRequest($this->app, $request, false);
+        $records = RecordsRequest::fromRequest($this->app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, [ACL::CANMODIFRECORD]);
 
         // twig parameters
         $twp = [
-            'error'     => null,
-            'dlg_level' => $request->get('dlg_level'),
+            'error'        => null,
+            'dlg_level'    => $request->get('dlg_level'),
             //    'fields' => [],    // fields the can receive the value
             //    'fvalue' => 'Europe',
-            'up_paths'  => [],
+            'lst'          => $records->serializedList(),
+            'received_cnt' => $records->received()->count(),
+            'rejected_cnt' => $records->rejected()->count(),
+            'up_paths'     => [],
         ];
 
         // find which field(s) can be updated, that is what tbranches are linked to a parent of the term
 
         try {
+            if($records->count() === 0) {
+                // no record is editable
+                throw new Exception("you don't have rights to edit those records");
+            }
             $dbox = $this->app->getApplicationBox()->get_databox($sbas_id);
 
             if (!($domth = $dbox->get_dom_thesaurus())) {
@@ -55,7 +63,7 @@ class ThesaurusController extends Controller
                 if (!($q = $field->get_tbranch())) {
                     continue;
                 }
-                $fieldName = $field->get_name();
+                //$fieldName = $field->get_name();
                 $roots = $xpath->query($q);     // linked nodes for this field
                 $q = '(' . $q . ')//sy[@id=\'' . $tx_term_id . '\']';   // can we find the term under the tbranch(es) ?
                 // normally we should find only one linked parent, since we search from a unique term
