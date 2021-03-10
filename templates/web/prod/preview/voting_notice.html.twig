@@ -15,7 +15,12 @@
                 {% endif %}
             </dt>
             <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
-                {% set initiator = validationSession.getInitiator().getDisplayName() %}
+                {% set initiator %}
+                    <a style="color:#27bbe2;" href="mailto:{{ validationSession.getInitiator().getEmail() }}?subject={{ 'preview::tab:feedback mail subject' | trans | url_encode}}">
+                        {{ validationSession.getInitiator().getDisplayName() }}
+                    </a>
+                {% endset %}
+
                 {% set createdDate = app['date-formatter'].getDateTranslated(validationSession.getCreated()) %}
 
                 {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
