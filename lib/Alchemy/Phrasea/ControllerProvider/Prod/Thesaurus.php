@@ -48,6 +48,7 @@ class Thesaurus implements ControllerProviderInterface, ServiceProviderInterface
 //            $firewall->requireRight(\ACL::CANMODIFRECORD);
 //        });
 
+        /** @uses ThesaurusController::dropRecordsAction() */
         $controllers->get('/droprecords', 'controller.prod.thesaurus:dropRecordsAction');
 
         return $controllers;

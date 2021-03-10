@@ -265,8 +265,8 @@ const thesaurusService = services => {
                 size: 'Custom',
                 customWidth: 770,
                 customHeight: 400,
-                title: localeService.t('add data'),
-                loading: true
+                // title: localeService.t('add data'),
+                loading: true,
             },
             0
         );
