@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-03-10T07:16:59Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -11805,19 +11805,19 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Validation</target>
         <jms:reference-file line="954">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="f7f27fe47e2d3556c660a6fade6ceba7e8e62c4c" resname="preview::tab:feedback closed">
+      <trans-unit id="f7f27fe47e2d3556c660a6fade6ceba7e8e62c4c" resname="preview::tab:feedback closed" approved="no">
         <source>preview::tab:feedback closed</source>
-        <target state="needs-translation">Validation fermée</target>
+        <target state="needs-translation">Fermée</target>
         <jms:reference-file line="12">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="678d8240bfd591b28479d51678dc15a5ad4e2b80" resname="preview::tab:feedback list">
+      <trans-unit id="678d8240bfd591b28479d51678dc15a5ad4e2b80" resname="preview::tab:feedback list" approved="no">
         <source>preview::tab:feedback list</source>
-        <target state="new">preview::tab:feedback list</target>
+        <target state="needs-translation">Liste des validations</target>
         <jms:reference-file line="1">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open">
+      <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open" approved="no">
         <source>preview::tab:feedback open</source>
-        <target state="needs-translation">Validation ouverte</target>
+        <target state="needs-translation">Ouverte</target>
         <jms:reference-file line="14">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b130a62ee72757a562af1398e01cd0fc5aad3d30" resname="preview::visualisation" approved="yes">
