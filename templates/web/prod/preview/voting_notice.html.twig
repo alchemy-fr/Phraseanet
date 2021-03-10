@@ -4,9 +4,10 @@
     {% set basket = basket_element.getBasket() %}
     {% set validationSession = basket.getValidation() %}
     {% if validationSession.isParticipant(app.getAuthenticatedUser()) and (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationSession.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() )%}
+        {% set basketName = basket.getName() %}
         <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
             <dt>
-                {{ basket.getName() }}
+                {{ basketName }}
 
                 {% if validationSession.getExpires() < date() %}
                     ( {{ 'preview::tab:feedback closed' | trans }} )
@@ -15,7 +16,12 @@
                 {% endif %}
             </dt>
             <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
-                {% set initiator = validationSession.getInitiator().getDisplayName() %}
+                {% set initiator %}
+                    <a style="color:#27bbe2;" href="mailto:{{ validationSession.getInitiator().getEmail() }}?subject={{ 'preview::tab:feedback mail subject' | trans | url_encode}}{{ ' ' ~ basketName | url_encode }}">
+                        {{ validationSession.getInitiator().getDisplayName() }}
+                    </a>
+                {% endset %}
+
                 {% set createdDate = app['date-formatter'].getDateTranslated(validationSession.getCreated()) %}
 
                 {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
