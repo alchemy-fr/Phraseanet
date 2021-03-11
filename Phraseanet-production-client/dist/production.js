@@ -8634,7 +8634,7 @@ module.exports = {
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 88 */
@@ -10229,14 +10229,21 @@ var workzone = function workzone(services) {
             extraClass: 'tooltip_flat'
         });
 
-        (0, _jquery2.default)('#idFrameC .tabs').tabs({
+        (0, _jquery2.default)('#idFrameC .tabs').data('hash', null) // unknowk for now
+        .tabs({
+            create: function activate(event, ui) {
+                (0, _jquery2.default)(this).data('hash', ui.tab.context.hash);
+            },
             activate: function activate(event, ui) {
+                (0, _jquery2.default)(this).data('hash', ui.newTab.context.hash);
                 if (ui.newTab.context.hash === '#thesaurus_tab') {
                     appEvents.emit('thesaurus.show');
                 }
                 workzoneOptions.open();
+                console.log("tab is " + (0, _jquery2.default)('#idFrameC .tabs').data("hash"));
             }
         });
+
         (0, _jquery2.default)('.basket_refresher').on('click', function () {
             return workzoneOptions.refresh('current');
         });
@@ -10566,6 +10573,12 @@ var workzone = function workzone(services) {
 
         (0, _jquery2.default)('.bloc', cache).droppable({
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('grouping') && !(0, _jquery2.default)(elem).hasClass('SSTT')) {
                     return true;
                 }
@@ -10589,6 +10602,12 @@ var workzone = function workzone(services) {
             hoverClass: 'baskDrop',
             tolerance: 'pointer',
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                     if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
                         return false;
@@ -10636,6 +10655,12 @@ var workzone = function workzone(services) {
             hoverClass: 'baskDrop',
             tolerance: 'pointer',
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                     if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
                         return false;
@@ -10883,6 +10908,12 @@ var workzone = function workzone(services) {
 
                 dest.droppable({
                     accept: function accept(elem) {
+                        // return false;
+                        var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                        if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                            return false; // can't drop on baskets if the baskets tab is not front
+                        }
+
                         if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                             if ((0, _jquery2.default)(elem).closest('.content')[0] === (0, _jquery2.default)(this)[0]) {
                                 return false;
@@ -11371,6 +11402,15 @@ var thesaurusService = function thesaurusService(services) {
     var sbas = void 0;
     var bas2sbas = void 0;
     var trees = void 0; // @TODO remove global
+
+    var dragging = false; // true when an object is dragged over the th zone
+    var dragTarget = null; // the target where the mouse is over
+    var dragUniqueSbid = null; // will end-up as : null (nothing dragged) ; false (many sbids) ; sbid (same sbid for all)
+    var dragLstRecords = ''; // list or records, format as expected for RecordsRequest::fromRequest
+    var url = configService.get('baseUrl');
+
+    var searchSelection = { asArray: [], serialized: '' };
+
     var initialize = function initialize(params) {
         var $container = params.$container;
 
@@ -11387,6 +11427,7 @@ var thesaurusService = function thesaurusService(services) {
         }
 
         startThesaurus();
+        console.log("hello from thesaurus ! container=", $container);
         var cclicks = 0;
         var cDelay = 350;
         var cTimer = null;
@@ -11444,8 +11485,186 @@ var thesaurusService = function thesaurusService(services) {
             T_Gfilter(event.currentTarget);
         });
 
+        /**
+         * drag/drop on terms : we will not set each term as droppable (costly), but the whole tx zone.
+         */
+        (0, _jquery2.default)('#THPD_T_tree').droppable({
+            accept: function accept(elem) {
+                var lstbr = searchSelection.asArray;
+                console.log("lstbr", lstbr);
+
+                dragUniqueSbid = null;
+                lstbr.forEach(function (sbid_rid) {
+                    sbid_rid = sbid_rid.split('_');
+                    var sbid = sbid_rid[0];
+                    var rid = sbid_rid[1];
+                    dragUniqueSbid = dragUniqueSbid === null ? sbid : sbid === dragUniqueSbid ? sbid : false;
+                });
+                dragLstRecords = lstbr.join(';'); // a list as expected for RecordsRequest::fromRequest
+
+                (0, _jquery2.default)(this).removeClass('draggingOver');
+                console.log("accept", elem);
+                // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
+                //     return true;
+                // }
+                dragging = false; // == not yet dragging something over th
+
+
+                // the th zone can accet drags only when in front (activated tab)
+                // 'hash' is set by the 'workzone' js code.
+                // return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+
+                if ((0, _jquery2.default)('#idFrameC .tabs').data('hash') !== '#thesaurus_tab') {
+                    return false; // can't drop on th if the th tab is not front
+                }
+
+                // by using classes on both main container AND the (unique) acceptable thesaurus zone
+                // we can have custom drag/drop css for both ok / reject
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver'); // the container
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver'); // all thesaurus
+
+                if (dragUniqueSbid === null || dragUniqueSbid === false) {
+                    // many sbids
+                    // return false;    // don't return false, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                }
+
+                return true;
+            },
+            scope: 'objects',
+            hoverClass: 'groupDrop',
+            tolerance: 'pointer',
+            over: function over(event, ui) {
+                console.log("over", event, ui, event.toElement);
+
+                (0, _jquery2.default)('#THPD_T_tree', $container).addClass('draggingOver');
+                if (dragUniqueSbid !== null && dragUniqueSbid !== false) {
+                    (0, _jquery2.default)('#TX_P\\.' + dragUniqueSbid + '\\.T', $container).addClass('draggingOver');
+                }
+                /*
+                $(this).addClass('draggingOver');
+                 if(dragTarget) {
+                    // something was already hilighted (should no happen)
+                    dragTarget.removeClass('dragOver');
+                }
+                dragging = true;            // == dragging something over th
+                dragTarget = null;
+                // for now, target can only be a term (which has a sbas_id and tx_term_id props)
+                const target = $(event.toElement);
+                const sbas_id = target.data('sbas_id');
+                const tx_term_id = target.data('tx_term_id');
+                if(sbas_id && tx_term_id) {
+                    dragTarget = target;
+                    dragTarget.addClass('dragOver');
+                    console.log("IN : " + dragTarget.attr('id'));
+                }
+                */
+            },
+            out: function out(event, ui) {
+                console.log("out", event, ui, event.toElement);
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+                /*
+                $(this).removeClass('draggingOver');
+                if(dragTarget) {
+                    // something was hilighted
+                    dragTarget.removeClass('dragOver');
+                }
+                dragging = false;    // == no more dragging something over th
+                dragTarget = null;
+                  */
+            },
+            drop: function drop(event, ui) {
+                console.log("drop", event, ui);
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+
+                var target = (0, _jquery2.default)(event.toElement);
+                var sbas_id = target.data('sbas_id').toString(); // set on html by ThesaurusXmlHttpController.php
+                var tx_term_id = target.data('tx_term_id').toString(); // set on html by ThesaurusXmlHttpController.php
+
+                if (sbas_id === dragUniqueSbid) {
+                    dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                }
+
+                /*
+                $(this).removeClass('draggingOver');
+                if(dragTarget) {
+                    // const tid = $(event.toElement).data('tx_term_id');
+                    console.log("DROP ON id=" + dragTarget.attr('id'));
+                    dragTarget.removeClass('dragOver');
+                //                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
+                }
+                dragging = false;    // == no more dragging something over th
+                dragTarget = null;
+                  */
+            }
+        })
+        // track the mouse
+        .mousemove(function (event) {
+            return;
+            if (dragging) {
+                var target = (0, _jquery2.default)(event.toElement);
+                var sbas_id = target.data('sbas_id'); // set on html by ThesaurusXmlHttpController.php
+                var tx_term_id = target.data('tx_term_id'); // set on html by ThesaurusXmlHttpController.php
+                var oldTarget = dragTarget;
+                dragTarget = sbas_id && tx_term_id ? target : null;
+
+                // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
+
+                if (oldTarget && !oldTarget.is(dragTarget)) {
+                    // the mouse has quit a overed term (oldTargetId)
+                    oldTarget.removeClass('dragOver');
+                    console.log("OUT : " + oldTarget.attr('id'));
+                }
+
+                if (dragTarget && !dragTarget.is(oldTarget)) {
+                    // the mouse just overs a new term
+                    dragTarget.addClass('dragOver');
+                    console.log("IN : " + dragTarget.attr('id'));
+                }
+            }
+        });
+
         searchValue = _underscore2.default.debounce(searchValue, 300);
     };
+
+    function dropRecordsOnTerm(sbas_id, tx_term_id, lstRecords) {
+        var dlg = _dialog2.default.create(services, {
+            size: 'Custom',
+            customWidth: 770,
+            customHeight: 400,
+            // title: localeService.t('add data'),
+            loading: true
+        }, 0);
+        // dlg.setContent("");
+
+        // let parms = {
+        //     url: '/thesaurus/drop_records.php',
+        //     data: {
+        //         'sbas_id': sbas_id,
+        //         'tx_term_id': tx_term_id,
+        //         'lst': lstRecords
+        //     },
+        //     async: true,
+        //     cache: false,
+        //     dataType: 'json',
+        //     // timeout: 10 * 60 * 1000, // 10 minutes !
+        //     success: function (result, textStatus) {
+        //         dlg.setContent(result);
+        //     }
+        // };
+
+        _jquery2.default.get(url + 'prod/thesaurus/droprecords', {
+            'dlg_level': 0,
+            'sbas_id': sbas_id,
+            'tx_term_id': tx_term_id,
+            'lst': lstRecords
+        }, function (data, textStatus) {
+            dlg.setContent(data);
+        });
+    }
 
     function show() {
         // first show of thesaurus
@@ -12543,6 +12762,12 @@ var thesaurusService = function thesaurusService(services) {
             }
         });
     }
+
+    appEvents.listenAll({
+        'broadcast.searchResultSelection': function broadcastSearchResultSelection(selection) {
+            searchSelection = selection;
+        }
+    });
 
     return { initialize: initialize, show: show };
 };
@@ -50210,7 +50435,7 @@ module.exports = VTTRegion;
 /* 148 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 149 */
