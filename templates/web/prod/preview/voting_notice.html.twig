@@ -6,7 +6,13 @@
     {% if validationSession.isParticipant(app.getAuthenticatedUser()) and (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationSession.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() )%}
         {% set basketName = basket.getName() %}
         <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
-            <dt>
+            <dt data-kind="BASK"
+                data-position="0"
+                data-id="{{ basket.getId() }}"
+                data-reload="true"
+                class="to-open-preview-action" title="{{ basket.getDescription() }}"
+                style="cursor:pointer;"
+            >
                 {{ basketName }}
 
                 {% if validationSession.getExpires() < date() %}
