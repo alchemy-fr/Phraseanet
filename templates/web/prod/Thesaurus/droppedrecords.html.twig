@@ -1,3 +1,6 @@
+
+<h3 style="color: red">POC/Experimental. The OK button will <u>NOT</u> edit records.</h3>
+
 {% if error %}
 
     {{ error }}
@@ -11,7 +14,7 @@
     <form id="DroppedOnTH_form">
         <table>
             <tr>
-                <th>svalue</th>
+                <th>value</th>
                 <th><span class="fieldSelected" style="display: none">operation</span></th>
                 <th>to field</th>
             </tr>
@@ -43,7 +46,9 @@
                         <option class="mono" value="set">set to</option>
                         <option class="multi" value="add">add to</option>
                         <option class="multi" value="replace">replace all</option>
-                        <option class="mono multi" value="remove">remove from</option>
+                        {# do NOT mix the following 2 options as one #}
+                        <option class="mono" value="delete">delete</option>
+                        <option class="multi" value="delete">remove from</option>
                     </select>
                 </td>
                 <td>
@@ -88,14 +93,30 @@
                     $(' .fieldSelect').filter(function () { return $(this).prop('selectedIndex')>0;}).each(function () {
                         let n = $(this).data('n');
                         data.push({
-                            'field': $(this).val(),
-                            'op'   : $(' .actionSelect._'+n, $container).val(),
-                            'value': $(' .synonym._'+n, $container).val()
+                            'field_name': $(this).val(),
+                            'action'    : $(' .actionSelect._'+n, $container).val(),
+                            'value'     : $(' .synonym._'+n, $container).val()
                         });
                     });
+                    data = {
+                        'records': {{ records|json_encode|raw }},
+                        'actions': {
+                            'metadatas': data
+                        }
+                    };
+
                     console.log(data);
 
-                    // $( this ).dialog( "close" );
+                    $.ajax({
+                            url: "{{ path('prod_edit_applyJSAction') }}",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(data),
+                            success: function (data, textStatus) {
+                                console.log(data);
+                            }
+                        },
+                    );
                 }
             },
             {
@@ -115,18 +136,13 @@
             let select = $(this);
             let n = select.data('n');
 
-            if( $('option:eq(' + select.prop('selectedIndex') + ')', select).data('multi') ) {
-                // this select is on a multi-valued field
-                $(' .actionSelect._'+n+' OPTION.mono', $container).hide();
-                $(' .actionSelect._'+n+' OPTION.multi', $container).show();
-                $(' .actionSelect._'+n).prop('selectedIndex', 1); // add
-            }
-            else {
-                // this select is on a mono-valued field
-                $(' .actionSelect._'+n+' OPTION.multi', $container).hide();
-                $(' .actionSelect._'+n+' OPTION.mono', $container).show();
-                $(' .actionSelect._'+n).prop('selectedIndex', 0); // set
-            }
+            // show only possible actions, depending on field is mono/multi
+            let actionSelect = $(' .actionSelect._'+n, $container);
+            let multi = !!$('option:eq(' + select.prop('selectedIndex') + ')', select).data('multi');
+            $(' OPTION.mono', actionSelect).toggle(!multi);
+            $(' OPTION.multi', actionSelect).toggle(multi);
+            // set default action
+            actionSelect.prop('selectedIndex', multi ? 1 : 0); // 1=add : 0=set
 
             // if at least one destination field is set, show some elements
             let oneFieldSet = false;

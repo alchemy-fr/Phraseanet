@@ -30,15 +30,24 @@ class ThesaurusController extends Controller
     {
         $sbas_id = $request->get('sbas_id');
         $tx_term_id = $request->get('tx_term_id');
+
         $records = RecordsRequest::fromRequest($this->app, $request, RecordsRequest::FLATTEN_YES_PRESERVE_STORIES, [ACL::CANMODIFRECORD]);
+
+        // array of sbid/rid. too bad we cannot array_map on arraycollection
+        $recRefs = [];
+        foreach($records as $r) {
+            $recRefs[] = [
+                'sbas_id'=>$r->getDataboxId(),
+                'record_id'=>$r->getRecordId()
+            ];
+        }
 
         // twig parameters
         $twp = [
             'error'        => null,
             'dlg_level'    => $request->get('dlg_level'),
-            //    'fields' => [],    // fields the can receive the value
-            //    'fvalue' => 'Europe',
-            'lst'          => $records->serializedList(),
+            // 'lst'          => $records->serializedList(),
+            'records'      => $recRefs,
             'received_cnt' => $records->received()->count(),
             'rejected_cnt' => $records->rejected()->count(),
             'up_paths'     => [],

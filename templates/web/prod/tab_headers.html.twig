@@ -17,7 +17,10 @@
                 </li>
             {% endif %}
             <li class="ui-corner-top baskets">
-                <a href="#baskets_wrapper" class="WZbasketTab WZtabs">
+                {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
+                {% set hash = expose_activate ? '#baskets_wrapper' : '#baskets' %}
+
+                <a href="{{ hash }}" class="WZbasketTab WZtabs">
                     <img src="/assets/common/images/icons/workzone32.png" title="{{ 'phraseanet:: baskets' | trans }}"/>
                     <div id="basket_menu_trigger">&#9660;</div>
                 </a>
