@@ -7317,24 +7317,27 @@ div.thesaurus div.c {
   position: absolute;
 }
 
+.treeview ul li {
+  /*
+            &:hover {
+                color: $textPrimaryColor;
+            }
+            span {
+                color: $mediumTextColor;
+                .dragOver {
+                    background-color: $highlightBackgroundColor;
+                    color: $highlightTextColor;
+                }
+            }
+*/
+}
+
 .treeview ul li .hitarea {
   background: url("/assets/common/images/icons/icon_tree.png") 0 0 no-repeat;
   position: relative;
   height: 9px;
   width: 9px;
   margin-top: 5px;
-}
-
-.treeview ul li:hover {
-  color: #333333;
-}
-
-.treeview ul li span {
-  color: #333333;
-}
-
-.treeview ul li span.h {
-  color: #884c92 !important;
 }
 
 #THPD_T_treeBox,
@@ -7379,6 +7382,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #THPD_tabs {
   right: 0;
+  /*
+    .treeview LI.selected SPAN {
+        background-color: $thesaurusColor !important;
+        color: $textPrimaryActiveColor !important;
+    }
+
+    .treeview LI.selected SPAN {
+        background-color: #ff0000;
+    }
+
+    .treeview LI.selected LI SPAN {
+        background-color: transparent;
+    }
+
+    .context-menu-item-disabled {
+        background-color: #ff0000;
+    }
+
+ */
 }
 
 #THPD_tabs .ui-tabs-nav li.th_tab a {
@@ -7426,14 +7448,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
   padding-bottom: 5px;
 }
 
-#THPD_tabs .treeview span {
+#THPD_tabs .treeview span.tx_term {
   cursor: pointer;
+  color: #333333;
 }
 
-#THPD_tabs .treeview span.h {
-  /* highlighted (filtered) */
-  color: #ffffd0;
+#THPD_tabs .treeview span.tx_term.h {
+  /* highlighted (filtered as matching the filter input) */
+  color: #884c92;
   font-weight: bold;
+}
+
+#THPD_tabs .treeview span.tx_term:hover {
+  color: #333333;
+}
+
+#THPD_tabs .treeview span.tx_term.dragOver {
+  /* highlited as a target for dropping */
+  background-color: #076882;
+  color: #ffffff;
 }
 
 #THPD_tabs .treeview i {
@@ -7447,21 +7480,27 @@ dans l'onglet thesaurus : arbres, menus contextuels
   font-family: courier;
 }
 
-#THPD_tabs .treeview LI.selected SPAN {
-  background-color: #884c92 !important;
-  color: #1a1a1a !important;
+#THPD_T_tree.draggingOver {
+  /* something is currently dragged over, we change some hover */
 }
 
-#THPD_tabs .treeview LI.selected SPAN {
-  background-color: #ff0000;
+#THPD_T_tree.draggingOver:hover {
+  cursor: not-allowed;
 }
 
-#THPD_tabs .treeview LI.selected LI SPAN {
-  background-color: transparent;
+#THPD_T_tree.draggingOver span.tx_term:hover {
+  color: #333333;
+  cursor: not-allowed;
 }
 
-#THPD_tabs .context-menu-item-disabled {
-  background-color: #ff0000;
+#THPD_T_tree.draggingOver LI.draggingOver:hover {
+  cursor: default;
+}
+
+#THPD_T_tree.draggingOver LI.draggingOver span.tx_term:hover {
+  background-color: #076882;
+  color: #ffffff;
+  cursor: copy;
 }
 
 #idFrameC .ui-tabs #THPD_C.ui-tabs-panel,
