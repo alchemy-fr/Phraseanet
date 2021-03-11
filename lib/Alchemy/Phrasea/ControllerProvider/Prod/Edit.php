@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\EditController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -53,6 +53,11 @@ class Edit implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/', 'controller.prod.edit:submitAction');
 
         $controllers->get('/vocabulary/{vocabulary}/', 'controller.prod.edit:searchVocabularyAction');
+
+        /** @uses \Alchemy\Phrasea\Controller\Prod\EditController::applyJSAction */
+        $controllers
+            ->post('/applyjs/', 'controller.prod.edit:applyJSAction')
+            ->bind('prod_edit_applyJSAction');
 
         $controllers->post('/apply/', 'controller.prod.edit:applyAction');
 

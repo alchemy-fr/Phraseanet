@@ -540,7 +540,12 @@ const workzone = (services) => {
 
         $('.bloc', cache).droppable({
             accept: function (elem) {
-return false;
+// return false;
+                let currentTab = $('#idFrameC .tabs').data('hash');
+                if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false;   // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                     return true;
                 }
@@ -565,7 +570,12 @@ return false;
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
-//return false;
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
@@ -615,7 +625,12 @@ return false;
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
-return false;
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
@@ -864,7 +879,12 @@ return false;
 
                 dest.droppable({
                     accept: function (elem) {
-return false;
+// return false;
+                        let currentTab = $('#idFrameC .tabs').data('hash');
+                        if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                            return false;   // can't drop on baskets if the baskets tab is not front
+                        }
+
                         if ($(elem).hasClass('CHIM')) {
                             if ($(elem).closest('.content')[0] === $(this)[0]) {
                                 return false;

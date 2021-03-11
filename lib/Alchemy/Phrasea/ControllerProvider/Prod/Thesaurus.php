@@ -42,11 +42,6 @@ class Thesaurus implements ControllerProviderInterface, ServiceProviderInterface
     public function connect(Application $app)
     {
         $controllers = $this->createAuthenticatedCollection($app);
-//        $firewall = $this->getFirewall($app);
-
-//        $controllers->before(function () use ($firewall) {
-//            $firewall->requireRight(\ACL::CANMODIFRECORD);
-//        });
 
         /** @uses ThesaurusController::dropRecordsAction() */
         $controllers->get('/droprecords', 'controller.prod.thesaurus:dropRecordsAction');
