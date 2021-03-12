@@ -65715,6 +65715,7 @@ var previewRecordService = function previewRecordService(services) {
                 (0, _jquery2.default)('#PREVIEWIMGDESCINNER').empty().append(data.desc);
                 (0, _jquery2.default)('#HISTORICOPS').empty().append(data.history);
                 (0, _jquery2.default)('#popularity').empty().append(data.popularity);
+                (0, _jquery2.default)('#NOTICE-INNER').empty().append(data.votingNotice);
 
                 if ((0, _jquery2.default)('#popularity .bitly_link').length > 0) {
                     if (window.BitlyCB !== undefined && window.BitlyClient !== undefined) {
