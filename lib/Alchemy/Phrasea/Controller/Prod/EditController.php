@@ -26,6 +26,8 @@ use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use stdClass;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -342,6 +344,29 @@ class EditController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+
+    /**
+     * performs an editing using a similar json-body as api_v3:record:patch (except here we can work on a list of records)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function applyJSAction(Request $request): JsonResponse
+    {
+        // todo : by worker
+
+        // for now call record_adapter. no check, no acl, ...
+        /** @var stdClass $arg */
+        $arg = json_decode($request->getContent());
+
+        foreach($arg->records as $rec) {
+            $r = $this->getApplicationBox()->get_databox($rec->sbas_id)->get_record($rec->record_id);
+            $r->setMetadatasByActions($arg->actions);
+        }
+
+        return $this->app->json(['success' => true]);
+    }
+
     /**
      * @param int $preset_id
      * @return Preset
@@ -359,7 +384,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsLoadAction($preset_id)
     {
@@ -381,7 +406,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsListAction(Request $request)
     {
@@ -399,7 +424,7 @@ class EditController extends Controller
      * route DELETE "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsDeleteAction($preset_id)
     {
@@ -421,7 +446,7 @@ class EditController extends Controller
      * route POST "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsSaveAction(Request $request)
     {

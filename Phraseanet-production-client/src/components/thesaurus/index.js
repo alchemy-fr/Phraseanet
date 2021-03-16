@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import _ from 'underscore';
-import { sprintf } from 'sprintf-js';
+import {sprintf} from 'sprintf-js';
 import * as AppCommons from './../../phraseanet-common';
 import dialog from './../../phraseanet-common/components/dialog';
+
 require('./../../phraseanet-common/components/vendors/contextMenu');
 
 const thesaurusService = services => {
@@ -12,6 +13,16 @@ const thesaurusService = services => {
     let sbas;
     let bas2sbas;
     let trees; // @TODO remove global
+
+    let dragging = false;       // true when an object is dragged over the th zone
+    let dragTarget = null;      // the target where the mouse is over
+    let dragUniqueSbid = null;  // will end-up as : null (nothing dragged) ; false (many sbids) ; sbid (same sbid for all)
+    let dragLstRecords = ''     // list or records, format as expected for RecordsRequest::fromRequest
+    const url = configService.get('baseUrl');
+
+    let searchSelection = {asArray: [], serialized: ''};
+
+
     const initialize = params => {
         let { $container } = params;
 
@@ -29,6 +40,7 @@ const thesaurusService = services => {
         }
 
         startThesaurus();
+        console.log("hello from thesaurus ! container=", $container);
         let cclicks = 0;
         const cDelay = 350;
         let cTimer = null;
@@ -93,8 +105,190 @@ const thesaurusService = services => {
                 T_Gfilter(event.currentTarget);
             });
 
+        /**
+         * drag/drop on terms : we will not set each term as droppable (costly), but the whole tx zone.
+         */
+        $('#THPD_T_tree')
+            .droppable({
+                accept: function(elem) {
+                    let lstbr = searchSelection.asArray;
+                    console.log("lstbr", lstbr);
+
+                    dragUniqueSbid = null;
+                    lstbr.forEach(sbid_rid => {
+                        sbid_rid = sbid_rid.split('_');
+                        let sbid = sbid_rid[0];
+                        let rid = sbid_rid[1];
+                        dragUniqueSbid = (dragUniqueSbid===null) ? sbid : (sbid===dragUniqueSbid ? sbid : false);
+                    });
+                    dragLstRecords = lstbr.join(';');   // a list as expected for RecordsRequest::fromRequest
+
+                    $(this).removeClass('draggingOver');
+                    console.log("accept", elem);
+                    // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
+                    //     return true;
+                    // }
+                    dragging = false;    // == not yet dragging something over th
+
+
+                    // the th zone can accet drags only when in front (activated tab)
+                    // 'hash' is set by the 'workzone' js code.
+                    // return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+
+                    if($('#idFrameC .tabs').data('hash') !== '#thesaurus_tab') {
+                        return false;   // can't drop on th if the th tab is not front
+                    }
+
+                    // by using classes on both main container AND the (unique) acceptable thesaurus zone
+                    // we can have custom drag/drop css for both ok / reject
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');      // the container
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');   // all thesaurus
+
+                    if(dragUniqueSbid === null || dragUniqueSbid === false) {
+                        // many sbids
+                        // return false;    // don't return false, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                    }
+
+                    return true;
+                },
+                scope: 'objects',
+                hoverClass: 'groupDrop',
+                tolerance: 'pointer',
+                over: function(event, ui) {
+                    console.log("over", event, ui, event.toElement);
+
+                    $('#THPD_T_tree', $container).addClass('draggingOver');
+                    if(dragUniqueSbid !== null && dragUniqueSbid !== false) {
+                        $('#TX_P\\.'+dragUniqueSbid+'\\.T', $container).addClass('draggingOver');
+                    }
+                    /*
+                    $(this).addClass('draggingOver');
+
+                    if(dragTarget) {
+                        // something was already hilighted (should no happen)
+                        dragTarget.removeClass('dragOver');
+                    }
+                    dragging = true;            // == dragging something over th
+                    dragTarget = null;
+                    // for now, target can only be a term (which has a sbas_id and tx_term_id props)
+                    const target = $(event.toElement);
+                    const sbas_id = target.data('sbas_id');
+                    const tx_term_id = target.data('tx_term_id');
+                    if(sbas_id && tx_term_id) {
+                        dragTarget = target;
+                        dragTarget.addClass('dragOver');
+                        console.log("IN : " + dragTarget.attr('id'));
+                    }
+                    */
+                },
+                out: function(event, ui) {
+                    console.log("out", event, ui, event.toElement);
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+                    /*
+                    $(this).removeClass('draggingOver');
+                    if(dragTarget) {
+                        // something was hilighted
+                        dragTarget.removeClass('dragOver');
+                    }
+                    dragging = false;    // == no more dragging something over th
+                    dragTarget = null;
+
+                     */
+                },
+                drop: (event, ui) => {
+                    console.log("drop", event, ui);
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+
+                    const target = $(event.toElement);
+                    const sbas_id = target.data('sbas_id').toString();         // set on html by ThesaurusXmlHttpController.php
+                    const tx_term_id = target.data('tx_term_id').toString();   // set on html by ThesaurusXmlHttpController.php
+
+                    if(sbas_id === dragUniqueSbid) {
+                        dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                    }
+
+
+
+                        /*
+                        $(this).removeClass('draggingOver');
+                        if(dragTarget) {
+                            // const tid = $(event.toElement).data('tx_term_id');
+                            console.log("DROP ON id=" + dragTarget.attr('id'));
+                            dragTarget.removeClass('dragOver');
+    //                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
+                        }
+                        dragging = false;    // == no more dragging something over th
+                        dragTarget = null;
+
+                         */
+                }
+            })
+            // track the mouse
+            .mousemove( (event) => {
+                return;
+                if(dragging) {
+                    const target = $(event.toElement);
+                    const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                    const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+                    const oldTarget = dragTarget;
+                    dragTarget = (sbas_id && tx_term_id) ? target : null;
+
+                    // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                    // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                    // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
+
+                    if(oldTarget && !oldTarget.is(dragTarget)) {
+                        // the mouse has quit a overed term (oldTargetId)
+                        oldTarget.removeClass('dragOver');
+                        console.log("OUT : " + oldTarget.attr('id'));
+                    }
+
+                    if(dragTarget && !dragTarget.is(oldTarget)) {
+                        // the mouse just overs a new term
+                        dragTarget.addClass('dragOver');
+                        console.log("IN : " + dragTarget.attr('id'));
+                    }
+                }
+            });
+
         searchValue = _.debounce(searchValue, 300);
     };
+
+
+
+    function dropRecordsOnTerm(sbas_id, tx_term_id, lstRecords) {
+        let dlg = dialog.create(
+            services,
+            {
+                size: 'Custom',
+                customWidth: 770,
+                customHeight: 400,
+                // title: localeService.t('add data'),
+                loading: true
+            },
+            0
+        );
+
+        $.get(
+            `${url}prod/thesaurus/droprecords`,
+            {
+                'dlg_level': 0,
+                'sbas_id': sbas_id,
+                'tx_term_id': tx_term_id,
+                'lst': lstRecords
+            },
+            function (data, textStatus) {
+                dlg.setContent(data);
+            }
+        );
+    }
+
+
+
+
+
 
     function show() {
         // first show of thesaurus
@@ -1363,6 +1557,13 @@ const thesaurusService = services => {
             }
         });
     }
+
+    appEvents.listenAll({
+        'broadcast.searchResultSelection': (selection) => {
+            searchSelection = selection;
+        }
+    });
+
 
     return { initialize, show };
 };

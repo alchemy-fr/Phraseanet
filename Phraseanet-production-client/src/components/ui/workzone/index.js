@@ -7,6 +7,7 @@ import Selectable from '../../utils/selectable';
 import Alerts from '../../utils/alert';
 import dialog from './../../../phraseanet-common/components/dialog';
 import feedbackReminder from "../../basket/reminder";
+
 const humane = require('humane-js');
 require('./../../../phraseanet-common/components/tooltip');
 require('./../../../phraseanet-common/components/vendors/contextMenu');
@@ -196,14 +197,22 @@ const workzone = (services) => {
             extraClass: 'tooltip_flat'
         });
 
-        $('#idFrameC .tabs').tabs({
-            activate: function (event, ui) {
-                if (ui.newTab.context.hash === '#thesaurus_tab') {
-                    appEvents.emit('thesaurus.show');
+        $('#idFrameC .tabs')
+            .data('hash', null)  // unknowk for now
+            .tabs({
+                create:   function activate(event, ui) {
+                    $(this).data('hash', ui.tab.context.hash);
+                },
+                activate: function activate(event, ui) {
+                    $(this).data('hash', ui.newTab.context.hash)
+                    if (ui.newTab.context.hash === '#thesaurus_tab') {
+                        appEvents.emit('thesaurus.show');
+                    }
+                    workzoneOptions.open();
+                    console.log("tab is " + $('#idFrameC .tabs').data("hash"));
                 }
-                workzoneOptions.open();
-            }
-        });
+            });
+
         $('.basket_refresher').on('click', function () {
             return workzoneOptions.refresh('current');
         });
@@ -531,6 +540,12 @@ const workzone = (services) => {
 
         $('.bloc', cache).droppable({
             accept: function (elem) {
+// return false;
+                let currentTab = $('#idFrameC .tabs').data('hash');
+                if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false;   // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                     return true;
                 }
@@ -555,6 +570,12 @@ const workzone = (services) => {
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
@@ -604,6 +625,12 @@ const workzone = (services) => {
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
@@ -852,6 +879,12 @@ const workzone = (services) => {
 
                 dest.droppable({
                     accept: function (elem) {
+// return false;
+                        let currentTab = $('#idFrameC .tabs').data('hash');
+                        if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                            return false;   // can't drop on baskets if the baskets tab is not front
+                        }
+
                         if ($(elem).hasClass('CHIM')) {
                             if ($(elem).closest('.content')[0] === $(this)[0]) {
                                 return false;
