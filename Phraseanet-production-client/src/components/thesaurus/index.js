@@ -266,27 +266,10 @@ const thesaurusService = services => {
                 customWidth: 770,
                 customHeight: 400,
                 // title: localeService.t('add data'),
-                loading: true,
+                loading: true
             },
             0
         );
-        // dlg.setContent("");
-
-        // let parms = {
-        //     url: '/thesaurus/drop_records.php',
-        //     data: {
-        //         'sbas_id': sbas_id,
-        //         'tx_term_id': tx_term_id,
-        //         'lst': lstRecords
-        //     },
-        //     async: true,
-        //     cache: false,
-        //     dataType: 'json',
-        //     // timeout: 10 * 60 * 1000, // 10 minutes !
-        //     success: function (result, textStatus) {
-        //         dlg.setContent(result);
-        //     }
-        // };
 
         $.get(
             `${url}prod/thesaurus/droprecords`,

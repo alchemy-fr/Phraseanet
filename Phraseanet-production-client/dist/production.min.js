@@ -11638,23 +11638,6 @@ var thesaurusService = function thesaurusService(services) {
             // title: localeService.t('add data'),
             loading: true
         }, 0);
-        // dlg.setContent("");
-
-        // let parms = {
-        //     url: '/thesaurus/drop_records.php',
-        //     data: {
-        //         'sbas_id': sbas_id,
-        //         'tx_term_id': tx_term_id,
-        //         'lst': lstRecords
-        //     },
-        //     async: true,
-        //     cache: false,
-        //     dataType: 'json',
-        //     // timeout: 10 * 60 * 1000, // 10 minutes !
-        //     success: function (result, textStatus) {
-        //         dlg.setContent(result);
-        //     }
-        // };
 
         _jquery2.default.get(url + 'prod/thesaurus/droprecords', {
             'dlg_level': 0,

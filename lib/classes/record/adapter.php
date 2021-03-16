@@ -1128,7 +1128,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function setMetadatasByActions(stdClass $actions)
     {
         // WIP crashes when trying to access an undefined stdClass property ? should return null ?
-        // $this->apply_body($actions);
+        $this->apply_body($actions);
         return $this;
     }
 
@@ -1141,20 +1141,19 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @param stdClass $b
-     * @param record_adapter $record
      * @throws Exception
      */
     private function apply_body(stdClass $b)
     {
         // do metadatas ops
-        if (is_array($b->metadatas)) {
+        if (is_array(@$b->metadatas)) {
             $this->do_metadatas($b->metadatas);
         }
         // do sb ops
-        if (is_array($b->status)) {
+        if (is_array(@$b->status)) {
             $this->do_status($b->status);
         }
-        if(!is_null($b->base_id)) {
+        if(!is_null(@$b->base_id)) {
             $this->do_collection($b->base_id);
         }
     }
@@ -1176,8 +1175,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     /**
      * @param $metadatas
      * @throws Exception
+     *
+     *  nb : use of "silent" @ operator on stdClass member access (equals null in not defined) is more simple than "iseet()" or "empty()"
      */
-    private function do_metadatas($metadatas)
+    private function do_metadatas(array $metadatas)
     {
         /** @var databox_field[]  $struct */
         $struct = $this->getDatabox()->get_meta_structure();
@@ -1192,15 +1193,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         }
 
         $metadatas_ops = [];
+        /** @var stdClass $_m */
         foreach ($metadatas as $_m) {
             // sanity
-            if($_m->meta_struct_id && $_m->field_name) {                // WIP crashes if meta_struct_id is undefined
+            if(@$_m->meta_struct_id && @$_m->field_name) {                // WIP crashes if meta_struct_id is undefined
                 throw new Exception("define meta_struct_id OR field_name, not both.");
             }
             // select fields that match meta_struct_id or field_name (can be arrays)
             $fields_list = null;    // to filter caption_fields from record, default all
             $struct_fields = [];    // struct fields that match meta_struct_id or field_name
-            $field_keys = $_m->meta_struct_id ? $_m->meta_struct_id : $_m->field_name;  // can be null if none defined (=match all)
+            $field_keys = @$_m->meta_struct_id ?: @$_m->field_name;  // can be null if none defined (=match all)
             if($field_keys !== null) {
                 if (!is_array($field_keys)) {
                     $field_keys = [$field_keys];
@@ -1222,9 +1224,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
             $caption_fields = $this->get_caption()->get_fields($fields_list, true);
 
-            $meta_id = is_null($_m->meta_id) ? null : (int)($_m->meta_id);
+            $meta_id = isset($_m->meta_id) ? (int)($_m->meta_id) : null;
 
-            if(!($match_method = (string)($_m->match_method))) {
+            if(!($match_method = (string)(@$_m->match_method))) {
                 $match_method = 'ignore_case';
             }
             if(!in_array($match_method, ['strict', 'ignore_case', 'regexp'])) {
@@ -1232,7 +1234,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
 
             $values = [];
-            if(is_array($_m->value)) {
+            if(is_array(@$_m->value)) {
                 foreach ($_m->value as $v) {
                     if(($v = trim((string)$v)) !== '') {
                         $values[] = $v;
@@ -1240,16 +1242,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 }
             }
             else {
-                if(($v = trim((string)($_m->value))) !== '') {
+                if(($v = trim((string)(@$_m->value))) !== '') {
                     $values[] = $v;
                 }
             }
 
-            if(!($action = (string)($_m->action))) {
+            if(!($action = (string)(@$_m->action))) {
                 $action = 'set';
             }
 
-            switch ($_m->action) {
+            switch ($action) {
                 case 'set':
                     $ops = $this->metadata_set($struct_fields, $caption_fields, $meta_id, $values);
                     break;
@@ -1260,6 +1262,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     $ops = $this->metadata_replace($caption_fields, $meta_id, $match_method, $values, null);
                     break;
                 case 'replace':
+                    if (!isset($_m->replace_with)) {
+                        throw new Exception("missing mandatory \"replace_with\" for action \"replace\".");
+                    }
                     if (!is_string($_m->replace_with) && !is_null($_m->replace_with)) {
                         throw new Exception("bad \"replace_with\" for action \"replace\".");
                     }
@@ -1285,13 +1290,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return array
      * @throws Exception
      */
-    private function do_status($statuses)
+    private function do_status(array $statuses)
     {
         $datas = strrev($this->getStatus());
 
         foreach ($statuses as $status) {
-            $n = (int)($status->bit);
-            $value = (int)($status->state);
+            $n = (int)(@$status->bit);
+            $value = (int)(@$status->state);
             if ($n > 31 || $n < 4) {
                 throw new Exception(sprintf("Invalid status bit number (%s).", $n));
             }
@@ -1327,7 +1332,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      * @return array                            ops to execute
      * @throws Exception
      */
-    private function metadata_set(array $struct_fields, $caption_fields, $meta_id, $values): array
+    private function metadata_set(array $struct_fields, array $caption_fields, $meta_id, array $values): array
     {
         $ops = [];
 

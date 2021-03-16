@@ -47,7 +47,7 @@
                         <option class="multi" value="add">add to</option>
                         <option class="multi" value="replace">replace all</option>
                         {# do NOT mix the following 2 options as one #}
-                        <option class="mono" value="delete">delete</option>
+                        <option class="mono" value="delete">delete from</option>
                         <option class="multi" value="delete">remove from</option>
                     </select>
                 </td>
@@ -78,8 +78,11 @@
     // let $container = $('#DroppedOnTH_form');
 
     let dlg = dialog.get({{ dlg_level }});
+    // todo : find dlg container by .widget() ?
     let $container = dlg.getDomElement().parent(); // the whole dlg, including title & buttons
 
+    // todo : fix black-dialog-wrap
+    // $container.addClass('black-dialog-wrap');
     dlg.setOption("title", "editing {{ received_cnt }} record(s)");
     dlg.setOption("buttons",
         [
@@ -92,11 +95,22 @@
                     let data = [];
                     $(' .fieldSelect').filter(function () { return $(this).prop('selectedIndex')>0;}).each(function () {
                         let n = $(this).data('n');
-                        data.push({
-                            'field_name': $(this).val(),
-                            'action'    : $(' .actionSelect._'+n, $container).val(),
-                            'value'     : $(' .synonym._'+n, $container).val()
-                        });
+                        let action = $(' .actionSelect._'+n, $container).val();
+                        if(action === 'replace') {
+                            // replace ll multi-v needs a "replace_by" arg
+                            data.push({
+                                'field_name':   $(this).val(),
+                                'action':       action,
+                                'replace_with': $(' .synonym._' + n, $container).val()
+                            });
+                        }
+                        else {
+                            data.push({
+                                'field_name': $(this).val(),
+                                'action':     action,
+                                'value':      $(' .synonym._' + n, $container).val()
+                            });
+                        }
                     });
                     data = {
                         'records': {{ records|json_encode|raw }},
@@ -114,6 +128,7 @@
                             data: JSON.stringify(data),
                             success: function (data, textStatus) {
                                 console.log(data);
+                                dlg.close();
                             }
                         },
                     );
