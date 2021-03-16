@@ -11578,7 +11578,11 @@ var thesaurusService = function thesaurusService(services) {
                 (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
                 (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
 
-                var target = (0, _jquery2.default)(event.toElement);
+                // the event relates from the whole tx zone (<ul>), we must find the exact element of the mouseup
+                // too bad, jquery does not seem to handle that in a cross-browser way.
+                var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
+                : (0, _jquery2.default)(event.toElement); // chrome
+
                 var sbas_id = target.data('sbas_id').toString(); // set on html by ThesaurusXmlHttpController.php
                 var tx_term_id = target.data('tx_term_id').toString(); // set on html by ThesaurusXmlHttpController.php
 
