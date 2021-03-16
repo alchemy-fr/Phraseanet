@@ -6,25 +6,35 @@ use Symfony\Component\EventDispatcher\Event as SfEvent;
 
 class RecordEditInWorkerEvent extends SfEvent
 {
-    private $mdsParams;
-    private $elementKeys;
+    const MDS_TYPE = 'mds_type';
+    const JSON_TYPE = 'json_type';
+
+    private $dataType;
+    private $data;
+    private $elementIds;
     private $databoxId;
 
-    public function __construct($mdsParams, $elementKeys, $databoxId)
+
+    public function __construct($dataType, $data, $databoxId, $elementIds = array())
     {
-        $this->mdsParams     = $mdsParams;
-        $this->elementKeys   = $elementKeys;
+        $this->dataType      = $dataType;
+        $this->data          = $data;
         $this->databoxId     = $databoxId;
+        $this->elementIds    = $elementIds;
     }
 
-    public function getMdsParams()
+    public function getDataType()
     {
-        return $this->mdsParams;
+        return $this->dataType;
+    }
+    public function getData()
+    {
+        return $this->data;
     }
 
-    public function getElementKeys()
+    public function getElementIds()
     {
-        return $this->elementKeys;
+        return $this->elementIds;
     }
 
     public function getDataboxId()
