@@ -426,6 +426,7 @@ span.ww_winTitle {
         display: flex;
         align-items: center;
         justify-content: center;
+        height: auto!important;
         form {
             margin-bottom: 0;
         }
@@ -455,11 +456,11 @@ span.ww_winTitle {
             min-width: 170px;
             margin: 12px 10px;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-            background: $dialogBtnBg;
-            color: $dialogBtnColor;
-            &:first-child {
-                background: $dialogBtnBg2;
-                color: $dialogBtnColor2;
+            background: $dialogBtnBg2;
+            color: $dialogBtnColor2;
+            &:last-child {
+                background: $dialogBtnBg;
+                color: $dialogBtnColor;
             }
             &:hover {
                 background: $dialogBtnBgHover;

@@ -17085,16 +17085,29 @@ var deleteBasket = function deleteBasket(services) {
             case 'SSTT':
 
                 var buttons = {};
-                buttons[localeService.t('valider')] = function (e) {
+
+                buttons[localeService.t('archive')] = function (e) {
+                    _archiveBasket($el);
+                };
+
+                buttons[localeService.t('deleteTitle')] = function (e) {
                     _deleteBasket($el);
                 };
 
-                (0, _jquery2.default)('#DIALOG').empty().append(localeService.t('confirmDel')).attr('title', localeService.t('attention')).dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    modal: true,
-                    draggable: false
-                }).dialog('open').dialog('option', 'buttons', buttons);
+                var dialogWindow = _dialog2.default.create(services, {
+                    size: 'Medium',
+                    title: localeService.t('attention'),
+                    closeButton: true
+                });
+
+                //Add custom class to dialog wrapper
+                dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+
+                var content = '<div class="well-small">' + localeService.t('confirmDel') + '</div>';
+                dialogWindow.setContent(content);
+
+                dialogWindow.setOption('buttons', buttons);
+
                 (0, _jquery2.default)('#tooltip').hide();
                 break;
             /*case 'STORY':
@@ -17106,9 +17119,9 @@ var deleteBasket = function deleteBasket(services) {
     };
 
     var _deleteBasket = function _deleteBasket(item) {
-        if ((0, _jquery2.default)('#DIALOG').data('ui-dialog')) {
-            (0, _jquery2.default)('#DIALOG').dialog('destroy');
-        }
+        var dialogWindow = _dialog2.default.get(1);
+        dialogWindow.close();
+
         // id de chutier
         var k = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
         _jquery2.default.ajax({
@@ -17139,6 +17152,44 @@ var deleteBasket = function deleteBasket(services) {
                     alert(data.message);
                 }
                 return;
+            }
+        });
+    };
+
+    var _archiveBasket = function _archiveBasket(item) {
+        var dialogWindow = _dialog2.default.get(1);
+        dialogWindow.close();
+
+        var basketId = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: url + 'prod/baskets/' + basketId + '/archive/?archive=1',
+            dataType: 'json',
+            success: function success(data) {
+                if (data.success) {
+                    var basket = (0, _jquery2.default)('#SSTT_' + basketId);
+                    var basketNext = basket.next();
+
+                    if (basketNext.data('ui-droppable')) {
+                        basketNext.droppable('destroy');
+                    }
+
+                    basketNext.slideUp().remove();
+
+                    if (basket.data('ui-droppable')) {
+                        basket.droppable('destroy');
+                    }
+
+                    basket.slideUp().remove();
+
+                    if ((0, _jquery2.default)('#baskets .SSTT').length === 0) {
+                        appEvents.emit('workzone.refresh');
+                    }
+                } else {
+                    alert(data.message);
+                }
+
+                return false;
             }
         });
     };
