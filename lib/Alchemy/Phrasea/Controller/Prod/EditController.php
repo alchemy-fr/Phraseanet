@@ -355,7 +355,13 @@ class EditController extends Controller
     {
         /** @var stdClass $arg */
         $arg = json_decode($request->getContent());
-        $databoxId = reset($arg->records)->sbas_id;
+        $sbasIds = array_unique(array_column($arg->records, 'sbas_id'));
+
+        if (count($sbasIds) !== 1) {
+            throw new \Exception('Unable to edit on multiple databoxes');
+        }
+
+        $databoxId =  reset($sbasIds);
 
         // order the worker to save values in fields
         $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
