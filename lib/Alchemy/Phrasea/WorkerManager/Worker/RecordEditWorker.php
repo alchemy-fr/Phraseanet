@@ -30,7 +30,12 @@ class RecordEditWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        $databox = $this->findDataboxById($payload['databoxId']);
+        try {
+            $databox = $this->findDataboxById($payload['databoxId']);
+        } catch(\Exception $e) {
+            return;
+        }
+
         $recordIds = [];
 
         $workerRunningJob = null;
@@ -134,8 +139,13 @@ class RecordEditWorker implements WorkerInterface
 
             // for now call record_adapter. no check, no acl, ...
             foreach($arg->records as $rec) {
-                $r = $databox->get_record($rec->record_id);
-                $r->setMetadatasByActions($arg->actions);
+                try {
+                    /** @var \record_adapter $r */
+                    $r = $databox->get_record($rec->record_id);
+                    $r->setMetadatasByActions($arg->actions);
+                } catch(\Exception $e) {
+                    continue;
+                }
             }
         }
 
