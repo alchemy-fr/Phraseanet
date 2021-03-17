@@ -338,7 +338,7 @@ class EditController extends Controller
 
         // order the worker to save values in fields
         $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
-            new RecordEditInWorkerEvent($request->request->get('mds'), array_keys($records->toArray()), $databox->get_sbas_id())
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), array_keys($records->toArray()))
         );
 
         return $this->app->json(['success' => true]);
@@ -353,16 +353,20 @@ class EditController extends Controller
      */
     public function applyJSAction(Request $request): JsonResponse
     {
-        // todo : by worker
-
-        // for now call record_adapter. no check, no acl, ...
         /** @var stdClass $arg */
         $arg = json_decode($request->getContent());
+        $sbasIds = array_unique(array_column($arg->records, 'sbas_id'));
 
-        foreach($arg->records as $rec) {
-            $r = $this->getApplicationBox()->get_databox($rec->sbas_id)->get_record($rec->record_id);
-            $r->setMetadatasByActions($arg->actions);
+        if (count($sbasIds) !== 1) {
+            throw new \Exception('Unable to edit on multiple databoxes');
         }
+
+        $databoxId =  reset($sbasIds);
+
+        // order the worker to save values in fields
+        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId)
+        );
 
         return $this->app->json(['success' => true]);
     }
