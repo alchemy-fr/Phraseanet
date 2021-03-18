@@ -11525,7 +11525,7 @@ var thesaurusService = function thesaurusService(services) {
 
                 if (dragUniqueSbid === null || dragUniqueSbid === false) {
                     // many sbids
-                    // return false;    // don't return false, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                    // return false;    // don't return false now, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
                 }
 
                 return true;
@@ -11583,11 +11583,15 @@ var thesaurusService = function thesaurusService(services) {
                 var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
                 : (0, _jquery2.default)(event.toElement); // chrome
 
-                var sbas_id = target.data('sbas_id').toString(); // set on html by ThesaurusXmlHttpController.php
-                var tx_term_id = target.data('tx_term_id').toString(); // set on html by ThesaurusXmlHttpController.php
+                var sbas_id = target.data('sbas_id'); // set on html by ThesaurusXmlHttpController.php
+                var tx_term_id = target.data('tx_term_id'); // set on html by ThesaurusXmlHttpController.php
 
-                if (sbas_id === dragUniqueSbid) {
-                    dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                if (sbas_id && tx_term_id) {
+                    sbas_id = sbas_id.toString(); // be carefull because data() will cast digits as int
+                    tx_term_id = tx_term_id.toString();
+                    if (sbas_id === dragUniqueSbid) {
+                        dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                    }
                 }
 
                 /*
@@ -11602,34 +11606,36 @@ var thesaurusService = function thesaurusService(services) {
                 dragTarget = null;
                   */
             }
-        })
-        // track the mouse
-        .mousemove(function (event) {
-            return;
-            if (dragging) {
-                var target = (0, _jquery2.default)(event.toElement);
-                var sbas_id = target.data('sbas_id'); // set on html by ThesaurusXmlHttpController.php
-                var tx_term_id = target.data('tx_term_id'); // set on html by ThesaurusXmlHttpController.php
-                var oldTarget = dragTarget;
-                dragTarget = sbas_id && tx_term_id ? target : null;
-
-                // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
-                // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
-                // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
-
-                if (oldTarget && !oldTarget.is(dragTarget)) {
-                    // the mouse has quit a overed term (oldTargetId)
-                    oldTarget.removeClass('dragOver');
-                    console.log("OUT : " + oldTarget.attr('id'));
-                }
-
-                if (dragTarget && !dragTarget.is(oldTarget)) {
-                    // the mouse just overs a new term
-                    dragTarget.addClass('dragOver');
-                    console.log("IN : " + dragTarget.attr('id'));
-                }
-            }
         });
+        /*
+                    // track the mouse
+                    .mousemove( (event) => {
+                        if(dragging) {
+                            const target = $(event.toElement);
+                            const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                            const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+                            const oldTarget = dragTarget;
+                            dragTarget = (sbas_id && tx_term_id) ? target : null;
+        
+                            // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                            // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                            // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
+        
+                            if(oldTarget && !oldTarget.is(dragTarget)) {
+                                // the mouse has quit a overed term (oldTargetId)
+                                oldTarget.removeClass('dragOver');
+                                console.log("OUT : " + oldTarget.attr('id'));
+                            }
+        
+                            if(dragTarget && !dragTarget.is(oldTarget)) {
+                                // the mouse just overs a new term
+                                dragTarget.addClass('dragOver');
+                                console.log("IN : " + dragTarget.attr('id'));
+                            }
+                        }
+        
+                    });
+        */
 
         searchValue = _underscore2.default.debounce(searchValue, 300);
     };
@@ -11643,13 +11649,135 @@ var thesaurusService = function thesaurusService(services) {
             loading: true
         }, 0);
 
-        _jquery2.default.get(url + 'prod/thesaurus/droprecords', {
+        var data = { // declaring data structure avoids phpstorm warnings
+            dlg_title: undefined,
+            dlg_content: undefined,
+            rec_refs: undefined,
+            commit_url: undefined
+        };
+        _jquery2.default.getJSON(url + 'prod/thesaurus/droprecords', {
             'dlg_level': 0,
             'sbas_id': sbas_id,
             'tx_term_id': tx_term_id,
             'lst': lstRecords
-        }, function (data, textStatus) {
-            dlg.setContent(data);
+        }, function (dlgData) {
+
+            dlg.setOption("title", dlgData.dlg_title);
+            dlg.setContent(dlgData.dlg_content);
+
+            var $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+
+            /**
+             * add buttons
+             */
+            dlg.setOption("buttons", [
+            /**
+             * OK button
+             */
+            {
+                text: "Ok",
+                class: "fieldSelected",
+                style: "display:none",
+                click: function click() {
+                    // don't submit the complex form, better build json
+                    var actions = [];
+                    (0, _jquery2.default)(' .fieldSelect', $container).filter(function () {
+                        return (0, _jquery2.default)(this).prop('selectedIndex') > 0;
+                    }).each(function () {
+                        var n = (0, _jquery2.default)(this).data('n');
+                        var action = (0, _jquery2.default)(' .actionSelect._' + n + ':visible', $container).val();
+                        if (action === 'replace') {
+                            // replace all multi-v needs a "replace_by" arg
+                            actions.push({
+                                'field_name': (0, _jquery2.default)(this).val(),
+                                'action': action,
+                                'replace_with': (0, _jquery2.default)(' .synonym._' + n, $container).val()
+                            });
+                        } else {
+                            actions.push({
+                                'field_name': (0, _jquery2.default)(this).val(),
+                                'action': action,
+                                'value': (0, _jquery2.default)(' .synonym._' + n, $container).val()
+                            });
+                        }
+                    });
+                    data = {
+                        'records': dlgData.rec_refs,
+                        'actions': {
+                            'metadatas': actions
+                        }
+                    };
+
+                    _jquery2.default.ajax({
+                        url: dlgData.commit_url,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function success(data, textStatus) {
+                            console.log(data);
+                            dlg.close();
+                        }
+                    });
+
+                    return false;
+                }
+            },
+            /**
+             * Cancel button
+             */
+            {
+                text: "Cancel",
+                click: function click() {
+                    (0, _jquery2.default)(this).dialog("close");
+                }
+            }]);
+
+            /**
+             * when a destination field is changed, show/hide the "action" menus
+             */
+            (0, _jquery2.default)(' .fieldSelect', $container).change(function () {
+                var n_changed = (0, _jquery2.default)(this).data('n');
+
+                // show "action" menus depending on the selected fields (none, mono, multi)
+                var oneFieldSet = false; // if at least one destination field is set, we will show some elements
+                (0, _jquery2.default)(' .fieldSelect', $container).each(function () {
+                    var $this = (0, _jquery2.default)(this);
+                    var n = $this.data('n');
+                    var selIndex = $this.prop('selectedIndex');
+                    if (selIndex > 0) {
+                        if (n === n_changed) {
+                            // reset both mono an multi menus
+                            (0, _jquery2.default)(' .actionSelect._' + n, $container).prop('selectedIndex', 0);
+                        }
+                        var multi = !!(0, _jquery2.default)('option:eq(' + selIndex + ')', $this).data('multi');
+                        if (multi) {
+                            (0, _jquery2.default)(' .actionSelect._' + n + '.mono', $container).hide();
+                            (0, _jquery2.default)(' .actionSelect._' + n + '.multi', $container).show();
+                        } else {
+                            (0, _jquery2.default)(' .actionSelect._' + n + '.multi', $container).hide();
+                            (0, _jquery2.default)(' .actionSelect._' + n + '.mono', $container).show();
+                        }
+
+                        oneFieldSet = true;
+                    } else {
+                        // hide both menus
+                        (0, _jquery2.default)(' .actionSelect._' + n).hide();
+                    }
+                });
+                (0, _jquery2.default)(' .fieldSelected', $container).toggle(oneFieldSet);
+            }).change(); // enforce initial update
+
+            /**
+             * the "other values" button
+             */
+            (0, _jquery2.default)(' .moreFields BUTTON', $container).click(function () {
+                (0, _jquery2.default)(' .moreFields', $container).hide();
+                (0, _jquery2.default)(' .other', $container).show();
+                return false;
+            });
+        }).fail(function (jqxhr, textStatus, error) {
+            var err = textStatus + ", " + error;
+            dlg.setContent("Request Failed: " + err);
         });
     }
 

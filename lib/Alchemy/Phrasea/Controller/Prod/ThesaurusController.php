@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Controller\RecordsRequest;
 use DOMElement;
 use DOMXPath;
 use Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ThesaurusController extends Controller
@@ -26,7 +27,7 @@ class ThesaurusController extends Controller
     use DispatcherAware;
     use FilesystemAware;
 
-    public function dropRecordsAction(Request $request): string
+    public function dropRecordsAction(Request $request): JsonResponse
     {
         $sbas_id = $request->get('sbas_id');
         $tx_term_id = $request->get('tx_term_id');
@@ -45,9 +46,9 @@ class ThesaurusController extends Controller
         // twig parameters
         $twp = [
             'error'        => null,
-            'dlg_level'    => $request->get('dlg_level'),
+            // 'dlg_level'    => $request->get('dlg_level'),
             // 'lst'          => $records->serializedList(),
-            'records'      => $recRefs,
+            // 'records'      => $recRefs,
             'received_cnt' => $records->received()->count(),
             'rejected_cnt' => $records->rejected()->count(),
             'up_paths'     => [],
@@ -72,7 +73,7 @@ class ThesaurusController extends Controller
                 if (!($q = $field->get_tbranch())) {
                     continue;
                 }
-                //$fieldName = $field->get_name();
+
                 $roots = $xpath->query($q);     // linked nodes for this field
                 $q = '(' . $q . ')//sy[@id=\'' . $tx_term_id . '\']';   // can we find the term under the tbranch(es) ?
                 // normally we should find only one linked parent, since we search from a unique term
@@ -82,6 +83,7 @@ class ThesaurusController extends Controller
                 //       |---B    <-- ...but also linked here (bad idea btw)
                 //           |---terms
                 // going up, we decide to stop at the first link (B) (easier)
+
                 if (($droppedSy = $xpath->query($q))->length > 0) {
                     // yes (and since the query targets a unique id, there is only one result)
                     $droppedSy = $droppedSy->item(0);
@@ -150,6 +152,11 @@ class ThesaurusController extends Controller
             $twp['error'] = $e->getMessage();
         }
 
-        return $this->render('prod/Thesaurus/droppedrecords.html.twig', $twp);
+        return $this->app->json([
+            'dlg_title'   => sprintf("editing %s record(s)", $records->received()->count()),
+            'dlg_content' => $this->render('prod/Thesaurus/droppedrecords.html.twig', $twp),
+            'rec_refs'    => $recRefs,
+            'commit_url'  => $this->app->url('prod_edit_applyJSAction')
+        ]);
     }
 }
