@@ -146,7 +146,7 @@ const thesaurusService = services => {
 
                     if(dragUniqueSbid === null || dragUniqueSbid === false) {
                         // many sbids
-                        // return false;    // don't return false, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                        // return false;    // don't return false now, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
                     }
 
                     return true;
@@ -208,14 +208,16 @@ const thesaurusService = services => {
                         :
                         $(event.toElement);             // chrome
 
-                    const sbas_id = target.data('sbas_id').toString();         // set on html by ThesaurusXmlHttpController.php
-                    const tx_term_id = target.data('tx_term_id').toString();   // set on html by ThesaurusXmlHttpController.php
+                    let sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                    let tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
 
-                    if(sbas_id === dragUniqueSbid) {
-                        dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                    if(sbas_id && tx_term_id) {
+                        sbas_id = sbas_id.toString();       // be carefull because data() will cast digits as int
+                        tx_term_id = tx_term_id.toString();
+                        if(sbas_id === dragUniqueSbid) {
+                            dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                        }
                     }
-
-
 
                         /*
                         $(this).removeClass('draggingOver');
@@ -231,9 +233,9 @@ const thesaurusService = services => {
                          */
                 }
             })
+/*
             // track the mouse
             .mousemove( (event) => {
-                return;
                 if(dragging) {
                     const target = $(event.toElement);
                     const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
@@ -257,11 +259,12 @@ const thesaurusService = services => {
                         console.log("IN : " + dragTarget.attr('id'));
                     }
                 }
+
             });
+*/
 
         searchValue = _.debounce(searchValue, 300);
     };
-
 
 
     function dropRecordsOnTerm(sbas_id, tx_term_id, lstRecords) {
@@ -277,7 +280,13 @@ const thesaurusService = services => {
             0
         );
 
-        $.get(
+        let data = {        // declaring data structure avoids phpstorm warnings
+            dlg_title:   undefined,
+            dlg_content: undefined,
+            rec_refs:    undefined,
+            commit_url:  undefined,
+        };
+        $.getJSON(
             `${url}prod/thesaurus/droprecords`,
             {
                 'dlg_level': 0,
@@ -285,10 +294,134 @@ const thesaurusService = services => {
                 'tx_term_id': tx_term_id,
                 'lst': lstRecords
             },
-            function (data, textStatus) {
-                dlg.setContent(data);
+            function (dlgData) {
+
+                dlg.setOption("title", dlgData.dlg_title);
+                dlg.setContent(dlgData.dlg_content);
+
+                let $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+
+                /**
+                 * add buttons
+                 */
+                dlg.setOption("buttons",
+                    [
+                        /**
+                         * OK button
+                         */
+                        {
+                            text:  "Ok",
+                            class: "fieldSelected",
+                            style: "display:none",
+                            click: function() {
+                                // don't submit the complex form, better build json
+                                let actions = [];
+                                $(' .fieldSelect', $container).filter(function () { return $(this).prop('selectedIndex')>0;}).each(function () {
+                                    let n = $(this).data('n');
+                                    let action = $(' .actionSelect._'+n+':visible', $container).val();
+                                    if(action === 'replace') {
+                                        // replace all multi-v needs a "replace_by" arg
+                                        actions.push({
+                                            'field_name':   $(this).val(),
+                                            'action':       action,
+                                            'replace_with': $(' .synonym._' + n, $container).val()
+                                        });
+                                    }
+                                    else {
+                                        actions.push({
+                                            'field_name': $(this).val(),
+                                            'action':     action,
+                                            'value':      $(' .synonym._' + n, $container).val()
+                                        });
+                                    }
+                                });
+                                data = {
+                                    'records': dlgData.rec_refs,
+                                    'actions': {
+                                        'metadatas': actions
+                                    }
+                                };
+
+                                $.ajax({
+                                        url: dlgData.commit_url,
+                                        type: "POST",
+                                        contentType: "application/json",
+                                        data: JSON.stringify(data),
+                                        success: function (data, textStatus) {
+                                            console.log(data);
+                                            dlg.close();
+                                        }
+                                    },
+                                );
+
+                                return false;
+                            }
+                        },
+                        /**
+                         * Cancel button
+                         */
+                        {
+                            text: "Cancel",
+                            click: function() {
+                                $( this ).dialog( "close" );
+                            }
+                        }
+                    ]
+                );
+
+                /**
+                 * when a destination field is changed, show/hide the "action" menus
+                 */
+                $(' .fieldSelect', $container)
+                    .change(function () {
+                        let n_changed = $(this).data('n');
+
+                        // show "action" menus depending on the selected fields (none, mono, multi)
+                        let oneFieldSet = false;   // if at least one destination field is set, we will show some elements
+                        $(' .fieldSelect', $container).each(function () {
+                            let $this = $(this);
+                            let n = $this.data('n');
+                            let selIndex = $this.prop('selectedIndex');
+                            if(selIndex > 0) {
+                                if(n === n_changed) {
+                                    // reset both mono an multi menus
+                                    $(' .actionSelect._'+n, $container).prop('selectedIndex', 0);
+                                }
+                                let multi = !!$('option:eq(' + selIndex + ')', $this).data('multi');
+                                if(multi) {
+                                    $(' .actionSelect._'+n+'.mono', $container).hide();
+                                    $(' .actionSelect._'+n+'.multi', $container).show();
+                                }
+                                else {
+                                    $(' .actionSelect._'+n+'.multi', $container).hide();
+                                    $(' .actionSelect._'+n+'.mono', $container).show();
+                                }
+
+                                oneFieldSet = true;
+                            }
+                            else {
+                                // hide both menus
+                                $(' .actionSelect._'+n).hide();
+                            }
+                        });
+                        $(' .fieldSelected', $container).toggle(oneFieldSet);
+                    })
+                    .change();  // enforce initial update
+
+                /**
+                 * the "other values" button
+                 */
+                $(' .moreFields BUTTON', $container).click(function () {
+                    $(' .moreFields', $container).hide();
+                    $(' .other', $container).show();
+                    return false;
+                })
             }
-        );
+
+        ).fail(function( jqxhr, textStatus, error ) {
+             let err = textStatus + ", " + error;
+            dlg.setContent( "Request Failed: " + err );
+        });
     }
 
 
