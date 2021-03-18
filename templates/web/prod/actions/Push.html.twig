@@ -245,7 +245,7 @@
                     <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
                     <div class="PNB10 badges">
                         {% if context == 'Feedback' %}
-                            {% for participant in participants | sort | reverse if participant.getCanAgree() %}
+                            {% for participant in participants | sort | reverse %}
                                 {% set userId = participant.getUser().getId() %}
                                 <div class="badge {{ 'badge_' ~ userId }} %>">
                                     <a href="#" class="deleter">
