@@ -273,19 +273,19 @@
                                                             </td>
                                                         </tr>
                                                         <tr class="toggles">
-                                                            <td class="toggle status_on toggle_agree">
+                                                            <td class="toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }} ">
                                                                 <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_off"
                                                                      src="/assets/common/images/icons/grey-pen.png"/>
                                                                 <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_on"
                                                                      src="/assets/common/images/icons/dark-green-pen.png"/>
-                                                                <input type="hidden" name="participants[{{ userId }}][agree]" value="1" />
+                                                                <input type="hidden" name="participants[{{ userId }}][agree]" value="{{ participant.getCanAgree() ? '1' : '0' }}" />
                                                             </td>
-                                                            <td class="toggle status_off toggle_see_others" style="text-align: center;">
+                                                            <td class="toggle {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }} toggle_see_others" style="text-align: center;">
                                                                 <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_off"
                                                                      src="/assets/common/images/icons/grey-user.png"/>
                                                                 <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_on"
                                                                      src="/assets/common/images/icons/dark-green-user.png"/>
-                                                                <input type="hidden" name="participants[{{ userId }}][see_others]" value="0" />
+                                                                <input type="hidden" name="participants[{{ userId }}][see_others]" value="{{ participant.getCanSeeOthers() ? '1' : '0' }}" />
                                                             </td>
                                                             <td class="toggle status_off toggle_HD" style="text-align: right;">
                                                                 <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
