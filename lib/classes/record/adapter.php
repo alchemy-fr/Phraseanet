@@ -1033,10 +1033,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $mandatoryParams = ['meta_struct_id', 'meta_id', 'value'];
 
-        foreach ($mandatoryParams as $param) {
-            if (!array_key_exists($param, $params)) {
+        foreach ($mandatoryParams as $k) {
+            if (!array_key_exists($k, $params)) {
                 throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $param));
             }
+            $params[$k] = trim($params[$k]);
         }
 
         if (!is_scalar($params['value'])) {
@@ -1060,27 +1061,69 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
         }
 
-        $tmp_val = trim($params['value']);
+        $new_val = $params['value'];
+        $meta_id = ($params['meta_id'] !== '') ? (int)($params['meta_id']) : null;
 
-        if (trim($params['meta_id']) !== '') {
+        //
+        // preserve unicity of multi-values : no doubles please
+        //
+        $values = $caption_field->get_values(); // existing values
+        $value_found = null;
+        $meta_found = null;
+        foreach ($values as $v) {
+            if($v->getValue() === $new_val) {
+                // the value already exists
+                $value_found = $v;
+            }
+            if(!is_null($meta_id) && $v->getId() === $meta_id) {
+                // the imposed meta is found
+                $meta_found = $v;
+            }
+        }
 
-            if(is_null($caption_field_value = $caption_field->get_value($params['meta_id']))) {
+        if (!is_null($meta_id)) {
+            //
+            // here we want to override a specific value (by meta-id)
+            //
+            if(!$meta_found) {
+                // this meta_id does not exists, we cannot override it
                 return $this;
             }
 
-            if ($tmp_val === '') {
-                $caption_field_value->delete();
-                unset($caption_field_value);
-            } else {
-                $caption_field_value->set_value($params['value']);
+            if ($new_val === '') {
+                // override with empty = delete
+                $meta_found->delete();
+            }
+            else {
+                // override with new value
+                if($value_found && $value_found->getId() !== $meta_found->getId()) {
+                    // the new value did already exists _elsewhere_, we must delete it to avoid doubles
+                    $value_found->delete();
+                }
+                $meta_found->set_value($new_val);
                 if ($vocab && $vocab_id) {
-                    $caption_field_value->setVocab($vocab, $vocab_id);
+                    $meta_found->setVocab($vocab, $vocab_id);
                 }
             }
         }
         else {
-            if($tmp_val !== '') {
-                caption_Field_Value::create($this->app, $databox_field, $this, $params['value'], $vocab, $vocab_id);
+            //
+            // here we want to set/add a value. if the field is mono, "create()" will override it if necessary
+            //
+            if($databox_field->is_multi()) {
+                // add a _non empty_ value only if it does not already exists
+                if($new_val !== '' && !$value_found) {
+                    caption_Field_Value::create($this->app, $databox_field, $this, $new_val, $vocab, $vocab_id);
+                }
+            }
+            else {
+                // set a mono value
+                foreach ($values as $v) {       // delete former one (should be unique)
+                    $v->delete();
+                }
+                if($new_val !== '') {
+                    caption_Field_Value::create($this->app, $databox_field, $this, $new_val, $vocab, $vocab_id);
+                }
             }
         }
 
@@ -1341,6 +1384,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             foreach ($cf->get_values() as $field_value) {
                 if (is_null($meta_id) || $field_value->getId() === (int)$meta_id) {
                     $ops[] = [
+                        'explain' => sprintf('set:: removing value "%s" from "%s"', $field_value->getValue(), $cf->get_name()),
                         'meta_struct_id' => $cf->get_meta_struct_id(),
                         'meta_id'        => $field_value->getId(),
                         'value'          => ''
@@ -1355,6 +1399,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                 foreach ($values as $value) {
                     if ($value) {
                         $ops[] = [
+                            'expain'         => sprintf('set:: adding value "%s" to "%s" (multi)', $value, $sf->get_name()),
                             'meta_struct_id' => $sf->get_id(),
                             'meta_id'        => $meta_id,  // can be null
                             'value'          => $value
@@ -1365,10 +1410,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             else {
                 // mono-valued
                 if(count($values) > 1) {
-                    throw new Exception(sprintf("setting mono-valued (%s) requires only one value.", $sf->get_name()));
+                    throw new Exception(sprintf("set:: setting mono-valued (%s) requires only one value.", $sf->get_name()));
                 }
                 if( ($value = $values[0]) ) {
                     $ops[] = [
+                        'expain' => sprintf('adding value "%s" to "%s" (mono)', $value, $sf->get_name()),
                         'meta_struct_id' => $sf->get_id(),
                         'meta_id'        => $meta_id,  // probably null,
                         'value'          => $value
@@ -1398,6 +1444,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             }
             foreach ($values as $value) {
                 $ops[] = [
+                    'expain'         => sprintf('add:: adding value "%s" to "%s"', $value, $sf->get_name()),
                     'meta_struct_id' => $sf->get_id(),
                     'meta_id'        => null,
                     'value'          => $value
@@ -1424,21 +1471,35 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $replace_with = trim((string)$replace_with);
 
         foreach ($caption_fields as $cf) {
+
             // match all ?
+            //
             if(is_null($meta_id) && count($values) == 0) {
+                // first delete former values
                 foreach ($cf->get_values() as $field_value) {
                     $ops[] = [
+                        'explain' => sprintf('rpl::match_all: removing value "%s" from "%s"', $field_value->getValue(), $cf->get_name()),
                         'meta_struct_id' => $cf->get_meta_struct_id(),
                         'meta_id'        => $field_value->getId(),
-                        'value'          => $replace_with
+                        'value'          => ''
                     ];
                 }
+                // then add the replacing value
+                $ops[] = [
+                    'expain' => sprintf('rpl::match_all: adding value "%s" to "%s"', $replace_with, $cf->get_name()),
+                    'meta_struct_id' => $cf->get_meta_struct_id(),
+                    'meta_id'        => null,
+                    'value'          => $replace_with
+                ];
             }
+
             // match by meta-id ?
+            //
             if (!is_null($meta_id)) {
                 foreach ($cf->get_values() as $field_value) {
                     if ($field_value->getId() === $meta_id) {
                         $ops[] = [
+                            'expain' => sprintf('rpl::match_meta_id %s (field "%s") set value "%s"', $field_value->getId(), $cf->get_name(), $replace_with),
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
                             'value'          => $replace_with
@@ -1446,7 +1507,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     }
                 }
             }
+
             // match by value(s) ?
+            //
             foreach ($values as $value) {
                 foreach ($cf->get_values() as $field_value) {
                     $rw = $replace_with;
@@ -1455,6 +1518,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
                     }
                     if ($this->match($value, $match_method, $field_value->getValue())) {
                         $ops[] = [
+                            'expain' => sprintf('rpl::match_value "%s" (field "%s") set value "%s"', $field_value->getValue(), $cf->get_name(), $rw),
                             'meta_struct_id' => $cf->get_meta_struct_id(),
                             'meta_id'        => $field_value->getId(),
                             'value'          => $rw

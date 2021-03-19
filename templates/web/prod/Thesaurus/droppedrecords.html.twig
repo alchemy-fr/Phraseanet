@@ -1,5 +1,5 @@
 
-<h3 style="color: red">POC/Experimental. The OK button will <u>NOT</u> edit records.</h3>
+<h3 style="color: red">POC/Experimental.</h3>
 
 {% if error %}
 
@@ -42,12 +42,13 @@
 {#                    {% endif %}#}
                 </td>
                 <td>
-                    <select class="actionSelect _{{ n }}">
+                    <select class="actionSelect mono _{{ n }}">
                         <option class="mono" value="set">set to</option>
+                        <option class="mono" value="delete">delete from</option>
+                    </select>
+                    <select class="actionSelect multi _{{ n }}">
                         <option class="multi" value="add">add to</option>
                         <option class="multi" value="replace">replace all</option>
-                        {# do NOT mix the following 2 options as one #}
-                        <option class="mono" value="delete">delete from</option>
                         <option class="multi" value="delete">remove from</option>
                     </select>
                 </td>
@@ -74,16 +75,16 @@
     </form>
 {% endif %}
 
+{#
 <script type="application/javascript">
-    // let $container = $('#DroppedOnTH_form');
-
-    let dlg = dialog.get({{ dlg_level }});
+    //let dlg = dialog.get({{ dlg_level }});
     // todo : find dlg container by .widget() ?
-    let $container = dlg.getDomElement().parent(); // the whole dlg, including title & buttons
+    //let $container = dlg.getDomElement().parent(); // the whole dlg, including title & buttons
 
     // todo : fix black-dialog-wrap
     // $container.addClass('black-dialog-wrap');
-    dlg.setOption("title", "editing {{ received_cnt }} record(s)");
+    // dlg.setOption("title", "editing {{ received_cnt }} record(s)");
+
     dlg.setOption("buttons",
         [
             {
@@ -95,7 +96,7 @@
                     let data = [];
                     $(' .fieldSelect').filter(function () { return $(this).prop('selectedIndex')>0;}).each(function () {
                         let n = $(this).data('n');
-                        let action = $(' .actionSelect._'+n, $container).val();
+                        let action = $(' .actionSelect._'+n+':visible', $container).val();
                         if(action === 'replace') {
                             // replace ll multi-v needs a "replace_by" arg
                             data.push({
@@ -142,44 +143,55 @@
             }
         ]
     );
+*/
 
-    /**
-     * when a destination field is selected, show/hide the "multi" radio
-     */
-    $(' .fieldSelect', $container)
-        .change(function () {
-            let select = $(this);
-            let n = select.data('n');
 
-            // show only possible actions, depending on field is mono/multi
-            let actionSelect = $(' .actionSelect._'+n, $container);
-            let multi = !!$('option:eq(' + select.prop('selectedIndex') + ')', select).data('multi');
-            $(' OPTION.mono', actionSelect).toggle(!multi);
-            $(' OPTION.multi', actionSelect).toggle(multi);
-            // set default action
-            actionSelect.prop('selectedIndex', multi ? 1 : 0); // 1=add : 0=set
-
-            // if at least one destination field is set, show some elements
-            let oneFieldSet = false;
-            $(' .fieldSelect', $container).each(function () {
-                let n = $(this).data('n');
-                if($(this).prop('selectedIndex') > 0) {
-                    $(' .actionSelect._'+n).show();
-                    oneFieldSet = true;
-                }
-                else {
-                    $(' .actionSelect._'+n).hide();
-                }
-            });
-            $(' .fieldSelected', $container).toggle(oneFieldSet);
-        })
-        .change();  // enforce initial update
+    // /**
+    //  * when a destination field is changed, show/hide the "action" menus
+    //  */
+    // $(' .fieldSelect', $container)
+    //     .change(function () {
+    //         let n_changed = $(this).data('n');
+    //
+    //         // show "action" menus depending on the selected fields (none, mono, multi)
+    //         let oneFieldSet = false;   // if at least one destination field is set, we will show some elements
+    //         $(' .fieldSelect', $container).each(function () {
+    //             let $this = $(this);
+    //             let n = $this.data('n');
+    //             let selIndex = $this.prop('selectedIndex');
+    //             if(selIndex > 0) {
+    //                 if(n === n_changed) {
+    //                     // reset both mono an multi menus
+    //                     $(' .actionSelect._'+n, $container).prop('selectedIndex', 0);
+    //                 }
+    //                 let multi = !!$('option:eq(' + selIndex + ')', $this).data('multi');
+    //                 if(multi) {
+    //                     $(' .actionSelect._'+n+'.mono', $container).hide();
+    //                     $(' .actionSelect._'+n+'.multi', $container).show();
+    //                 }
+    //                 else {
+    //                     $(' .actionSelect._'+n+'.multi', $container).hide();
+    //                     $(' .actionSelect._'+n+'.mono', $container).show();
+    //                 }
+    //
+    //                 oneFieldSet = true;
+    //             }
+    //             else {
+    //                 // hide both menus
+    //                 $(' .actionSelect._'+n).hide();
+    //             }
+    //         });
+    //         $(' .fieldSelected', $container).toggle(oneFieldSet);
+    //     })
+    //     .change();  // enforce initial update
 
 
     $(' .moreFields BUTTON', $container).click(function () {
         $(' .moreFields', $container).hide();
-        $(' .other').show();
+        $(' .other', $container).show();
         return false;
     })
 
 </script>
+
+#}
