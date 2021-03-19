@@ -9664,6 +9664,7 @@ input.text_input_white {
   padding: 4px 0px;
   margin-left: 20px;
   margin-bottom: -7px;
+  float: right;
 }
 
 .PushBox .FeedbackSend:hover {
@@ -10058,8 +10059,7 @@ input.text_input_white {
   top: auto;
   right: 20px;
   bottom: 10px;
-  left: 10px;
-  text-align: right;
+  left: 20px;
 }
 
 .PushBox .user_content .badges {

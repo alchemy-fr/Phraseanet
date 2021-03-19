@@ -901,8 +901,14 @@ class PushController extends Controller
         $feedbackaction = $request->request->get('feedbackaction');
         $participants = [];
 
-        if ($feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
+        if ($context === 'Feedback' && $feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
             $participants = $push->get_original_basket()->getValidation()->getParticipants();
+        } elseif ($context === 'Feedback') {
+            // Display the initiator in the participant list window when the first time to create a feedback
+            $validationParticipant =  new ValidationParticipant();
+            $validationParticipant->setUser($this->getAuthenticatedUser());
+            $validationParticipant->setCanSeeOthers(1);
+            array_push($participants, $validationParticipant);
         }
 
         $repository = $this->getUserListRepository();
