@@ -393,7 +393,7 @@ class AMQPConnection
                 break;
             case self::FAILED_QUEUE:
                 $this->queue_declare_and_bind($queueName, self::RETRY_ALCHEMY_EXCHANGE, [
-                    'x-message-ttl' =>  345600*1000  //  message in failed_q to be dead after 96 hours by default
+                    'x-message-ttl' =>  604800*1000  //  message in failed_q to be dead after 96 hours by default
                     ]);
                 break;
             case self::BASE_QUEUE:
