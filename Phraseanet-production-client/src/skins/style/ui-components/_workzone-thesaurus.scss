@@ -130,6 +130,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
         }
     }
     .treeview {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         ul {
             background-color: $darkBackgroundColor;
             margin-left: -16px;
@@ -143,21 +147,24 @@ dans l'onglet thesaurus : arbres, menus contextuels
             cursor: pointer;
             color: $mediumTextColor;
             &.h {
-                /* highlighted (filtered as matching the filter input) */
+                // highlighted (filtered as matching the filter input)
                 color: $thesaurusColor;
                 font-weight: bold;
             }
             &:hover {
-                color: $textPrimaryColor;
+                color: $highlightTextColor;
             }
+            /*
             &.dragOver {
-                /* highlited as a target for dropping */
+                // highlited as a target for dropping
                 background-color: $highlightBackgroundColor;
                 color: $highlightTextColor;
             }
+            */
         }
+        /*
         i {
-            /* count of hits */
+            // count of hits
             color: #80ff80;
             background-color: #606060;
             font-style: normal;
@@ -166,6 +173,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
             padding-right: 3px;
             font-family: courier;
         }
+        */
     }
 /*
     .treeview LI.selected SPAN {
@@ -188,25 +196,77 @@ dans l'onglet thesaurus : arbres, menus contextuels
  */
 }
 
-#THPD_T_tree.draggingOver {
-    //background-color: #FF0000;
-    /* something is currently dragged over, we change some hover */
-    &:hover {
-        cursor: not-allowed;
-    }
-    span.tx_term:hover {
-        color: $mediumTextColor;    // no more highlight
-        cursor: not-allowed;
-    }
-    LI.draggingOver {
-        //background-color: #00FF00;
-        &:hover {
-            cursor: default;
+#THPD_T_tree {
+    span.tx_term {
+        /*
+        cursor: pointer;
+        color: $mediumTextColor;
+        &.h {
+            // highlighted (filtered as matching the filter input)
+            color: $thesaurusColor;
+            font-weight: bold;
         }
-        span.tx_term:hover {
+        &:hover {
+            color: $highlightTextColor;
+        }
+        */
+        /*
+        &.dragOver {
+            // highlited as a target for dropping
             background-color: $highlightBackgroundColor;
             color: $highlightTextColor;
-            cursor: copy;
+        }
+        */
+    }
+    &.draggingOver {
+        // something is currently dragged over, we change some hover
+
+        // background-color: #000; // debug purpose
+
+        cursor: not-allowed;
+        /*
+        &:hover {
+            // background-color: #8F0000; // debug purpose
+            cursor: not-allowed;
+        }
+        */
+        /*  debug purpose
+        span.tx_term:hover {
+            color: #ff00ff;
+        }
+        */
+
+        span.tx_term {
+            // color: #7a43b6;          // debug purpose
+            color: $mediumTextColor;    // no more highlight
+            cursor: not-allowed;
+            /*   debug purpose
+            &:hover {
+                color: #f9a732;
+            }
+            */
+        }
+
+        LI.draggingOver {
+
+            // background-color: #00FF00; // debug purpose
+
+            cursor: default;
+            /*
+            &:hover {
+                // background-color: #008F00; // debug purpose
+                cursor: default;
+            }
+            */
+            span.tx_term {
+                cursor: copy;
+
+                &:hover {   // NOT WORKING IN SAFARI / WEBKIT : the :hover seems not applied when dragging (click down)
+                    // background-color: $highlightBackgroundColor;
+                    color: $highlightTextColor;
+                    // color: #fceb3f;          // debug purpose
+                }
+            }
         }
     }
 }
