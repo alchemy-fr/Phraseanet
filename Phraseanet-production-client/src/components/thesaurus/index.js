@@ -40,7 +40,7 @@ const thesaurusService = services => {
         }
 
         startThesaurus();
-        console.log("hello from thesaurus ! container=", $container);
+        // console.log("hello from thesaurus ! container=", $container);
         let cclicks = 0;
         const cDelay = 350;
         let cTimer = null;
@@ -155,12 +155,18 @@ const thesaurusService = services => {
                 hoverClass: 'groupDrop',
                 tolerance: 'pointer',
                 over: function(event, ui) {
-                    console.log("over", event, ui, event.toElement);
+                    const target = typeof(event.toElement) === 'undefined' ?
+                        $(event.originalEvent.target)   // ffox
+                        :
+                        $(event.toElement);             // chrome
 
-                    $('#THPD_T_tree', $container).addClass('draggingOver');
+                    // console.log("over", event, ui, target);
+
+                    $('#THPD_T_tree', $container).addClass('draggingOver').click(function() {return true;});
                     if(dragUniqueSbid !== null && dragUniqueSbid !== false) {
                         $('#TX_P\\.'+dragUniqueSbid+'\\.T', $container).addClass('draggingOver');
                     }
+//                    $('<style></style>').appendTo($container).remove();
                     /*
                     $(this).addClass('draggingOver');
 
@@ -182,9 +188,16 @@ const thesaurusService = services => {
                     */
                 },
                 out: function(event, ui) {
-                    console.log("out", event, ui, event.toElement);
+                    const target = typeof(event.toElement) === 'undefined' ?
+                        $(event.originalEvent.target)   // ffox
+                        :
+                        $(event.toElement);             // chrome
+
+                    // console.log("out", event, ui, target);
+
                     $('#THPD_T_tree', $container).removeClass('draggingOver');
                     $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+//                    $('<style></style>').appendTo($container).remove();
                     /*
                     $(this).removeClass('draggingOver');
                     if(dragTarget) {
@@ -197,16 +210,17 @@ const thesaurusService = services => {
                      */
                 },
                 drop: (event, ui) => {
-                    console.log("drop", event, ui);
-                    $('#THPD_T_tree', $container).removeClass('draggingOver');
-                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
-
                     // the event relates from the whole tx zone (<ul>), we must find the exact element of the mouseup
                     // too bad, jquery does not seem to handle that in a cross-browser way.
                     const target = typeof(event.toElement) === 'undefined' ?
                         $(event.originalEvent.target)   // ffox
                         :
                         $(event.toElement);             // chrome
+
+                    // console.log("drop", event, ui, target);
+
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
 
                     let sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
                     let tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
@@ -233,35 +247,38 @@ const thesaurusService = services => {
                          */
                 }
             })
-/*
-            // track the mouse
-            .mousemove( (event) => {
-                if(dragging) {
-                    const target = $(event.toElement);
-                    const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
-                    const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
-                    const oldTarget = dragTarget;
-                    dragTarget = (sbas_id && tx_term_id) ? target : null;
+        //    .click(function() {return true;})
+        ;
 
-                    // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
-                    // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
-                    // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
+        /*
+                    // track the mouse
+                    .mousemove( (event) => {
+                        if(dragging) {
+                            const target = $(event.toElement);
+                            const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                            const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+                            const oldTarget = dragTarget;
+                            dragTarget = (sbas_id && tx_term_id) ? target : null;
 
-                    if(oldTarget && !oldTarget.is(dragTarget)) {
-                        // the mouse has quit a overed term (oldTargetId)
-                        oldTarget.removeClass('dragOver');
-                        console.log("OUT : " + oldTarget.attr('id'));
-                    }
+                            // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                            // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                            // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
 
-                    if(dragTarget && !dragTarget.is(oldTarget)) {
-                        // the mouse just overs a new term
-                        dragTarget.addClass('dragOver');
-                        console.log("IN : " + dragTarget.attr('id'));
-                    }
-                }
+                            if(oldTarget && !oldTarget.is(dragTarget)) {
+                                // the mouse has quit a overed term (oldTargetId)
+                                oldTarget.removeClass('dragOver');
+                                console.log("OUT : " + oldTarget.attr('id'));
+                            }
 
-            });
-*/
+                            if(dragTarget && !dragTarget.is(oldTarget)) {
+                                // the mouse just overs a new term
+                                dragTarget.addClass('dragOver');
+                                console.log("IN : " + dragTarget.attr('id'));
+                            }
+                        }
+
+                    });
+        */
 
         searchValue = _.debounce(searchValue, 300);
     };
