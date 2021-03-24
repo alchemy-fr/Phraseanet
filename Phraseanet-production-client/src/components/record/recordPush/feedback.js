@@ -374,7 +374,7 @@ const Feedback = function (services, options) {
 
     $('form.list_saver', this.container).bind('submit', () => {
         var $form = $(event.currentTarget);
-        var $input = $('input[name="name"]', $form);
+        var $input = $('input[name="list_name"]', $form);
 
         var users = this.getUsers();
 
