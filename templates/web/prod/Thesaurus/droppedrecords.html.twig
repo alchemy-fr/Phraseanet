@@ -1,197 +1,111 @@
+<div id="TXCLASSIFICATION">
+    <h3 style="color: red">WIP/Experimental.</h3>
 
-<h3 style="color: red">POC/Experimental.</h3>
+    {% if error %}
 
-{% if error %}
+        {{ error }}
 
-    {{ error }}
+    {% else %}
 
-{% else %}
+        {% if rejected_cnt > 0 %}
 
-    {% if rejected_cnt > 0 %}
-        you don't have rights to edit {{ rejected_cnt }} record(s)
-    {% endif %}
+            you don't have rights to edit {{ rejected_cnt }} record(s)
 
-    <form id="DroppedOnTH_form">
-        <table>
-            <tr>
-                <th>value</th>
-                <th><span class="fieldSelected" style="display: none">operation</span></th>
-                <th>to field</th>
-            </tr>
-        {% if up_paths|length > 1 %}
-            <tr class="moreFields">
-                <td colspan="3">
-                    <button>+</button>&nbsp;Other value(s)...
-                </td>
-            </tr>
         {% endif %}
-        {% set n=1 %}
-        {% for tid,up_path in up_paths %}
-            {% set cl = (n == up_paths|length) ? "" : "class='other' style='display:none'"%}
-            <tr {{ cl|raw }}>
-                <td>
-{#                    {% if up_path.synonyms|length == 1 %} #}{# too bad : we must use a select event for one option...  #}
-{#                        {% set synonym = up_path.synonyms|first %}#}
-{#                        <input type="text" class="uneditable-input" value={{ synonym.value }} /> #}{# bad align because we changed "select" margins #}
-{#                    {% else %}#}
-                    <select class="synonym _{{ n }}">
-                    {% for synonym in up_path.synonyms %}
-                        <option {{ synonym.selected ? "selected" : "" }}>{{ synonym.value }}</option>
-                    {% endfor%}
-                    </select>
-{#                    {% endif %}#}
-                </td>
-                <td>
-                    <select class="actionSelect mono _{{ n }}">
-                        <option class="mono" value="set">set to</option>
-                        <option class="mono" value="delete">delete from</option>
-                    </select>
-                    <select class="actionSelect multi _{{ n }}">
-                        <option class="multi" value="add">add to</option>
-                        <option class="multi" value="replace">replace all</option>
-                        <option class="multi" value="delete">remove from</option>
-                    </select>
-                </td>
-                <td>
-                    <select class="fieldSelect" data-n="{{ n }}">
-                        {% set sel="" %}
-                        {% if n == up_paths|length %}
-                            <option data-multi="0">select...</option>
-                            {% if up_path.fields|length == 1 %}
-                                {% set sel="selected" %}
-                            {% endif %}
-                        {% else %}
-                            <option data-multi="0">none</option>
-                        {% endif %}
-                        {% for field in up_path.fields  %}
-                            <option {{ sel }} data-multi="{{ field.is_multi() ? 1 : 0 }}" value="{{ field.get_name() }}">{{ field.get_name() }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            {% set n = n+1 %}
-        {% endfor %}
-        </table>
-    </form>
-{% endif %}
 
-{#
-<script type="application/javascript">
-    //let dlg = dialog.get({{ dlg_level }});
-    // todo : find dlg container by .widget() ?
-    //let $container = dlg.getDomElement().parent(); // the whole dlg, including title & buttons
+            {% set simple_possible = false %}
+            {% set advanced_needed = true %}
+            {% set selected_sy = null %}
+            {% set bf0 = by_fields|first %}
+            {% if by_fields|length == 1 %}
+                {# if there is only 1 field, we can propose a "simple" ux with the selected "value" (dropped-on) #}
+                {# bf0 is the only field #}
+                {% set simple_possible = true %}
+            {% endif %}
 
-    // todo : fix black-dialog-wrap
-    // $container.addClass('black-dialog-wrap');
-    // dlg.setOption("title", "editing {{ received_cnt }} record(s)");
+            <div class="tabs">
+                <ul>
+                    {% if simple_possible %}
+                    <li data-tab_id="SIMPLE"><a href="#TXCLASSIFICATION_SIMPLE">simple mode</a></li>
+                    {% endif %}
 
-    dlg.setOption("buttons",
-        [
-            {
-                class: "fieldSelected",
-                text: "Ok",
-                style: "display:none",
-                click: function() {
-                    // don't submit the complex form, better build json
-                    let data = [];
-                    $(' .fieldSelect').filter(function () { return $(this).prop('selectedIndex')>0;}).each(function () {
-                        let n = $(this).data('n');
-                        let action = $(' .actionSelect._'+n+':visible', $container).val();
-                        if(action === 'replace') {
-                            // replace ll multi-v needs a "replace_by" arg
-                            data.push({
-                                'field_name':   $(this).val(),
-                                'action':       action,
-                                'replace_with': $(' .synonym._' + n, $container).val()
-                            });
-                        }
-                        else {
-                            data.push({
-                                'field_name': $(this).val(),
-                                'action':     action,
-                                'value':      $(' .synonym._' + n, $container).val()
-                            });
-                        }
-                    });
-                    data = {
-                        'records': {{ records|json_encode|raw }},
-                        'actions': {
-                            'metadatas': data
-                        }
-                    };
+                    {% if advanced_needed %}
+                    <li data-tab_id="ADVANCED"><a href="#TXCLASSIFICATION_ADVANCED">advanced mode</a></li>
+                    {% endif %}
+                </ul>
 
-                    console.log(data);
+                {% if simple_possible %}
+                <div id="TXCLASSIFICATION_SIMPLE" style="padding: 20px 10px 20px 10px">
+                    <form id="DroppedOnTH_form_simple">
+                        <input type="hidden" class="field _0"  value="{{ bf0.field.get_name() }}">
+                        <input type="hidden" class="action _0" value="add" data-n="0">
+                        <input type="hidden" class="value _0"  value="{{ bf0.selected_value.value }}">
+                    </form>
+                    {% if bf0.field.is_multi() %}
+                    add&nbsp;&nbsp;<b>{{ bf0.selected_value.value }}</b>&nbsp;&nbsp;to the field&nbsp;&nbsp;<b>{{ bf0.field.get_name() }}</b>
+                    {% else %}
+                    set&nbsp;&nbsp;<b>{{ bf0.field.get_name() }}</b>&nbsp;&nbsp;to&nbsp;&nbsp;<b>{{ bf0.selected_value.value }}</b>
+                    {% endif %}
+                </div>
+                {% endif %}
 
-                    $.ajax({
-                            url: "{{ path('prod_edit_applyJSAction') }}",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify(data),
-                            success: function (data, textStatus) {
-                                console.log(data);
-                                dlg.close();
-                            }
-                        },
-                    );
-                }
-            },
-            {
-                text: "Cancel",
-                click: function() {
-                    $( this ).dialog( "close" );
-                }
-            }
-        ]
-    );
-*/
+                {% if advanced_needed %}
+                <div id="TXCLASSIFICATION_ADVANCED" style="padding: 10px;">
+                    <form id="DroppedOnTH_form_advanced">
+                    {% set n = 0 %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Action</th>
+                                <th class="okbutton">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    {% for bf in by_fields %}
+                            <tr>
+                                <td>
+                                    <input type="hidden" class="field _{{ n }}" value="{{ bf.field.get_name() }}">
+                                    {{ bf.field.get_name() }}&nbsp;:
+                                </td>
 
+                                <td>
+                                    <select class="action _{{ n }}" data-n="{{ n }}">
+                                        <option value="" {{ simple_possible ? "" : "selected"}}>...</option>
+                                        {% if bf.field.is_multi() %}
+                                        <option value="add" {{ simple_possible ? "selected" : ""}}>add</option>
+                                        <option value="replace">replace all with</option>
+                                        <option value="delete">remove</option>
+                                        {% else %}
+                                        <option value="set" {{ simple_possible ? "selected" : ""}}>set to</option>
+                                        <option value="clear">clear</option>
+                                        {% endif%}
+                                    </select>
+                                </td>
 
-    // /**
-    //  * when a destination field is changed, show/hide the "action" menus
-    //  */
-    // $(' .fieldSelect', $container)
-    //     .change(function () {
-    //         let n_changed = $(this).data('n');
-    //
-    //         // show "action" menus depending on the selected fields (none, mono, multi)
-    //         let oneFieldSet = false;   // if at least one destination field is set, we will show some elements
-    //         $(' .fieldSelect', $container).each(function () {
-    //             let $this = $(this);
-    //             let n = $this.data('n');
-    //             let selIndex = $this.prop('selectedIndex');
-    //             if(selIndex > 0) {
-    //                 if(n === n_changed) {
-    //                     // reset both mono an multi menus
-    //                     $(' .actionSelect._'+n, $container).prop('selectedIndex', 0);
-    //                 }
-    //                 let multi = !!$('option:eq(' + selIndex + ')', $this).data('multi');
-    //                 if(multi) {
-    //                     $(' .actionSelect._'+n+'.mono', $container).hide();
-    //                     $(' .actionSelect._'+n+'.multi', $container).show();
-    //                 }
-    //                 else {
-    //                     $(' .actionSelect._'+n+'.multi', $container).hide();
-    //                     $(' .actionSelect._'+n+'.mono', $container).show();
-    //                 }
-    //
-    //                 oneFieldSet = true;
-    //             }
-    //             else {
-    //                 // hide both menus
-    //                 $(' .actionSelect._'+n).hide();
-    //             }
-    //         });
-    //         $(' .fieldSelected', $container).toggle(oneFieldSet);
-    //     })
-    //     .change();  // enforce initial update
+                                <td>
+                                    <div class="value_container _{{ n }}" style="display: none">
+                                        {% if bf.values|length == 1 %}
+                                            <input type="hidden" class="value _{{ n }}" value="{{ (bf.values|first).value }}">
+                                            {{ (bf.values|first).value }}
+                                        {% else %}
+                                            <select class="value _{{ n }}" >
+                                                {% for v in bf.values %}
+                                                    <option {{ v.selected ? "selected" : "" }}>{{ v.value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% set n = n+1 %}
+                    {% endfor %}
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+    {% endif %}
+</div>
 
-
-    $(' .moreFields BUTTON', $container).click(function () {
-        $(' .moreFields', $container).hide();
-        $(' .other', $container).show();
-        return false;
-    })
-
-</script>
-
-#}

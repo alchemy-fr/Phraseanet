@@ -11491,7 +11491,6 @@ var thesaurusService = function thesaurusService(services) {
         (0, _jquery2.default)('#THPD_T_tree').droppable({
             accept: function accept(elem) {
                 var lstbr = searchSelection.asArray;
-                console.log("lstbr", lstbr);
 
                 dragUniqueSbid = null;
                 lstbr.forEach(function (sbid_rid) {
@@ -11503,7 +11502,7 @@ var thesaurusService = function thesaurusService(services) {
                 dragLstRecords = lstbr.join(';'); // a list as expected for RecordsRequest::fromRequest
 
                 (0, _jquery2.default)(this).removeClass('draggingOver');
-                console.log("accept", elem);
+                // console.log("accept", elem);
                 // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                 //     return true;
                 // }
@@ -11537,7 +11536,7 @@ var thesaurusService = function thesaurusService(services) {
                 var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
                 : (0, _jquery2.default)(event.toElement); // chrome
 
-                console.log("over", event, ui, target);
+                // console.log("over", event, ui, target);
 
                 (0, _jquery2.default)('#THPD_T_tree', $container).addClass('draggingOver').click(function () {
                     return true;
@@ -11569,7 +11568,7 @@ var thesaurusService = function thesaurusService(services) {
                 var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
                 : (0, _jquery2.default)(event.toElement); // chrome
 
-                console.log("out", event, ui, target);
+                // console.log("out", event, ui, target);
 
                 (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
                 (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
@@ -11590,7 +11589,8 @@ var thesaurusService = function thesaurusService(services) {
                 var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
                 : (0, _jquery2.default)(event.toElement); // chrome
 
-                console.log("drop", event, ui, target);
+                // console.log("drop", event, ui, target);
+
                 (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
                 (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
 
@@ -11672,10 +11672,55 @@ var thesaurusService = function thesaurusService(services) {
             'lst': lstRecords
         }, function (dlgData) {
 
+            var $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+            $container.addClass('black-dialog-wrap');
+
             dlg.setOption("title", dlgData.dlg_title);
             dlg.setContent(dlgData.dlg_content);
 
-            var $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+            /**
+             * update the dlg (show/hide selects & buttons) depending on form status
+             */
+            var updateUx = function updateUx() {
+                // console.log("====== update =========================");
+
+                var okbutton = false; // must we show the ok button ?
+
+                /**
+                 * loop on advanced-mode fields
+                 */
+                (0, _jquery2.default)('#TXCLASSIFICATION_ADVANCED .action', $container).each(function () {
+                    var $this = (0, _jquery2.default)(this);
+                    var n = $this.data('n');
+
+                    switch ($this.val()) {// action
+                        case "":
+                            // first "select..." option
+                            (0, _jquery2.default)('.value_container._' + n, $container).hide();
+                            break;
+                        case "clear":
+                            // clear a mono-value : no need value selection
+                            (0, _jquery2.default)('.value_container._' + n, $container).hide();
+                            okbutton = true;
+                            break;
+                        default:
+                            (0, _jquery2.default)('.value_container._' + n, $container).show();
+                            okbutton = true;
+                    }
+                });
+
+                /**
+                 * if the "simple-mode" is front, show "ok" button
+                 */
+                var seltab_idx = (0, _jquery2.default)('.tabs', $container).tabs('option', 'active');
+                var seltab_id = (0, _jquery2.default)('.tabs>UL.ui-tabs-nav>LI:eq(' + seltab_idx + ')', $container).data('tab_id'); // "SIMPLE" or "ADVANCED"
+                if (seltab_id === "SIMPLE") {
+                    // simple ux:  ok is possible
+                    okbutton = true;
+                }
+
+                (0, _jquery2.default)(' .okbutton', $container).toggle(okbutton);
+            };
 
             /**
              * add buttons
@@ -11686,31 +11731,60 @@ var thesaurusService = function thesaurusService(services) {
              */
             {
                 text: "Ok",
-                class: "fieldSelected",
+                class: "fieldSelected okbutton",
                 style: "display:none",
                 click: function click() {
                     // don't submit the complex form, better build json
                     var actions = [];
-                    (0, _jquery2.default)(' .fieldSelect', $container).filter(function () {
-                        return (0, _jquery2.default)(this).prop('selectedIndex') > 0;
-                    }).each(function () {
-                        var n = (0, _jquery2.default)(this).data('n');
-                        var action = (0, _jquery2.default)(' .actionSelect._' + n + ':visible', $container).val();
-                        if (action === 'replace') {
-                            // replace all multi-v needs a "replace_by" arg
-                            actions.push({
-                                'field_name': (0, _jquery2.default)(this).val(),
-                                'action': action,
-                                'replace_with': (0, _jquery2.default)(' .synonym._' + n, $container).val()
-                            });
-                        } else {
-                            actions.push({
-                                'field_name': (0, _jquery2.default)(this).val(),
-                                'action': action,
-                                'value': (0, _jquery2.default)(' .synonym._' + n, $container).val()
-                            });
+
+                    /**
+                     * find the active tab ("SIMPLE" or "ADVANCED")
+                     */
+                    var seltab_idx = (0, _jquery2.default)('.tabs', $container).tabs('option', 'active');
+                    var seltab_id = (0, _jquery2.default)('.tabs>UL.ui-tabs-nav>LI:eq(' + seltab_idx + ')', $container).data('tab_id'); // "SIMPLE" or "ADVANCED"
+
+                    /**
+                     * extract data only from the front tab (div)
+                     */
+                    var box = (0, _jquery2.default)("#TXCLASSIFICATION_" + seltab_id, $container);
+                    (0, _jquery2.default)('.action', box).each(function () {
+                        var $this = (0, _jquery2.default)(this);
+                        var n = $this.data('n');
+                        var action = $this.val();
+                        if (action !== "") {
+                            var field = (0, _jquery2.default)('.field._' + n, box).val();
+                            var value = (0, _jquery2.default)('.value._' + n, box).val();
+
+                            switch (action) {
+                                case "replace":
+                                    // replace all multi-values
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': "replace",
+                                        'replace_with': value
+                                    });
+                                    break;
+                                case "clear":
+                                    // clear a mono-value
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': "delete"
+                                    });
+                                    break;
+                                default:
+                                    // all other actions don't need patch
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': action,
+                                        'value': value
+                                    });
+                            }
                         }
                     });
+
+                    /**
+                     * post actions
+                     */
                     data = {
                         'records': dlgData.rec_refs,
                         'actions': {
@@ -11718,13 +11792,14 @@ var thesaurusService = function thesaurusService(services) {
                         }
                     };
 
+                    // console.log(data);
+
                     _jquery2.default.ajax({
                         url: dlgData.commit_url,
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(data),
-                        success: function success(data, textStatus) {
-                            console.log(data);
+                        success: function success() {
                             dlg.close();
                         }
                     });
@@ -11732,6 +11807,7 @@ var thesaurusService = function thesaurusService(services) {
                     return false;
                 }
             },
+
             /**
              * Cancel button
              */
@@ -11743,49 +11819,15 @@ var thesaurusService = function thesaurusService(services) {
             }]);
 
             /**
-             * when a destination field is changed, show/hide the "action" menus
+             * format the dlg content
              */
-            (0, _jquery2.default)(' .fieldSelect', $container).change(function () {
-                var n_changed = (0, _jquery2.default)(this).data('n');
+            (0, _jquery2.default)('SELECT', $container).menu();
+            (0, _jquery2.default)('.tabs', $container).tabs({ 'activate': updateUx });
+            (0, _jquery2.default)('.action', $container).change(updateUx);
 
-                // show "action" menus depending on the selected fields (none, mono, multi)
-                var oneFieldSet = false; // if at least one destination field is set, we will show some elements
-                (0, _jquery2.default)(' .fieldSelect', $container).each(function () {
-                    var $this = (0, _jquery2.default)(this);
-                    var n = $this.data('n');
-                    var selIndex = $this.prop('selectedIndex');
-                    if (selIndex > 0) {
-                        if (n === n_changed) {
-                            // reset both mono an multi menus
-                            (0, _jquery2.default)(' .actionSelect._' + n, $container).prop('selectedIndex', 0);
-                        }
-                        var multi = !!(0, _jquery2.default)('option:eq(' + selIndex + ')', $this).data('multi');
-                        if (multi) {
-                            (0, _jquery2.default)(' .actionSelect._' + n + '.mono', $container).hide();
-                            (0, _jquery2.default)(' .actionSelect._' + n + '.multi', $container).show();
-                        } else {
-                            (0, _jquery2.default)(' .actionSelect._' + n + '.multi', $container).hide();
-                            (0, _jquery2.default)(' .actionSelect._' + n + '.mono', $container).show();
-                        }
-
-                        oneFieldSet = true;
-                    } else {
-                        // hide both menus
-                        (0, _jquery2.default)(' .actionSelect._' + n).hide();
-                    }
-                });
-                (0, _jquery2.default)(' .fieldSelected', $container).toggle(oneFieldSet);
-            }).change(); // enforce initial update
-
-            /**
-             * the "other values" button
-             */
-            (0, _jquery2.default)(' .moreFields BUTTON', $container).click(function () {
-                (0, _jquery2.default)(' .moreFields', $container).hide();
-                (0, _jquery2.default)(' .other', $container).show();
-                return false;
-            });
+            updateUx(); // enforce initial update;
         }).fail(function (jqxhr, textStatus, error) {
+            // the dlg content failed, report onto the dlg (better than forever loading)
             var err = textStatus + ", " + error;
             dlg.setContent("Request Failed: " + err);
         });

@@ -422,12 +422,20 @@ span.ww_winTitle {
             }
         }
     .ui-dialog-content {
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+//        padding: 0;
+//        display: flex;
+//        align-items: center;
+//        justify-content: center;
         form {
             margin-bottom: 0;
+        }
+    }
+    .ui-menu {
+        OPTION {
+            // dunno why option is rendered with white bg when style says "transparent"
+            // changing bg color causes glitches, so we change text
+            color: #333333;
+            background-color: white;
         }
     }
     .ui-dialog-titlebar {
@@ -1319,6 +1327,7 @@ h3.metadatas-title {
 @import 'ui-components/pagination';
 @import 'ui-components/upload';
 @import 'ui-components/modal-basket-pref';
+@import 'ui-components/modal-classification';
 @import 'ui-components/modal-publish';
 @import 'ui-components/modal-edit';
 @import 'ui-components/modal-export';
