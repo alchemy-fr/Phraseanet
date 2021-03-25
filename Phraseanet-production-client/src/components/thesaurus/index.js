@@ -112,7 +112,6 @@ const thesaurusService = services => {
             .droppable({
                 accept: function(elem) {
                     let lstbr = searchSelection.asArray;
-                    console.log("lstbr", lstbr);
 
                     dragUniqueSbid = null;
                     lstbr.forEach(sbid_rid => {
@@ -124,7 +123,7 @@ const thesaurusService = services => {
                     dragLstRecords = lstbr.join(';');   // a list as expected for RecordsRequest::fromRequest
 
                     $(this).removeClass('draggingOver');
-                    console.log("accept", elem);
+                    // console.log("accept", elem);
                     // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                     //     return true;
                     // }
@@ -313,10 +312,54 @@ const thesaurusService = services => {
             },
             function (dlgData) {
 
+                let $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+                $container.addClass('black-dialog-wrap');
+
                 dlg.setOption("title", dlgData.dlg_title);
                 dlg.setContent(dlgData.dlg_content);
 
-                let $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+                /**
+                 * update the dlg (show/hide selects & buttons) depending on form status
+                 */
+                let updateUx = function () {
+                    // console.log("====== update =========================");
+
+                    let okbutton = false;   // must we show the ok button ?
+
+                    /**
+                     * loop on advanced-mode fields
+                     */
+                    $('#TXCLASSIFICATION_ADVANCED .action', $container).each(function () {
+                        let $this    = $(this);
+                        let n        = $this.data('n');
+
+                        switch($this.val()) {   // action
+                            case "":                        // first "select..." option
+                                $('.value_container._'+n, $container).hide();
+                                break;
+                            case "clear":                   // clear a mono-value : no need value selection
+                                $('.value_container._'+n, $container).hide();
+                                okbutton = true;
+                                break;
+                            default:
+                                $('.value_container._'+n, $container).show();
+                                okbutton = true;
+                        }
+
+                    });
+
+                    /**
+                     * if the "simple-mode" is front, show "ok" button
+                     */
+                    let seltab_idx = $('.tabs', $container).tabs('option', 'active');
+                    let seltab_id  = $('.tabs>UL.ui-tabs-nav>LI:eq('+seltab_idx+')', $container).data('tab_id');    // "SIMPLE" or "ADVANCED"
+                    if(seltab_id === "SIMPLE") {
+                        // simple ux:  ok is possible
+                        okbutton = true;
+                    }
+
+                    $(' .okbutton', $container).toggle(okbutton);
+                }
 
                 /**
                  * add buttons
@@ -328,30 +371,59 @@ const thesaurusService = services => {
                          */
                         {
                             text:  "Ok",
-                            class: "fieldSelected",
+                            class: "fieldSelected okbutton",
                             style: "display:none",
-                            click: function() {
+                            click: function () {
                                 // don't submit the complex form, better build json
                                 let actions = [];
-                                $(' .fieldSelect', $container).filter(function () { return $(this).prop('selectedIndex')>0;}).each(function () {
-                                    let n = $(this).data('n');
-                                    let action = $(' .actionSelect._'+n+':visible', $container).val();
-                                    if(action === 'replace') {
-                                        // replace all multi-v needs a "replace_by" arg
-                                        actions.push({
-                                            'field_name':   $(this).val(),
-                                            'action':       action,
-                                            'replace_with': $(' .synonym._' + n, $container).val()
-                                        });
-                                    }
-                                    else {
-                                        actions.push({
-                                            'field_name': $(this).val(),
-                                            'action':     action,
-                                            'value':      $(' .synonym._' + n, $container).val()
-                                        });
-                                    }
-                                });
+
+                                /**
+                                 * find the active tab ("SIMPLE" or "ADVANCED")
+                                 */
+                                let seltab_idx = $('.tabs', $container).tabs('option', 'active');
+                                let seltab_id  = $('.tabs>UL.ui-tabs-nav>LI:eq('+seltab_idx+')', $container).data('tab_id');     // "SIMPLE" or "ADVANCED"
+
+                                /**
+                                 * extract data only from the front tab (div)
+                                 */
+                                let box = $("#TXCLASSIFICATION_"+seltab_id, $container);
+                                $('.action', box).each(
+                                    function() {
+                                        let $this    = $(this);
+                                        let n        = $this.data('n');
+                                        let action   = $this.val();
+                                        if(action !== "") {
+                                            let field = $('.field._' + n, box).val();
+                                            let value = $('.value._' + n, box).val();
+
+                                            switch(action) {
+                                                case "replace": // replace all multi-values
+                                                    actions.push({
+                                                        'field_name':   field,
+                                                        'action':       "replace",
+                                                        'replace_with': value
+                                                    });
+                                                    break;
+                                                case "clear":   // clear a mono-value
+                                                    actions.push({
+                                                        'field_name':   field,
+                                                        'action':       "delete"
+                                                    });
+                                                    break;
+                                                default:        // all other actions don't need patch
+                                                    actions.push({
+                                                        'field_name': field,
+                                                        'action':     action,
+                                                        'value':      value
+                                                    });
+                                            }
+
+                                        }
+                                    });
+
+                                /**
+                                 * post actions
+                                 */
                                 data = {
                                     'records': dlgData.rec_refs,
                                     'actions': {
@@ -359,13 +431,14 @@ const thesaurusService = services => {
                                     }
                                 };
 
+                                // console.log(data);
+
                                 $.ajax({
-                                        url: dlgData.commit_url,
-                                        type: "POST",
+                                        url:         dlgData.commit_url,
+                                        type:        "POST",
                                         contentType: "application/json",
-                                        data: JSON.stringify(data),
-                                        success: function (data, textStatus) {
-                                            console.log(data);
+                                        data:        JSON.stringify(data),
+                                        success:     function () {
                                             dlg.close();
                                         }
                                     },
@@ -374,69 +447,33 @@ const thesaurusService = services => {
                                 return false;
                             }
                         },
+
                         /**
                          * Cancel button
                          */
                         {
-                            text: "Cancel",
-                            click: function() {
-                                $( this ).dialog( "close" );
+                            text:  "Cancel",
+                            click: function () {
+                                $(this).dialog("close");
                             }
                         }
                     ]
                 );
 
                 /**
-                 * when a destination field is changed, show/hide the "action" menus
+                 * format the dlg content
                  */
-                $(' .fieldSelect', $container)
-                    .change(function () {
-                        let n_changed = $(this).data('n');
+                $('SELECT', $container).menu();
+                $('.tabs', $container).tabs({'activate':updateUx});
+                $('.action', $container).change(updateUx)
 
-                        // show "action" menus depending on the selected fields (none, mono, multi)
-                        let oneFieldSet = false;   // if at least one destination field is set, we will show some elements
-                        $(' .fieldSelect', $container).each(function () {
-                            let $this = $(this);
-                            let n = $this.data('n');
-                            let selIndex = $this.prop('selectedIndex');
-                            if(selIndex > 0) {
-                                if(n === n_changed) {
-                                    // reset both mono an multi menus
-                                    $(' .actionSelect._'+n, $container).prop('selectedIndex', 0);
-                                }
-                                let multi = !!$('option:eq(' + selIndex + ')', $this).data('multi');
-                                if(multi) {
-                                    $(' .actionSelect._'+n+'.mono', $container).hide();
-                                    $(' .actionSelect._'+n+'.multi', $container).show();
-                                }
-                                else {
-                                    $(' .actionSelect._'+n+'.multi', $container).hide();
-                                    $(' .actionSelect._'+n+'.mono', $container).show();
-                                }
+                updateUx();  // enforce initial update;
 
-                                oneFieldSet = true;
-                            }
-                            else {
-                                // hide both menus
-                                $(' .actionSelect._'+n).hide();
-                            }
-                        });
-                        $(' .fieldSelected', $container).toggle(oneFieldSet);
-                    })
-                    .change();  // enforce initial update
-
-                /**
-                 * the "other values" button
-                 */
-                $(' .moreFields BUTTON', $container).click(function () {
-                    $(' .moreFields', $container).hide();
-                    $(' .other', $container).show();
-                    return false;
-                })
             }
 
         ).fail(function( jqxhr, textStatus, error ) {
-             let err = textStatus + ", " + error;
+            // the dlg content failed, report onto the dlg (better than forever loading)
+            let err = textStatus + ", " + error;
             dlg.setContent( "Request Failed: " + err );
         });
     }
