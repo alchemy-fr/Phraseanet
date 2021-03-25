@@ -7439,6 +7439,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
   text-decoration: underline;
 }
 
+#THPD_tabs .treeview {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /*
+        i {
+            // count of hits
+            color: #80ff80;
+            background-color: #606060;
+            font-style: normal;
+            margin-left: 10px;
+            padding-left: 3px;
+            padding-right: 3px;
+            font-family: courier;
+        }
+        */
+}
+
 #THPD_tabs .treeview ul {
   background-color: #bfbfbf;
   margin-left: -16px;
@@ -7453,56 +7472,87 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #THPD_tabs .treeview span.tx_term {
   cursor: pointer;
   color: #333333;
+  /*
+            &.dragOver {
+                // highlited as a target for dropping
+                background-color: $highlightBackgroundColor;
+                color: $highlightTextColor;
+            }
+            */
 }
 
 #THPD_tabs .treeview span.tx_term.h {
-  /* highlighted (filtered as matching the filter input) */
   color: #884c92;
   font-weight: bold;
 }
 
 #THPD_tabs .treeview span.tx_term:hover {
-  color: #333333;
-}
-
-#THPD_tabs .treeview span.tx_term.dragOver {
-  /* highlited as a target for dropping */
-  background-color: #076882;
   color: #fff;
 }
 
-#THPD_tabs .treeview i {
-  /* count of hits */
-  color: #80ff80;
-  background-color: #606060;
-  font-style: normal;
-  margin-left: 10px;
-  padding-left: 3px;
-  padding-right: 3px;
-  font-family: courier;
+#THPD_T_tree span.tx_term {
+  /*
+        cursor: pointer;
+        color: $mediumTextColor;
+        &.h {
+            // highlighted (filtered as matching the filter input)
+            color: $thesaurusColor;
+            font-weight: bold;
+        }
+        &:hover {
+            color: $highlightTextColor;
+        }
+        */
+  /*
+        &.dragOver {
+            // highlited as a target for dropping
+            background-color: $highlightBackgroundColor;
+            color: $highlightTextColor;
+        }
+        */
 }
 
 #THPD_T_tree.draggingOver {
-  /* something is currently dragged over, we change some hover */
-}
-
-#THPD_T_tree.draggingOver:hover {
   cursor: not-allowed;
+  /*
+        &:hover {
+            // background-color: #8F0000; // debug purpose
+            cursor: not-allowed;
+        }
+        */
+  /*  debug purpose
+        span.tx_term:hover {
+            color: #ff00ff;
+        }
+        */
 }
 
-#THPD_T_tree.draggingOver span.tx_term:hover {
+#THPD_T_tree.draggingOver span.tx_term {
   color: #333333;
   cursor: not-allowed;
+  /*   debug purpose
+            &:hover {
+                color: #f9a732;
+            }
+            */
 }
 
-#THPD_T_tree.draggingOver LI.draggingOver:hover {
+#THPD_T_tree.draggingOver LI.draggingOver {
   cursor: default;
+  /*
+            &:hover {
+                // background-color: #008F00; // debug purpose
+                cursor: default;
+            }
+            */
+}
+
+#THPD_T_tree.draggingOver LI.draggingOver span.tx_term {
+  cursor: copy;
 }
 
 #THPD_T_tree.draggingOver LI.draggingOver span.tx_term:hover {
-  background-color: #076882;
   color: #fff;
-  cursor: copy;
 }
 
 #idFrameC .ui-tabs #THPD_C.ui-tabs-panel,
