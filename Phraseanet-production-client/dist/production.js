@@ -8634,7 +8634,7 @@ module.exports = {
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/home/n6/work/new_work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/n6/work/new_work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 88 */
@@ -11537,7 +11537,7 @@ var thesaurusService = function thesaurusService(services) {
                 var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
                 : (0, _jquery2.default)(event.toElement); // chrome
 
-                console.log("over", event, ui, target);
+                // console.log("over", event, ui, target);
 
                 (0, _jquery2.default)('#THPD_T_tree', $container).addClass('draggingOver').click(function () {
                     return true;
@@ -11569,7 +11569,7 @@ var thesaurusService = function thesaurusService(services) {
                 var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
                 : (0, _jquery2.default)(event.toElement); // chrome
 
-                console.log("out", event, ui, target);
+                // console.log("out", event, ui, target);
 
                 (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
                 (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
@@ -11590,7 +11590,8 @@ var thesaurusService = function thesaurusService(services) {
                 var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
                 : (0, _jquery2.default)(event.toElement); // chrome
 
-                console.log("drop", event, ui, target);
+                // console.log("drop", event, ui, target);
+
                 (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
                 (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
 
@@ -50560,7 +50561,7 @@ module.exports = VTTRegion;
 /* 148 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/home/n6/work/new_work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/n6/work/new_work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 149 */
@@ -60591,6 +60592,7 @@ var Feedback = function Feedback(services, options) {
     });
 
     (0, _jquery2.default)('.FeedbackSend', this.container).bind('click', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
         if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
             return;
@@ -60627,9 +60629,23 @@ var Feedback = function Feedback(services, options) {
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+            (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
 
             $FeedBackForm.trigger('submit');
         };
+
+        if ($el.data('feedback-action') === 'adduser') {
+            buttons[localeService.t('feedbackNotNotify')] = function () {
+                $dialog.close();
+
+                (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
+
+                $FeedBackForm.trigger('submit');
+            };
+        }
 
         var options = {
             size: '558x352',
@@ -60639,7 +60655,6 @@ var Feedback = function Feedback(services, options) {
             closeOnEscape: true
         };
 
-        var $el = (0, _jquery2.default)(event.currentTarget);
         if ($el.hasClass('validation')) {
             options.isValidation = true;
             options.size = '558x415';
@@ -60666,6 +60681,7 @@ var Feedback = function Feedback(services, options) {
 
         var feedbackTitle = (0, _jquery2.default)('#feedbackTitle').val();
         var pushTitle = (0, _jquery2.default)('#pushTitle').val();
+
         if (options.isValidation) {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
         } else {
@@ -60674,6 +60690,15 @@ var Feedback = function Feedback(services, options) {
 
         if ($el.data('feedback-action') !== 'adduser') {
             (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        } else {
+            // display the list of new user in the dialog window when add user
+            var lisNewUser = (0, _jquery2.default)('#newParticipantsUser').val();
+            if (lisNewUser == '') {
+                (0, _jquery2.default)('.email-to-notify').hide();
+            } else {
+                (0, _jquery2.default)('.email-to-notify').show();
+                (0, _jquery2.default)('#email-to-notify').empty().append((0, _jquery2.default)('#newParticipantsUser').val());
+            }
         }
 
         (0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val((0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val());
@@ -60726,6 +60751,22 @@ var Feedback = function Feedback(services, options) {
 
     this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
         var $elem = (0, _jquery2.default)(this).closest('.badge');
+        var userEmailEl = $elem.find('.user-email').val();
+
+        var value = (0, _jquery2.default)('#newParticipantsUser').val();
+        var actualParticipantsName = value.split('; ');
+        // remove the user in the list of new participant if yet exist
+        var key = _jquery2.default.inArray(userEmailEl, actualParticipantsName);
+        if (key > -1) {
+            actualParticipantsName.splice(key, 1);
+            if (actualParticipantsName.length != 0) {
+                value = actualParticipantsName.join('; ');
+                (0, _jquery2.default)('#newParticipantsUser').val(value);
+            } else {
+                (0, _jquery2.default)('#newParticipantsUser').val('');
+            }
+        }
+
         $elem.fadeOut(function () {
             $elem.remove();
         });
@@ -60843,6 +60884,18 @@ Feedback.prototype = {
         if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
             humane.info('User already selected');
             return;
+        }
+
+        if ((0, _jquery2.default)('input[name="feedbackAction"]').val() == 'adduser') {
+            var actualParticipantsUserIds = (0, _jquery2.default)('#participantsUserIds').val();
+            actualParticipantsUserIds = actualParticipantsUserIds.split('_');
+
+            if (!(_jquery2.default.inArray(user.usr_id.toString(), actualParticipantsUserIds) > -1)) {
+                var value = (0, _jquery2.default)('#newParticipantsUser').val();
+                var glue = value == '' ? '' : '; ';
+                value = value + glue + user.email;
+                (0, _jquery2.default)('#newParticipantsUser').val(value);
+            }
         }
 
         var html = _.template((0, _jquery2.default)('#' + this.Context.toLowerCase() + '_badge_tpl').html())({

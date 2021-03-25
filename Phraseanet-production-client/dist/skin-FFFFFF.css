@@ -9315,7 +9315,7 @@ input.text_input_white {
   color: #FFFFFF;
 }
 
-.dialog_container.validation .ui-dialog-buttonpane .ui-button:nth-child(2) {
+.dialog_container.validation .ui-dialog-buttonpane .ui-button:last-child {
   background-color: #8bc34a;
   color: #FFFFFF;
 }

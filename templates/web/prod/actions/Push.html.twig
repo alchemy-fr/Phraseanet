@@ -239,6 +239,11 @@
                     <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
                     <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
                     <input name="feedbackAction" type="hidden" value="{{ feedbackAction }}" />
+                    <input name="notify" type="hidden" value="1" />
+                    {% if feedbackAction == 'adduser' %}
+                        <input id="participantsUserIds" type="hidden" value="{{ participantUserIds }}" />
+                        <input id="newParticipantsUser" type="hidden" value="" />
+                    {% endif %}
                     <textarea name="message" style="display:none;"></textarea>
                     <input type="hidden" name="duration" value=""/>
                     <input type="checkbox" value="1" name="recept" style="display:none;"/>
@@ -248,9 +253,11 @@
                             {% for participant in participants | sort | reverse %}
                                 {% set userId = participant.getUser().getId() %}
                                 <div class="badge {{ 'badge_' ~ userId }} %>">
-                                    <a href="#" class="deleter">
-                                        <i class="fa fa-times-circle"></i>
-                                    </a>
+                                    {% if initiatorUserId != userId %}
+                                        <a href="#" class="deleter">
+                                            <i class="fa fa-times-circle"></i>
+                                        </a>
+                                    {% endif %}
                                     <input name="id" value="{{ userId }}" type="hidden" />
                                     <table>
                                         <tr>

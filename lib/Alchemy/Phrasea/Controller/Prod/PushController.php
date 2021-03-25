@@ -445,17 +445,20 @@ class PushController extends Controller
 
                 $receipt = $request->get('recept') ? $this->getAuthenticatedUser()->getEmail() : '';
 
-                $this->dispatch(
-                    PhraseaEvents::VALIDATION_CREATE,
-                    new ValidationEvent(
-                        $validationParticipant,
-                        $basket,
-                        $url,
-                        $request->request->get('message'),
-                        $receipt,
-                        (int)$request->request->get('duration')
-                    )
-                );
+                // send only mail if notify is needed
+                if ($request->request->get('notify') == 1) {
+                    $this->dispatch(
+                        PhraseaEvents::VALIDATION_CREATE,
+                        new ValidationEvent(
+                            $validationParticipant,
+                            $basket,
+                            $url,
+                            $request->request->get('message'),
+                            $receipt,
+                            (int)$request->request->get('duration')
+                        )
+                    );
+                }
             }
 
             if ($feedbackAction == 'adduser') {
@@ -900,15 +903,20 @@ class PushController extends Controller
 
         $feedbackaction = $request->request->get('feedbackaction');
         $participants = [];
+        $participantUserIds = '';
+        $initiatorUserId = null;
 
         if ($context === 'Feedback' && $feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
             $participants = $push->get_original_basket()->getValidation()->getParticipants();
+            $participantUserIds = implode('_', $push->get_original_basket()->getValidation()->getListParticipantsUserId());
+            $initiatorUserId = $push->get_original_basket()->getValidation()->getInitiator()->getId();
         } elseif ($context === 'Feedback') {
             // Display the initiator in the participant list window when the first time to create a feedback
             $validationParticipant =  new ValidationParticipant();
             $validationParticipant->setUser($this->getAuthenticatedUser());
             $validationParticipant->setCanSeeOthers(1);
             array_push($participants, $validationParticipant);
+            $initiatorUserId = $participantUserIds = $this->getAuthenticatedUser()->getId();
         }
 
         $repository = $this->getUserListRepository();
@@ -923,7 +931,9 @@ class PushController extends Controller
                 'context'          => $context,
                 'RecommendedUsers' => $recommendedUsers,
                 'participants'     => $participants,
-                'feedbackAction'   => $feedbackaction
+                'participantUserIds' => $participantUserIds,
+                'feedbackAction'   => $feedbackaction,
+                'initiatorUserId'  => $initiatorUserId
             ]
         );
     }

@@ -60,6 +60,7 @@ class LanguageController
             'feed_require_feed'       => $translator->trans('Vous n\'avez pas selectionne de fil de publication'),
             'removeTitle'             => $translator->trans('panier::Supression d\'un element d\'un reportage'),
             'removeRecordFeedbackTitle' => $translator->trans('basket:feedback Delete item'),
+            'feedbackNotNotify'         => $translator->trans('feedback::send not notify'),
             'feedbackReminderTitle'   => $translator->trans('prod::workzone:manual feedback reminder title'),
             'reminderMessageToCheck'  => $translator->trans('prod::workzone:manual feedback reminder provide a message!'),
             'reminderParticipantToCheck' => $translator->trans('prod::workzone:manual feedback reminder select a participant!'),
