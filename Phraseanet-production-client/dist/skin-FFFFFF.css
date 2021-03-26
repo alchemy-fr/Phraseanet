@@ -2305,15 +2305,13 @@ span.ww_winTitle {
   height: auto !important;
 }
 
-.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-content {
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-content form {
   margin-bottom: 0;
+}
+
+.black-dialog-wrap.ui-dialog.ui-widget-content .ui-menu OPTION {
+  color: #333333;
+  background-color: white;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-titlebar {
@@ -6117,6 +6115,17 @@ form.phrasea_query input.query {
   top: 0;
   right: 0;
   z-index: 1;
+}
+
+/******* Classification using thesaurus ************************************/
+
+#TXCLASSIFICATION FORM {
+  padding: 0;
+  margin: 0;
+}
+
+#TXCLASSIFICATION #TXCLASSIFICATION_ADVANCED TD {
+  padding: 0 5px 0 5px;
 }
 
 .publish-dialog .ui-dialog-content {
