@@ -84,8 +84,8 @@ class ThesaurusController extends Controller
                 //       |---B    <-- ...but also linked here (bad idea btw)
                 //           |---terms
                 // going up, we decide to stop at the first link (B) (easier)
-
-                if (($droppedSy = $xpath->query($q))->length > 0) {
+                $droppedSy = $xpath->query($q);
+                if ($droppedSy->length > 0) {
                     // yes this field is linked to a branch that contains the term
                     // since the query targets a unique id, there is only one result
                     $droppedSy = $droppedSy->item(0);
