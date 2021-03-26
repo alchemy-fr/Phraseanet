@@ -1,0 +1,111 @@
+<div id="TXCLASSIFICATION">
+    <h3 style="color: red">WIP/Experimental.</h3>
+
+    {% if error %}
+
+        {{ error }}
+
+    {% else %}
+
+        {% if rejected_cnt > 0 %}
+
+            you don't have rights to edit {{ rejected_cnt }} record(s)
+
+        {% endif %}
+
+            {% set simple_possible = false %}
+            {% set advanced_needed = true %}
+            {% set selected_sy = null %}
+            {% set bf0 = by_fields|first %}
+            {% if by_fields|length == 1 %}
+                {# if there is only 1 field, we can propose a "simple" ux with the selected "value" (dropped-on) #}
+                {# bf0 is the only field #}
+                {% set simple_possible = true %}
+            {% endif %}
+
+            <div class="tabs">
+                <ul>
+                    {% if simple_possible %}
+                    <li data-tab_id="SIMPLE"><a href="#TXCLASSIFICATION_SIMPLE">simple mode</a></li>
+                    {% endif %}
+
+                    {% if advanced_needed %}
+                    <li data-tab_id="ADVANCED"><a href="#TXCLASSIFICATION_ADVANCED">advanced mode</a></li>
+                    {% endif %}
+                </ul>
+
+                {% if simple_possible %}
+                <div id="TXCLASSIFICATION_SIMPLE" style="padding: 20px 10px 20px 10px">
+                    <form id="DroppedOnTH_form_simple">
+                        <input type="hidden" class="field _0"  value="{{ bf0.field.get_name() }}">
+                        <input type="hidden" class="action _0" value="add" data-n="0">
+                        <input type="hidden" class="value _0"  value="{{ bf0.selected_value.value }}">
+                    </form>
+                    {% if bf0.field.is_multi() %}
+                    add&nbsp;&nbsp;<b>{{ bf0.selected_value.value }}</b>&nbsp;&nbsp;to the field&nbsp;&nbsp;<b>{{ bf0.field.get_name() }}</b>
+                    {% else %}
+                    set&nbsp;&nbsp;<b>{{ bf0.field.get_name() }}</b>&nbsp;&nbsp;to&nbsp;&nbsp;<b>{{ bf0.selected_value.value }}</b>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if advanced_needed %}
+                <div id="TXCLASSIFICATION_ADVANCED" style="padding: 10px;">
+                    <form id="DroppedOnTH_form_advanced">
+                    {% set n = 0 %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Action</th>
+                                <th class="okbutton">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    {% for bf in by_fields %}
+                            <tr>
+                                <td>
+                                    <input type="hidden" class="field _{{ n }}" value="{{ bf.field.get_name() }}">
+                                    {{ bf.field.get_name() }}&nbsp;:
+                                </td>
+
+                                <td>
+                                    <select class="action _{{ n }}" data-n="{{ n }}">
+                                        <option value="" {{ simple_possible ? "" : "selected"}}>...</option>
+                                        {% if bf.field.is_multi() %}
+                                        <option value="add" {{ simple_possible ? "selected" : ""}}>add</option>
+                                        <option value="replace">replace all with</option>
+                                        <option value="delete">remove</option>
+                                        {% else %}
+                                        <option value="set" {{ simple_possible ? "selected" : ""}}>set to</option>
+                                        <option value="clear">clear</option>
+                                        {% endif%}
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <div class="value_container _{{ n }}" style="display: none">
+                                        {% if bf.values|length == 1 %}
+                                            <input type="hidden" class="value _{{ n }}" value="{{ (bf.values|first).value }}">
+                                            {{ (bf.values|first).value }}
+                                        {% else %}
+                                            <select class="value _{{ n }}" >
+                                                {% for v in bf.values %}
+                                                    <option {{ v.selected ? "selected" : "" }}>{{ v.value }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% set n = n+1 %}
+                    {% endfor %}
+                        </tbody>
+                    </table>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+    {% endif %}
+</div>
+

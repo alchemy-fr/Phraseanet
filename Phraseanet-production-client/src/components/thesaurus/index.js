@@ -1,8 +1,9 @@
 import $ from 'jquery';
 import _ from 'underscore';
-import { sprintf } from 'sprintf-js';
+import {sprintf} from 'sprintf-js';
 import * as AppCommons from './../../phraseanet-common';
 import dialog from './../../phraseanet-common/components/dialog';
+
 require('./../../phraseanet-common/components/vendors/contextMenu');
 
 const thesaurusService = services => {
@@ -12,6 +13,16 @@ const thesaurusService = services => {
     let sbas;
     let bas2sbas;
     let trees; // @TODO remove global
+
+    let dragging = false;       // true when an object is dragged over the th zone
+    let dragTarget = null;      // the target where the mouse is over
+    let dragUniqueSbid = null;  // will end-up as : null (nothing dragged) ; false (many sbids) ; sbid (same sbid for all)
+    let dragLstRecords = ''     // list or records, format as expected for RecordsRequest::fromRequest
+    const url = configService.get('baseUrl');
+
+    let searchSelection = {asArray: [], serialized: ''};
+
+
     const initialize = params => {
         let { $container } = params;
 
@@ -29,6 +40,7 @@ const thesaurusService = services => {
         }
 
         startThesaurus();
+        // console.log("hello from thesaurus ! container=", $container);
         let cclicks = 0;
         const cDelay = 350;
         let cTimer = null;
@@ -93,8 +105,383 @@ const thesaurusService = services => {
                 T_Gfilter(event.currentTarget);
             });
 
+        /**
+         * drag/drop on terms : we will not set each term as droppable (costly), but the whole tx zone.
+         */
+        $('#THPD_T_tree')
+            .droppable({
+                accept: function(elem) {
+                    let lstbr = searchSelection.asArray;
+
+                    dragUniqueSbid = null;
+                    lstbr.forEach(sbid_rid => {
+                        sbid_rid = sbid_rid.split('_');
+                        let sbid = sbid_rid[0];
+                        let rid = sbid_rid[1];
+                        dragUniqueSbid = (dragUniqueSbid===null) ? sbid : (sbid===dragUniqueSbid ? sbid : false);
+                    });
+                    dragLstRecords = lstbr.join(';');   // a list as expected for RecordsRequest::fromRequest
+
+                    $(this).removeClass('draggingOver');
+                    // console.log("accept", elem);
+                    // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
+                    //     return true;
+                    // }
+                    dragging = false;    // == not yet dragging something over th
+
+
+                    // the th zone can accet drags only when in front (activated tab)
+                    // 'hash' is set by the 'workzone' js code.
+                    // return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+
+                    if($('#idFrameC .tabs').data('hash') !== '#thesaurus_tab') {
+                        return false;   // can't drop on th if the th tab is not front
+                    }
+
+                    // by using classes on both main container AND the (unique) acceptable thesaurus zone
+                    // we can have custom drag/drop css for both ok / reject
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');      // the container
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');   // all thesaurus
+
+                    if(dragUniqueSbid === null || dragUniqueSbid === false) {
+                        // many sbids
+                        // return false;    // don't return false now, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                    }
+
+                    return true;
+                },
+                scope: 'objects',
+                hoverClass: 'groupDrop',
+                tolerance: 'pointer',
+                over: function(event, ui) {
+                    const target = typeof(event.toElement) === 'undefined' ?
+                        $(event.originalEvent.target)   // ffox
+                        :
+                        $(event.toElement);             // chrome
+
+                    // console.log("over", event, ui, target);
+
+                    $('#THPD_T_tree', $container).addClass('draggingOver').click(function() {return true;});
+                    if(dragUniqueSbid !== null && dragUniqueSbid !== false) {
+                        $('#TX_P\\.'+dragUniqueSbid+'\\.T', $container).addClass('draggingOver');
+                    }
+//                    $('<style></style>').appendTo($container).remove();
+                    /*
+                    $(this).addClass('draggingOver');
+
+                    if(dragTarget) {
+                        // something was already hilighted (should no happen)
+                        dragTarget.removeClass('dragOver');
+                    }
+                    dragging = true;            // == dragging something over th
+                    dragTarget = null;
+                    // for now, target can only be a term (which has a sbas_id and tx_term_id props)
+                    const target = $(event.toElement);
+                    const sbas_id = target.data('sbas_id');
+                    const tx_term_id = target.data('tx_term_id');
+                    if(sbas_id && tx_term_id) {
+                        dragTarget = target;
+                        dragTarget.addClass('dragOver');
+                        console.log("IN : " + dragTarget.attr('id'));
+                    }
+                    */
+                },
+                out: function(event, ui) {
+                    const target = typeof(event.toElement) === 'undefined' ?
+                        $(event.originalEvent.target)   // ffox
+                        :
+                        $(event.toElement);             // chrome
+
+                    // console.log("out", event, ui, target);
+
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+//                    $('<style></style>').appendTo($container).remove();
+                    /*
+                    $(this).removeClass('draggingOver');
+                    if(dragTarget) {
+                        // something was hilighted
+                        dragTarget.removeClass('dragOver');
+                    }
+                    dragging = false;    // == no more dragging something over th
+                    dragTarget = null;
+
+                     */
+                },
+                drop: (event, ui) => {
+                    // the event relates from the whole tx zone (<ul>), we must find the exact element of the mouseup
+                    // too bad, jquery does not seem to handle that in a cross-browser way.
+                    const target = typeof(event.toElement) === 'undefined' ?
+                        $(event.originalEvent.target)   // ffox
+                        :
+                        $(event.toElement);             // chrome
+
+                    // console.log("drop", event, ui, target);
+
+                    $('#THPD_T_tree', $container).removeClass('draggingOver');
+                    $('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+
+                    let sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                    let tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+
+                    if(sbas_id && tx_term_id) {
+                        sbas_id = sbas_id.toString();       // be carefull because data() will cast digits as int
+                        tx_term_id = tx_term_id.toString();
+                        if(sbas_id === dragUniqueSbid) {
+                            dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                        }
+                    }
+
+                        /*
+                        $(this).removeClass('draggingOver');
+                        if(dragTarget) {
+                            // const tid = $(event.toElement).data('tx_term_id');
+                            console.log("DROP ON id=" + dragTarget.attr('id'));
+                            dragTarget.removeClass('dragOver');
+    //                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
+                        }
+                        dragging = false;    // == no more dragging something over th
+                        dragTarget = null;
+
+                         */
+                }
+            })
+        //    .click(function() {return true;})
+        ;
+
+        /*
+                    // track the mouse
+                    .mousemove( (event) => {
+                        if(dragging) {
+                            const target = $(event.toElement);
+                            const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                            const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+                            const oldTarget = dragTarget;
+                            dragTarget = (sbas_id && tx_term_id) ? target : null;
+
+                            // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                            // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                            // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
+
+                            if(oldTarget && !oldTarget.is(dragTarget)) {
+                                // the mouse has quit a overed term (oldTargetId)
+                                oldTarget.removeClass('dragOver');
+                                console.log("OUT : " + oldTarget.attr('id'));
+                            }
+
+                            if(dragTarget && !dragTarget.is(oldTarget)) {
+                                // the mouse just overs a new term
+                                dragTarget.addClass('dragOver');
+                                console.log("IN : " + dragTarget.attr('id'));
+                            }
+                        }
+
+                    });
+        */
+
         searchValue = _.debounce(searchValue, 300);
     };
+
+
+    function dropRecordsOnTerm(sbas_id, tx_term_id, lstRecords) {
+        let dlg = dialog.create(
+            services,
+            {
+                size: 'Custom',
+                customWidth: 770,
+                customHeight: 400,
+                // title: localeService.t('add data'),
+                loading: true
+            },
+            0
+        );
+
+        let data = {        // declaring data structure avoids phpstorm warnings
+            dlg_title:   undefined,
+            dlg_content: undefined,
+            rec_refs:    undefined,
+            commit_url:  undefined,
+        };
+        $.getJSON(
+            `${url}prod/thesaurus/droprecords`,
+            {
+                'dlg_level': 0,
+                'sbas_id': sbas_id,
+                'tx_term_id': tx_term_id,
+                'lst': lstRecords
+            },
+            function (dlgData) {
+
+                let $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+                $container.addClass('black-dialog-wrap');
+
+                dlg.setOption("title", dlgData.dlg_title);
+                dlg.setContent(dlgData.dlg_content);
+
+                /**
+                 * update the dlg (show/hide selects & buttons) depending on form status
+                 */
+                let updateUx = function () {
+                    // console.log("====== update =========================");
+
+                    let okbutton = false;   // must we show the ok button ?
+
+                    /**
+                     * loop on advanced-mode fields
+                     */
+                    $('#TXCLASSIFICATION_ADVANCED .action', $container).each(function () {
+                        let $this    = $(this);
+                        let n        = $this.data('n');
+
+                        switch($this.val()) {   // action
+                            case "":                        // first "select..." option
+                                $('.value_container._'+n, $container).hide();
+                                break;
+                            case "clear":                   // clear a mono-value : no need value selection
+                                $('.value_container._'+n, $container).hide();
+                                okbutton = true;
+                                break;
+                            default:
+                                $('.value_container._'+n, $container).show();
+                                okbutton = true;
+                        }
+
+                    });
+
+                    /**
+                     * if the "simple-mode" is front, show "ok" button
+                     */
+                    let seltab_idx = $('.tabs', $container).tabs('option', 'active');
+                    let seltab_id  = $('.tabs>UL.ui-tabs-nav>LI:eq('+seltab_idx+')', $container).data('tab_id');    // "SIMPLE" or "ADVANCED"
+                    if(seltab_id === "SIMPLE") {
+                        // simple ux:  ok is possible
+                        okbutton = true;
+                    }
+
+                    $(' .okbutton', $container).toggle(okbutton);
+                }
+
+                /**
+                 * add buttons
+                 */
+                dlg.setOption("buttons",
+                    [
+                        /**
+                         * OK button
+                         */
+                        {
+                            text:  "Ok",
+                            class: "fieldSelected okbutton",
+                            style: "display:none",
+                            click: function () {
+                                // don't submit the complex form, better build json
+                                let actions = [];
+
+                                /**
+                                 * find the active tab ("SIMPLE" or "ADVANCED")
+                                 */
+                                let seltab_idx = $('.tabs', $container).tabs('option', 'active');
+                                let seltab_id  = $('.tabs>UL.ui-tabs-nav>LI:eq('+seltab_idx+')', $container).data('tab_id');     // "SIMPLE" or "ADVANCED"
+
+                                /**
+                                 * extract data only from the front tab (div)
+                                 */
+                                let box = $("#TXCLASSIFICATION_"+seltab_id, $container);
+                                $('.action', box).each(
+                                    function() {
+                                        let $this    = $(this);
+                                        let n        = $this.data('n');
+                                        let action   = $this.val();
+                                        if(action !== "") {
+                                            let field = $('.field._' + n, box).val();
+                                            let value = $('.value._' + n, box).val();
+
+                                            switch(action) {
+                                                case "replace": // replace all multi-values
+                                                    actions.push({
+                                                        'field_name':   field,
+                                                        'action':       "replace",
+                                                        'replace_with': value
+                                                    });
+                                                    break;
+                                                case "clear":   // clear a mono-value
+                                                    actions.push({
+                                                        'field_name':   field,
+                                                        'action':       "delete"
+                                                    });
+                                                    break;
+                                                default:        // all other actions don't need patch
+                                                    actions.push({
+                                                        'field_name': field,
+                                                        'action':     action,
+                                                        'value':      value
+                                                    });
+                                            }
+
+                                        }
+                                    });
+
+                                /**
+                                 * post actions
+                                 */
+                                data = {
+                                    'records': dlgData.rec_refs,
+                                    'actions': {
+                                        'metadatas': actions
+                                    }
+                                };
+
+                                // console.log(data);
+
+                                $.ajax({
+                                        url:         dlgData.commit_url,
+                                        type:        "POST",
+                                        contentType: "application/json",
+                                        data:        JSON.stringify(data),
+                                        success:     function () {
+                                            dlg.close();
+                                        }
+                                    },
+                                );
+
+                                return false;
+                            }
+                        },
+
+                        /**
+                         * Cancel button
+                         */
+                        {
+                            text:  "Cancel",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                );
+
+                /**
+                 * format the dlg content
+                 */
+                $('SELECT', $container).menu();
+                $('.tabs', $container).tabs({'activate':updateUx});
+                $('.action', $container).change(updateUx)
+
+                updateUx();  // enforce initial update;
+
+            }
+
+        ).fail(function( jqxhr, textStatus, error ) {
+            // the dlg content failed, report onto the dlg (better than forever loading)
+            let err = textStatus + ", " + error;
+            dlg.setContent( "Request Failed: " + err );
+        });
+    }
+
+
+
+
+
 
     function show() {
         // first show of thesaurus
@@ -1363,6 +1750,13 @@ const thesaurusService = services => {
             }
         });
     }
+
+    appEvents.listenAll({
+        'broadcast.searchResultSelection': (selection) => {
+            searchSelection = selection;
+        }
+    });
+
 
     return { initialize, show };
 };

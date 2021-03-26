@@ -26,6 +26,8 @@ use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
 use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use stdClass;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -336,7 +338,34 @@ class EditController extends Controller
 
         // order the worker to save values in fields
         $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
-            new RecordEditInWorkerEvent($request->request->get('mds'), array_keys($records->toArray()), $databox->get_sbas_id())
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), array_keys($records->toArray()))
+        );
+
+        return $this->app->json(['success' => true]);
+    }
+
+
+    /**
+     * performs an editing using a similar json-body as api_v3:record:patch (except here we can work on a list of records)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function applyJSAction(Request $request): JsonResponse
+    {
+        /** @var stdClass $arg */
+        $arg = json_decode($request->getContent());
+        $sbasIds = array_unique(array_column($arg->records, 'sbas_id'));
+
+        if (count($sbasIds) !== 1) {
+            throw new \Exception('Unable to edit on multiple databoxes');
+        }
+
+        $databoxId =  reset($sbasIds);
+
+        // order the worker to save values in fields
+        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId)
         );
 
         return $this->app->json(['success' => true]);
@@ -359,7 +388,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsLoadAction($preset_id)
     {
@@ -381,7 +410,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsListAction(Request $request)
     {
@@ -399,7 +428,7 @@ class EditController extends Controller
      * route DELETE "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsDeleteAction($preset_id)
     {
@@ -421,7 +450,7 @@ class EditController extends Controller
      * route POST "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsSaveAction(Request $request)
     {

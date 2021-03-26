@@ -145,6 +145,7 @@
 {% endif %}
 </div>
 
+{% if basket.getValidation() %}
 
 <script type="text/javascript">
     $( ".update-feed-validation" ).on( "submit", function( event ) {
@@ -197,5 +198,6 @@
 
 </script>
 
+{% endif %}
 
 
