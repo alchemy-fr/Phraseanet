@@ -2284,7 +2284,7 @@ span.ww_winTitle {
   font-size: 16px;
 }
 
-.black-dialog-wrap.ui-dialog.ui-widget-content.move-dialog .ui-dialog-content {
+.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-content {
   height: auto !important;
 }
 
@@ -2327,13 +2327,13 @@ span.ww_winTitle {
   min-width: 170px;
   margin: 12px 10px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-  background: #e6e6e6;
-  color: #000;
-}
-
-.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:first-child {
   background: #787878;
   color: #fff;
+}
+
+.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:last-child {
+  background: #e6e6e6;
+  color: #000;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:hover {
