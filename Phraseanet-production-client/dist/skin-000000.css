@@ -9307,7 +9307,7 @@ input.text_input_white {
   color: #FFFFFF;
 }
 
-.dialog_container.validation .ui-dialog-buttonpane .ui-button:nth-child(2) {
+.dialog_container.validation .ui-dialog-buttonpane .ui-button:last-child {
   background-color: #8bc34a;
   color: #FFFFFF;
 }
@@ -9708,6 +9708,7 @@ input.text_input_white {
   padding: 4px 0px;
   margin-left: 20px;
   margin-bottom: -7px;
+  float: right;
 }
 
 .PushBox .FeedbackSend:hover {
@@ -10102,8 +10103,7 @@ input.text_input_white {
   top: auto;
   right: 20px;
   bottom: 10px;
-  left: 10px;
-  text-align: right;
+  left: 20px;
 }
 
 .PushBox .user_content .badges {

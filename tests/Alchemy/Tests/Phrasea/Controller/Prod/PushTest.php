@@ -62,6 +62,7 @@ class PushTest extends \PhraseanetAuthenticatedWebTestCase
 
         self::$DI['client']->request('POST', '/prod/push/validate/', [
             'lst'          => implode(';', $records),
+            'notify'       => 1,
             'participants' => [[
                 'usr_id'     => self::$DI['user_alt1']->getId(),
                 'agree'      => 0,
