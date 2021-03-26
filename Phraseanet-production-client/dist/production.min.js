@@ -11027,7 +11027,7 @@ var workzone = function workzone(services) {
     }
 
     function openExposePublicationEdit(edit) {
-        (0, _jquery2.default)('#DIALOG-expose-edit').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+        (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
         (0, _jquery2.default)('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title')).dialog({
             autoOpen: false,
@@ -11042,19 +11042,19 @@ var workzone = function workzone(services) {
                 opacity: 0.7
             },
             close: function close(e, ui) {
-                (0, _jquery2.default)('#DIALOG-expose-edit').empty();
+                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty();
             }
         }).dialog('open');
         (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
-            (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
+            (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').dialog('close');
         });
 
         _jquery2.default.ajax({
             type: "GET",
             url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
             success: function success(data) {
-                (0, _jquery2.default)('#DIALOG-expose-edit').empty().html(data);
+                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }
         });
     }

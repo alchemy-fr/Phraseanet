@@ -416,12 +416,8 @@ span.ww_winTitle {
     border: 0 none ;
     background: $dialogWrapBg;
     font-size: 16px;
-    &.move-dialog {
-        .ui-dialog-content {
-            height: auto!important;
-            }
-        }
     .ui-dialog-content {
+        height: auto!important;
 //        padding: 0;
 //        display: flex;
 //        align-items: center;
@@ -463,11 +459,11 @@ span.ww_winTitle {
             min-width: 170px;
             margin: 12px 10px;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-            background: $dialogBtnBg;
-            color: $dialogBtnColor;
-            &:first-child {
-                background: $dialogBtnBg2;
-                color: $dialogBtnColor2;
+            background: $dialogBtnBg2;
+            color: $dialogBtnColor2;
+            &:last-child {
+                background: $dialogBtnBg;
+                color: $dialogBtnColor;
             }
             &:hover {
                 background: $dialogBtnBgHover;
