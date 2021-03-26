@@ -60692,9 +60692,18 @@ var Feedback = function Feedback(services, options) {
 
         var buttons = {};
 
-        buttons[localeService.t('annuler')] = function () {
-            $dialog.close();
-        };
+        if ($el.data('feedback-action') === 'adduser') {
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
+                $dialog.close();
+
+                (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
+
+                $FeedBackForm.trigger('submit');
+            };
+        }
 
         buttons[localeService.t('send')] = function () {
             if ($el.data('feedback-action') !== 'adduser') {
@@ -60726,18 +60735,9 @@ var Feedback = function Feedback(services, options) {
             $FeedBackForm.trigger('submit');
         };
 
-        if ($el.data('feedback-action') === 'adduser') {
-            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
-                $dialog.close();
-
-                (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
-                (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
-                (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
-                (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
-
-                $FeedBackForm.trigger('submit');
-            };
-        }
+        buttons[localeService.t('annuler')] = function () {
+            $dialog.close();
+        };
 
         var options = {
             size: '558x352',

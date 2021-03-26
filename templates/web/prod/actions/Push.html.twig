@@ -261,7 +261,7 @@
                                     <input name="id" value="{{ userId }}" type="hidden" />
                                     <table>
                                         <tr>
-                                            <td class="icon">
+                                            <td class="icon" {% if initiatorUserId == userId %} style="background-color: #673AB7!important;" {% endif %}>
                                                 <img src="/assets/common/images/icons/user-white.png"/>
                                             </td>
                                             <td class="infos">

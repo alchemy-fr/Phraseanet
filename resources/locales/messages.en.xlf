@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-03-26T11:08:06Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2021-03-26T15:01:52Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -16,16 +16,6 @@
         <source>                                Add</source>
         <target state="translated">                                Add</target>
         <jms:reference-file line="66">admin/fields/templates.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="955ba3f1b3cb9a2d319b73af341dd94392f61e87" resname="                    The parameter &quot;force authentication&quot; forces the recipient(s) of the push to possess a Phraseanet account&#10;                    to see its contents.&#10;                    This avoids anonymous users to access to the content of the push if they were able to get the display&#10;                    url through a forwarded mail for example.&#10;                " approved="yes">
-        <source>                    The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
-                    to see its contents.
-                    This avoids anonymous users to access to the content of the push if they were able to get the display
-                    url through a forwarded mail for example.
-                </source>
-        <target state="translated">Check the force authentication checkbox to constrain users to authenticate to access content of Push and Feedbacks. This feature can avoid divulging connection parameters contained in given links in e-mails notifications.</target>
-        <jms:reference-file line="164">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="217">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
         <source>#3567c6</source>
@@ -620,7 +610,7 @@
         <target state="translated">Acknowledge receipt</target>
         <jms:reference-file line="102">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="150">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="203">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="198">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="589db073670b88b4b42b9f60b53d87e049fa5e3f" resname="Accuse de reception indisponible, vous n'avez pas declare d'adresse email" approved="yes">
         <source>Accuse de reception indisponible, vous n'avez pas declare d'adresse email</source>
@@ -3381,7 +3371,13 @@
         <source>Force authentication</source>
         <target state="translated">Force authentication</target>
         <jms:reference-file line="158">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="211">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="206">prod/templates/push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info">
+        <source>Force authentication : info</source>
+        <target state="new">Force authentication : info</target>
+        <jms:reference-file line="164">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="212">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c7dbc1bf5eabb170eb6a0597a076723db79ec064" resname="Force sending of the document ?" approved="yes">
         <source>Force sending of the document ?</source>
@@ -4356,7 +4352,7 @@
         <jms:reference-file line="98">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="28">prod/WorkZone/Reminder.html.twig</jms:reference-file>
         <jms:reference-file line="144">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="197">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="192">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cbcbdf92e7a47c81ec1719f03f00d8e6c5b5f5ef" resname="Message automatique de Phraseanet" approved="yes">
         <source>Message automatique de Phraseanet</source>
@@ -4513,7 +4509,7 @@
         <jms:reference-file line="97">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="13">Bridge/Dailymotion/playlist_createcontainer.html.twig</jms:reference-file>
         <jms:reference-file line="38">actions/Download/prepare.html.twig</jms:reference-file>
-        <jms:reference-file line="191">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="186">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="50">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="994e92a6f1e83337ca0193b7fa44cf6b3e9287e5" resname="Name or email" approved="yes">
@@ -6912,7 +6908,7 @@
         <source>Time for feedback (days)</source>
         <target state="translated">Time for feedback (in days)</target>
         <jms:reference-file line="99">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="179">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="174">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb97899aedcd5609782b5ccb4ffa390e0e66a3eb" resname="Titre" approved="yes">
         <source>Titre</source>
@@ -7311,10 +7307,10 @@
         <jms:reference-file line="300">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="109">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="111">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="256">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="258">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="297">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="299">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="246">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="248">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="287">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="289">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae005b1ce814398e203551a75eeeb5da09f80204" resname="User can see others choices" approved="yes">
         <source>User can see others choices</source>
@@ -12200,7 +12196,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="a146a90e6a97ac82ffa4ab5d4dc7cf4955a1e305" resname="prod::feedback:feedback_set_title" approved="yes">
         <source>prod::feedback:feedback_set_title</source>
         <target state="translated">Feedback Title :</target>
-        <jms:reference-file line="193">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="188">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="47f76b5a8ec06b165c0d83ed447999def6f368e4" resname="prod::notification: notification title" approved="yes">
         <source>prod::notification: notification title</source>
@@ -12230,7 +12226,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="dee7c522bf9e0eea45e003fb4d0f736bc251a954" resname="prod::push:push_set_title" approved="yes">
         <source>prod::push:push_set_title</source>
         <target state="translated">Name of Push Basket</target>
-        <jms:reference-file line="194">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="189">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
         <source>prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.</source>
@@ -12493,36 +12489,36 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="324e7cea705016a31d01d0bde3ee526a92ea881c" resname="prod:expose:publication:Access rules" approved="yes">
         <source>prod:expose:publication:Access rules</source>
         <target state="translated">Publication Access rule</target>
-        <jms:reference-file line="62">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="58">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="97">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af3ad24004cd69b0254f1c8c2e5089d35b3844da" resname="prod:expose:publication:Advanced setting" approved="yes">
         <source>prod:expose:publication:Advanced setting</source>
         <target state="translated">Advanced setting</target>
-        <jms:reference-file line="104">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="100">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="139">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="551db59cb8c5b618adffe5719f791fc5c07a63cd" resname="prod:expose:publication:Available (leave blank for permanet publication)" approved="yes">
         <source>prod:expose:publication:Available (leave blank for permanet publication)</source>
         <target state="translated">Available (leave date blank for permanent publication)</target>
-        <jms:reference-file line="44">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="40">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="77">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="03fa83cecf49d9c7a3813b4a019c6d2d2ff50c30" resname="prod:expose:publication:Cancel" approved="yes">
         <source>prod:expose:publication:Cancel</source>
         <target state="translated">Cancel</target>
-        <jms:reference-file line="119">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="115">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="154">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdeebeeec3860ccbd6f36b4aeaf7cb77ce7312b1" resname="prod:expose:publication:Create publication" approved="yes">
         <source>prod:expose:publication:Create publication</source>
         <target state="translated">Create publication</target>
-        <jms:reference-file line="122">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="118">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="829875af60c25eadba563170b4f9e5f8db2ba688" resname="prod:expose:publication:Dark" approved="yes">
         <source>prod:expose:publication:Dark</source>
         <target state="translated">Dark theme</target>
-        <jms:reference-file line="96">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="92">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="131">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e6332dde288968d262020d7f1d0679a0a8bcb8d" resname="prod:expose:publication:Delete" approved="yes">
@@ -12533,7 +12529,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download" approved="yes">
         <source>prod:expose:publication:Download</source>
         <target state="translated">Download Layout</target>
-        <jms:reference-file line="87">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="83">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="122">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3ca4394264a3c86daf2d088f072dca679d82bb6a" resname="prod:expose:publication:Editing" approved="yes">
@@ -12544,62 +12540,62 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="27a3d37e05caa995cb1a7b58c36fe1936b00f866" resname="prod:expose:publication:Enabled" approved="yes">
         <source>prod:expose:publication:Enabled</source>
         <target state="translated">Enabled</target>
-        <jms:reference-file line="37">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="33">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="68">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1964c90b5229b7aed8e0e4cead60cd6f0cd49b76" resname="prod:expose:publication:From" approved="yes">
         <source>prod:expose:publication:From</source>
         <target state="translated">From</target>
-        <jms:reference-file line="46">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="42">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="79">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="22b12bdabd78e4c9dfcd2a3c202a7ed02af28746" resname="prod:expose:publication:Gallery" approved="yes">
         <source>prod:expose:publication:Gallery</source>
         <target state="translated">Gallery Layout</target>
-        <jms:reference-file line="85">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="81">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="120">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="879311e23dbb4491b0144ce49a6d66e83bd660e7" resname="prod:expose:publication:Layout" approved="yes">
         <source>prod:expose:publication:Layout</source>
         <target state="translated">Layout</target>
-        <jms:reference-file line="81">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="77">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="116">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="123400d6203202f86844b765e6f85509f6ebb1f6" resname="prod:expose:publication:Light" approved="yes">
         <source>prod:expose:publication:Light</source>
         <target state="translated">Light theme</target>
-        <jms:reference-file line="95">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="91">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="130">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0a35952e92e77bf6a762055c17aab923e4dc3a46" resname="prod:expose:publication:Mapbox" approved="yes">
         <source>prod:expose:publication:Mapbox</source>
         <target state="translated">Map Layout</target>
-        <jms:reference-file line="86">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="82">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="121">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="85dffecce40b9a951d2e11cb518280dcce7ee31a" resname="prod:expose:publication:Name" approved="yes">
         <source>prod:expose:publication:Name</source>
         <target state="translated">Publication Name</target>
-        <jms:reference-file line="11">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="7">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="31">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ca3d77bf1e62e1cf39bf5b8a3a161ab17b28f375" resname="prod:expose:publication:Open access" approved="yes">
         <source>prod:expose:publication:Open access</source>
         <target state="translated">Open access</target>
-        <jms:reference-file line="66">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="62">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="101">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a2a8888f67982de346cedbe03b5884757de77925" resname="prod:expose:publication:Parent Publication" approved="yes">
         <source>prod:expose:publication:Parent Publication</source>
         <target state="translated">Parent Publication</target>
         <jms:reference-file line="10">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
-        <jms:reference-file line="21">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="17">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="41">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d190364e0bc239d60124d5a906249199fcedbcf7" resname="prod:expose:publication:Password" approved="yes">
         <source>prod:expose:publication:Password</source>
         <target state="translated">Password</target>
-        <jms:reference-file line="67">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="63">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="102">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37fc20596092e78e7c9f232b1d5a1792c3338286" resname="prod:expose:publication:Permission" approved="yes">
@@ -12611,13 +12607,13 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="6e4586d5715234b05a5637d7232d42289efd54e3" resname="prod:expose:publication:Profile" approved="yes">
         <source>prod:expose:publication:Profile</source>
         <target state="translated">Publication Profile</target>
-        <jms:reference-file line="30">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="26">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="56">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="055d4b2c4be0a43224479c371b7e0c4da2719756" resname="prod:expose:publication:Publicly listing" approved="yes">
         <source>prod:expose:publication:Publicly listing</source>
         <target state="translated">Publicly listing (Publication listed on Expose landing page)</target>
-        <jms:reference-file line="55">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="51">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="88">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a1795f494a3d378d7e089f44aaba611d2840f96" resname="prod:expose:publication:Refresh Publication" approved="yes">
@@ -12628,43 +12624,43 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="f0ee6ea23eac8f7db8e39a77d3027629342b0e10" resname="prod:expose:publication:Select Layout" approved="yes">
         <source>prod:expose:publication:Select Layout</source>
         <target state="translated">Select Layout</target>
-        <jms:reference-file line="84">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="80">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="119">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="14a842c2a43ef10eec62cc59c8e3c151ca99c660" resname="prod:expose:publication:Select Profile" approved="yes">
         <source>prod:expose:publication:Select Profile</source>
         <target state="translated">Select Profile</target>
-        <jms:reference-file line="33">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="29">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="61">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a55b57125f0703c7fe2393a15ee3ae4e9882763e" resname="prod:expose:publication:Select Theme" approved="yes">
         <source>prod:expose:publication:Select Theme</source>
         <target state="translated">Select Theme</target>
-        <jms:reference-file line="94">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="90">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="129">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="89bd08c42543705b2b8ec5046cf43e26cc7a85b1" resname="prod:expose:publication:Select a parent publication" approved="yes">
         <source>prod:expose:publication:Select a parent publication</source>
         <target state="translated">Select a parent publication</target>
-        <jms:reference-file line="25">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="21">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="77e197ee00b2da0b378e08f9717e9029907dde6d" resname="prod:expose:publication:Slug" approved="yes">
         <source>prod:expose:publication:Slug</source>
         <target state="translated">Publication Slug</target>
-        <jms:reference-file line="15">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="11">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="35">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="09e31f070644dc5cdce690efdd861868fbe36c8a" resname="prod:expose:publication:Theme" approved="yes">
         <source>prod:expose:publication:Theme</source>
         <target state="translated">Theme</target>
-        <jms:reference-file line="91">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="87">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="126">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="26b15d28f92ef84be6ca70cbe4b3cf12cb418ac0" resname="prod:expose:publication:To" approved="yes">
         <source>prod:expose:publication:To</source>
         <target state="translated">To</target>
-        <jms:reference-file line="50">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="46">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="83">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7665e294abb20f03a6664346b679992539de9e77" resname="prod:expose:publication:Update Publication" approved="yes">
@@ -12675,7 +12671,7 @@ Warning: The current values will be overwritten by these new values</target>
       <trans-unit id="b74f6e47a7bbe1f0b8d486f5f87344e29e15599f" resname="prod:expose:publication:Users" approved="yes">
         <source>prod:expose:publication:Users</source>
         <target state="translated">Users</target>
-        <jms:reference-file line="68">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
+        <jms:reference-file line="64">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="103">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9664183fc801100081920a8c1dc3cd7e48d7e304" resname="prod:expose:publication:permission:Group Name" approved="yes">
