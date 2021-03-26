@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-03-26T15:01:52Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="47">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="60">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -3369,13 +3369,13 @@
       </trans-unit>
       <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication" approved="yes">
         <source>Force authentication</source>
-        <target state="translated">Force authentication</target>
+        <target state="translated">Users must authenticate with a login and a password</target>
         <jms:reference-file line="158">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="206">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info">
+      <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info" approved="no">
         <source>Force authentication : info</source>
-        <target state="new">Force authentication : info</target>
+        <target state="needs-translation">If box is unchecked, the user will receive an authentication link</target>
         <jms:reference-file line="164">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="212">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -10459,14 +10459,14 @@
         <target state="translated">failed to send mail</target>
         <jms:reference-file line="42">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights">
+      <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights" approved="no">
         <source>feedback:: save users and users rights</source>
-        <target state="new">feedback:: save users and users rights</target>
+        <target state="needs-translation">Save users and users rights</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
+      <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify" approved="no">
         <source>feedback::users to notify</source>
-        <target state="new">feedback::users to notify</target>
+        <target state="needs-translation">Users to notify</target>
         <jms:reference-file line="140">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="373fa5153a6c195e99a654c0098e05bfbf38665a" resname="fevrier" approved="yes">
@@ -11822,9 +11822,9 @@
         <target state="needs-translation">Feedback List</target>
         <jms:reference-file line="1">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="45e45867cea85ca4966d3753bd9796f17e8c5596" resname="preview::tab:feedback mail subject">
+      <trans-unit id="45e45867cea85ca4966d3753bd9796f17e8c5596" resname="preview::tab:feedback mail subject" approved="no">
         <source>preview::tab:feedback mail subject</source>
-        <target state="new">preview::tab:feedback mail subject</target>
+        <target state="needs-translation">Feedback email subject</target>
         <jms:reference-file line="26">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open">
