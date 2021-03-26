@@ -215,9 +215,18 @@ const Feedback = function (services, options) {
 
         var buttons = {};
 
-        buttons[localeService.t('annuler')] = function () {
-            $dialog.close();
-        };
+        if ($el.data('feedback-action') === 'adduser') {
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
+                $dialog.close();
+
+                $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+                $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+                $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+                $('input[name="notify"]', $FeedBackForm).val('0');
+
+                $FeedBackForm.trigger('submit');
+            };
+        }
 
         buttons[localeService.t('send')] = function () {
             if ($el.data('feedback-action') !== 'adduser') {
@@ -249,18 +258,9 @@ const Feedback = function (services, options) {
             $FeedBackForm.trigger('submit');
         };
 
-        if ($el.data('feedback-action') === 'adduser') {
-            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
-                $dialog.close();
-
-                $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
-                $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
-                $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
-                $('input[name="notify"]', $FeedBackForm).val('0');
-
-                $FeedBackForm.trigger('submit');
-            };
-        }
+        buttons[localeService.t('annuler')] = function () {
+            $dialog.close();
+        };
 
         var options = {
             size: '558x352',
