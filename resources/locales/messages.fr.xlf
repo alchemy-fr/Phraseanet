@@ -3364,15 +3364,15 @@
         <target state="translated">Longueur de focale</target>
         <jms:reference-file line="110">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication">
+      <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication" approved="no">
         <source>Force authentication</source>
-        <target state="needs-translation">Obliger les utilisateurs à s'authentifier</target>
+        <target state="needs-translation">Les utilisateurs doivent s'authentifier à l'aide d'un identifiant et d'un mot de passe</target>
         <jms:reference-file line="158">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="206">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info">
+      <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info" approved="no">
         <source>Force authentication : info</source>
-        <target state="new">Force authentication : info</target>
+        <target state="needs-translation">Si la case n'est pas cochée, un lien d'authentification sera inclus dans l'email reçu par l'utilisateur</target>
         <jms:reference-file line="164">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="212">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -10459,14 +10459,14 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Echec de l'envoi d'e-mail</target>
         <jms:reference-file line="42">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights">
+      <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights" approved="no">
         <source>feedback:: save users and users rights</source>
-        <target state="new">feedback:: save users and users rights</target>
+        <target state="needs-translation">Sauvegarder les utilisateurs et leurs droits</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
+      <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify" approved="no">
         <source>feedback::users to notify</source>
-        <target state="new">feedback::users to notify</target>
+        <target state="needs-translation">Utilisateurs à notifier</target>
         <jms:reference-file line="140">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="373fa5153a6c195e99a654c0098e05bfbf38665a" resname="fevrier" approved="yes">
@@ -11822,9 +11822,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Liste des validations</target>
         <jms:reference-file line="1">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="45e45867cea85ca4966d3753bd9796f17e8c5596" resname="preview::tab:feedback mail subject">
+      <trans-unit id="45e45867cea85ca4966d3753bd9796f17e8c5596" resname="preview::tab:feedback mail subject" approved="no">
         <source>preview::tab:feedback mail subject</source>
-        <target state="new">preview::tab:feedback mail subject</target>
+        <target state="needs-translation">Objet de l'email de validation</target>
         <jms:reference-file line="26">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open">
