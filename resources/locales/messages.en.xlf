@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-03-25T13:13:36Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2021-03-26T07:49:13Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -10462,14 +10462,14 @@
         <target state="translated">failed to send mail</target>
         <jms:reference-file line="42">eventsmanager/notify/downloadmailfail.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="e299f479ac6ef7fbaf35abfda28dfb02a55d65e9" resname="feedback::send not notify">
-        <source>feedback::send not notify</source>
-        <target state="new">feedback::send not notify</target>
+      <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights">
+        <source>feedback:: save users and users rights</source>
+        <target state="new">feedback:: save users and users rights</target>
         <jms:reference-file line="63">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="66a94ce4f2f32a753f9444d0b5cc8d0c0ccc5986" resname="feedback::send user to notify">
-        <source>feedback::send user to notify</source>
-        <target state="new">feedback::send user to notify</target>
+      <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
+        <source>feedback::users to notify</source>
+        <target state="new">feedback::users to notify</target>
         <jms:reference-file line="140">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="373fa5153a6c195e99a654c0098e05bfbf38665a" resname="fevrier" approved="yes">

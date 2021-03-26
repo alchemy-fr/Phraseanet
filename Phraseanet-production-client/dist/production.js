@@ -60676,7 +60676,7 @@ var Feedback = function Feedback(services, options) {
         };
 
         if ($el.data('feedback-action') === 'adduser') {
-            buttons[localeService.t('feedbackNotNotify')] = function () {
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
                 $dialog.close();
 
                 (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());

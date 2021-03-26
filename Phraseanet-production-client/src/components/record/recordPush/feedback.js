@@ -250,7 +250,7 @@ const Feedback = function (services, options) {
         };
 
         if ($el.data('feedback-action') === 'adduser') {
-            buttons[localeService.t('feedbackNotNotify')] = function () {
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
                 $dialog.close();
 
                 $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
