@@ -140,7 +140,7 @@ input.text_input_white {
         background-color: $feedbackThemeColor;
         color: #FFFFFF;
     }
-    .ui-dialog-buttonpane .ui-button:nth-child(2) {
+    .ui-dialog-buttonpane .ui-button:last-child {
         background-color: $feedbackThemeColor;
         color: #FFFFFF;
     }
@@ -494,6 +494,7 @@ input.text_input_white {
     padding: 4px 0px;
     margin-left: 20px;
     margin-bottom: -7px;
+    float: right;
 }
 
 .PushBox .FeedbackSend:hover {
@@ -848,8 +849,8 @@ input.text_input_white {
     top: auto;
     right: 20px;
     bottom: 10px;
-    left: 10px;
-    text-align: right;
+    left: 20px;
+    //text-align: right;
 }
 
 .PushBox .user_content .badges {

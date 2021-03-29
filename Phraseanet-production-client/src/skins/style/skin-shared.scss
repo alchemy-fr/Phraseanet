@@ -416,18 +416,22 @@ span.ww_winTitle {
     border: 0 none ;
     background: $dialogWrapBg;
     font-size: 16px;
-    &.move-dialog {
-        .ui-dialog-content {
-            height: auto!important;
-            }
-        }
     .ui-dialog-content {
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        height: auto!important;
+//        padding: 0;
+//        display: flex;
+//        align-items: center;
+//        justify-content: center;
         form {
             margin-bottom: 0;
+        }
+    }
+    .ui-menu {
+        OPTION {
+            // dunno why option is rendered with white bg when style says "transparent"
+            // changing bg color causes glitches, so we change text
+            color: #333333;
+            background-color: white;
         }
     }
     .ui-dialog-titlebar {
@@ -455,11 +459,11 @@ span.ww_winTitle {
             min-width: 170px;
             margin: 12px 10px;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-            background: $dialogBtnBg;
-            color: $dialogBtnColor;
-            &:first-child {
-                background: $dialogBtnBg2;
-                color: $dialogBtnColor2;
+            background: $dialogBtnBg2;
+            color: $dialogBtnColor2;
+            &:last-child {
+                background: $dialogBtnBg;
+                color: $dialogBtnColor;
             }
             &:hover {
                 background: $dialogBtnBgHover;
@@ -1319,6 +1323,7 @@ h3.metadatas-title {
 @import 'ui-components/pagination';
 @import 'ui-components/upload';
 @import 'ui-components/modal-basket-pref';
+@import 'ui-components/modal-classification';
 @import 'ui-components/modal-publish';
 @import 'ui-components/modal-edit';
 @import 'ui-components/modal-export';

@@ -30,6 +30,7 @@ class LanguageController
 
         return new JsonResponse([
             'serverName'              => $this->serverName,
+            'archive'                 => $translator->trans('Archive'),
             'thesaurusBasesChanged'   => $translator->trans( 'prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.'),
             'confirmDel'              => $translator->trans('paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?'),
             'serverError'             => $translator->trans('phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique'),
@@ -60,6 +61,7 @@ class LanguageController
             'feed_require_feed'       => $translator->trans('Vous n\'avez pas selectionne de fil de publication'),
             'removeTitle'             => $translator->trans('panier::Supression d\'un element d\'un reportage'),
             'removeRecordFeedbackTitle' => $translator->trans('basket:feedback Delete item'),
+            'feedbackSaveNotNotify'     => $translator->trans('feedback:: save users and users rights'),
             'feedbackReminderTitle'   => $translator->trans('prod::workzone:manual feedback reminder title'),
             'reminderMessageToCheck'  => $translator->trans('prod::workzone:manual feedback reminder provide a message!'),
             'reminderParticipantToCheck' => $translator->trans('prod::workzone:manual feedback reminder select a participant!'),

@@ -207,6 +207,7 @@ const Feedback = function (services, options) {
     });
 
     $('.FeedbackSend', this.container).bind('click', function (event) {
+        const $el = $(event.currentTarget);
         if ($('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
             return;
@@ -214,9 +215,18 @@ const Feedback = function (services, options) {
 
         var buttons = {};
 
-        buttons[localeService.t('annuler')] = function () {
-            $dialog.close();
-        };
+        if ($el.data('feedback-action') === 'adduser') {
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
+                $dialog.close();
+
+                $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+                $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+                $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+                $('input[name="notify"]', $FeedBackForm).val('0');
+
+                $FeedBackForm.trigger('submit');
+            };
+        }
 
         buttons[localeService.t('send')] = function () {
             if ($el.data('feedback-action') !== 'adduser') {
@@ -243,10 +253,14 @@ const Feedback = function (services, options) {
             $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
             $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+            $('input[name="notify"]', $FeedBackForm).val('1');
 
             $FeedBackForm.trigger('submit');
         };
 
+        buttons[localeService.t('annuler')] = function () {
+            $dialog.close();
+        };
 
         var options = {
             size: '558x352',
@@ -256,7 +270,6 @@ const Feedback = function (services, options) {
             closeOnEscape: true,
         };
 
-        const $el = $(event.currentTarget);
         if($el.hasClass('validation')) {
             options.isValidation = true;
             options.size = '558x415'
@@ -284,6 +297,7 @@ const Feedback = function (services, options) {
 
         var feedbackTitle =  $('#feedbackTitle').val();
         var pushTitle =  $('#pushTitle').val();
+
         if (options.isValidation) {
             $('input[name="name"]').attr("placeholder", feedbackTitle);
         }else {
@@ -292,6 +306,15 @@ const Feedback = function (services, options) {
 
         if ($el.data('feedback-action') !== 'adduser') {
             $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
+        } else {
+            // display the list of new user in the dialog window when add user
+            let lisNewUser = $('#newParticipantsUser').val();
+            if (lisNewUser == '') {
+                $('.email-to-notify').hide();
+            } else {
+                $('.email-to-notify').show();
+                $('#email-to-notify').empty().append($('#newParticipantsUser').val());
+            }
         }
 
         $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
@@ -345,6 +368,22 @@ const Feedback = function (services, options) {
 
     this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
         var $elem = $(this).closest('.badge');
+        let userEmailEl = $elem.find('.user-email').val();
+
+        let value = $('#newParticipantsUser').val();
+        let actualParticipantsName = value.split('; ');
+        // remove the user in the list of new participant if yet exist
+        let key = $.inArray(userEmailEl, actualParticipantsName);
+        if (key > -1) {
+            actualParticipantsName.splice(key, 1);
+            if (actualParticipantsName.length != 0) {
+                value = actualParticipantsName.join('; ');
+                $('#newParticipantsUser').val(value);
+            } else {
+                $('#newParticipantsUser').val('');
+            }
+        }
+
         $elem.fadeOut(function () {
             $elem.remove();
         });
@@ -374,7 +413,7 @@ const Feedback = function (services, options) {
 
     $('form.list_saver', this.container).bind('submit', () => {
         var $form = $(event.currentTarget);
-        var $input = $('input[name="name"]', $form);
+        var $input = $('input[name="list_name"]', $form);
 
         var users = this.getUsers();
 
@@ -466,6 +505,18 @@ Feedback.prototype = {
         if ($('.badge_' + user.usr_id, this.container).length > 0) {
             humane.info('User already selected');
             return;
+        }
+
+        if ($('input[name="feedbackAction"]').val() == 'adduser') {
+            let actualParticipantsUserIds = $('#participantsUserIds').val();
+            actualParticipantsUserIds = actualParticipantsUserIds.split('_');
+
+            if (!($.inArray(user.usr_id.toString(), actualParticipantsUserIds) > -1)) {
+                let value = $('#newParticipantsUser').val();
+                let glue = (value == '') ? '' : '; ' ;
+                value = value + glue + user.email;
+                $('#newParticipantsUser').val(value);
+            }
         }
 
         var html = _.template($('#' + this.Context.toLowerCase() + '_badge_tpl').html())({

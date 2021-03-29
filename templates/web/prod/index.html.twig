@@ -183,32 +183,33 @@
                         <div id="retractableButton"><i class="fa fa-angle-double-left" aria-hidden="true"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
 
-                            {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                            {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
-                            {% if expose_activate == 'true' %}
-                                {% block tab_headers_wrapper %}
-                                    <div id="baskets_wrapper" class="PNB">
-                                    <div id="expose_tabs" class="tabs" aria-expanded="false">
-                                        <ul>
-                                            <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
-                                            <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>
-                                        </ul>
-                                        <div class="ui-tabs-panels-container">
-                                            <div id="baskets" class="PNB">
-                                                {{WorkZoneMacros.make_bloc(app, WorkZone)}}
-                                            </div>
-                                            <div id="expose_tab">
-                                                {{ WorkZoneMacros.make_expose_bloc(app, WorkZone) }}
-                                            </div>
+                        {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
+
+                        {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
+                        {% if expose_activate == 'true' %}
+                            {% block tab_headers_wrapper %}
+                            <div id="baskets_wrapper" class="PNB">
+                                <div id="expose_tabs" class="tabs" aria-expanded="false">
+                                    <ul>
+                                        <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
+                                        <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>
+                                    </ul>
+                                    <div class="ui-tabs-panels-container">
+                                        <div id="baskets" class="PNB">
+                                            {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                                        </div>
+                                        <div id="expose_tab">
+                                            {{ WorkZoneMacros.make_expose_bloc(app, WorkZone) }}
                                         </div>
                                     </div>
-                                    </div>
-                                {% endblock %}
-                            {% else %}
-                                <div id="baskets" class="PNB">
-                                   {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                                 </div>
-                            {% endif %}
+                            </div>
+                            {% endblock %}
+                        {% else %}
+                            <div id="baskets" class="PNB">
+                               {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                            </div>
+                        {% endif %}
 
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
@@ -268,6 +269,7 @@
                             </div>
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
                         {% endif %}
+
                     {% endblock %}
                     {% if plugins.workzone is not empty %}
                     <div id="plugins" class="PNB {{ plugins.workzone|length > 1 ? 'multiple-plugin' : 'single-plugin' }}" style="top:52px;">

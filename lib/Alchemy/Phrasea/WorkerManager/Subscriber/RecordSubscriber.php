@@ -290,8 +290,9 @@ class RecordSubscriber implements EventSubscriberInterface
         $payload = [
             'message_type' => MessagePublisher::RECORD_EDIT_TYPE,
             'payload' => [
-                'mdsParams'      => $event->getMdsParams(),
-                'elementKeys'    => $event->getElementKeys(),
+                'dataType'       => $event->getDataType(),
+                'data'           => $event->getData(),
+                'elementIds'     => $event->getElementIds(),
                 'databoxId'      => $event->getDataboxId()
             ]
         ];

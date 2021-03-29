@@ -70,6 +70,7 @@
         <i class="fa fa-times-circle"></i>
     </a>
     <input name="id" value="<%= user.usr_id %>" type="hidden" />
+    <input class="user-email" value="<%= user.email %>" type="hidden" />
     <table>
         <tr>
             <td class="icon">
@@ -135,6 +136,10 @@
 
 <script type="text/template" id="feedback_adduser_sendform_tpl">
     <form style="margin-bottom: 0;">
+        <div class="control-group email-to-notify">
+            <label style="font-size: 16px;">{% trans %}feedback::users to notify{% endtrans %}</label>
+            <span id="email-to-notify"></span>
+        </div>
         <div class="control-group">
             <textarea id="PushSendFormMessage" placeholder="{% trans %}Message{% endtrans %}" name="message"
                   class="input-block-level" rows="7"></textarea>
@@ -156,12 +161,7 @@
             <div class="control-group info">
             <span class="help-inline" style="font-style: italic">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                {% trans %}
-                    The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
-                    to see its contents.
-                    This avoids anonymous users to access to the content of the push if they were able to get the display
-                    url through a forwarded mail for example.
-                {% endtrans %}
+                {% trans %}Force authentication : info{% endtrans %}
             </span>
             </div>
         {% endif %}
@@ -209,12 +209,7 @@
         <div class="control-group info">
             <span class="help-inline" style="font-style: italic">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                {% trans %}
-                    The parameter "force authentication" forces the recipient(s) of the push to possess a Phraseanet account
-                    to see its contents.
-                    This avoids anonymous users to access to the content of the push if they were able to get the display
-                    url through a forwarded mail for example.
-                {% endtrans %}
+                {% trans %}Force authentication : info{% endtrans %}
             </span>
         </div>
     {% endif %}
