@@ -38,7 +38,7 @@
                 <div id="TXCLASSIFICATION_SIMPLE" style="padding: 20px 10px 20px 10px">
                     <form id="DroppedOnTH_form_simple">
                         <input type="hidden" class="field _0"  value="{{ bf0.field.get_name() }}">
-                        <input type="hidden" class="action _0" value="add" data-n="0">
+                        <input type="hidden" class="action _0" value="{{ bf0.field.is_multi() ? "add" : "set" }}" data-n="0">
                         <input type="hidden" class="value _0"  value="{{ bf0.selected_value.value }}">
                     </form>
                     {% if bf0.field.is_multi() %}
