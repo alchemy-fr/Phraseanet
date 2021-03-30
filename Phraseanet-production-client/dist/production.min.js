@@ -10430,16 +10430,12 @@ var workzone = function workzone(services) {
     function WorkZoneElementRemover(el, confirm) {
         var context = (0, _jquery2.default)(el).data('context');
 
-        if (confirm !== true && ((0, _jquery2.default)(el).hasClass('groupings') || (0, _jquery2.default)(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
+        if (confirm !== true && ((0, _jquery2.default)(el).hasClass('groupings') || (0, _jquery2.default)(el).hasClass('record-remove-from-basket-action') || (0, _jquery2.default)(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
-                (0, _jquery2.default)('#DIALOG-baskets').dialog('close').remove();
+                _dialog2.default.get(1).close();
                 WorkZoneElementRemover(el, true);
-            };
-
-            buttons[localeService.t('annuler')] = function () {
-                (0, _jquery2.default)('#DIALOG-baskets').dialog('close').remove();
             };
 
             var texte = '';
@@ -10452,19 +10448,17 @@ var workzone = function workzone(services) {
                 title = localeService.t('removeRecordFeedbackTitle');
             }
 
-            (0, _jquery2.default)('body').append('<div id="DIALOG-baskets"></div>');
-            (0, _jquery2.default)('#DIALOG-baskets').attr('title', title).empty().append(texte).dialog({
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: false,
-                draggable: false,
-                modal: true,
-                buttons: buttons,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                }
-            }).dialog('open');
+            var dialogWindow = _dialog2.default.create(services, {
+                size: 'Medium',
+                title: title,
+                closeButton: true
+            });
+
+            //Add custom class to dialog wrapper
+            dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+            dialogWindow.setContent(texte);
+
+            dialogWindow.setOption('buttons', buttons);
             return false;
         } else {
 

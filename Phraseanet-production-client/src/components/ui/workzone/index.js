@@ -391,16 +391,12 @@ const workzone = (services) => {
     function WorkZoneElementRemover(el, confirm) {
         var context = $(el).data('context');
 
-        if (confirm !== true && ($(el).hasClass('groupings') || $(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
+        if (confirm !== true && ($(el).hasClass('groupings') || $(el).hasClass('record-remove-from-basket-action') || $(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
-                $('#DIALOG-baskets').dialog('close').remove();
+                dialog.get(1).close();
                 WorkZoneElementRemover(el, true);
-            };
-
-            buttons[localeService.t('annuler')] = function () {
-                $('#DIALOG-baskets').dialog('close').remove();
             };
 
             var texte = '';
@@ -413,22 +409,17 @@ const workzone = (services) => {
                 title = localeService.t('removeRecordFeedbackTitle');
             }
 
-            $('body').append('<div id="DIALOG-baskets"></div>');
-            $('#DIALOG-baskets').attr('title', title)
-                .empty()
-                .append(texte)
-                .dialog({
-                    autoOpen: false,
-                    closeOnEscape: true,
-                    resizable: false,
-                    draggable: false,
-                    modal: true,
-                    buttons: buttons,
-                    overlay: {
-                        backgroundColor: '#000',
-                        opacity: 0.7
-                    }
-                }).dialog('open');
+            let dialogWindow = dialog.create(services, {
+                size: 'Medium',
+                title: title,
+                closeButton: true,
+            });
+
+            //Add custom class to dialog wrapper
+            dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+            dialogWindow.setContent(texte);
+
+            dialogWindow.setOption('buttons', buttons);
             return false;
         } else {
 
