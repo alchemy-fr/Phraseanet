@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
+use InvalidArgumentException;
+
 class GpsPosition
 {
     const FULL_GEO_NOTATION = 'FullNotation';
@@ -119,7 +121,7 @@ class GpsPosition
                 break;
 
             default:
-                throw new \InvalidArgumentException(sprintf('Unsupported tag name "%s".', $tag_name));
+                throw new InvalidArgumentException(sprintf('Unsupported tag name "%s".', $tag_name));
         }
     }
 
