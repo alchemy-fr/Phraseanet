@@ -20,8 +20,8 @@ class MetadataHelper
 
         $tags = [];
         foreach (self::$tag_descriptors as $key => $descriptor) {
-            if (array_key_exists('type', $descriptor) && array_key_exists('analyzable', $descriptor)) {
-                $tags[] = new Tag($key, $descriptor['type'], $descriptor['analyzable']);
+            if (array_key_exists('type', $descriptor)) {
+                $tags[] = new Tag($key, $descriptor['type']);
             }
         }
 

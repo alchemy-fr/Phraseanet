@@ -73,10 +73,11 @@ class TermIndexer
             $term['databox_id'] = $databoxId;
 
             // Index request
-            $params = array();
-            $params['id'] = $id;
-            $params['type'] = self::TYPE_NAME;
-            $params['body'] = $term;
+            $params = [
+                'id'   => $id,
+                'type' => self::TYPE_NAME,
+                'body' => $term
+            ];
 
             $bulk->index($params, null);
         });

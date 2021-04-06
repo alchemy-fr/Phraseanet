@@ -38,7 +38,7 @@ class ValueChecker
                         $filtered[] = $item;
 //                    }
                     break;
-                case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_TEXT:
                 default:
                     $filtered[] = $item;
             }

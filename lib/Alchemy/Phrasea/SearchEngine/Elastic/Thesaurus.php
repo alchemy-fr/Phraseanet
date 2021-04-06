@@ -100,6 +100,7 @@ class Thesaurus
         ));
 
         $must = [];
+        $mustnot = [];
         $filters = [];
 
         $must[] = [
@@ -119,9 +120,10 @@ class Thesaurus
                     ],
                 ],
             ];
-        } else {
-            $filters[] = [
-                'missing' => [
+        }
+        else {
+            $mustnot[] = [
+                'exists' => [
                     'field' => 'context'
                 ]
             ];
@@ -136,6 +138,15 @@ class Thesaurus
         if ($filter) {
             $filters = array_merge($filters, $filter->getQueryFilters());
         }
+
+        $query = [
+            'bool' => [
+                'must'     => $must,
+                'must_not' => $mustnot,
+                'filter'   => $filters,
+            ]
+        ];
+        /*
         if(!empty($filters)) {
             if (count($filters) > 1) {
                 $must[] = [
@@ -165,19 +176,25 @@ class Thesaurus
         else {
             $query = $must[0];
         }
-
-        // Path deduplication
-        $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path.raw';
-
+*/
         // Search request
-        $params = array();
-        $params['index'] = $this->options->getIndexName();
-        $params['type'] = TermIndexer::TYPE_NAME;
-        $params['body']['query'] = $query;
-        $params['body']['aggs'] = $aggs;
-        // No need to get any hits since we extract data from aggs
-        $params['body']['size'] = 0;
+        $params = [
+            'index' => $this->options->getIndexName() . '.t',
+            'type'  => TermIndexer::TYPE_NAME,
+            'body'  => [
+                'query' => $query,
+                'aggs'  => [
+                    // Path deduplication
+                    'dedup' => [
+                        'terms' => [
+                            'field' => 'path.raw'
+                        ]
+                    ]
+                ],
+                // No need to get any hits since we extract data from aggs
+                'size' => 0
+            ]
+        ];
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
@@ -218,22 +235,34 @@ class Thesaurus
         }
 
         $field = sprintf('value%s', $field_suffix);
-        $query = array();
-        $query['match'][$field]['query'] = $term->getValue();
-        $query['match'][$field]['operator'] = 'and';
+        $query = [
+            'match' => [
+                $field => [
+                    'query' => $term->getValue(),
+                    'operator' => 'and'
+                ]
+            ]
+        ];
         // Allow 25% of non-matching tokens
         // (not exactly the same that 75% of matching tokens)
         // $query['match'][$field]['minimum_should_match'] = '-25%';
 
         if ($term->hasContext()) {
-            $value_query = $query;
-            $field = sprintf('context%s', $field_suffix);
-            $context_query = array();
-            $context_query['match'][$field]['query'] = $term->getContext();
-            $context_query['match'][$field]['operator'] = 'and';
-            $query = array();
-            $query['bool']['must'][0] = $value_query;
-            $query['bool']['must'][1] = $context_query;
+            $query = [
+                'bool' => [
+                    'must' => [
+                        $query,
+                        [
+                            'match' => [
+                                $field => [
+                                    'query' => $term->getContext(),
+                                    'operator' => 'and'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
         }
 
         if ($lang) {
@@ -247,23 +276,29 @@ class Thesaurus
             $query = self::applyQueryFilter($query, $filter->getQueryFilter());
         }
 
-        // Path deduplication
-        $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path.raw';
-
         // Search request
-        $params = array();
-        $params['index'] = $this->options->getIndexName();
-        $params['type'] = TermIndexer::TYPE_NAME;
-        $params['body']['query'] = $query;
-        $params['body']['aggs'] = $aggs;
-        // Arbitrary score low limit, we need find a more granular way to remove
-        // inexact concepts.
-        // We also need to disable TF/IDF on terms, and try to boost score only
-        // when the search match nearly all tokens of term's value field.
-        $params['body']['min_score'] = $this->options->getMinScore();
-        // No need to get any hits since we extract data from aggs
-        $params['body']['size'] = 0;
+        $params = [
+            'index' => $this->options->getIndexName() . '.t',
+            // 'type'  => TermIndexer::TYPE_NAME,
+            'body'  => [
+                'query' => $query,
+                'aggs'  => [
+                    // Path deduplication
+                    'dedup' => [
+                        'terms' => [
+                            'field' => 'path.raw'
+                        ]
+                    ]
+                ],
+                // Arbitrary score low limit, we need find a more granular way to remove
+                // inexact concepts.
+                // We also need to disable TF/IDF on terms, and try to boost score only
+                // when the search match nearly all tokens of term's value field.
+                'min_score' => $this->options->getMinScore(),
+                // No need to get any hits since we extract data from aggs
+                'size'      => 0
+            ]
+        ];
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
@@ -288,15 +323,15 @@ class Thesaurus
 
     private static function applyQueryFilter(array $query, array $filters)
     {
-        if (!isset($query['filtered'])) {
+        if (!isset($query['bool'])) {
             // Wrap in a filtered query
-            $query = ['filtered' => ['query' => $query, 'filter' => []]];
+            $query = ['bool' => ['must' => $query, 'filter' => []]];
         }
-        elseif (!isset($query['filtered']['filter'])) {
-            $query['filtered']['filter'] = [];
+        elseif (!isset($query['bool']['filter'])) {
+            $query['bool']['filter'] = [];
         }
 
-        self::addFilters($query['filtered']['filter'], $filters);
+        self::addFilters($query['bool']['filter'], $filters);
 
         return $query;
     }

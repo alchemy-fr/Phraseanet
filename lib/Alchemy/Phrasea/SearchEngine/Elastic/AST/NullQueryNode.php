@@ -8,7 +8,7 @@ class NullQueryNode extends Node
 {
     public function buildQuery(QueryContext $context)
     {
-        return array('match_all' => array());
+        return array('match_all' => new \stdClass());
     }
 
     public function getTermNodes()

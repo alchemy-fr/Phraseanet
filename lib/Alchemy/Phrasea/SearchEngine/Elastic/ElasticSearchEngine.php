@@ -416,8 +416,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
     {
         $params = [
-            'index' => $this->indexName,
-            'type'  => RecordIndexer::TYPE_NAME,
+            'index' => $this->indexName . '.r',
+            // 'type'  => RecordIndexer::TYPE_NAME,
             'body'  => [
                 'sort'   => $this->createSortQueryParams($options),
             ]
@@ -426,14 +426,18 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query_filters = $this->createQueryFilters($options);
         $acl_filters = $this->createACLFilters($options);
 
-        $ESQuery = ['filtered' => ['query' => $ESQuery]];
+        $ESQuery = [
+            'bool' => [
+                'must' => $ESQuery
+            ]
+        ];
 
         if (count($query_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $query_filters;
+            $ESQuery['bool']['filter']['bool']['must'][] = $query_filters;
         }
 
         if (count($acl_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $acl_filters;
+            $ESQuery['bool']['filter']['bool']['must'][] = $acl_filters;
         }
 
         $params['body']['query'] = $ESQuery;
@@ -700,7 +704,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $highlighted_fields = [];
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
-                case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_TEXT:
                 case FieldMapping::TYPE_DOUBLE:
                 case FieldMapping::TYPE_DATE:
                     $index_field = $field->getIndexField();
@@ -820,7 +824,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $search_context = $this->context_factory->createContext($options);
         $fields = $search_context->getUnrestrictedFields();
         foreach ($fields as $field) {
-            if ($field->getType() == FieldMapping::TYPE_STRING) {
+            if ($field->getType() == FieldMapping::TYPE_TEXT) {
                 $k = '' . $field->getName();
                 $body[$k] = [
                     'text'       => $query,

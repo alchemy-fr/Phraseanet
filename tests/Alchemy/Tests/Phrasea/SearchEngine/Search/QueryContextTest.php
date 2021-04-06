@@ -25,8 +25,8 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUnrestrictedFields()
     {
-        $foo_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
-        $bar_field = new Field('bar', FieldMapping::TYPE_STRING, ['private' => false]);
+        $foo_field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
+        $bar_field = new Field('bar', FieldMapping::TYPE_TEXT, ['private' => false]);
         $structure = $this->prophesize(Structure::class);
         $structure->getUnrestrictedFields()->willReturn([
             'foo' => $foo_field,
@@ -42,8 +42,8 @@ class QueryContextTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPrivateFields()
     {
-        $foo_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => true]);
-        $bar_field = new Field('bar', FieldMapping::TYPE_STRING, ['private' => true]);
+        $foo_field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => true]);
+        $bar_field = new Field('bar', FieldMapping::TYPE_TEXT, ['private' => true]);
         $structure = $this->prophesize(Structure::class);
         $structure->getPrivateFields()->willReturn([
             'foo' => $foo_field,

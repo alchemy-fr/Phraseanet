@@ -19,15 +19,16 @@ class MetadataTagToFieldMappingConverter
 
     public function convertTag(Tag $tag)
     {
-        if ($tag->getType() === FieldMapping::TYPE_STRING) {
-            $fieldMapping = new StringFieldMapping($tag->getName());
+        if ($tag->getType() === 'string') {                         // "string" is phraseanet type
+            $fieldMapping = new TextFieldMapping($tag->getName());
 
-            $fieldMapping->disableAnalysis();
+            $fieldMapping->addRawChild();
 
-            if ($tag->isAnalyzable()) {
-                $fieldMapping->addChild((new StringFieldMapping('raw'))->enableRawIndexing());
-                $fieldMapping->enableAnalysis();
-            }
+            return $fieldMapping;
+        }
+
+        if ($tag->getType() === 'keyword') {                         // "keyword" comes only from media_subdef::getTechnicalFieldsList()
+            $fieldMapping = new KeywordFieldMapping($tag->getName());
 
             return $fieldMapping;
         }

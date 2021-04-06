@@ -42,7 +42,7 @@ class ComplexMapping extends FieldMapping
      */
     public function addRawChild()
     {
-        return $this->addChild(new RawFieldMapping($this->getType()));
+        return $this->addChild(new RawFieldMapping());
     }
 
     /**
