@@ -146,7 +146,7 @@ if [[ $NEWRELIC_ENABLED = "true" ]]; then
   echo "Newrelic setup of daemon and PHP agent done"
 else
   echo `date +"%Y-%m-%d %H:%M:%S"` " - Newrelic extension deactivation."
-  rm /usr/local/etc/php/conf.d/newrelic.ini 
+  rm -f /usr/local/etc/php/conf.d/newrelic.ini 
 fi
 
 if [[ $BLACKFIRE_ENABLED = "true" ]]; then
@@ -156,7 +156,7 @@ if [[ $BLACKFIRE_ENABLED = "true" ]]; then
   echo "Blackfire setup done"
 else
     echo `date +"%Y-%m-%d %H:%M:%S"` " - blackfire extension deactivation."
-    rm /usr/local/etc/php/conf.d/zz-blackfire.ini
+    rm -f /usr/local/etc/php/conf.d/zz-blackfire.ini
 fi
 
 
