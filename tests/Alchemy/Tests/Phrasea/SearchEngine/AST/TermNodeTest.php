@@ -5,7 +5,6 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Context;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\TermNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
@@ -39,8 +38,8 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
         $node = new TermNode('bar');
         $node->setConcepts([
-            new Concept('/baz'),
-            new Concept('/qux'),
+            new Concept(1, '/baz'),
+            new Concept(2, '/qux'),
         ]);
         $query = $node->buildQuery($query_context->reveal());
 
@@ -98,8 +97,8 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
         $node = new TermNode('baz');
         $node->setConcepts([
-            new Concept('/baz'),
-            new Concept('/qux'),
+            new Concept(1, '/baz'),
+            new Concept(2, '/qux'),
         ]);
         $query = $node->buildQuery($query_context->reveal());
 

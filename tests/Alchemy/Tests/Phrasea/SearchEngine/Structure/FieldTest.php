@@ -3,9 +3,8 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 
 /**
  * @group unit
@@ -87,8 +86,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeWithThesaurusRoots()
     {
-        $foo = new Concept('/foo');
-        $bar = new Concept('/bar');
+        $foo = new Concept(1, '/foo');
+        $bar = new Concept(2, '/bar');
         $field = new Field('foo', FieldMapping::TYPE_STRING);
         $other = new Field('foo', FieldMapping::TYPE_STRING, [
             'thesaurus_roots' => [$foo, $bar]
@@ -96,8 +95,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $merged = $field->mergeWith($other);
         $this->assertEquals([$foo, $bar], $merged->getThesaurusRoots());
 
-        $foo = new Concept('/foo');
-        $bar = new Concept('/bar');
+        $foo = new Concept(1, '/foo');
+        $bar = new Concept(2, '/bar');
         $field = new Field('foo', FieldMapping::TYPE_STRING, [
             'thesaurus_roots' => [$foo]
         ]);

@@ -32,17 +32,21 @@ class QueryCompiler
     public function compile($string, QueryContext $context)
     {
         $query = $this->parse($string);
-        $this->injectThesaurusConcepts($query);
+        $this->injectThesaurusConcepts($query, $context);
 
         return $query->build($context);
     }
 
-    private function injectThesaurusConcepts(Query $query)
+    /**
+     * @param Query $query
+     * @param QueryContext $context
+     */
+    private function injectThesaurusConcepts(Query $query, $context)
     {
         // TODO We must restrict thesaurus matching for IN queries, and only
         // search in each field's root concepts.
         $nodes = $query->getTermNodes();
-        $concepts = $this->thesaurus->findConceptsBulk($nodes);
+        $concepts = $this->thesaurus->findConceptsBulk($nodes, $context->getDataboxes());
 
         foreach ($concepts as $index => $termConcepts) {
             $node = $nodes[$index];

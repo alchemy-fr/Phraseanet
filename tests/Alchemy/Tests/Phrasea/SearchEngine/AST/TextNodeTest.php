@@ -5,7 +5,6 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Context;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\TextNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
@@ -147,7 +146,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
         $node = new TextNode('bar');
         $node->setConcepts([
-            new Concept('/qux'),
+            new Concept(2, '/qux'),
         ]);
         $query = $node->buildQuery($query_context->reveal());
 
@@ -203,7 +202,7 @@ class TextNodeTest extends \PHPUnit_Framework_TestCase
 
         $node = new TextNode('baz');
         $node->setConcepts([
-            new Concept('/qux'),
+            new Concept(2, '/qux'),
         ]);
         $query = $node->buildQuery($query_context->reveal());
 

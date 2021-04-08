@@ -2,14 +2,18 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
 class QueryHelper
 {
     private function __construct() {}
 
+    /**
+     * @param Field[] $private_fields
+     * @param Field[] $unrestricted_fields
+     * @param \Closure $query_builder
+     * @return array
+     */
     public static function wrapPrivateFieldQueries(array $private_fields, array $unrestricted_fields, \Closure $query_builder)
     {
         // We make a boolean clause for each collection set to shrink query size
@@ -31,7 +35,16 @@ class QueryHelper
         foreach ($fields_map as $hash => $fields) {
             // Right to query on a private field is dependant of document collection
             // Here we make sure we can only match on allowed collections
-            $query = $query_builder(array_merge($fields, $unrestricted_fields));
+            $relevant_fields = [];
+            foreach($unrestricted_fields as $uf) {
+                foreach ($uf->getDependantCollections() as $c) {
+                    if(in_array($c, $collections_map[$hash])) {
+                        $relevant_fields[] = $uf;
+                        break;
+                    }
+                }
+            }
+            $query = $query_builder(array_merge($fields, $relevant_fields));
             if ($query !== null) {
                 $queries[] = self::restrictQueryToCollections($query, $collections_map[$hash]);
             }

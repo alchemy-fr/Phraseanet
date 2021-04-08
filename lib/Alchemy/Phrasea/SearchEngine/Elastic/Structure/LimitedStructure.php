@@ -32,6 +32,11 @@ final class LimitedStructure implements Structure
         $this->search_options = $search_options;
     }
 
+    public function getDataboxes()
+    {
+        return array_keys($this->search_options->getCollectionsReferencesByDatabox());
+    }
+
     public function getAllFields()
     {
         return $this->limit($this->structure->getAllFields());
@@ -39,7 +44,8 @@ final class LimitedStructure implements Structure
 
     public function getUnrestrictedFields()
     {
-        return $this->structure->getUnrestrictedFields();
+        // return $this->structure->getUnrestrictedFields();
+        return $this->limit($this->structure->getUnrestrictedFields());
     }
 
     public function getPrivateFields()
@@ -93,7 +99,7 @@ final class LimitedStructure implements Structure
         return $this->structure->getMetadataTagByName($name);
     }
 
-    private function limit(array $fields)
+    private function old_limit(array $fields)
     {
         $allowed_collections = $this->allowedCollections();
         // Filter private field collections (base_id) on which access is restricted.
@@ -101,6 +107,27 @@ final class LimitedStructure implements Structure
         foreach ($fields as $name => $field) {
             if ($field->isPrivate()) {
                 $field = $this->limitField($field, $allowed_collections);
+                // Private fields without collections can't be ever visible, we skip them
+                if (!$field->getDependantCollections()) {
+                    continue;
+                }
+            }
+            $limited_fields[$name] = $field;
+        }
+        return $limited_fields;
+    }
+
+    private function limit(array $fields)
+    {
+        $allowed_collections = $this->allowedCollections();
+        // Filter private field collections (base_id) on which access is restricted.
+        $limited_fields = [];
+        foreach ($fields as $name => $field) {
+            $field = $this->limitField($field, $allowed_collections);
+            if(empty($field->getDependantCollections())) {
+                continue;
+            }
+            if ($field->isPrivate()) {
                 // Private fields without collections can't be ever visible, we skip them
                 if (!$field->getDependantCollections()) {
                     continue;
