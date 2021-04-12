@@ -46,7 +46,8 @@ class QueryCompiler
         // TODO We must restrict thesaurus matching for IN queries, and only
         // search in each field's root concepts.
         $nodes = $query->getTermNodes();
-        $concepts = $this->thesaurus->findConceptsBulk($nodes, $context->getDataboxes());
+        $filter = Thesaurus\Filter::byDataboxes($context->getDataboxes());
+        $concepts = $this->thesaurus->findConceptsBulk($nodes, null, $filter, false);
 
         foreach ($concepts as $index => $termConcepts) {
             $node = $nodes[$index];

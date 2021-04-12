@@ -45,7 +45,7 @@ class Thesaurus
      * @param  boolean              $strict Strict mode matching
      * @return Concept[][]                  List of matching concepts for each term
      */
-    public function findConceptsBulk(array $terms, array $databoxIds, $lang = null, $filter = null, $strict = false)
+    public function findConceptsBulk(array $terms, $lang = null, $filter = null, $strict = false)
     {
         $this->logger->debug(sprintf('Finding linked concepts in bulk for %d terms', count($terms)));
 
@@ -61,7 +61,7 @@ class Thesaurus
         $concepts = array();
         foreach ($terms as $index => $term) {
             $strict |= ($term instanceof AST\TermNode);      // a "term" node is [strict group of words]
-            $concepts[] = $this->findConcepts($term, $databoxIds, $lang, $filters[$index], $strict);
+            $concepts[] = $this->findConcepts($term, $lang, $filters[$index], $strict);
         }
 
         return $concepts;
@@ -79,16 +79,16 @@ class Thesaurus
      * @param  boolean     $strict Whether to enable strict search or not
      * @return Concept[]           Matching concepts
      */
-    public function findConcepts($term, array $databoxIds, $lang = null, Filter $filter = null, $strict = false)
+    private function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
     {
         return $strict ?
-            $this->findConceptsStrict($term, $databoxIds, $lang, $filter)
+            $this->findConceptsStrict($term, $lang, $filter)
             :
-            $this->findConceptsFuzzy($term, $databoxIds, $lang, $filter)
+            $this->findConceptsFuzzy($term, $lang, $filter)
             ;
     }
 
-    private function findConceptsStrict($term, array $databoxIds, $lang = null, Filter $filter = null)
+    private function findConceptsStrict($term, $lang = null, Filter $filter = null)
     {
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
@@ -126,7 +126,7 @@ class Thesaurus
                 ]
             ];
         }
-
+/*
         if(count($databoxIds) > 0) {
             if(count($databoxIds) == 1) {
                 $filters[] = [
@@ -143,7 +143,7 @@ class Thesaurus
                 ];
             }
         }
-
+*/
         if ($lang) {
             $filters[] = [
                 'term' => [
@@ -185,18 +185,34 @@ class Thesaurus
             $query = $must[0];
         }
 
-        // Path deduplication
-        $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path.raw';
-
         // Search request
-        $params = array();
-        $params['index'] = $this->options->getIndexName();
-        $params['type'] = TermIndexer::TYPE_NAME;
-        $params['body']['query'] = $query;
-        $params['body']['aggs'] = $aggs;
-        // No need to get any hits since we extract data from aggs
-        $params['body']['size'] = 0;
+        $params = [
+            'index' => $this->options->getIndexName(),
+            'type'  => TermIndexer::TYPE_NAME,
+            'body'  => [
+                'query' => $query,
+                'aggs'  => [
+                    // Path deduplication
+                    'db' => [                           // databox_id
+                        'terms' => [
+                            'field' => 'databox_id'
+                        ],
+                        'aggs'  => [
+                            // Path deduplication
+                            'cp' => [                   // concept_path
+                                'terms' => [
+                                    'field' => 'path.raw'
+                                ]
+                            ]
+                        ],
+
+                    ]
+                ],
+                // No need to get any hits since we extract data from aggs
+                'size' => 0
+            ]
+        ];
+
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
@@ -225,7 +241,7 @@ class Thesaurus
         return $concepts;
     }
 
-    private function findConceptsFuzzy($term, array $databoxIds, $lang = null, Filter $filter = null)
+    private function findConceptsFuzzy($term, $lang = null, Filter $filter = null)
     {
         if (!($term instanceof TermInterface)) {
             $term = new Term($term);
@@ -260,7 +276,7 @@ class Thesaurus
             $query['bool']['must'][0] = $value_query;
             $query['bool']['must'][1] = $context_query;
         }
-
+/*
         if(count($databoxIds) > 0) {
             if(count($databoxIds) == 1) {
                 $query = self::applyQueryFilter(
@@ -283,7 +299,7 @@ class Thesaurus
                 );
             }
         }
-
+*/
         if ($lang) {
             $lang_filter = array();
             $lang_filter['term']['lang'] = $lang;
