@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2013-12-03T15:14:54Z" source-language="en" target-language="es" datatype="plaintext" original="not.available">
     <header>
@@ -13077,6 +13077,26 @@
         <jms:reference-file line="87">web/admin/dashboard.html.twig</jms:reference-file>
         <source>your configuration</source>
         <target state="new">your configuration</target>
+      </trans-unit>
+      <trans-unit id="654b7f2144322b13150ca53f8eb712644275fbbb" resname="#5aa53b" approved="no">
+        <source>#5aa53b</source>
+        <target state="translated">#5aa53b</target>
+        <jms:reference-file line="78">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c03e9a1b443b7d9ac9a84e4d2cf55ebc016a9c5b" resname="                                Add" approved="no">
+        <source>Add</source>
+        <target state="translated">Agregar</target>
+        <jms:reference-file line="66">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c18097cf04c5f24e6b201e44603c26f000cbf266" resname="#4497d5" approved="no">
+        <source>#4497d5</source>
+        <target state="translated">#4497d5</target>
+        <jms:reference-file line="80">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="no">
+        <source>#3567c6</source>
+        <target state="translated">#3567c6</target>
+        <jms:reference-file line="81">Form/Configuration/CustomLinkFormType.php</jms:reference-file>
       </trans-unit>
     </body>
   </file>
