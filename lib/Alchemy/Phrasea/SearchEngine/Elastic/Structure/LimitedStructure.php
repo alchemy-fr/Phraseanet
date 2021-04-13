@@ -25,11 +25,17 @@ final class LimitedStructure implements Structure
 {
     private $structure;
     private $search_options;
+    private $allowedCollections;
+
+    // all collections (base_id) with allowed private field access (user rights are computed in options object)
+    private $allowedBusinessCollections;
 
     public function __construct(Structure $structure, SearchEngineOptions $search_options)
     {
         $this->structure = $structure;
         $this->search_options = $search_options;
+        $this->allowedCollections =  $search_options->getBasesIds();
+        $this->allowedBusinessCollections = $search_options->getBusinessFieldsOn();
     }
 
     public function getDataboxes()
@@ -99,14 +105,15 @@ final class LimitedStructure implements Structure
         return $this->structure->getMetadataTagByName($name);
     }
 
+    /*
     private function old_limit(array $fields)
     {
-        $allowed_collections = $this->allowedCollections();
+        $allowedBusinessCollections = $this->allowedBusinessCollections;
         // Filter private field collections (base_id) on which access is restricted.
         $limited_fields = [];
         foreach ($fields as $name => $field) {
             if ($field->isPrivate()) {
-                $field = $this->limitField($field, $allowed_collections);
+                $field = $this->limitField($field, $allowedBusinessCollections);
                 // Private fields without collections can't be ever visible, we skip them
                 if (!$field->getDependantCollections()) {
                     continue;
@@ -116,50 +123,34 @@ final class LimitedStructure implements Structure
         }
         return $limited_fields;
     }
+    */
 
+    /**
+     * @param Field[] $fields
+     * @return Field[]
+     */
     private function limit(array $fields)
     {
-        $allowed_collections = $this->allowedCollections();
         // Filter private field collections (base_id) on which access is restricted.
         $limited_fields = [];
         foreach ($fields as $name => $field) {
-            $field = $this->limitField($field, $allowed_collections);
-            if(empty($field->getDependantCollections())) {
-                continue;
+            $field = $this->limitField($field);
+            if(!empty($field->getDependantCollections())) {
+                $limited_fields[$name] = $field;
             }
-            if ($field->isPrivate()) {
-                // Private fields without collections can't be ever visible, we skip them
-                if (!$field->getDependantCollections()) {
-                    continue;
-                }
-            }
-            $limited_fields[$name] = $field;
         }
         return $limited_fields;
     }
 
-    private function limitField(Field $field, array $allowed_collections = null)
+    private function limitField(Field $field)
     {
-        if ($allowed_collections === null) {
-            $allowed_collections = $this->allowedCollections();
-        }
-
         $collections = array_values(array_intersect(
             $field->getDependantCollections(),
-            $allowed_collections
+            $field->isPrivate() ? $this->allowedBusinessCollections : $this->allowedCollections
         ));
 
         return $field->withOptions([
             'used_by_collections' => $collections
         ]);
-    }
-
-    /**
-     * @return int[]    // base_id's
-     */
-    private function allowedCollections()
-    {
-        // Get all collections (base_id) with allowed private field access (user rights are computed in options object)
-        return $this->search_options->getBusinessFieldsOn();
     }
 }
