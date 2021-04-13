@@ -167,15 +167,18 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $structure = new Structure();
         $structure->add($foo = (new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2]
+            'used_by_collections' => [1, 2],
+            'used_by_databoxes' => [1]
         ])));
         $structure->add(new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]));
         $structure->add(new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]));
         $structure->add(new Field('baz', FieldMapping::TYPE_STRING, ['private' => false]));
         $this->assertEquals([1, 2], $foo->getDependantCollections());

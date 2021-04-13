@@ -14,8 +14,10 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testBasicMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['1', '2']]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['3', '4']]);
+        $field = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['1', '2'],
+                                                              'used_by_databoxes' => [1]]);
+        $other = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['3', '4'],
+                                                              'used_by_databoxes' => [1]]);
         $merged = $field->mergeWith($other);
         $this->assertInstanceOf(Field::class, $merged);
         $this->assertNotSame($field, $merged);
@@ -110,10 +112,12 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     public function testMergeWithDependantCollections()
     {
         $field = new Field('foo', FieldMapping::TYPE_STRING, [
-            'used_by_collections' => [1, 2]
+            'used_by_collections' => [1, 2],
+            'used_by_databoxes' => [1]
         ]);
         $other = new Field('foo', FieldMapping::TYPE_STRING, [
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]);
         $merged = $field->mergeWith($other);
         $this->assertEquals([1, 2, 3], $merged->getDependantCollections());

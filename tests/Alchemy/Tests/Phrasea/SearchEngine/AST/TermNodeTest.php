@@ -27,7 +27,13 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuild()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field(
+            'foo',
+            FieldMapping::TYPE_STRING,
+            [
+                'private' => false,
+                'used_by_databoxes' => [1, 2]
+            ]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
             ->getUnrestrictedFields()
@@ -81,10 +87,14 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFields()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $public_field = new Field('foo', FieldMapping::TYPE_STRING, [
+            'private' => false,
+             'used_by_databoxes' => [1, 2]
+       ]);
         $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2, 3]
+            'used_by_collections' => [1, 2, 3],
+            'used_by_databoxes' => [1, 2]
         ]);
 
         $query_context = $this->prophesize(QueryContext::class);
@@ -126,16 +136,14 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
                                 "should": [{
                                     "multi_match": {
                                         "fields": [
-                                            "concept_path.bar",
-                                            "concept_path.foo"
+                                            "concept_path.bar"
                                         ],
                                         "query": "/baz"
                                     }
                                 }, {
                                     "multi_match": {
                                         "fields": [
-                                            "concept_path.bar",
-                                            "concept_path.foo"
+                                            "concept_path.bar"
                                         ],
                                         "query": "/qux"
                                     }

@@ -26,6 +26,8 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         $options = $this->prophesize(SearchEngineOptions::class);
         $structure = new LimitedStructure($wrapped->reveal(), $options->reveal());
 
+        $s = $structure->getUnrestrictedFields();
+
         $this->assertEquals(['foo' => $field], $structure->getUnrestrictedFields());
     }
 
@@ -40,13 +42,15 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
             ->shouldBeCalled()
             ->willReturn(
                 new Field('foo', FieldMapping::TYPE_STRING, [
-                    'used_by_collections' => [1, 2, 3]
+                    'used_by_collections' => [1, 2, 3],
+                    'used_by_databoxes' => [1]
                 ])
             )
         ;
         $this->assertEquals(
             new Field('foo', FieldMapping::TYPE_STRING, [
-                'used_by_collections' => [2]
+                'used_by_collections' => [2],
+                'used_by_databoxes' => [1]
             ]),
             $structure->get('foo')
         );
@@ -65,21 +69,25 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         $wrapped->getAllFields()->willReturn([
             'foo' => new Field('foo', FieldMapping::TYPE_STRING, [
                 'private' => false,
-                'used_by_collections' => [1, 2, 3]
+                'used_by_collections' => [1, 2, 3],
+                'used_by_databoxes' => [1]
             ]),
             'bar' => new Field('bar', FieldMapping::TYPE_STRING, [
                 'private' => true,
-                'used_by_collections' => [1, 2, 3]
+                'used_by_collections' => [1, 2, 3],
+                'used_by_databoxes' => [1]
             ])
         ]);
         $this->assertEquals([
             'foo' => new Field('foo', FieldMapping::TYPE_STRING, [
                 'private' => false,
-                'used_by_collections' => [1, 2, 3]
+                'used_by_collections' => [1, 2, 3],
+                'used_by_databoxes' => [1]
             ]),
             'bar' => new Field('bar', FieldMapping::TYPE_STRING, [
                 'private' => true,
-                'used_by_collections' => [1, 3]
+                'used_by_collections' => [1, 3],
+                'used_by_databoxes' => [1]
             ])
         ], $structure->getAllFields());
     }
