@@ -98,6 +98,11 @@ final class GlobalStructure implements Structure
         }
     }
 
+    public function getDataboxes()
+    {
+        return array_keys($this->fieldsByDatabox);
+    }
+
     /**
      * @return Field[]
      */
