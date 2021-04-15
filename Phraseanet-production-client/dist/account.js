@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 245);
+/******/ 	return __webpack_require__(__webpack_require__.s = 282);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -83,31 +83,123 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 /***/ }),
 
 /***/ 10:
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["e"] = makeString;
+/* harmony export (immutable) */ __webpack_exports__["a"] = copy;
+/* harmony export (immutable) */ __webpack_exports__["h"] = setPath;
+/* harmony export (immutable) */ __webpack_exports__["f"] = pushPath;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getPath;
+/* harmony export (immutable) */ __webpack_exports__["b"] = deepExtend;
+/* harmony export (immutable) */ __webpack_exports__["g"] = regexEscape;
+/* harmony export (immutable) */ __webpack_exports__["c"] = escape;
+function makeString(object) {
+  if (object == null) return '';
+  /* eslint prefer-template: 0 */
+  return '' + object;
+}
+
+function copy(a, s, t) {
+  a.forEach(function (m) {
+    if (s[m]) t[m] = s[m];
+  });
+}
+
+function getLastOfPath(object, path, Empty) {
+  function cleanKey(key) {
+    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
+  }
+
+  function canNotTraverseDeeper() {
+    return !object || typeof object === 'string';
+  }
+
+  var stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
+  while (stack.length > 1) {
+    if (canNotTraverseDeeper()) return {};
+
+    var key = cleanKey(stack.shift());
+    if (!object[key] && Empty) object[key] = new Empty();
+    object = object[key];
+  }
+
+  if (canNotTraverseDeeper()) return {};
+  return {
+    obj: object,
+    k: cleanKey(stack.shift())
+  };
+}
+
+function setPath(object, path, newValue) {
+  var _getLastOfPath = getLastOfPath(object, path, Object),
+      obj = _getLastOfPath.obj,
+      k = _getLastOfPath.k;
+
+  obj[k] = newValue;
+}
+
+function pushPath(object, path, newValue, concat) {
+  var _getLastOfPath2 = getLastOfPath(object, path, Object),
+      obj = _getLastOfPath2.obj,
+      k = _getLastOfPath2.k;
+
+  obj[k] = obj[k] || [];
+  if (concat) obj[k] = obj[k].concat(newValue);
+  if (!concat) obj[k].push(newValue);
+}
+
+function getPath(object, path) {
+  var _getLastOfPath3 = getLastOfPath(object, path),
+      obj = _getLastOfPath3.obj,
+      k = _getLastOfPath3.k;
+
+  if (!obj) return undefined;
+  return obj[k];
+}
+
+function deepExtend(target, source, overwrite) {
+  /* eslint no-restricted-syntax: 0 */
+  for (var prop in source) {
+    if (prop in target) {
+      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
+      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
+        if (overwrite) target[prop] = source[prop];
+      } else {
+        deepExtend(target[prop], source[prop], overwrite);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+
+function regexEscape(str) {
+  /* eslint no-useless-escape: 0 */
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+}
+
+/* eslint-disable */
+var _entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
 };
+/* eslint-enable */
 
+function escape(data) {
+  if (typeof data === 'string') {
+    return data.replace(/[&<>"'\/]/g, function (s) {
+      return _entityMap[s];
+    });
+  }
+
+  return data;
+}
 
 /***/ }),
 
@@ -2235,7 +2327,7 @@ exports.default = ApplicationConfigService;
   }
 }());
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(10)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
 
 /***/ }),
 
@@ -2289,7 +2381,7 @@ var LocaleService = function () {
         }
 
         if (options.locale === undefined) {
-            options.locale = 'fr';
+            options.locale = (0, _jquery2.default)('html').attr('lang') || 'fr';
         }
         this.locale = options.locale;
         this.isCached = false;
@@ -2594,7 +2686,7 @@ process.umask = function() { return 0; };
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(27);
@@ -3013,424 +3105,12 @@ var I18n = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 245:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(246);
-
-
-/***/ }),
-
-/***/ 246:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _bootstrap = __webpack_require__(247);
-
-var _bootstrap2 = _interopRequireDefault(_bootstrap);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var accountApp = {
-    bootstrap: _bootstrap2.default
-};
-
-if (typeof window !== 'undefined') {
-    window.accountApp = accountApp;
-}
-
-module.exports = accountApp;
-
-/***/ }),
-
-/***/ 247:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _configService = __webpack_require__(16);
-
-var _configService2 = _interopRequireDefault(_configService);
-
-var _locale = __webpack_require__(20);
-
-var _locale2 = _interopRequireDefault(_locale);
-
-var _lodash = __webpack_require__(4);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _config = __webpack_require__(248);
-
-var _config2 = _interopRequireDefault(_config);
-
-var _emitter = __webpack_require__(15);
-
-var _emitter2 = _interopRequireDefault(_emitter);
-
-var _account = __webpack_require__(249);
-
-var _account2 = _interopRequireDefault(_account);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-(0, _jquery2.default)(document).ready(function () {
-    // hide or show callback url input whether user choose a web or dektop application
-    (0, _jquery2.default)('#form_create input[name=type]').bind('click', function () {
-        if ((0, _jquery2.default)(this).val() === 'desktop') {
-            (0, _jquery2.default)('#form_create .callback-control-group').hide().find('input').val('');
-        } else {
-            (0, _jquery2.default)('#form_create .callback-control-group').show();
-        }
-    });
-});
-
-var Bootstrap = function () {
-    function Bootstrap(userConfig) {
-        _classCallCheck(this, Bootstrap);
-
-        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
-
-        this.appEvents = new _emitter2.default();
-        this.configService = new _configService2.default(configuration);
-        this.onConfigReady();
-
-        return this;
-    }
-
-    _createClass(Bootstrap, [{
-        key: 'onConfigReady',
-        value: function onConfigReady() {
-            var _this = this;
-
-            this.appServices = {
-                configService: this.configService,
-                localeService: this.localeService,
-                appEvents: this.appEvents
-            };
-
-            /**
-             * add components
-             */
-
-            (0, _jquery2.default)(document).ready(function () {
-                var accountService = (0, _account2.default)(_this.appServices);
-
-                accountService.initialize({
-                    $container: (0, _jquery2.default)('body')
-                });
-
-                switch (_this.configService.get('state')) {
-                    case 'editAccount':
-                        accountService.editAccount();
-                        break;
-                    case 'editSession':
-                        accountService.editSession();
-                        break;
-                    default:
-                }
-            });
-        }
-    }]);
-
-    return Bootstrap;
-}();
-
-var bootstrap = function bootstrap(userConfig) {
-    return new Bootstrap(userConfig);
-};
-
-exports.default = bootstrap;
-
-/***/ }),
-
-/***/ 248:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var defaultConfig = {
-    locale: 'fr',
-    basePath: '/',
-    translations: '/prod/language.json'
-};
-
-exports.default = defaultConfig;
-
-/***/ }),
-
-/***/ 249:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _geonames = __webpack_require__(54);
-
-var _geonames2 = _interopRequireDefault(_geonames);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2016 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-var account = function account(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-
-    var initialize = function initialize(options) {
-        var $container = options.$container;
-
-        $container.on('click', '.alert .alert-block-close a', function (e) {
-            e.preventDefault();
-            (0, _jquery2.default)(this).closest('.alert').alert('close');
-            return false;
-        });
-
-        // revoke third party application access
-        (0, _jquery2.default)('a.app-btn').bind('click', function (e) {
-            e.preventDefault();
-            var $this = (0, _jquery2.default)(this);
-            _jquery2.default.ajax({
-                type: 'GET',
-                url: $this.attr('href'),
-                dataType: 'json',
-                data: { revoke: $this.hasClass('authorize') ? 0 : 1 },
-                success: function success(data) {
-                    if (data.success) {
-                        var li = $this.closest('li');
-
-                        var hidden = (0, _jquery2.default)('.app-btn.hidden , .status.hidden', li);
-                        var notHidden = (0, _jquery2.default)('.app-btn:not(.hidden), .status:not(.hidden)', li);
-
-                        hidden.removeClass('hidden');
-                        notHidden.addClass('hidden');
-                    }
-                }
-            });
-        });
-
-        // generate new access token
-        (0, _jquery2.default)('a#generate_access').bind('click', function (e) {
-            e.preventDefault();
-            var $this = (0, _jquery2.default)(this);
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: $this.attr('href'),
-                dataType: 'json',
-                data: {
-                    usr_id: $this.closest('div').attr('id')
-                },
-                success: function success(data) {
-                    if (data.success) {
-                        (0, _jquery2.default)('#my_access_token').empty().append(data.token);
-                    }
-                }
-            });
-        });
-
-        //modify application callback url
-        (0, _jquery2.default)('.modifier_callback').bind('click', function () {
-            var modifierBtn = (0, _jquery2.default)(this);
-            var saveBtn = (0, _jquery2.default)('a.save_callback');
-            var input = (0, _jquery2.default)('.url_callback_input');
-            var inputVal = input.html();
-
-            modifierBtn.hide();
-            saveBtn.show();
-            // wrapp current calback in an input
-            input.empty().wrapInner('' + '<input value="' + inputVal + '"' + ' name="oauth_callback" size="50" type="text"/>');
-
-            (0, _jquery2.default)('.url_callback').off();
-
-            // save new callback
-            saveBtn.bind('click', function (e) {
-                e.preventDefault();
-                var callback = (0, _jquery2.default)('input[name=oauth_callback]').val();
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: saveBtn.attr('href'),
-                    dataType: 'json',
-                    data: { callback: callback },
-                    success: function success(data) {
-                        if (data.success) {
-                            input.empty().append(callback);
-                        } else {
-                            input.empty().append(inputVal);
-                        }
-
-                        modifierBtn.show();
-                        saveBtn.hide();
-                    }
-                });
-            });
-        });
-
-        //modify application webhook url
-        (0, _jquery2.default)('.webhook-modify-btn').bind('click', function () {
-            var modifierBtn = (0, _jquery2.default)(this);
-            var saveBtn = (0, _jquery2.default)('a.save_webhook');
-            var input = (0, _jquery2.default)('.url_webhook_input');
-            var inputVal = input.html();
-
-            modifierBtn.hide();
-            saveBtn.show();
-            // wrapp current calback in an input
-            input.empty().wrapInner('' + '<input value="' + inputVal + '"' + ' name="oauth_webhook" size="50" type="text"/>');
-
-            (0, _jquery2.default)('.url_webhook').off();
-
-            // save new callback
-            saveBtn.bind('click', function (e) {
-                e.preventDefault();
-                var webhook = (0, _jquery2.default)('input[name=oauth_webhook]').val();
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: saveBtn.attr('href'),
-                    dataType: 'json',
-                    data: { webhook: webhook },
-                    success: function success(data) {
-                        if (data.success) {
-                            input.empty().append(webhook);
-                        } else {
-                            input.empty().append(inputVal);
-                        }
-
-                        modifierBtn.show();
-                        saveBtn.hide();
-                    }
-                });
-            });
-        });
-
-        // hide or show callback url input whether user choose a web or dektop application
-        /*   $('#form_create input[name=type]').bind('click', function () {
-               if ($(this).val() === 'desktop') {
-                   $('#form_create .callback-control-group').hide().find('input').val('');
-               } else {
-                   $('#form_create .callback-control-group').show();
-               }
-           });*/
-
-        // authorize password grant type or not
-        (0, _jquery2.default)('.grant-type').bind('click', function () {
-            var $this = (0, _jquery2.default)(this);
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: $this.attr('value'),
-                dataType: 'json',
-                data: { grant: $this.is(':checked') ? '1' : '0' },
-                success: function success(data) {}
-            });
-        });
-
-        // delete an application
-        /*  $('a.delete-app').bind('click', function (e) {
-              e.preventDefault();
-              var $this = $(this);
-              var li = $this.closest('li');
-               $.ajax({
-                  type: 'DELETE',
-                  url: $this.attr('href'),
-                  dataType: 'json',
-                  data: {},
-                  success: function (data) {
-                      if (data.success) {
-                          li.find('.modal').modal('hide');
-                          li.remove();
-                      }
-                  }
-              });
-          });*/
-    };
-
-    var editAccount = function editAccount() {
-        (0, _jquery2.default)('legend').bind('click', function () {
-            (0, _jquery2.default)('.form-info').hide(200);
-            (0, _jquery2.default)((0, _jquery2.default)(this).data('target')).show();
-        });
-
-        _geonames2.default.init((0, _jquery2.default)('#form_geonameid'), {
-            server: configService.get('geonameServerUrl'),
-            limit: 40
-        });
-    };
-
-    var editSession = function editSession() {
-        var modal = (0, _jquery2.default)('#modal-delete-confirm').modal({
-            show: false
-        });
-
-        (0, _jquery2.default)('a.delete-session').bind('click', function (e) {
-            e.preventDefault();
-            modal.data('delete-url', (0, _jquery2.default)(this).prop('href')).modal('toggle');
-
-            return false;
-        });
-
-        (0, _jquery2.default)('a.confirm-delete').on('click', function (e) {
-            e.preventDefault();
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: modal.data('delete-url'),
-                dataType: 'json',
-                success: function success(data) {
-                    if (data.success) {
-                        (0, _jquery2.default)('#row-' + data.session_id).closest('tr').remove();
-                    }
-                    modal.modal('toggle');
-                }
-            });
-        });
-    };
-
-    return { initialize: initialize, editAccount: editAccount, editSession: editSession };
-};
-exports.default = account;
-
-/***/ }),
-
 /***/ 25:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__EventEmitter__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__EventEmitter__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -3582,10 +3262,10 @@ var ResourceStore = function (_EventEmitter) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__postProcessor__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__compatibility_v1__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4184,11 +3864,423 @@ var PluralResolver = function () {
 
 /***/ }),
 
+/***/ 282:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(283);
+
+
+/***/ }),
+
+/***/ 283:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _bootstrap = __webpack_require__(284);
+
+var _bootstrap2 = _interopRequireDefault(_bootstrap);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var accountApp = {
+    bootstrap: _bootstrap2.default
+};
+
+if (typeof window !== 'undefined') {
+    window.accountApp = accountApp;
+}
+
+module.exports = accountApp;
+
+/***/ }),
+
+/***/ 284:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _configService = __webpack_require__(16);
+
+var _configService2 = _interopRequireDefault(_configService);
+
+var _locale = __webpack_require__(20);
+
+var _locale2 = _interopRequireDefault(_locale);
+
+var _lodash = __webpack_require__(4);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _config = __webpack_require__(285);
+
+var _config2 = _interopRequireDefault(_config);
+
+var _emitter = __webpack_require__(15);
+
+var _emitter2 = _interopRequireDefault(_emitter);
+
+var _account = __webpack_require__(286);
+
+var _account2 = _interopRequireDefault(_account);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+(0, _jquery2.default)(document).ready(function () {
+    // hide or show callback url input whether user choose a web or dektop application
+    (0, _jquery2.default)('#form_create input[name=type]').bind('click', function () {
+        if ((0, _jquery2.default)(this).val() === 'desktop') {
+            (0, _jquery2.default)('#form_create .callback-control-group').hide().find('input').val('');
+        } else {
+            (0, _jquery2.default)('#form_create .callback-control-group').show();
+        }
+    });
+});
+
+var Bootstrap = function () {
+    function Bootstrap(userConfig) {
+        _classCallCheck(this, Bootstrap);
+
+        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
+
+        this.appEvents = new _emitter2.default();
+        this.configService = new _configService2.default(configuration);
+        this.onConfigReady();
+
+        return this;
+    }
+
+    _createClass(Bootstrap, [{
+        key: 'onConfigReady',
+        value: function onConfigReady() {
+            var _this = this;
+
+            this.appServices = {
+                configService: this.configService,
+                localeService: this.localeService,
+                appEvents: this.appEvents
+            };
+
+            /**
+             * add components
+             */
+
+            (0, _jquery2.default)(document).ready(function () {
+                var accountService = (0, _account2.default)(_this.appServices);
+
+                accountService.initialize({
+                    $container: (0, _jquery2.default)('body')
+                });
+
+                switch (_this.configService.get('state')) {
+                    case 'editAccount':
+                        accountService.editAccount();
+                        break;
+                    case 'editSession':
+                        accountService.editSession();
+                        break;
+                    default:
+                }
+            });
+        }
+    }]);
+
+    return Bootstrap;
+}();
+
+var bootstrap = function bootstrap(userConfig) {
+    return new Bootstrap(userConfig);
+};
+
+exports.default = bootstrap;
+
+/***/ }),
+
+/***/ 285:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var defaultConfig = {
+    locale: 'fr',
+    basePath: '/',
+    translations: '/prod/language.json'
+};
+
+exports.default = defaultConfig;
+
+/***/ }),
+
+/***/ 286:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _geonames = __webpack_require__(56);
+
+var _geonames2 = _interopRequireDefault(_geonames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+var account = function account(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+
+    var initialize = function initialize(options) {
+        var $container = options.$container;
+
+        $container.on('click', '.alert .alert-block-close a', function (e) {
+            e.preventDefault();
+            (0, _jquery2.default)(this).closest('.alert').alert('close');
+            return false;
+        });
+
+        // revoke third party application access
+        (0, _jquery2.default)('a.app-btn').bind('click', function (e) {
+            e.preventDefault();
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'GET',
+                url: $this.attr('href'),
+                dataType: 'json',
+                data: { revoke: $this.hasClass('authorize') ? 0 : 1 },
+                success: function success(data) {
+                    if (data.success) {
+                        var li = $this.closest('li');
+
+                        var hidden = (0, _jquery2.default)('.app-btn.hidden , .status.hidden', li);
+                        var notHidden = (0, _jquery2.default)('.app-btn:not(.hidden), .status:not(.hidden)', li);
+
+                        hidden.removeClass('hidden');
+                        notHidden.addClass('hidden');
+                    }
+                }
+            });
+        });
+
+        // generate new access token
+        (0, _jquery2.default)('a#generate_access').bind('click', function (e) {
+            e.preventDefault();
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: $this.attr('href'),
+                dataType: 'json',
+                data: {
+                    usr_id: $this.closest('div').attr('id')
+                },
+                success: function success(data) {
+                    if (data.success) {
+                        (0, _jquery2.default)('#my_access_token').empty().append(data.token);
+                    }
+                }
+            });
+        });
+
+        //modify application callback url
+        (0, _jquery2.default)('.modifier_callback').bind('click', function () {
+            var modifierBtn = (0, _jquery2.default)(this);
+            var saveBtn = (0, _jquery2.default)('a.save_callback');
+            var input = (0, _jquery2.default)('.url_callback_input');
+            var inputVal = input.html();
+
+            modifierBtn.hide();
+            saveBtn.show();
+            // wrapp current calback in an input
+            input.empty().wrapInner('' + '<input value="' + inputVal + '"' + ' name="oauth_callback" size="50" type="text"/>');
+
+            (0, _jquery2.default)('.url_callback').off();
+
+            // save new callback
+            saveBtn.bind('click', function (e) {
+                e.preventDefault();
+                var callback = (0, _jquery2.default)('input[name=oauth_callback]').val();
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: saveBtn.attr('href'),
+                    dataType: 'json',
+                    data: { callback: callback },
+                    success: function success(data) {
+                        if (data.success) {
+                            input.empty().append(callback);
+                        } else {
+                            input.empty().append(inputVal);
+                        }
+
+                        modifierBtn.show();
+                        saveBtn.hide();
+                    }
+                });
+            });
+        });
+
+        //modify application webhook url
+        (0, _jquery2.default)('.webhook-modify-btn').bind('click', function () {
+            var modifierBtn = (0, _jquery2.default)(this);
+            var saveBtn = (0, _jquery2.default)('a.save_webhook');
+            var input = (0, _jquery2.default)('.url_webhook_input');
+            var inputVal = input.html();
+
+            modifierBtn.hide();
+            saveBtn.show();
+            // wrapp current calback in an input
+            input.empty().wrapInner('' + '<input value="' + inputVal + '"' + ' name="oauth_webhook" size="50" type="text"/>');
+
+            (0, _jquery2.default)('.url_webhook').off();
+
+            // save new callback
+            saveBtn.bind('click', function (e) {
+                e.preventDefault();
+                var webhook = (0, _jquery2.default)('input[name=oauth_webhook]').val();
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: saveBtn.attr('href'),
+                    dataType: 'json',
+                    data: { webhook: webhook },
+                    success: function success(data) {
+                        if (data.success) {
+                            input.empty().append(webhook);
+                        } else {
+                            input.empty().append(inputVal);
+                        }
+
+                        modifierBtn.show();
+                        saveBtn.hide();
+                    }
+                });
+            });
+        });
+
+        // hide or show callback url input whether user choose a web or dektop application
+        /*   $('#form_create input[name=type]').bind('click', function () {
+               if ($(this).val() === 'desktop') {
+                   $('#form_create .callback-control-group').hide().find('input').val('');
+               } else {
+                   $('#form_create .callback-control-group').show();
+               }
+           });*/
+
+        // authorize password grant type or not
+        (0, _jquery2.default)('.grant-type').bind('click', function () {
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: $this.attr('value'),
+                dataType: 'json',
+                data: { grant: $this.is(':checked') ? '1' : '0' },
+                success: function success(data) {}
+            });
+        });
+
+        // delete an application
+        /*  $('a.delete-app').bind('click', function (e) {
+              e.preventDefault();
+              var $this = $(this);
+              var li = $this.closest('li');
+               $.ajax({
+                  type: 'DELETE',
+                  url: $this.attr('href'),
+                  dataType: 'json',
+                  data: {},
+                  success: function (data) {
+                      if (data.success) {
+                          li.find('.modal').modal('hide');
+                          li.remove();
+                      }
+                  }
+              });
+          });*/
+    };
+
+    var editAccount = function editAccount() {
+        (0, _jquery2.default)('legend').bind('click', function () {
+            (0, _jquery2.default)('.form-info').hide(200);
+            (0, _jquery2.default)((0, _jquery2.default)(this).data('target')).show();
+        });
+
+        _geonames2.default.init((0, _jquery2.default)('#form_geonameid'), {
+            server: configService.get('geonameServerUrl'),
+            limit: 40
+        });
+    };
+
+    var editSession = function editSession() {
+        var modal = (0, _jquery2.default)('#modal-delete-confirm').modal({
+            show: false
+        });
+
+        (0, _jquery2.default)('a.delete-session').bind('click', function (e) {
+            e.preventDefault();
+            modal.data('delete-url', (0, _jquery2.default)(this).prop('href')).modal('toggle');
+
+            return false;
+        });
+
+        (0, _jquery2.default)('a.confirm-delete').on('click', function (e) {
+            e.preventDefault();
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: modal.data('delete-url'),
+                dataType: 'json',
+                success: function success(data) {
+                    if (data.success) {
+                        (0, _jquery2.default)('#row-' + data.session_id).closest('tr').remove();
+                    }
+                    modal.modal('toggle');
+                }
+            });
+        });
+    };
+
+    return { initialize: initialize, editAccount: editAccount, editSession: editSession };
+};
+exports.default = account;
+
+/***/ }),
+
 /***/ 29:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(3);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -4465,9 +4557,9 @@ var Logger = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__EventEmitter__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -4760,7 +4852,7 @@ var Connector = function (_EventEmitter) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -5184,7 +5276,7 @@ exports.default = ajax;
 
 /***/ }),
 
-/***/ 37:
+/***/ 38:
 /***/ (function(module, exports, __webpack_require__) {
 
 var jQuery = __webpack_require__(0);
@@ -20196,7 +20288,7 @@ $.widget( "ui.tooltip", {
 
 /***/ }),
 
-/***/ 38:
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*** IMPORTS FROM imports-loader ***/
@@ -22568,11 +22660,100 @@ function stubFalse() {
 
 module.exports = merge;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(10)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
 
 /***/ }),
 
 /***/ 5:
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
+/***/ 56:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+__webpack_require__(38);
+__webpack_require__(39);
+var geonames = {
+
+    init: function init($field, options) {
+        var geocompleter = $field.geocompleter(options);
+
+        // On focus add select-state
+        geocompleter.geocompleter('autocompleter', 'on', 'autocompletefocus', function (event, ui) {
+            (0, _jquery2.default)('li', (0, _jquery2.default)(event.originalEvent.target)).closest('li').removeClass('selected');
+            (0, _jquery2.default)('a.ui-state-active, a.ui-state-hover, a.ui-state-focus', (0, _jquery2.default)(event.originalEvent.target)).closest('li').addClass('selected');
+        });
+
+        // On search request add loading-state
+        geocompleter.geocompleter('autocompleter', 'on', 'autocompletesearch', function (event, ui) {
+            (0, _jquery2.default)(this).attr('autocomplete', 'false');
+            (0, _jquery2.default)(this).addClass('input-loading');
+            (0, _jquery2.default)(this).removeClass('input-error');
+        });
+
+        // On response remove loading-state
+        geocompleter.geocompleter('autocompleter', 'on', 'autocompleteresponse', function (event, ui) {
+            (0, _jquery2.default)(this).removeClass('input-loading');
+        });
+
+        // On close menu remove loading-state
+        geocompleter.geocompleter('autocompleter', 'on', 'autocompleteclose', function (event, ui) {
+            (0, _jquery2.default)(this).removeClass('input-loading');
+        });
+
+        // On request error add error-state
+        geocompleter.geocompleter('autocompleter', 'on', 'geotocompleter.request.error', function (jqXhr, status, error) {
+            (0, _jquery2.default)(this).removeClass('input-loading');
+            (0, _jquery2.default)(this).addClass('input-error');
+        });
+
+        return geocompleter;
+    }
+
+};
+
+exports.default = geonames;
+
+/***/ }),
+
+/***/ 6:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22639,95 +22820,6 @@ var EventEmitter = function () {
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (EventEmitter);
-
-/***/ }),
-
-/***/ 54:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-__webpack_require__(37);
-__webpack_require__(38);
-var geonames = {
-
-    init: function init($field, options) {
-        var geocompleter = $field.geocompleter(options);
-
-        // On focus add select-state
-        geocompleter.geocompleter('autocompleter', 'on', 'autocompletefocus', function (event, ui) {
-            (0, _jquery2.default)('li', (0, _jquery2.default)(event.originalEvent.target)).closest('li').removeClass('selected');
-            (0, _jquery2.default)('a.ui-state-active, a.ui-state-hover, a.ui-state-focus', (0, _jquery2.default)(event.originalEvent.target)).closest('li').addClass('selected');
-        });
-
-        // On search request add loading-state
-        geocompleter.geocompleter('autocompleter', 'on', 'autocompletesearch', function (event, ui) {
-            (0, _jquery2.default)(this).attr('autocomplete', 'false');
-            (0, _jquery2.default)(this).addClass('input-loading');
-            (0, _jquery2.default)(this).removeClass('input-error');
-        });
-
-        // On response remove loading-state
-        geocompleter.geocompleter('autocompleter', 'on', 'autocompleteresponse', function (event, ui) {
-            (0, _jquery2.default)(this).removeClass('input-loading');
-        });
-
-        // On close menu remove loading-state
-        geocompleter.geocompleter('autocompleter', 'on', 'autocompleteclose', function (event, ui) {
-            (0, _jquery2.default)(this).removeClass('input-loading');
-        });
-
-        // On request error add error-state
-        geocompleter.geocompleter('autocompleter', 'on', 'geotocompleter.request.error', function (jqXhr, status, error) {
-            (0, _jquery2.default)(this).removeClass('input-loading');
-            (0, _jquery2.default)(this).addClass('input-error');
-        });
-
-        return geocompleter;
-    }
-
-};
-
-exports.default = geonames;
-
-/***/ }),
-
-/***/ 6:
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
 
 /***/ }),
 
@@ -35124,128 +35216,36 @@ var ReactiveTest = Rx.ReactiveTest = {
 
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)(module), __webpack_require__(6), __webpack_require__(22)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)(module), __webpack_require__(5), __webpack_require__(22)))
 
 /***/ }),
 
-/***/ 9:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ 8:
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["e"] = makeString;
-/* harmony export (immutable) */ __webpack_exports__["a"] = copy;
-/* harmony export (immutable) */ __webpack_exports__["h"] = setPath;
-/* harmony export (immutable) */ __webpack_exports__["f"] = pushPath;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getPath;
-/* harmony export (immutable) */ __webpack_exports__["b"] = deepExtend;
-/* harmony export (immutable) */ __webpack_exports__["g"] = regexEscape;
-/* harmony export (immutable) */ __webpack_exports__["c"] = escape;
-function makeString(object) {
-  if (object == null) return '';
-  /* eslint prefer-template: 0 */
-  return '' + object;
-}
-
-function copy(a, s, t) {
-  a.forEach(function (m) {
-    if (s[m]) t[m] = s[m];
-  });
-}
-
-function getLastOfPath(object, path, Empty) {
-  function cleanKey(key) {
-    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
-  }
-
-  function canNotTraverseDeeper() {
-    return !object || typeof object === 'string';
-  }
-
-  var stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
-  while (stack.length > 1) {
-    if (canNotTraverseDeeper()) return {};
-
-    var key = cleanKey(stack.shift());
-    if (!object[key] && Empty) object[key] = new Empty();
-    object = object[key];
-  }
-
-  if (canNotTraverseDeeper()) return {};
-  return {
-    obj: object,
-    k: cleanKey(stack.shift())
-  };
-}
-
-function setPath(object, path, newValue) {
-  var _getLastOfPath = getLastOfPath(object, path, Object),
-      obj = _getLastOfPath.obj,
-      k = _getLastOfPath.k;
-
-  obj[k] = newValue;
-}
-
-function pushPath(object, path, newValue, concat) {
-  var _getLastOfPath2 = getLastOfPath(object, path, Object),
-      obj = _getLastOfPath2.obj,
-      k = _getLastOfPath2.k;
-
-  obj[k] = obj[k] || [];
-  if (concat) obj[k] = obj[k].concat(newValue);
-  if (!concat) obj[k].push(newValue);
-}
-
-function getPath(object, path) {
-  var _getLastOfPath3 = getLastOfPath(object, path),
-      obj = _getLastOfPath3.obj,
-      k = _getLastOfPath3.k;
-
-  if (!obj) return undefined;
-  return obj[k];
-}
-
-function deepExtend(target, source, overwrite) {
-  /* eslint no-restricted-syntax: 0 */
-  for (var prop in source) {
-    if (prop in target) {
-      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
-      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
-        if (overwrite) target[prop] = source[prop];
-      } else {
-        deepExtend(target[prop], source[prop], overwrite);
-      }
-    } else {
-      target[prop] = source[prop];
-    }
-  }
-  return target;
-}
-
-function regexEscape(str) {
-  /* eslint no-useless-escape: 0 */
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-}
-
-/* eslint-disable */
-var _entityMap = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': '&quot;',
-  "'": '&#39;',
-  "/": '&#x2F;'
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
 };
-/* eslint-enable */
 
-function escape(data) {
-  if (typeof data === 'string') {
-    return data.replace(/[&<>"'\/]/g, function (s) {
-      return _entityMap[s];
-    });
-  }
-
-  return data;
-}
 
 /***/ })
 

@@ -597,6 +597,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
 
+        // clear the trivial cache of databox->get_collections()
+        $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);
+
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
 	    $this->dispatch(CollectionEvents::DISABLED, new DisabledEvent($this));
@@ -613,6 +616,9 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         $this->getReferenceRepository()->save($this->reference);
         $this->collectionRepositoryRegistry->purgeRegistry();
+
+        // clear the trivial cache of databox->get_collections()
+        $this->get_databox()->clearCache(databox::CACHE_COLLECTIONS);
 
         cache_databox::update($this->app, $this->databox->get_sbas_id(), 'structure');
         
@@ -813,22 +819,6 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
 
         // no match ? try against the databox whitelist
         return $this->get_databox()->getAutoregisterModel($email);
-    }
-
-    /**
-     * Gets terms of use.
-     *
-     * @return null|string
-     */
-    public function getTermsOfUse()
-    {
-        if (false === $xml = simplexml_load_string($this->get_prefs())) {
-            return null;
-        }
-
-        foreach ($xml->xpath('/baseprefs/cgu') as $sbpcgu) {
-            return $sbpcgu->saveXML();
-        }
     }
 
     public function get_cache_key($option = null)

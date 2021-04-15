@@ -12,11 +12,10 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 interface Structure
 {
-    const STRUCTURE_WITH_FIELDS = 0x10;
-    const STRUCTURE_WITH_FLAGS  = 0x20;
-    const FIELD_WITH_THESAURUS  = 0x01;
-    const FIELD_WITH_FACETS     = 0x02;
-    const WITH_EVERYTHING       = 0xFF;
+    /**
+     * @return mixed
+     */
+    public function getDataboxes();
 
     /**
      * @return Field[]

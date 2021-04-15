@@ -86,6 +86,21 @@ interface MailInterface
     public function getPhraseanetURL();
 
     /**
+     * Set the locale for the email text
+     *
+     * @param $locale
+     * @return string
+     */
+    public function setLocale($locale);
+
+    /**
+     * Get the locale
+     *
+     * @return string
+     */
+    public function getLocale();
+
+    /**
      * Returns an URL for a logo
      *
      * @return string

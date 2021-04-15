@@ -21,6 +21,7 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Queue\WebhookPublisher;
 use Alchemy\Phrasea\WorkerManager\Subscriber\AssetsIngestSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\ExportSubscriber;
+use Alchemy\Phrasea\WorkerManager\Subscriber\ExposeSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\SearchengineSubscriber;
 use Alchemy\Phrasea\WorkerManager\Subscriber\SubtitleSubscriber;
@@ -70,6 +71,7 @@ class QueueWorkerServiceProvider implements PluginProviderInterface
                 $dispatcher->addSubscriber(new SearchengineSubscriber($app['alchemy_worker.message.publisher'], new LazyLocator($app, 'repo.worker-running-job')));
                 $dispatcher->addSubscriber(new WebhookSubscriber($app['alchemy_worker.message.publisher']));
                 $dispatcher->addSubscriber(new SubtitleSubscriber(new LazyLocator($app, 'repo.worker-job'), $app['alchemy_worker.message.publisher']));
+                $dispatcher->addSubscriber(new ExposeSubscriber($app['alchemy_worker.message.publisher']));
 
                 return $dispatcher;
             })

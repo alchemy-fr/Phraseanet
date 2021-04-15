@@ -23,6 +23,7 @@ use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationRecordFailureEvent;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
@@ -305,6 +306,10 @@ class CreateRecordWorker implements WorkerInterface
                 }
 
                 $story->set_metadatas($metadatas)->rebuild_subdefs();
+
+                // order to write meta in file
+                $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                    new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
             }
 
             $this->messagePublisher->pushLog(sprintf('The record record_id= %d was successfully added in the story record_id= %d', $elementCreated->getRecordId(), $story->getRecordId()));

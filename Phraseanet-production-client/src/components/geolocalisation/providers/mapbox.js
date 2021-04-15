@@ -8,11 +8,14 @@ import {generateRandStr} from '../../utils/utils';
 import provider from '../provider';
 import leafletLocaleFr from './locales/fr';
 import merge from 'lodash.merge';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 require('mapbox.js/theme/style.css');
 require('mapbox-gl/dist/mapbox-gl.css');
 require('./mapbox.css');
 require('leaflet-draw/dist/leaflet.draw.css');
 require('leaflet-contextmenu/dist/leaflet.contextmenu.css');
+
 const leafletMap = (services) => {
     const {configService, localeService, eventEmitter} = services;
     let $container = null;
@@ -27,6 +30,7 @@ const leafletMap = (services) => {
     let map = null;
     let geocoder = null;
     let mapboxClient = null;
+    let markerGl = [];
     let $tabContent;
     let tabContainerName = 'leafletTabContainer';
     let editable;
@@ -98,7 +102,7 @@ const leafletMap = (services) => {
         if (activeProvider.accessToken === undefined) {
             return;
         }
-        let {selection} = params;
+        let {selection, selectionPos} = params;
 
         if(map != null ) {
             if (shouldUseMapboxGl() && !map.loaded()) {
@@ -146,27 +150,6 @@ const leafletMap = (services) => {
 
             $container.empty().append(`<div id="${mapUID}" class="phrasea-popup" style="width: 100%;height:100%; position: absolute;top:0;left:0"></div>`);
 
-            if (editable) {
-                // init add marker context menu only if 1 record is available and has no coords
-                if (pois.length === 1) {
-                    let poiIndex = 0;
-                    let selectedPoi = pois[poiIndex];
-                    let poiCoords = haveValidCoords(selectedPoi);
-                    if (poiCoords === false) {
-                        mapOptions = merge({
-                            contextmenu: true,
-                            contextmenuWidth: 140,
-                            contextmenuItems: [{
-                                text: localeService.t('mapMarkerAdd'),
-                                callback: (e) => {
-                                    addMarkerOnce(e, poiIndex, selectedPoi)
-                                }
-                            }]
-                        }, mapOptions);
-                    }
-                }
-            }
-
             if (!shouldUseMapboxGl()) {
                 L.mapbox.accessToken = activeProvider.accessToken;
                 map = L.mapbox.map(mapUID, _, mapOptions);
@@ -190,6 +173,36 @@ const leafletMap = (services) => {
                 }
                 addMarkersLayers();
                 refreshMarkers(pois);
+                addNoticeControlJS(drawable, editable);
+
+                if (editable) {
+                    map.on('contextmenu', function(eContext) {
+                        let buttonText = localeService.t("Change position");
+                        if (pois.length === 1) {
+                            let poiIndex = 0;
+                            let selectedPoi = pois[poiIndex];
+                            let poiCoords = haveValidCoords(selectedPoi);
+
+                            // if has no coords
+                            if (poiCoords === false) {
+                                buttonText = localeService.t("mapMarkerAdd");
+                            }
+                        }
+
+                        let popupDialog = L.popup({ closeOnClick: false })
+                            .setLatLng(eContext.latlng)
+                            .setContent('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>')
+                            .openOn(map);
+
+                        let popup = document.getElementsByClassName('leaflet-popup');
+                        $(popup[0]).on('click', '.add-position', function(event) {
+                            for (let i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
+                            }
+                        });
+
+                    });
+                }
             } else {
                 mapboxgl.accessToken = activeProvider.accessToken
                 if (mapboxGLDefaultPosition == null) {
@@ -231,20 +244,30 @@ const leafletMap = (services) => {
                         eventEmitter.emit('updateCircleGeo', {shapes: [], drawnItems: []});
                         eventEmitter.emit('updateSearchValue');
                         removeCircleIfExist();
-                        removeNoticeControl();
+                        removeNoticeControlGL();
                     });
 
                     $('.submit-geo-search-action').on('click', function (event) {
                         removeCircleIfExist();
-                        removeNoticeControl();
+                        removeNoticeControlGL();
                     });
 
                     addCircleDrawControl();
-                    addNoticeControl();
                     addCircleGeoDrawing(drawnItems);
 
                 } else {
                     map.addControl(new mapboxgl.NavigationControl());
+                }
+
+                addNoticeControlGL(drawable, editable);
+
+                if (searchable) {
+                    let geocoderSearch = new MapboxGeocoder({
+                        accessToken: mapboxgl.accessToken,
+                        mapboxgl: mapboxgl,
+                        marker: false
+                    });
+                    map.addControl(geocoderSearch, 'top-left');
                 }
 
                 map.on('style.load', function () {
@@ -278,6 +301,15 @@ const leafletMap = (services) => {
                     }
 
                     if (!drawable) {
+
+                        for (let i = 0; i < pois.length; i++) {
+                            // add class for the icon
+                            let el = document.createElement('div');
+                            el.className = 'mapboxGl-phrasea-marker';
+
+                            markerGl[pois[i]._rid] = new mapboxgl.Marker(el);
+                        }
+
                         addMarkersLayersGL(geojson);
                         refreshMarkers(pois);
                     } else {
@@ -297,7 +329,44 @@ const leafletMap = (services) => {
 
                         //map.on('moveend', calculateBounds).on('zoomend', calculateBounds);
                     }
+
                 });
+
+                if (editable) {
+                    map.on('contextmenu', function(eContext) {
+                        let buttonText = localeService.t("Change position");
+                        if (pois.length === 1) {
+                            let poiIndex = 0;
+                            let selectedPoi = pois[poiIndex];
+                            let poiCoords = haveValidCoords(selectedPoi);
+
+                            // if has no coords
+                            if (poiCoords === false) {
+                                buttonText = localeService.t("mapMarkerAdd");
+                            }
+                        }
+
+                        let popup = document.getElementsByClassName('mapboxgl-popup');
+                        // Check if there is already a popup on the map and if so, remove it
+                        if (popup[0]) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                        }
+
+                        let popupDialog = new mapboxgl.Popup({ closeOnClick: false })
+                            .setLngLat(eContext.lngLat)
+                            .setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>')
+                            .addTo(map);
+
+                        popup = document.getElementsByClassName('mapboxgl-popup');
+                        $(popup[0]).on('click', '.add-position', function(event) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                            for (let i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
+                            }
+                        });
+
+                    });
+                }
             }
 
 
@@ -365,19 +434,38 @@ const leafletMap = (services) => {
         }
     }
 
-    const addNoticeControl = () => {
-        let controlContainerList = $('.mapboxgl-control-container');
-        let $noticeButton = $('<button id="map-notice-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
-        controlContainerList.append($noticeButton);
+    const addNoticeControlGL = (drawable, editable) => {
+        let controlContainerSearch = $('.map_search_dialog .mapboxgl-control-container');
+        let controlContainerEdit = $('#EDITWINDOW .mapboxgl-control-container');
 
-        let $noticeBox = $('<div id="notice-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' +
-            localeService.t("title notice") + '</span></span><span class="notice-desc">' + localeService.t("description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
-        controlContainerList.append($noticeBox);
+        let $noticeButton = null;
+        let $noticeBox = null;
+        if (drawable) {
+            $noticeButton = $('<button id="map-notice-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
 
-        $noticeButton.on('click', function (event) {
-            $noticeBox.show();
-            $noticeButton.hide();
-        });
+            $noticeBox = $('<div id="notice-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' +
+                localeService.t("title notice") + '</span></span><span class="notice-desc">' + localeService.t("description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerSearch.append($noticeButton);
+            controlContainerSearch.append($noticeBox);
+        }
+
+        if (editable) {
+            $noticeButton = $('<button id="map-info-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBox = $('<div id="notice-info-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' +
+                localeService.t("mapboxgl title info") + '</span></span><span class="notice-desc">' + localeService.t("mapboxgl description info") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerEdit.append($noticeButton);
+            controlContainerEdit.append($noticeBox);
+        }
+
+        if ($noticeButton != null) {
+            $noticeButton.on('click', function (event) {
+                $noticeBox.show();
+                $noticeButton.hide();
+            });
+        }
 
         $('.notice-close-btn').on('click', function (event) {
             $noticeBox.hide();
@@ -385,10 +473,66 @@ const leafletMap = (services) => {
         });
     }
 
-    const removeNoticeControl = () => {
-        let controlContainerList = $('.mapboxgl-control-container');
-        if (controlContainerList.find('#notice-box').length > 0) {
+    const removeNoticeControlGL = () => {
+        let controlContainerSearch = $('.map_search_dialog .mapboxgl-control-container');
+        let controlContainerEdit = $('#EDITWINDOW .mapboxgl-control-container');
+
+        if (controlContainerSearch.find('#notice-box').length > 0) {
             $('#notice-box').remove();
+        }
+        if (controlContainerEdit.find('#notice-info-box').length > 0) {
+            $('#notice-info-box').remove();
+        }
+    }
+
+    const addNoticeControlJS = (drawable) => {
+        let controlContainerSearch = $('.map_search_dialog .leaflet-control-container');
+        let controlContainerEdit = $('#EDITWINDOW .leaflet-control-container');
+
+        let $noticeButtonJs = null;
+        let $noticeBoxJs = null;
+        if (drawable) {
+            $noticeButtonJs = $('<button id="map-noticeJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBoxJs = $('<div id="noticeJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' +
+                localeService.t("mapboxjs title notice") + '</span></span><span class="notice-desc">' + localeService.t("mapboxjs description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerSearch.append($noticeButtonJs);
+            controlContainerSearch.append($noticeBoxJs);
+        }
+
+        if (editable) {
+            $noticeButtonJs = $('<button id="map-infoJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBoxJs = $('<div id="notice-infoJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' +
+                localeService.t("mapboxjs title info") + '</span></span><span class="notice-desc">' + localeService.t("mapboxjs description info") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerEdit.append($noticeButtonJs);
+            controlContainerEdit.append($noticeBoxJs);
+        }
+
+        if ($noticeButtonJs != null) {
+            $noticeButtonJs.on('click', function (event) {
+                $noticeBoxJs.show();
+                $noticeButtonJs.hide();
+            });
+        }
+
+        $('.notice-close-btn').on('click', function (event) {
+            $noticeBoxJs.hide();
+            $noticeButtonJs.show();
+        });
+    }
+
+    const removeNoticeControlJS = () => {
+        let controlContainerSearch = $('.map_search_dialog .leaflet-control-container');
+        let controlContainerEdit = $('#EDITWINDOW .leaflet-control-container');
+
+        if (controlContainerSearch.find('#noticeJs-box').length > 0) {
+            $('#noticeJs-box').remove();
+        }
+        if (controlContainerEdit.find('#notice-infoJs-box').length > 0) {
+            $('#notice-infoJs-box').remove();
         }
     }
 
@@ -648,7 +792,13 @@ const leafletMap = (services) => {
     }
     const addMarkerOnce = (e, poiIndex, poi) => {
         // inject coords into poi's fields:
-        let mappedCoords = getMappedFields(e.latlng);
+        let mappedCoords = '';
+        if (shouldUseMapboxGl()) {
+            mappedCoords = getMappedFields(e.lngLat);
+        } else {
+            mappedCoords = getMappedFields(e.latlng);
+        }
+
         let pois = [merge(poi, mappedCoords)];
         refreshMarkers(pois).then(() => {
             // broadcast event:
@@ -663,7 +813,9 @@ const leafletMap = (services) => {
             let presets = {
                 fields: wrappedMappedFields //presetFields
             };
-            map.contextmenu.disable();
+            if (!shouldUseMapboxGl()) {
+                map.contextmenu.disable();
+            }
             eventEmitter.emit('recordEditor.addPresetValuesFromDataSource', {data: presets, recordIndex: poiIndex});
         });
     }
@@ -703,15 +855,23 @@ const leafletMap = (services) => {
             data: geojson
         });
 
-        map.addLayer({
-            id: 'points',
-            source: 'data',
-            type: 'symbol',
-            layout: {
-                "icon-image": "star-15",
-                "icon-size": 1.5
-            },
-        });
+        // map.loadImage(
+        //     '/assets/common/images/icons/marker_icon.png',
+        //     function (error, image) {
+        //         if (error) throw error;
+        //         map.addImage('custom-marker', image);
+        //
+        //         // Add a symbol layer
+        //         map.addLayer({
+        //             id: 'points',
+        //             source: 'data',
+        //             type: 'symbol',
+        //             layout: {
+        //                 "icon-image": 'custom-marker'
+        //             },
+        //         });
+        //     }
+        // );
     }
 
     const addMarkersLayers = () => {
@@ -745,8 +905,12 @@ const leafletMap = (services) => {
 
                     map.getSource('data').setData(geojson);
 
+                    markerGl.forEach(function (item, index) {
+                        item.remove();
+                    });
+
                     let markerGlColl = markerGLCollection(services);
-                    markerGlColl.initialize({map, geojson, editable});
+                    markerGlColl.initialize({map, geojson, markerGl, editable});
 
                     if (geojson.features.length > 0) {
                         shouldUpdateZoom = true;
@@ -783,7 +947,6 @@ const leafletMap = (services) => {
                         position.lng = featureLayer.getGeoJSON()[0].geometry.coordinates[0];
                         position.lat = featureLayer.getGeoJSON()[0].geometry.coordinates[1];
                         updateMarkerPosition(featureLayer.getGeoJSON()[0].properties.recordIndex, position);
-                        console.log('ato');
                     } else {
                         // set default position
                         shouldUpdateZoom = false;
@@ -816,6 +979,7 @@ const leafletMap = (services) => {
                         coordinates: poiCoords
                     },
                     properties: {
+                        _rid: poi._rid,
                         recordIndex: poiIndex,
                         'marker-color': '0c4554',
                         'marker-zoom': currentZoomLevel,

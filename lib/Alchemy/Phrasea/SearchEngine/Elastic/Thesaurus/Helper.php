@@ -31,6 +31,7 @@ class Helper
         $nodes = $xpath->query($expression);
         $concepts = [];
 
+        /** @var DOMElement $node */
         foreach ($nodes as $node) {
             $me_and_parents = array_merge([$node], self::getElementAncestors($node));
 
@@ -46,11 +47,13 @@ class Helper
             }
 
             // Concept paths are have databox identifier at root level
-            $concepts[] = new Concept(sprintf(
-                '/%d/%s',
+            $concepts[] = new Concept(
                 $databox->get_sbas_id(),
-                implode('/', array_reverse($path_segments))
-            ));
+                sprintf(
+                    '/%d/%s',
+                    $databox->get_sbas_id(),
+                    implode('/', array_reverse($path_segments))
+                ));
         }
 
         return $concepts;

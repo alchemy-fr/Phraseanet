@@ -3,8 +3,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Assert\Assertion;
 use DomainException;
 
 final class GlobalStructure implements Structure
@@ -13,7 +11,6 @@ final class GlobalStructure implements Structure
      * @var Field[]
      */
     private $fields = array();
-
 
     /**
      * @var Field[][]
@@ -45,53 +42,6 @@ final class GlobalStructure implements Structure
      */
     private $metadata_tags = array();
 
-    /**
-     * @param \databox[] $databoxes
-     * @param int $what    bitmask of what should be included in this structure, in fields, ...
-     *
-     * @return GlobalStructure
-     */
-    public static function createFromDataboxes(array $databoxes, $what = self::WITH_EVERYTHING)
-    {
-        $fields = [];
-        $flags = [];
-
-        foreach ($databoxes as $databox) {
-            if($what & self::STRUCTURE_WITH_FIELDS) {
-                foreach ($databox->get_meta_structure() as $fieldStructure) {
-                    $fields[] = Field::createFromLegacyField($fieldStructure, $what);
-                }
-            }
-
-            if($what & self::STRUCTURE_WITH_FLAGS) {
-                foreach ($databox->getStatusStructure() as $status) {
-                    $flags[] = Flag::createFromLegacyStatus($status);
-                }
-            }
-        }
-
-        return new self($fields, $flags, MetadataHelper::createTags());
-    }
-
-    /**
-     * @param \databox $databox
-     * @return GlobalStructure
-     */
-    public static function createFromDatabox(\databox $databox)
-    {
-        $fields = [];
-        $flags = [];
-
-        foreach ($databox->get_meta_structure() as $fieldStructure) {
-            $fields[] = Field::createFromLegacyField($fieldStructure);
-        }
-
-        foreach ($databox->getStatusStructure() as $status) {
-            $flags[] = Flag::createFromLegacyStatus($status);
-        }
-
-        return new self($fields, $flags, MetadataHelper::createTags());
-    }
 
     /**
      * GlobalStructure constructor.
@@ -101,9 +51,6 @@ final class GlobalStructure implements Structure
      */
     public function __construct(array $fields = [], array $flags = [], array $metadata_tags = [])
     {
-        Assertion::allIsInstanceOf($fields, Field::class);
-        Assertion::allIsInstanceOf($flags, Flag::class);
-        Assertion::allIsInstanceOf($metadata_tags, Tag::class);
 
         foreach ($fields as $field) {
             $this->add($field);
@@ -149,6 +96,11 @@ final class GlobalStructure implements Structure
         if ($field->hasConceptInference()) {
             $this->thesaurus_fields[$name] = $field;
         }
+    }
+
+    public function getDataboxes()
+    {
+        return array_keys($this->fieldsByDatabox);
     }
 
     /**

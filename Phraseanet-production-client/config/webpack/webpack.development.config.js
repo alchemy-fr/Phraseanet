@@ -40,7 +40,7 @@ module.exports = {
     output: {
         path: config.distDir,
         filename: '[name].js',
-        chunkFilename: 'lazy-[name].js',
+        chunkFilename: 'lazy-[name].js?v=' + config.jsFileVersion,
         libraryTarget: 'umd',
         library: config._app,
         publicPath: '/assets/production/'

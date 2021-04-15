@@ -35,9 +35,9 @@
                         {% if show == true %}
                             <div class="registration">
                                 <div class="coll-name">
-                            <span>
-                                {{ collInfo["coll-name"] }}
-                            </span>
+                                    <span>
+                                        {{ collInfo["coll-name"] }}
+                                    </span>
                                 </div>
                                 <div class="icon-box">
                                     {% if type == 'registrable' %}
@@ -47,23 +47,23 @@
                                     {% endif %}
                                 </div>
                                 <div class="status-box">
-                            <span class="status {{ type }}" >
-                            {% if type == 'active' %}
-                                    {{ "registration:collection.active" | trans }}
-                                {% elseif type == 'registrable' %}
-                                    {{ "registration:collection.registrable" | trans }}
-                                {% elseif type == 'in-time' %}
-                                    {{ "registration:collection.in-time" | trans }}
-                                {% elseif type == 'out-dated' %}
-                                    {{ "registration:collection.out-dated" | trans }}
-                                {% elseif type == 'pending' %}
-                                    {{ "registration:collection.pending" | trans }}
-                                {% elseif type == 'rejected' %}
-                                    {{ "registration:collection.rejected" | trans }}
-                                {% elseif type == 'accepted' %}
-                                    {{ "registration:collection.accepted" | trans }}
-                                {% endif %}
-                            </span>
+                                    <span class="status {{ type }}" >
+                                        {% if type == 'active' %}
+                                            {{ "registration:collection.active" | trans }}
+                                        {% elseif type == 'registrable' %}
+                                            {{ "registration:collection.registrable" | trans }}
+                                        {% elseif type == 'in-time' %}
+                                            {{ "registration:collection.in-time" | trans }}
+                                        {% elseif type == 'out-dated' %}
+                                            {{ "registration:collection.out-dated" | trans }}
+                                        {% elseif type == 'pending' %}
+                                            {{ "registration:collection.pending" | trans }}
+                                        {% elseif type == 'rejected' %}
+                                            {{ "registration:collection.rejected" | trans }}
+                                        {% elseif type == 'accepted' %}
+                                            {{ "registration:collection.accepted" | trans }}
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
                         {% endif %}

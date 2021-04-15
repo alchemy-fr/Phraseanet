@@ -88,6 +88,7 @@ use Alchemy\Phrasea\Status\StatusStructure;
 use Alchemy\Phrasea\TaskManager\LiveInformation;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreateEvent;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\ORM\EntityManager;
 use Guzzle\Http\Client as Guzzle;
@@ -432,7 +433,7 @@ class V1Controller extends Controller
                     'autoRegister' => $conf->get(['registry', 'registration', 'auto-register-enabled']),
                 ],
                 'push'              => [
-                    'validationReminder' => $conf->get(['registry', 'actions', 'validation-reminder-days']),
+                    'validationReminder' => $conf->get(['registry', 'actions', 'validation-reminder-time-left-percent']),
                     'expirationValue'    => $conf->get(['registry', 'actions', 'validation-expiration-days']),
                 ],
             ],
@@ -1991,6 +1992,10 @@ class V1Controller extends Controller
 
         $record->set_metadatas($metadata);
 
+        // order to write meta in file
+        $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+            new RecordsWriteMetaEvent([$record->getRecordId()], $databox_id));
+
         return Result::create($request, [
             "record_metadatas" => $this->listRecordMetadata($record),
         ])->createResponse();
@@ -2599,6 +2604,10 @@ class V1Controller extends Controller
 
         if(count($metadatas) > 0) {
             $story->set_metadatas($metadatas);
+
+            // order to write meta in file
+            $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent([$story->getRecordId()], $story->getDataboxId()));
         }
 
         if (isset($data->{'story_records'})) {

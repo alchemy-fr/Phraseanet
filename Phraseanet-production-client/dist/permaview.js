@@ -70,39 +70,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 224);
+/******/ 	return __webpack_require__(__webpack_require__.s = 261);
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ 10:
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
 
 /***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
@@ -3106,23 +3077,23 @@ exports.default = ApplicationConfigService;
   }
 }());
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(10)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
 
 /***/ }),
 
-/***/ 224:
+/***/ 261:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _bootstrap = __webpack_require__(225);
+var _bootstrap = __webpack_require__(262);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(227);
+__webpack_require__(264);
 
 
 var PermaviewApplication = {
@@ -3137,7 +3108,7 @@ module.exports = PermaviewApplication;
 
 /***/ }),
 
-/***/ 225:
+/***/ 262:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3151,7 +3122,7 @@ var _configService = __webpack_require__(16);
 
 var _configService2 = _interopRequireDefault(_configService);
 
-var _config = __webpack_require__(226);
+var _config = __webpack_require__(263);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -3187,7 +3158,7 @@ exports.default = bootstrap;
 
 /***/ }),
 
-/***/ 226:
+/***/ 263:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3216,7 +3187,7 @@ exports.default = defaultConfig;
 
 /***/ }),
 
-/***/ 227:
+/***/ 264:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
@@ -5204,11 +5175,11 @@ function stubFalse() {
 
 module.exports = merge;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(10)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
 
 /***/ }),
 
-/***/ 6:
+/***/ 5:
 /***/ (function(module, exports) {
 
 var g;
@@ -5232,6 +5203,35 @@ try {
 // easier to handle this case. if(!global) { ...}
 
 module.exports = g;
+
+
+/***/ }),
+
+/***/ 8:
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
 
 
 /***/ })

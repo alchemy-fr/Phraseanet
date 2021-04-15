@@ -52,7 +52,8 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
         ]);
         $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2, 3]
+            'used_by_collections' => [1, 2, 3],
+            'used_by_databoxes' => [1]
         ]);
 
         $query_context = $this->prophesize(QueryContext::class);
@@ -96,9 +97,7 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
                                 "type": "phrase",
                                 "fields": [
                                     "private_caption.bar.fr",
-                                    "private_caption.bar.en",
-                                    "foo.fr",
-                                    "foo.en"
+                                    "private_caption.bar.en"
                                 ],
                                 "query": "baz",
                                 "lenient": true

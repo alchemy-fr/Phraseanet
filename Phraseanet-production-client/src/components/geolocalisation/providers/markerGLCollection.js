@@ -3,10 +3,10 @@ let mapboxgl = require('mapbox-gl');
 
 const markerGLCollection = (services) => {
     const {configService, localeService, eventEmitter} = services;
-    let markerCollection = {};
     let cachedGeoJson;
     let map;
     let geojson;
+    let markerGl;
     let editable;
     let isDraggable = false;
     let isCursorOverPoint = false;
@@ -15,7 +15,7 @@ const markerGLCollection = (services) => {
     let popupDialog;
 
     const initialize = (params) => {
-        let initWith = {map, geojson} = params;
+        let initWith = {map, geojson, markerGl} = params;
         editable = params.editable || false;
         setCollection(geojson)
     };
@@ -39,6 +39,32 @@ const markerGLCollection = (services) => {
     };
 
     const setPoint = (marker) => {
+        let markerId = marker.properties.recordIndex;
+
+        if (marker.properties._rid !== undefined) {
+            markerId = marker.properties._rid;
+        }
+
+        let markerElement = getMarker(markerId);
+
+        if (markerElement === undefined) {
+            let el = document.createElement('div');
+            el.className = 'mapboxGl-phrasea-marker';
+
+            markerElement = markerGl[markerId] = new mapboxgl.Marker(el);
+        }
+
+        markerElement.feature = {
+            properties : {
+                recordIndex : marker.properties.recordIndex
+            }
+        };
+
+        // add marker to map
+        markerElement
+            .setLngLat(marker.geometry.coordinates)
+            .addTo(map);
+
         let $content = $('<div style="min-width: 200px"/>');
 
         let template = `<p>${marker.properties.title}</p> `;
@@ -46,14 +72,14 @@ const markerGLCollection = (services) => {
         if (editable === true) {
             template += `
             <div class="view-mode">
-                    <button class="edit-position btn btn-inverse btn-small btn-block" data-marker-id="${marker.properties.recordIndex}">${localeService.t('mapMarkerEdit')}</button>
+                    <button class="edit-position btn btn-inverse btn-small btn-block" data-marker-id="${marker.properties._rid}">${localeService.t('mapMarkerEdit')}</button>
             </div>
             <div class="edit-mode">
                 <p class="help" style="font-size: 12px;font-style: italic;">${localeService.t('mapMarkerMoveLabel')}</p>
                 <p><span class="updated-position" style="font-size: 12px;"></span></p>
                 <div>
-                    <button class="cancel-position btn btn-inverse btn-small btn-block" data-marker-id="${marker.properties.recordIndex}">${localeService.t('mapMarkerEditCancel')}</button>
-                    <button class="submit-position btn btn-inverse btn-small btn-block" data-marker-id="${marker.properties.recordIndex}">${localeService.t('mapMarkerEditSubmit')}</button>
+                    <button class="cancel-position btn btn-inverse btn-small btn-block" data-marker-id="${marker.properties._rid}">${localeService.t('mapMarkerEditCancel')}</button>
+                    <button class="submit-position btn btn-inverse btn-small btn-block" data-marker-id="${marker.properties._rid}">${localeService.t('mapMarkerEditSubmit')}</button>
                 </div>
             </div>`;
         }
@@ -61,153 +87,70 @@ const markerGLCollection = (services) => {
         $content.append(template);
 
         $content.find('.edit-mode').hide();
-        //
+
+        let popupDialog = new mapboxgl.Popup({closeOnClick: false})
+            .setDOMContent($content.get(0));
+
+        popupDialog.on('close', function (event) {
+            if (editable) {
+                markerElement.setDraggable(false);
+            }
+        });
+
+        // bind popup to the marker element
+        markerElement.setPopup(popupDialog);
+
+        markerElement.on('dragend', () => {
+            let position = markerElement.getLngLat().wrap();
+            $content.find('.updated-position').html(`${position.lat}<br>${position.lng}`);
+            $content.find('.edit-mode').show();
+        });
+
         $content.on('click', '.edit-position', (event) => {
             let $el = $(event.currentTarget);
-            let marker = getMarker($el.data('marker-id'));
-            marker._originalPosition = marker.lngLat.wrap();
+            let markerSelected = getMarker($el.data('marker-id'));
+            markerSelected._originalPosition = markerElement.getLngLat().wrap();
             $content.find('.view-mode').hide();
             $content.find('.edit-mode').show();
             $content.find('.help').show();
-            isDraggable = true;
 
-            map.on('mousedown', mouseDown);
+            markerSelected.setDraggable(true);
         });
 
         $content.on('click', '.submit-position', (event) => {
             let $el = $(event.currentTarget);
-            let marker = getMarker($el.data('marker-id'));
+            let markerSelected = getMarker($el.data('marker-id'));
 
-            isDraggable = false;
+            markerSelected.setDraggable(false);
             $content.find('.view-mode').show();
             $content.find('.help').hide();
             $content.find('.updated-position').html('');
             $content.find('.edit-mode').hide();
 
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
+            markerSelected.togglePopup();
 
-            marker.lngLat = {
-                lng: cachedGeoJson.features[0].geometry.coordinates[0],
-                lat: cachedGeoJson.features[0].geometry.coordinates[1]
-            };
-            marker.feature = cachedGeoJson.features[0];
-            eventEmitter.emit('markerChange', {marker, position: marker.lngLat});
+            markerSelected._originalPosition = markerSelected.getLngLat().wrap();
+            eventEmitter.emit('markerChange', {marker: markerSelected, position: markerSelected.getLngLat().wrap()});
         });
 
 
         $content.on('click', '.cancel-position', (event) => {
             let $el = $(event.currentTarget);
-            let marker = getMarker($el.data('marker-id'));
-            isDraggable = false;
+            let markerSelected = getMarker($el.data('marker-id'));
+
+            markerSelected.setDraggable(false);
             $content.find('.view-mode').show();
             $content.find('.updated-position').html('');
             $content.find('.edit-mode').hide();
             $content.find('.help').hide();
 
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
+            markerSelected.togglePopup();
 
-            cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
-            map.getSource('data').setData(cachedGeoJson);
+            resetMarkerPosition($content, markerSelected);
         });
-
-        // When the cursor enters a feature in the point layer, prepare for dragging.
-        map.on('mouseenter', 'points', function () {
-            if (!isDraggable) {
-                return;
-            }
-            map.getCanvas().style.cursor = 'move';
-            isCursorOverPoint = true;
-            map.dragPan.disable();
-        });
-
-        map.on('mouseleave', 'points', function () {
-            if (!isDraggable) {
-                return;
-            }
-            map.getCanvas().style.cursor = '';
-            isCursorOverPoint = false;
-            map.dragPan.enable();
-        });
-
-        map.on('click', 'points', function (e) {
-            markerCollection[e.features[0].properties.recordIndex] = e;
-            var coordinates = e.features[0].geometry.coordinates.slice();
-
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            // Check if there is already a popup on the map and if so, remove it
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
-
-            popupDialog = new mapboxgl.Popup({closeOnClick: false}).setLngLat(coordinates)
-                .setDOMContent($content.get(0))
-                .addTo(map);
-
-            popupDialog.on('close', function (event) {
-                if (editable) {
-                    resetMarkerPosition($content);
-                }
-            });
-        });
-
-        function mouseDown() {
-            if (!isCursorOverPoint) return;
-
-            isDragging = true;
-
-            // Set a cursor indicator
-            map.getCanvas().style.cursor = 'grab';
-
-            // Mouse events
-            map.on('mousemove', onMove);
-            map.once('mouseup', onUp);
-
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
-        }
-
-        function onMove(e) {
-            if (!isDragging) return;
-            var coords = e.lngLat;
-
-            // Set a UI indicator for dragging.
-            map.getCanvas().style.cursor = 'grabbing';
-
-            // Update the Point feature in `geojson` coordinates
-            // and call setData to the source layer `point` on it.
-            cachedGeoJson.features[0].geometry.coordinates = [coords.lng, coords.lat];
-            map.getSource('data').setData(cachedGeoJson);
-        }
-
-        function onUp(e) {
-            if (!isDragging) return;
-            let position = e.lngLat;
-
-            map.getCanvas().style.cursor = '';
-            isDragging = false;
-
-            // Unbind mouse events
-            map.off('mousemove', onMove);
-            $content.find('.updated-position').html(`${position.lat}<br>${position.lng}`);
-            popupDialog = new mapboxgl.Popup({closeOnClick: false}).setLngLat(position)
-                .setDOMContent($content.get(0))
-                .addTo(map);
-
-            popupDialog.on('close', function (event) {
-                if (editable) {
-                    resetMarkerPosition($content);
-                }
-            });
-        }
-
     }
 
-    const resetMarkerPosition = ($content) => {
-        let marker = getMarker($content.find('.edit-position').data('marker-id'))
+    const resetMarkerPosition = ($content, marker) => {
         $content.find('.view-mode').show();
         $content.find('.updated-position').html('');
         $content.find('.edit-mode').hide();
@@ -215,12 +158,12 @@ const markerGLCollection = (services) => {
         isDraggable = false;
         if (marker._originalPosition !== undefined) {
             cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
-            map.getSource('data').setData(cachedGeoJson);
+            marker.setLngLat(marker._originalPosition);
         }
     }
 
     const getMarker = (markerId) => {
-        return markerCollection[markerId];
+        return markerGl[markerId];
     }
 
     return {

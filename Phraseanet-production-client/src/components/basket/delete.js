@@ -34,16 +34,29 @@ const deleteBasket = (services) => {
             case 'SSTT':
 
                 var buttons = {};
-                buttons[localeService.t('valider')] = function (e) {
+
+                buttons[localeService.t('archive')] = function (e) {
+                    _archiveBasket($el);
+                };
+
+                buttons[localeService.t('deleteTitle')] = function (e) {
                     _deleteBasket($el);
                 };
 
-                $('#DIALOG').empty().append(localeService.t('confirmDel')).attr('title', localeService.t('attention')).dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    modal: true,
-                    draggable: false
-                }).dialog('open').dialog('option', 'buttons', buttons);
+                let dialogWindow = dialog.create(services, {
+                    size: 'Medium',
+                    title: localeService.t('attention'),
+                    closeButton: true,
+                });
+
+                //Add custom class to dialog wrapper
+                dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+
+                let content = '<div class="well-small">' + localeService.t('confirmDel') + '</div>';
+                dialogWindow.setContent(content);
+
+                dialogWindow.setOption('buttons', buttons);
+
                 $('#tooltip').hide();
                 break;
             /*case 'STORY':
@@ -55,9 +68,9 @@ const deleteBasket = (services) => {
     };
 
     const _deleteBasket = (item) => {
-        if ($('#DIALOG').data('ui-dialog')) {
-            $('#DIALOG').dialog('destroy');
-        }
+        let dialogWindow = dialog.get(1);
+        dialogWindow.close();
+
         // id de chutier
         var k = $(item).attr('id').split('_').slice(1, 2).pop();
         $.ajax({
@@ -88,6 +101,44 @@ const deleteBasket = (services) => {
                     alert(data.message);
                 }
                 return;
+            }
+        });
+    };
+
+    const _archiveBasket = (item) => {
+        let dialogWindow = dialog.get(1);
+        dialogWindow.close();
+
+        let basketId = $(item).attr('id').split('_').slice(1, 2).pop();
+        $.ajax({
+            type: 'POST',
+            url: `${url}prod/baskets/${basketId}/archive/?archive=1`,
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    const basket = $('#SSTT_' + basketId);
+                    const basketNext = basket.next();
+
+                    if (basketNext.data('ui-droppable')) {
+                        basketNext.droppable('destroy');
+                    }
+
+                    basketNext.slideUp().remove();
+
+                    if (basket.data('ui-droppable')) {
+                        basket.droppable('destroy');
+                    }
+
+                    basket.slideUp().remove();
+
+                    if ($('#baskets .SSTT').length === 0) {
+                        appEvents.emit('workzone.refresh');
+                    }
+                } else {
+                    alert(data.message);
+                }
+
+                return false;
             }
         });
     };

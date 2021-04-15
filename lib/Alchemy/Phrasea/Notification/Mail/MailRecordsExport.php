@@ -18,7 +18,7 @@ class MailRecordsExport extends AbstractMailWithLink
      */
     public function getSubject()
     {
-        return $this->app->trans('Vous avez recu des documents');
+        return $this->app->trans('Vous avez recu des documents', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -34,7 +34,7 @@ class MailRecordsExport extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Download');
+        return $this->app->trans('Download', [], 'messages', $this->getLocale());
     }
 
     /**

@@ -11,27 +11,27 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
-use Alchemy\Phrasea\Collection\Reference\CollectionReference;
+use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field AS ESField;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field as ESField;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
-use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Utilities\Stopwatch;
 use Closure;
-use Doctrine\Common\Collections\ArrayCollection;
-use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Alchemy\Phrasea\Application;
 use databox_field;
+use Doctrine\Common\Collections\ArrayCollection;
 use Elasticsearch\Client;
 
 class ElasticSearchEngine implements SearchEngineInterface
@@ -61,13 +61,13 @@ class ElasticSearchEngine implements SearchEngineInterface
 
     /**
      * @param Application $app
-     * @param Structure $structure
+     * @param GlobalStructure $structure
      * @param Client $client
      * @param QueryContextFactory $context_factory
-     * @param callable $facetsResponseFactory
+     * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
      */
-    public function __construct(Application $app, Structure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -77,7 +77,14 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->options = $options;
 
         $this->indexName = $options->getIndexName();
+    }
 
+    /**
+     * @return Structure
+     */
+    public function getStructure()
+    {
+        return $this->structure;
     }
 
     public function getIndexName()
@@ -129,7 +136,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     public function getAvailableDateFields()
     {
         // TODO Use limited structure
-        return array_keys($this->structure->getDateFields());
+        return array_keys($this->getStructure()->getDateFields());
     }
 
     /**
@@ -275,9 +282,8 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function query($queryText, SearchEngineOptions $options = null)
+    public function query($queryText, SearchEngineOptions $options)
     {
-        $options = $options ?: new SearchEngineOptions();
         $context = $this->context_factory->createContext($options);
 
         /** @var QueryCompiler $query_compiler */

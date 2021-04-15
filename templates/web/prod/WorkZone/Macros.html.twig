@@ -76,11 +76,6 @@
                 <tr>
                   <td>
                     <div class="context-menu context-menu-theme-vista">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                             data-kind="basket" data-id="{{basket.getId()}}">{{ 'action::exporter' | trans }}
-                        </div>
-                      </div>
                         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                           <div title="" class="context-menu-item menu3-custom-item">
                             <div  data-kind="basket" data-id="{{basket.getId()}}"
@@ -120,7 +115,7 @@
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
-                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}{% if basket.getValidation() %}feedbacks-block{% elseif basket.getPusher() %}pushes-block{% else %}baskets-block{% endif %} ">
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}{% if basket.getValidation() %} feedbacks-block {% elseif basket.getPusher() %} pushes-block {% else %} baskets-block {% endif %} ">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
               {% if basket.getValidation() %}
@@ -174,15 +169,6 @@
                 <tr>
                   <td>
                     <div class="context-menu context-menu-theme-flat">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                             data-kind="basket" data-id="{{basket.getId()}}">
-                            <a href="#">
-                              <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
-                            <span>{{ 'action::exporter' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
                           <a href="{{ path('lightbox_compare', { 'basket' : basket.getId() }) }}" target="_blank">
@@ -279,15 +265,6 @@
                 <tr>
                   <td>
                     <div class="context-menu context-menu-theme-flat">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner export-record-action"
-                          data-kind="record" data-id="{{story.getRecord(app).get_serialize_key()}}">
-                          <a href="#">
-                            <img src="/assets/common/images/icons/export-shadow.png" style="width: 22px;" alt="{{ 'action::exporter' | trans }}">
-                            <span>{{ 'action::exporter' | trans }}</span>
-                          </a>
-                        </div>
-                      </div>
                       {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                       <div title="" class="context-menu-item menu3-custom-item">
                         <div class="context-menu-item-inner edit-record-action"
@@ -463,4 +440,47 @@
           </table>
       </span>
   {% endfor %}
+{% endmacro %}
+
+{% macro make_expose_bloc(app, WorkZone) %}
+    <div id="expose_workzone" class="expose_workzone">
+        <div id="expose_sel" class="custom_select_dark" style="display: inline-block;padding:10px;">
+            {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
+
+            <select id="expose_list" name="expose_list" class="expose_list">
+                <option value="">{{ 'prod:expose:select expose' | trans }}</option>
+                {% for key in expose_list|keys %}
+                    {% if expose_list[key].activate_expose %}
+                        <option value="{{ key }}">{{ key }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="add_expose_block" style="padding:10px;">
+            <a id="add_publication" class="add_publication" href="#" >
+                <span>{{ 'prod:expose:Add publication' | trans }}</span>
+                <img src="/assets/common/images/icons/Basket-New.png" title="{{ 'prod:expose:Add publication' | trans }}">
+            </a>
+            <button class="btn-success refresh-list" style="margin-bottom: 5px;">{{ 'prod:expose:Refresh' | trans }}</button>
+
+            <button class="btn display-tree pull-right" style="padding-bottom: 2px;padding-top: 2px;">
+                <img src="/assets/common/images/icons/tree-icon.png" title="Display hierarchical">
+            </button>
+            <button class="btn display-list pull-right" style="padding-bottom: 2px;padding-top: 2px;">
+                <img src="/assets/common/images/icons/menu-icon.png" title="Display list">
+            </button>
+        </div>
+
+        <div class="insidebloc expose_insidebloc">
+            <div id="validations-block" class="validations-block publication-list">
+            </div>
+        </div>
+    </div>
+    <div id='DIALOG-expose-edit'>
+        <div class="expose-edit-content" style="min-height: 522px;"></div>
+    </div>
+
+    {% import 'prod/WorkZone/ExposeNew.html.twig' as ExposeNew %}
+    {{ ExposeNew.add_publication(app) }}
+
 {% endmacro %}

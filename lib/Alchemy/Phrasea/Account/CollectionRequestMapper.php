@@ -31,15 +31,15 @@ class CollectionRequestMapper
         $demands = array();
 
         foreach ($databoxStatuses as $databoxId => $data) {
-            foreach ($data['registrations']['by-type']['pending'] as $collectionId => $waiting) {
+            foreach (['registrations-by-type']['pending'] as $collectionId => $waiting) {
                 $demands[] = $this->mapCollectionStatus($databoxId, $collectionId, "pending");
             }
 
-            foreach ($data['registrations']['by-type']['rejected'] as $collectionId => $waiting) {
+            foreach ($data['registrations-by-type']['rejected'] as $collectionId => $waiting) {
                 $demands[] = $this->mapCollectionStatus($databoxId, $collectionId, "rejected");
             }
 
-            foreach ($data['registrations']['by-type']['accepted'] as $collectionId => $waiting) {
+            foreach ($data['registrations-by-type']['accepted'] as $collectionId => $waiting) {
                 $demands[] = $this->mapCollectionStatus($databoxId, $collectionId, "accepted");
             }
         }

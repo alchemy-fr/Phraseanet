@@ -24,6 +24,10 @@ use Alchemy\Phrasea\Model\Manipulator\PresetManipulator;
 use Alchemy\Phrasea\Model\Repositories\PresetRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
+use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use stdClass;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -332,67 +336,37 @@ class EditController extends Controller
             return $this->app->json(['message' => '', 'error'   => false]);
         }
 
-        $elements = $records->toArray();
+        // order the worker to save values in fields
+        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), array_keys($records->toArray()))
+        );
 
-        foreach ($request->request->get('mds') as $rec) {
-            try {
-                $record = $databox->get_record($rec['record_id']);
-            } catch (\Exception $e) {
-                continue;
-            }
+        return $this->app->json(['success' => true]);
+    }
 
-            $key = $record->getId();
 
-            if (!array_key_exists($key, $elements)) {
-                continue;
-            }
+    /**
+     * performs an editing using a similar json-body as api_v3:record:patch (except here we can work on a list of records)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function applyJSAction(Request $request): JsonResponse
+    {
+        /** @var stdClass $arg */
+        $arg = json_decode($request->getContent());
+        $sbasIds = array_unique(array_column($arg->records, 'sbas_id'));
 
-            $statbits = $rec['status'];
-            $editDirty = $rec['edit'];
-
-            if ($editDirty == '0') {
-                $editDirty = false;
-            } else {
-                $editDirty = true;
-            }
-
-            if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
-                $record->set_metadatas($rec['metadatas']);
-                $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
-            }
-
-            if (isset($rec['technicalsdatas']) && is_array($rec['technicalsdatas'])){
-                $record->insertOrUpdateTechnicalDatas($rec['technicalsdatas']);
-            }
-
-            $newstat = $record->getStatus();
-            $statbits = ltrim($statbits, 'x');
-            if (!in_array($statbits, ['', 'null'])) {
-                $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
-                if ($mask_and != '') {
-                    $newstat = \databox_status::operation_and_not($newstat, $mask_and);
-                }
-
-                $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
-
-                if ($mask_or != '') {
-                    $newstat = \databox_status::operation_or($newstat, $mask_or);
-                }
-
-                $record->setStatus($newstat);
-            }
-
-            $record->write_metas();
-
-            if ($statbits != '') {
-                $this->getDataboxLogger($databox)
-                    ->log($record, \Session_Logger::EVENT_STATUS, '', '');
-            }
-            if ($editDirty) {
-                $this->getDataboxLogger($databox)
-                    ->log($record, \Session_Logger::EVENT_EDIT, '', '');
-            }
+        if (count($sbasIds) !== 1) {
+            throw new \Exception('Unable to edit on multiple databoxes');
         }
+
+        $databoxId =  reset($sbasIds);
+
+        // order the worker to save values in fields
+        $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId)
+        );
 
         return $this->app->json(['success' => true]);
     }
@@ -414,7 +388,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsLoadAction($preset_id)
     {
@@ -436,7 +410,7 @@ class EditController extends Controller
      * route GET "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsListAction(Request $request)
     {
@@ -454,7 +428,7 @@ class EditController extends Controller
      * route DELETE "../prod/records/edit/presets/{preset_id}"
      *
      * @param int $preset_id
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsDeleteAction($preset_id)
     {
@@ -476,7 +450,7 @@ class EditController extends Controller
      * route POST "../prod/records/edit/presets"
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function presetsSaveAction(Request $request)
     {

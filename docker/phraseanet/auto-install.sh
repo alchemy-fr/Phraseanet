@@ -39,7 +39,6 @@ bin/setup system:config set workers.queue.worker-queue.vhost /
 
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.host elasticsearch
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore 2
-/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.minScore 2
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit 10
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._collection.limit 10
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._doctype.limit 10
@@ -49,21 +48,6 @@ bin/setup system:config set workers.queue.worker-queue.vhost /
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.port 6379
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $PHRASEANET_SERVER_NAME
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.type redis
-
-## enable API and disable ssl on it
-/var/alchemy/Phraseanet/bin/setup system:config set registry.api-clients.api-enabled $PHRASEANET_API_ENABLED
-/var/alchemy/Phraseanet/bin/setup system:config set registry.api-clients.api-require-ssl $PHRASEANET_API_SSL
-/var/alchemy/Phraseanet/bin/setup system:config set registry.api-clients.api-auth-token-header-only $PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
-
-## Trusted proxie setting 
-
-if [[ -n $PHRASEANET_TRUSTED_PROXIES ]]; then
-        bin/setup system:config add trusted-proxies $PHRASEANET_TRUSTED_PROXIES
-fi
-
-
-## set instance title
-bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
 
 
 /var/alchemy/Phraseanet/bin/console compile:configuration

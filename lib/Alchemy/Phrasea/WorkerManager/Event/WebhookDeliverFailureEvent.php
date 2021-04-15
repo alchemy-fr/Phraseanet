@@ -11,7 +11,7 @@ class WebhookDeliverFailureEvent extends SfEvent
     private $count;
     private $deleveryId;
 
-    public function __construct($webhookEventId, $workerMessage, $count = 2, $deleveryId = null)
+    public function __construct($webhookEventId, $workerMessage, $count, $deleveryId = null)
     {
         $this->webhookEventId   = $webhookEventId;
         $this->workerMessage    = $workerMessage;

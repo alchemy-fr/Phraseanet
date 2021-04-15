@@ -9,12 +9,15 @@
  */
 namespace Alchemy\Phrasea\Controller\Root;
 
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
 class RootController extends Controller
 {
+    use EntityManagerAware;
+
     public function getRobots()
     {
         if ($this->getConf()->get(['registry', 'general', 'allow-indexation']) === true) {
@@ -35,6 +38,19 @@ class RootController extends Controller
     {
         $response = $this->app->redirectPath('root');
         $response->headers->setCookie(new Cookie('locale', $locale));
+
+        $authenticatedUser = $this->getAuthenticatedUser();
+
+        // if connected, update user locale
+        if ($authenticatedUser !== null) {
+            try {
+                $authenticatedUser->setLocale($locale);
+
+                $this->getEntityManager()->flush();
+            } catch (\Exception $e) {
+                // invalid locale
+            }
+        }
 
         return $response;
     }

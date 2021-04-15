@@ -12,6 +12,7 @@ import recordFeedbackModal from '../../record/feedback';
 import bridgeRecord from '../../record/bridge';
 import videoToolsModal from '../../record/videoEditor/index';
 import merge from 'lodash.merge';
+import * as _ from "underscore";
 
 const toolbar = (services) => {
     const {configService, localeService, appEvents} = services;
@@ -201,6 +202,20 @@ const toolbar = (services) => {
 
             _triggerModal(event, recordFeedbackModal(services).openModal);
         });
+
+        /**
+         * workzone > feedback
+         */
+        $container.on('click', '.feedback-user', function (event) {
+            event.preventDefault();
+            let $el = $(event.currentTarget);
+            let params = {};
+            params.ssel = $el.data('basket-id');
+            params.feedbackaction = 'adduser';
+
+            recordFeedbackModal(services).openModal(params);
+        });
+
         /**
          * tools > Tools
          */
@@ -277,6 +292,80 @@ const toolbar = (services) => {
                 _closeActionPanel();
             }
         });
+
+        // for facets filter under the search form
+        $container.find('#facet_filter_in_search').on('mouseenter', '.facetFilter_AND',function () {
+            $(this).find('.buttons-span').show()
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseleave', '.facetFilter_AND',function () {
+            $(this).find('.buttons-span').hide()
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseenter', '.facetFilter_EXCEPT',function () {
+            $(this).find('.buttons-span').show()
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseleave', '.facetFilter_EXCEPT',function () {
+            $(this).find('.buttons-span').hide()
+        });
+
+        $container.find('#facet_filter_in_search').on('click', '.facetFilter-closer',function (event) {
+            event.stopPropagation();
+            let $facet = $(this).parent().parent();
+            let facetField = $facet.data('facetField');
+            let facetLabel = $facet.data('facetLabel');
+            let facetNegated = $facet.data('facetNegated');
+
+            // get the selectedFacets from the facets module
+            let selectedFacets = {};
+            appEvents.emit('facets.getSelectedFacets', function(v) {
+                selectedFacets = v;
+            });
+
+            selectedFacets[facetField].values = _.reject(selectedFacets[facetField].values, function (facetValue) {
+                return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
+            });
+
+            // restore the selected facets
+            appEvents.emit('facets.setSelectedFacets', selectedFacets);
+
+            appEvents.emit('search.doRefreshState');
+            return false;
+        });
+
+        $container.find('#facet_filter_in_search').on('click', '.facetFilter-inverse',function (event) {
+            event.stopPropagation();
+            let $facet = $(this).parent().parent();
+            let facetField = $facet.data('facetField');
+            let facetLabel = $facet.data('facetLabel');
+            let facetNegated = $facet.data('facetNegated');
+
+            // get the selectedFacets from the facets module
+            let selectedFacets = {};
+            appEvents.emit('facets.getSelectedFacets', function(v) {
+                selectedFacets = v;
+            });
+
+            let found = _.find(selectedFacets[facetField].values, function (facetValue) {
+                return (facetValue.value.label == facetLabel && facetValue.negated == facetNegated);
+            });
+
+            if (found) {
+                let s_class = "facetFilter" + '_' + (found.negated ? "EXCEPT" : "AND");
+                $facet.removeClass(s_class);
+                found.negated = !found.negated;
+                s_class = "facetFilter" + '_' + (found.negated ? "EXCEPT" : "AND");
+                $facet.addClass(s_class);
+
+                // restore the selected facets
+                appEvents.emit('facets.setSelectedFacets', selectedFacets);
+
+                appEvents.emit('search.doRefreshState');
+            }
+            return false;
+        });
+
     };
 
     return {initialize};

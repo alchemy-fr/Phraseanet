@@ -2,8 +2,8 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
-use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application as PhraseaApplication;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
@@ -80,7 +80,7 @@ class AssetsIngestWorker implements WorkerInterface
                 'commit_id'  => $payload['commit_id']
             ];
 
-            $this->messagePublisher->publishMessage($createRecordMessage, MessagePublisher::CREATE_RECORD_QUEUE);
+            $this->messagePublisher->publishMessage($createRecordMessage, MessagePublisher::CREATE_RECORD_TYPE);
 
             /** @var WorkerRunningJob $workerRunningJob */
             $workerRunningJob =  $this->repoWorkerJob->findOneBy([

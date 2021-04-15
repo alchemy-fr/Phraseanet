@@ -5,6 +5,8 @@ namespace Alchemy\Phrasea\Application;
 use Alchemy\EmbedProvider\EmbedServiceProvider;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\ControllerProvider as Providers;
+use Alchemy\Phrasea\PhraseanetService\Provider\PSAdminServiceProvider;
+use Alchemy\Phrasea\PhraseanetService\Provider\PSExposeServiceProvider;
 use Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider;
 use Alchemy\Phrasea\WorkerManager\Provider\ControllerServiceProvider as WorkerManagerProvider;
 use Assert\Assertion;
@@ -30,6 +32,7 @@ class RouteLoader
         '/admin/subdefs'               => Providers\Admin\Subdefs::class,
         '/admin/task-manager'          => Providers\Admin\TaskManager::class,
         '/admin/worker-manager'        => WorkerManagerProvider::class,
+        '/admin/phraseanet-service'    => PSAdminServiceProvider::class,
         '/admin/users'                 => Providers\Admin\Users::class,
         '/client/'                     => Providers\Client\Root::class,
         '/datafiles'                   => Providers\Datafiles::class,
@@ -45,6 +48,7 @@ class RouteLoader
         '/prod/bridge/'                => Providers\Prod\Bridge::class,
         '/prod/download'               => Providers\Prod\Download::class,
         '/prod/export/'                => Providers\Prod\Export::class,
+        '/prod/expose/'                => PSExposeServiceProvider::class,
         '/prod/feeds'                  => Providers\Prod\Feed::class,
         '/prod/language'               => Providers\Prod\Language::class,
         '/prod/lazaret/'               => Providers\Prod\Lazaret::class,
@@ -61,6 +65,7 @@ class RouteLoader
         '/prod/share/'                 => Providers\Prod\Share::class,
         '/prod/story'                  => Providers\Prod\Story::class,
         '/prod/subdefs'                => Providers\Prod\Subdefs::class,
+        '/prod/thesaurus/'             => Providers\Prod\Thesaurus::class,
         '/prod/tools/'                 => Providers\Prod\Tools::class,
         '/prod/tooltip'                => Providers\Prod\Tooltip::class,
         '/prod/TOU/'                   => Providers\Prod\TOU::class,

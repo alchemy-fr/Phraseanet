@@ -1,0 +1,41 @@
+<h1>{{ 'admin::workermanager:tab:Reminder: description' |trans }}</h1>
+
+{{ form_start(form, {'action': path('worker_admin_validationReminder')}) }}
+{{ form_widget(form) }}
+<br/>
+<br/>
+<br/>
+<div class="control-group">
+    {% if(running) %}
+    <button type="submit" value="stop" class="btn btn-danger stop-validation-reminder">{{ 'Stop' | trans }}</button>
+    {% else %}
+    <button type="submit" value="start" class="btn btn-primary start-validation-reminder">{{ "Start"|trans }}</button>
+    {% endif %}
+</div>
+{{ form_end(form) }}
+
+<script type="text/javascript">
+    $("#worker-reminder").on('click', 'BUTTON[type=submit]', function(e, z) {
+        e.preventDefault();
+        var button = $(e.target);
+        var form = button.closest("FORM");
+        $("INPUT.act", form).val(button.val());     // "save", "start" or "stop"
+
+        var ok = true;
+        {% if(running) %}
+        if(button.val() === 'save') {
+            // saving will empty the queue, "stopping"
+            ok = confirm("Warning! Changing the settings will stop validation Reminder!")
+        }
+        {% endif %}
+        if(button.val() === 'stop') {
+            // saving will empty the queue, "stopping"
+            ok = confirm("Warning! You are about to stop validation Reminder!")
+        }
+
+        if(ok) {
+            form.submit();
+        }
+    });
+</script>
+

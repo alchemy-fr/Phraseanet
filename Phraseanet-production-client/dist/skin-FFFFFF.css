@@ -2058,7 +2058,7 @@ EM {
 }
 
 .PNB .ui-corner-top {
-  top: 77px;
+  top: 100px;
 }
 
 div#PREVIEWTITLEWRAPPER {
@@ -2066,7 +2066,7 @@ div#PREVIEWTITLEWRAPPER {
 }
 
 div#PREVIEWTITLEWRAPPER span {
-  line-height: 45px;
+  line-height: 25px;
 }
 
 .PNB10 {
@@ -2301,19 +2301,17 @@ span.ww_winTitle {
   font-size: 16px;
 }
 
-.black-dialog-wrap.ui-dialog.ui-widget-content.move-dialog .ui-dialog-content {
-  height: auto !important;
-}
-
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-content {
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: auto !important;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-content form {
   margin-bottom: 0;
+}
+
+.black-dialog-wrap.ui-dialog.ui-widget-content .ui-menu OPTION {
+  color: #333333;
+  background-color: white;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-titlebar {
@@ -2346,13 +2344,13 @@ span.ww_winTitle {
   min-width: 170px;
   margin: 12px 10px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-  background: #e6e6e6;
-  color: #000;
-}
-
-.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:first-child {
   background: #787878;
   color: #fff;
+}
+
+.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:last-child {
+  background: #e6e6e6;
+  color: #000;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:hover {
@@ -3812,13 +3810,132 @@ form.phrasea_query input.query {
 }
 
 .searchFormWrapper {
-  margin: 30px 0 0 5px;
+  margin: 20px 0 0 5px;
   line-height: 30px;
+}
+
+#facet_filter_in_search .facetFilter_AND {
+  font-weight: normal;
+  position: relative;
+  width: 127px;
+  height: 25px;
+  line-height: 25px;
+  vertical-align: middle;
+  border-radius: 4px;
+  background-color: #4c5d84;
+  color: #FFF;
+  padding-left: 13px;
+  padding-right: 13px;
+  display: inline-block;
+  margin: 2px 0px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+#facet_filter_in_search .facetFilter_AND .buttons-span {
+  background-color: #4c5d84;
+  max-width: 86px;
+  left: 67px;
+}
+
+#facet_filter_in_search .facetFilter_AND .buttons-span :hover {
+  display: block;
+}
+
+#facet_filter_in_search .facetFilter_AND .facetFilter-inverse {
+  background: url("/assets/common/images/icons/inverse-negative.png") 10px 2px no-repeat;
+}
+
+#facet_filter_in_search .facetFilter_AND:hover .facetFilter-label {
+  color: transparent;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT {
+  font-weight: normal;
+  position: relative;
+  width: 127px;
+  height: 25px;
+  line-height: 25px;
+  vertical-align: middle;
+  border-radius: 4px;
+  background-color: #8a3747;
+  color: #FFF;
+  padding-left: 13px;
+  padding-right: 13px;
+  display: inline-block;
+  margin: 2px 0px;
+  float: right;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT .buttons-span {
+  background-color: #8a3747;
+  max-width: 86px;
+  left: 67px;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT .facetFilter-inverse {
+  background: url("/assets/common/images/icons/inverse-positive.png") 10px 2px no-repeat;
+}
+
+#facet_filter_in_search .facetFilter_EXCEPT:hover .facetFilter-label {
+  color: transparent;
+}
+
+#facet_filter_in_search .facetFilter-label {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  line-height: 25px;
+  display: inline-block;
+  min-width: 54px;
+}
+
+#facet_filter_in_search .facetFilter-label .color-dot {
+  height: 16px;
+  width: 16px;
+}
+
+#facet_filter_in_search .facetFilter-gradient {
+  position: absolute;
+  width: 20px;
+  right: 0;
+}
+
+#facet_filter_in_search .buttons-span {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  display: none;
+}
+
+#facet_filter_in_search .facetFilter-closer {
+  position: absolute;
+  right: 4px;
+  cursor: pointer;
+  background: url("/assets/common/images/icons/bgd_facetFilter.png") 12px 4px no-repeat;
+  height: 21px;
+  width: 37px;
+  border-left: 1px solid #FFF;
+}
+
+#facet_filter_in_search .facetFilter-inverse {
+  position: absolute;
+  right: 42px;
+  cursor: pointer;
+  height: 21px;
+  width: 37px;
+  border-left: 1px solid #FFF;
 }
 
 #searchForm {
   width: 100%;
   float: left;
+  margin-bottom: 0px;
 }
 
 #searchForm .input-append {
@@ -6000,6 +6117,17 @@ form.phrasea_query input.query {
   z-index: 1;
 }
 
+/******* Classification using thesaurus ************************************/
+
+#TXCLASSIFICATION FORM {
+  padding: 0;
+  margin: 0;
+}
+
+#TXCLASSIFICATION #TXCLASSIFICATION_ADVANCED TD {
+  padding: 0 5px 0 5px;
+}
+
 .publish-dialog .ui-dialog-content {
   max-height: 575px !important;
 }
@@ -7200,24 +7328,27 @@ div.thesaurus div.c {
   position: absolute;
 }
 
+.treeview ul li {
+  /*
+            &:hover {
+                color: $textPrimaryColor;
+            }
+            span {
+                color: $mediumTextColor;
+                .dragOver {
+                    background-color: $highlightBackgroundColor;
+                    color: $highlightTextColor;
+                }
+            }
+*/
+}
+
 .treeview ul li .hitarea {
   background: url("/assets/common/images/icons/icon_tree.png") 0 0 no-repeat;
   position: relative;
   height: 9px;
   width: 9px;
   margin-top: 5px;
-}
-
-.treeview ul li:hover {
-  color: #333333;
-}
-
-.treeview ul li span {
-  color: #333333;
-}
-
-.treeview ul li span.h {
-  color: #884c92 !important;
 }
 
 #THPD_T_treeBox,
@@ -7262,6 +7393,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #THPD_tabs {
   right: 0;
+  /*
+    .treeview LI.selected SPAN {
+        background-color: $thesaurusColor !important;
+        color: $textPrimaryActiveColor !important;
+    }
+
+    .treeview LI.selected SPAN {
+        background-color: #ff0000;
+    }
+
+    .treeview LI.selected LI SPAN {
+        background-color: transparent;
+    }
+
+    .context-menu-item-disabled {
+        background-color: #ff0000;
+    }
+
+ */
 }
 
 #THPD_tabs .ui-tabs-nav li.th_tab a {
@@ -7298,6 +7448,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
   text-decoration: underline;
 }
 
+#THPD_tabs .treeview {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /*
+        i {
+            // count of hits
+            color: #80ff80;
+            background-color: #606060;
+            font-style: normal;
+            margin-left: 10px;
+            padding-left: 3px;
+            padding-right: 3px;
+            font-family: courier;
+        }
+        */
+}
+
 #THPD_tabs .treeview ul {
   background-color: #bfbfbf;
   margin-left: -16px;
@@ -7309,42 +7478,90 @@ dans l'onglet thesaurus : arbres, menus contextuels
   padding-bottom: 5px;
 }
 
-#THPD_tabs .treeview span {
+#THPD_tabs .treeview span.tx_term {
   cursor: pointer;
+  color: #333333;
+  /*
+            &.dragOver {
+                // highlited as a target for dropping
+                background-color: $highlightBackgroundColor;
+                color: $highlightTextColor;
+            }
+            */
 }
 
-#THPD_tabs .treeview span.h {
-  /* highlighted (filtered) */
-  color: #ffffd0;
+#THPD_tabs .treeview span.tx_term.h {
+  color: #884c92;
   font-weight: bold;
 }
 
-#THPD_tabs .treeview i {
-  /* count of hits */
-  color: #80ff80;
-  background-color: #606060;
-  font-style: normal;
-  margin-left: 10px;
-  padding-left: 3px;
-  padding-right: 3px;
-  font-family: courier;
+#THPD_tabs .treeview span.tx_term:hover {
+  color: #fff;
 }
 
-#THPD_tabs .treeview LI.selected SPAN {
-  background-color: #884c92 !important;
-  color: #1a1a1a !important;
+#THPD_T_tree span.tx_term {
+  /*
+        cursor: pointer;
+        color: $mediumTextColor;
+        &.h {
+            // highlighted (filtered as matching the filter input)
+            color: $thesaurusColor;
+            font-weight: bold;
+        }
+        &:hover {
+            color: $highlightTextColor;
+        }
+        */
+  /*
+        &.dragOver {
+            // highlited as a target for dropping
+            background-color: $highlightBackgroundColor;
+            color: $highlightTextColor;
+        }
+        */
 }
 
-#THPD_tabs .treeview LI.selected SPAN {
-  background-color: #ff0000;
+#THPD_T_tree.draggingOver {
+  cursor: not-allowed;
+  /*
+        &:hover {
+            // background-color: #8F0000; // debug purpose
+            cursor: not-allowed;
+        }
+        */
+  /*  debug purpose
+        span.tx_term:hover {
+            color: #ff00ff;
+        }
+        */
 }
 
-#THPD_tabs .treeview LI.selected LI SPAN {
-  background-color: transparent;
+#THPD_T_tree.draggingOver span.tx_term {
+  color: #333333;
+  cursor: not-allowed;
+  /*   debug purpose
+            &:hover {
+                color: #f9a732;
+            }
+            */
 }
 
-#THPD_tabs .context-menu-item-disabled {
-  background-color: #ff0000;
+#THPD_T_tree.draggingOver LI.draggingOver {
+  cursor: default;
+  /*
+            &:hover {
+                // background-color: #008F00; // debug purpose
+                cursor: default;
+            }
+            */
+}
+
+#THPD_T_tree.draggingOver LI.draggingOver span.tx_term {
+  cursor: copy;
+}
+
+#THPD_T_tree.draggingOver LI.draggingOver span.tx_term:hover {
+  color: #fff;
 }
 
 #idFrameC .ui-tabs #THPD_C.ui-tabs-panel,
@@ -7441,8 +7658,31 @@ dans l'onglet thesaurus : arbres, menus contextuels
   padding: 0 5px;
 }
 
+#idFrameC #baskets_wrapper {
+  top: 88px !important;
+}
+
+#idFrameC #expose_tabs #baskets {
+  top: 44px;
+}
+
+#idFrameC #expose_tabs.ui-tabs .ui-tabs-nav .expose_li {
+  height: 44px;
+}
+
+#idFrameC #expose_tabs.ui-tabs .ui-tabs-nav .expose_li a {
+  padding: 11px 10px;
+  font-size: 13px;
+  font-weight: bold;
+  min-width: 154px;
+}
+
+#idFrameC #expose_tabs.ui-tabs .ui-tabs-nav .expose_li.ui-state-active a {
+  border-bottom: 1px solid #076882;
+}
+
 #idFrameC #baskets {
-  top: 86px !important;
+  top: 86px;
   border-top: 1px solid #a6a6a6;
 }
 
@@ -7859,6 +8099,96 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .bottom .captionRolloverTips {
   padding-top: 4px;
+}
+
+#idFrameC .basketTips.expose_basket_item {
+  background: #e8e8e8;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid #e8e8e8;
+  box-sizing: border-box;
+}
+
+#idFrameC .basketTips.expose_basket_item .top_block {
+  position: relative;
+  padding-left: 40px;
+  display: inline-block;
+}
+
+#idFrameC .basketTips.expose_basket_item .top_block:before {
+  content: "\F054";
+  font-family: fontawesome;
+  font-size: 23px;
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: 0.3s all;
+}
+
+#idFrameC .basketTips.expose_basket_item .top_block.open:before {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+#idFrameC .expose_item_deployed {
+  height: 0;
+  max-height: 0;
+  transition: max-height 0.3s;
+  overflow: hidden;
+}
+
+#idFrameC .expose_item_deployed.open {
+  height: auto;
+  max-height: 100vh;
+  min-height: 130px;
+}
+
+#idFrameC .top_image {
+  width: 100px;
+  height: 60px;
+  object-fit: contain;
+}
+
+#idFrameC .expose_item_title {
+  display: flex;
+  padding: 0px 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  flex-wrap: wrap;
+  height: 40px;
+}
+
+#idFrameC .expose_item_top {
+  position: relative;
+  padding-right: 48px;
+}
+
+#idFrameC .edit_expose {
+  position: absolute;
+  right: 12px;
+  top: 5px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#idFrameC .expose_item_bottom {
+  max-height: 500px;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#idFrameC .expose_item_bottom .expose_drag_drop {
+  min-height: 120px;
+  padding: 10px;
+  display: inline-block;
+  width: 100%;
+}
+
+#idFrameC .expose_item_bottom .load_more_asset {
+  text-align: center;
 }
 
 /******* PROPOSALS ************************************************************/
@@ -8432,6 +8762,105 @@ TABLE.explain3 TR TD {
   BORDER-BOTTOM: #87ceeb 1px solid;
 }
 
+.expose-edit-wrapper {
+  padding: 12px 20px 0 10px;
+}
+
+.expose-edit-wrapper .ui-widget {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.expose-edit-wrapper .ui-widget > label {
+  width: 28%;
+}
+
+.expose-edit-wrapper .ui-widget label {
+  padding-top: 6px;
+  padding-right: 10px;
+}
+
+.expose-edit-wrapper .available-widget {
+  display: inline-flex;
+  padding-right: 10px;
+}
+
+.expose-edit-wrapper input[type=text],
+.expose-edit-wrapper select {
+  margin-bottom: 10px;
+}
+
+.expose-edit-wrapper .switch {
+  position: relative;
+  width: 60px;
+  /* Rounded sliders */
+}
+
+.expose-edit-wrapper .switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  width: 43px;
+  height: 18px;
+}
+
+.expose-edit-wrapper .switch .slider:before {
+  position: absolute;
+  content: "";
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 0;
+  bottom: 0;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.expose-edit-wrapper .switch input:checked + .slider {
+  background-color: #2196f3;
+}
+
+.expose-edit-wrapper .switch input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+.expose-edit-wrapper .switch input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.expose-edit-wrapper .switch .slider.round {
+  border-radius: 34px;
+}
+
+.expose-edit-wrapper .switch .slider.round:before {
+  border-radius: 50%;
+}
+
+.expose-edit-wrapper .switch input {
+  margin-left: 10px;
+  margin-top: -8px;
+}
+
+.expose-edit-wrapper .ui-dialog-buttonset {
+  display: inline-flex;
+}
+
+.expose-edit-wrapper button.ui-button {
+  display: inline-block;
+  text-align: center;
+}
+
 #PREVIEWBOX,
 #EDITWINDOW {
   z-index: 1200;
@@ -8451,7 +8880,6 @@ TABLE.explain3 TR TD {
 }
 
 #PREVIEWBOX #PREVIEWTITLE_COLLLOGO img {
-  width: 16px;
   height: 16px;
 }
 
@@ -8570,6 +8998,17 @@ TABLE.explain3 TR TD {
   opacity: 0.4;
 }
 
+.feedback-data-list:after {
+  width: 75%;
+  height: 1px;
+  background: #fff;
+  position: absolute;
+  content: '';
+  left: 12.5%;
+  bottom: 0;
+  opacity: 0.4;
+}
+
 #PREVIEWOTHERSINNER li.otherRegToolTip span.title {
   line-height: 25px;
   margin-left: 3px;
@@ -8588,7 +9027,7 @@ TABLE.explain3 TR TD {
 }
 
 #SPANTITLE {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 25px;
   font-weight: bold;
 }
@@ -8885,7 +9324,7 @@ input.text_input_white {
   color: #FFFFFF;
 }
 
-.dialog_container.validation .ui-dialog-buttonpane .ui-button:nth-child(2) {
+.dialog_container.validation .ui-dialog-buttonpane .ui-button:last-child {
   background-color: #8bc34a;
   color: #FFFFFF;
 }
@@ -9286,6 +9725,7 @@ input.text_input_white {
   padding: 4px 0px;
   margin-left: 20px;
   margin-bottom: -7px;
+  float: right;
 }
 
 .PushBox .FeedbackSend:hover {
@@ -9680,8 +10120,7 @@ input.text_input_white {
   top: auto;
   right: 20px;
   bottom: 10px;
-  left: 10px;
-  text-align: right;
+  left: 20px;
 }
 
 .PushBox .user_content .badges {

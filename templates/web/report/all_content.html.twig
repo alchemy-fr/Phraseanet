@@ -36,8 +36,8 @@
 
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/report/js/report{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/report/js/report{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
 
 {% endblock javascript%}
 

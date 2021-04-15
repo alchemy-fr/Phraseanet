@@ -576,18 +576,35 @@ class databox extends base implements ThumbnailedElement
         parent::delete_data_from_cache($option);
     }
 
+    /*
+     * trivial cache to speed-up get_collections() which does sql
+     */
+    private $_collection_unique_ids = null;
+    private $_collections = null;
+
+    public function clearCache($what)
+    {
+        switch($what) {
+            case self::CACHE_COLLECTIONS:
+                $this->_collection_unique_ids = $this->_collections = null;
+                break;
+        }
+    }
+
     /**
      * @return int[]
      */
     public function get_collection_unique_ids()
     {
-        $collectionsIds = [];
+        if($this->_collection_unique_ids === null) {
+            $this->_collection_unique_ids = [];
 
-        foreach ($this->get_collections() as $collection) {
-            $collectionsIds[] = $collection->get_base_id();
+            foreach ($this->get_collections() as $collection) {
+                $this->_collection_unique_ids[] = $collection->get_base_id();
+            }
         }
 
-        return $collectionsIds;
+        return $this->_collection_unique_ids;
     }
 
     /**
@@ -595,14 +612,19 @@ class databox extends base implements ThumbnailedElement
      */
     public function get_collections()
     {
-        /** @var CollectionRepositoryRegistry $repositoryRegistry */
-        $repositoryRegistry = $this->app['repo.collections-registry'];
-        $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
+        if($this->_collections === null) {
+            /** @var CollectionRepositoryRegistry $repositoryRegistry */
+            $repositoryRegistry = $this->app['repo.collections-registry'];
+            $repository = $repositoryRegistry->getRepositoryByDatabox($this->get_sbas_id());
 
-        return array_filter($repository->findAll(), function (collection $collection) {
-            return $collection->is_active();
-        });
+           $this->_collections = array_filter($repository->findAll(), function (collection $collection) {
+               return $collection->is_active();
+           });
+        }
+
+        return $this->_collections;
     }
+
 
     /**
      * @return collection|null

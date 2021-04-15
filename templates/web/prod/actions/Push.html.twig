@@ -180,6 +180,9 @@
                     {% endif %}
                 {% endif %}
             </div>
+            <span style="font-size: 21px;font-family: Roboto;margin-left: 30px;font-weight: 700; {% if context == 'Push' %}color: #2196f3;{% else %}color: #8bc34a;{% endif %}">
+                    {% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}
+            </span>
             <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
             <div id="info-box" style="display: none">
                 <p>
@@ -235,16 +238,84 @@
                     <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />
                     <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
                     <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
+                    <input name="feedbackAction" type="hidden" value="{{ feedbackAction }}" />
+                    <input name="notify" type="hidden" value="1" />
+                    {% if feedbackAction == 'adduser' %}
+                        <input id="participantsUserIds" type="hidden" value="{{ participantUserIds }}" />
+                        <input id="newParticipantsUser" type="hidden" value="" />
+                    {% endif %}
                     <textarea name="message" style="display:none;"></textarea>
                     <input type="hidden" name="duration" value=""/>
                     <input type="checkbox" value="1" name="recept" style="display:none;"/>
                     <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
-                    <div class="PNB10 badges"></div>
+                    <div class="PNB10 badges">
+                        {% if context == 'Feedback' %}
+                            {% for participant in participants | sort | reverse %}
+                                {% set userId = participant.getUser().getId() %}
+                                <div class="badge {{ 'badge_' ~ userId }} %>">
+                                    {% if initiatorUserId != userId %}
+                                        <a href="#" class="deleter">
+                                            <i class="fa fa-times-circle"></i>
+                                        </a>
+                                    {% endif %}
+                                    <input name="id" value="{{ userId }}" type="hidden" />
+                                    <table>
+                                        <tr>
+                                            <td class="icon" {% if initiatorUserId == userId %} style="background-color: #673AB7!important;" {% endif %}>
+                                                <img src="/assets/common/images/icons/user-white.png"/>
+                                            </td>
+                                            <td class="infos">
+                                                <div>
+                                                    <input type="hidden" name="participants[{{ userId }}][usr_id]" value="{{ userId }}" />
+                                                    <table>
+                                                        <tr>
+                                                            <td colspan="3">
+                                                                <span class="name">{{ participant.getUser().getDisplayName() }}</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="3">
+                                                                {% set subtitle =  [participant.getUser().getJob(), participant.getUser().getCompany()] | join(', ')  %}
+                                                                <span class="subtite">{% if subtitle != ', '%} {{ subtitle }} {% endif %}</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="toggles">
+                                                            <td class="toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }} ">
+                                                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_off"
+                                                                     src="/assets/common/images/icons/grey-pen.png"/>
+                                                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_on"
+                                                                     src="/assets/common/images/icons/dark-green-pen.png"/>
+                                                                <input type="hidden" name="participants[{{ userId }}][agree]" value="{{ participant.getCanAgree() ? '1' : '0' }}" />
+                                                            </td>
+                                                            <td class="toggle {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }} toggle_see_others" style="text-align: center;">
+                                                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_off"
+                                                                     src="/assets/common/images/icons/grey-user.png"/>
+                                                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_on"
+                                                                     src="/assets/common/images/icons/dark-green-user.png"/>
+                                                                <input type="hidden" name="participants[{{ userId }}][see_others]" value="{{ participant.getCanSeeOthers() ? '1' : '0' }}" />
+                                                            </td>
+                                                            <td class="toggle status_off toggle_HD" style="text-align: right;">
+                                                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
+                                                                     src="/assets/common/images/icons/download-grey.png"/>
+                                                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on"
+                                                                     src="/assets/common/images/icons/dark-green-download.png"/>
+                                                                <input type="hidden" name="participants[{{ userId }}][HD]" value="0" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </form>
                 <div class="PNB10 footer">
                     <form class="list_saver">
                         <div class="btn-toolbar">
-                            <input type="text" name="name" placeholder="{{ 'Save this list' | trans }}"/>
+                            <input type="text" name="list_name" placeholder="{{ 'Save this list' | trans }}"/>
                             <button class="saveList">
                                 <img src="/assets/common/images/icons/white-save.png"/>
                                 {# {% if context == 'Push' %}
@@ -258,7 +329,7 @@
                     {% if context == 'Push' %}
                         <button class="FeedbackSend">{{ "Send" | trans }}</button>
                     {% else %}
-                        <button class="FeedbackSend validation">{{ "Send" | trans }}</button>
+                        <button class="FeedbackSend validation" data-feedback-action={{ feedbackAction }} >{{ "Send" | trans }}</button>
                     {% endif %}
                 </div>
             </div>

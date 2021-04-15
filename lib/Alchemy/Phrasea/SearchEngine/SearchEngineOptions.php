@@ -14,13 +14,12 @@ namespace Alchemy\Phrasea\SearchEngine;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
-use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
-use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
 use Assert\Assertion;
+use databox_descriptionStructure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use databox_descriptionStructure;
 
 class SearchEngineOptions
 {
@@ -41,7 +40,7 @@ class SearchEngineOptions
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
 
-    /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+    /** @var CollectionReferenceRepository */
     private $collectionReferenceRepository;
 
     /** @var string */
@@ -455,6 +454,11 @@ class SearchEngineOptions
         return $this->date_fields;
     }
 
+    public function __construct(CollectionReferenceRepository $collectionReferenceRepository)
+    {
+        $this->collectionReferenceRepository = $collectionReferenceRepository;
+    }
+
     /**
      * Creates options based on a Symfony Request object
      *
@@ -469,9 +473,7 @@ class SearchEngineOptions
         $authenticator = $app->getAuthenticator();
         $isAuthenticated = $authenticator->isAuthenticated();
 
-        $options = new static();
-
-        $options->collectionReferenceRepository = $app['repo.collection-references'];
+        $options = new static($app['repo.collection-references']);
 
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
@@ -713,7 +715,7 @@ class SearchEngineOptions
             throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
         }
 
-        $options = new static();
+        $options = new static($app['repo.collection-references']);
         $options->disallowBusinessFields();
 
         $methods = self::getHydrateMethods($app);

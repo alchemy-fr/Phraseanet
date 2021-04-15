@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.userModule = exports.utilsModule = exports.commonModule = exports.dialogModule = undefined;
 
-var _common = __webpack_require__(90);
+var _common = __webpack_require__(96);
 
 var _common2 = _interopRequireDefault(_common);
 
@@ -44,11 +44,11 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _user = __webpack_require__(45);
+var _user = __webpack_require__(47);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _utils = __webpack_require__(56);
+var _utils = __webpack_require__(58);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -329,8 +329,33 @@ exports.default = Selectable;
 /* 34 */,
 /* 35 */,
 /* 36 */,
-/* 37 */,
-/* 38 */
+/* 37 */
+/***/ (function(module, exports) {
+
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+
+/***/ }),
+/* 38 */,
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*** IMPORTS FROM imports-loader ***/
@@ -720,68 +745,6 @@ exports.default = Selectable;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.generateRandStr = exports.cleanTags = exports.escapeHtml = undefined;
-
-var _phraseanetCommon = __webpack_require__(11);
-
-var AppCommons = _interopRequireWildcard(_phraseanetCommon);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-var entityMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    '\'': '&#39;',
-    '/': '&#x2F;'
-};
-var escapeHtml = function escapeHtml(string) {
-    return String(string).replace(/[&<>"'\/]/g, function (s) {
-        return entityMap[s];
-    });
-};
-// @TODO - check legacy code
-var cleanTags = function cleanTags(string) {
-    var chars2replace = [{
-        f: '&',
-        t: '&amp;'
-    }, {
-        f: '<',
-        t: '&lt;'
-    }, {
-        f: '>',
-        t: '&gt;'
-    }];
-    for (var c in chars2replace) {
-        string = string.replace(RegExp(chars2replace[c].f, 'g'), chars2replace[c].t);
-    }
-    return string;
-};
-
-var generateRandStr = function generateRandStr() {
-    var sLength = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 5;
-
-    var s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    return Array(sLength).join().split(',').map(function () {
-        return s.charAt(Math.floor(Math.random() * s.length));
-    }).join('');
-};
-
-exports.escapeHtml = escapeHtml;
-exports.cleanTags = cleanTags;
-exports.generateRandStr = generateRandStr;
-
-/***/ }),
 /* 40 */
 /***/ (function(module, exports) {
 
@@ -910,7 +873,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(153);
+var	fixUrls = __webpack_require__(186);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1223,8 +1186,70 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 42 */,
-/* 43 */
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.generateRandStr = exports.cleanTags = exports.escapeHtml = undefined;
+
+var _phraseanetCommon = __webpack_require__(11);
+
+var AppCommons = _interopRequireWildcard(_phraseanetCommon);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var entityMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    '\'': '&#39;',
+    '/': '&#x2F;'
+};
+var escapeHtml = function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function (s) {
+        return entityMap[s];
+    });
+};
+// @TODO - check legacy code
+var cleanTags = function cleanTags(string) {
+    var chars2replace = [{
+        f: '&',
+        t: '&amp;'
+    }, {
+        f: '<',
+        t: '&lt;'
+    }, {
+        f: '>',
+        t: '&gt;'
+    }];
+    for (var c in chars2replace) {
+        string = string.replace(RegExp(chars2replace[c].f, 'g'), chars2replace[c].t);
+    }
+    return string;
+};
+
+var generateRandStr = function generateRandStr() {
+    var sLength = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 5;
+
+    var s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    return Array(sLength).join().split(',').map(function () {
+        return s.charAt(Math.floor(Math.random() * s.length));
+    }).join('');
+};
+
+exports.escapeHtml = escapeHtml;
+exports.cleanTags = cleanTags;
+exports.generateRandStr = generateRandStr;
+
+/***/ }),
+/* 43 */,
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var win;
@@ -1241,10 +1266,28 @@ if (typeof window !== "undefined") {
 
 module.exports = win;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 44 */
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  API_ORIGIN: 'https://api.mapbox.com',
+  EVENT_PROGRESS_DOWNLOAD: 'downloadProgress',
+  EVENT_PROGRESS_UPLOAD: 'uploadProgress',
+  EVENT_ERROR: 'error',
+  EVENT_RESPONSE: 'response',
+  ERROR_HTTP: 'HttpError',
+  ERROR_REQUEST_ABORTED: 'RequestAbortedError'
+};
+
+
+/***/ }),
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1310,7 +1353,7 @@ var Alerts = alert;
 exports.default = Alerts;
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1326,7 +1369,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8); // @TODO enable lints
+var humane = __webpack_require__(9); // @TODO enable lints
 /* eslint-disable no-undef*/
 
 
@@ -1366,7 +1409,7 @@ function setPref(name, value) {
 exports.default = { setPref: setPref };
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1380,11 +1423,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _notifyLayout = __webpack_require__(108);
+var _notifyLayout = __webpack_require__(115);
 
 var _notifyLayout2 = _interopRequireDefault(_notifyLayout);
 
-var _notifyService = __webpack_require__(109);
+var _notifyService = __webpack_require__(116);
 
 var _notifyService2 = _interopRequireDefault(_notifyService);
 
@@ -1497,7 +1540,7 @@ var notify = function notify(services) {
 exports.default = notify;
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1515,67 +1558,67 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _toolbar = __webpack_require__(110);
+var _toolbar = __webpack_require__(117);
 
 var _toolbar2 = _interopRequireDefault(_toolbar);
 
-var _mainMenu = __webpack_require__(74);
+var _mainMenu = __webpack_require__(79);
 
 var _mainMenu2 = _interopRequireDefault(_mainMenu);
 
-var _keyboard = __webpack_require__(187);
+var _keyboard = __webpack_require__(224);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
-var _cgu = __webpack_require__(188);
+var _cgu = __webpack_require__(225);
 
 var _cgu2 = _interopRequireDefault(_cgu);
 
-var _edit = __webpack_require__(61);
+var _edit = __webpack_require__(63);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _export = __webpack_require__(68);
+var _export = __webpack_require__(73);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _share = __webpack_require__(189);
+var _share = __webpack_require__(226);
 
 var _share2 = _interopRequireDefault(_share);
 
-var _index = __webpack_require__(73);
+var _index = __webpack_require__(78);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _addToBasket = __webpack_require__(190);
+var _addToBasket = __webpack_require__(227);
 
 var _addToBasket2 = _interopRequireDefault(_addToBasket);
 
-var _removeFromBasket = __webpack_require__(191);
+var _removeFromBasket = __webpack_require__(228);
 
 var _removeFromBasket2 = _interopRequireDefault(_removeFromBasket);
 
-var _print = __webpack_require__(72);
+var _print = __webpack_require__(77);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _preferences = __webpack_require__(192);
+var _preferences = __webpack_require__(229);
 
 var _preferences2 = _interopRequireDefault(_preferences);
 
-var _order = __webpack_require__(75);
+var _order = __webpack_require__(80);
 
 var _order2 = _interopRequireDefault(_order);
 
-var _recordPreview = __webpack_require__(196);
+var _recordPreview = __webpack_require__(233);
 
 var _recordPreview2 = _interopRequireDefault(_recordPreview);
 
-var _alert = __webpack_require__(44);
+var _alert = __webpack_require__(46);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _uploader = __webpack_require__(200);
+var _uploader = __webpack_require__(237);
 
 var _uploader2 = _interopRequireDefault(_uploader);
 
@@ -2001,19 +2044,19 @@ var ui = function ui(services) {
 exports.default = ui;
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var implementation = __webpack_require__(123);
+var implementation = __webpack_require__(130);
 
 module.exports = Function.prototype.bind || implementation;
 
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2057,7 +2100,7 @@ module.exports = function isCallable(value) {
 
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2079,21 +2122,21 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _markerCollection = __webpack_require__(145);
+var _markerCollection = __webpack_require__(151);
 
 var _markerCollection2 = _interopRequireDefault(_markerCollection);
 
-var _markerGLCollection = __webpack_require__(146);
+var _markerGLCollection = __webpack_require__(152);
 
 var _markerGLCollection2 = _interopRequireDefault(_markerGLCollection);
 
-var _utils = __webpack_require__(39);
+var _utils = __webpack_require__(42);
 
-var _provider = __webpack_require__(147);
+var _provider = __webpack_require__(153);
 
 var _provider2 = _interopRequireDefault(_provider);
 
-var _fr = __webpack_require__(148);
+var _fr = __webpack_require__(154);
 
 var _fr2 = _interopRequireDefault(_fr);
 
@@ -2101,13 +2144,20 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _mapboxGlGeocoder = __webpack_require__(155);
+
+var _mapboxGlGeocoder2 = _interopRequireDefault(_mapboxGlGeocoder);
+
+__webpack_require__(184);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(149);
-__webpack_require__(154);
-__webpack_require__(156);
-__webpack_require__(158);
-__webpack_require__(162);
+__webpack_require__(187);
+__webpack_require__(191);
+__webpack_require__(193);
+__webpack_require__(195);
+__webpack_require__(199);
+
 var leafletMap = function leafletMap(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -2125,6 +2175,7 @@ var leafletMap = function leafletMap(services) {
     var map = null;
     var geocoder = null;
     var mapboxClient = null;
+    var markerGl = [];
     var $tabContent = void 0;
     var tabContainerName = 'leafletTabContainer';
     var editable = void 0;
@@ -2198,7 +2249,8 @@ var leafletMap = function leafletMap(services) {
         if (activeProvider.accessToken === undefined) {
             return;
         }
-        var selection = params.selection;
+        var selection = params.selection,
+            selectionPos = params.selectionPos;
 
 
         if (map != null) {
@@ -2239,37 +2291,16 @@ var leafletMap = function leafletMap(services) {
         }
         __webpack_require__.e/* require.ensure */(3).then((function () {
             // select geocoding provider:
-            mapbox = __webpack_require__(259);
-            leafletDraw = __webpack_require__(260);
-            __webpack_require__(261);
-            mapboxgl = __webpack_require__(66);
-            var MapboxClient = __webpack_require__(262);
-            var MapboxLanguage = __webpack_require__(263);
-            MapboxCircle = __webpack_require__(264);
-            turf = __webpack_require__(265);
+            mapbox = __webpack_require__(296);
+            leafletDraw = __webpack_require__(297);
+            __webpack_require__(298);
+            mapboxgl = __webpack_require__(68);
+            var MapboxClient = __webpack_require__(299);
+            var MapboxLanguage = __webpack_require__(300);
+            MapboxCircle = __webpack_require__(301);
+            turf = __webpack_require__(302);
 
             $container.empty().append('<div id="' + mapUID + '" class="phrasea-popup" style="width: 100%;height:100%; position: absolute;top:0;left:0"></div>');
-
-            if (editable) {
-                // init add marker context menu only if 1 record is available and has no coords
-                if (pois.length === 1) {
-                    var poiIndex = 0;
-                    var selectedPoi = pois[poiIndex];
-                    var poiCoords = haveValidCoords(selectedPoi);
-                    if (poiCoords === false) {
-                        mapOptions = (0, _lodash2.default)({
-                            contextmenu: true,
-                            contextmenuWidth: 140,
-                            contextmenuItems: [{
-                                text: localeService.t('mapMarkerAdd'),
-                                callback: function callback(e) {
-                                    addMarkerOnce(e, poiIndex, selectedPoi);
-                                }
-                            }]
-                        }, mapOptions);
-                    }
-                }
-            }
 
             if (!shouldUseMapboxGl()) {
                 L.mapbox.accessToken = activeProvider.accessToken;
@@ -2294,6 +2325,32 @@ var leafletMap = function leafletMap(services) {
                 }
                 addMarkersLayers();
                 refreshMarkers(pois);
+                addNoticeControlJS(drawable, editable);
+
+                if (editable) {
+                    map.on('contextmenu', function (eContext) {
+                        var buttonText = localeService.t("Change position");
+                        if (pois.length === 1) {
+                            var poiIndex = 0;
+                            var selectedPoi = pois[poiIndex];
+                            var poiCoords = haveValidCoords(selectedPoi);
+
+                            // if has no coords
+                            if (poiCoords === false) {
+                                buttonText = localeService.t("mapMarkerAdd");
+                            }
+                        }
+
+                        var popupDialog = L.popup({ closeOnClick: false }).setLatLng(eContext.latlng).setContent('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>').openOn(map);
+
+                        var popup = document.getElementsByClassName('leaflet-popup');
+                        (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
+                            for (var i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
+                            }
+                        });
+                    });
+                }
             } else {
                 mapboxgl.accessToken = activeProvider.accessToken;
                 if (mapboxGLDefaultPosition == null) {
@@ -2335,19 +2392,29 @@ var leafletMap = function leafletMap(services) {
                         eventEmitter.emit('updateCircleGeo', { shapes: [], drawnItems: [] });
                         eventEmitter.emit('updateSearchValue');
                         removeCircleIfExist();
-                        removeNoticeControl();
+                        removeNoticeControlGL();
                     });
 
                     (0, _jquery2.default)('.submit-geo-search-action').on('click', function (event) {
                         removeCircleIfExist();
-                        removeNoticeControl();
+                        removeNoticeControlGL();
                     });
 
                     addCircleDrawControl();
-                    addNoticeControl();
                     addCircleGeoDrawing(drawnItems);
                 } else {
                     map.addControl(new mapboxgl.NavigationControl());
+                }
+
+                addNoticeControlGL(drawable, editable);
+
+                if (searchable) {
+                    var geocoderSearch = new _mapboxGlGeocoder2.default({
+                        accessToken: mapboxgl.accessToken,
+                        mapboxgl: mapboxgl,
+                        marker: false
+                    });
+                    map.addControl(geocoderSearch, 'top-left');
                 }
 
                 map.on('style.load', function () {
@@ -2380,6 +2447,15 @@ var leafletMap = function leafletMap(services) {
                     }
 
                     if (!drawable) {
+
+                        for (var _i = 0; _i < pois.length; _i++) {
+                            // add class for the icon
+                            var el = document.createElement('div');
+                            el.className = 'mapboxGl-phrasea-marker';
+
+                            markerGl[pois[_i]._rid] = new mapboxgl.Marker(el);
+                        }
+
                         addMarkersLayersGL(geojson);
                         refreshMarkers(pois);
                     } else {
@@ -2399,6 +2475,38 @@ var leafletMap = function leafletMap(services) {
                         //map.on('moveend', calculateBounds).on('zoomend', calculateBounds);
                     }
                 });
+
+                if (editable) {
+                    map.on('contextmenu', function (eContext) {
+                        var buttonText = localeService.t("Change position");
+                        if (pois.length === 1) {
+                            var poiIndex = 0;
+                            var selectedPoi = pois[poiIndex];
+                            var poiCoords = haveValidCoords(selectedPoi);
+
+                            // if has no coords
+                            if (poiCoords === false) {
+                                buttonText = localeService.t("mapMarkerAdd");
+                            }
+                        }
+
+                        var popup = document.getElementsByClassName('mapboxgl-popup');
+                        // Check if there is already a popup on the map and if so, remove it
+                        if (popup[0]) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                        }
+
+                        var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(eContext.lngLat).setHTML('<button class="add-position btn btn-inverse btn-small btn-block">' + buttonText + '</button>').addTo(map);
+
+                        popup = document.getElementsByClassName('mapboxgl-popup');
+                        (0, _jquery2.default)(popup[0]).on('click', '.add-position', function (event) {
+                            popup[0].parentElement.removeChild(popup[0]);
+                            for (var i = 0; i < pois.length; i++) {
+                                addMarkerOnce(eContext, i, pois[i]);
+                            }
+                        });
+                    });
+                }
             }
 
             currentZoomLevel = activeProvider.markerDefaultZoom;
@@ -2463,18 +2571,36 @@ var leafletMap = function leafletMap(services) {
         }
     };
 
-    var addNoticeControl = function addNoticeControl() {
-        var controlContainerList = (0, _jquery2.default)('.mapboxgl-control-container');
-        var $noticeButton = (0, _jquery2.default)('<button id="map-notice-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
-        controlContainerList.append($noticeButton);
+    var addNoticeControlGL = function addNoticeControlGL(drawable, editable) {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .mapboxgl-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .mapboxgl-control-container');
 
-        var $noticeBox = (0, _jquery2.default)('<div id="notice-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("title notice") + '</span></span><span class="notice-desc">' + localeService.t("description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
-        controlContainerList.append($noticeBox);
+        var $noticeButton = null;
+        var $noticeBox = null;
+        if (drawable) {
+            $noticeButton = (0, _jquery2.default)('<button id="map-notice-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
 
-        $noticeButton.on('click', function (event) {
-            $noticeBox.show();
-            $noticeButton.hide();
-        });
+            $noticeBox = (0, _jquery2.default)('<div id="notice-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("title notice") + '</span></span><span class="notice-desc">' + localeService.t("description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerSearch.append($noticeButton);
+            controlContainerSearch.append($noticeBox);
+        }
+
+        if (editable) {
+            $noticeButton = (0, _jquery2.default)('<button id="map-info-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBox = (0, _jquery2.default)('<div id="notice-info-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("mapboxgl title info") + '</span></span><span class="notice-desc">' + localeService.t("mapboxgl description info") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerEdit.append($noticeButton);
+            controlContainerEdit.append($noticeBox);
+        }
+
+        if ($noticeButton != null) {
+            $noticeButton.on('click', function (event) {
+                $noticeBox.show();
+                $noticeButton.hide();
+            });
+        }
 
         (0, _jquery2.default)('.notice-close-btn').on('click', function (event) {
             $noticeBox.hide();
@@ -2482,10 +2608,64 @@ var leafletMap = function leafletMap(services) {
         });
     };
 
-    var removeNoticeControl = function removeNoticeControl() {
-        var controlContainerList = (0, _jquery2.default)('.mapboxgl-control-container');
-        if (controlContainerList.find('#notice-box').length > 0) {
+    var removeNoticeControlGL = function removeNoticeControlGL() {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .mapboxgl-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .mapboxgl-control-container');
+
+        if (controlContainerSearch.find('#notice-box').length > 0) {
             (0, _jquery2.default)('#notice-box').remove();
+        }
+        if (controlContainerEdit.find('#notice-info-box').length > 0) {
+            (0, _jquery2.default)('#notice-info-box').remove();
+        }
+    };
+
+    var addNoticeControlJS = function addNoticeControlJS(drawable) {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .leaflet-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .leaflet-control-container');
+
+        var $noticeButtonJs = null;
+        var $noticeBoxJs = null;
+        if (drawable) {
+            $noticeButtonJs = (0, _jquery2.default)('<button id="map-noticeJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBoxJs = (0, _jquery2.default)('<div id="noticeJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("mapboxjs title notice") + '</span></span><span class="notice-desc">' + localeService.t("mapboxjs description notice") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerSearch.append($noticeButtonJs);
+            controlContainerSearch.append($noticeBoxJs);
+        }
+
+        if (editable) {
+            $noticeButtonJs = (0, _jquery2.default)('<button id="map-infoJs-btn"><img src="/assets/common/images/icons/button-information-grey.png" width="34" height="34"/></button>');
+
+            $noticeBoxJs = (0, _jquery2.default)('<div id="notice-infoJs-box"><span class="notice-header"><img src="/assets/common/images/icons/information-grey.png" width="18" height="18" /><span class="notice-title">' + localeService.t("mapboxjs title info") + '</span></span><span class="notice-desc">' + localeService.t("mapboxjs description info") + '</span><span class="notice-close-btn"><img src="/assets/common/images/icons/button-close-gray.png" /></span></div>');
+
+            controlContainerEdit.append($noticeButtonJs);
+            controlContainerEdit.append($noticeBoxJs);
+        }
+
+        if ($noticeButtonJs != null) {
+            $noticeButtonJs.on('click', function (event) {
+                $noticeBoxJs.show();
+                $noticeButtonJs.hide();
+            });
+        }
+
+        (0, _jquery2.default)('.notice-close-btn').on('click', function (event) {
+            $noticeBoxJs.hide();
+            $noticeButtonJs.show();
+        });
+    };
+
+    var removeNoticeControlJS = function removeNoticeControlJS() {
+        var controlContainerSearch = (0, _jquery2.default)('.map_search_dialog .leaflet-control-container');
+        var controlContainerEdit = (0, _jquery2.default)('#EDITWINDOW .leaflet-control-container');
+
+        if (controlContainerSearch.find('#noticeJs-box').length > 0) {
+            (0, _jquery2.default)('#noticeJs-box').remove();
+        }
+        if (controlContainerEdit.find('#notice-infoJs-box').length > 0) {
+            (0, _jquery2.default)('#notice-infoJs-box').remove();
         }
     };
 
@@ -2735,7 +2915,13 @@ var leafletMap = function leafletMap(services) {
     };
     var addMarkerOnce = function addMarkerOnce(e, poiIndex, poi) {
         // inject coords into poi's fields:
-        var mappedCoords = getMappedFields(e.latlng);
+        var mappedCoords = '';
+        if (shouldUseMapboxGl()) {
+            mappedCoords = getMappedFields(e.lngLat);
+        } else {
+            mappedCoords = getMappedFields(e.latlng);
+        }
+
         var pois = [(0, _lodash2.default)(poi, mappedCoords)];
         refreshMarkers(pois).then(function () {
             // broadcast event:
@@ -2750,7 +2936,9 @@ var leafletMap = function leafletMap(services) {
             var presets = {
                 fields: wrappedMappedFields //presetFields
             };
-            map.contextmenu.disable();
+            if (!shouldUseMapboxGl()) {
+                map.contextmenu.disable();
+            }
             eventEmitter.emit('recordEditor.addPresetValuesFromDataSource', { data: presets, recordIndex: poiIndex });
         });
     };
@@ -2782,15 +2970,23 @@ var leafletMap = function leafletMap(services) {
             data: geojson
         });
 
-        map.addLayer({
-            id: 'points',
-            source: 'data',
-            type: 'symbol',
-            layout: {
-                "icon-image": "star-15",
-                "icon-size": 1.5
-            }
-        });
+        // map.loadImage(
+        //     '/assets/common/images/icons/marker_icon.png',
+        //     function (error, image) {
+        //         if (error) throw error;
+        //         map.addImage('custom-marker', image);
+        //
+        //         // Add a symbol layer
+        //         map.addLayer({
+        //             id: 'points',
+        //             source: 'data',
+        //             type: 'symbol',
+        //             layout: {
+        //                 "icon-image": 'custom-marker'
+        //             },
+        //         });
+        //     }
+        // );
     };
 
     var addMarkersLayers = function addMarkersLayers() {
@@ -2804,7 +3000,7 @@ var leafletMap = function leafletMap(services) {
                         // To draw a circle overlay with a radius in meters, use L.circle()
                         return L.circleMarker(latlng, { radius: feature.properties.radius || 10 });
                     } else {
-                        var marker = __webpack_require__(80); //L.marker(feature);
+                        var marker = __webpack_require__(85); //L.marker(feature);
                         return marker.style(feature, latlng, { accessToken: activeProvider.accessToken });
                     }
                 }
@@ -2824,8 +3020,12 @@ var leafletMap = function leafletMap(services) {
 
                     map.getSource('data').setData(geojson);
 
+                    markerGl.forEach(function (item, index) {
+                        item.remove();
+                    });
+
                     var markerGlColl = (0, _markerGLCollection2.default)(services);
-                    markerGlColl.initialize({ map: map, geojson: geojson, editable: editable });
+                    markerGlColl.initialize({ map: map, geojson: geojson, markerGl: markerGl, editable: editable });
 
                     if (geojson.features.length > 0) {
                         shouldUpdateZoom = true;
@@ -2859,7 +3059,6 @@ var leafletMap = function leafletMap(services) {
                         position.lng = featureLayer.getGeoJSON()[0].geometry.coordinates[0];
                         position.lat = featureLayer.getGeoJSON()[0].geometry.coordinates[1];
                         updateMarkerPosition(featureLayer.getGeoJSON()[0].properties.recordIndex, position);
-                        console.log('ato');
                     } else {
                         // set default position
                         shouldUpdateZoom = false;
@@ -2891,6 +3090,7 @@ var leafletMap = function leafletMap(services) {
                         coordinates: poiCoords
                     },
                     properties: {
+                        _rid: poi._rid,
                         recordIndex: poiIndex,
                         'marker-color': '0c4554',
                         'marker-zoom': currentZoomLevel,
@@ -3110,7 +3310,7 @@ var leafletMap = function leafletMap(services) {
 exports.default = leafletMap;
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3226,12 +3426,12 @@ var FieldCollection = function () {
 exports.default = FieldCollection;
 
 /***/ }),
-/* 52 */,
-/* 53 */,
 /* 54 */,
 /* 55 */,
 /* 56 */,
-/* 57 */
+/* 57 */,
+/* 58 */,
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3251,7 +3451,7 @@ var _dialog2 = _interopRequireDefault(_dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var lazyload = __webpack_require__(58);
+var lazyload = __webpack_require__(60);
 
 
 var publication = function publication(services) {
@@ -3694,7 +3894,7 @@ var publication = function publication(services) {
 exports.default = publication;
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*** IMPORTS FROM imports-loader ***/
@@ -3947,7 +4147,7 @@ exports.default = publication;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/* global window, exports, define */
@@ -4172,7 +4372,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/* global window, exports, define */
 
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4194,10 +4394,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(97);
+__webpack_require__(103);
 
-__webpack_require__(37);
-__webpack_require__(98);
+__webpack_require__(38);
+__webpack_require__(104);
 
 
 var workzoneFacets = function workzoneFacets(services) {
@@ -4663,6 +4863,7 @@ var workzoneFacets = function workzoneFacets(services) {
                                     s_facet.data('facetLabel', label);
                                     s_facet.data('facetNegated', facetValue.negated);
 
+                                    var newNodeSearch = (0, _jquery2.default)(newNode).clone();
                                     /*add selected facet tooltip*/
                                     // s_facet.attr('title', facetValue.value.value);
 
@@ -4673,6 +4874,19 @@ var workzoneFacets = function workzoneFacets(services) {
                                     });
 
                                     (0, _jquery2.default)('.fancytree-folder .dataNode', data.node.li).append(newNode);
+
+                                    //  begin generating facets filter under search form
+                                    newNodeSearch.css({ "float": "left" });
+
+                                    var labelNewNodeSearch = newNodeSearch.find('.facetFilter-label');
+                                    labelNewNodeSearch.attr('title', data.node.data.label + ' > ' + facetTitle);
+
+                                    var s_facetInSearch = newNodeSearch.find('span').first();
+                                    s_facetInSearch.data('facetField', data.node.data.field);
+                                    s_facetInSearch.data('facetLabel', label);
+                                    s_facetInSearch.data('facetNegated', facetValue.negated);
+
+                                    (0, _jquery2.default)('#facet_filter_in_search').append(newNodeSearch);
                                 });
                             }
                         } else {
@@ -4715,7 +4929,7 @@ var workzoneFacets = function workzoneFacets(services) {
 exports.default = workzoneFacets;
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4729,7 +4943,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(112);
+var _index = __webpack_require__(119);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -4895,16 +5109,16 @@ var editRecord = function editRecord(services) {
 exports.default = editRecord;
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js__ = __webpack_require__(118);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js__ = __webpack_require__(125);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_video_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__ = __webpack_require__(148);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_global_window__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_global_window__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_global_window___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_global_window__);
 
 
@@ -6354,13 +6568,13 @@ Flash.VERSION = version$1;
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var keys = __webpack_require__(124);
+var keys = __webpack_require__(131);
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
 
 var toStr = Object.prototype.toString;
@@ -6419,14 +6633,14 @@ module.exports = defineProperties;
 
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bind = __webpack_require__(48);
-var ES = __webpack_require__(126);
+var bind = __webpack_require__(50);
+var ES = __webpack_require__(133);
 var replace = bind.call(Function.call, String.prototype.replace);
 
 var leftWhitespace = /^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/;
@@ -6439,13 +6653,13 @@ module.exports = function trim() {
 
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var implementation = __webpack_require__(64);
+var implementation = __webpack_require__(66);
 
 var zeroWidthSpace = '\u200b';
 
@@ -6458,7 +6672,7 @@ module.exports = function getPolyfill() {
 
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.11.0/LICENSE.txt */
@@ -6506,7 +6720,142 @@ return mapboxgl;
 
 
 /***/ }),
-/* 67 */
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var browser = __webpack_require__(163);
+var MapiClient = __webpack_require__(70);
+
+function BrowserClient(options) {
+  MapiClient.call(this, options);
+}
+BrowserClient.prototype = Object.create(MapiClient.prototype);
+BrowserClient.prototype.constructor = BrowserClient;
+
+BrowserClient.prototype.sendRequest = browser.browserSend;
+BrowserClient.prototype.abortRequest = browser.browserAbort;
+
+/**
+ * Create a client for the browser.
+ *
+ * @param {Object} options
+ * @param {string} options.accessToken
+ * @param {string} [options.origin]
+ * @returns {MapiClient}
+ */
+function createBrowserClient(options) {
+  return new BrowserClient(options);
+}
+
+module.exports = createBrowserClient;
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var parseToken = __webpack_require__(71);
+var MapiRequest = __webpack_require__(169);
+var constants = __webpack_require__(45);
+
+/**
+ * A low-level Mapbox API client. Use it to create service clients
+ * that share the same configuration.
+ *
+ * Services and `MapiRequest`s use the underlying `MapiClient` to
+ * determine how to create, send, and abort requests in a way
+ * that is appropriate to the configuration and environment
+ * (Node or the browser).
+ *
+ * @class MapiClient
+ * @property {string} accessToken - The Mapbox access token assigned
+ *   to this client.
+ * @property {string} [origin] - The origin
+ *   to use for API requests. Defaults to https://api.mapbox.com.
+ */
+
+function MapiClient(options) {
+  if (!options || !options.accessToken) {
+    throw new Error('Cannot create a client without an access token');
+  }
+  // Try parsing the access token to determine right away if it's valid.
+  parseToken(options.accessToken);
+
+  this.accessToken = options.accessToken;
+  this.origin = options.origin || constants.API_ORIGIN;
+}
+
+MapiClient.prototype.createRequest = function createRequest(requestOptions) {
+  return new MapiRequest(this, requestOptions);
+};
+
+module.exports = MapiClient;
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var base64 = __webpack_require__(168);
+
+var tokenCache = {};
+
+function parseToken(token) {
+  if (tokenCache[token]) {
+    return tokenCache[token];
+  }
+
+  var parts = token.split('.');
+  var usage = parts[0];
+  var rawPayload = parts[1];
+  if (!rawPayload) {
+    throw new Error('Invalid token');
+  }
+
+  var parsedPayload = parsePaylod(rawPayload);
+
+  var result = {
+    usage: usage,
+    user: parsedPayload.u
+  };
+  if (has(parsedPayload, 'a')) result.authorization = parsedPayload.a;
+  if (has(parsedPayload, 'exp')) result.expires = parsedPayload.exp * 1000;
+  if (has(parsedPayload, 'iat')) result.created = parsedPayload.iat * 1000;
+  if (has(parsedPayload, 'scopes')) result.scopes = parsedPayload.scopes;
+  if (has(parsedPayload, 'client')) result.client = parsedPayload.client;
+  if (has(parsedPayload, 'll')) result.lastLogin = parsedPayload.ll;
+  if (has(parsedPayload, 'iu')) result.impersonator = parsedPayload.iu;
+
+  tokenCache[token] = result;
+  return result;
+}
+
+function parsePaylod(rawPayload) {
+  try {
+    return JSON.parse(base64.decode(rawPayload));
+  } catch (parseError) {
+    throw new Error('Invalid token');
+  }
+}
+
+function has(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+module.exports = parseToken;
+
+
+/***/ }),
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = function escape(url) {
@@ -6528,7 +6877,7 @@ module.exports = function escape(url) {
 
 
 /***/ }),
-/* 68 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6548,7 +6897,7 @@ var _dialog2 = _interopRequireDefault(_dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var exportRecord = function exportRecord(services) {
     var configService = services.configService,
@@ -6946,7 +7295,7 @@ var exportRecord = function exportRecord(services) {
 exports.default = exportRecord;
 
 /***/ }),
-/* 69 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6960,11 +7309,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _feedback = __webpack_require__(171);
+var _feedback = __webpack_require__(208);
 
 var _feedback2 = _interopRequireDefault(_feedback);
 
-var _listManager = __webpack_require__(172);
+var _listManager = __webpack_require__(209);
 
 var _listManager2 = _interopRequireDefault(_listManager);
 
@@ -7074,7 +7423,7 @@ var pushRecord = function pushRecord(services) {
 exports.default = pushRecord;
 
 /***/ }),
-/* 70 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7091,7 +7440,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var Lists = function Lists() {};
 
@@ -7289,7 +7638,7 @@ exports.Lists = Lists;
 exports.List = List;
 
 /***/ }),
-/* 71 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7322,7 +7671,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * triggered via workzone > Basket > context menu
  */
-__webpack_require__(38);
+__webpack_require__(39);
 
 var pushAddUser = function pushAddUser(services) {
     var configService = services.configService,
@@ -7463,7 +7812,7 @@ var pushAddUser = function pushAddUser(services) {
 exports.default = pushAddUser;
 
 /***/ }),
-/* 72 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7554,7 +7903,7 @@ var printRecord = function printRecord(services) {
 exports.default = printRecord;
 
 /***/ }),
-/* 73 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7572,15 +7921,15 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _videoScreenCapture = __webpack_require__(181);
+var _videoScreenCapture = __webpack_require__(218);
 
 var _videoScreenCapture2 = _interopRequireDefault(_videoScreenCapture);
 
-var _videoRangeCapture = __webpack_require__(184);
+var _videoRangeCapture = __webpack_require__(221);
 
 var _videoRangeCapture2 = _interopRequireDefault(_videoRangeCapture);
 
-var _videoSubtitleCapture = __webpack_require__(185);
+var _videoSubtitleCapture = __webpack_require__(222);
 
 var _videoSubtitleCapture2 = _interopRequireDefault(_videoSubtitleCapture);
 
@@ -7592,10 +7941,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(186);
+__webpack_require__(223);
 
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
     var activeTab = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -7683,8 +8032,8 @@ var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
 exports.default = recordVideoEditorModal;
 
 /***/ }),
-/* 74 */,
-/* 75 */
+/* 79 */,
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7698,7 +8047,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _orderItem = __webpack_require__(195);
+var _orderItem = __webpack_require__(232);
 
 var _orderItem2 = _interopRequireDefault(_orderItem);
 
@@ -7943,7 +8292,7 @@ var order = function order(services) {
 exports.default = order;
 
 /***/ }),
-/* 76 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8052,7 +8401,7 @@ var resultInfos = function resultInfos(services) {
 exports.default = resultInfos;
 
 /***/ }),
-/* 77 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8104,10 +8453,10 @@ module.exports = {
 
 
 /***/ }),
-/* 78 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var html_sanitize = __webpack_require__(164);
+var html_sanitize = __webpack_require__(201);
 
 module.exports = function(_) {
     if (!_) return '';
@@ -8128,14 +8477,14 @@ function cleanId(id) { return id; }
 
 
 /***/ }),
-/* 79 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var config = __webpack_require__(81),
-    version = __webpack_require__(82).version;
+var config = __webpack_require__(86),
+    version = __webpack_require__(87).version;
 
 module.exports = function(path, accessToken) {
     accessToken = accessToken || L.mapbox.accessToken;
@@ -8195,15 +8544,15 @@ module.exports.style = function(styleURL, accessToken) {
 
 
 /***/ }),
-/* 80 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var format_url = __webpack_require__(79),
-    util = __webpack_require__(77),
-    sanitize = __webpack_require__(78);
+var format_url = __webpack_require__(84),
+    util = __webpack_require__(82),
+    sanitize = __webpack_require__(83);
 
 // mapbox-related markers functionality
 // provide an icon from mapbox's simple-style spec and hosted markers
@@ -8267,7 +8616,7 @@ module.exports = {
 
 
 /***/ }),
-/* 81 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8282,18 +8631,18 @@ module.exports = {
 
 
 /***/ }),
-/* 82 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
-/* 83 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
-var minDoc = __webpack_require__(119);
+var minDoc = __webpack_require__(126);
 
 var doccy;
 
@@ -8309,10 +8658,10 @@ if (typeof document !== 'undefined') {
 
 module.exports = doccy;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 84 */
+/* 89 */
 /***/ (function(module, exports) {
 
 function clean (s) {
@@ -8331,7 +8680,7 @@ module.exports = function tsml (sa) {
 }
 
 /***/ }),
-/* 85 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports = SafeParseTuple
@@ -8351,15 +8700,15 @@ function SafeParseTuple(obj, reviver) {
 
 
 /***/ }),
-/* 86 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var window = __webpack_require__(43)
-var isFunction = __webpack_require__(120)
-var parseHeaders = __webpack_require__(121)
-var xtend = __webpack_require__(137)
+var window = __webpack_require__(44)
+var isFunction = __webpack_require__(127)
+var parseHeaders = __webpack_require__(128)
+var xtend = __webpack_require__(37)
 
 module.exports = createXHR
 createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
@@ -8599,9 +8948,317 @@ function noop() {}
 
 
 /***/ }),
-/* 87 */,
-/* 88 */,
-/* 89 */
+/* 92 */,
+/* 93 */
+/***/ (function(module, exports) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        // At least give some kind of context to the user
+        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+        err.context = er;
+        throw err;
+      }
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    args = Array.prototype.slice.call(arguments, 1);
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else if (listeners) {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.prototype.listenerCount = function(type) {
+  if (this._events) {
+    var evlistener = this._events[type];
+
+    if (isFunction(evlistener))
+      return 1;
+    else if (evlistener)
+      return evlistener.length;
+  }
+  return 0;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  return emitter.listenerCount(type);
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
+
+/***/ }),
+/* 94 */,
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8611,11 +9268,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _utils = __webpack_require__(39);
+var _utils = __webpack_require__(42);
 
 var utils = _interopRequireWildcard(_utils);
 
-var _bootstrap = __webpack_require__(92);
+var _bootstrap = __webpack_require__(98);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -8623,14 +9280,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(209);
+__webpack_require__(246);
 
-__webpack_require__(210);
-__webpack_require__(211);
-__webpack_require__(212);
-__webpack_require__(213);
-__webpack_require__(214);
-__webpack_require__(215);
+__webpack_require__(247);
+__webpack_require__(248);
+__webpack_require__(249);
+__webpack_require__(250);
+__webpack_require__(251);
+__webpack_require__(252);
 
 _jquery2.default.widget.bridge('uitooltip', _jquery2.default.fn.tooltip);
 //window.btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
@@ -8647,7 +9304,7 @@ if (typeof window !== 'undefined') {
 module.exports = ProductionApplication;
 
 /***/ }),
-/* 90 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8704,7 +9361,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* eslint-disable semi*/
 /* eslint-disable no-loop-func*/
 
-var cookie = __webpack_require__(91);
+var cookie = __webpack_require__(97);
 
 var initialize = function initialize() {
     // $(document).ready(function () {
@@ -8799,7 +9456,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 91 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -8972,7 +9629,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 92 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8992,15 +9649,15 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var AppCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _publication = __webpack_require__(57);
+var _publication = __webpack_require__(59);
 
 var _publication2 = _interopRequireDefault(_publication);
 
-var _workzone = __webpack_require__(93);
+var _workzone = __webpack_require__(99);
 
 var _workzone2 = _interopRequireDefault(_workzone);
 
-var _index = __webpack_require__(46);
+var _index = __webpack_require__(48);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -9008,7 +9665,7 @@ var _locale = __webpack_require__(20);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _ui = __webpack_require__(47);
+var _ui = __webpack_require__(49);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -9020,7 +9677,7 @@ var _i18next = __webpack_require__(21);
 
 var _i18next2 = _interopRequireDefault(_i18next);
 
-var _config = __webpack_require__(201);
+var _config = __webpack_require__(238);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -9028,19 +9685,19 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _user = __webpack_require__(202);
+var _user = __webpack_require__(239);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _basket = __webpack_require__(203);
+var _basket = __webpack_require__(240);
 
 var _basket2 = _interopRequireDefault(_basket);
 
-var _search = __webpack_require__(204);
+var _search = __webpack_require__(241);
 
 var _search2 = _interopRequireDefault(_search);
 
-var _utils = __webpack_require__(39);
+var _utils = __webpack_require__(42);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -9058,8 +9715,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var humane = __webpack_require__(8);
-__webpack_require__(208);
+var humane = __webpack_require__(9);
+__webpack_require__(245);
 
 var Bootstrap = function () {
     function Bootstrap(userConfig) {
@@ -9336,7 +9993,7 @@ var bootstrap = function bootstrap(userConfig) {
 exports.default = bootstrap;
 
 /***/ }),
-/* 93 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9354,15 +10011,15 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(94);
+var _index = __webpack_require__(100);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(60);
+var _index3 = __webpack_require__(62);
 
 var _index4 = _interopRequireDefault(_index3);
 
-var _index5 = __webpack_require__(99);
+var _index5 = __webpack_require__(105);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -9370,15 +10027,23 @@ var _selectable = __webpack_require__(23);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _alert = __webpack_require__(44);
+var _alert = __webpack_require__(46);
 
 var _alert2 = _interopRequireDefault(_alert);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _reminder = __webpack_require__(114);
+
+var _reminder2 = _interopRequireDefault(_reminder);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 __webpack_require__(14);
 __webpack_require__(19);
 
@@ -9397,9 +10062,26 @@ var workzone = function workzone(services) {
     var nextBasketScroll = false;
     var warnOnRemove = true;
     var $container = void 0;
+    var dragBloc = (0, _jquery2.default)('#basket-tab').val();
+
+    function checkActiveBloc(destBloc) {
+
+        if (document.getElementById('expose_tab') && document.getElementById('expose_tab').getAttribute('aria-expanded') == 'true') {
+            (0, _jquery2.default)('#basket-tab').val('#expose_tab');
+        }
+        if (document.getElementById('baskets') && document.getElementById('baskets').getAttribute('aria-expanded') == 'true') {
+            (0, _jquery2.default)('#basket-tab').val('#baskets');
+        }
+
+        var destBloc = (0, _jquery2.default)('#basket-tab').val();
+        console.log(destBloc);
+        return destBloc;
+    }
+    checkActiveBloc(dragBloc);
 
     var initialize = function initialize() {
         $container = (0, _jquery2.default)('#idFrameC');
+        checkActiveBloc(dragBloc);
 
         $container.resizable({
             handles: 'e',
@@ -9439,13 +10121,49 @@ var workzone = function workzone(services) {
             }
         });
 
+        $container.on('click', '.feedback-reminder', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            (0, _reminder2.default)(services).openModal($el.data('basket-id'));
+        });
+
+        (0, _jquery2.default)('#idFrameC .expose_li').on('click', function (event) {
+            checkActiveBloc(dragBloc);
+        });
+
+        (0, _jquery2.default)('.add_publication').on('click', function (event) {
+            openExposePublicationAdd((0, _jquery2.default)('#expose_list').val());
+        });
+
+        (0, _jquery2.default)('.refresh-list').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        (0, _jquery2.default)('.display-list').on('click', function (event) {
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        (0, _jquery2.default)('#expose_list').on('change', function () {
+            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(this.value);
+        });
+
+        (0, _jquery2.default)('.publication-list').on('click', '.top-block', function (event) {
+            (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+            (0, _jquery2.default)(this).toggleClass('open');
+        });
+
         (0, _jquery2.default)('#idFrameC .ui-tabs-nav li').on('click', function (event) {
             if ($container.attr('data-status') === 'closed') {
                 (0, _jquery2.default)('#retractableButton').find('i').removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
                 $container.width(360);
                 (0, _jquery2.default)('#rightFrame').css('left', 360);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 360);
-                (0, _jquery2.default)('#baskets, #proposals, #thesaurus_tab').hide();
+                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab').hide();
                 (0, _jquery2.default)('.ui-resizable-handle, #basket_menu_trigger').show();
                 var IDname = (0, _jquery2.default)(this).attr('aria-controls');
                 (0, _jquery2.default)('#' + IDname).show();
@@ -9466,7 +10184,7 @@ var workzone = function workzone(services) {
                 (0, _jquery2.default)('#rightFrame').css('left', 80);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 80);
                 $container.attr('data-status', 'closed');
-                (0, _jquery2.default)('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
+                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
                 (0, _jquery2.default)('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
                 (0, _jquery2.default)('.WZbasketTab').css('background-position', '15px 16px');
                 $container.addClass('closed');
@@ -9511,14 +10229,21 @@ var workzone = function workzone(services) {
             extraClass: 'tooltip_flat'
         });
 
-        (0, _jquery2.default)('#idFrameC .tabs').tabs({
+        (0, _jquery2.default)('#idFrameC .tabs').data('hash', null) // unknowk for now
+        .tabs({
+            create: function activate(event, ui) {
+                (0, _jquery2.default)(this).data('hash', ui.tab.context.hash);
+            },
             activate: function activate(event, ui) {
+                (0, _jquery2.default)(this).data('hash', ui.newTab.context.hash);
                 if (ui.newTab.context.hash === '#thesaurus_tab') {
                     appEvents.emit('thesaurus.show');
                 }
                 workzoneOptions.open();
+                console.log("tab is " + (0, _jquery2.default)('#idFrameC .tabs').data("hash"));
             }
         });
+
         (0, _jquery2.default)('.basket_refresher').on('click', function () {
             return workzoneOptions.refresh('current');
         });
@@ -9536,15 +10261,15 @@ var workzone = function workzone(services) {
             selection: new _selectable2.default(services, (0, _jquery2.default)('#baskets'), { selector: '.CHIM' }),
             refresh: refreshBaskets,
             addElementToBasket: function addElementToBasket(options) {
-                var sbas_id = options.sbas_id,
-                    record_id = options.record_id,
+                var dbId = options.dbId,
+                    recordId = options.recordId,
                     event = options.event,
                     singleSelection = options.singleSelection;
 
                 singleSelection = !!singleSelection || false;
 
                 if ((0, _jquery2.default)('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, (0, _jquery2.default)('#IMGT_' + sbas_id + '_' + record_id), (0, _jquery2.default)('#baskets .SSTT.active'), singleSelection);
+                    return dropOnBask(event, (0, _jquery2.default)('#IMGT_' + dbId + '_' + recordId), (0, _jquery2.default)('#baskets .SSTT.active'), singleSelection);
                 } else {
                     humane.info(localeService.t('noActiveBasket'));
                 }
@@ -9595,6 +10320,7 @@ var workzone = function workzone(services) {
             }
         };
         filterBaskets();
+        (0, _jquery2.default)('#expose_tabs').tabs();
     };
 
     var getResultSelectionStream = function getResultSelectionStream() {
@@ -9702,34 +10428,37 @@ var workzone = function workzone(services) {
     });
 
     function WorkZoneElementRemover(el, confirm) {
-        var context = el.data('context');
+        var context = (0, _jquery2.default)(el).data('context');
 
-        if (confirm !== true && (0, _jquery2.default)(el).hasClass('groupings') && warnOnRemove) {
+        if (confirm !== true && ((0, _jquery2.default)(el).hasClass('groupings') || (0, _jquery2.default)(el).hasClass('record-remove-from-basket-action') || (0, _jquery2.default)(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
-                (0, _jquery2.default)('#DIALOG-baskets').dialog('close').remove();
+                _dialog2.default.get(1).close();
                 WorkZoneElementRemover(el, true);
             };
 
-            buttons[localeService.t('annuler')] = function () {
-                (0, _jquery2.default)('#DIALOG-baskets').dialog('close').remove();
-            };
+            var texte = '';
+            var title = '';
+            if ((0, _jquery2.default)(el).hasClass('groupings')) {
+                texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
+                title = localeService.t('removeTitle');
+            } else {
+                texte = '<p>' + localeService.t('confirmRemoveFeedBack') + '</p>';
+                title = localeService.t('removeRecordFeedbackTitle');
+            }
 
-            var texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
-            (0, _jquery2.default)('body').append('<div id="DIALOG-baskets"></div>');
-            (0, _jquery2.default)('#DIALOG-baskets').attr('title', localeService.t('removeTitle')).empty().append(texte).dialog({
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: false,
-                draggable: false,
-                modal: true,
-                buttons: buttons,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                }
-            }).dialog('open');
+            var dialogWindow = _dialog2.default.create(services, {
+                size: 'Medium',
+                title: title,
+                closeButton: true
+            });
+
+            //Add custom class to dialog wrapper
+            dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+            dialogWindow.setContent(texte);
+
+            dialogWindow.setOption('buttons', buttons);
             return false;
         } else {
 
@@ -9824,7 +10553,9 @@ var workzone = function workzone(services) {
 
                 uiactive.addClass('ui-state-focus active');
 
+                // reset selection when opening a basket type
                 workzoneOptions.selection.empty();
+                appEvents.emit('broadcast.workzoneResultSelection', { asArray: [], serialized: "" });
 
                 getContent(uiactive);
             },
@@ -9836,6 +10567,12 @@ var workzone = function workzone(services) {
 
         (0, _jquery2.default)('.bloc', cache).droppable({
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('grouping') && !(0, _jquery2.default)(elem).hasClass('SSTT')) {
                     return true;
                 }
@@ -9859,6 +10596,12 @@ var workzone = function workzone(services) {
             hoverClass: 'baskDrop',
             tolerance: 'pointer',
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                     if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
                         return false;
@@ -9894,6 +10637,219 @@ var workzone = function workzone(services) {
                 hideTransition: 'hide',
                 shadow: false
             });
+        });
+    }
+
+    function activeExpose() {
+        var idFrameC = (0, _jquery2.default)('#idFrameC');
+
+        // drop on publication
+        idFrameC.find('.publication-droppable').droppable({
+            scope: 'objects',
+            hoverClass: 'baskDrop',
+            tolerance: 'pointer',
+            accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
+                if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
+                    if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
+                        return false;
+                    }
+                }
+                if ((0, _jquery2.default)(elem).hasClass('grouping') || (0, _jquery2.default)(elem).parent()[0] === (0, _jquery2.default)(this)[0]) {
+                    return false;
+                }
+                return true;
+            },
+            drop: function drop(event, ui) {
+                dropOnBask(event, ui.draggable, (0, _jquery2.default)(this));
+            }
+        });
+
+        // delete an asset from publication
+        idFrameC.find('.publication-droppable').on('click', '.removeAsset', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
+
+            var buttons = {};
+
+            var $dialog = _dialog2.default.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
+            });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/delete-asset/' + publicationId + '/' + assetId + '/?exposeName=' + exposeName,
+                    beforeSend: function beforeSend() {
+                        assetsContainer.addClass('loading');
+                    },
+                    success: function success(data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            var texte = '<p>' + localeService.t('removeAssetPublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
+        });
+
+        idFrameC.find('.publication-droppable').on('click', '.edit_expose', function (event) {
+            openExposePublicationEdit((0, _jquery2.default)(this));
+        });
+
+        // delete a publication
+        idFrameC.find('.publication-droppable').on('click', '.delete-publication', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var buttons = {};
+
+            var $dialog = _dialog2.default.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
+            });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/delete-publication/' + publicationId + '/?exposeName=' + exposeName,
+                    success: function success(data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            updatePublicationList(exposeName);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            var texte = '<p>' + localeService.t('removeExposePublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
+        });
+
+        // refresh publication content
+        idFrameC.find('.publication-droppable').on('click', '.refresh-publication', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
+
+            assetsContainer.empty().addClass('loading');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+        });
+
+        // set publication cover
+        idFrameC.find('.publication-droppable').on('click', '.set-cover', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var assetId = (0, _jquery2.default)(this).attr('data-asset-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var publicationData = JSON.stringify({ "cover": '/assets/' + assetId }, undefined, 4);
+
+            _jquery2.default.ajax({
+                type: "PUT",
+                url: '/prod/expose/update-publication/' + publicationId,
+                dataType: 'json',
+                data: {
+                    exposeName: '' + exposeName,
+                    publicationData: publicationData
+                },
+                success: function success(data) {
+                    if (data.success) {
+                        updatePublicationList(exposeName);
+                    } else {
+                        console.log(data.message);
+                    }
+                }
+            });
+        });
+
+        // load more asset and append it at the end
+        idFrameC.find('.publication-droppable').on('click', '.load_more_asset', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_bottom').find('.expose_drag_drop');
+            var page = assetsContainer.find('#list_assets_page').val();
+
+            (0, _jquery2.default)(this).find('.loading_more').removeClass('hidden');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+        });
+    }
+
+    function updatePublicationList(exposeName) {
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('.publication-list').empty().html(data);
+
+                (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
+                    (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                    (0, _jquery2.default)(this).toggleClass('open');
+
+                    if ((0, _jquery2.default)(this).hasClass('open')) {
+                        var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+                        var _exposeName = (0, _jquery2.default)('#expose_list').val();
+                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
+
+                        assetsContainer.addClass('loading');
+                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
+                    }
+                });
+
+                activeExpose();
+            }
+        });
+    }
+
+    function getPublicationAssetsList(publicationId, exposeName, assetsContainer) {
+        var page = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: '/prod/expose/get-publication/' + publicationId + '/assets?exposeName=' + exposeName + '&page=' + page,
+            success: function success(data) {
+                if (typeof data.success === 'undefined') {
+                    if (page === 1) {
+                        assetsContainer.removeClass('loading');
+                        assetsContainer.empty().html(data);
+                    } else {
+                        assetsContainer.append(data);
+                        assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
+                        assetsContainer.find('#list_assets_page').val(page);
+                    }
+                } else {
+                    console.log(data);
+                }
+            }
         });
     }
 
@@ -9946,6 +10902,12 @@ var workzone = function workzone(services) {
 
                 dest.droppable({
                     accept: function accept(elem) {
+                        // return false;
+                        var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                        if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                            return false; // can't drop on baskets if the baskets tab is not front
+                        }
+
                         if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                             if ((0, _jquery2.default)(elem).closest('.content')[0] === (0, _jquery2.default)(this)[0]) {
                                 return false;
@@ -9982,6 +10944,10 @@ var workzone = function workzone(services) {
                         left: -20
                     },
                     start: function start(event, ui) {
+                        if (!(0, _jquery2.default)(this).hasClass('selected')) {
+                            return false;
+                        }
+
                         var baskets = (0, _jquery2.default)('#baskets');
                         baskets.append('<div class="top-scroller"></div>' + '<div class="bottom-scroller"></div>');
                         (0, _jquery2.default)('.bottom-scroller', baskets).bind('mousemove', function () {
@@ -9996,9 +10962,9 @@ var workzone = function workzone(services) {
                     },
                     drag: function drag(event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || (0, _jquery2.default)(this).closest('.content').hasClass('grouping')) {
-                            (0, _jquery2.default)('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
+                            (0, _jquery2.default)('#dragDropCursor div').empty().append(workzoneOptions.selection.length() + ', ' + localeService.t('movedRecord'));
                         } else {
-                            (0, _jquery2.default)('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                            (0, _jquery2.default)('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
                     }
                 });
@@ -10009,7 +10975,87 @@ var workzone = function workzone(services) {
         });
     }
 
+    function openExposePublicationAdd(exposeName) {
+        (0, _jquery2.default)('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 575,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {}
+        }).dialog('open');
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-expose-add').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/list-publication/?format=json&exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                var i = 0;
+                for (; i < data.publications.length; i++) {
+                    (0, _jquery2.default)('#DIALOG-expose-add select#publication_parent').append('<option value=' + data.publications[i].id + ' >' + data.publications[i].title + '</option>');
+                }
+            }
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/list-profile?exposeName=' + exposeName,
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
+                var i = 0;
+                for (; i < data.profiles.length; i++) {
+                    (0, _jquery2.default)('select#profile-field').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+                }
+            }
+        });
+    }
+
+    function openExposePublicationEdit(edit) {
+        (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        (0, _jquery2.default)('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 575,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {
+                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty();
+            }
+        }).dialog('open');
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+            success: function success(data) {
+                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
+            }
+        });
+    }
+
     function dropOnBask(event, from, destKey, singleSelection) {
+        checkActiveBloc(dragBloc);
+
         var action = '';
         var dest_uri = '';
         var lstbr = [];
@@ -10060,7 +11106,7 @@ var workzone = function workzone(services) {
 
         switch (action) {
             case 'CHU2CHU':
-                if (!appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
+                if (appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
                 break;
             case 'IMGT2REG':
             case 'CHU2REG':
@@ -10109,31 +11155,63 @@ var workzone = function workzone(services) {
                 return false;
         }
 
-        if (window.console) {
-            window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
-        }
+        //save basket after drop elt
+        if ((0, _jquery2.default)('#basket-tab').val() === '#baskets') {
 
-        _jquery2.default.ajax({
-            type: 'POST',
-            url: url,
-            data: data,
-            dataType: 'json',
-            beforeSend: function beforeSend() {},
-            success: function success(data) {
-                if (!data.success) {
-                    humane.error(data.message);
-                } else {
-                    humane.info(data.message);
-                }
-                if (act === 'MOV' || (0, _jquery2.default)(destKey).next().is(':visible') === true || (0, _jquery2.default)(destKey).hasClass('content') === true) {
-                    (0, _jquery2.default)('.CHIM.selected:visible').fadeOut();
-                    workzoneOptions.selection.empty();
-                    return workzoneOptions.reloadCurrent();
-                }
-
-                return true;
+            if (window.console) {
+                window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
             }
-        });
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                beforeSend: function beforeSend() {},
+                success: function success(data) {
+                    if (!data.success) {
+                        humane.error(data.message);
+                    } else {
+                        humane.info(data.message);
+                    }
+                    if (act === 'MOV' || (0, _jquery2.default)(destKey).next().is(':visible') === true || (0, _jquery2.default)(destKey).hasClass('content') === true) {
+                        (0, _jquery2.default)('.CHIM.selected:visible').fadeOut();
+                        workzoneOptions.selection.empty();
+                        return workzoneOptions.reloadCurrent();
+                    }
+
+                    return true;
+                }
+            });
+        } else {
+            console.log(data.lst);
+
+            var publicationId = destKey.attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = destKey.find('.expose_item_deployed');
+
+            if (publicationId !== undefined) {
+                assetsContainer.empty().addClass('loading');
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/add-assets',
+                    data: {
+                        publicationId: publicationId,
+                        exposeName: exposeName,
+                        lst: data.lst
+                    },
+                    dataType: 'json',
+                    success: function success(data) {
+                        setTimeout(function () {
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                        }, 6000);
+
+                        console.log(data.message);
+                    }
+                });
+            }
+        }
     }
 
     function fix() {
@@ -10207,7 +11285,7 @@ var workzone = function workzone(services) {
 exports.default = workzone;
 
 /***/ }),
-/* 94 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10221,13 +11299,13 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(95);
+var _index = __webpack_require__(101);
 
 var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(96);
+__webpack_require__(102);
 
 var workzoneThesaurus = function workzoneThesaurus(services) {
     var configService = services.configService,
@@ -10274,7 +11352,7 @@ var workzoneThesaurus = function workzoneThesaurus(services) {
 exports.default = workzoneThesaurus;
 
 /***/ }),
-/* 95 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10292,7 +11370,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _sprintfJs = __webpack_require__(59);
+var _sprintfJs = __webpack_require__(61);
 
 var _phraseanetCommon = __webpack_require__(11);
 
@@ -10318,6 +11396,15 @@ var thesaurusService = function thesaurusService(services) {
     var sbas = void 0;
     var bas2sbas = void 0;
     var trees = void 0; // @TODO remove global
+
+    var dragging = false; // true when an object is dragged over the th zone
+    var dragTarget = null; // the target where the mouse is over
+    var dragUniqueSbid = null; // will end-up as : null (nothing dragged) ; false (many sbids) ; sbid (same sbid for all)
+    var dragLstRecords = ''; // list or records, format as expected for RecordsRequest::fromRequest
+    var url = configService.get('baseUrl');
+
+    var searchSelection = { asArray: [], serialized: '' };
+
     var initialize = function initialize(params) {
         var $container = params.$container;
 
@@ -10334,6 +11421,7 @@ var thesaurusService = function thesaurusService(services) {
         }
 
         startThesaurus();
+        // console.log("hello from thesaurus ! container=", $container);
         var cclicks = 0;
         var cDelay = 350;
         var cTimer = null;
@@ -10391,8 +11479,353 @@ var thesaurusService = function thesaurusService(services) {
             T_Gfilter(event.currentTarget);
         });
 
+        /**
+         * drag/drop on terms : we will not set each term as droppable (costly), but the whole tx zone.
+         */
+        (0, _jquery2.default)('#THPD_T_tree').droppable({
+            accept: function accept(elem) {
+                var lstbr = searchSelection.asArray;
+
+                dragUniqueSbid = null;
+                lstbr.forEach(function (sbid_rid) {
+                    sbid_rid = sbid_rid.split('_');
+                    var sbid = sbid_rid[0];
+                    var rid = sbid_rid[1];
+                    dragUniqueSbid = dragUniqueSbid === null ? sbid : sbid === dragUniqueSbid ? sbid : false;
+                });
+                dragLstRecords = lstbr.join(';'); // a list as expected for RecordsRequest::fromRequest
+
+                (0, _jquery2.default)(this).removeClass('draggingOver');
+                // console.log("accept", elem);
+                // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
+                //     return true;
+                // }
+                dragging = false; // == not yet dragging something over th
+
+
+                // the th zone can accet drags only when in front (activated tab)
+                // 'hash' is set by the 'workzone' js code.
+                // return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+
+                if ((0, _jquery2.default)('#idFrameC .tabs').data('hash') !== '#thesaurus_tab') {
+                    return false; // can't drop on th if the th tab is not front
+                }
+
+                // by using classes on both main container AND the (unique) acceptable thesaurus zone
+                // we can have custom drag/drop css for both ok / reject
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver'); // the container
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver'); // all thesaurus
+
+                if (dragUniqueSbid === null || dragUniqueSbid === false) {
+                    // many sbids
+                    // return false;    // don't return false now, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                }
+
+                return true;
+            },
+            scope: 'objects',
+            hoverClass: 'groupDrop',
+            tolerance: 'pointer',
+            over: function over(event, ui) {
+                var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
+                : (0, _jquery2.default)(event.toElement); // chrome
+
+                // console.log("over", event, ui, target);
+
+                (0, _jquery2.default)('#THPD_T_tree', $container).addClass('draggingOver').click(function () {
+                    return true;
+                });
+                if (dragUniqueSbid !== null && dragUniqueSbid !== false) {
+                    (0, _jquery2.default)('#TX_P\\.' + dragUniqueSbid + '\\.T', $container).addClass('draggingOver');
+                }
+                //                    $('<style></style>').appendTo($container).remove();
+                /*
+                $(this).addClass('draggingOver');
+                 if(dragTarget) {
+                    // something was already hilighted (should no happen)
+                    dragTarget.removeClass('dragOver');
+                }
+                dragging = true;            // == dragging something over th
+                dragTarget = null;
+                // for now, target can only be a term (which has a sbas_id and tx_term_id props)
+                const target = $(event.toElement);
+                const sbas_id = target.data('sbas_id');
+                const tx_term_id = target.data('tx_term_id');
+                if(sbas_id && tx_term_id) {
+                    dragTarget = target;
+                    dragTarget.addClass('dragOver');
+                    console.log("IN : " + dragTarget.attr('id'));
+                }
+                */
+            },
+            out: function out(event, ui) {
+                var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
+                : (0, _jquery2.default)(event.toElement); // chrome
+
+                // console.log("out", event, ui, target);
+
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+                //                    $('<style></style>').appendTo($container).remove();
+                /*
+                $(this).removeClass('draggingOver');
+                if(dragTarget) {
+                    // something was hilighted
+                    dragTarget.removeClass('dragOver');
+                }
+                dragging = false;    // == no more dragging something over th
+                dragTarget = null;
+                  */
+            },
+            drop: function drop(event, ui) {
+                // the event relates from the whole tx zone (<ul>), we must find the exact element of the mouseup
+                // too bad, jquery does not seem to handle that in a cross-browser way.
+                var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
+                : (0, _jquery2.default)(event.toElement); // chrome
+
+                // console.log("drop", event, ui, target);
+
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+
+                var sbas_id = target.data('sbas_id'); // set on html by ThesaurusXmlHttpController.php
+                var tx_term_id = target.data('tx_term_id'); // set on html by ThesaurusXmlHttpController.php
+
+                if (sbas_id && tx_term_id) {
+                    sbas_id = sbas_id.toString(); // be carefull because data() will cast digits as int
+                    tx_term_id = tx_term_id.toString();
+                    if (sbas_id === dragUniqueSbid) {
+                        dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                    }
+                }
+
+                /*
+                $(this).removeClass('draggingOver');
+                if(dragTarget) {
+                    // const tid = $(event.toElement).data('tx_term_id');
+                    console.log("DROP ON id=" + dragTarget.attr('id'));
+                    dragTarget.removeClass('dragOver');
+                //                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
+                }
+                dragging = false;    // == no more dragging something over th
+                dragTarget = null;
+                  */
+            }
+        })
+        //    .click(function() {return true;})
+        ;
+
+        /*
+                    // track the mouse
+                    .mousemove( (event) => {
+                        if(dragging) {
+                            const target = $(event.toElement);
+                            const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                            const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+                            const oldTarget = dragTarget;
+                            dragTarget = (sbas_id && tx_term_id) ? target : null;
+                             // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                            // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                            // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
+                             if(oldTarget && !oldTarget.is(dragTarget)) {
+                                // the mouse has quit a overed term (oldTargetId)
+                                oldTarget.removeClass('dragOver');
+                                console.log("OUT : " + oldTarget.attr('id'));
+                            }
+                             if(dragTarget && !dragTarget.is(oldTarget)) {
+                                // the mouse just overs a new term
+                                dragTarget.addClass('dragOver');
+                                console.log("IN : " + dragTarget.attr('id'));
+                            }
+                        }
+                     });
+        */
+
         searchValue = _underscore2.default.debounce(searchValue, 300);
     };
+
+    function dropRecordsOnTerm(sbas_id, tx_term_id, lstRecords) {
+        var dlg = _dialog2.default.create(services, {
+            size: 'Custom',
+            customWidth: 770,
+            customHeight: 400,
+            // title: localeService.t('add data'),
+            loading: true
+        }, 0);
+
+        var data = { // declaring data structure avoids phpstorm warnings
+            dlg_title: undefined,
+            dlg_content: undefined,
+            rec_refs: undefined,
+            commit_url: undefined
+        };
+        _jquery2.default.getJSON(url + 'prod/thesaurus/droprecords', {
+            'dlg_level': 0,
+            'sbas_id': sbas_id,
+            'tx_term_id': tx_term_id,
+            'lst': lstRecords
+        }, function (dlgData) {
+
+            var $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+            $container.addClass('black-dialog-wrap');
+
+            dlg.setOption("title", dlgData.dlg_title);
+            dlg.setContent(dlgData.dlg_content);
+
+            /**
+             * update the dlg (show/hide selects & buttons) depending on form status
+             */
+            var updateUx = function updateUx() {
+                // console.log("====== update =========================");
+
+                var okbutton = false; // must we show the ok button ?
+
+                /**
+                 * loop on advanced-mode fields
+                 */
+                (0, _jquery2.default)('#TXCLASSIFICATION_ADVANCED .action', $container).each(function () {
+                    var $this = (0, _jquery2.default)(this);
+                    var n = $this.data('n');
+
+                    switch ($this.val()) {// action
+                        case "":
+                            // first "select..." option
+                            (0, _jquery2.default)('.value_container._' + n, $container).hide();
+                            break;
+                        case "clear":
+                            // clear a mono-value : no need value selection
+                            (0, _jquery2.default)('.value_container._' + n, $container).hide();
+                            okbutton = true;
+                            break;
+                        default:
+                            (0, _jquery2.default)('.value_container._' + n, $container).show();
+                            okbutton = true;
+                    }
+                });
+
+                /**
+                 * if the "simple-mode" is front, show "ok" button
+                 */
+                var seltab_idx = (0, _jquery2.default)('.tabs', $container).tabs('option', 'active');
+                var seltab_id = (0, _jquery2.default)('.tabs>UL.ui-tabs-nav>LI:eq(' + seltab_idx + ')', $container).data('tab_id'); // "SIMPLE" or "ADVANCED"
+                if (seltab_id === "SIMPLE") {
+                    // simple ux:  ok is possible
+                    okbutton = true;
+                }
+
+                (0, _jquery2.default)(' .okbutton', $container).toggle(okbutton);
+            };
+
+            /**
+             * add buttons
+             */
+            dlg.setOption("buttons", [
+            /**
+             * OK button
+             */
+            {
+                text: "Ok",
+                class: "fieldSelected okbutton",
+                style: "display:none",
+                click: function click() {
+                    // don't submit the complex form, better build json
+                    var actions = [];
+
+                    /**
+                     * find the active tab ("SIMPLE" or "ADVANCED")
+                     */
+                    var seltab_idx = (0, _jquery2.default)('.tabs', $container).tabs('option', 'active');
+                    var seltab_id = (0, _jquery2.default)('.tabs>UL.ui-tabs-nav>LI:eq(' + seltab_idx + ')', $container).data('tab_id'); // "SIMPLE" or "ADVANCED"
+
+                    /**
+                     * extract data only from the front tab (div)
+                     */
+                    var box = (0, _jquery2.default)("#TXCLASSIFICATION_" + seltab_id, $container);
+                    (0, _jquery2.default)('.action', box).each(function () {
+                        var $this = (0, _jquery2.default)(this);
+                        var n = $this.data('n');
+                        var action = $this.val();
+                        if (action !== "") {
+                            var field = (0, _jquery2.default)('.field._' + n, box).val();
+                            var value = (0, _jquery2.default)('.value._' + n, box).val();
+
+                            switch (action) {
+                                case "replace":
+                                    // replace all multi-values
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': "replace",
+                                        'replace_with': value
+                                    });
+                                    break;
+                                case "clear":
+                                    // clear a mono-value
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': "delete"
+                                    });
+                                    break;
+                                default:
+                                    // all other actions don't need patch
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': action,
+                                        'value': value
+                                    });
+                            }
+                        }
+                    });
+
+                    /**
+                     * post actions
+                     */
+                    data = {
+                        'records': dlgData.rec_refs,
+                        'actions': {
+                            'metadatas': actions
+                        }
+                    };
+
+                    // console.log(data);
+
+                    _jquery2.default.ajax({
+                        url: dlgData.commit_url,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function success() {
+                            dlg.close();
+                        }
+                    });
+
+                    return false;
+                }
+            },
+
+            /**
+             * Cancel button
+             */
+            {
+                text: "Cancel",
+                click: function click() {
+                    (0, _jquery2.default)(this).dialog("close");
+                }
+            }]);
+
+            /**
+             * format the dlg content
+             */
+            (0, _jquery2.default)('SELECT', $container).menu();
+            (0, _jquery2.default)('.tabs', $container).tabs({ 'activate': updateUx });
+            (0, _jquery2.default)('.action', $container).change(updateUx);
+
+            updateUx(); // enforce initial update;
+        }).fail(function (jqxhr, textStatus, error) {
+            // the dlg content failed, report onto the dlg (better than forever loading)
+            var err = textStatus + ", " + error;
+            dlg.setContent("Request Failed: " + err);
+        });
+    }
 
     function show() {
         // first show of thesaurus
@@ -11491,25 +12924,31 @@ var thesaurusService = function thesaurusService(services) {
         });
     }
 
+    appEvents.listenAll({
+        'broadcast.searchResultSelection': function broadcastSearchResultSelection(selection) {
+            searchSelection = selection;
+        }
+    });
+
     return { initialize: initialize, show: show };
 };
 
 exports.default = thesaurusService;
 
 /***/ }),
-/* 96 */
+/* 102 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 97 */
+/* 103 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 98 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*!
@@ -15856,7 +17295,7 @@ $.extend($.ui.fancytree,
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 99 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15870,37 +17309,43 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _delete = __webpack_require__(100);
+var _delete = __webpack_require__(106);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _archive = __webpack_require__(101);
+var _archive = __webpack_require__(107);
 
 var _archive2 = _interopRequireDefault(_archive);
 
-var _create = __webpack_require__(102);
+var _create = __webpack_require__(108);
 
 var _create2 = _interopRequireDefault(_create);
 
-var _create3 = __webpack_require__(103);
+var _create3 = __webpack_require__(109);
 
 var _create4 = _interopRequireDefault(_create3);
 
-var _update = __webpack_require__(104);
+var _update = __webpack_require__(110);
 
 var _update2 = _interopRequireDefault(_update);
 
-var _browse = __webpack_require__(105);
+var _browse = __webpack_require__(111);
 
 var _browse2 = _interopRequireDefault(_browse);
 
-var _reorderContent = __webpack_require__(106);
+var _reorderContent = __webpack_require__(112);
 
 var _reorderContent2 = _interopRequireDefault(_reorderContent);
 
-var _reorderContent3 = __webpack_require__(107);
+var _reorderContent3 = __webpack_require__(113);
 
 var _reorderContent4 = _interopRequireDefault(_reorderContent3);
+
+var _phraseanetCommon = __webpack_require__(11);
+
+var appCommons = _interopRequireWildcard(_phraseanetCommon);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15935,6 +17380,8 @@ var workzoneBaskets = function workzoneBaskets(services) {
                     basketId: 'current',
                     sort: $el.data('sort')
                 });
+
+                appCommons.userModule.setPref('workzone_order', $el.data('sort'));
             }
         }).on('click', '.basket-preferences-action', function (event) {
             event.preventDefault();
@@ -15971,7 +17418,7 @@ var workzoneBaskets = function workzoneBaskets(services) {
 exports.default = workzoneBaskets;
 
 /***/ }),
-/* 100 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16024,16 +17471,29 @@ var deleteBasket = function deleteBasket(services) {
             case 'SSTT':
 
                 var buttons = {};
-                buttons[localeService.t('valider')] = function (e) {
+
+                buttons[localeService.t('archive')] = function (e) {
+                    _archiveBasket($el);
+                };
+
+                buttons[localeService.t('deleteTitle')] = function (e) {
                     _deleteBasket($el);
                 };
 
-                (0, _jquery2.default)('#DIALOG').empty().append(localeService.t('confirmDel')).attr('title', localeService.t('attention')).dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    modal: true,
-                    draggable: false
-                }).dialog('open').dialog('option', 'buttons', buttons);
+                var dialogWindow = _dialog2.default.create(services, {
+                    size: 'Medium',
+                    title: localeService.t('attention'),
+                    closeButton: true
+                });
+
+                //Add custom class to dialog wrapper
+                dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+
+                var content = '<div class="well-small">' + localeService.t('confirmDel') + '</div>';
+                dialogWindow.setContent(content);
+
+                dialogWindow.setOption('buttons', buttons);
+
                 (0, _jquery2.default)('#tooltip').hide();
                 break;
             /*case 'STORY':
@@ -16045,9 +17505,9 @@ var deleteBasket = function deleteBasket(services) {
     };
 
     var _deleteBasket = function _deleteBasket(item) {
-        if ((0, _jquery2.default)('#DIALOG').data('ui-dialog')) {
-            (0, _jquery2.default)('#DIALOG').dialog('destroy');
-        }
+        var dialogWindow = _dialog2.default.get(1);
+        dialogWindow.close();
+
         // id de chutier
         var k = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
         _jquery2.default.ajax({
@@ -16082,6 +17542,44 @@ var deleteBasket = function deleteBasket(services) {
         });
     };
 
+    var _archiveBasket = function _archiveBasket(item) {
+        var dialogWindow = _dialog2.default.get(1);
+        dialogWindow.close();
+
+        var basketId = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: url + 'prod/baskets/' + basketId + '/archive/?archive=1',
+            dataType: 'json',
+            success: function success(data) {
+                if (data.success) {
+                    var basket = (0, _jquery2.default)('#SSTT_' + basketId);
+                    var basketNext = basket.next();
+
+                    if (basketNext.data('ui-droppable')) {
+                        basketNext.droppable('destroy');
+                    }
+
+                    basketNext.slideUp().remove();
+
+                    if (basket.data('ui-droppable')) {
+                        basket.droppable('destroy');
+                    }
+
+                    basket.slideUp().remove();
+
+                    if ((0, _jquery2.default)('#baskets .SSTT').length === 0) {
+                        appEvents.emit('workzone.refresh');
+                    }
+                } else {
+                    alert(data.message);
+                }
+
+                return false;
+            }
+        });
+    };
+
     /*const _deleteRecords = (lst) => {
         if (lst.split(';').length === 0) {
             alert(localeService.t('nodocselected'));
@@ -16109,7 +17607,7 @@ var deleteBasket = function deleteBasket(services) {
 exports.default = deleteBasket;
 
 /***/ }),
-/* 101 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16181,7 +17679,7 @@ var archiveBasket = function archiveBasket(services) {
 exports.default = archiveBasket;
 
 /***/ }),
-/* 102 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16304,7 +17802,7 @@ var basketCreate = function basketCreate(services) {
 exports.default = basketCreate;
 
 /***/ }),
-/* 103 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16430,7 +17928,7 @@ var storyCreate = function storyCreate(services) {
 exports.default = storyCreate;
 
 /***/ }),
-/* 104 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16454,7 +17952,7 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8); /**
+var humane = __webpack_require__(9); /**
                                     * triggered via workzone > Basket > context menu
                                     */
 
@@ -16547,7 +18045,7 @@ var basketUpdate = function basketUpdate(services) {
 exports.default = basketUpdate;
 
 /***/ }),
-/* 105 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16573,7 +18071,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 __webpack_require__(14);
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var basketBrowse = function basketBrowse(services) {
     var configService = services.configService,
@@ -16850,7 +18348,7 @@ var basketBrowse = function basketBrowse(services) {
 exports.default = basketBrowse;
 
 /***/ }),
-/* 106 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17134,7 +18632,7 @@ var basketReorderContent = function basketReorderContent(services) {
 exports.default = basketReorderContent;
 
 /***/ }),
-/* 107 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17418,7 +18916,114 @@ var storyReorderContent = function storyReorderContent(services) {
 exports.default = storyReorderContent;
 
 /***/ }),
-/* 108 */
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _lodash = __webpack_require__(4);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var feedbackReminder = function feedbackReminder(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+
+    var openModal = function openModal(basketId) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        var dialogOptions = (0, _lodash2.default)({
+            size: '558x415',
+            loading: false,
+            title: localeService.t('feedbackReminderTitle'),
+            closeButton: true
+        }, options);
+
+        var $dialog = _dialog2.default.create(services, dialogOptions);
+        $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container');
+
+        return _jquery2.default.get(url + 'prod/baskets/' + basketId + '/reminder/', function (data) {
+            $dialog.setContent(data);
+            _bindFormEvents();
+
+            return false;
+        });
+    };
+
+    var _bindFormEvents = function _bindFormEvents() {
+        var $doReminderForm = (0, _jquery2.default)('#doReminderForm');
+
+        var $dialog = _dialog2.default.get(1);
+
+        $doReminderForm.find(".participant").change(function (e) {
+            var allParticipant = $doReminderForm.find("#all-participant").prop('checked');
+            if (allParticipant) {
+                $doReminderForm.find(".participant[value!=0]").prop('checked', true);
+            }
+        });
+
+        var buttons = {};
+
+        buttons[localeService.t('send')] = function () {
+            var errorMessage = '';
+            var errorContainer = $doReminderForm.find('#reminder-error');
+
+            if (!$doReminderForm.find('input.participant').is(':checked')) {
+                errorMessage = '<p>' + localeService.t('reminderParticipantToCheck') + '<p>';
+            }
+
+            if (_jquery2.default.trim($doReminderForm.find('#reminder-message').val()) === '') {
+                errorMessage += '<p>' + localeService.t('reminderMessageToCheck') + '</p>';
+            }
+
+            if (errorMessage !== '') {
+                errorContainer.removeClass('hidden');
+                errorContainer.empty().append(errorMessage);
+            } else {
+                $dialog.close();
+
+                _jquery2.default.ajax({
+                    type: $doReminderForm.attr('method'),
+                    url: $doReminderForm.attr('action'),
+                    data: $doReminderForm.serializeArray(),
+                    beforeSend: function beforeSend() {},
+                    success: function success(datas) {
+                        console.log(datas);
+                    }
+                });
+            }
+
+            return false;
+        };
+
+        $dialog.setOption('buttons', buttons);
+    };
+
+    return { openModal: openModal };
+};
+
+exports.default = feedbackReminder;
+
+/***/ }),
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17666,7 +19271,7 @@ var notifyLayout = function notifyLayout(services) {
 exports.default = notifyLayout;
 
 /***/ }),
-/* 109 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17729,7 +19334,7 @@ var notifyService = function notifyService(services) {
 exports.default = notifyService;
 
 /***/ }),
-/* 110 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17743,57 +19348,63 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _move = __webpack_require__(111);
+var _move = __webpack_require__(118);
 
 var _move2 = _interopRequireDefault(_move);
 
-var _edit = __webpack_require__(61);
+var _edit = __webpack_require__(63);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _delete = __webpack_require__(168);
+var _delete = __webpack_require__(205);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _export = __webpack_require__(68);
+var _export = __webpack_require__(73);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _property = __webpack_require__(169);
+var _property = __webpack_require__(206);
 
 var _property2 = _interopRequireDefault(_property);
 
-var _push = __webpack_require__(170);
+var _push = __webpack_require__(207);
 
 var _push2 = _interopRequireDefault(_push);
 
-var _publish = __webpack_require__(175);
+var _publish = __webpack_require__(212);
 
 var _publish2 = _interopRequireDefault(_publish);
 
-var _index = __webpack_require__(176);
+var _index = __webpack_require__(213);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _print = __webpack_require__(72);
+var _print = __webpack_require__(77);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _feedback = __webpack_require__(178);
+var _feedback = __webpack_require__(215);
 
 var _feedback2 = _interopRequireDefault(_feedback);
 
-var _bridge = __webpack_require__(179);
+var _bridge = __webpack_require__(216);
 
 var _bridge2 = _interopRequireDefault(_bridge);
 
-var _index3 = __webpack_require__(73);
+var _index3 = __webpack_require__(78);
 
 var _index4 = _interopRequireDefault(_index3);
 
 var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+var _underscore = __webpack_require__(2);
+
+var _ = _interopRequireWildcard(_underscore);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17992,6 +19603,20 @@ var toolbar = function toolbar(services) {
 
             _triggerModal(event, (0, _feedback2.default)(services).openModal);
         });
+
+        /**
+         * workzone > feedback
+         */
+        $container.on('click', '.feedback-user', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var params = {};
+            params.ssel = $el.data('basket-id');
+            params.feedbackaction = 'adduser';
+
+            (0, _feedback2.default)(services).openModal(params);
+        });
+
         /**
          * tools > Tools
          */
@@ -18068,6 +19693,79 @@ var toolbar = function toolbar(services) {
                 _closeActionPanel();
             }
         });
+
+        // for facets filter under the search form
+        $container.find('#facet_filter_in_search').on('mouseenter', '.facetFilter_AND', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').show();
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseleave', '.facetFilter_AND', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').hide();
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseenter', '.facetFilter_EXCEPT', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').show();
+        });
+
+        $container.find('#facet_filter_in_search').on('mouseleave', '.facetFilter_EXCEPT', function () {
+            (0, _jquery2.default)(this).find('.buttons-span').hide();
+        });
+
+        $container.find('#facet_filter_in_search').on('click', '.facetFilter-closer', function (event) {
+            event.stopPropagation();
+            var $facet = (0, _jquery2.default)(this).parent().parent();
+            var facetField = $facet.data('facetField');
+            var facetLabel = $facet.data('facetLabel');
+            var facetNegated = $facet.data('facetNegated');
+
+            // get the selectedFacets from the facets module
+            var selectedFacets = {};
+            appEvents.emit('facets.getSelectedFacets', function (v) {
+                selectedFacets = v;
+            });
+
+            selectedFacets[facetField].values = _.reject(selectedFacets[facetField].values, function (facetValue) {
+                return facetValue.value.label == facetLabel && facetValue.negated == facetNegated;
+            });
+
+            // restore the selected facets
+            appEvents.emit('facets.setSelectedFacets', selectedFacets);
+
+            appEvents.emit('search.doRefreshState');
+            return false;
+        });
+
+        $container.find('#facet_filter_in_search').on('click', '.facetFilter-inverse', function (event) {
+            event.stopPropagation();
+            var $facet = (0, _jquery2.default)(this).parent().parent();
+            var facetField = $facet.data('facetField');
+            var facetLabel = $facet.data('facetLabel');
+            var facetNegated = $facet.data('facetNegated');
+
+            // get the selectedFacets from the facets module
+            var selectedFacets = {};
+            appEvents.emit('facets.getSelectedFacets', function (v) {
+                selectedFacets = v;
+            });
+
+            var found = _.find(selectedFacets[facetField].values, function (facetValue) {
+                return facetValue.value.label == facetLabel && facetValue.negated == facetNegated;
+            });
+
+            if (found) {
+                var s_class = "facetFilter" + '_' + (found.negated ? "EXCEPT" : "AND");
+                $facet.removeClass(s_class);
+                found.negated = !found.negated;
+                s_class = "facetFilter" + '_' + (found.negated ? "EXCEPT" : "AND");
+                $facet.addClass(s_class);
+
+                // restore the selected facets
+                appEvents.emit('facets.setSelectedFacets', selectedFacets);
+
+                appEvents.emit('search.doRefreshState');
+            }
+            return false;
+        });
     };
 
     return { initialize: initialize };
@@ -18076,7 +19774,7 @@ var toolbar = function toolbar(services) {
 exports.default = toolbar;
 
 /***/ }),
-/* 111 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18096,7 +19794,7 @@ var _dialog2 = _interopRequireDefault(_dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var $dialog = null;
 
@@ -18191,7 +19889,7 @@ var moveRecord = function moveRecord(services) {
 exports.default = moveRecord;
 
 /***/ }),
-/* 112 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18219,35 +19917,35 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _utils = __webpack_require__(39);
+var _utils = __webpack_require__(42);
 
-var _sprintfJs = __webpack_require__(59);
+var _sprintfJs = __webpack_require__(61);
 
-var _layout = __webpack_require__(113);
+var _layout = __webpack_require__(120);
 
 var _layout2 = _interopRequireDefault(_layout);
 
-var _presets = __webpack_require__(114);
+var _presets = __webpack_require__(121);
 
 var _presets2 = _interopRequireDefault(_presets);
 
-var _searchReplace = __webpack_require__(115);
+var _searchReplace = __webpack_require__(122);
 
 var _searchReplace2 = _interopRequireDefault(_searchReplace);
 
-var _preview = __webpack_require__(116);
+var _preview = __webpack_require__(123);
 
 var _preview2 = _interopRequireDefault(_preview);
 
-var _thesaurusDatasource = __webpack_require__(143);
+var _thesaurusDatasource = __webpack_require__(149);
 
 var _thesaurusDatasource2 = _interopRequireDefault(_thesaurusDatasource);
 
-var _geonameDatasource = __webpack_require__(144);
+var _geonameDatasource = __webpack_require__(150);
 
 var _geonameDatasource2 = _interopRequireDefault(_geonameDatasource);
 
-var _mapbox = __webpack_require__(50);
+var _mapbox = __webpack_require__(52);
 
 var _mapbox2 = _interopRequireDefault(_mapbox);
 
@@ -18255,15 +19953,15 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _recordCollection = __webpack_require__(165);
+var _recordCollection = __webpack_require__(202);
 
 var _recordCollection2 = _interopRequireDefault(_recordCollection);
 
-var _fieldCollection = __webpack_require__(51);
+var _fieldCollection = __webpack_require__(53);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
-var _statusCollection = __webpack_require__(167);
+var _statusCollection = __webpack_require__(204);
 
 var _statusCollection2 = _interopRequireDefault(_statusCollection);
 
@@ -18288,10 +19986,13 @@ var recordEditorService = function recordEditorService(services) {
     var $editorContainer = null;
     var $ztextStatus = void 0;
     var $editTextArea = void 0;
+    var $editDateArea = void 0;
+    var $editTimeArea = void 0;
     var $editMonoValTextArea = void 0;
     var $editMultiValTextArea = void 0;
     var $toolsTabs = void 0;
     var $idExplain = void 0;
+    var $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
 
     var initialize = function initialize(params) {
         var _params;
@@ -18310,6 +20011,8 @@ var recordEditorService = function recordEditorService(services) {
 
         $ztextStatus = (0, _jquery2.default)('#ZTextStatus', options.$container);
         $editTextArea = (0, _jquery2.default)('#idEditZTextArea', options.$container);
+        $editDateArea = (0, _jquery2.default)('#idEditZDateArea', options.$container);
+        $editTimeArea = (0, _jquery2.default)('#idEditTimeArea', options.$container);
         $editMonoValTextArea = (0, _jquery2.default)('#ZTextMonoValued', options.$container);
         $editMultiValTextArea = (0, _jquery2.default)('#EditTextMultiValued', options.$container);
         $toolsTabs = (0, _jquery2.default)('#EDIT_MID_R .tabs', options.$container);
@@ -18416,6 +20119,37 @@ var recordEditorService = function recordEditorService(services) {
                     _onTextareaKeyDown(event);
                     break;
                 default:
+            }
+        }).on('change mouseup mousedown keyup keydown', '#idEditZDateArea', function (e) {
+            var dateText = (0, _jquery2.default)(this).val();
+
+            if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                $editDateArea.css('width', 167);
+                $editTimeArea.show();
+            } else {
+                $editTimeArea.hide();
+                $editDateArea.css('width', 210);
+            }
+
+            // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+            if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                options.fieldLastValue = $editDateArea.val();
+                options.textareaIsDirty = true;
+            }
+        }).on('change', '#idEditTimeArea', function (e) {
+            var date = $editDateArea.val();
+            date = date.split(' ');
+            // retrieve the date and add the time to it
+            $editDateArea.val(date[0] + ' ' + (0, _jquery2.default)(this).val() + ':00');
+            var dateText = $editDateArea.val();
+
+            // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+            if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                options.fieldLastValue = $editDateArea.val();
+                options.textareaIsDirty = true;
+            } else {
+                $editTimeArea.hide();
+                $editDateArea.css('width', 210);
             }
         });
     };
@@ -18554,11 +20288,11 @@ var recordEditorService = function recordEditorService(services) {
             changeMonth: true,
             dateFormat: 'yy/mm/dd',
             onSelect: function onSelect(dateText, inst) {
-                var lval = $editTextArea.val();
+                var lval = $editDateArea.val();
                 if (lval !== dateText) {
                     options.fieldLastValue = lval;
-                    $editTextArea.val(dateText);
-                    $editTextArea.trigger('keyup.maxLength');
+                    $editDateArea.val(dateText);
+                    $editDateArea.trigger('keyup.maxLength');
                     options.textareaIsDirty = true;
                     validateFieldChanges(null, 'ok');
                 }
@@ -18624,7 +20358,8 @@ var recordEditorService = function recordEditorService(services) {
         });
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: getRecordSelection()
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
         });
     }
 
@@ -18718,7 +20453,11 @@ var recordEditorService = function recordEditorService(services) {
                                 var t = $editTextArea.val();
                                 $editTextArea.val(t + (t ? ' ; ' : '') + (0, _jquery2.default)(this).val());
                             } else {
-                                $editTextArea.val((0, _jquery2.default)(this).val());
+                                if (field.type === 'date') {
+                                    $editDateArea.val((0, _jquery2.default)(this).val());
+                                } else {
+                                    $editTextArea.val((0, _jquery2.default)(this).val());
+                                }
                             }
                             $editTextArea.trigger('keyup.maxLength');
                             options.textareaIsDirty = true;
@@ -18785,10 +20524,29 @@ var recordEditorService = function recordEditorService(services) {
                     (0, _jquery2.default)('.editDiaButtons', options.$container).hide();
 
                     if (field.type === 'date') {
-                        $editTextArea.css('height', '16px');
+                        $editTextArea.hide();
+                        $editDateArea.show();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).show();
+                        $editDateArea.val(field._value);
+
+                        var dateText = $editDateArea.val();
+
+                        if (dateText === '') {
+                            dateText = field._value;
+                        }
+
+                        if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                            $editDateArea.css('width', 167);
+                            $editTimeArea.show();
+                        } else {
+                            $editTimeArea.hide();
+                            $editDateArea.css('width', 210);
+                        }
                     } else {
+                        $editDateArea.hide();
+                        $editTimeArea.hide();
                         (0, _jquery2.default)('#idEditDateZone', options.$container).hide();
+                        $editTextArea.show();
                         $editTextArea.css('height', '100%');
                     }
 
@@ -18803,8 +20561,12 @@ var recordEditorService = function recordEditorService(services) {
                         (0, _jquery2.default)('#idDivButtons', options.$container).show(); // valeurs h�t�rog�nes : les 3 boutons remplacer/ajouter/annuler
                     } else {
                         // homogene
-                        $editTextArea.val(options.fieldLastValue = field._value);
-                        $editTextArea.removeClass('hetero');
+                        if (field.type === 'date') {
+                            $editDateArea.val(options.fieldLastValue = field._value);
+                        } else {
+                            $editTextArea.val(options.fieldLastValue = field._value);
+                            $editTextArea.removeClass('hetero');
+                        }
 
                         (0, _jquery2.default)('#idDivButtons', options.$container).hide(); // valeurs homog�nes
                         if (field.type === 'date') {
@@ -19103,7 +20865,12 @@ var recordEditorService = function recordEditorService(services) {
 
         if (action === 'cancel') {
             // on restore le contenu du champ
-            $editTextArea.val(options.fieldLastValue);
+            if (currentField.type === 'date') {
+                $editDateArea.val(options.fieldLastValue);
+            } else {
+                $editTextArea.val(options.fieldLastValue);
+            }
+
             $editTextArea.trigger('keyup.maxLength');
             options.textareaIsDirty = false;
             return true;
@@ -19116,6 +20883,11 @@ var recordEditorService = function recordEditorService(services) {
         var o = document.getElementById('idEditField_' + fieldIndex);
         if (o !== undefined) {
             var t = $editTextArea.val();
+
+            if (currentField.type === 'date') {
+                t = $editDateArea.val();
+            }
+
             for (var recordIndex in records) {
                 var record = options.recordCollection.getRecordByIndex(recordIndex);
                 if (!record._selected) {
@@ -19244,10 +21016,13 @@ var recordEditorService = function recordEditorService(services) {
                 var $record = (0, _jquery2.default)(selected[_pos]);
                 selection.push($record.attr('id').split('_').pop());
             }
-            recordEditorEvents.emit('recordSelection.changed', {
-                selection: getRecordSelection()
-            });
         }
+
+        recordEditorEvents.emit('recordSelection.changed', {
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
+        });
+
         /**trigger select all checkbox**/
         if (selected.length < allRecords.length) {
             (0, _jquery2.default)("#select-all-diapo").removeAttr("checked");
@@ -19257,6 +21032,7 @@ var recordEditorService = function recordEditorService(services) {
             }
         };
         options.lastClickId = recordIndex;
+
         refreshFields(event);
     }
 
@@ -19820,6 +21596,7 @@ var recordEditorService = function recordEditorService(services) {
             if (!record._selected) {
                 continue;
             }
+            recordFieldValue["_rid"] = record.rid;
             for (var _recordIndex in options.recordConfig.records) {
                 if (options.recordConfig.records[_recordIndex].id === record.rid) {
                     recordFieldValue["technicalInfo"] = options.recordConfig.records[_recordIndex].technicalInfo;
@@ -19880,7 +21657,7 @@ var recordEditorService = function recordEditorService(services) {
 exports.default = recordEditorService;
 
 /***/ }),
-/* 113 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20040,7 +21817,7 @@ var recordEditorLayout = function recordEditorLayout(services) {
 exports.default = recordEditorLayout;
 
 /***/ }),
-/* 114 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20054,7 +21831,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _utils = __webpack_require__(39);
+var _utils = __webpack_require__(42);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20296,7 +22073,7 @@ var presetsModule = function presetsModule(services) {
 exports.default = presetsModule;
 
 /***/ }),
-/* 115 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20316,7 +22093,7 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 /**
  * Editor Right tab plugin
  */
@@ -20421,7 +22198,7 @@ var searchReplace = function searchReplace(services) {
 exports.default = searchReplace;
 
 /***/ }),
-/* 116 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20439,7 +22216,7 @@ var _pym = __webpack_require__(17);
 
 var _pym2 = _interopRequireDefault(_pym);
 
-var _videoEditor = __webpack_require__(117);
+var _videoEditor = __webpack_require__(124);
 
 var _videoEditor2 = _interopRequireDefault(_videoEditor);
 
@@ -20555,6 +22332,10 @@ var preview = function preview(services) {
 
         $container.empty();
 
+        if (currentRecord === false) {
+            return false;
+        }
+
         switch (currentRecord.type) {
             case 'video':
             case 'audio':
@@ -20621,11 +22402,17 @@ var preview = function preview(services) {
      * @param params
      */
     function onSelectionChange(params) {
-        var selection = params.selection;
+        var selection = params.selection,
+            selectionPos = params.selectionPos;
 
-        if (selection.length === 1) {
+        if (selectionPos.length === 1) {
             renderPreview({
-                recordIndex: selection[0]
+                recordIndex: selectionPos[0]
+            });
+        } else {
+            // no preview to display
+            renderPreview({
+                recordIndex: null
             });
         }
     }
@@ -20635,7 +22422,7 @@ var preview = function preview(services) {
 exports.default = preview;
 
 /***/ }),
-/* 117 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20649,7 +22436,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _videojsFlash = __webpack_require__(62);
+var _videojsFlash = __webpack_require__(64);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -20696,7 +22483,7 @@ var videoEditor = function videoEditor(services) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
 
             // load videoJs lib
-            rangeCapture = __webpack_require__(87).default;
+            rangeCapture = __webpack_require__(92).default;
             rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
 
@@ -20732,7 +22519,7 @@ var videoEditor = function videoEditor(services) {
 exports.default = videoEditor;
 
 /***/ }),
-/* 118 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -20749,12 +22536,12 @@ exports.default = videoEditor;
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var window = _interopDefault(__webpack_require__(43));
-var document = _interopDefault(__webpack_require__(83));
-var tsml = _interopDefault(__webpack_require__(84));
-var safeParseTuple = _interopDefault(__webpack_require__(85));
-var xhr = _interopDefault(__webpack_require__(86));
-var vtt = _interopDefault(__webpack_require__(138));
+var window = _interopDefault(__webpack_require__(44));
+var document = _interopDefault(__webpack_require__(88));
+var tsml = _interopDefault(__webpack_require__(89));
+var safeParseTuple = _interopDefault(__webpack_require__(90));
+var xhr = _interopDefault(__webpack_require__(91));
+var vtt = _interopDefault(__webpack_require__(144));
 
 var version = "6.13.0";
 
@@ -46074,13 +47861,13 @@ module.exports = videojs;
 
 
 /***/ }),
-/* 119 */
+/* 126 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 120 */
+/* 127 */
 /***/ (function(module, exports) {
 
 module.exports = isFunction
@@ -46101,11 +47888,11 @@ function isFunction (fn) {
 
 
 /***/ }),
-/* 121 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var trim = __webpack_require__(122)
-  , forEach = __webpack_require__(136)
+var trim = __webpack_require__(129)
+  , forEach = __webpack_require__(143)
   , isArray = function(arg) {
       return Object.prototype.toString.call(arg) === '[object Array]';
     }
@@ -46138,18 +47925,18 @@ module.exports = function (headers) {
 
 
 /***/ }),
-/* 122 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bind = __webpack_require__(48);
-var define = __webpack_require__(63);
+var bind = __webpack_require__(50);
+var define = __webpack_require__(65);
 
-var implementation = __webpack_require__(64);
-var getPolyfill = __webpack_require__(65);
-var shim = __webpack_require__(135);
+var implementation = __webpack_require__(66);
+var getPolyfill = __webpack_require__(67);
+var shim = __webpack_require__(142);
 
 var boundTrim = bind.call(Function.call, getPolyfill());
 
@@ -46163,7 +47950,7 @@ module.exports = boundTrim;
 
 
 /***/ }),
-/* 123 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46222,7 +48009,7 @@ module.exports = function bind(that) {
 
 
 /***/ }),
-/* 124 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46232,7 +48019,7 @@ module.exports = function bind(that) {
 var has = Object.prototype.hasOwnProperty;
 var toStr = Object.prototype.toString;
 var slice = Array.prototype.slice;
-var isArgs = __webpack_require__(125);
+var isArgs = __webpack_require__(132);
 var isEnumerable = Object.prototype.propertyIsEnumerable;
 var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
 var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
@@ -46370,7 +48157,7 @@ module.exports = keysShim;
 
 
 /***/ }),
-/* 125 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46394,28 +48181,28 @@ module.exports = function isArguments(value) {
 
 
 /***/ }),
-/* 126 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var GetIntrinsic = __webpack_require__(127);
+var GetIntrinsic = __webpack_require__(134);
 
 var $Object = GetIntrinsic('%Object%');
 var $TypeError = GetIntrinsic('%TypeError%');
 var $String = GetIntrinsic('%String%');
 
-var $isNaN = __webpack_require__(128);
-var $isFinite = __webpack_require__(129);
+var $isNaN = __webpack_require__(135);
+var $isFinite = __webpack_require__(136);
 
-var sign = __webpack_require__(130);
-var mod = __webpack_require__(131);
+var sign = __webpack_require__(137);
+var mod = __webpack_require__(138);
 
-var IsCallable = __webpack_require__(49);
-var toPrimitive = __webpack_require__(132);
+var IsCallable = __webpack_require__(51);
+var toPrimitive = __webpack_require__(139);
 
-var has = __webpack_require__(134);
+var has = __webpack_require__(141);
 
 // https://es5.github.io/#x9
 var ES5 = {
@@ -46643,7 +48430,7 @@ module.exports = ES5;
 
 
 /***/ }),
-/* 127 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46827,7 +48614,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 
 
 /***/ }),
-/* 128 */
+/* 135 */
 /***/ (function(module, exports) {
 
 module.exports = Number.isNaN || function isNaN(a) {
@@ -46836,7 +48623,7 @@ module.exports = Number.isNaN || function isNaN(a) {
 
 
 /***/ }),
-/* 129 */
+/* 136 */
 /***/ (function(module, exports) {
 
 var $isNaN = Number.isNaN || function (a) { return a !== a; };
@@ -46845,7 +48632,7 @@ module.exports = Number.isFinite || function (x) { return typeof x === 'number' 
 
 
 /***/ }),
-/* 130 */
+/* 137 */
 /***/ (function(module, exports) {
 
 module.exports = function sign(number) {
@@ -46854,7 +48641,7 @@ module.exports = function sign(number) {
 
 
 /***/ }),
-/* 131 */
+/* 138 */
 /***/ (function(module, exports) {
 
 module.exports = function mod(number, modulo) {
@@ -46864,7 +48651,7 @@ module.exports = function mod(number, modulo) {
 
 
 /***/ }),
-/* 132 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46872,9 +48659,9 @@ module.exports = function mod(number, modulo) {
 
 var toStr = Object.prototype.toString;
 
-var isPrimitive = __webpack_require__(133);
+var isPrimitive = __webpack_require__(140);
 
-var isCallable = __webpack_require__(49);
+var isCallable = __webpack_require__(51);
 
 // https://es5.github.io/#x8.12
 var ES5internalSlots = {
@@ -46908,7 +48695,7 @@ module.exports = function ToPrimitive(input, PreferredType) {
 
 
 /***/ }),
-/* 133 */
+/* 140 */
 /***/ (function(module, exports) {
 
 module.exports = function isPrimitive(value) {
@@ -46917,26 +48704,26 @@ module.exports = function isPrimitive(value) {
 
 
 /***/ }),
-/* 134 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bind = __webpack_require__(48);
+var bind = __webpack_require__(50);
 
 module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
 
 /***/ }),
-/* 135 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var define = __webpack_require__(63);
-var getPolyfill = __webpack_require__(65);
+var define = __webpack_require__(65);
+var getPolyfill = __webpack_require__(67);
 
 module.exports = function shimStringTrim() {
 	var polyfill = getPolyfill();
@@ -46946,13 +48733,13 @@ module.exports = function shimStringTrim() {
 
 
 /***/ }),
-/* 136 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isCallable = __webpack_require__(49);
+var isCallable = __webpack_require__(51);
 
 var toStr = Object.prototype.toString;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -47015,32 +48802,7 @@ module.exports = forEach;
 
 
 /***/ }),
-/* 137 */
-/***/ (function(module, exports) {
-
-module.exports = extend
-
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-function extend() {
-    var target = {}
-
-    for (var i = 0; i < arguments.length; i++) {
-        var source = arguments[i]
-
-        for (var key in source) {
-            if (hasOwnProperty.call(source, key)) {
-                target[key] = source[key]
-            }
-        }
-    }
-
-    return target
-}
-
-
-/***/ }),
-/* 138 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -47064,12 +48826,12 @@ function extend() {
 // forth between JSON. If we don't then it's not that big of a deal since we're
 // off browser.
 
-var window = __webpack_require__(43);
+var window = __webpack_require__(44);
 
 var vttjs = module.exports = {
-  WebVTT: __webpack_require__(139),
-  VTTCue: __webpack_require__(140),
-  VTTRegion: __webpack_require__(141)
+  WebVTT: __webpack_require__(145),
+  VTTCue: __webpack_require__(146),
+  VTTRegion: __webpack_require__(147)
 };
 
 window.vttjs = vttjs;
@@ -47096,7 +48858,7 @@ if (!window.VTTCue) {
 
 
 /***/ }),
-/* 139 */
+/* 145 */
 /***/ (function(module, exports) {
 
 /**
@@ -48431,7 +50193,7 @@ module.exports = WebVTT;
 
 
 /***/ }),
-/* 140 */
+/* 146 */
 /***/ (function(module, exports) {
 
 /**
@@ -48742,7 +50504,7 @@ module.exports = VTTCue;
 
 
 /***/ }),
-/* 141 */
+/* 147 */
 /***/ (function(module, exports) {
 
 /**
@@ -48882,13 +50644,13 @@ module.exports = VTTRegion;
 
 
 /***/ }),
-/* 142 */
+/* 148 */
 /***/ (function(module, exports) {
 
 module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
-/* 143 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49109,7 +50871,7 @@ var thesaurusDatasource = function thesaurusDatasource(services) {
 exports.default = thesaurusDatasource;
 
 /***/ }),
-/* 144 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49129,7 +50891,7 @@ var _underscore2 = _interopRequireDefault(_underscore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(38);
+__webpack_require__(39);
 
 var geonameDatasource = function geonameDatasource(services) {
     var configService = services.configService,
@@ -49423,7 +51185,7 @@ var geonameDatasource = function geonameDatasource(services) {
 exports.default = geonameDatasource;
 
 /***/ }),
-/* 145 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49552,7 +51314,7 @@ var markerCollection = function markerCollection(services) {
 exports.default = markerCollection;
 
 /***/ }),
-/* 146 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49568,17 +51330,17 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapboxgl = __webpack_require__(66);
+var mapboxgl = __webpack_require__(68);
 
 var markerGLCollection = function markerGLCollection(services) {
     var configService = services.configService,
         localeService = services.localeService,
         eventEmitter = services.eventEmitter;
 
-    var markerCollection = {};
     var cachedGeoJson = void 0;
     var map = void 0;
     var geojson = void 0;
+    var markerGl = void 0;
     var editable = void 0;
     var isDraggable = false;
     var isCursorOverPoint = false;
@@ -49589,7 +51351,7 @@ var markerGLCollection = function markerGLCollection(services) {
     var initialize = function initialize(params) {
         var _params;
 
-        var initWith = (_params = params, map = _params.map, geojson = _params.geojson, _params);
+        var initWith = (_params = params, map = _params.map, geojson = _params.geojson, markerGl = _params.markerGl, _params);
         editable = params.editable || false;
         setCollection(geojson);
     };
@@ -49613,158 +51375,103 @@ var markerGLCollection = function markerGLCollection(services) {
     };
 
     var setPoint = function setPoint(marker) {
+        var markerId = marker.properties.recordIndex;
+
+        if (marker.properties._rid !== undefined) {
+            markerId = marker.properties._rid;
+        }
+
+        var markerElement = getMarker(markerId);
+
+        if (markerElement === undefined) {
+            var el = document.createElement('div');
+            el.className = 'mapboxGl-phrasea-marker';
+
+            markerElement = markerGl[markerId] = new mapboxgl.Marker(el);
+        }
+
+        markerElement.feature = {
+            properties: {
+                recordIndex: marker.properties.recordIndex
+            }
+        };
+
+        // add marker to map
+        markerElement.setLngLat(marker.geometry.coordinates).addTo(map);
+
         var $content = (0, _jquery2.default)('<div style="min-width: 200px"/>');
 
         var template = '<p>' + marker.properties.title + '</p> ';
 
         if (editable === true) {
-            template += '\n            <div class="view-mode">\n                    <button class="edit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties.recordIndex + '">' + localeService.t('mapMarkerEdit') + '</button>\n            </div>\n            <div class="edit-mode">\n                <p class="help" style="font-size: 12px;font-style: italic;">' + localeService.t('mapMarkerMoveLabel') + '</p>\n                <p><span class="updated-position" style="font-size: 12px;"></span></p>\n                <div>\n                    <button class="cancel-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties.recordIndex + '">' + localeService.t('mapMarkerEditCancel') + '</button>\n                    <button class="submit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties.recordIndex + '">' + localeService.t('mapMarkerEditSubmit') + '</button>\n                </div>\n            </div>';
+            template += '\n            <div class="view-mode">\n                    <button class="edit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties._rid + '">' + localeService.t('mapMarkerEdit') + '</button>\n            </div>\n            <div class="edit-mode">\n                <p class="help" style="font-size: 12px;font-style: italic;">' + localeService.t('mapMarkerMoveLabel') + '</p>\n                <p><span class="updated-position" style="font-size: 12px;"></span></p>\n                <div>\n                    <button class="cancel-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties._rid + '">' + localeService.t('mapMarkerEditCancel') + '</button>\n                    <button class="submit-position btn btn-inverse btn-small btn-block" data-marker-id="' + marker.properties._rid + '">' + localeService.t('mapMarkerEditSubmit') + '</button>\n                </div>\n            </div>';
         }
 
         $content.append(template);
 
         $content.find('.edit-mode').hide();
-        //
+
+        var popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setDOMContent($content.get(0));
+
+        popupDialog.on('close', function (event) {
+            if (editable) {
+                markerElement.setDraggable(false);
+            }
+        });
+
+        // bind popup to the marker element
+        markerElement.setPopup(popupDialog);
+
+        markerElement.on('dragend', function () {
+            var position = markerElement.getLngLat().wrap();
+            $content.find('.updated-position').html(position.lat + '<br>' + position.lng);
+            $content.find('.edit-mode').show();
+        });
+
         $content.on('click', '.edit-position', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var marker = getMarker($el.data('marker-id'));
-            marker._originalPosition = marker.lngLat.wrap();
+            var markerSelected = getMarker($el.data('marker-id'));
+            markerSelected._originalPosition = markerElement.getLngLat().wrap();
             $content.find('.view-mode').hide();
             $content.find('.edit-mode').show();
             $content.find('.help').show();
-            isDraggable = true;
 
-            map.on('mousedown', mouseDown);
+            markerSelected.setDraggable(true);
         });
 
         $content.on('click', '.submit-position', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var marker = getMarker($el.data('marker-id'));
+            var markerSelected = getMarker($el.data('marker-id'));
 
-            isDraggable = false;
+            markerSelected.setDraggable(false);
             $content.find('.view-mode').show();
             $content.find('.help').hide();
             $content.find('.updated-position').html('');
             $content.find('.edit-mode').hide();
 
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
+            markerSelected.togglePopup();
 
-            marker.lngLat = {
-                lng: cachedGeoJson.features[0].geometry.coordinates[0],
-                lat: cachedGeoJson.features[0].geometry.coordinates[1]
-            };
-            marker.feature = cachedGeoJson.features[0];
-            eventEmitter.emit('markerChange', { marker: marker, position: marker.lngLat });
+            markerSelected._originalPosition = markerSelected.getLngLat().wrap();
+            eventEmitter.emit('markerChange', { marker: markerSelected, position: markerSelected.getLngLat().wrap() });
         });
 
         $content.on('click', '.cancel-position', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var marker = getMarker($el.data('marker-id'));
-            isDraggable = false;
+            var markerSelected = getMarker($el.data('marker-id'));
+
+            markerSelected.setDraggable(false);
             $content.find('.view-mode').show();
             $content.find('.updated-position').html('');
             $content.find('.edit-mode').hide();
             $content.find('.help').hide();
 
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
+            markerSelected.togglePopup();
 
-            cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
-            map.getSource('data').setData(cachedGeoJson);
+            resetMarkerPosition($content, markerSelected);
         });
-
-        // When the cursor enters a feature in the point layer, prepare for dragging.
-        map.on('mouseenter', 'points', function () {
-            if (!isDraggable) {
-                return;
-            }
-            map.getCanvas().style.cursor = 'move';
-            isCursorOverPoint = true;
-            map.dragPan.disable();
-        });
-
-        map.on('mouseleave', 'points', function () {
-            if (!isDraggable) {
-                return;
-            }
-            map.getCanvas().style.cursor = '';
-            isCursorOverPoint = false;
-            map.dragPan.enable();
-        });
-
-        map.on('click', 'points', function (e) {
-            markerCollection[e.features[0].properties.recordIndex] = e;
-            var coordinates = e.features[0].geometry.coordinates.slice();
-
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            // Check if there is already a popup on the map and if so, remove it
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
-
-            popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(coordinates).setDOMContent($content.get(0)).addTo(map);
-
-            popupDialog.on('close', function (event) {
-                if (editable) {
-                    resetMarkerPosition($content);
-                }
-            });
-        });
-
-        function mouseDown() {
-            if (!isCursorOverPoint) return;
-
-            isDragging = true;
-
-            // Set a cursor indicator
-            map.getCanvas().style.cursor = 'grab';
-
-            // Mouse events
-            map.on('mousemove', onMove);
-            map.once('mouseup', onUp);
-
-            var popup = document.getElementsByClassName('mapboxgl-popup');
-            if (popup[0]) popup[0].parentElement.removeChild(popup[0]);
-        }
-
-        function onMove(e) {
-            if (!isDragging) return;
-            var coords = e.lngLat;
-
-            // Set a UI indicator for dragging.
-            map.getCanvas().style.cursor = 'grabbing';
-
-            // Update the Point feature in `geojson` coordinates
-            // and call setData to the source layer `point` on it.
-            cachedGeoJson.features[0].geometry.coordinates = [coords.lng, coords.lat];
-            map.getSource('data').setData(cachedGeoJson);
-        }
-
-        function onUp(e) {
-            if (!isDragging) return;
-            var position = e.lngLat;
-
-            map.getCanvas().style.cursor = '';
-            isDragging = false;
-
-            // Unbind mouse events
-            map.off('mousemove', onMove);
-            $content.find('.updated-position').html(position.lat + '<br>' + position.lng);
-            popupDialog = new mapboxgl.Popup({ closeOnClick: false }).setLngLat(position).setDOMContent($content.get(0)).addTo(map);
-
-            popupDialog.on('close', function (event) {
-                if (editable) {
-                    resetMarkerPosition($content);
-                }
-            });
-        }
     };
 
-    var resetMarkerPosition = function resetMarkerPosition($content) {
-        var marker = getMarker($content.find('.edit-position').data('marker-id'));
+    var resetMarkerPosition = function resetMarkerPosition($content, marker) {
         $content.find('.view-mode').show();
         $content.find('.updated-position').html('');
         $content.find('.edit-mode').hide();
@@ -49772,12 +51479,12 @@ var markerGLCollection = function markerGLCollection(services) {
         isDraggable = false;
         if (marker._originalPosition !== undefined) {
             cachedGeoJson.features[0].geometry.coordinates = [marker._originalPosition.lng, marker._originalPosition.lat];
-            map.getSource('data').setData(cachedGeoJson);
+            marker.setLngLat(marker._originalPosition);
         }
     };
 
     var getMarker = function getMarker(markerId) {
-        return markerCollection[markerId];
+        return markerGl[markerId];
     };
 
     return {
@@ -49788,7 +51495,7 @@ var markerGLCollection = function markerGLCollection(services) {
 exports.default = markerGLCollection;
 
 /***/ }),
-/* 147 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49972,7 +51679,7 @@ exports.default = provider;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 148 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50080,13 +51787,4627 @@ var leafletLocaleFr = {
 exports.default = leafletLocaleFr;
 
 /***/ }),
-/* 149 */
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Typeahead = __webpack_require__(156);
+var debounce = __webpack_require__(160);
+var extend = __webpack_require__(37);
+var EventEmitter = __webpack_require__(93).EventEmitter;
+var exceptions = __webpack_require__(161);
+var MapboxClient = __webpack_require__(162);
+var mbxGeocoder = __webpack_require__(172);
+var MapboxEventManager = __webpack_require__(180);
+var localization = __webpack_require__(182);
+var subtag = __webpack_require__(183);
+
+/**
+ * A geocoder component using the [Mapbox Geocoding API](https://docs.mapbox.com/api/search/#geocoding)
+ * @class MapboxGeocoder
+ * @param {Object} options
+ * @param {String} options.accessToken Required.
+ * @param {String} [options.origin=https://api.mapbox.com] Use to set a custom API origin.
+ * @param {Object} [options.mapboxgl] A [mapbox-gl](https://github.com/mapbox/mapbox-gl-js) instance to use when creating [Markers](https://docs.mapbox.com/mapbox-gl-js/api/#marker). Required if `options.marker` is `true`.
+ * @param {Number} [options.zoom=16] On geocoded result what zoom level should the map animate to when a `bbox` isn't found in the response. If a `bbox` is found the map will fit to the `bbox`.
+ * @param {Boolean|Object} [options.flyTo=true] If `false`, animating the map to a selected result is disabled. If `true`, animating the map will use the default animation parameters. If an object, it will be passed as `options` to the map [`flyTo`](https://docs.mapbox.com/mapbox-gl-js/api/#map#flyto) or [`fitBounds`](https://docs.mapbox.com/mapbox-gl-js/api/#map#fitbounds) method providing control over the animation of the transition.
+ * @param {String} [options.placeholder=Search] Override the default placeholder attribute value.
+ * @param {Object} [options.proximity] a proximity argument: this is
+ * a geographical point given as an object with `latitude` and `longitude`
+ * properties. Search results closer to this point will be given
+ * higher priority.
+ * @param {Boolean} [options.trackProximity=true] If `true`, the geocoder proximity will automatically update based on the map view.
+ * @param {Boolean} [options.collapsed=false] If `true`, the geocoder control will collapse until hovered or in focus.
+ * @param {Boolean} [options.clearAndBlurOnEsc=false] If `true`, the geocoder control will clear it's contents and blur when user presses the escape key.
+ * @param {Boolean} [options.clearOnBlur=false] If `true`, the geocoder control will clear its value when the input blurs.
+ * @param {Array} [options.bbox] a bounding box argument: this is
+ * a bounding box given as an array in the format `[minX, minY, maxX, maxY]`.
+ * Search results will be limited to the bounding box.
+ * @param {string} [options.countries] a comma separated list of country codes to
+ * limit results to specified country or countries.
+ * @param {string} [options.types] a comma seperated list of types that filter
+ * results to match those specified. See https://docs.mapbox.com/api/search/#data-types
+ * for available types.
+ * If reverseGeocode is enabled, you should specify one type. If you configure more than one type, the first type will be used.
+ * @param {Number} [options.minLength=2] Minimum number of characters to enter before results are shown.
+ * @param {Number} [options.limit=5] Maximum number of results to show.
+ * @param {string} [options.language] Specify the language to use for response text and query result weighting. Options are IETF language tags comprised of a mandatory ISO 639-1 language code and optionally one or more IETF subtags for country or script. More than one value can also be specified, separated by commas. Defaults to the browser's language settings.
+ * @param {Function} [options.filter] A function which accepts a Feature in the [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) format to filter out results from the Geocoding API response before they are included in the suggestions list. Return `true` to keep the item, `false` otherwise.
+ * @param {Function} [options.localGeocoder] A function accepting the query string which performs local geocoding to supplement results from the Mapbox Geocoding API. Expected to return an Array of GeoJSON Features in the [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) format.
+ * @param {Function} [options.externalGeocoder] A function accepting the query string and current features list which performs geocoding to supplement results from the Mapbox Geocoding API. Expected to return a Promise which resolves to an Array of GeoJSON Features in the [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) format.
+ * @param {distance|score} [options.reverseMode=distance] - Set the factors that are used to sort nearby results.
+ * @param {boolean} [options.reverseGeocode=false] If `true`, enable reverse geocoding mode. In reverse geocoding, search input is expected to be coordinates in the form `lat, lon`, with suggestions being the reverse geocodes.
+ * @param {Boolean} [options.enableEventLogging=true] Allow Mapbox to collect anonymous usage statistics from the plugin.
+ * @param {Boolean|Object} [options.marker=true]  If `true`, a [Marker](https://docs.mapbox.com/mapbox-gl-js/api/#marker) will be added to the map at the location of the user-selected result using a default set of Marker options.  If the value is an object, the marker will be constructed using these options. If `false`, no marker will be added to the map. Requires that `options.mapboxgl` also be set.
+ * @param {Function} [options.render] A function that specifies how the results should be rendered in the dropdown menu. This function should accepts a single [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) object as input and return a string. Any HTML in the returned string will be rendered.
+ * @param {Function} [options.getItemValue] A function that specifies how the selected result should be rendered in the search bar. This function should accept a single [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) object as input and return a string. HTML tags in the output string will not be rendered. Defaults to `(item) => item.place_name`.
+ * @param {String} [options.mode=mapbox.places] A string specifying the geocoding [endpoint](https://docs.mapbox.com/api/search/#endpoints) to query. Options are `mapbox.places` and `mapbox.places-permanent`. The `mapbox.places-permanent` mode requires an enterprise license for permanent geocodes.
+ * @param {Boolean} [options.localGeocoderOnly=false] If `true`, indicates that the `localGeocoder` results should be the only ones returned to the user. If `false`, indicates that the `localGeocoder` results should be combined with those from the Mapbox API with the `localGeocoder` results ranked higher.
+ * @example
+ * var geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
+ * map.addControl(geocoder);
+ * @return {MapboxGeocoder} `this`
+ *
+ */
+
+function MapboxGeocoder(options) {
+  this._eventEmitter = new EventEmitter();
+  this.options = extend({}, this.options, options);
+  this.inputString = '';
+  this.fresh = true;
+  this.lastSelected = null;
+}
+
+MapboxGeocoder.prototype = {
+  options: {
+    zoom: 16,
+    flyTo: true,
+    trackProximity: true,
+    minLength: 2,
+    reverseGeocode: false,
+    limit: 5,
+    origin: 'https://api.mapbox.com',
+    enableEventLogging: true,
+    marker: true,
+    mapboxgl: null,
+    collapsed: false,
+    clearAndBlurOnEsc: false,
+    clearOnBlur: false,
+    getItemValue: function(item) {
+      return item.place_name
+    },
+    render: function(item) {
+      var placeName = item.place_name.split(',');
+      return '<div class="mapboxgl-ctrl-geocoder--suggestion"><div class="mapboxgl-ctrl-geocoder--suggestion-title">' + placeName[0]+ '</div><div class="mapboxgl-ctrl-geocoder--suggestion-address">' + placeName.splice(1, placeName.length).join(',') + '</div></div>';
+    }
+  },
+
+  /**
+   * Add the geocoder to a container. The container can be either a `mapboxgl.Map`, an `HTMLElement` or a CSS selector string.
+   *
+   * If the container is a [`mapboxgl.Map`](https://docs.mapbox.com/mapbox-gl-js/api/map/), this function will behave identically to [`Map.addControl(geocoder)`](https://docs.mapbox.com/mapbox-gl-js/api/map/#map#addcontrol).
+   * If the container is an instance of [`HTMLElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement), then the geocoder will be appended as a child of that [`HTMLElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement).
+   * If the container is a [CSS selector string](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors), the geocoder will be appended to the element returned from the query.
+   *
+   * This function will throw an error if the container is none of the above.
+   * It will also throw an error if the referenced HTML element cannot be found in the `document.body`.
+   *
+   * For example, if the HTML body contains the element `<div id='geocoder-container'></div>`, the following script will append the geocoder to `#geocoder-container`:
+   *
+   * ```javascript
+   * var geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
+   * geocoder.addTo('#geocoder-container');
+   * ```
+   * @param {String|HTMLElement|mapboxgl.Map} container A reference to the container to which to add the geocoder
+   */
+  addTo: function(container){
+
+    function addToExistingContainer (geocoder, container) {
+      if (!document.body.contains(container)) {
+        throw new Error("Element provided to #addTo() exists, but is not in the DOM")
+      }
+      const el = geocoder.onAdd(); //returns the input elements, which are then added to the requested html container
+      container.appendChild(el);
+    }
+
+    // if the container is a map, add the control like normal
+    if (container._controlContainer){
+      //  it's a mapbox-gl map, add like normal
+      container.addControl(this);
+    }
+    // if the container is an HTMLElement, then set the parent to be that element
+    else if (container instanceof HTMLElement) {
+      addToExistingContainer(this, container);
+    }
+    // if the container is a string, treat it as a CSS query
+    else if (typeof container == 'string'){
+      const parent = document.querySelectorAll(container);
+      if (parent.length === 0){
+        throw new Error("Element ", container, "not found.")
+      }
+
+      if (parent.length > 1){
+        throw new Error("Geocoder can only be added to a single html element")
+      }
+
+      addToExistingContainer(this, parent[0]);
+    }else{
+      throw new Error("Error: addTo must be a mapbox-gl-js map, an html element, or a CSS selector query for a single html element")
+    }
+  },
+
+  onAdd: function(map) {
+    if (map && typeof map != 'string'){
+      this._map = map;
+    }
+
+    this.setLanguage();
+
+    if (!this.options.localGeocoderOnly){
+      this.geocoderService = mbxGeocoder(
+        MapboxClient({
+          accessToken: this.options.accessToken,
+          origin: this.options.origin
+        })
+      );
+    }
+
+    if (this.options.localGeocoderOnly && !this.options.localGeocoder){
+      throw new Error("A localGeocoder function must be specified to use localGeocoderOnly mode")
+    }
+
+    this.eventManager = new MapboxEventManager(this.options);
+
+    this._onChange = this._onChange.bind(this);
+    this._onKeyDown = this._onKeyDown.bind(this);
+    this._onPaste = this._onPaste.bind(this);
+    this._onBlur = this._onBlur.bind(this);
+    this._showButton = this._showButton.bind(this);
+    this._hideButton = this._hideButton.bind(this);
+    this._onQueryResult = this._onQueryResult.bind(this);
+    this.clear = this.clear.bind(this);
+    this._updateProximity = this._updateProximity.bind(this);
+    this._collapse = this._collapse.bind(this);
+    this._unCollapse = this._unCollapse.bind(this);
+    this._clear = this._clear.bind(this);
+    this._clearOnBlur = this._clearOnBlur.bind(this);
+
+    var el = (this.container = document.createElement('div'));
+    el.className = 'mapboxgl-ctrl-geocoder mapboxgl-ctrl';
+
+    var searchIcon = this.createIcon('search', '<path d="M7.4 2.5c-2.7 0-4.9 2.2-4.9 4.9s2.2 4.9 4.9 4.9c1 0 1.8-.2 2.5-.8l3.7 3.7c.2.2.4.3.8.3.7 0 1.1-.4 1.1-1.1 0-.3-.1-.5-.3-.8L11.4 10c.4-.8.8-1.6.8-2.5.1-2.8-2.1-5-4.8-5zm0 1.6c1.8 0 3.2 1.4 3.2 3.2s-1.4 3.2-3.2 3.2-3.3-1.3-3.3-3.1 1.4-3.3 3.3-3.3z"/>')
+
+    this._inputEl = document.createElement('input');
+    this._inputEl.type = 'text';
+    this._inputEl.className = 'mapboxgl-ctrl-geocoder--input';
+
+    this.setPlaceholder();
+
+    if (this.options.collapsed) {
+      this._collapse();
+      this.container.addEventListener('mouseenter', this._unCollapse);
+      this.container.addEventListener('mouseleave', this._collapse);
+      this._inputEl.addEventListener('focus', this._unCollapse);
+    }
+
+    if (this.options.collapsed || this.options.clearOnBlur) {
+      this._inputEl.addEventListener('blur', this._onBlur);
+    }
+
+    this._inputEl.addEventListener('keydown', debounce(this._onKeyDown, 200));
+    this._inputEl.addEventListener('paste', this._onPaste);
+    this._inputEl.addEventListener('change', this._onChange);
+    this.container.addEventListener('mouseenter', this._showButton);
+    this.container.addEventListener('mouseleave', this._hideButton);
+    this._inputEl.addEventListener('keyup', function(e){
+      this.eventManager.keyevent(e, this);
+    }.bind(this));
+
+    var actions = document.createElement('div');
+    actions.classList.add('mapboxgl-ctrl-geocoder--pin-right');
+
+    this._clearEl = document.createElement('button');
+    this._clearEl.setAttribute('aria-label', 'Clear');
+    this._clearEl.addEventListener('click', this.clear);
+    this._clearEl.className = 'mapboxgl-ctrl-geocoder--button';
+
+    var buttonIcon = this.createIcon('close', '<path d="M3.8 2.5c-.6 0-1.3.7-1.3 1.3 0 .3.2.7.5.8L7.2 9 3 13.2c-.3.3-.5.7-.5 1 0 .6.7 1.3 1.3 1.3.3 0 .7-.2 1-.5L9 10.8l4.2 4.2c.2.3.7.3 1 .3.6 0 1.3-.7 1.3-1.3 0-.3-.2-.7-.3-1l-4.4-4L15 4.6c.3-.2.5-.5.5-.8 0-.7-.7-1.3-1.3-1.3-.3 0-.7.2-1 .3L9 7.1 4.8 2.8c-.3-.1-.7-.3-1-.3z"/>')
+    this._clearEl.appendChild(buttonIcon);
+
+    this._loadingEl = this.createIcon('loading', '<path fill="#333" d="M4.4 4.4l.8.8c2.1-2.1 5.5-2.1 7.6 0l.8-.8c-2.5-2.5-6.7-2.5-9.2 0z"/><path opacity=".1" d="M12.8 12.9c-2.1 2.1-5.5 2.1-7.6 0-2.1-2.1-2.1-5.5 0-7.7l-.8-.8c-2.5 2.5-2.5 6.7 0 9.2s6.6 2.5 9.2 0 2.5-6.6 0-9.2l-.8.8c2.2 2.1 2.2 5.6 0 7.7z"/>');
+
+    actions.appendChild(this._clearEl);
+    actions.appendChild(this._loadingEl);
+
+    el.appendChild(searchIcon);
+    el.appendChild(this._inputEl);
+    el.appendChild(actions);
+
+    this._typeahead = new Typeahead(this._inputEl, [], {
+      filter: false,
+      minLength: this.options.minLength,
+      limit: this.options.limit
+    });
+
+    this.setRenderFunction(this.options.render);
+    this._typeahead.getItemValue = this.options.getItemValue;
+
+    this.mapMarker = null;
+    this._handleMarker = this._handleMarker.bind(this);
+    if (this._map){
+      if (this.options.trackProximity ) {
+        this._updateProximity();
+        this._map.on('moveend', this._updateProximity);
+      }
+      this._mapboxgl = this.options.mapboxgl;
+      if (!this._mapboxgl && this.options.marker) {
+        // eslint-disable-next-line no-console
+        console.error("No mapboxgl detected in options. Map markers are disabled. Please set options.mapboxgl.");
+        this.options.marker = false;
+      }
+    }
+    return el;
+  },
+
+  createIcon: function(name, path) {
+    var icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('class', 'mapboxgl-ctrl-geocoder--icon mapboxgl-ctrl-geocoder--icon-' + name);
+    icon.setAttribute('viewBox', '0 0 18 18');
+    icon.setAttribute('xml:space','preserve');
+    icon.setAttribute('width', 18);
+    icon.setAttribute('height', 18);
+    // IE does not have innerHTML for SVG nodes
+    if (!('innerHTML' in icon)) {
+      var SVGNodeContainer = document.createElement('div');
+      SVGNodeContainer.innerHTML = '<svg>' + path.valueOf().toString() + '</svg>';
+      var SVGNode = SVGNodeContainer.firstChild,
+        SVGPath = SVGNode.firstChild;
+      icon.appendChild(SVGPath);
+    } else {
+      icon.innerHTML = path;
+    }
+    return icon;
+  },
+
+  onRemove: function() {
+    this.container.parentNode.removeChild(this.container);
+
+    if (this.options.trackProximity && this._map) {
+      this._map.off('moveend', this._updateProximity);
+    }
+
+    this._removeMarker();
+
+    this._map = null;
+
+    return this;
+  },
+
+  _onPaste: function(e){
+    var value = (e.clipboardData || window.clipboardData).getData('text');
+    if (value.length >= this.options.minLength) {
+      this._geocode(value);
+    }
+  },
+
+  _onKeyDown: function(e) {
+    var ESC_KEY_CODE = 27,
+      TAB_KEY_CODE = 9;
+
+    if (e.keyCode === ESC_KEY_CODE && this.options.clearAndBlurOnEsc) {
+      this._clear(e);
+      return this._inputEl.blur();
+    }
+
+    // if target has shadowRoot, then get the actual active element inside the shadowRoot
+    var target = e.target && e.target.shadowRoot
+      ? e.target.shadowRoot.activeElement
+      : e.target;
+    var value = target ? target.value : '';
+
+    if (!value) {
+      this.fresh = true;
+      // the user has removed all the text
+      if (e.keyCode !== TAB_KEY_CODE) this.clear(e);
+      return (this._clearEl.style.display = 'none');
+    }
+
+    // TAB, ESC, LEFT, RIGHT, ENTER, UP, DOWN
+    if ((e.metaKey || [TAB_KEY_CODE, ESC_KEY_CODE, 37, 39, 13, 38, 40].indexOf(e.keyCode) !== -1))
+      return;
+
+    if (target.value.length >= this.options.minLength) {
+      this._geocode(target.value);
+    }
+  },
+
+  _showButton: function() {
+    if (this._typeahead.selected) this._clearEl.style.display = 'block';
+  },
+
+  _hideButton: function() {
+    if (this._typeahead.selected) this._clearEl.style.display = 'none';
+  },
+
+  _onBlur: function(e) {
+    if (this.options.clearOnBlur) {
+      this._clearOnBlur(e);
+    }
+    if (this.options.collapsed) {
+      this._collapse();
+    }
+  },
+  _onChange: function() {
+    var selected = this._typeahead.selected;
+    if (selected  && JSON.stringify(selected) !== this.lastSelected) {
+      this._clearEl.style.display = 'none';
+      if (this.options.flyTo) {
+        var flyOptions;
+        if (selected.properties && exceptions[selected.properties.short_code]) {
+          // Certain geocoder search results return (and therefore zoom to fit)
+          // an unexpectedly large bounding box: for example, both Russia and the
+          // USA span both sides of -180/180, or France includes the island of
+          // Reunion in the Indian Ocean. An incomplete list of these exceptions
+          // at ./exceptions.json provides "reasonable" bounding boxes as a
+          // short-term solution; this may be amended as necessary.
+          flyOptions = extend({}, this.options.flyTo);
+          if (this._map){
+            this._map.fitBounds(exceptions[selected.properties.short_code].bbox, flyOptions);
+          }
+        } else if (selected.bbox) {
+          var bbox = selected.bbox;
+          flyOptions = extend({}, this.options.flyTo);
+          if (this._map){
+            this._map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], flyOptions);
+          }
+        } else {
+          var defaultFlyOptions = {
+            zoom: this.options.zoom
+          }
+          flyOptions = extend({}, defaultFlyOptions, this.options.flyTo);
+          //  ensure that center is not overriden by custom options
+          flyOptions.center = selected.center;
+          if (this._map){
+            this._map.flyTo(flyOptions);
+          }
+        }
+      }
+      if (this.options.marker && this._mapboxgl){
+        this._handleMarker(selected);
+      }
+
+      // After selecting a feature, re-focus the textarea and set
+      // cursor at start.
+      this._inputEl.focus();
+      this._inputEl.scrollLeft = 0;
+      this._inputEl.setSelectionRange(0, 0);
+      this.lastSelected = JSON.stringify(selected);
+      this._eventEmitter.emit('result', { result: selected });
+      this.eventManager.select(selected, this);
+    }
+  },
+
+  _geocode: function(searchInput) {
+    this._loadingEl.style.display = 'block';
+    this._eventEmitter.emit('loading', { query: searchInput });
+    this.inputString = searchInput;
+    // Possible config proprerties to pass to client
+    var keys = [
+      'bbox',
+      'limit',
+      'proximity',
+      'countries',
+      'types',
+      'language',
+      'reverseMode',
+      'mode'
+    ];
+    var self = this;
+    var geocoderError = null;
+    // Create config object
+    var config = keys.reduce(function(config, key) {
+      if (self.options[key]) {
+        // countries, types, and language need to be passed in as arrays to client
+        // https://github.com/mapbox/mapbox-sdk-js/blob/master/services/geocoding.js#L38-L47
+        ['countries', 'types', 'language'].indexOf(key) > -1
+          ? (config[key] = self.options[key].split(/[\s,]+/))
+          : (config[key] = self.options[key]);
+
+        if (key === 'proximity' && self.options[key] && typeof self.options[key].longitude === 'number' && typeof self.options[key].latitude === 'number') {
+          config[key] = [self.options[key].longitude, self.options[key].latitude]
+        }
+      }
+      return config;
+    }, {});
+
+    var request;
+    if (this.options.localGeocoderOnly){
+      request = Promise.resolve();
+    }
+    // check if searchInput resembles coordinates, and if it does,
+    // make the request a reverseGeocode
+    else if (
+      this.options.reverseGeocode &&
+      /(-?\d+\.?\d*)[, ]+(-?\d+\.?\d*)[ ]*$/.test(searchInput)
+    ) {
+      // parse coordinates
+      var coords = searchInput.split(/[\s(,)?]+/).map(function(c) {
+        return parseFloat(c, 10);
+      }).reverse();
+
+      // client only accepts one type for reverseGeocode, so
+      // use first config type if one, if not default to poi
+      config.types ? [config.types[0]] : ["poi"];
+      config = extend(config, { query: coords, limit: 1 });
+
+      // drop proximity which may have been set by trackProximity since it's not supported by the reverseGeocoder
+      if ('proximity' in config) {
+        delete config.proximity;
+      }
+
+      request = this.geocoderService.reverseGeocode(config).send();
+    } else {
+      config = extend(config, { query: searchInput });
+      request = this.geocoderService.forwardGeocode(config).send();
+    }
+
+    var localGeocoderRes = [];
+    if (this.options.localGeocoder) {
+      localGeocoderRes = this.options.localGeocoder(searchInput);
+      if (!localGeocoderRes) {
+        localGeocoderRes = [];
+      }
+    }
+    var externalGeocoderRes = [];
+
+    request.catch(function(error){
+      geocoderError = error;
+    }.bind(this)) 
+      .then(
+        function(response) {
+          this._loadingEl.style.display = 'none';
+
+          var res = {};
+
+          if (!response){
+            res = {
+              type: 'FeatureCollection',
+              features: []
+            }
+          } else if (response.statusCode == '200') {
+            res = response.body;
+            res.request = response.request
+            res.headers = response.headers
+          }
+
+          res.config = config;
+
+          if (this.fresh){
+            this.eventManager.start(this);
+            this.fresh = false;
+          }
+
+          // supplement Mapbox Geocoding API results with locally populated results
+          res.features = res.features
+            ? localGeocoderRes.concat(res.features)
+            : localGeocoderRes;
+
+          if (this.options.externalGeocoder) {
+
+            externalGeocoderRes = this.options.externalGeocoder(searchInput, res.features) || [];
+            // supplement Mapbox Geocoding API results with features returned by a promise
+            return externalGeocoderRes.then(function(features) {
+              res.features = res.features ? features.concat(res.features) : features;
+              return res;
+            }, function(){
+              // on error, display the original result
+              return res;
+            });
+          }
+          return res;
+
+        }.bind(this)).then(
+        function(res) {
+          if (geocoderError) {
+            throw geocoderError;
+          }
+
+          // apply results filter if provided
+          if (this.options.filter && res.features.length) {
+            res.features = res.features.filter(this.options.filter);
+          }
+
+          if (res.features.length) {
+            this._clearEl.style.display = 'block';
+            this._eventEmitter.emit('results', res);
+            this._typeahead.update(res.features);
+          } else {
+            this._clearEl.style.display = 'none';
+            this._typeahead.selected = null;
+            this._renderNoResults();
+            this._eventEmitter.emit('results', res);
+          }
+
+        }.bind(this)
+      ).catch(
+        function(err) {
+          this._loadingEl.style.display = 'none';
+
+          // in the event of an error in the Mapbox Geocoding API still display results from the localGeocoder
+          if ((localGeocoderRes.length && this.options.localGeocoder) || (externalGeocoderRes.length && this.options.externalGeocoder) ) {
+            this._clearEl.style.display = 'block';
+            this._typeahead.update(localGeocoderRes);
+          } else {
+            this._clearEl.style.display = 'none';
+            this._typeahead.selected = null;
+            this._renderError();
+          }
+
+          this._eventEmitter.emit('results', { features: localGeocoderRes });
+          this._eventEmitter.emit('error', { error: err });
+        }.bind(this)
+      );
+
+    return request;
+  },
+
+  /**
+   * Shared logic for clearing input
+   * @param {Event} [ev] the event that triggered the clear, if available
+   * @private
+   *
+   */
+  _clear: function(ev) {
+    if (ev) ev.preventDefault();
+    this._inputEl.value = '';
+    this._typeahead.selected = null;
+    this._typeahead.clear();
+    this._onChange();
+    this._clearEl.style.display = 'none';
+    this._removeMarker();
+    this.lastSelected = null;
+    this._eventEmitter.emit('clear');
+    this.fresh = true;
+  },
+
+  /**
+   * Clear and then focus the input.
+   * @param {Event} [ev] the event that triggered the clear, if available
+   *
+   */
+  clear: function(ev) {
+    this._clear(ev);
+    this._inputEl.focus();
+  },
+
+
+  /**
+   * Clear the input, without refocusing it. Used to implement clearOnBlur
+   * constructor option.
+   * @param {Event} [ev] the blur event
+   * @private
+   */
+  _clearOnBlur: function(ev) {
+    var ctx = this;
+
+    /*
+     * If relatedTarget is not found, assume user targeted the suggestions list.
+     * In that case, do not clear on blur. There are other edge cases where
+     * ev.relatedTarget could be null. Clicking on list always results in null
+     * relatedtarget because of upstream behavior in `suggestions`.
+     *
+     * The ideal solution would be to check if ev.relatedTarget is a child of
+     * the list. See issue #258 for details on why we can't do that yet.
+     */
+    if (ev.relatedTarget) {
+      ctx._clear(ev);
+    }
+  },
+
+  _onQueryResult: function(response) {
+    var results = response.body;
+    if (!results.features.length) return;
+    var result = results.features[0];
+    this._typeahead.selected = result;
+    this._inputEl.value = result.place_name;
+    this._onChange();
+  },
+
+  _updateProximity: function() {
+    // proximity is designed for local scale, if the user is looking at the whole world,
+    // it doesn't make sense to factor in the arbitrary centre of the map
+    if (!this._map){
+      return;
+    }
+    if (this._map.getZoom() > 9) {
+      var center = this._map.getCenter().wrap();
+      this.setProximity({ longitude: center.lng, latitude: center.lat });
+    } else {
+      this.setProximity(null);
+    }
+  },
+
+  _collapse: function() {
+    // do not collapse if input is in focus
+    if (!this._inputEl.value && this._inputEl !== document.activeElement) this.container.classList.add('mapboxgl-ctrl-geocoder--collapsed');
+  },
+
+  _unCollapse: function() {
+    this.container.classList.remove('mapboxgl-ctrl-geocoder--collapsed');
+  },
+
+  /**
+   * Set & query the input
+   * @param {string} searchInput location name or other search input
+   * @returns {MapboxGeocoder} this
+   */
+  query: function(searchInput) {
+    this._geocode(searchInput).then(this._onQueryResult);
+    return this;
+  },
+
+  _renderError: function(){
+    var errorMessage = "<div class='mapbox-gl-geocoder--error'>There was an error reaching the server</div>"
+    this._renderMessage(errorMessage);
+  },
+
+  _renderNoResults: function(){
+    var errorMessage = "<div class='mapbox-gl-geocoder--error mapbox-gl-geocoder--no-results'>No results found</div>";
+    this._renderMessage(errorMessage);
+  },
+
+  _renderMessage: function(msg){
+    this._typeahead.update([]);
+    this._typeahead.selected = null;
+    this._typeahead.clear();
+    this._typeahead.renderError(msg);
+  },
+
+  /**
+   * Get the text to use as the search bar placeholder
+   *
+   * If placeholder is provided in options, then use options.placeholder
+   * Otherwise, if language is provided in options, then use the localized string of the first language if available
+   * Otherwise use the default
+   *
+   * @returns {String} the value to use as the search bar placeholder
+   * @private
+   */
+  _getPlaceholderText: function(){
+    if (this.options.placeholder) return this.options.placeholder;
+    if (this.options.language){
+      var firstLanguage = this.options.language.split(",")[0];
+      var language = subtag.language(firstLanguage);
+      var localizedValue = localization.placeholder[language];
+      if (localizedValue)  return localizedValue;
+    }
+    return 'Search';
+  },
+
+  /**
+   * Set input
+   * @param {string} searchInput location name or other search input
+   * @returns {MapboxGeocoder} this
+   */
+  setInput: function(searchInput) {
+    // Set input value to passed value and clear everything else.
+    this._inputEl.value = searchInput;
+    this._typeahead.selected = null;
+    this._typeahead.clear();
+    if (searchInput.length >= this.options.minLength) {
+      this._geocode(searchInput);
+    }
+    return this;
+  },
+
+  /**
+   * Set proximity
+   * @param {Object} proximity The new `options.proximity` value. This is a geographical point given as an object with `latitude` and `longitude` properties.
+   * @returns {MapboxGeocoder} this
+   */
+  setProximity: function(proximity) {
+    this.options.proximity = proximity;
+    return this;
+  },
+
+  /**
+   * Get proximity
+   * @returns {Object} The geocoder proximity
+   */
+  getProximity: function() {
+    return this.options.proximity;
+  },
+
+  /**
+   * Set the render function used in the results dropdown
+   * @param {Function} fn The function to use as a render function. This function accepts a single [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) object as input and returns a string.
+   * @returns {MapboxGeocoder} this
+   */
+  setRenderFunction: function(fn){
+    if (fn && typeof(fn) == "function"){
+      this._typeahead.render = fn;
+    }
+    return this;
+  },
+
+  /**
+   * Get the function used to render the results dropdown
+   *
+   * @returns {Function} the render function
+   */
+  getRenderFunction: function(){
+    return this._typeahead.render;
+  },
+
+  /**
+   * Get the language to use in UI elements and when making search requests
+   *
+   * Look first at the explicitly set options otherwise use the browser's language settings
+   * @param {String} language Specify the language to use for response text and query result weighting. Options are IETF language tags comprised of a mandatory ISO 639-1 language code and optionally one or more IETF subtags for country or script. More than one value can also be specified, separated by commas.
+   * @returns {MapboxGeocoder} this
+   */
+  setLanguage: function(language){
+    var browserLocale = navigator.language || navigator.userLanguage || navigator.browserLanguage;
+    this.options.language = language || this.options.language || browserLocale;
+    return this;
+  },
+
+  /**
+   * Get the language to use in UI elements and when making search requests
+   * @returns {String} The language(s) used by the plugin, if any
+   */
+  getLanguage: function(){
+    return this.options.language;
+  },
+
+  /**
+   * Get the zoom level the map will move to when there is no bounding box on the selected result
+   * @returns {Number} the map zoom
+   */
+  getZoom: function(){
+    return this.options.zoom;
+  },
+
+  /**
+   * Set the zoom level
+   * @param {Number} zoom The zoom level that the map should animate to when a `bbox` isn't found in the response. If a `bbox` is found the map will fit to the `bbox`.
+   * @returns {MapboxGeocoder} this
+   */
+  setZoom: function(zoom){
+    this.options.zoom = zoom;
+    return this;
+  },
+
+  /**
+   * Get the parameters used to fly to the selected response, if any
+   * @returns {Boolean|Object} The `flyTo` option
+   */
+  getFlyTo: function(){
+    return this.options.flyTo;
+  },
+
+  /**
+   * Set the flyTo options
+   * @param {Boolean|Object} flyTo If false, animating the map to a selected result is disabled. If true, animating the map will use the default animation parameters. If an object, it will be passed as `options` to the map [`flyTo`](https://docs.mapbox.com/mapbox-gl-js/api/#map#flyto) or [`fitBounds`](https://docs.mapbox.com/mapbox-gl-js/api/#map#fitbounds) method providing control over the animation of the transition.
+   */
+  setFlyTo: function(flyTo){
+    this.options.flyTo = flyTo;
+    return this;
+  },
+
+  /**
+   * Get the value of the placeholder string
+   * @returns {String} The input element's placeholder value
+   */
+  getPlaceholder: function(){
+    return this.options.placeholder;
+  },
+
+  /**
+   * Set the value of the input element's placeholder
+   * @param {String} placeholder the text to use as the input element's placeholder
+   * @returns {MapboxGeocoder} this
+   */
+  setPlaceholder: function(placeholder){
+    this.placeholder = (placeholder) ? placeholder : this._getPlaceholderText();
+    this._inputEl.placeholder = this.placeholder;
+    this._inputEl.setAttribute('aria-label', this.placeholder);
+    return this
+  },
+
+  /**
+   * Get the bounding box used by the plugin
+   * @returns {Array<Number>} the bounding box, if any
+   */
+  getBbox: function(){
+    return this.options.bbox;
+  },
+
+  /**
+   * Set the bounding box to limit search results to
+   * @param {Array<Number>} bbox a bounding box given as an array in the format [minX, minY, maxX, maxY].
+   * @returns {MapboxGeocoder} this
+   */
+  setBbox: function(bbox){
+    this.options.bbox = bbox;
+    return this;
+  },
+
+  /**
+   * Get a list of the countries to limit search results to
+   * @returns {String} a comma separated list of countries to limit to, if any
+   */
+  getCountries: function(){
+    return this.options.countries;
+  },
+
+  /**
+   * Set the countries to limit search results to
+   * @param {String} countries a comma separated list of countries to limit to
+   * @returns {MapboxGeocoder} this
+   */
+  setCountries: function(countries){
+    this.options.countries = countries;
+    return this;
+  },
+
+  /**
+   * Get a list of the types to limit search results to
+   * @returns {String} a comma separated list of types to limit to
+   */
+  getTypes: function(){
+    return this.options.types;
+  },
+
+  /**
+   * Set the types to limit search results to
+   * @param {String} countries a comma separated list of types to limit to
+   * @returns {MapboxGeocoder} this
+   */
+  setTypes: function(types){
+    this.options.types = types;
+    return this;
+  },
+
+  /**
+   * Get the minimum number of characters typed to trigger results used in the plugin
+   * @returns {Number} The minimum length in characters before a search is triggered
+   */
+  getMinLength: function(){
+    return this.options.minLength;
+  },
+
+  /**
+   * Set the minimum number of characters typed to trigger results used by the plugin
+   * @param {Number} minLength the minimum length in characters
+   * @returns {MapboxGeocoder} this
+   */
+  setMinLength: function(minLength){
+    this.options.minLength = minLength;
+    if (this._typeahead)  this._typeahead.minLength = minLength;
+    return this;
+  },
+
+  /**
+   * Get the limit value for the number of results to display used by the plugin
+   * @returns {Number} The limit value for the number of results to display used by the plugin
+   */
+  getLimit: function(){
+    return this.options.limit;
+  },
+
+  /**
+   * Set the limit value for the number of results to display used by the plugin
+   * @param {Number} limit the number of search results to return
+   * @returns {MapboxGeocoder}
+   */
+  setLimit: function(limit){
+    this.options.limit = limit;
+    if (this._typeahead) this._typeahead.options.limit = limit;
+    return this;
+  },
+
+  /**
+   * Get the filter function used by the plugin
+   * @returns {Function} the filter function
+   */
+  getFilter: function(){
+    return this.options.filter;
+  },
+
+  /**
+   * Set the filter function used by the plugin.
+   * @param {Function} filter A function which accepts a Feature in the [Carmen GeoJSON](https://github.com/mapbox/carmen/blob/master/carmen-geojson.md) format to filter out results from the Geocoding API response before they are included in the suggestions list. Return `true` to keep the item, `false` otherwise.
+   * @returns {MapboxGeocoder} this
+   */
+  setFilter: function(filter){
+    this.options.filter = filter;
+    return this;
+  },
+
+  /**
+   * Set the geocoding endpoint used by the plugin.
+   * @param {Function} origin A function which accepts an HTTPS URL to specify the endpoint to query results from.
+   * @returns {MapboxGeocoder} this
+   */
+  setOrigin: function(origin){
+    this.options.origin = origin;
+    this.geocoderService = mbxGeocoder(
+      MapboxClient({
+        accessToken: this.options.accessToken,
+        origin: this.options.origin
+      })
+    );
+    return this;
+  },
+
+  /**
+   * Get the geocoding endpoint the plugin is currently set to
+   * @returns {Function} the endpoint URL
+   */
+  getOrigin: function(){
+    return this.options.origin;
+  },
+
+  /**
+   * Handle the placement of a result marking the selected result
+   * @private
+   * @param {Object} selected the selected geojson feature
+   * @returns {MapboxGeocoder} this
+   */
+  _handleMarker: function(selected){
+    // clean up any old marker that might be present
+    if (!this._map){
+      return;
+    }
+    this._removeMarker();
+    var defaultMarkerOptions = {
+      color: '#4668F2'
+    }
+    var markerOptions = extend({}, defaultMarkerOptions, this.options.marker)
+    this.mapMarker = new this._mapboxgl.Marker(markerOptions);
+    if (selected.center) {
+      this.mapMarker
+        .setLngLat(selected.center)
+        .addTo(this._map);
+    } else if (selected.geometry && selected.geometry.type && selected.geometry.type === 'Point' && selected.geometry.coordinates) {
+      this.mapMarker
+        .setLngLat(selected.geometry.coordinates)
+        .addTo(this._map);
+    }
+    return this;
+  },
+
+  /**
+   * Handle the removal of a result marker
+   * @private
+   */
+  _removeMarker: function(){
+    if (this.mapMarker){
+      this.mapMarker.remove();
+      this.mapMarker = null;
+    }
+  },
+
+  /**
+   * Subscribe to events that happen within the plugin.
+   * @param {String} type name of event. Available events and the data passed into their respective event objects are:
+   *
+   * - __clear__ `Emitted when the input is cleared`
+   * - __loading__ `{ query } Emitted when the geocoder is looking up a query`
+   * - __results__ `{ results } Fired when the geocoder returns a response`
+   * - __result__ `{ result } Fired when input is set`
+   * - __error__ `{ error } Error as string`
+   * @param {Function} fn function that's called when the event is emitted.
+   * @returns {MapboxGeocoder} this;
+   */
+  on: function(type, fn) {
+    this._eventEmitter.on(type, fn);
+    return this;
+  },
+
+  /**
+   * Remove an event
+   * @returns {MapboxGeocoder} this
+   * @param {String} type Event name.
+   * @param {Function} fn Function that should unsubscribe to the event emitted.
+   */
+  off: function(type, fn) {
+    this._eventEmitter.removeListener(type, fn);
+    this.eventManager.remove();
+    return this;
+  }
+};
+
+module.exports = MapboxGeocoder;
+
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * A typeahead component for inputs
+ * @class Suggestions
+ *
+ * @param {HTMLInputElement} el A valid HTML input element
+ * @param {Array} data An array of data used for results
+ * @param {Object} options
+ * @param {Number} [options.limit=5] Max number of results to display in the auto suggest list.
+ * @param {Number} [options.minLength=2] Number of characters typed into an input to trigger suggestions.
+ * @param {Boolean} [options.hideOnBlur=true] If `true`, hides the suggestions when focus is lost.
+ * @return {Suggestions} `this`
+ * @example
+ * // in the browser
+ * var input = document.querySelector('input');
+ * var data = [
+ *   'Roy Eldridge',
+ *   'Roy Hargrove',
+ *   'Rex Stewart'
+ * ];
+ *
+ * new Suggestions(input, data);
+ *
+ * // with options
+ * var input = document.querySelector('input');
+ * var data = [{
+ *   name: 'Roy Eldridge',
+ *   year: 1911
+ * }, {
+ *   name: 'Roy Hargrove',
+ *   year: 1969
+ * }, {
+ *   name: 'Rex Stewart',
+ *   year: 1907
+ * }];
+ *
+ * var typeahead = new Suggestions(input, data, {
+ *   filter: false, // Disable filtering
+ *   minLength: 3, // Number of characters typed into an input to trigger suggestions.
+ *   limit: 3, //  Max number of results to display.
+ *   hideOnBlur: false // Don't hide results when input loses focus
+ * });
+ *
+ * // As we're passing an object of an arrays as data, override
+ * // `getItemValue` by specifying the specific property to search on.
+ * typeahead.getItemValue = function(item) { return item.name };
+ *
+ * input.addEventListener('change', function() {
+ *   console.log(typeahead.selected); // Current selected item.
+ * });
+ *
+ * // With browserify
+ * var Suggestions = require('suggestions');
+ *
+ * new Suggestions(input, data);
+ */
+var Suggestions = __webpack_require__(157);
+window.Suggestions = module.exports = Suggestions;
+
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var extend = __webpack_require__(37);
+var fuzzy = __webpack_require__(158);
+var List = __webpack_require__(159);
+
+var Suggestions = function(el, data, options) {
+  options = options || {};
+
+  this.options = extend({
+    minLength: 2,
+    limit: 5,
+    filter: true,
+    hideOnBlur: true
+  }, options);
+
+  this.el = el;
+  this.data = data || [];
+  this.list = new List(this);
+
+  this.query = '';
+  this.selected = null;
+
+  this.list.draw();
+
+  this.el.addEventListener('keyup', function(e) {
+    this.handleKeyUp(e.keyCode);
+  }.bind(this), false);
+
+  this.el.addEventListener('keydown', function(e) {
+    this.handleKeyDown(e);
+  }.bind(this));
+
+  this.el.addEventListener('focus', function() {
+    this.handleFocus();
+  }.bind(this));
+
+  this.el.addEventListener('blur', function() {
+    this.handleBlur();
+  }.bind(this));
+
+  this.el.addEventListener('paste', function(e) {
+    this.handlePaste(e);
+  }.bind(this));
+
+  // use user-provided render function if given, otherwise just use the default
+  this.render = (this.options.render) ? this.options.render.bind(this) : this.render.bind(this)
+
+  this.getItemValue = (this.options.getItemValue) ? this.options.getItemValue.bind(this) : this.getItemValue.bind(this);
+
+  return this;
+};
+
+Suggestions.prototype.handleKeyUp = function(keyCode) {
+  // 40 - DOWN
+  // 38 - UP
+  // 27 - ESC
+  // 13 - ENTER
+  // 9 - TAB
+
+  if (keyCode === 40 ||
+      keyCode === 38 ||
+      keyCode === 27 ||
+      keyCode === 13 ||
+      keyCode === 9) return;
+
+  this.handleInputChange(this.el.value);
+};
+
+Suggestions.prototype.handleKeyDown = function(e) {
+  switch (e.keyCode) {
+    case 13: // ENTER
+    case 9: // TAB
+      if (!this.list.isEmpty()) {
+        if (this.list.isVisible()) {
+          e.preventDefault();
+        }
+        this.value(this.list.items[this.list.active].original);
+        this.list.hide();
+      }
+    break;
+    case 27: // ESC
+      if (!this.list.isEmpty()) this.list.hide();
+    break;
+    case 38: // UP
+      this.list.previous();
+    break;
+    case 40: // DOWN
+      this.list.next();
+    break;
+  }
+};
+
+Suggestions.prototype.handleBlur = function() {
+  if (!this.list.selectingListItem && this.options.hideOnBlur) {
+    this.list.hide();
+  }
+};
+
+Suggestions.prototype.handlePaste = function(e) {
+  if (e.clipboardData) {
+    this.handleInputChange(e.clipboardData.getData('Text'));
+  } else {
+    var self = this;
+    setTimeout(function () {
+      self.handleInputChange(e.target.value);
+    }, 100);
+  }
+};
+
+Suggestions.prototype.handleInputChange = function(query) {
+  this.query = this.normalize(query);
+
+  this.list.clear();
+
+  if (this.query.length < this.options.minLength) {
+    this.list.draw();
+    return;
+  }
+
+  this.getCandidates(function(data) {
+    for (var i = 0; i < data.length; i++) {
+      this.list.add(data[i]);
+      if (i === (this.options.limit - 1)) break;
+    }
+    this.list.draw();
+  }.bind(this));
+};
+
+Suggestions.prototype.handleFocus = function() {
+  if (!this.list.isEmpty()) this.list.show();
+  this.list.selectingListItem = false;
+};
+
+/**
+ * Update data previously passed
+ *
+ * @param {Array} revisedData
+ */
+Suggestions.prototype.update = function(revisedData) {
+  this.data = revisedData;
+  this.handleKeyUp();
+};
+
+/**
+ * Clears data
+ */
+Suggestions.prototype.clear = function() {
+  this.data = [];
+  this.list.clear();
+};
+
+/**
+ * Normalize the results list and input value for matching
+ *
+ * @param {String} value
+ * @return {String}
+ */
+Suggestions.prototype.normalize = function(value) {
+  value = value.toLowerCase();
+  return value;
+};
+
+/**
+ * Evaluates whether an array item qualifies as a match with the current query
+ *
+ * @param {String} candidate a possible item from the array passed
+ * @param {String} query the current query
+ * @return {Boolean}
+ */
+Suggestions.prototype.match = function(candidate, query) {
+  return candidate.indexOf(query) > -1;
+};
+
+Suggestions.prototype.value = function(value) {
+  this.selected = value;
+  this.el.value = this.getItemValue(value);
+
+  if (document.createEvent) {
+    var e = document.createEvent('HTMLEvents');
+    e.initEvent('change', true, false);
+    this.el.dispatchEvent(e);
+  } else {
+    this.el.fireEvent('onchange');
+  }
+};
+
+Suggestions.prototype.getCandidates = function(callback) {
+  var options = {
+    pre: '<strong>',
+    post: '</strong>',
+    extract: function(d) { return this.getItemValue(d); }.bind(this)
+  };
+  var results;
+  if(this.options.filter){
+    results = fuzzy.filter(this.query, this.data, options);
+
+    results = results.map(function(item){
+      return {
+        original: item.original,
+        string: this.render(item.original, item.string)
+      };
+    }.bind(this))
+  }else{
+    results = this.data.map(function(d) {
+      var renderedString = this.render(d);
+      return {
+        original: d,
+        string: renderedString
+      };
+    }.bind(this));
+  }
+  callback(results);
+};
+
+/**
+ * For a given item in the data array, return what should be used as the candidate string
+ *
+ * @param {Object|String} item an item from the data array
+ * @return {String} item
+ */
+Suggestions.prototype.getItemValue = function(item) {
+  return item;
+};
+
+/**
+ * For a given item in the data array, return a string of html that should be rendered in the dropdown
+ * @param {Object|String} item an item from the data array
+ * @param {String} sourceFormatting a string that has pre-formatted html that should be passed directly through the render function 
+ * @return {String} html
+ */
+Suggestions.prototype.render = function(item, sourceFormatting) {
+  if (sourceFormatting){
+    // use existing formatting on the source string
+    return sourceFormatting;
+  }
+  var boldString = (item.original) ? this.getItemValue(item.original) : this.getItemValue(item);
+  var indexString = this.normalize(boldString);
+  var indexOfQuery = indexString.lastIndexOf(this.query);
+  while (indexOfQuery > -1) {
+    var endIndexOfQuery = indexOfQuery + this.query.length;
+    boldString = boldString.slice(0, indexOfQuery) + '<strong>' + boldString.slice(indexOfQuery, endIndexOfQuery) + '</strong>' + boldString.slice(endIndexOfQuery);
+    indexOfQuery = indexString.slice(0, indexOfQuery).lastIndexOf(this.query);
+  }
+  return boldString
+}
+
+/**
+ * Render an custom error message in the suggestions list
+ * @param {String} msg An html string to render as an error message
+ */
+Suggestions.prototype.renderError = function(msg){
+  this.list.drawError(msg);
+}
+
+module.exports = Suggestions;
+
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+ * Fuzzy
+ * https://github.com/myork/fuzzy
+ *
+ * Copyright (c) 2012 Matt York
+ * Licensed under the MIT license.
+ */
+
+(function() {
+
+var root = this;
+
+var fuzzy = {};
+
+// Use in node or in browser
+if (true) {
+  module.exports = fuzzy;
+} else {
+  root.fuzzy = fuzzy;
+}
+
+// Return all elements of `array` that have a fuzzy
+// match against `pattern`.
+fuzzy.simpleFilter = function(pattern, array) {
+  return array.filter(function(str) {
+    return fuzzy.test(pattern, str);
+  });
+};
+
+// Does `pattern` fuzzy match `str`?
+fuzzy.test = function(pattern, str) {
+  return fuzzy.match(pattern, str) !== null;
+};
+
+// If `pattern` matches `str`, wrap each matching character
+// in `opts.pre` and `opts.post`. If no match, return null
+fuzzy.match = function(pattern, str, opts) {
+  opts = opts || {};
+  var patternIdx = 0
+    , result = []
+    , len = str.length
+    , totalScore = 0
+    , currScore = 0
+    // prefix
+    , pre = opts.pre || ''
+    // suffix
+    , post = opts.post || ''
+    // String to compare against. This might be a lowercase version of the
+    // raw string
+    , compareString =  opts.caseSensitive && str || str.toLowerCase()
+    , ch;
+
+  pattern = opts.caseSensitive && pattern || pattern.toLowerCase();
+
+  // For each character in the string, either add it to the result
+  // or wrap in template if it's the next string in the pattern
+  for(var idx = 0; idx < len; idx++) {
+    ch = str[idx];
+    if(compareString[idx] === pattern[patternIdx]) {
+      ch = pre + ch + post;
+      patternIdx += 1;
+
+      // consecutive characters should increase the score more than linearly
+      currScore += 1 + currScore;
+    } else {
+      currScore = 0;
+    }
+    totalScore += currScore;
+    result[result.length] = ch;
+  }
+
+  // return rendered string if we have a match for every char
+  if(patternIdx === pattern.length) {
+    // if the string is an exact match with pattern, totalScore should be maxed
+    totalScore = (compareString === pattern) ? Infinity : totalScore;
+    return {rendered: result.join(''), score: totalScore};
+  }
+
+  return null;
+};
+
+// The normal entry point. Filters `arr` for matches against `pattern`.
+// It returns an array with matching values of the type:
+//
+//     [{
+//         string:   '<b>lah' // The rendered string
+//       , index:    2        // The index of the element in `arr`
+//       , original: 'blah'   // The original element in `arr`
+//     }]
+//
+// `opts` is an optional argument bag. Details:
+//
+//    opts = {
+//        // string to put before a matching character
+//        pre:     '<b>'
+//
+//        // string to put after matching character
+//      , post:    '</b>'
+//
+//        // Optional function. Input is an entry in the given arr`,
+//        // output should be the string to test `pattern` against.
+//        // In this example, if `arr = [{crying: 'koala'}]` we would return
+//        // 'koala'.
+//      , extract: function(arg) { return arg.crying; }
+//    }
+fuzzy.filter = function(pattern, arr, opts) {
+  if(!arr || arr.length === 0) {
+    return [];
+  }
+  if (typeof pattern !== 'string') {
+    return arr;
+  }
+  opts = opts || {};
+  return arr
+    .reduce(function(prev, element, idx, arr) {
+      var str = element;
+      if(opts.extract) {
+        str = opts.extract(element);
+      }
+      var rendered = fuzzy.match(pattern, str, opts);
+      if(rendered != null) {
+        prev[prev.length] = {
+            string: rendered.rendered
+          , score: rendered.score
+          , index: idx
+          , original: element
+        };
+      }
+      return prev;
+    }, [])
+
+    // Sort by score. Browsers are inconsistent wrt stable/unstable
+    // sorting, so force stable by using the index in the case of tie.
+    // See http://ofb.net/~sethml/is-sort-stable.html
+    .sort(function(a,b) {
+      var compare = b.score - a.score;
+      if(compare) return compare;
+      return a.index - b.index;
+    });
+};
+
+
+}());
+
+
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var List = function(component) {
+  this.component = component;
+  this.items = [];
+  this.active = 0;
+  this.wrapper = document.createElement('div');
+  this.wrapper.className = 'suggestions-wrapper';
+  this.element = document.createElement('ul');
+  this.element.className = 'suggestions';
+  this.wrapper.appendChild(this.element);
+
+  // selectingListItem is set to true in the time between the mousedown and mouseup when clicking an item in the list
+  // mousedown on a list item will cause the input to blur which normally hides the list, so this flag is used to keep
+  // the list open until the mouseup
+  this.selectingListItem = false;
+
+  component.el.parentNode.insertBefore(this.wrapper, component.el.nextSibling);
+  return this;
+};
+
+List.prototype.show = function() {
+  this.element.style.display = 'block';
+};
+
+List.prototype.hide = function() {
+  this.element.style.display = 'none';
+};
+
+List.prototype.add = function(item) {
+  this.items.push(item);
+};
+
+List.prototype.clear = function() {
+  this.items = [];
+  this.active = 0;
+};
+
+List.prototype.isEmpty = function() {
+  return !this.items.length;
+};
+
+List.prototype.isVisible = function() {
+  return this.element.style.display === 'block';
+};
+
+List.prototype.draw = function() {
+  this.element.innerHTML = '';
+
+  if (this.items.length === 0) {
+    this.hide();
+    return;
+  }
+
+  for (var i = 0; i < this.items.length; i++) {
+    this.drawItem(this.items[i], this.active === i);
+  }
+
+  this.show();
+};
+
+List.prototype.drawItem = function(item, active) {
+  var li = document.createElement('li'),
+    a = document.createElement('a');
+
+  if (active) li.className += ' active';
+
+  a.innerHTML = item.string;
+
+  li.appendChild(a);
+  this.element.appendChild(li);
+
+  li.addEventListener('mousedown', function() {
+    this.selectingListItem = true;
+  }.bind(this));
+
+  li.addEventListener('mouseup', function() {
+    this.handleMouseUp.call(this, item);
+  }.bind(this));
+};
+
+List.prototype.handleMouseUp = function(item) {
+  this.selectingListItem = false;
+  this.component.value(item.original);
+  this.clear();
+  this.draw();
+};
+
+List.prototype.move = function(index) {
+  this.active = index;
+  this.draw();
+};
+
+List.prototype.previous = function() {
+  this.move(this.active === 0 ? this.items.length - 1 : this.active - 1);
+};
+
+List.prototype.next = function() {
+  this.move(this.active === this.items.length - 1 ? 0 : this.active + 1);
+};
+
+List.prototype.drawError = function(msg){
+  var li = document.createElement('li');
+
+  li.innerHTML = msg;
+
+  this.element.appendChild(li);
+  this.show();
+}
+
+module.exports = List;
+
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * lodash (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max,
+    nativeMin = Math.min;
+
+/**
+ * Gets the timestamp of the number of milliseconds that have elapsed since
+ * the Unix epoch (1 January 1970 00:00:00 UTC).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Date
+ * @returns {number} Returns the timestamp.
+ * @example
+ *
+ * _.defer(function(stamp) {
+ *   console.log(_.now() - stamp);
+ * }, _.now());
+ * // => Logs the number of milliseconds it took for the deferred invocation.
+ */
+var now = function() {
+  return root.Date.now();
+};
+
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked. The debounced function comes with a `cancel` method to cancel
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide `options` to indicate whether `func` should be invoked on the
+ * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+ * with the last arguments provided to the debounced function. Subsequent
+ * calls to the debounced function return the result of the last `func`
+ * invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the debounced function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.debounce` and `_.throttle`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0] The number of milliseconds to delay.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', _.debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }));
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+ * var source = new EventSource('/stream');
+ * jQuery(source).on('message', debounced);
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel);
+ */
+function debounce(func, wait, options) {
+  var lastArgs,
+      lastThis,
+      maxWait,
+      result,
+      timerId,
+      lastCallTime,
+      lastInvokeTime = 0,
+      leading = false,
+      maxing = false,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  wait = toNumber(wait) || 0;
+  if (isObject(options)) {
+    leading = !!options.leading;
+    maxing = 'maxWait' in options;
+    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+
+  function invokeFunc(time) {
+    var args = lastArgs,
+        thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function leadingEdge(time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time;
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait);
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result;
+  }
+
+  function remainingWait(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime,
+        result = wait - timeSinceLastCall;
+
+    return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+  }
+
+  function shouldInvoke(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime;
+
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+  }
+
+  function timerExpired() {
+    var time = now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = setTimeout(timerExpired, remainingWait(time));
+  }
+
+  function trailingEdge(time) {
+    timerId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+    }
+    lastInvokeTime = 0;
+    lastArgs = lastCallTime = lastThis = timerId = undefined;
+  }
+
+  function flush() {
+    return timerId === undefined ? result : trailingEdge(now());
+  }
+
+  function debounced() {
+    var time = now(),
+        isInvoking = shouldInvoke(time);
+
+    lastArgs = arguments;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        timerId = setTimeout(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait);
+    }
+    return result;
+  }
+  debounced.cancel = cancel;
+  debounced.flush = flush;
+  return debounced;
+}
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+}
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+module.exports = debounce;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  'fr': {
+    'name': 'France',
+    'bbox': [[-4.59235, 41.380007], [9.560016, 51.148506]]
+  },
+  'us': {
+    'name': 'United States',
+    'bbox': [[-171.791111, 18.91619], [-66.96466, 71.357764]]
+  },
+  'ru': {
+    'name': 'Russia',
+    'bbox': [[19.66064, 41.151416], [190.10042, 81.2504]]
+  },
+  'ca': {
+    'name': 'Canada',
+    'bbox': [[-140.99778, 41.675105], [-52.648099, 83.23324]]
+  }
+};
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var client = __webpack_require__(69);
+
+module.exports = client;
+
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var MapiResponse = __webpack_require__(164);
+var MapiError = __webpack_require__(166);
+var constants = __webpack_require__(45);
+var parseHeaders = __webpack_require__(167);
+
+// Keys are request IDs, values are XHRs.
+var requestsUnderway = {};
+
+function browserAbort(request) {
+  var xhr = requestsUnderway[request.id];
+  if (!xhr) return;
+  xhr.abort();
+  delete requestsUnderway[request.id];
+}
+
+function createResponse(request, xhr) {
+  return new MapiResponse(request, {
+    body: xhr.response,
+    headers: parseHeaders(xhr.getAllResponseHeaders()),
+    statusCode: xhr.status
+  });
+}
+
+function normalizeBrowserProgressEvent(event) {
+  var total = event.total;
+  var transferred = event.loaded;
+  var percent = (100 * transferred) / total;
+  return {
+    total: total,
+    transferred: transferred,
+    percent: percent
+  };
+}
+
+function sendRequestXhr(request, xhr) {
+  return new Promise(function(resolve, reject) {
+    xhr.onprogress = function(event) {
+      request.emitter.emit(
+        constants.EVENT_PROGRESS_DOWNLOAD,
+        normalizeBrowserProgressEvent(event)
+      );
+    };
+
+    var file = request.file;
+    if (file) {
+      xhr.upload.onprogress = function(event) {
+        request.emitter.emit(
+          constants.EVENT_PROGRESS_UPLOAD,
+          normalizeBrowserProgressEvent(event)
+        );
+      };
+    }
+
+    xhr.onerror = function(error) {
+      reject(error);
+    };
+
+    xhr.onabort = function() {
+      var mapiError = new MapiError({
+        request: request,
+        type: constants.ERROR_REQUEST_ABORTED
+      });
+      reject(mapiError);
+    };
+
+    xhr.onload = function() {
+      delete requestsUnderway[request.id];
+      if (xhr.status < 200 || xhr.status >= 400) {
+        var mapiError = new MapiError({
+          request: request,
+          body: xhr.response,
+          statusCode: xhr.status
+        });
+        reject(mapiError);
+        return;
+      }
+      resolve(xhr);
+    };
+
+    var body = request.body;
+
+    // matching service needs to send a www-form-urlencoded request
+    if (typeof body === 'string') {
+      xhr.send(body);
+    } else if (body) {
+      xhr.send(JSON.stringify(body));
+    } else if (file) {
+      xhr.send(file);
+    } else {
+      xhr.send();
+    }
+
+    requestsUnderway[request.id] = xhr;
+  }).then(function(xhr) {
+    return createResponse(request, xhr);
+  });
+}
+
+// The accessToken argument gives this function flexibility
+// for Mapbox's internal client.
+function createRequestXhr(request, accessToken) {
+  var url = request.url(accessToken);
+  var xhr = new window.XMLHttpRequest();
+  xhr.open(request.method, url);
+  Object.keys(request.headers).forEach(function(key) {
+    xhr.setRequestHeader(key, request.headers[key]);
+  });
+  return xhr;
+}
+
+function browserSend(request) {
+  return Promise.resolve().then(function() {
+    var xhr = createRequestXhr(request, request.client.accessToken);
+    return sendRequestXhr(request, xhr);
+  });
+}
+
+module.exports = {
+  browserAbort: browserAbort,
+  sendRequestXhr: sendRequestXhr,
+  browserSend: browserSend,
+  createRequestXhr: createRequestXhr
+};
+
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var parseLinkHeader = __webpack_require__(165);
+
+/**
+ * A Mapbox API response.
+ *
+ * @class MapiResponse
+ * @property {Object} body - The response body, parsed as JSON.
+ * @property {string} rawBody - The raw response body.
+ * @property {number} statusCode - The response's status code.
+ * @property {Object} headers - The parsed response headers.
+ * @property {Object} links - The parsed response links.
+ * @property {MapiRequest} request - The response's originating `MapiRequest`.
+ */
+
+/**
+ * @ignore
+ * @param {MapiRequest} request
+ * @param {Object} responseData
+ * @param {Object} responseData.headers
+ * @param {string} responseData.body
+ * @param {number} responseData.statusCode
+ */
+function MapiResponse(request, responseData) {
+  this.request = request;
+  this.headers = responseData.headers;
+  this.rawBody = responseData.body;
+  this.statusCode = responseData.statusCode;
+  try {
+    this.body = JSON.parse(responseData.body || '{}');
+  } catch (parseError) {
+    this.body = responseData.body;
+  }
+  this.links = parseLinkHeader(this.headers.link);
+}
+
+/**
+ * Check if there is a next page that you can fetch.
+ *
+ * @returns {boolean}
+ */
+MapiResponse.prototype.hasNextPage = function hasNextPage() {
+  return !!this.links.next;
+};
+
+/**
+ * Create a request for the next page, if there is one.
+ * If there is no next page, returns `null`.
+ *
+ * @returns {MapiRequest | null}
+ */
+MapiResponse.prototype.nextPage = function nextPage() {
+  if (!this.hasNextPage()) return null;
+  return this.request._extend({
+    path: this.links.next.url
+  });
+};
+
+module.exports = MapiResponse;
+
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Like https://github.com/thlorenz/lib/parse-link-header but without any
+// additional dependencies.
+
+function parseParam(param) {
+  var parts = param.match(/\s*(.+)\s*=\s*"?([^"]+)"?/);
+  if (!parts) return null;
+
+  return {
+    key: parts[1],
+    value: parts[2]
+  };
+}
+
+function parseLink(link) {
+  var parts = link.match(/<?([^>]*)>(.*)/);
+  if (!parts) return null;
+
+  var linkUrl = parts[1];
+  var linkParams = parts[2].split(';');
+  var rel = null;
+  var parsedLinkParams = linkParams.reduce(function(result, param) {
+    var parsed = parseParam(param);
+    if (!parsed) return result;
+    if (parsed.key === 'rel') {
+      if (!rel) {
+        rel = parsed.value;
+      }
+      return result;
+    }
+    result[parsed.key] = parsed.value;
+    return result;
+  }, {});
+  if (!rel) return null;
+
+  return {
+    url: linkUrl,
+    rel: rel,
+    params: parsedLinkParams
+  };
+}
+
+/**
+ * Parse a Link header.
+ *
+ * @param {string} linkHeader
+ * @returns {{
+ *   [string]: {
+ *     url: string,
+ *     params: { [string]: string }
+ *   }
+ * }}
+ */
+function parseLinkHeader(linkHeader) {
+  if (!linkHeader) return {};
+
+  return linkHeader.split(/,\s*</).reduce(function(result, link) {
+    var parsed = parseLink(link);
+    if (!parsed) return result;
+    // rel value can be multiple whitespace-separated rels.
+    var splitRel = parsed.rel.split(/\s+/);
+    splitRel.forEach(function(rel) {
+      if (!result[rel]) {
+        result[rel] = {
+          url: parsed.url,
+          params: parsed.params
+        };
+      }
+    });
+    return result;
+  }, {});
+}
+
+module.exports = parseLinkHeader;
+
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var constants = __webpack_require__(45);
+
+/**
+ * A Mapbox API error.
+ *
+ * If there's an error during the API transaction,
+ * the Promise returned by `MapiRequest`'s [`send`](#send)
+ * method should reject with a `MapiError`.
+ *
+ * @class MapiError
+ * @hideconstructor
+ * @property {MapiRequest} request - The errored request.
+ * @property {string} type - The type of error. Usually this is `'HttpError'`.
+ *   If the request was aborted, so the error was
+ *   not sent from the server, the type will be
+ *   `'RequestAbortedError'`.
+ * @property {number} [statusCode] - The numeric status code of
+ *   the HTTP response.
+ * @property {Object | string} [body] - If the server sent a response body,
+ *   this property exposes that response, parsed as JSON if possible.
+ * @property {string} [message] - Whatever message could be derived from the
+ *   call site and HTTP response.
+ *
+ * @param {MapiRequest} options.request
+ * @param {number} [options.statusCode]
+ * @param {string} [options.body]
+ * @param {string} [options.message]
+ * @param {string} [options.type]
+ */
+function MapiError(options) {
+  var errorType = options.type || constants.ERROR_HTTP;
+
+  var body;
+  if (options.body) {
+    try {
+      body = JSON.parse(options.body);
+    } catch (e) {
+      body = options.body;
+    }
+  } else {
+    body = null;
+  }
+
+  var message = options.message || null;
+  if (!message) {
+    if (typeof body === 'string') {
+      message = body;
+    } else if (body && typeof body.message === 'string') {
+      message = body.message;
+    } else if (errorType === constants.ERROR_REQUEST_ABORTED) {
+      message = 'Request aborted';
+    }
+  }
+
+  this.message = message;
+  this.type = errorType;
+  this.statusCode = options.statusCode || null;
+  this.request = options.request;
+  this.body = body;
+}
+
+module.exports = MapiError;
+
+
+/***/ }),
+/* 167 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function parseSingleHeader(raw) {
+  var boundary = raw.indexOf(':');
+  var name = raw
+    .substring(0, boundary)
+    .trim()
+    .toLowerCase();
+  var value = raw.substring(boundary + 1).trim();
+  return {
+    name: name,
+    value: value
+  };
+}
+
+/**
+ * Parse raw headers into an object with lowercase properties.
+ * Does not fully parse headings into more complete data structure,
+ * as larger libraries might do. Also does not deal with duplicate
+ * headers because Node doesn't seem to deal with those well, so
+ * we shouldn't let the browser either, for consistency.
+ *
+ * @param {string} raw
+ * @returns {Object}
+ */
+function parseHeaders(raw) {
+  var headers = {};
+  if (!raw) {
+    return headers;
+  }
+
+  raw
+    .trim()
+    .split(/[\r|\n]+/)
+    .forEach(function(rawHeader) {
+      var parsed = parseSingleHeader(rawHeader);
+      headers[parsed.name] = parsed.value;
+    });
+
+  return headers;
+}
+
+module.exports = parseHeaders;
+
+
+/***/ }),
+/* 168 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
+;(function(root) {
+
+	// Detect free variables `exports`.
+	var freeExports = typeof exports == 'object' && exports;
+
+	// Detect free variable `module`.
+	var freeModule = typeof module == 'object' && module &&
+		module.exports == freeExports && module;
+
+	// Detect free variable `global`, from Node.js or Browserified code, and use
+	// it as `root`.
+	var freeGlobal = typeof global == 'object' && global;
+	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+		root = freeGlobal;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var InvalidCharacterError = function(message) {
+		this.message = message;
+	};
+	InvalidCharacterError.prototype = new Error;
+	InvalidCharacterError.prototype.name = 'InvalidCharacterError';
+
+	var error = function(message) {
+		// Note: the error messages used throughout this file match those used by
+		// the native `atob`/`btoa` implementation in Chromium.
+		throw new InvalidCharacterError(message);
+	};
+
+	var TABLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+	// http://whatwg.org/html/common-microsyntaxes.html#space-character
+	var REGEX_SPACE_CHARACTERS = /[\t\n\f\r ]/g;
+
+	// `decode` is designed to be fully compatible with `atob` as described in the
+	// HTML Standard. http://whatwg.org/html/webappapis.html#dom-windowbase64-atob
+	// The optimized base64-decoding algorithm used is based on @atk’s excellent
+	// implementation. https://gist.github.com/atk/1020396
+	var decode = function(input) {
+		input = String(input)
+			.replace(REGEX_SPACE_CHARACTERS, '');
+		var length = input.length;
+		if (length % 4 == 0) {
+			input = input.replace(/==?$/, '');
+			length = input.length;
+		}
+		if (
+			length % 4 == 1 ||
+			// http://whatwg.org/C#alphanumeric-ascii-characters
+			/[^+a-zA-Z0-9/]/.test(input)
+		) {
+			error(
+				'Invalid character: the string to be decoded is not correctly encoded.'
+			);
+		}
+		var bitCounter = 0;
+		var bitStorage;
+		var buffer;
+		var output = '';
+		var position = -1;
+		while (++position < length) {
+			buffer = TABLE.indexOf(input.charAt(position));
+			bitStorage = bitCounter % 4 ? bitStorage * 64 + buffer : buffer;
+			// Unless this is the first of a group of 4 characters…
+			if (bitCounter++ % 4) {
+				// …convert the first 8 bits to a single ASCII character.
+				output += String.fromCharCode(
+					0xFF & bitStorage >> (-2 * bitCounter & 6)
+				);
+			}
+		}
+		return output;
+	};
+
+	// `encode` is designed to be fully compatible with `btoa` as described in the
+	// HTML Standard: http://whatwg.org/html/webappapis.html#dom-windowbase64-btoa
+	var encode = function(input) {
+		input = String(input);
+		if (/[^\0-\xFF]/.test(input)) {
+			// Note: no need to special-case astral symbols here, as surrogates are
+			// matched, and the input is supposed to only contain ASCII anyway.
+			error(
+				'The string to be encoded contains characters outside of the ' +
+				'Latin1 range.'
+			);
+		}
+		var padding = input.length % 3;
+		var output = '';
+		var position = -1;
+		var a;
+		var b;
+		var c;
+		var d;
+		var buffer;
+		// Make sure any padding is handled outside of the loop.
+		var length = input.length - padding;
+
+		while (++position < length) {
+			// Read three bytes, i.e. 24 bits.
+			a = input.charCodeAt(position) << 16;
+			b = input.charCodeAt(++position) << 8;
+			c = input.charCodeAt(++position);
+			buffer = a + b + c;
+			// Turn the 24 bits into four chunks of 6 bits each, and append the
+			// matching character for each of them to the output.
+			output += (
+				TABLE.charAt(buffer >> 18 & 0x3F) +
+				TABLE.charAt(buffer >> 12 & 0x3F) +
+				TABLE.charAt(buffer >> 6 & 0x3F) +
+				TABLE.charAt(buffer & 0x3F)
+			);
+		}
+
+		if (padding == 2) {
+			a = input.charCodeAt(position) << 8;
+			b = input.charCodeAt(++position);
+			buffer = a + b;
+			output += (
+				TABLE.charAt(buffer >> 10) +
+				TABLE.charAt((buffer >> 4) & 0x3F) +
+				TABLE.charAt((buffer << 2) & 0x3F) +
+				'='
+			);
+		} else if (padding == 1) {
+			buffer = input.charCodeAt(position);
+			output += (
+				TABLE.charAt(buffer >> 2) +
+				TABLE.charAt((buffer << 4) & 0x3F) +
+				'=='
+			);
+		}
+
+		return output;
+	};
+
+	var base64 = {
+		'encode': encode,
+		'decode': decode,
+		'version': '0.1.0'
+	};
+
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		true
+	) {
+		!(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+			return base64;
+		}).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}	else if (freeExports && !freeExports.nodeType) {
+		if (freeModule) { // in Node.js or RingoJS v0.8.0+
+			freeModule.exports = base64;
+		} else { // in Narwhal or RingoJS v0.7.0-
+			for (var key in base64) {
+				base64.hasOwnProperty(key) && (freeExports[key] = base64[key]);
+			}
+		}
+	} else { // in Rhino or a web browser
+		root.base64 = base64;
+	}
+
+}(this));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)(module), __webpack_require__(5)))
+
+/***/ }),
+/* 169 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var parseToken = __webpack_require__(71);
+var xtend = __webpack_require__(37);
+var EventEmitter = __webpack_require__(170);
+var urlUtils = __webpack_require__(171);
+var constants = __webpack_require__(45);
+
+var requestId = 1;
+
+/**
+ * A Mapbox API request.
+ *
+ * Note that creating a `MapiRequest` does *not* send the request automatically.
+ * Use the request's `send` method to send it off and get a `Promise`.
+ *
+ * The `emitter` property is an `EventEmitter` that emits the following events:
+ *
+ * - `'response'` - Listeners will be called with a `MapiResponse`.
+ * - `'error'` - Listeners will be called with a `MapiError`.
+ * - `'downloadProgress'` - Listeners will be called with `ProgressEvents`.
+ * - `'uploadProgress'` - Listeners will be called with `ProgressEvents`.
+ *   Upload events are only available when the request includes a file.
+ *
+ * @class MapiRequest
+ * @property {EventEmitter} emitter - An event emitter. See above.
+ * @property {MapiClient} client - This request's `MapiClient`.
+ * @property {MapiResponse|null} response - If this request has been sent and received
+ *   a response, the response is available on this property.
+ * @property {MapiError|Error|null} error - If this request has been sent and
+ *   received an error in response, the error is available on this property.
+ * @property {boolean} aborted - If the request has been aborted
+ *   (via [`abort`](#abort)), this property will be `true`.
+ * @property {boolean} sent - If the request has been sent, this property will
+ *   be `true`. You cannot send the same request twice, so if you need to create
+ *   a new request that is the equivalent of an existing one, use
+ *   [`clone`](#clone).
+ * @property {string} path - The request's path, including colon-prefixed route
+ *   parameters.
+ * @property {string} origin - The request's origin.
+ * @property {string} method - The request's HTTP method.
+ * @property {Object} query - A query object, which will be transformed into
+ *   a URL query string.
+ * @property {Object} params - A route parameters object, whose values will
+ *   be interpolated the path.
+ * @property {Object} headers - The request's headers.
+ * @property {Object|string|null} body - Data to send with the request.
+ *   If the request has a body, it will also be sent with the header
+ *   `'Content-Type: application/json'`.
+ * @property {Blob|ArrayBuffer|string|ReadStream} file - A file to
+ *   send with the request. The browser client accepts Blobs and ArrayBuffers;
+ *   the Node client accepts strings (filepaths) and ReadStreams.
+ * @property {string} encoding - The encoding of the response.
+ * @property {string} sendFileAs - The method to send the `file`. Options are
+ *   `data` (x-www-form-urlencoded) or `form` (multipart/form-data).
+ */
+
+/**
+ * @ignore
+ * @param {MapiClient} client
+ * @param {Object} options
+ * @param {string} options.method
+ * @param {string} options.path
+ * @param {Object} [options.query={}]
+ * @param {Object} [options.params={}]
+ * @param {string} [options.origin]
+ * @param {Object} [options.headers]
+ * @param {Object} [options.body=null]
+ * @param {Blob|ArrayBuffer|string|ReadStream} [options.file=null]
+ * @param {string} [options.encoding=utf8]
+ */
+function MapiRequest(client, options) {
+  if (!client) {
+    throw new Error('MapiRequest requires a client');
+  }
+  if (!options || !options.path || !options.method) {
+    throw new Error(
+      'MapiRequest requires an options object with path and method properties'
+    );
+  }
+
+  var defaultHeaders = {};
+  if (options.body) {
+    defaultHeaders['content-type'] = 'application/json';
+  }
+
+  var headersWithDefaults = xtend(defaultHeaders, options.headers);
+
+  // Disallows duplicate header names of mixed case,
+  // e.g. Content-Type and content-type.
+  var headers = Object.keys(headersWithDefaults).reduce(function(memo, name) {
+    memo[name.toLowerCase()] = headersWithDefaults[name];
+    return memo;
+  }, {});
+
+  this.id = requestId++;
+  this._options = options;
+
+  this.emitter = new EventEmitter();
+  this.client = client;
+  this.response = null;
+  this.error = null;
+  this.sent = false;
+  this.aborted = false;
+  this.path = options.path;
+  this.method = options.method;
+  this.origin = options.origin || client.origin;
+  this.query = options.query || {};
+  this.params = options.params || {};
+  this.body = options.body || null;
+  this.file = options.file || null;
+  this.encoding = options.encoding || 'utf8';
+  this.sendFileAs = options.sendFileAs || null;
+  this.headers = headers;
+}
+
+/**
+ * Get the URL of the request.
+ *
+ * @param {string} [accessToken] - By default, the access token of the request's
+ *   client is used.
+ * @return {string}
+ */
+MapiRequest.prototype.url = function url(accessToken) {
+  var url = urlUtils.prependOrigin(this.path, this.origin);
+  url = urlUtils.appendQueryObject(url, this.query);
+  var routeParams = this.params;
+  var actualAccessToken =
+    accessToken == null ? this.client.accessToken : accessToken;
+  if (actualAccessToken) {
+    url = urlUtils.appendQueryParam(url, 'access_token', actualAccessToken);
+    var accessTokenOwnerId = parseToken(actualAccessToken).user;
+    routeParams = xtend({ ownerId: accessTokenOwnerId }, routeParams);
+  }
+  url = urlUtils.interpolateRouteParams(url, routeParams);
+  return url;
+};
+
+/**
+ * Send the request. Returns a Promise that resolves with a `MapiResponse`.
+ * You probably want to use `response.body`.
+ *
+ * `send` only retrieves the first page of paginated results. You can get
+ * the next page by using the `MapiResponse`'s [`nextPage`](#nextpage)
+ * function, or iterate through all pages using [`eachPage`](#eachpage)
+ * instead of `send`.
+ *
+ * @returns {Promise<MapiResponse>}
+ */
+MapiRequest.prototype.send = function send() {
+  var self = this;
+
+  if (self.sent) {
+    throw new Error(
+      'This request has already been sent. Check the response and error properties. Create a new request with clone().'
+    );
+  }
+  self.sent = true;
+
+  return self.client.sendRequest(self).then(
+    function(response) {
+      self.response = response;
+      self.emitter.emit(constants.EVENT_RESPONSE, response);
+      return response;
+    },
+    function(error) {
+      self.error = error;
+      self.emitter.emit(constants.EVENT_ERROR, error);
+      throw error;
+    }
+  );
+};
+
+/**
+ * Abort the request.
+ *
+ * Any pending `Promise` returned by [`send`](#send) will be rejected with
+ * an error with `type: 'RequestAbortedError'`. If you've created a request
+ * that might be aborted, you need to catch and handle such errors.
+ *
+ * This method will also abort any requests created while fetching subsequent
+ * pages via [`eachPage`](#eachpage).
+ *
+ * If the request has not been sent or has already been aborted, nothing
+ * will happen.
+ */
+MapiRequest.prototype.abort = function abort() {
+  if (this._nextPageRequest) {
+    this._nextPageRequest.abort();
+    delete this._nextPageRequest;
+  }
+
+  if (this.response || this.error || this.aborted) return;
+
+  this.aborted = true;
+  this.client.abortRequest(this);
+};
+
+/**
+ * Invoke a callback for each page of a paginated API response.
+ *
+ * The callback should have the following signature:
+ *
+ * ```js
+ * (
+ *   error: MapiError,
+ *   response: MapiResponse,
+ *   next: () => void
+ * ) => void
+ * ```
+ *
+ * **The next page will not be fetched until you've invoked the
+ * `next` callback**, indicating that you're ready for it.
+ *
+ * @param {Function} callback
+ */
+MapiRequest.prototype.eachPage = function eachPage(callback) {
+  var self = this;
+
+  function handleResponse(response) {
+    function getNextPage() {
+      delete self._nextPageRequest;
+      var nextPageRequest = response.nextPage();
+      if (nextPageRequest) {
+        self._nextPageRequest = nextPageRequest;
+        getPage(nextPageRequest);
+      }
+    }
+    callback(null, response, getNextPage);
+  }
+
+  function handleError(error) {
+    callback(error, null, function() {});
+  }
+
+  function getPage(request) {
+    request.send().then(handleResponse, handleError);
+  }
+  getPage(this);
+};
+
+/**
+ * Clone this request.
+ *
+ * Each request can only be sent *once*. So if you'd like to send the
+ * same request again, clone it and send away.
+ *
+ * @returns {MapiRequest} - A new `MapiRequest` configured just like this one.
+ */
+MapiRequest.prototype.clone = function clone() {
+  return this._extend();
+};
+
+/**
+ * @ignore
+ */
+MapiRequest.prototype._extend = function _extend(options) {
+  var extendedOptions = xtend(this._options, options);
+  return new MapiRequest(this.client, extendedOptions);
+};
+
+module.exports = MapiRequest;
+
+
+/***/ }),
+/* 170 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} once Specify if the listener is a one-time listener.
+ * @returns {EventEmitter}
+ * @private
+ */
+function addListener(emitter, event, fn, context, once) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('The listener must be a function');
+  }
+
+  var listener = new EE(fn, context || emitter, once)
+    , evt = prefix ? prefix + event : event;
+
+  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+  else emitter._events[evt] = [emitter._events[evt], listener];
+
+  return emitter;
+}
+
+/**
+ * Clear event by name.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} evt The Event name.
+ * @private
+ */
+function clearEvent(emitter, evt) {
+  if (--emitter._eventsCount === 0) emitter._events = new Events();
+  else delete emitter._events[evt];
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Array} The registered listeners.
+ * @public
+ */
+EventEmitter.prototype.listeners = function listeners(event) {
+  var evt = prefix ? prefix + event : event
+    , handlers = this._events[evt];
+
+  if (!handlers) return [];
+  if (handlers.fn) return [handlers.fn];
+
+  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+    ee[i] = handlers[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Return the number of listeners listening to a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Number} The number of listeners.
+ * @public
+ */
+EventEmitter.prototype.listenerCount = function listenerCount(event) {
+  var evt = prefix ? prefix + event : event
+    , listeners = this._events[evt];
+
+  if (!listeners) return 0;
+  if (listeners.fn) return 1;
+  return listeners.length;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  return addListener(this, event, fn, context, false);
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  return addListener(this, event, fn, context, true);
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {*} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    clearEvent(this, evt);
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+      listeners.fn === fn &&
+      (!once || listeners.once) &&
+      (!context || listeners.context === context)
+    ) {
+      clearEvent(this, evt);
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+        listeners[i].fn !== fn ||
+        (once && !listeners[i].once) ||
+        (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else clearEvent(this, evt);
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {(String|Symbol)} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) clearEvent(this, evt);
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+if (true) {
+  module.exports = EventEmitter;
+}
+
+
+/***/ }),
+/* 171 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// Encode each item of an array individually. The comma
+// delimiters should not themselves be encoded.
+function encodeArray(arrayValue) {
+  return arrayValue.map(encodeURIComponent).join(',');
+}
+
+function encodeValue(value) {
+  if (Array.isArray(value)) {
+    return encodeArray(value);
+  }
+  return encodeURIComponent(String(value));
+}
+
+/**
+ * Append a query parameter to a URL.
+ *
+ * @param {string} url
+ * @param {string} key
+ * @param {string|number|boolean|Array<*>>} [value] - Provide an array
+ *   if the value is a list and commas between values need to be
+ *   preserved, unencoded.
+ * @returns {string} - Modified URL.
+ */
+function appendQueryParam(url, key, value) {
+  if (value === false || value === null) {
+    return url;
+  }
+  var punctuation = /\?/.test(url) ? '&' : '?';
+  var query = encodeURIComponent(key);
+  if (value !== undefined && value !== '' && value !== true) {
+    query += '=' + encodeValue(value);
+  }
+  return '' + url + punctuation + query;
+}
+
+/**
+ * Derive a query string from an object and append it
+ * to a URL.
+ *
+ * @param {string} url
+ * @param {Object} [queryObject] - Values should be primitives.
+ * @returns {string} - Modified URL.
+ */
+function appendQueryObject(url, queryObject) {
+  if (!queryObject) {
+    return url;
+  }
+
+  var result = url;
+  Object.keys(queryObject).forEach(function(key) {
+    var value = queryObject[key];
+    if (value === undefined) {
+      return;
+    }
+    if (Array.isArray(value)) {
+      value = value
+        .filter(function(v) {
+          return v !== null && v !== undefined;
+        })
+        .join(',');
+    }
+    result = appendQueryParam(result, key, value);
+  });
+  return result;
+}
+
+/**
+ * Prepend an origin to a URL. If the URL already has an
+ * origin, do nothing.
+ *
+ * @param {string} url
+ * @param {string} origin
+ * @returns {string} - Modified URL.
+ */
+function prependOrigin(url, origin) {
+  if (!origin) {
+    return url;
+  }
+
+  if (url.slice(0, 4) === 'http') {
+    return url;
+  }
+
+  var delimiter = url[0] === '/' ? '' : '/';
+  return '' + origin.replace(/\/$/, '') + delimiter + url;
+}
+
+/**
+ * Interpolate values into a route with express-style,
+ * colon-prefixed route parameters.
+ *
+ * @param {string} route
+ * @param {Object} [params] - Values should be primitives
+ *   or arrays of primitives. Provide an array if the value
+ *   is a list and commas between values need to be
+ *   preserved, unencoded.
+ * @returns {string} - Modified URL.
+ */
+function interpolateRouteParams(route, params) {
+  if (!params) {
+    return route;
+  }
+  return route.replace(/\/:([a-zA-Z0-9]+)/g, function(_, paramId) {
+    var value = params[paramId];
+    if (value === undefined) {
+      throw new Error('Unspecified route parameter ' + paramId);
+    }
+    var preppedValue = encodeValue(value);
+    return '/' + preppedValue;
+  });
+}
+
+module.exports = {
+  appendQueryObject: appendQueryObject,
+  appendQueryParam: appendQueryParam,
+  prependOrigin: prependOrigin,
+  interpolateRouteParams: interpolateRouteParams
+};
+
+
+/***/ }),
+/* 172 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var xtend = __webpack_require__(37);
+var v = __webpack_require__(173);
+var pick = __webpack_require__(176);
+var stringifyBooleans = __webpack_require__(177);
+var createServiceFactory = __webpack_require__(179);
+
+/**
+ * Geocoding API service.
+ *
+ * Learn more about this service and its responses in
+ * [the HTTP service documentation](https://docs.mapbox.com/api/search/#geocoding).
+ */
+var Geocoding = {};
+
+var featureTypes = [
+  'country',
+  'region',
+  'postcode',
+  'district',
+  'place',
+  'locality',
+  'neighborhood',
+  'address',
+  'poi',
+  'poi.landmark'
+];
+
+/**
+ * Search for a place.
+ *
+ * See the [public documentation](https://docs.mapbox.com/api/search/#forward-geocoding).
+ *
+ * @param {Object} config
+ * @param {string} config.query - A place name.
+ * @param {'mapbox.places'|'mapbox.places-permanent'} [config.mode="mapbox.places"] - Either `mapbox.places` for ephemeral geocoding, or `mapbox.places-permanent` for storing results and batch geocoding.
+ * @param {Array<string>} [config.countries] - Limits results to the specified countries.
+ *   Each item in the array should be an [ISO 3166 alpha 2 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+ * @param {Coordinates} [config.proximity] - Bias local results based on a provided location.
+ * @param {Array<'country'|'region'|'postcode'|'district'|'place'|'locality'|'neighborhood'|'address'|'poi'|'poi.landmark'>} [config.types] - Filter results by feature types.
+ * @param {boolean} [config.autocomplete=true] - Return autocomplete results or not.
+ * @param {BoundingBox} [config.bbox] - Limit results to a bounding box.
+ * @param {number} [config.limit=5] - Limit the number of results returned.
+ * @param {Array<string>} [config.language] - Specify the language to use for response text and, for forward geocoding, query result weighting.
+ *  Options are [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag) comprised of a mandatory
+ *  [ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and optionally one or more IETF subtags for country or script.
+ * @param {boolean} [config.routing=false] - Specify whether to request additional metadata about the recommended navigation destination. Only applicable for address features.
+ * @return {MapiRequest}
+ *
+ * @example
+ * geocodingClient.forwardGeocode({
+ *   query: 'Paris, France',
+ *   limit: 2
+ * })
+ *   .send()
+ *   .then(response => {
+ *     const match = response.body;
+ *   });
+ *
+ * @example
+ * // geocoding with proximity
+ * geocodingClient.forwardGeocode({
+ *   query: 'Paris, France',
+ *   proximity: [-95.4431142, 33.6875431]
+ * })
+ *   .send()
+ *   .then(response => {
+ *     const match = response.body;
+ *   });
+ *
+ * // geocoding with countries
+ * geocodingClient.forwardGeocode({
+ *   query: 'Paris, France',
+ *   countries: ['fr']
+ * })
+ *   .send()
+ *   .then(response => {
+ *     const match = response.body;
+ *   });
+ *
+ * // geocoding with bounding box
+ * geocodingClient.forwardGeocode({
+ *   query: 'Paris, France',
+ *   bbox: [2.14, 48.72, 2.55, 48.96]
+ * })
+ *   .send()
+ *   .then(response => {
+ *     const match = response.body;
+ *   });
+ */
+Geocoding.forwardGeocode = function(config) {
+  v.assertShape({
+    query: v.required(v.string),
+    mode: v.oneOf('mapbox.places', 'mapbox.places-permanent'),
+    countries: v.arrayOf(v.string),
+    proximity: v.coordinates,
+    types: v.arrayOf(v.oneOf(featureTypes)),
+    autocomplete: v.boolean,
+    bbox: v.arrayOf(v.number),
+    limit: v.number,
+    language: v.arrayOf(v.string),
+    routing: v.boolean
+  })(config);
+
+  config.mode = config.mode || 'mapbox.places';
+
+  var query = stringifyBooleans(
+    xtend(
+      { country: config.countries },
+      pick(config, [
+        'proximity',
+        'types',
+        'autocomplete',
+        'bbox',
+        'limit',
+        'language',
+        'routing'
+      ])
+    )
+  );
+
+  return this.client.createRequest({
+    method: 'GET',
+    path: '/geocoding/v5/:mode/:query.json',
+    params: pick(config, ['mode', 'query']),
+    query: query
+  });
+};
+
+/**
+ * Search for places near coordinates.
+ *
+ * See the [public documentation](https://docs.mapbox.com/api/search/#reverse-geocoding).
+ *
+ * @param {Object} config
+ * @param {Coordinates} config.query - Coordinates at which features will be searched.
+ * @param {'mapbox.places'|'mapbox.places-permanent'} [config.mode="mapbox.places"] - Either `mapbox.places` for ephemeral geocoding, or `mapbox.places-permanent` for storing results and batch geocoding.
+ * @param {Array<string>} [config.countries] - Limits results to the specified countries.
+ *   Each item in the array should be an [ISO 3166 alpha 2 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+ * @param {Array<'country'|'region'|'postcode'|'district'|'place'|'locality'|'neighborhood'|'address'|'poi'|'poi.landmark'>} [config.types] - Filter results by feature types.
+ * @param {BoundingBox} [config.bbox] - Limit results to a bounding box.
+ * @param {number} [config.limit=1] - Limit the number of results returned. If using this option, you must provide a single item for `types`.
+ * @param {Array<string>} [config.language] - Specify the language to use for response text and, for forward geocoding, query result weighting.
+ *  Options are [IETF language tags](https://en.wikipedia.org/wiki/IETF_language_tag) comprised of a mandatory
+ *  [ISO 639-1 language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) and optionally one or more IETF subtags for country or script.
+ * @param {'distance'|'score'} [config.reverseMode='distance'] - Set the factors that are used to sort nearby results.
+ * @param {boolean} [config.routing=false] - Specify whether to request additional metadata about the recommended navigation destination. Only applicable for address features.
+ * @return {MapiRequest}
+ *
+ * @example
+ * geocodingClient.reverseGeocode({
+ *   query: [-95.4431142, 33.6875431]
+ * })
+ *   .send()
+ *   .then(response => {
+ *     // GeoJSON document with geocoding matches
+ *     const match = response.body;
+ *   });
+ */
+Geocoding.reverseGeocode = function(config) {
+  v.assertShape({
+    query: v.required(v.coordinates),
+    mode: v.oneOf('mapbox.places', 'mapbox.places-permanent'),
+    countries: v.arrayOf(v.string),
+    types: v.arrayOf(v.oneOf(featureTypes)),
+    bbox: v.arrayOf(v.number),
+    limit: v.number,
+    language: v.arrayOf(v.string),
+    reverseMode: v.oneOf('distance', 'score'),
+    routing: v.boolean
+  })(config);
+
+  config.mode = config.mode || 'mapbox.places';
+
+  var query = stringifyBooleans(
+    xtend(
+      { country: config.countries },
+      pick(config, [
+        'country',
+        'types',
+        'bbox',
+        'limit',
+        'language',
+        'reverseMode',
+        'routing'
+      ])
+    )
+  );
+
+  return this.client.createRequest({
+    method: 'GET',
+    path: '/geocoding/v5/:mode/:query.json',
+    params: pick(config, ['mode', 'query']),
+    query: query
+  });
+};
+
+module.exports = createServiceFactory(Geocoding);
+
+
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+var xtend = __webpack_require__(37);
+var v = __webpack_require__(174);
+
+function file(value) {
+  // If we're in a browser so Blob is available, the file must be that.
+  // In Node, however, it could be a filepath or a pipeable (Readable) stream.
+  if (typeof window !== 'undefined') {
+    if (value instanceof global.Blob || value instanceof global.ArrayBuffer) {
+      return;
+    }
+    return 'Blob or ArrayBuffer';
+  }
+  if (typeof value === 'string' || value.pipe !== undefined) {
+    return;
+  }
+  return 'Filename or Readable stream';
+}
+
+function assertShape(validatorObj, apiName) {
+  return v.assert(v.strictShape(validatorObj), apiName);
+}
+
+function date(value) {
+  var msg = 'date';
+  if (typeof value === 'boolean') {
+    return msg;
+  }
+  try {
+    var date = new Date(value);
+    if (date.getTime && isNaN(date.getTime())) {
+      return msg;
+    }
+  } catch (e) {
+    return msg;
+  }
+}
+
+function coordinates(value) {
+  return v.tuple(v.number, v.number)(value);
+}
+
+module.exports = xtend(v, {
+  file: file,
+  date: date,
+  coordinates: coordinates,
+  assertShape: assertShape
+});
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Validators are functions which assert certain type.
+ * They can return a string which can then be used
+ * to display a helpful error message.
+ * They can also return a function for a custom error message.
+ */
+var isPlainObject = __webpack_require__(175);
+var xtend = __webpack_require__(37);
+
+var DEFAULT_ERROR_PATH = 'value';
+var NEWLINE_INDENT = '\n  ';
+
+var v = {};
+
+/**
+ * Runners
+ *
+ * Take root validators and run assertion
+ */
+v.assert = function(rootValidator, options) {
+  options = options || {};
+  return function(value) {
+    var message = validate(rootValidator, value);
+    // all good
+    if (!message) {
+      return;
+    }
+
+    var errorMessage = processMessage(message, options);
+
+    if (options.apiName) {
+      errorMessage = options.apiName + ': ' + errorMessage;
+    }
+
+    throw new Error(errorMessage);
+  };
+};
+
+/**
+ * Higher Order Validators
+ *
+ * validators which take other validators as input
+ * and output a new validator
+ */
+v.shape = function shape(validatorObj) {
+  var validators = objectEntries(validatorObj);
+  return function shapeValidator(value) {
+    var validationResult = validate(v.plainObject, value);
+
+    if (validationResult) {
+      return validationResult;
+    }
+
+    var key, validator;
+    var errorMessages = [];
+
+    for (var i = 0; i < validators.length; i++) {
+      key = validators[i].key;
+      validator = validators[i].value;
+      validationResult = validate(validator, value[key]);
+
+      if (validationResult) {
+        // return [key].concat(validationResult);
+        errorMessages.push([key].concat(validationResult));
+      }
+    }
+
+    if (errorMessages.length < 2) {
+      return errorMessages[0];
+    }
+
+    // enumerate all the error messages
+    return function(options) {
+      errorMessages = errorMessages.map(function(message) {
+        var key = message[0];
+        var renderedMessage = processMessage(message, options)
+          .split('\n')
+          .join(NEWLINE_INDENT); // indents any inner nesting
+        return '- ' + key + ': ' + renderedMessage;
+      });
+
+      var objectId = options.path.join('.');
+      var ofPhrase = objectId === DEFAULT_ERROR_PATH ? '' : ' of ' + objectId;
+
+      return (
+        'The following properties' +
+        ofPhrase +
+        ' have invalid values:' +
+        NEWLINE_INDENT +
+        errorMessages.join(NEWLINE_INDENT)
+      );
+    };
+  };
+};
+
+v.strictShape = function strictShape(validatorObj) {
+  var shapeValidator = v.shape(validatorObj);
+  return function strictShapeValidator(value) {
+    var shapeResult = shapeValidator(value);
+    if (shapeResult) {
+      return shapeResult;
+    }
+
+    var invalidKeys = Object.keys(value).reduce(function(memo, valueKey) {
+      if (validatorObj[valueKey] === undefined) {
+        memo.push(valueKey);
+      }
+      return memo;
+    }, []);
+
+    if (invalidKeys.length !== 0) {
+      return function() {
+        return 'The following keys are invalid: ' + invalidKeys.join(', ');
+      };
+    }
+  };
+};
+
+v.arrayOf = function arrayOf(validator) {
+  return createArrayValidator(validator);
+};
+
+v.tuple = function tuple() {
+  var validators = Array.isArray(arguments[0])
+    ? arguments[0]
+    : Array.prototype.slice.call(arguments);
+  return createArrayValidator(validators);
+};
+
+// Currently array validation fails when the first invalid item is found.
+function createArrayValidator(validators) {
+  var validatingTuple = Array.isArray(validators);
+  var getValidator = function(index) {
+    if (validatingTuple) {
+      return validators[index];
+    }
+    return validators;
+  };
+
+  return function arrayValidator(value) {
+    var validationResult = validate(v.plainArray, value);
+    if (validationResult) {
+      return validationResult;
+    }
+
+    if (validatingTuple && value.length !== validators.length) {
+      return 'an array with ' + validators.length + ' items';
+    }
+
+    for (var i = 0; i < value.length; i++) {
+      validationResult = validate(getValidator(i), value[i]);
+      if (validationResult) {
+        return [i].concat(validationResult);
+      }
+    }
+  };
+}
+
+v.required = function required(validator) {
+  function requiredValidator(value) {
+    if (value == null) {
+      return function(options) {
+        return formatErrorMessage(
+          options,
+          isArrayCulprit(options.path)
+            ? 'cannot be undefined/null.'
+            : 'is required.'
+        );
+      };
+    }
+    return validator.apply(this, arguments);
+  }
+  requiredValidator.__required = true;
+
+  return requiredValidator;
+};
+
+v.oneOfType = function oneOfType() {
+  var validators = Array.isArray(arguments[0])
+    ? arguments[0]
+    : Array.prototype.slice.call(arguments);
+  return function oneOfTypeValidator(value) {
+    var messages = validators
+      .map(function(validator) {
+        return validate(validator, value);
+      })
+      .filter(Boolean);
+
+    // If we don't have as many messages as no. of validators,
+    // then at least one validator was ok with the value.
+    if (messages.length !== validators.length) {
+      return;
+    }
+
+    // check primitive type
+    if (
+      messages.every(function(message) {
+        return message.length === 1 && typeof message[0] === 'string';
+      })
+    ) {
+      return orList(
+        messages.map(function(m) {
+          return m[0];
+        })
+      );
+    }
+
+    // Complex oneOfTypes like
+    // `v.oneOftypes(v.shape({name: v.string})`, `v.shape({name: v.number}))`
+    // are complex ¯\_(ツ)_/¯. For the current scope only returning the longest message.
+    return messages.reduce(function(max, arr) {
+      return arr.length > max.length ? arr : max;
+    });
+  };
+};
+
+/**
+ * Meta Validators
+ * which take options as argument (not validators)
+ * and return a new primitive validator
+ */
+v.equal = function equal(compareWith) {
+  return function equalValidator(value) {
+    if (value !== compareWith) {
+      return JSON.stringify(compareWith);
+    }
+  };
+};
+
+v.oneOf = function oneOf() {
+  var options = Array.isArray(arguments[0])
+    ? arguments[0]
+    : Array.prototype.slice.call(arguments);
+  var validators = options.map(function(value) {
+    return v.equal(value);
+  });
+
+  return v.oneOfType.apply(this, validators);
+};
+
+v.range = function range(compareWith) {
+  var min = compareWith[0];
+  var max = compareWith[1];
+  return function rangeValidator(value) {
+    var validationResult = validate(v.number, value);
+
+    if (validationResult || value < min || value > max) {
+      return 'number between ' + min + ' & ' + max + ' (inclusive)';
+    }
+  };
+};
+
+/**
+ * Primitive validators
+ *
+ * simple validators which return a string or undefined
+ */
+v.any = function any() {
+  return;
+};
+
+v.boolean = function boolean(value) {
+  if (typeof value !== 'boolean') {
+    return 'boolean';
+  }
+};
+
+v.number = function number(value) {
+  if (typeof value !== 'number') {
+    return 'number';
+  }
+};
+
+v.plainArray = function plainArray(value) {
+  if (!Array.isArray(value)) {
+    return 'array';
+  }
+};
+
+v.plainObject = function plainObject(value) {
+  if (!isPlainObject(value)) {
+    return 'object';
+  }
+};
+
+v.string = function string(value) {
+  if (typeof value !== 'string') {
+    return 'string';
+  }
+};
+
+v.func = function func(value) {
+  if (typeof value !== 'function') {
+    return 'function';
+  }
+};
+
+function validate(validator, value) {
+  // assertions are optional by default unless wrapped in v.require
+  if (value == null && !validator.hasOwnProperty('__required')) {
+    return;
+  }
+
+  var result = validator(value);
+
+  if (result) {
+    return Array.isArray(result) ? result : [result];
+  }
+}
+
+function processMessage(message, options) {
+  // message array follows the convention
+  // [...path, result]
+  // path is an array of object keys / array indices
+  // result is output of the validator
+  var len = message.length;
+
+  var result = message[len - 1];
+  var path = message.slice(0, len - 1);
+
+  if (path.length === 0) {
+    path = [DEFAULT_ERROR_PATH];
+  }
+  options = xtend(options, { path: path });
+
+  return typeof result === 'function'
+    ? result(options) // allows customization of result
+    : formatErrorMessage(options, prettifyResult(result));
+}
+
+function orList(list) {
+  if (list.length < 2) {
+    return list[0];
+  }
+  if (list.length === 2) {
+    return list.join(' or ');
+  }
+  return list.slice(0, -1).join(', ') + ', or ' + list.slice(-1);
+}
+
+function prettifyResult(result) {
+  return 'must be ' + addArticle(result) + '.';
+}
+
+function addArticle(nounPhrase) {
+  if (/^an? /.test(nounPhrase)) {
+    return nounPhrase;
+  }
+  if (/^[aeiou]/i.test(nounPhrase)) {
+    return 'an ' + nounPhrase;
+  }
+  if (/^[a-z]/i.test(nounPhrase)) {
+    return 'a ' + nounPhrase;
+  }
+  return nounPhrase;
+}
+
+function formatErrorMessage(options, prettyResult) {
+  var arrayCulprit = isArrayCulprit(options.path);
+  var output = options.path.join('.') + ' ' + prettyResult;
+  var prepend = arrayCulprit ? 'Item at position ' : '';
+
+  return prepend + output;
+}
+
+function isArrayCulprit(path) {
+  return typeof path[path.length - 1] == 'number' || typeof path[0] == 'number';
+}
+
+function objectEntries(obj) {
+  return Object.keys(obj || {}).map(function(key) {
+    return { key: key, value: obj[key] };
+  });
+}
+
+v.validate = validate;
+v.processMessage = processMessage;
+
+module.exports = v;
+
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var toString = Object.prototype.toString;
+
+module.exports = function (x) {
+	var prototype;
+	return toString.call(x) === '[object Object]' && (prototype = Object.getPrototypeOf(x), prototype === null || prototype === Object.getPrototypeOf({}));
+};
+
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Create a new object by picking properties off an existing object.
+ * The second param can be overloaded as a callback for
+ * more fine grained picking of properties.
+ * @param {Object} source
+ * @param {Array<string>|function(string, Object):boolean} keys
+ * @returns {Object}
+ */
+function pick(source, keys) {
+  var filter = function(key, val) {
+    return keys.indexOf(key) !== -1 && val !== undefined;
+  };
+
+  if (typeof keys === 'function') {
+    filter = keys;
+  }
+
+  return Object.keys(source)
+    .filter(function(key) {
+      return filter(key, source[key]);
+    })
+    .reduce(function(result, key) {
+      result[key] = source[key];
+      return result;
+    }, {});
+}
+
+module.exports = pick;
+
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var objectMap = __webpack_require__(178);
+
+/**
+ * Stringify all the boolean values in an object, so true becomes "true".
+ *
+ * @param {Object} obj
+ * @returns {Object}
+ */
+function stringifyBoolean(obj) {
+  return objectMap(obj, function(_, value) {
+    return typeof value === 'boolean' ? JSON.stringify(value) : value;
+  });
+}
+
+module.exports = stringifyBoolean;
+
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function objectMap(obj, cb) {
+  return Object.keys(obj).reduce(function(result, key) {
+    result[key] = cb(key, obj[key]);
+    return result;
+  }, {});
+}
+
+module.exports = objectMap;
+
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var MapiClient = __webpack_require__(70);
+// This will create the environment-appropriate client.
+var createClient = __webpack_require__(69);
+
+function createServiceFactory(ServicePrototype) {
+  return function(clientOrConfig) {
+    var client;
+    if (MapiClient.prototype.isPrototypeOf(clientOrConfig)) {
+      client = clientOrConfig;
+    } else {
+      client = createClient(clientOrConfig);
+    }
+    var service = Object.create(ServicePrototype);
+    service.client = client;
+    return service;
+  };
+}
+
+module.exports = createServiceFactory;
+
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var nanoid = __webpack_require__(181)
+
+/**
+ * Construct a new mapbox event client to send interaction events to the mapbox event service
+ * @param {Object} options options with which to create the service
+ * @param {String} options.accessToken the mapbox access token to make requests
+ * @param {Number} [options.flushInterval=1000] the number of ms after which to flush the event queue
+ * @param {Number} [options.maxQueueSize=100] the number of events to queue before flushing
+ * @private
+ */
+function MapboxEventManager(options) {
+  this.origin = options.origin || 'https://api.mapbox.com';
+  this.endpoint = 'events/v2';
+  this.access_token = options.accessToken;
+  this.version = '0.2.0'
+  this.sessionID = this.generateSessionID();
+  this.userAgent = this.getUserAgent();
+
+  this.options = options;
+  this.send = this.send.bind(this);
+
+
+  // parse global options to be sent with each request
+  this.countries = (options.countries) ? options.countries.split(",") : null;
+  this.types = (options.types) ? options.types.split(",") : null;
+  this.bbox = (options.bbox) ? options.bbox : null;
+  this.language = (options.language) ? options.language.split(",") : null;
+  this.limit = (options.limit) ? +options.limit : null;
+  this.locale = navigator.language || null;
+  this.enableEventLogging = this.shouldEnableLogging(options);
+  this.eventQueue = new Array();
+  this.flushInterval = options.flushInterval || 1000;
+  this.maxQueueSize = options.maxQueueSize || 100;
+  this.timer = (this.flushInterval) ? setTimeout(this.flush.bind(this), this.flushInterval) : null;
+  // keep some state to deduplicate requests if necessary
+  this.lastSentInput = "";
+  this.lastSentIndex = 0;
+}
+
+MapboxEventManager.prototype = {
+  /**
+     * Send a search.select event to the mapbox events service
+     * This event marks the array index of the item selected by the user out of the array of possible options
+     * @private
+     * @param {Object} selected the geojson feature selected by the user
+     * @param {Object} geocoder a mapbox-gl-geocoder instance
+     * @returns {Promise}
+     */
+  select: function(selected, geocoder){
+    var resultIndex = this.getSelectedIndex(selected, geocoder);
+    var payload = this.getEventPayload('search.select', geocoder);
+    payload.resultIndex = resultIndex;
+    payload.resultPlaceName  = selected.place_name;
+    payload.resultId = selected.id;
+    if ((resultIndex === this.lastSentIndex && payload.queryString === this.lastSentInput) || resultIndex == -1) {
+      // don't log duplicate events if the user re-selected the same feature on the same search
+      return;
+    }
+    this.lastSentIndex = resultIndex;
+    this.lastSentInput = payload.queryString;
+    if (!payload.queryString) return; // will be rejected
+    return this.push(payload)
+  },
+
+  /**
+     * Send a search-start event to the mapbox events service
+     * This turnstile event marks when a user starts a new search
+     * @private
+     * @param {Object} geocoder a mapbox-gl-geocoder instance
+     * @returns {Promise}
+     */
+  start: function(geocoder){
+    var payload = this.getEventPayload('search.start', geocoder);
+    if (!payload.queryString) return; // will be rejected
+    return this.push(payload);
+  },
+
+  /**
+   * Send a search-keyevent event to the mapbox events service
+   * This event records each keypress in sequence
+   * @private
+   * @param {Object} keyEvent the keydown event to log
+   * @param {Object} geocoder a mapbox-gl-geocoder instance
+   * 
+   */
+  keyevent: function(keyEvent, geocoder){
+
+    //pass invalid event
+    if (!keyEvent.key) return;
+    // don't send events for keys that don't change the input
+    // TAB, ESC, LEFT, RIGHT, ENTER, UP, DOWN
+    if (keyEvent.metaKey || [9, 27, 37, 39, 13, 38, 40].indexOf(keyEvent.keyCode) !== -1) return;
+    var payload = this.getEventPayload('search.keystroke', geocoder);
+    payload.lastAction = keyEvent.key;
+    if (!payload.queryString) return; // will be rejected
+    return this.push(payload);
+  },
+
+  /**
+   * Send an event to the events service
+   *
+   * The event is skipped if the instance is not enabled to send logging events
+   *
+   * @private
+   * @param {Object} payload the http POST body of the event
+   * @param {Function} [callback] a callback function to invoke when the send has completed
+   * @returns {Promise}
+   */
+  send: function (payload, callback) {
+    if (!this.enableEventLogging) {
+      if (callback) return callback();
+      return;
+    }
+    var options = this.getRequestOptions(payload);
+    this.request(options, function(err){
+      if (err) return this.handleError(err, callback);
+      if (callback) {
+        return callback();
+      }
+    }.bind(this))
+  },
+  /**
+   * Get http request options
+   * @private
+   * @param {*} payload
+   */
+  getRequestOptions: function(payload){
+    if (!Array.isArray(payload)) payload = [payload];
+    var options = {
+      // events must be sent with POST
+      method: "POST",
+      host: this.origin,
+      path: this.endpoint +  "?access_token=" + this.access_token,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(payload) //events are arrays
+    }
+    return options
+  },
+
+  /**
+   * Get the event payload to send to the events service
+   * Most payload properties are shared across all events
+   * @private
+   * @param {String} event the name of the event to send to the events service. Valid options are 'search.start', 'search.select', 'search.feedback'.
+   * @param {Object} geocoder a mapbox-gl-geocoder instance
+   * @returns {Object} an event payload
+   */
+  getEventPayload: function (event, geocoder) {
+    var proximity;
+    if (!geocoder.options.proximity) proximity = null;
+    else proximity = [geocoder.options.proximity.longitude, geocoder.options.proximity.latitude];
+
+    var zoom = (geocoder._map) ? geocoder._map.getZoom() : undefined;
+    var payload = {
+      event: event,
+      created: +new Date(),
+      sessionIdentifier: this.sessionID,
+      country: this.countries,
+      userAgent: this.userAgent,
+      language: this.language,
+      bbox: this.bbox,
+      types: this.types,
+      endpoint: 'mapbox.places',
+      // fuzzyMatch: search.fuzzy, //todo  --> add to plugin
+      proximity: proximity,
+      limit: geocoder.options.limit,
+      // routing: search.routing, //todo --> add to plugin
+      mapZoom: zoom,
+      keyboardLocale: this.locale
+    }
+
+    // get the text in the search bar
+    if (event === "search.select"){
+      payload.queryString = geocoder.inputString;
+    }else if (event != "search.select" && geocoder._inputEl){
+      payload.queryString = geocoder._inputEl.value;
+    }else{
+      payload.queryString = geocoder.inputString;
+    }
+    return payload;
+  },
+
+  /**
+   * Wraps the request function for easier testing
+   * Make an http request and invoke a callback
+   * @private
+   * @param {Object} opts options describing the http request to be made
+   * @param {Function} callback the callback to invoke when the http request is completed
+   */
+  request: function (opts, callback) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 ) {
+        if (this.status == 204){
+          //success
+          return callback(null);
+        }else {
+          return callback(this.statusText);
+        }
+      }
+    };
+
+    xhttp.open(opts.method, opts.host + '/' + opts.path, true);
+    for (var header in opts.headers){
+      var headerValue = opts.headers[header];
+      xhttp.setRequestHeader(header, headerValue)
+    }
+    xhttp.send(opts.body);
+  },
+
+  /**
+   * Handle an error that occurred while making a request
+   * @param {Object} err an error instance to log
+   * @private
+   */
+  handleError: function (err, callback) {
+    if (callback) return callback(err);
+  },
+
+  /**
+   * Generate a session ID to be returned with all of the searches made by this geocoder instance
+   * ID is random and cannot be tracked across sessions
+   * @private
+   */
+  generateSessionID: function () {
+    return nanoid();
+  },
+
+  /**
+   * Get a user agent string to send with the request to the events service
+   * @private
+   */
+  getUserAgent: function () {
+    return 'mapbox-gl-geocoder.' + this.version + "." + navigator.userAgent;
+  },
+
+  /**
+     * Get the 0-based numeric index of the item that the user selected out of the list of options
+     * @private
+     * @param {Object} selected the geojson feature selected by the user
+     * @param {Object} geocoder a Mapbox-GL-Geocoder instance
+     * @returns {Number} the index of the selected result
+     */
+  getSelectedIndex: function(selected, geocoder){
+    if (!geocoder._typeahead) return;
+    var results = geocoder._typeahead.data;
+    var selectedID = selected.id;
+    var resultIDs = results.map(function (feature) {
+      return feature.id;
+    });
+    var selectedIdx = resultIDs.indexOf(selectedID);
+    return selectedIdx;
+  },
+
+  /**
+     * Check whether events should be logged
+     * Clients using a localGeocoder or an origin other than mapbox should not have events logged
+     * @private
+     */
+  shouldEnableLogging: function(options){
+    if (options.enableEventLogging === false) return false;
+    if (options.origin && options.origin.indexOf('api.mapbox.com') == -1) return false;
+    // hard to make sense of events when a local instance is suplementing results from origin
+    if (options.localGeocoder) return false;
+    // hard to make sense of events when a custom filter is in use
+    if (options.filter) return false;
+    return true;
+  },
+
+  /**
+   * Flush out the event queue by sending events to the events service
+   * @private
+   */
+  flush: function(){
+    if (this.eventQueue.length > 0){
+      this.send(this.eventQueue);
+      this.eventQueue = new Array();
+    }
+    // //reset the timer
+    if (this.timer)  clearTimeout(this.timer);
+    if (this.flushInterval) this.timer = setTimeout(this.flush.bind(this), this.flushInterval)
+  },
+
+  /**
+   * Push event into the pending queue
+   * @param {Object} evt the event to send to the events service
+   * @param {Boolean} forceFlush indicates that the event queue should be flushed after adding this event regardless of size of the queue
+   * @private
+   */
+  push: function(evt, forceFlush){
+    this.eventQueue.push(evt);
+    if (this.eventQueue.length >= this.maxQueueSize || forceFlush){
+      this.flush();
+    }
+  },
+
+  /**
+   * Flush any remaining events from the queue before it is removed
+   * @private
+   */
+  remove: function(){
+    this.flush();
+  }
+}
+
+
+
+module.exports = MapboxEventManager;
+
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// This file replaces `index.js` in bundlers like webpack or Rollup,
+// according to `browser` config in `package.json`.
+
+if (false) {
+  // All bundlers will remove this block in production bundle
+  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+    throw new Error(
+      'React Native does not have a built-in secure random generator. ' +
+      'If you don’t need unpredictable IDs, you can use `nanoid/non-secure`. ' +
+      'For secure ID install `expo-random` locally and use `nanoid/async`.'
+    )
+  }
+  if (typeof self === 'undefined' || (!self.crypto && !self.msCrypto)) {
+    throw new Error(
+      'Your browser does not have secure random generator. ' +
+      'If you don’t need unpredictable IDs, you can use nanoid/non-secure.'
+    )
+  }
+}
+
+var crypto = self.crypto || self.msCrypto
+
+// This alphabet uses a-z A-Z 0-9 _- symbols.
+// Symbols are generated for smaller size.
+// -_zyxwvutsrqponmlkjihgfedcba9876543210ZYXWVUTSRQPONMLKJIHGFEDCBA
+var url = '-_'
+// Loop from 36 to 0 (from z to a and 9 to 0 in Base36).
+var i = 36
+while (i--) {
+  // 36 is radix. Number.prototype.toString(36) returns number
+  // in Base36 representation. Base36 is like hex, but it uses 0–9 and a-z.
+  url += i.toString(36)
+}
+// Loop from 36 to 10 (from Z to A in Base36).
+i = 36
+while (i-- - 10) {
+  url += i.toString(36).toUpperCase()
+}
+
+module.exports = function (size) {
+  var id = ''
+  var bytes = crypto.getRandomValues(new Uint8Array(size || 21))
+  i = size || 21
+
+  // Compact alternative for `for (var i = 0; i < size; i++)`
+  while (i--) {
+    // We can’t use bytes bigger than the alphabet. 63 is 00111111 bitmask.
+    // This mask reduces random byte 0-255 to 0-63 values.
+    // There is no need in `|| ''` and `* 1.6` hacks in here,
+    // because bitmask trim bytes exact to alphabet size.
+    id += url[bytes[i] & 63]
+  }
+  return id
+}
+
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Localized values for the placeholder string
+ * 
+ * @private
+ */
+var placeholder = {
+  // list drawn from https://docs.mapbox.com/api/search/#language-coverage
+  'de': 'Suche', // german
+  'it': 'Ricerca', //italian
+  'en': 'Search', // english
+  'nl': 'Zoeken', //dutch
+  'fr': 'Chercher',  //french
+  'ca': 'Cerca', //catalan
+  'he': 'לחפש', //hebrew
+  'ja': 'サーチ',  //japanese
+  'lv': 'Meklēt', //latvian
+  'pt': 'Procurar', //portuguese 
+  'sr': 'Претрага', //serbian
+  'zh': '搜索', //chinese-simplified
+  'cs': 'Vyhledávání', //czech
+  'hu': 'Keresés', //hungarian
+  'ka': 'ძიება', // georgian
+  'nb': 'Søke', //norwegian
+  'sk': 'Vyhľadávanie', //slovak
+  'th': 'ค้นหา', //thai
+  'fi': 'Hae',//finnish
+  'is': 'Leita',//icelandic
+  'ko': '수색',//korean
+  'pl':  'Szukaj', //polish
+  'sl': 'Iskanje', //slovenian
+  'fa': 'جستجو' //persian(aka farsi)
+}
+
+module.exports = {placeholder: placeholder};
+
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports) {
+
+!function(root, name, make) {
+  if (typeof module != 'undefined' && module.exports) module.exports = make()
+  else root[name] = make()
+}(this, 'subtag', function() {
+
+  var empty = ''
+  var pattern = /^([a-zA-Z]{2,3})(?:[_-]+([a-zA-Z]{3})(?=$|[_-]+))?(?:[_-]+([a-zA-Z]{4})(?=$|[_-]+))?(?:[_-]+([a-zA-Z]{2}|[0-9]{3})(?=$|[_-]+))?/
+
+  function match(tag) {
+    return tag.match(pattern) || []
+  }
+
+  function split(tag) {
+    return match(tag).filter(function(v, i) { return v && i })
+  }
+
+  function api(tag) {
+    tag = match(tag)
+    return {
+      language: tag[1] || empty,
+      extlang: tag[2] || empty,
+      script: tag[3] || empty,
+      region: tag[4] || empty
+    }
+  }
+
+  function expose(target, key, value) {
+    Object.defineProperty(target, key, {
+      value: value,
+      enumerable: true
+    })
+  }
+
+  function part(position, pattern, type) {
+    function method(tag) {
+      return match(tag)[position] || empty
+    }
+    expose(method, 'pattern', pattern)
+    expose(api, type, method)
+  }
+
+  part(1, /^[a-zA-Z]{2,3}$/, 'language')
+  part(2, /^[a-zA-Z]{3}$/, 'extlang')
+  part(3, /^[a-zA-Z]{4}$/, 'script')
+  part(4, /^[a-zA-Z]{2}$|^[0-9]{3}$/, 'region')
+
+  expose(api, 'split', split)
+
+  return api
+});
+
+
+/***/ }),
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(150);
+var content = __webpack_require__(185);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -50100,8 +56421,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../css-loader/index.js!./style.css", function() {
-			var newContent = require("!!../../css-loader/index.js!./style.css");
+		module.hot.accept("!!../../../css-loader/index.js!./mapbox-gl-geocoder.css", function() {
+			var newContent = require("!!../../../css-loader/index.js!./mapbox-gl-geocoder.css");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -50111,34 +56432,21 @@ if(false) {
 }
 
 /***/ }),
-/* 150 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(67);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
 
 // module
-exports.push([module.i, "/* general typography */\n.leaflet-container {\n  background:#fff;\n  font:12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  outline:0;\n  overflow:hidden;\n  -ms-touch-action:none;\n  }\n\n.leaflet-container *,\n.leaflet-container *:after,\n.leaflet-container *:before {\n  -webkit-box-sizing:border-box;\n     -moz-box-sizing:border-box;\n          box-sizing:border-box;\n  }\n\n.leaflet-container h1,\n.leaflet-container h2,\n.leaflet-container h3,\n.leaflet-container h4,\n.leaflet-container h5,\n.leaflet-container h6,\n.leaflet-container p {\n  font-size:15px;\n  line-height:20px;\n  margin:0 0 10px;\n  }\n\n.leaflet-container .marker-description img {\n  margin-bottom: 10px;\n  }\n\n.leaflet-container a {\n  color:#3887BE;\n  font-weight:normal;\n  text-decoration:none;\n  }\n  .leaflet-container a:hover      { color:#63b6e5; }\n  .leaflet-container.dark a       { color:#63b6e5; }\n  .leaflet-container.dark a:hover { color:#8fcaec; }\n\n.leaflet-container.dark .mapbox-button,\n.leaflet-container .mapbox-button {\n  background-color:#3887be;\n  display:inline-block;\n  height:40px;\n  line-height:40px;\n  text-decoration:none;\n  color:#fff;\n  font-size:12px;\n  white-space:nowrap;\n  text-overflow:ellipsis;\n  }\n  .leaflet-container.dark .mapbox-button:hover,\n  .leaflet-container .mapbox-button:hover {\n    color:#fff;\n    background-color:#3bb2d0;\n    }\n\n/* Base Leaflet\n------------------------------------------------------- */\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n  position:absolute;\n  left:0;\n  top:0;\n  }\n\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  -webkit-user-drag:none;\n  -webkit-user-select:none;\n     -moz-user-select:none;\n          user-select:none;\n  }\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  display: block;\n  }\n\n.leaflet-tile {\n  filter:inherit;\n  visibility:hidden;\n  }\n.leaflet-tile-loaded {\n  visibility:inherit;\n  }\n.leaflet-zoom-box {\n  width:0;\n  height:0;\n  }\n\n.leaflet-tile-pane    { z-index:2; }\n.leaflet-objects-pane { z-index:3; }\n.leaflet-overlay-pane { z-index:4; }\n.leaflet-shadow-pane  { z-index:5; }\n.leaflet-marker-pane  { z-index:6; }\n.leaflet-popup-pane   { z-index:7; }\n\n.leaflet-control {\n  position:relative;\n  z-index:7;\n  pointer-events:auto;\n  float:left;\n  clear:both;\n  }\n  .leaflet-right .leaflet-control   { float:right; }\n  .leaflet-top .leaflet-control     { margin-top:10px; }\n  .leaflet-bottom .leaflet-control  { margin-bottom:10px; }\n  .leaflet-left .leaflet-control    { margin-left:10px; }\n  .leaflet-right .leaflet-control   { margin-right:10px; }\n\n.leaflet-top,\n.leaflet-bottom {\n  position:absolute;\n  z-index:1000;\n  pointer-events:none;\n  }\n  .leaflet-top    { top:0; }\n  .leaflet-right  { right:0; }\n  .leaflet-bottom { bottom:0; }\n  .leaflet-left   { left:0; }\n\n/* zoom and fade animations */\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n  opacity:0;\n  -webkit-transition:opacity 0.2s linear;\n     -moz-transition:opacity 0.2s linear;\n       -o-transition:opacity 0.2s linear;\n          transition:opacity 0.2s linear;\n  }\n  .leaflet-fade-anim .leaflet-tile-loaded,\n  .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n    opacity:1;\n    }\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n  -webkit-transition:-webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n     -moz-transition:   -moz-transform 0.25s cubic-bezier(0,0,0.25,1);\n       -o-transition:     -o-transform 0.25s cubic-bezier(0,0,0.25,1);\n          transition:        transform 0.25s cubic-bezier(0,0,0.25,1);\n  }\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n  -webkit-transition:none;\n     -moz-transition:none;\n       -o-transition:none;\n          transition:none;\n  }\n.leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; }\n\n/* cursors */\n.leaflet-container {\n  cursor:-webkit-grab;\n  cursor:   -moz-grab;\n  }\n.leaflet-overlay-pane path,\n.leaflet-marker-icon,\n.leaflet-container.map-clickable,\n.leaflet-container.leaflet-clickable {\n  cursor:pointer;\n  }\n.leaflet-popup-pane,\n.leaflet-control {\n  cursor:auto;\n  }\n.leaflet-dragging,\n.leaflet-dragging .map-clickable,\n.leaflet-dragging .leaflet-clickable,\n.leaflet-dragging .leaflet-container {\n  cursor:move;\n  cursor:-webkit-grabbing;\n  cursor:   -moz-grabbing;\n  }\n\n.leaflet-zoom-box {\n  background:#fff;\n  border:2px dotted #202020;\n  opacity:0.5;\n  }\n\n/* general toolbar styles */\n.leaflet-control-layers,\n.leaflet-bar {\n  background-color:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-radius:3px;\n  box-shadow:none;\n  }\n.leaflet-bar a,\n.leaflet-bar a:hover {\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  border-bottom:1px solid #ddd;\n  border-bottom-color:rgba(0,0,0,0.10);\n  }\n  .leaflet-bar a:hover,\n  .leaflet-bar a:active {\n    background-color:#f8f8f8;\n    cursor:pointer;\n    }\n  .leaflet-bar a:hover:first-child {\n    border-radius:3px 3px 0 0;\n    }\n  .leaflet-bar a:hover:last-child {\n    border-bottom:none;\n    border-radius:0 0 3px 3px;\n    }\n  .leaflet-bar a:hover:only-of-type {\n    border-radius:3px;\n    }\n\n.leaflet-bar .leaflet-disabled {\n  cursor:default;\n  opacity:0.75;\n  }\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n  display:block;\n  content:'';\n  text-indent:-999em;\n  }\n\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n  display:none;\n  }\n  .leaflet-control-layers-expanded .leaflet-control-layers-list {\n    display:block;\n    position:relative;\n    }\n\n.leaflet-control-layers-expanded {\n  background:#fff;\n  padding:6px 10px 6px 6px;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  }\n.leaflet-control-layers-selector {\n  margin-top:2px;\n  position:relative;\n  top:1px;\n  }\n.leaflet-control-layers label {\n  display: block;\n  }\n.leaflet-control-layers-separator {\n  height:0;\n  border-top:1px solid #ddd;\n  border-top-color:rgba(0,0,0,0.10);\n  margin:5px -10px 5px -6px;\n  }\n\n.leaflet-container .leaflet-control-attribution {\n  background-color:rgba(255,255,255,0.5);\n  margin:0;\n  box-shadow:none;\n  }\n  .leaflet-container .leaflet-control-attribution a,\n  .leaflet-container .map-info-container a {\n    color:#404040;\n    }\n    .leaflet-control-attribution a:hover,\n    .map-info-container a:hover {\n      color:inherit;\n      text-decoration:underline;\n      }\n\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n  padding:0 5px;\n  }\n  .leaflet-left .leaflet-control-scale    { margin-left:5px; }\n  .leaflet-bottom .leaflet-control-scale  { margin-bottom:5px; }\n\n/* Used for smaller map containers & triggered by container size */\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution { margin:10px; }\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution {\n  background:#fff;\n  border-radius:3px 13px 13px 3px;\n  padding:3px 31px 3px 3px;\n  visibility:hidden;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover {\n    visibility:visible;\n    }\n\n.leaflet-control-attribution.leaflet-compact-attribution:after {\n  content:'';\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  background-position:0 -78px;\n  border-radius:50%;\n  position:absolute;\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  bottom:0;\n  z-index:1;\n  visibility:visible;\n  cursor:pointer;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover:after { background-color:#fff; }\n\n.leaflet-right .leaflet-control-attribution.leaflet-compact-attribution:after { right:0; }\n.leaflet-left .leaflet-control-attribution.leaflet-compact-attribution:after { left:0; }\n\n.leaflet-control-scale-line {\n  background-color:rgba(255,255,255,0.5);\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-top:none;\n  padding:2px 5px 1px;\n  white-space:nowrap;\n  overflow:hidden;\n  }\n  .leaflet-control-scale-line:not(:first-child) {\n    border-top:2px solid #ddd;\n    border-top-color:rgba(0,0,0,0.10);\n    border-bottom:none;\n    margin-top:-2px;\n    }\n  .leaflet-control-scale-line:not(:first-child):not(:last-child) {\n    border-bottom:2px solid #777;\n    }\n\n/* popup */\n.leaflet-popup {\n  position:absolute;\n  text-align:center;\n  pointer-events:none;\n  }\n.leaflet-popup-content-wrapper {\n  padding:1px;\n  text-align:left;\n  pointer-events:all;\n  }\n.leaflet-popup-content {\n  padding:10px 10px 15px;\n  margin:0;\n  line-height:inherit;\n  }\n  .leaflet-popup-close-button + .leaflet-popup-content-wrapper .leaflet-popup-content {\n    padding-top:15px;\n    }\n\n.leaflet-popup-tip-container {\n  width:20px;\n  height:20px;\n  margin:0 auto;\n  position:relative;\n  }\n.leaflet-popup-tip {\n  width:0;\n\theight:0;\n  margin:0;\n\tborder-left:10px solid transparent;\n\tborder-right:10px solid transparent;\n\tborder-top:10px solid #fff;\n  box-shadow:none;\n  }\n.leaflet-popup-close-button {\n  text-indent:-999em;\n  position:absolute;\n  top:0;right:0;\n  pointer-events:all;\n  }\n  .leaflet-popup-close-button:hover {\n    background-color:#f8f8f8;\n    }\n\n.leaflet-popup-scrolled {\n  overflow:auto;\n  border-bottom:1px solid #ddd;\n  border-top:1px solid #ddd;\n  }\n\n/* div icon */\n.leaflet-div-icon {\n  background:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  }\n.leaflet-editing-icon {\n  border-radius:3px;\n  }\n\n/* Leaflet + Mapbox\n------------------------------------------------------- */\n.leaflet-bar a,\n.mapbox-icon,\n.map-tooltip.closable .close,\n.leaflet-control-layers-toggle,\n.leaflet-popup-close-button,\n.mapbox-button-icon:before {\n  content:'';\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  background-repeat:no-repeat;\n  }\n.leaflet-bar a {\n  display:block;\n  }\n\n.leaflet-control-attribution:after,\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out,\n.leaflet-popup-close-button,\n.leaflet-control-layers-toggle,\n.leaflet-container.dark .map-tooltip .close,\n.map-tooltip .close,\n.mapbox-icon {\n  opacity: .75;\n  background-image:url(" + escape(__webpack_require__(151)) + ");\n  background-repeat:no-repeat;\n  background-size:26px 260px;\n  }\n  .leaflet-container.dark .leaflet-control-attribution:after,\n  .mapbox-button-icon:before,\n  .leaflet-container.dark .leaflet-control-zoom-in,\n  .leaflet-container.dark .leaflet-control-zoom-out,\n  .leaflet-container.dark .leaflet-control-layers-toggle,\n  .leaflet-container.dark .mapbox-icon {\n    opacity: 1;\n    background-image:url(" + escape(__webpack_require__(152)) + ");\n    background-size:26px 260px;\n    }\n  .leaflet-bar .leaflet-control-zoom-in                 { background-position:0 0; }\n  .leaflet-bar .leaflet-control-zoom-out                { background-position:0 -26px; }\n  .map-tooltip.closable .close,\n  .leaflet-popup-close-button {\n    background-position:-3px -55px;\n    width:20px;\n    height:20px;\n    border-radius:0 3px 0 0;\n    }\n  .mapbox-icon-info                                     { background-position:0 -78px; }\n  .leaflet-control-layers-toggle                        { background-position:0 -104px; }\n  .mapbox-icon.mapbox-icon-share:before, .mapbox-icon.mapbox-icon-share         { background-position:0 -130px; }\n  .mapbox-icon.mapbox-icon-geocoder:before, .mapbox-icon.mapbox-icon-geocoder   { background-position:0 -156px; }\n  .mapbox-icon-facebook:before, .mapbox-icon-facebook   { background-position:0 -182px; }\n  .mapbox-icon-twitter:before, .mapbox-icon-twitter     { background-position:0 -208px; }\n  .mapbox-icon-pinterest:before, .mapbox-icon-pinterest { background-position:0 -234px; }\n\n.leaflet-popup-content-wrapper,\n.map-legends,\n.map-tooltip {\n  background:#fff;\n  border-radius:3px;\n  box-shadow:0 1px 2px rgba(0,0,0,0.10);\n  }\n.map-legends,\n.map-tooltip {\n  max-width:300px;\n  }\n.map-legends .map-legend {\n  padding:10px;\n  }\n.map-tooltip {\n  z-index:999999;\n  padding:10px;\n  min-width:180px;\n  max-height:400px;\n  overflow:auto;\n  opacity:1;\n  -webkit-transition:opacity 150ms;\n     -moz-transition:opacity 150ms;\n       -o-transition:opacity 150ms;\n          transition:opacity 150ms;\n  }\n\n.map-tooltip .close {\n  text-indent:-999em;\n  overflow:hidden;\n  display:none;\n  }\n  .map-tooltip.closable .close {\n    position:absolute;\n    top:0;right:0;\n    border-radius:3px;\n    }\n    .map-tooltip.closable .close:active  {\n      background-color:#f8f8f8;\n      }\n\n.leaflet-control-interaction {\n  position:absolute;\n  top:10px;\n  right:10px;\n  width:300px;\n  }\n.leaflet-popup-content .marker-title {\n  font-weight:bold;\n  }\n.leaflet-control .mapbox-button {\n  background-color:#fff;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  padding:5px 10px;\n  border-radius:3px;\n  }\n\n/* Share modal\n------------------------------------------------------- */\n.mapbox-modal > div {\n  position:absolute;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  z-index:-1;\n  overflow-y:auto;\n  }\n  .mapbox-modal.active > div {\n    z-index:99999;\n    transition:all .2s, z-index 0 0;\n    }\n\n.mapbox-modal .mapbox-modal-mask {\n  background:rgba(0,0,0,0.5);\n  opacity:0;\n  }\n  .mapbox-modal.active .mapbox-modal-mask { opacity:1; }\n\n.mapbox-modal .mapbox-modal-content {\n  -webkit-transform:translateY(-100%);\n     -moz-transform:translateY(-100%);\n      -ms-transform:translateY(-100%);\n          transform:translateY(-100%);\n  }\n  .mapbox-modal.active .mapbox-modal-content {\n    -webkit-transform:translateY(0);\n       -moz-transform:translateY(0);\n        -ms-transform:translateY(0);\n            transform:translateY(0);\n    }\n\n.mapbox-modal-body {\n  position:relative;\n  background:#fff;\n  padding:20px;\n  z-index:1000;\n  width:50%;\n  margin:20px 0 20px 25%;\n  }\n.mapbox-share-buttons {\n  margin:0 0 20px;\n  }\n.mapbox-share-buttons a {\n  width:33.3333%;\n  border-left:1px solid #fff;\n  text-align:center;\n  border-radius:0;\n  }\n  .mapbox-share-buttons a:last-child  { border-radius:0 3px 3px 0; }\n  .mapbox-share-buttons a:first-child { border:none; border-radius:3px 0 0 3px; }\n\n.mapbox-modal input {\n  width:100%;\n  height:40px;\n  padding:10px;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  color:rgba(0,0,0,0.5);\n  }\n\n/* Info Control\n------------------------------------------------------- */\n.leaflet-control.mapbox-control-info {\n  margin:5px 30px 10px 10px;\n  min-height:26px;\n  }\n  .leaflet-right .leaflet-control.mapbox-control-info {\n    margin:5px 10px 10px 30px;\n    }\n\n.mapbox-info-toggle {\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  border-radius:50%;\n  position:absolute;\n  bottom:0;left:0;\n  z-index:1;\n  }\n  .leaflet-right .mapbox-control-info .mapbox-info-toggle  { left:auto; right:0; }\n  .mapbox-info-toggle:hover { background-color:#fff; }\n\n.map-info-container {\n  background:#fff;\n  padding:3px 5px 3px 27px;\n  display:none;\n  position:relative;\n  bottom:0;left:0;\n  border-radius:13px 3px 3px 13px;\n  }\n  .leaflet-right .map-info-container {\n    left:auto;\n    right:0;\n    padding:3px 27px 3px 5px;\n    border-radius:3px 13px 13px 3px;\n    }\n\n.mapbox-control-info.active .map-info-container { display:inline-block; }\n.leaflet-container .mapbox-improve-map { font-weight:bold; }\n\n/* Geocoder\n------------------------------------------------------- */\n.leaflet-control-mapbox-geocoder {\n  position:relative;\n  }\n.leaflet-control-mapbox-geocoder.searching {\n  opacity:0.75;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-wrap {\n  background:#fff;\n  position:absolute;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  overflow:hidden;\n  left:26px;\n  height:28px;\n  width:0;\n  top:-1px;\n  border-radius:0 3px 3px 0;\n  opacity:0;\n  -webkit-transition:opacity 100ms;\n     -moz-transition:opacity 100ms;\n       -o-transition:opacity 100ms;\n          transition:opacity 100ms;\n  }\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-wrap {\n  width:180px;\n  opacity:1;\n  }\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle,\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle:hover {\n  border-bottom:none;\n  }\n.leaflet-control-mapbox-geocoder-toggle {\n  border-radius:3px;\n  }\n.leaflet-control-mapbox-geocoder.active,\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-top-right-radius:0;\n  border-bottom-right-radius:0;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n  background:transparent;\n  border:0;\n  width:180px;\n  padding:0 0 0 10px;\n  height:26px;\n  outline:none;\n  }\n.leaflet-control-mapbox-geocoder-results {\n  width:180px;\n  position:absolute;\n  left:26px;\n  top:25px;\n  border-radius:0 0 3px 3px;\n  }\n  .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-results {\n    background:#fff;\n    border:1px solid #999;\n    border-color:rgba(0,0,0,0.4);\n    }\n.leaflet-control-mapbox-geocoder-results a,\n.leaflet-control-mapbox-geocoder-results span {\n  padding:0 10px;\n  text-overflow:ellipsis;\n  white-space:nowrap;\n  display:block;\n  width:100%;\n  font-size:12px;\n  line-height:26px;\n  text-align:left;\n  overflow:hidden;\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a:hover,\n  .leaflet-control-mapbox-geocoder-results a:hover {\n    background:#f8f8f8;\n    opacity:1;\n    }\n\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap,\n.leaflet-right .leaflet-control-mapbox-geocoder-results {\n  left:auto;\n  right:26px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap {\n  border-radius:3px 0 0 3px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder.active,\n.leaflet-right .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-radius:0 3px 3px 0;\n  }\n\n.leaflet-bottom .leaflet-control-mapbox-geocoder-results {\n  top:auto;\n  bottom:25px;\n  border-radius:3px 3px 0 0;\n  }\n\n/* Mapbox Logo\n------------------------------------------------------- */\n.mapbox-logo-true:before {\n  content:'';\n  display:inline-block;\n  width:61px;\n  height:19px;\n  vertical-align:middle;\n}\n.mapbox-logo-true {\n  background-repeat:no-repeat;\n  background-size:61px 19px;\n  background-image:url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI2NSIgaGVpZ2h0PSIyMCI+PGRlZnMvPjxtZXRhZGF0YT48cmRmOlJERj48Y2M6V29yayByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIvPjxkYzp0aXRsZS8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNjEuODQ4MywtOTguNTAzOTUpIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0ib3BhY2l0eTowLjI1O2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLW9wYWNpdHk6MTtzdHJva2UtZGFzaGFycmF5Om5vbmUiPjxwYXRoIGQ9Ik0gNS4yOCAxLjUgQyA0LjU0IDEuNTYgMy45IDIuMjUgMy45MSAzIGwgMCAxMS44OCBjIDAuMDIgMC43NyAwLjcyIDEuNDcgMS41IDEuNDcgbCAxLjc1IDAgYyAwLjc4IDAgMS40OCAtMC42OSAxLjUgLTEuNDcgbCAwIC00LjI4IDAuNzIgMS4xOSBjIDAuNTMgMC44NyAyLjAzIDAuODcgMi41NiAwIGwgMC43MiAtMS4xOSAwIDQuMjggYyAwLjAyIDAuNzYgMC43IDEuNDUgMS40NyAxLjQ3IGwgMS43NSAwIGMgMC43OCAwIDEuNDggLTAuNjkgMS41IC0xLjQ3IGwgMCAtMC4xNiBjIDEuMDIgMS4xMiAyLjQ2IDEuODEgNC4wOSAxLjgxIGwgNC4wOSAwIDAgMS40NyBjIC0wIDAuNzggMC42OSAxLjQ4IDEuNDcgMS41IGwgMS43NSAwIGMgMC43OSAtMCAxLjUgLTAuNzEgMS41IC0xLjUgbCAwLjAyIC0xLjQ3IGMgMS43MiAwIDMuMDggLTAuNjQgNC4xNCAtMS42OSBsIDAgMC4xOSBjIDAgMC4zOSAwLjE2IDAuNzkgMC40NCAxLjA2IDAuMjggMC4yOCAwLjY3IDAuNDQgMS4wNiAwLjQ0IGwgMy4zMSAwIGMgMi4wMyAwIDMuODUgLTEuMDYgNC45MSAtMi42OSAxLjA1IDEuNjEgMi44NCAyLjY5IDQuODggMi42OSAxLjAzIDAgMS45OCAtMC4yNyAyLjgxIC0wLjc1IDAuMjggMC4zNSAwLjczIDAuNTcgMS4xOSAwLjU2IGwgMi4xMiAwIGMgMC40OCAwLjAxIDAuOTcgLTAuMjMgMS4yNSAtMC42MiBsIDAuOTEgLTEuMjggMC45MSAxLjI4IGMgMC4yOCAwLjM5IDAuNzQgMC42MyAxLjIyIDAuNjIgbCAyLjE2IDAgQyA2Mi42NyAxNi4zMyA2My40MiAxNC44OSA2Mi44MSAxNCBMIDYwLjIyIDEwLjM4IDYyLjYyIDcgQyA2My4yNiA2LjExIDYyLjUgNC42MiA2MS40MSA0LjYyIGwgLTIuMTYgMCBDIDU4Ljc4IDQuNjIgNTguMzEgNC44NiA1OC4wMyA1LjI1IEwgNTcuMzEgNi4yOCA1Ni41NiA1LjI1IEMgNTYuMjkgNC44NiA1NS44MiA0LjYyIDU1LjM0IDQuNjIgbCAtMi4xNiAwIGMgLTAuNDkgLTAgLTAuOTcgMC4yNSAtMS4yNSAwLjY2IC0wLjg2IC0wLjUxIC0xLjg0IC0wLjgxIC0yLjkxIC0wLjgxIC0yLjAzIDAgLTMuODMgMS4wOCAtNC44OCAyLjY5IEMgNDMuMSA1LjUzIDQxLjI3IDQuNDcgMzkuMTkgNC40NyBMIDM5LjE5IDMgQyAzOS4xOSAyLjYxIDM5LjAzIDIuMjEgMzguNzUgMS45NCAzOC40NyAxLjY2IDM4LjA4IDEuNSAzNy42OSAxLjUgbCAtMS43NSAwIGMgLTAuNzEgMCAtMS41IDAuODMgLTEuNSAxLjUgbCAwIDMuMTYgQyAzMy4zOCA1LjEgMzEuOTYgNC40NyAzMC4zOCA0LjQ3IGwgLTMuMzQgMCBjIC0wLjc3IDAuMDIgLTEuNDcgMC43MiAtMS40NyAxLjUgbCAwIDAuMzEgYyAtMS4wMiAtMS4xMiAtMi40NiAtMS44MSAtNC4wOSAtMS44MSAtMS42MyAwIC0zLjA3IDAuNyAtNC4wOSAxLjgxIEwgMTcuMzggMyBjIC0wIC0wLjc5IC0wLjcxIC0xLjUgLTEuNSAtMS41IEwgMTQuNSAxLjUgQyAxMy41NSAxLjUgMTIuMjggMS44NyAxMS42NiAyLjk0IGwgLTEgMS42OSAtMSAtMS42OSBDIDkuMDMgMS44NyA3Ljc3IDEuNSA2LjgxIDEuNSBsIC0xLjQxIDAgQyA1LjM2IDEuNSA1LjMyIDEuNSA1LjI4IDEuNSB6IG0gMTYuMTkgNy43MiBjIDAuNTMgMCAwLjk0IDAuMzUgMC45NCAxLjI4IGwgMCAxLjI4IC0wLjk0IDAgYyAtMC41MiAwIC0wLjk0IC0wLjM4IC0wLjk0IC0xLjI4IC0wIC0wLjkgMC40MiAtMS4yOCAwLjk0IC0xLjI4IHogbSA4LjgxIDAgYyAwLjgzIDAgMS4xOCAwLjY4IDEuMTkgMS4yOCAwLjAxIDAuOTQgLTAuNjIgMS4yOCAtMS4xOSAxLjI4IHogbSA4LjcyIDAgYyAwLjcyIDAgMS4zNyAwLjYgMS4zNyAxLjI4IDAgMC43NyAtMC41MSAxLjI4IC0xLjM3IDEuMjggeiBtIDEwLjAzIDAgYyAwLjU4IDAgMS4wOSAwLjUgMS4wOSAxLjI4IDAgMC43OCAtMC41MSAxLjI4IC0xLjA5IDEuMjggLTAuNTggMCAtMS4xMiAtMC41IC0xLjEyIC0xLjI4IDAgLTAuNzggMC41NCAtMS4yOCAxLjEyIC0xLjI4IHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZm9udC1zaXplOm1lZGl1bTtmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTtsaW5lLWhlaWdodDpub3JtYWw7bGV0dGVyLXNwYWNpbmc6bm9ybWFsO3dvcmQtc3BhY2luZzpub3JtYWw7dGV4dC10cmFuc2Zvcm06bm9uZTtkaXJlY3Rpb246bHRyO2Jsb2NrLXByb2dyZXNzaW9uOnRiO3dyaXRpbmctbW9kZTpsci10Yjt0ZXh0LWFuY2hvcjpzdGFydDtiYXNlbGluZS1zaGlmdDpiYXNlbGluZTtjb2xvcjojMDAwMDAwO2ZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZTtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7bWFya2VyOm5vbmU7dmlzaWJpbGl0eTp2aXNpYmxlO2Rpc3BsYXk6aW5saW5lO292ZXJmbG93OnZpc2libGU7ZW5hYmxlLWJhY2tncm91bmQ6YWNjdW11bGF0ZTtmb250LWZhbWlseTpTYW5zOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246U2FucyIvPjwvZz48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0iZmlsbDojZmZmZmZmIj48cGF0aCBkPSJtIDUuNDEgMyAwIDEyIDEuNzUgMCAwIC05LjkxIDMuNSA1Ljk0IDMuNDcgLTUuOTQgMCA5LjkxIDEuNzUgMCAwIC0xMiBMIDE0LjUgMyBDIDEzLjggMyAxMy4yNSAzLjE2IDEyLjk0IDMuNjkgTCAxMC42NiA3LjU5IDguMzggMy42OSBDIDguMDcgMy4xNiA3LjUxIDMgNi44MSAzIHogTSAzNiAzIGwgMCAxMi4wMyAzLjI1IDAgYyAyLjQ0IDAgNC4zOCAtMS45MSA0LjM4IC00LjUzIDAgLTIuNjIgLTEuOTMgLTQuNDcgLTQuMzggLTQuNDcgQyAzOC43IDYuMDMgMzguMzIgNiAzNy43NSA2IGwgMCAtMyB6IE0gMjEuNDcgNS45NyBjIC0yLjQ0IDAgLTQuMTkgMS45MSAtNC4xOSA0LjUzIDAgMi42MiAxLjc1IDQuNTMgNC4xOSA0LjUzIGwgNC4xOSAwIDAgLTQuNTMgYyAwIC0yLjYyIC0xLjc1IC00LjUzIC00LjE5IC00LjUzIHogbSAyNy41NiAwIGMgLTIuNDEgMCAtNC4zOCAyLjAzIC00LjM4IDQuNTMgMCAyLjUgMS45NyA0LjUzIDQuMzggNC41MyAyLjQxIDAgNC4zNCAtMi4wMyA0LjM0IC00LjUzIDAgLTIuNSAtMS45NCAtNC41MyAtNC4zNCAtNC41MyB6IG0gLTIyIDAuMDMgMCAxMiAxLjc1IDAgMCAtMi45NyBjIDAuNTcgMCAxLjA0IC0wIDEuNTkgMCAyLjQ0IDAgNC4zNCAtMS45MSA0LjM0IC00LjUzIDAgLTIuNjIgLTEuOSAtNC41IC00LjM0IC00LjUgeiBtIDI2LjE2IDAgMy4wMyA0LjM4IC0zLjE5IDQuNjIgMi4xMiAwIEwgNTcuMzEgMTEuOTEgNTkuNDQgMTUgNjEuNTkgMTUgNTguMzggMTAuMzggNjEuNDEgNiA1OS4yNSA2IDU3LjMxIDguODEgNTUuMzQgNiB6IE0gMjEuNDcgNy43MiBjIDEuNCAwIDIuNDQgMS4xOSAyLjQ0IDIuNzggbCAwIDIuNzggLTIuNDQgMCBjIC0xLjQgMCAtMi40NCAtMS4yMSAtMi40NCAtMi43OCAtMCAtMS41NyAxLjA0IC0yLjc4IDIuNDQgLTIuNzggeiBtIDI3LjU2IDAgYyAxLjQ0IDAgMi41OSAxLjI0IDIuNTkgMi43OCAwIDEuNTQgLTEuMTUgMi43OCAtMi41OSAyLjc4IC0xLjQ0IDAgLTIuNjIgLTEuMjQgLTIuNjIgLTIuNzggMCAtMS41NCAxLjE4IC0yLjc4IDIuNjIgLTIuNzggeiBtIC0yMC4yNSAwLjAzIDEuNTkgMCBjIDEuNTkgMCAyLjU5IDEuMjggMi41OSAyLjc1IDAgMS40NyAtMS4xMyAyLjc4IC0yLjU5IDIuNzggbCAtMS41OSAwIHogbSA4Ljk3IDAgMS41IDAgYyAxLjQ3IDAgMi42MiAxLjI4IDIuNjIgMi43NSAwIDEuNDcgLTEuMDQgMi43OCAtMi42MiAyLjc4IGwgLTEuNSAwIHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIi8+PC9nPjwvZz48L3N2Zz4=');\n}\n\n/* Dark Theme\n------------------------------------------------------- */\n.leaflet-container.dark .leaflet-bar {\n  background-color:#404040;\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-bar a {\n    color:#404040;\n    border-color:rgba(0,0,0,0.5);\n    }\n  .leaflet-container.dark .leaflet-bar a:active,\n  .leaflet-container.dark .leaflet-bar a:hover {\n    background-color:#505050;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:after,\n.leaflet-container.dark .mapbox-info-toggle,\n.leaflet-container.dark .map-info-container,\n.leaflet-container.dark .leaflet-control-attribution {\n  background-color:rgba(0,0,0,0.5);\n  color:#f8f8f8;\n  }\n  .leaflet-container.dark .leaflet-control-attribution a,\n  .leaflet-container.dark .leaflet-control-attribution a:hover,\n  .leaflet-container.dark .map-info-container a,\n  .leaflet-container.dark .map-info-container a:hover {\n    color:#fff;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:hover:after {\n  background-color:#000;\n  }\n.leaflet-container.dark .leaflet-control-layers-list span {\n  color:#f8f8f8;\n  }\n.leaflet-container.dark .leaflet-control-layers-separator {\n  border-top-color:rgba(255,255,255,0.10);\n  }\n.leaflet-container.dark .leaflet-bar a.leaflet-disabled,\n.leaflet-container.dark .leaflet-control .mapbox-button.disabled {\n  background-color:#252525;\n  color:#404040;\n  }\n.leaflet-container.dark .leaflet-control-mapbox-geocoder > div {\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a {\n    border-color:#ddd #202020;\n    border-color:rgba(0,0,0,0.10) rgba(0,0,0,0.75);\n    }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results span {\n    border-color:#202020;\n    border-color:rgba(0,0,0,0.75);\n    }\n\n/* Larger Screens\n------------------------------------------------------- */\n@media only screen and (max-width:800px) {\n.mapbox-modal-body {\n  width:83.3333%;\n  margin-left:8.3333%;\n  }\n}\n\n/* Smaller Screens\n------------------------------------------------------- */\n@media only screen and (max-width:640px) {\n.mapbox-modal-body {\n  width:100%;\n  height:100%;\n  margin:0;\n  }\n}\n\n/* Print\n------------------------------------------------------- */\n@media print { .mapbox-improve-map { display:none; } }\n\n/* Browser Fixes\n------------------------------------------------------- */\n/* VML support for IE8 */\n.leaflet-vml-shape { width:1px; height:1px; }\n.lvml { behavior:url(#default#VML); display:inline-block; position:absolute; }\n/* Map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img.leaflet-tile { max-width:none !important; }\n/* Markers are broken in FF/IE if you have max-width: 100% on marker images */\n.leaflet-container img.leaflet-marker-icon { max-width:none; }\n/* Stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer { max-width:15000px !important; }\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg { -moz-user-select:none; }\n/* Older IEs don't support the translateY property for display animation */\n.leaflet-oldie .mapbox-modal .mapbox-modal-content        { display:none; }\n.leaflet-oldie .mapbox-modal.active .mapbox-modal-content { display:block; }\n.map-tooltip { width:280px\\8; /* < IE9 */ }\n\n/* < IE8 */\n.leaflet-oldie .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-popup-close-button,\n.leaflet-oldie .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .map-tooltip .close,\n.leaflet-oldie .map-tooltip .close,\n.leaflet-oldie .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXnSURBVHic7ZxfiFVFGMB/33pRUQsKto002DY3McJ6yBYkESQxpYTypaB66KEXYRWLYOlhr9RTRGWRUkk9RyEU+Y9ClECJVTKlPybWBilqkYuWrqBOD/NdPV7PmTPn3NPtat/AcO6ZP9/vfN/Mmfl2Zs6Kc452hK62UAxkIANdEURkVERGC9crOjKIiANwzkmRep1lOjWXa2ijaU7jaGWgKsL110a1EnV+LQMqbLqyobO6t4EMZCADGchABrqmQUlPNSWOVgaqIpi7ZSADGchABjKQga49kIjURaQem14apGE4KVR/D0fXds5FRaAOOL1e+h1dP7ZgE6wQxDnXvs7QWaZLE1wUVmRNdY1zrp6wRF0kfqHYnHwDGchABjJQIETNRyIyFVgBzAPmavIIsAt4xzn3d66QiNl1PnCYy05JczwMzG9pKlfIhQCkES/kwUKQqRma9GpM02xqGXdrBdCXZm2NzaFP66SGUGeYl5E+WqJO0HRHSG+PXtJN54AjVbhbjQcbBSjiakH4hR0p+hChOiHQrhKg7Drt6t7//Qtb9RAU5XtXMaiak28gAxnIQO0Gicg0EXlMRDaIyFGNGzRtWhQpMA/1A6uAL4BzZM9H57TMKqC/8HyUPFhZJLiMI4sh0/UDK4FtwHig3LiWWal1UkPsDDsFWAgsBZZo8hZgM7DdOXcmV0igjQ4Ba4HFwORAuclaZi1wqNU2OgNsVw22aNoS1XAhMCXx4OkubOBJZwKDwFbgLNm97qyWGQRmtuoFWRsV0ujabCPzVA1kIAMZqBNAIjIgImPNRxUzK+SsmtRJn4Pqmj8AjCXzsmTlaTSck/8zcDRX/QiNMp8S6Ab2a5nvG5plyioDaoLs1/sBYKwyUBokkTdQJeiVZgi6UR+UVQI0QWHdoXKFvKDYz7RiynXctk7LPlmeRmsKyAqWNQfSQAYykIGuS5CI1ERkSET2ishpvQ6JSLE93ByfoQbsRHeNgfe4vOO8E6iF6hdxToZU6OqGUIWv1vShqkB7VYNaU3pN0/fGgvLa6C5gk3PufJO5zwObgDuraqM8jbZWpdEnwG3AYKOX6XVQ07+sSqNQr3P4QxS9LXeGBGxIzTiGXwR8QSHRsCj7ZjxAbxFYaVAKbMe/BkrAduRpZJ6qgQxkoP8DKDRY1sk/s5W6YFhoUG3nFnZeOIJfxLgXWB7zBFmmyzPT44my9zXSC098OZCTwCQttzOZVzVoX1a5LHmdtYyWDM29yjknItKF3xSelFWvKo1mhCClQLo1sC95T8T/ebr+xrqOABVZT82tY56qgQxkIAN1CkhEulsGiUi3iCzKyJsjIpuBYyLyo4isFpHXReTuTFLAr1sOnAeeT8nbzNW+3rfAM2UcyAcSQj4FngR68Ot0F1NA24CuMqBu4PMUgYdS0hzwYqlFJ+AeNV3s30aLSoEUtjEScoHE3nkZ0Ay1fR7o3ZCcGNAEYHcO5A/g5pZACpsMPEf6UexTwCN5MvI6w2zgaeBt4HQK5BsC57ubY+jPll/wHzn1Ayc07QD+u6MR4GPn3LlA/SuCOZAGMpCBDFRhiF50EpFl+PP49wOzgIPAHmCLc+6zXAERE18P+b7DRqAnJCfvfF0P/mTgLZr0l97vB27CL3HO0rwTwBzn3PHCGiU0uQisA6bhzT0T/T4ZeAr4s6FZmal8WcI0LwETgdfwHzY1XKz3teyjibLLioLWa8UDeG/oZbxD+QHwdULwg1r+K71fXxQ0ohXfAgS/Mvyh5i1MgNZp2qt6P5ImL/QezdbrSeAG4EbVJJkH8LteJ+p1FikhBPpNr3Odc6fUNHdo2oJEucbX8Y2zDQeLgr7T62IReRb4AX9mGGC6Xo8Bu0VkOvCQpu1JlRZoo6Vc/WL2ad4C4A28CWvAR5TtdU0dwqH/ewHvHi8HbgUexh+euDRCFH6PVOh0/FKzw3um4M8zpA1DxwkMQzFjXR9+d/9N1WI8BZI71kU56Aq8HXgC+Ak/5o3gX+rUNmmO5nsbqP2gfwCyvJzPNoKXiAAAAABJRU5ErkJggg==');\n}\n.leaflet-oldie .mapbox-button-icon:before,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXYSURBVHic7ZxfiFVFHMc/a4uKWtDDtqJGZprYgwX5ByTdkkLbSgghCiKih14EBYtg6aEr9RRREKRUUs9hGEVtChKaYMkq2VqWmnUX2tKiNDNZY/Xbw/wue7x7zsw559626zY/GM6df7/P+c3MPfO7M3NumyTGQiaMCSWCIiiC6qVqoZC0lXgy1Cq0FanUck1XxVmSNL8WrzYT1LCMvz5qL1FnoAyoTNOVkpYb3hEUQREUQREUQRF0RYOqjHim9aHaTFDDEt2tCIqgCIqgCIqgCLoiQRULedNLgwCeq1NasbR8IilvqMhJpe5zrvpFQElYIYiksRsMLdd0aYoLwYqsqW5i9KjLLdHJj6AIiqAIiiCP5J2PpgLrgGXAYkvrA/YBrwF/BTXkmB2XSzqhbDlhZRqaypdLuuiB1ORiCOaDTM2wZLaFNMumZunzDYZ1wJy01ubyPfOazLE6qeIbDMsy0qsl6ngtWpyRfqOFInVKbWFXS9TxWtRXQl9mHR9oXwlQdp2xGt4t8YVt6iMor+/d8EM1OvkRFEERFEH/AWga8CCwFfjJwlZLm5ZHge/pPQ+4z8IKYGJGub+BT4GPLBwvCio7f6QeWfQ13TxgA7ATGPKUG7IyG6xOOj3nxDcFWAl0A/da2sdAL/AJcD6kwAc6bop6gT1kWzUZ6LKb6CbDqrx9dB535704S8BZ1o2zdEpSZ1HQ3MRddtmdp8kQzuKa9d8VBSUl9lEh0Pjro6ZKy00TERRBERRBLQZaCpxh9FHFUqBKiiJZ+n5gFfBHnrsKgUKb7t/j/PCwBNZwapKW1yGp3/KPSDrjKVsalIT0W3ypwZoGSoPU8pY2E/RCCqSiwJ55GdBVBusIlCu0Xpf3Na1guZbb1mnYJwtZtKmALm/Z6EBGUARFUASNV1A70AMcBP60aw9F93ADPkO7pD3mDwxKesOusvT2QP3czkmPKd2YUNpucVl+LlBo4jsITAduAIbrmnMAOAncnqflQn10M26JebgufdjSb8oDyQM6hlv3ru/4dkv/vFmgd4EZwPoErN3iM4BdeUGNjDpJqsrtmzc86mqwHkkH5X4t7JD0tEFyw3INzYwwuwisEVA9bPe/CarBdocsip5qBEVQBP3fQRWyX4jOCpUsZS2xhR2SQdwixq3A2lDhMkcTa7Ie2G6fwzfsmax8clrSJCu3py4vVV/ZphsALtjnFXkqtNwyWlLqR1Ub7obPA5OyKjXLolk+SFmQgEN18eD/PLXEI2j8gYqspwbrRE81giIogiKohUAdzQB1APdk5C3Ends6CXwLbAReBm7J1OZxINdKGpb0VEpeb4pT+aWkx8os0SxJKHlf0iOSOiXNkHQpBbRT0oQyoA5JH6YoPJ6SJknPeHR5+6gTWJ2SPjej/BceXV7QV8AHvsoJucTlvt5o8ZkraZa1fUheD+gJfo9+Bq4JlPkNt4Xgl9CdSJos6UlJF1IsOSvp/hw6vL8mFgCLgCXA44w+730IeIiM89314gP9ACzHHXD9xdIO49476gO2MfJjLCjRgYygCIqgCGqiFFl0WoM7j78ImA8cBQ7gzuaHp/wck1anpO2BqXy7lSu9I9YJ9APXWfycxfuBa4HbzDpwc9ZC4FQZi2qWXJK0WdI0ue3SuRp5P/lRSb8nLCvsQK5JNM2zkiZKeknSkKVdlPSmlX0gUXZNUdAWq3hY7tzj83K++FuS9icU32Hl91p8S1FQn1V8VVKb3Mrw25a3MgHabGkvWrwvTZ/ve7TArqeBq3H+3f66PIBf7VrzkuaTIj7Qj3ZdDJwF9jLy5wJdiXK1t+NrZxuOFgV9bddVwBPAN8ARS5tp15PAZxa/29IOpGrz9FG3Rsscy+uS9IqkBXLD/Z1GRl1yQEjuHANy7vFaSdMlrZa0K1Gm1PcISTMlDZiSbZa2I8VSSTolz2Mo9PQeBO7CvTE1iDtRc2dKuffwPX4CfVQfrpf0sKRjks5Zs27J6pP6EH3vCBp70D8db2VXFPfIagAAAABJRU5ErkJggg==');\n}\n\n.leaflet-oldie .mapbox-logo-true {\n  background-image: none;\n}\n", ""]);
+exports.push([module.i, "/* Basics */\n.mapboxgl-ctrl-geocoder,\n.mapboxgl-ctrl-geocoder *,\n.mapboxgl-ctrl-geocoder *:after,\n.mapboxgl-ctrl-geocoder *:before {\n  box-sizing: border-box;\n}\n\n.mapboxgl-ctrl-geocoder {\n  font-size: 18px;\n  line-height: 24px;\n  font-family: \"Open Sans\", \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n  position: relative;\n  background-color: #fff;\n  width: 100%;\n  min-width: 240px;\n  z-index: 1;\n  border-radius: 4px;\n  transition: width .25s, min-width .25s;\n}\n\n.mapboxgl-ctrl-geocoder--input {\n  font: inherit;\n  width: 100%;\n  border: 0;\n  background-color: transparent;\n  margin: 0;\n  height: 50px;\n  color: #404040; /* fallback */\n  color: rgba(0, 0, 0, 0.75);\n  padding: 6px 45px;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  overflow: hidden;\n}\n\n.mapboxgl-ctrl-geocoder--input::-ms-clear {\n  display: none; /* hide input clear button in IE */\n}\n\n.mapboxgl-ctrl-geocoder--input:focus {\n  color: #404040; /* fallback */\n  color: rgba(0, 0, 0, 0.75);\n  outline: 0;\n  box-shadow: none;\n  outline: thin dotted;\n}\n\n.mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--pin-right > * {\n  z-index: 2;\n  position: absolute;\n  right: 8px;\n  top: 7px;\n  display: none;\n}\n\n.mapboxgl-ctrl-geocoder,\n.mapboxgl-ctrl-geocoder .suggestions {\n  box-shadow: 0 0 10px 2px rgba(0,0,0,.1);\n}\n\n/* Collapsed */\n.mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {\n  width: 50px;\n  min-width: 50px;\n  transition: width .25s, min-width .25s;\n}\n\n/* Suggestions */\n.mapboxgl-ctrl-geocoder .suggestions {\n  background-color: #fff;\n  border-radius: 4px;\n  left: 0;\n  list-style: none;\n  margin: 0;\n  padding: 0;\n  position: absolute;\n  width: 100%;\n  top: 110%; /* fallback */\n  top: calc(100% + 6px);\n  z-index: 1000;\n  overflow: hidden;\n  font-size: 15px;\n}\n\n.mapboxgl-ctrl-bottom-left .suggestions,\n.mapboxgl-ctrl-bottom-right .suggestions {\n  top: auto;\n  bottom: 100%;\n}\n\n.mapboxgl-ctrl-geocoder .suggestions > li > a {\n  cursor: default;\n  display: block;\n  padding: 6px 12px;\n  color: #404040;\n}\n\n.mapboxgl-ctrl-geocoder .suggestions > .active > a,\n.mapboxgl-ctrl-geocoder .suggestions > li > a:hover {\n  color: #404040;\n  background-color: #f3f3f3;\n  text-decoration: none;\n  cursor: pointer;\n}\n\n.mapboxgl-ctrl-geocoder--suggestion-title {\n  font-weight: bold;\n}\n\n.mapboxgl-ctrl-geocoder--suggestion-title,\n.mapboxgl-ctrl-geocoder--suggestion-address {\n  text-overflow: ellipsis;\n  overflow: hidden;\n  white-space: nowrap;\n}\n\n/* Icons */\n.mapboxgl-ctrl-geocoder--icon {\n  display: inline-block;\n  vertical-align: middle;\n  speak: none;\n  fill: #757575;\n  top: 15px;\n}\n\n.mapboxgl-ctrl-geocoder--icon-search {\n  position: absolute;\n  top: 13px;\n  left: 12px;\n  width: 23px;\n  height: 23px;\n}\n\n.mapboxgl-ctrl-geocoder--button {\n  padding: 0;\n  margin: 0;\n  border: none;\n  cursor: pointer;\n  background: #fff;\n  line-height: 1;\n}\n\n.mapboxgl-ctrl-geocoder--icon-close {\n  width: 20px;\n  height: 20px;\n  margin-top: 8px;\n  margin-right: 3px;\n}\n\n.mapboxgl-ctrl-geocoder--button:hover .mapboxgl-ctrl-geocoder--icon-close {\n  fill: #909090;\n}\n\n.mapboxgl-ctrl-geocoder--icon-loading {\n  width: 26px;\n  height: 26px;\n  margin-top: 5px;\n  margin-right: 0px;\n  -moz-animation: rotate 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);\n  -webkit-animation: rotate 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);\n  animation: rotate 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);\n}\n\n/* Animation */\n@-webkit-keyframes rotate {\n  from {\n    -webkit-transform: rotate(0);\n    transform: rotate(0);\n  }\n  to {\n    -webkit-transform: rotate(360deg);\n    transform: rotate(360deg);\n  }\n}\n\n@keyframes rotate {\n  from {\n    -webkit-transform: rotate(0);\n    transform: rotate(0);\n  }\n  to {\n    -webkit-transform: rotate(360deg);\n    transform: rotate(360deg);\n  }\n}\n\n/* Media queries*/\n@media screen and (min-width: 640px) {\n\n  .mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {\n    width: 36px;\n    min-width: 36px;\n  }\n\n  .mapboxgl-ctrl-geocoder {\n    width: 33.3333%;\n    font-size: 15px;\n    line-height: 20px;\n    max-width: 360px;\n  }\n  .mapboxgl-ctrl-geocoder .suggestions {\n    font-size: 13px;\n  }\n\n  .mapboxgl-ctrl-geocoder--icon {\n    top: 8px;\n  }\n\n  .mapboxgl-ctrl-geocoder--icon-close {\n    width: 16px;\n    height: 16px;\n    margin-top: 3px;\n    margin-right: 0;\n  }\n\n  .mapboxgl-ctrl-geocoder--icon-search {\n    left: 7px;\n    width: 20px;\n    height: 20px;\n  }\n\n  .mapboxgl-ctrl-geocoder--input {\n    height: 36px;\n    padding: 6px 35px;\n  }\n\n  .mapboxgl-ctrl-geocoder--icon-loading {\n    width: 26px;\n    height: 26px;\n    margin-top: -2px;\n    margin-right: -5px;\n  }\n\n  .mapbox-gl-geocoder--error{\n    color:#909090;\n    padding: 6px 12px;\n    font-size: 16px;\n    text-align: center\n  }\n\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 151 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "icons-000000@2x.4c2a02.png";
-
-/***/ }),
-/* 152 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__.p + "icons-ffffff@2x.f9d13b.png";
-
-/***/ }),
-/* 153 */
+/* 186 */
 /***/ (function(module, exports) {
 
 
@@ -50233,13 +56541,71 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 154 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(155);
+var content = __webpack_require__(188);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(41)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../css-loader/index.js!./style.css", function() {
+			var newContent = require("!!../../css-loader/index.js!./style.css");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 188 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var escape = __webpack_require__(72);
+exports = module.exports = __webpack_require__(40)(false);
+// imports
+
+
+// module
+exports.push([module.i, "/* general typography */\n.leaflet-container {\n  background:#fff;\n  font:12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  outline:0;\n  overflow:hidden;\n  -ms-touch-action:none;\n  }\n\n.leaflet-container *,\n.leaflet-container *:after,\n.leaflet-container *:before {\n  -webkit-box-sizing:border-box;\n     -moz-box-sizing:border-box;\n          box-sizing:border-box;\n  }\n\n.leaflet-container h1,\n.leaflet-container h2,\n.leaflet-container h3,\n.leaflet-container h4,\n.leaflet-container h5,\n.leaflet-container h6,\n.leaflet-container p {\n  font-size:15px;\n  line-height:20px;\n  margin:0 0 10px;\n  }\n\n.leaflet-container .marker-description img {\n  margin-bottom: 10px;\n  }\n\n.leaflet-container a {\n  color:#3887BE;\n  font-weight:normal;\n  text-decoration:none;\n  }\n  .leaflet-container a:hover      { color:#63b6e5; }\n  .leaflet-container.dark a       { color:#63b6e5; }\n  .leaflet-container.dark a:hover { color:#8fcaec; }\n\n.leaflet-container.dark .mapbox-button,\n.leaflet-container .mapbox-button {\n  background-color:#3887be;\n  display:inline-block;\n  height:40px;\n  line-height:40px;\n  text-decoration:none;\n  color:#fff;\n  font-size:12px;\n  white-space:nowrap;\n  text-overflow:ellipsis;\n  }\n  .leaflet-container.dark .mapbox-button:hover,\n  .leaflet-container .mapbox-button:hover {\n    color:#fff;\n    background-color:#3bb2d0;\n    }\n\n/* Base Leaflet\n------------------------------------------------------- */\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n  position:absolute;\n  left:0;\n  top:0;\n  }\n\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  -webkit-user-drag:none;\n  -webkit-user-select:none;\n     -moz-user-select:none;\n          user-select:none;\n  }\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  display: block;\n  }\n\n.leaflet-tile {\n  filter:inherit;\n  visibility:hidden;\n  }\n.leaflet-tile-loaded {\n  visibility:inherit;\n  }\n.leaflet-zoom-box {\n  width:0;\n  height:0;\n  }\n\n.leaflet-tile-pane    { z-index:2; }\n.leaflet-objects-pane { z-index:3; }\n.leaflet-overlay-pane { z-index:4; }\n.leaflet-shadow-pane  { z-index:5; }\n.leaflet-marker-pane  { z-index:6; }\n.leaflet-popup-pane   { z-index:7; }\n\n.leaflet-control {\n  position:relative;\n  z-index:7;\n  pointer-events:auto;\n  float:left;\n  clear:both;\n  }\n  .leaflet-right .leaflet-control   { float:right; }\n  .leaflet-top .leaflet-control     { margin-top:10px; }\n  .leaflet-bottom .leaflet-control  { margin-bottom:10px; }\n  .leaflet-left .leaflet-control    { margin-left:10px; }\n  .leaflet-right .leaflet-control   { margin-right:10px; }\n\n.leaflet-top,\n.leaflet-bottom {\n  position:absolute;\n  z-index:1000;\n  pointer-events:none;\n  }\n  .leaflet-top    { top:0; }\n  .leaflet-right  { right:0; }\n  .leaflet-bottom { bottom:0; }\n  .leaflet-left   { left:0; }\n\n/* zoom and fade animations */\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n  opacity:0;\n  -webkit-transition:opacity 0.2s linear;\n     -moz-transition:opacity 0.2s linear;\n       -o-transition:opacity 0.2s linear;\n          transition:opacity 0.2s linear;\n  }\n  .leaflet-fade-anim .leaflet-tile-loaded,\n  .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n    opacity:1;\n    }\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n  -webkit-transition:-webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n     -moz-transition:   -moz-transform 0.25s cubic-bezier(0,0,0.25,1);\n       -o-transition:     -o-transform 0.25s cubic-bezier(0,0,0.25,1);\n          transition:        transform 0.25s cubic-bezier(0,0,0.25,1);\n  }\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n  -webkit-transition:none;\n     -moz-transition:none;\n       -o-transition:none;\n          transition:none;\n  }\n.leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; }\n\n/* cursors */\n.leaflet-container {\n  cursor:-webkit-grab;\n  cursor:   -moz-grab;\n  }\n.leaflet-overlay-pane path,\n.leaflet-marker-icon,\n.leaflet-container.map-clickable,\n.leaflet-container.leaflet-clickable {\n  cursor:pointer;\n  }\n.leaflet-popup-pane,\n.leaflet-control {\n  cursor:auto;\n  }\n.leaflet-dragging,\n.leaflet-dragging .map-clickable,\n.leaflet-dragging .leaflet-clickable,\n.leaflet-dragging .leaflet-container {\n  cursor:move;\n  cursor:-webkit-grabbing;\n  cursor:   -moz-grabbing;\n  }\n\n.leaflet-zoom-box {\n  background:#fff;\n  border:2px dotted #202020;\n  opacity:0.5;\n  }\n\n/* general toolbar styles */\n.leaflet-control-layers,\n.leaflet-bar {\n  background-color:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-radius:3px;\n  box-shadow:none;\n  }\n.leaflet-bar a,\n.leaflet-bar a:hover {\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  border-bottom:1px solid #ddd;\n  border-bottom-color:rgba(0,0,0,0.10);\n  }\n  .leaflet-bar a:hover,\n  .leaflet-bar a:active {\n    background-color:#f8f8f8;\n    cursor:pointer;\n    }\n  .leaflet-bar a:hover:first-child {\n    border-radius:3px 3px 0 0;\n    }\n  .leaflet-bar a:hover:last-child {\n    border-bottom:none;\n    border-radius:0 0 3px 3px;\n    }\n  .leaflet-bar a:hover:only-of-type {\n    border-radius:3px;\n    }\n\n.leaflet-bar .leaflet-disabled {\n  cursor:default;\n  opacity:0.75;\n  }\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n  display:block;\n  content:'';\n  text-indent:-999em;\n  }\n\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n  display:none;\n  }\n  .leaflet-control-layers-expanded .leaflet-control-layers-list {\n    display:block;\n    position:relative;\n    }\n\n.leaflet-control-layers-expanded {\n  background:#fff;\n  padding:6px 10px 6px 6px;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  }\n.leaflet-control-layers-selector {\n  margin-top:2px;\n  position:relative;\n  top:1px;\n  }\n.leaflet-control-layers label {\n  display: block;\n  }\n.leaflet-control-layers-separator {\n  height:0;\n  border-top:1px solid #ddd;\n  border-top-color:rgba(0,0,0,0.10);\n  margin:5px -10px 5px -6px;\n  }\n\n.leaflet-container .leaflet-control-attribution {\n  background-color:rgba(255,255,255,0.5);\n  margin:0;\n  box-shadow:none;\n  }\n  .leaflet-container .leaflet-control-attribution a,\n  .leaflet-container .map-info-container a {\n    color:#404040;\n    }\n    .leaflet-control-attribution a:hover,\n    .map-info-container a:hover {\n      color:inherit;\n      text-decoration:underline;\n      }\n\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n  padding:0 5px;\n  }\n  .leaflet-left .leaflet-control-scale    { margin-left:5px; }\n  .leaflet-bottom .leaflet-control-scale  { margin-bottom:5px; }\n\n/* Used for smaller map containers & triggered by container size */\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution { margin:10px; }\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution {\n  background:#fff;\n  border-radius:3px 13px 13px 3px;\n  padding:3px 31px 3px 3px;\n  visibility:hidden;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover {\n    visibility:visible;\n    }\n\n.leaflet-control-attribution.leaflet-compact-attribution:after {\n  content:'';\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  background-position:0 -78px;\n  border-radius:50%;\n  position:absolute;\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  bottom:0;\n  z-index:1;\n  visibility:visible;\n  cursor:pointer;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover:after { background-color:#fff; }\n\n.leaflet-right .leaflet-control-attribution.leaflet-compact-attribution:after { right:0; }\n.leaflet-left .leaflet-control-attribution.leaflet-compact-attribution:after { left:0; }\n\n.leaflet-control-scale-line {\n  background-color:rgba(255,255,255,0.5);\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-top:none;\n  padding:2px 5px 1px;\n  white-space:nowrap;\n  overflow:hidden;\n  }\n  .leaflet-control-scale-line:not(:first-child) {\n    border-top:2px solid #ddd;\n    border-top-color:rgba(0,0,0,0.10);\n    border-bottom:none;\n    margin-top:-2px;\n    }\n  .leaflet-control-scale-line:not(:first-child):not(:last-child) {\n    border-bottom:2px solid #777;\n    }\n\n/* popup */\n.leaflet-popup {\n  position:absolute;\n  text-align:center;\n  pointer-events:none;\n  }\n.leaflet-popup-content-wrapper {\n  padding:1px;\n  text-align:left;\n  pointer-events:all;\n  }\n.leaflet-popup-content {\n  padding:10px 10px 15px;\n  margin:0;\n  line-height:inherit;\n  }\n  .leaflet-popup-close-button + .leaflet-popup-content-wrapper .leaflet-popup-content {\n    padding-top:15px;\n    }\n\n.leaflet-popup-tip-container {\n  width:20px;\n  height:20px;\n  margin:0 auto;\n  position:relative;\n  }\n.leaflet-popup-tip {\n  width:0;\n\theight:0;\n  margin:0;\n\tborder-left:10px solid transparent;\n\tborder-right:10px solid transparent;\n\tborder-top:10px solid #fff;\n  box-shadow:none;\n  }\n.leaflet-popup-close-button {\n  text-indent:-999em;\n  position:absolute;\n  top:0;right:0;\n  pointer-events:all;\n  }\n  .leaflet-popup-close-button:hover {\n    background-color:#f8f8f8;\n    }\n\n.leaflet-popup-scrolled {\n  overflow:auto;\n  border-bottom:1px solid #ddd;\n  border-top:1px solid #ddd;\n  }\n\n/* div icon */\n.leaflet-div-icon {\n  background:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  }\n.leaflet-editing-icon {\n  border-radius:3px;\n  }\n\n/* Leaflet + Mapbox\n------------------------------------------------------- */\n.leaflet-bar a,\n.mapbox-icon,\n.map-tooltip.closable .close,\n.leaflet-control-layers-toggle,\n.leaflet-popup-close-button,\n.mapbox-button-icon:before {\n  content:'';\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  background-repeat:no-repeat;\n  }\n.leaflet-bar a {\n  display:block;\n  }\n\n.leaflet-control-attribution:after,\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out,\n.leaflet-popup-close-button,\n.leaflet-control-layers-toggle,\n.leaflet-container.dark .map-tooltip .close,\n.map-tooltip .close,\n.mapbox-icon {\n  opacity: .75;\n  background-image:url(" + escape(__webpack_require__(189)) + ");\n  background-repeat:no-repeat;\n  background-size:26px 260px;\n  }\n  .leaflet-container.dark .leaflet-control-attribution:after,\n  .mapbox-button-icon:before,\n  .leaflet-container.dark .leaflet-control-zoom-in,\n  .leaflet-container.dark .leaflet-control-zoom-out,\n  .leaflet-container.dark .leaflet-control-layers-toggle,\n  .leaflet-container.dark .mapbox-icon {\n    opacity: 1;\n    background-image:url(" + escape(__webpack_require__(190)) + ");\n    background-size:26px 260px;\n    }\n  .leaflet-bar .leaflet-control-zoom-in                 { background-position:0 0; }\n  .leaflet-bar .leaflet-control-zoom-out                { background-position:0 -26px; }\n  .map-tooltip.closable .close,\n  .leaflet-popup-close-button {\n    background-position:-3px -55px;\n    width:20px;\n    height:20px;\n    border-radius:0 3px 0 0;\n    }\n  .mapbox-icon-info                                     { background-position:0 -78px; }\n  .leaflet-control-layers-toggle                        { background-position:0 -104px; }\n  .mapbox-icon.mapbox-icon-share:before, .mapbox-icon.mapbox-icon-share         { background-position:0 -130px; }\n  .mapbox-icon.mapbox-icon-geocoder:before, .mapbox-icon.mapbox-icon-geocoder   { background-position:0 -156px; }\n  .mapbox-icon-facebook:before, .mapbox-icon-facebook   { background-position:0 -182px; }\n  .mapbox-icon-twitter:before, .mapbox-icon-twitter     { background-position:0 -208px; }\n  .mapbox-icon-pinterest:before, .mapbox-icon-pinterest { background-position:0 -234px; }\n\n.leaflet-popup-content-wrapper,\n.map-legends,\n.map-tooltip {\n  background:#fff;\n  border-radius:3px;\n  box-shadow:0 1px 2px rgba(0,0,0,0.10);\n  }\n.map-legends,\n.map-tooltip {\n  max-width:300px;\n  }\n.map-legends .map-legend {\n  padding:10px;\n  }\n.map-tooltip {\n  z-index:999999;\n  padding:10px;\n  min-width:180px;\n  max-height:400px;\n  overflow:auto;\n  opacity:1;\n  -webkit-transition:opacity 150ms;\n     -moz-transition:opacity 150ms;\n       -o-transition:opacity 150ms;\n          transition:opacity 150ms;\n  }\n\n.map-tooltip .close {\n  text-indent:-999em;\n  overflow:hidden;\n  display:none;\n  }\n  .map-tooltip.closable .close {\n    position:absolute;\n    top:0;right:0;\n    border-radius:3px;\n    }\n    .map-tooltip.closable .close:active  {\n      background-color:#f8f8f8;\n      }\n\n.leaflet-control-interaction {\n  position:absolute;\n  top:10px;\n  right:10px;\n  width:300px;\n  }\n.leaflet-popup-content .marker-title {\n  font-weight:bold;\n  }\n.leaflet-control .mapbox-button {\n  background-color:#fff;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  padding:5px 10px;\n  border-radius:3px;\n  }\n\n/* Share modal\n------------------------------------------------------- */\n.mapbox-modal > div {\n  position:absolute;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  z-index:-1;\n  overflow-y:auto;\n  }\n  .mapbox-modal.active > div {\n    z-index:99999;\n    transition:all .2s, z-index 0 0;\n    }\n\n.mapbox-modal .mapbox-modal-mask {\n  background:rgba(0,0,0,0.5);\n  opacity:0;\n  }\n  .mapbox-modal.active .mapbox-modal-mask { opacity:1; }\n\n.mapbox-modal .mapbox-modal-content {\n  -webkit-transform:translateY(-100%);\n     -moz-transform:translateY(-100%);\n      -ms-transform:translateY(-100%);\n          transform:translateY(-100%);\n  }\n  .mapbox-modal.active .mapbox-modal-content {\n    -webkit-transform:translateY(0);\n       -moz-transform:translateY(0);\n        -ms-transform:translateY(0);\n            transform:translateY(0);\n    }\n\n.mapbox-modal-body {\n  position:relative;\n  background:#fff;\n  padding:20px;\n  z-index:1000;\n  width:50%;\n  margin:20px 0 20px 25%;\n  }\n.mapbox-share-buttons {\n  margin:0 0 20px;\n  }\n.mapbox-share-buttons a {\n  width:33.3333%;\n  border-left:1px solid #fff;\n  text-align:center;\n  border-radius:0;\n  }\n  .mapbox-share-buttons a:last-child  { border-radius:0 3px 3px 0; }\n  .mapbox-share-buttons a:first-child { border:none; border-radius:3px 0 0 3px; }\n\n.mapbox-modal input {\n  width:100%;\n  height:40px;\n  padding:10px;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  color:rgba(0,0,0,0.5);\n  }\n\n/* Info Control\n------------------------------------------------------- */\n.leaflet-control.mapbox-control-info {\n  margin:5px 30px 10px 10px;\n  min-height:26px;\n  }\n  .leaflet-right .leaflet-control.mapbox-control-info {\n    margin:5px 10px 10px 30px;\n    }\n\n.mapbox-info-toggle {\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  border-radius:50%;\n  position:absolute;\n  bottom:0;left:0;\n  z-index:1;\n  }\n  .leaflet-right .mapbox-control-info .mapbox-info-toggle  { left:auto; right:0; }\n  .mapbox-info-toggle:hover { background-color:#fff; }\n\n.map-info-container {\n  background:#fff;\n  padding:3px 5px 3px 27px;\n  display:none;\n  position:relative;\n  bottom:0;left:0;\n  border-radius:13px 3px 3px 13px;\n  }\n  .leaflet-right .map-info-container {\n    left:auto;\n    right:0;\n    padding:3px 27px 3px 5px;\n    border-radius:3px 13px 13px 3px;\n    }\n\n.mapbox-control-info.active .map-info-container { display:inline-block; }\n.leaflet-container .mapbox-improve-map { font-weight:bold; }\n\n/* Geocoder\n------------------------------------------------------- */\n.leaflet-control-mapbox-geocoder {\n  position:relative;\n  }\n.leaflet-control-mapbox-geocoder.searching {\n  opacity:0.75;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-wrap {\n  background:#fff;\n  position:absolute;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  overflow:hidden;\n  left:26px;\n  height:28px;\n  width:0;\n  top:-1px;\n  border-radius:0 3px 3px 0;\n  opacity:0;\n  -webkit-transition:opacity 100ms;\n     -moz-transition:opacity 100ms;\n       -o-transition:opacity 100ms;\n          transition:opacity 100ms;\n  }\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-wrap {\n  width:180px;\n  opacity:1;\n  }\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle,\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle:hover {\n  border-bottom:none;\n  }\n.leaflet-control-mapbox-geocoder-toggle {\n  border-radius:3px;\n  }\n.leaflet-control-mapbox-geocoder.active,\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-top-right-radius:0;\n  border-bottom-right-radius:0;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n  background:transparent;\n  border:0;\n  width:180px;\n  padding:0 0 0 10px;\n  height:26px;\n  outline:none;\n  }\n.leaflet-control-mapbox-geocoder-results {\n  width:180px;\n  position:absolute;\n  left:26px;\n  top:25px;\n  border-radius:0 0 3px 3px;\n  }\n  .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-results {\n    background:#fff;\n    border:1px solid #999;\n    border-color:rgba(0,0,0,0.4);\n    }\n.leaflet-control-mapbox-geocoder-results a,\n.leaflet-control-mapbox-geocoder-results span {\n  padding:0 10px;\n  text-overflow:ellipsis;\n  white-space:nowrap;\n  display:block;\n  width:100%;\n  font-size:12px;\n  line-height:26px;\n  text-align:left;\n  overflow:hidden;\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a:hover,\n  .leaflet-control-mapbox-geocoder-results a:hover {\n    background:#f8f8f8;\n    opacity:1;\n    }\n\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap,\n.leaflet-right .leaflet-control-mapbox-geocoder-results {\n  left:auto;\n  right:26px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap {\n  border-radius:3px 0 0 3px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder.active,\n.leaflet-right .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-radius:0 3px 3px 0;\n  }\n\n.leaflet-bottom .leaflet-control-mapbox-geocoder-results {\n  top:auto;\n  bottom:25px;\n  border-radius:3px 3px 0 0;\n  }\n\n/* Mapbox Logo\n------------------------------------------------------- */\n.mapbox-logo-true:before {\n  content:'';\n  display:inline-block;\n  width:61px;\n  height:19px;\n  vertical-align:middle;\n}\n.mapbox-logo-true {\n  background-repeat:no-repeat;\n  background-size:61px 19px;\n  background-image:url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI2NSIgaGVpZ2h0PSIyMCI+PGRlZnMvPjxtZXRhZGF0YT48cmRmOlJERj48Y2M6V29yayByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIvPjxkYzp0aXRsZS8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNjEuODQ4MywtOTguNTAzOTUpIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0ib3BhY2l0eTowLjI1O2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLW9wYWNpdHk6MTtzdHJva2UtZGFzaGFycmF5Om5vbmUiPjxwYXRoIGQ9Ik0gNS4yOCAxLjUgQyA0LjU0IDEuNTYgMy45IDIuMjUgMy45MSAzIGwgMCAxMS44OCBjIDAuMDIgMC43NyAwLjcyIDEuNDcgMS41IDEuNDcgbCAxLjc1IDAgYyAwLjc4IDAgMS40OCAtMC42OSAxLjUgLTEuNDcgbCAwIC00LjI4IDAuNzIgMS4xOSBjIDAuNTMgMC44NyAyLjAzIDAuODcgMi41NiAwIGwgMC43MiAtMS4xOSAwIDQuMjggYyAwLjAyIDAuNzYgMC43IDEuNDUgMS40NyAxLjQ3IGwgMS43NSAwIGMgMC43OCAwIDEuNDggLTAuNjkgMS41IC0xLjQ3IGwgMCAtMC4xNiBjIDEuMDIgMS4xMiAyLjQ2IDEuODEgNC4wOSAxLjgxIGwgNC4wOSAwIDAgMS40NyBjIC0wIDAuNzggMC42OSAxLjQ4IDEuNDcgMS41IGwgMS43NSAwIGMgMC43OSAtMCAxLjUgLTAuNzEgMS41IC0xLjUgbCAwLjAyIC0xLjQ3IGMgMS43MiAwIDMuMDggLTAuNjQgNC4xNCAtMS42OSBsIDAgMC4xOSBjIDAgMC4zOSAwLjE2IDAuNzkgMC40NCAxLjA2IDAuMjggMC4yOCAwLjY3IDAuNDQgMS4wNiAwLjQ0IGwgMy4zMSAwIGMgMi4wMyAwIDMuODUgLTEuMDYgNC45MSAtMi42OSAxLjA1IDEuNjEgMi44NCAyLjY5IDQuODggMi42OSAxLjAzIDAgMS45OCAtMC4yNyAyLjgxIC0wLjc1IDAuMjggMC4zNSAwLjczIDAuNTcgMS4xOSAwLjU2IGwgMi4xMiAwIGMgMC40OCAwLjAxIDAuOTcgLTAuMjMgMS4yNSAtMC42MiBsIDAuOTEgLTEuMjggMC45MSAxLjI4IGMgMC4yOCAwLjM5IDAuNzQgMC42MyAxLjIyIDAuNjIgbCAyLjE2IDAgQyA2Mi42NyAxNi4zMyA2My40MiAxNC44OSA2Mi44MSAxNCBMIDYwLjIyIDEwLjM4IDYyLjYyIDcgQyA2My4yNiA2LjExIDYyLjUgNC42MiA2MS40MSA0LjYyIGwgLTIuMTYgMCBDIDU4Ljc4IDQuNjIgNTguMzEgNC44NiA1OC4wMyA1LjI1IEwgNTcuMzEgNi4yOCA1Ni41NiA1LjI1IEMgNTYuMjkgNC44NiA1NS44MiA0LjYyIDU1LjM0IDQuNjIgbCAtMi4xNiAwIGMgLTAuNDkgLTAgLTAuOTcgMC4yNSAtMS4yNSAwLjY2IC0wLjg2IC0wLjUxIC0xLjg0IC0wLjgxIC0yLjkxIC0wLjgxIC0yLjAzIDAgLTMuODMgMS4wOCAtNC44OCAyLjY5IEMgNDMuMSA1LjUzIDQxLjI3IDQuNDcgMzkuMTkgNC40NyBMIDM5LjE5IDMgQyAzOS4xOSAyLjYxIDM5LjAzIDIuMjEgMzguNzUgMS45NCAzOC40NyAxLjY2IDM4LjA4IDEuNSAzNy42OSAxLjUgbCAtMS43NSAwIGMgLTAuNzEgMCAtMS41IDAuODMgLTEuNSAxLjUgbCAwIDMuMTYgQyAzMy4zOCA1LjEgMzEuOTYgNC40NyAzMC4zOCA0LjQ3IGwgLTMuMzQgMCBjIC0wLjc3IDAuMDIgLTEuNDcgMC43MiAtMS40NyAxLjUgbCAwIDAuMzEgYyAtMS4wMiAtMS4xMiAtMi40NiAtMS44MSAtNC4wOSAtMS44MSAtMS42MyAwIC0zLjA3IDAuNyAtNC4wOSAxLjgxIEwgMTcuMzggMyBjIC0wIC0wLjc5IC0wLjcxIC0xLjUgLTEuNSAtMS41IEwgMTQuNSAxLjUgQyAxMy41NSAxLjUgMTIuMjggMS44NyAxMS42NiAyLjk0IGwgLTEgMS42OSAtMSAtMS42OSBDIDkuMDMgMS44NyA3Ljc3IDEuNSA2LjgxIDEuNSBsIC0xLjQxIDAgQyA1LjM2IDEuNSA1LjMyIDEuNSA1LjI4IDEuNSB6IG0gMTYuMTkgNy43MiBjIDAuNTMgMCAwLjk0IDAuMzUgMC45NCAxLjI4IGwgMCAxLjI4IC0wLjk0IDAgYyAtMC41MiAwIC0wLjk0IC0wLjM4IC0wLjk0IC0xLjI4IC0wIC0wLjkgMC40MiAtMS4yOCAwLjk0IC0xLjI4IHogbSA4LjgxIDAgYyAwLjgzIDAgMS4xOCAwLjY4IDEuMTkgMS4yOCAwLjAxIDAuOTQgLTAuNjIgMS4yOCAtMS4xOSAxLjI4IHogbSA4LjcyIDAgYyAwLjcyIDAgMS4zNyAwLjYgMS4zNyAxLjI4IDAgMC43NyAtMC41MSAxLjI4IC0xLjM3IDEuMjggeiBtIDEwLjAzIDAgYyAwLjU4IDAgMS4wOSAwLjUgMS4wOSAxLjI4IDAgMC43OCAtMC41MSAxLjI4IC0xLjA5IDEuMjggLTAuNTggMCAtMS4xMiAtMC41IC0xLjEyIC0xLjI4IDAgLTAuNzggMC41NCAtMS4yOCAxLjEyIC0xLjI4IHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZm9udC1zaXplOm1lZGl1bTtmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTtsaW5lLWhlaWdodDpub3JtYWw7bGV0dGVyLXNwYWNpbmc6bm9ybWFsO3dvcmQtc3BhY2luZzpub3JtYWw7dGV4dC10cmFuc2Zvcm06bm9uZTtkaXJlY3Rpb246bHRyO2Jsb2NrLXByb2dyZXNzaW9uOnRiO3dyaXRpbmctbW9kZTpsci10Yjt0ZXh0LWFuY2hvcjpzdGFydDtiYXNlbGluZS1zaGlmdDpiYXNlbGluZTtjb2xvcjojMDAwMDAwO2ZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZTtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7bWFya2VyOm5vbmU7dmlzaWJpbGl0eTp2aXNpYmxlO2Rpc3BsYXk6aW5saW5lO292ZXJmbG93OnZpc2libGU7ZW5hYmxlLWJhY2tncm91bmQ6YWNjdW11bGF0ZTtmb250LWZhbWlseTpTYW5zOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246U2FucyIvPjwvZz48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0iZmlsbDojZmZmZmZmIj48cGF0aCBkPSJtIDUuNDEgMyAwIDEyIDEuNzUgMCAwIC05LjkxIDMuNSA1Ljk0IDMuNDcgLTUuOTQgMCA5LjkxIDEuNzUgMCAwIC0xMiBMIDE0LjUgMyBDIDEzLjggMyAxMy4yNSAzLjE2IDEyLjk0IDMuNjkgTCAxMC42NiA3LjU5IDguMzggMy42OSBDIDguMDcgMy4xNiA3LjUxIDMgNi44MSAzIHogTSAzNiAzIGwgMCAxMi4wMyAzLjI1IDAgYyAyLjQ0IDAgNC4zOCAtMS45MSA0LjM4IC00LjUzIDAgLTIuNjIgLTEuOTMgLTQuNDcgLTQuMzggLTQuNDcgQyAzOC43IDYuMDMgMzguMzIgNiAzNy43NSA2IGwgMCAtMyB6IE0gMjEuNDcgNS45NyBjIC0yLjQ0IDAgLTQuMTkgMS45MSAtNC4xOSA0LjUzIDAgMi42MiAxLjc1IDQuNTMgNC4xOSA0LjUzIGwgNC4xOSAwIDAgLTQuNTMgYyAwIC0yLjYyIC0xLjc1IC00LjUzIC00LjE5IC00LjUzIHogbSAyNy41NiAwIGMgLTIuNDEgMCAtNC4zOCAyLjAzIC00LjM4IDQuNTMgMCAyLjUgMS45NyA0LjUzIDQuMzggNC41MyAyLjQxIDAgNC4zNCAtMi4wMyA0LjM0IC00LjUzIDAgLTIuNSAtMS45NCAtNC41MyAtNC4zNCAtNC41MyB6IG0gLTIyIDAuMDMgMCAxMiAxLjc1IDAgMCAtMi45NyBjIDAuNTcgMCAxLjA0IC0wIDEuNTkgMCAyLjQ0IDAgNC4zNCAtMS45MSA0LjM0IC00LjUzIDAgLTIuNjIgLTEuOSAtNC41IC00LjM0IC00LjUgeiBtIDI2LjE2IDAgMy4wMyA0LjM4IC0zLjE5IDQuNjIgMi4xMiAwIEwgNTcuMzEgMTEuOTEgNTkuNDQgMTUgNjEuNTkgMTUgNTguMzggMTAuMzggNjEuNDEgNiA1OS4yNSA2IDU3LjMxIDguODEgNTUuMzQgNiB6IE0gMjEuNDcgNy43MiBjIDEuNCAwIDIuNDQgMS4xOSAyLjQ0IDIuNzggbCAwIDIuNzggLTIuNDQgMCBjIC0xLjQgMCAtMi40NCAtMS4yMSAtMi40NCAtMi43OCAtMCAtMS41NyAxLjA0IC0yLjc4IDIuNDQgLTIuNzggeiBtIDI3LjU2IDAgYyAxLjQ0IDAgMi41OSAxLjI0IDIuNTkgMi43OCAwIDEuNTQgLTEuMTUgMi43OCAtMi41OSAyLjc4IC0xLjQ0IDAgLTIuNjIgLTEuMjQgLTIuNjIgLTIuNzggMCAtMS41NCAxLjE4IC0yLjc4IDIuNjIgLTIuNzggeiBtIC0yMC4yNSAwLjAzIDEuNTkgMCBjIDEuNTkgMCAyLjU5IDEuMjggMi41OSAyLjc1IDAgMS40NyAtMS4xMyAyLjc4IC0yLjU5IDIuNzggbCAtMS41OSAwIHogbSA4Ljk3IDAgMS41IDAgYyAxLjQ3IDAgMi42MiAxLjI4IDIuNjIgMi43NSAwIDEuNDcgLTEuMDQgMi43OCAtMi42MiAyLjc4IGwgLTEuNSAwIHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIi8+PC9nPjwvZz48L3N2Zz4=');\n}\n\n/* Dark Theme\n------------------------------------------------------- */\n.leaflet-container.dark .leaflet-bar {\n  background-color:#404040;\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-bar a {\n    color:#404040;\n    border-color:rgba(0,0,0,0.5);\n    }\n  .leaflet-container.dark .leaflet-bar a:active,\n  .leaflet-container.dark .leaflet-bar a:hover {\n    background-color:#505050;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:after,\n.leaflet-container.dark .mapbox-info-toggle,\n.leaflet-container.dark .map-info-container,\n.leaflet-container.dark .leaflet-control-attribution {\n  background-color:rgba(0,0,0,0.5);\n  color:#f8f8f8;\n  }\n  .leaflet-container.dark .leaflet-control-attribution a,\n  .leaflet-container.dark .leaflet-control-attribution a:hover,\n  .leaflet-container.dark .map-info-container a,\n  .leaflet-container.dark .map-info-container a:hover {\n    color:#fff;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:hover:after {\n  background-color:#000;\n  }\n.leaflet-container.dark .leaflet-control-layers-list span {\n  color:#f8f8f8;\n  }\n.leaflet-container.dark .leaflet-control-layers-separator {\n  border-top-color:rgba(255,255,255,0.10);\n  }\n.leaflet-container.dark .leaflet-bar a.leaflet-disabled,\n.leaflet-container.dark .leaflet-control .mapbox-button.disabled {\n  background-color:#252525;\n  color:#404040;\n  }\n.leaflet-container.dark .leaflet-control-mapbox-geocoder > div {\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a {\n    border-color:#ddd #202020;\n    border-color:rgba(0,0,0,0.10) rgba(0,0,0,0.75);\n    }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results span {\n    border-color:#202020;\n    border-color:rgba(0,0,0,0.75);\n    }\n\n/* Larger Screens\n------------------------------------------------------- */\n@media only screen and (max-width:800px) {\n.mapbox-modal-body {\n  width:83.3333%;\n  margin-left:8.3333%;\n  }\n}\n\n/* Smaller Screens\n------------------------------------------------------- */\n@media only screen and (max-width:640px) {\n.mapbox-modal-body {\n  width:100%;\n  height:100%;\n  margin:0;\n  }\n}\n\n/* Print\n------------------------------------------------------- */\n@media print { .mapbox-improve-map { display:none; } }\n\n/* Browser Fixes\n------------------------------------------------------- */\n/* VML support for IE8 */\n.leaflet-vml-shape { width:1px; height:1px; }\n.lvml { behavior:url(#default#VML); display:inline-block; position:absolute; }\n/* Map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img.leaflet-tile { max-width:none !important; }\n/* Markers are broken in FF/IE if you have max-width: 100% on marker images */\n.leaflet-container img.leaflet-marker-icon { max-width:none; }\n/* Stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer { max-width:15000px !important; }\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg { -moz-user-select:none; }\n/* Older IEs don't support the translateY property for display animation */\n.leaflet-oldie .mapbox-modal .mapbox-modal-content        { display:none; }\n.leaflet-oldie .mapbox-modal.active .mapbox-modal-content { display:block; }\n.map-tooltip { width:280px\\8; /* < IE9 */ }\n\n/* < IE8 */\n.leaflet-oldie .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-popup-close-button,\n.leaflet-oldie .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .map-tooltip .close,\n.leaflet-oldie .map-tooltip .close,\n.leaflet-oldie .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXnSURBVHic7ZxfiFVFGMB/33pRUQsKto002DY3McJ6yBYkESQxpYTypaB66KEXYRWLYOlhr9RTRGWRUkk9RyEU+Y9ClECJVTKlPybWBilqkYuWrqBOD/NdPV7PmTPn3NPtat/AcO6ZP9/vfN/Mmfl2Zs6Kc452hK62UAxkIANdEURkVERGC9crOjKIiANwzkmRep1lOjWXa2ijaU7jaGWgKsL110a1EnV+LQMqbLqyobO6t4EMZCADGchABrqmQUlPNSWOVgaqIpi7ZSADGchABjKQga49kIjURaQem14apGE4KVR/D0fXds5FRaAOOL1e+h1dP7ZgE6wQxDnXvs7QWaZLE1wUVmRNdY1zrp6wRF0kfqHYnHwDGchABjJQIETNRyIyFVgBzAPmavIIsAt4xzn3d66QiNl1PnCYy05JczwMzG9pKlfIhQCkES/kwUKQqRma9GpM02xqGXdrBdCXZm2NzaFP66SGUGeYl5E+WqJO0HRHSG+PXtJN54AjVbhbjQcbBSjiakH4hR0p+hChOiHQrhKg7Drt6t7//Qtb9RAU5XtXMaiak28gAxnIQO0Gicg0EXlMRDaIyFGNGzRtWhQpMA/1A6uAL4BzZM9H57TMKqC/8HyUPFhZJLiMI4sh0/UDK4FtwHig3LiWWal1UkPsDDsFWAgsBZZo8hZgM7DdOXcmV0igjQ4Ba4HFwORAuclaZi1wqNU2OgNsVw22aNoS1XAhMCXx4OkubOBJZwKDwFbgLNm97qyWGQRmtuoFWRsV0ujabCPzVA1kIAMZqBNAIjIgImPNRxUzK+SsmtRJn4Pqmj8AjCXzsmTlaTSck/8zcDRX/QiNMp8S6Ab2a5nvG5plyioDaoLs1/sBYKwyUBokkTdQJeiVZgi6UR+UVQI0QWHdoXKFvKDYz7RiynXctk7LPlmeRmsKyAqWNQfSQAYykIGuS5CI1ERkSET2ishpvQ6JSLE93ByfoQbsRHeNgfe4vOO8E6iF6hdxToZU6OqGUIWv1vShqkB7VYNaU3pN0/fGgvLa6C5gk3PufJO5zwObgDuraqM8jbZWpdEnwG3AYKOX6XVQ07+sSqNQr3P4QxS9LXeGBGxIzTiGXwR8QSHRsCj7ZjxAbxFYaVAKbMe/BkrAduRpZJ6qgQxkoP8DKDRY1sk/s5W6YFhoUG3nFnZeOIJfxLgXWB7zBFmmyzPT44my9zXSC098OZCTwCQttzOZVzVoX1a5LHmdtYyWDM29yjknItKF3xSelFWvKo1mhCClQLo1sC95T8T/ebr+xrqOABVZT82tY56qgQxkIAN1CkhEulsGiUi3iCzKyJsjIpuBYyLyo4isFpHXReTuTFLAr1sOnAeeT8nbzNW+3rfAM2UcyAcSQj4FngR68Ot0F1NA24CuMqBu4PMUgYdS0hzwYqlFJ+AeNV3s30aLSoEUtjEScoHE3nkZ0Ay1fR7o3ZCcGNAEYHcO5A/g5pZACpsMPEf6UexTwCN5MvI6w2zgaeBt4HQK5BsC57ubY+jPll/wHzn1Ayc07QD+u6MR4GPn3LlA/SuCOZAGMpCBDFRhiF50EpFl+PP49wOzgIPAHmCLc+6zXAERE18P+b7DRqAnJCfvfF0P/mTgLZr0l97vB27CL3HO0rwTwBzn3PHCGiU0uQisA6bhzT0T/T4ZeAr4s6FZmal8WcI0LwETgdfwHzY1XKz3teyjibLLioLWa8UDeG/oZbxD+QHwdULwg1r+K71fXxQ0ohXfAgS/Mvyh5i1MgNZp2qt6P5ImL/QezdbrSeAG4EbVJJkH8LteJ+p1FikhBPpNr3Odc6fUNHdo2oJEucbX8Y2zDQeLgr7T62IReRb4AX9mGGC6Xo8Bu0VkOvCQpu1JlRZoo6Vc/WL2ad4C4A28CWvAR5TtdU0dwqH/ewHvHi8HbgUexh+euDRCFH6PVOh0/FKzw3um4M8zpA1DxwkMQzFjXR9+d/9N1WI8BZI71kU56Aq8HXgC+Ak/5o3gX+rUNmmO5nsbqP2gfwCyvJzPNoKXiAAAAABJRU5ErkJggg==');\n}\n.leaflet-oldie .mapbox-button-icon:before,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXYSURBVHic7ZxfiFVFHMc/a4uKWtDDtqJGZprYgwX5ByTdkkLbSgghCiKih14EBYtg6aEr9RRREKRUUs9hGEVtChKaYMkq2VqWmnUX2tKiNDNZY/Xbw/wue7x7zsw559626zY/GM6df7/P+c3MPfO7M3NumyTGQiaMCSWCIiiC6qVqoZC0lXgy1Cq0FanUck1XxVmSNL8WrzYT1LCMvz5qL1FnoAyoTNOVkpYb3hEUQREUQREUQRF0RYOqjHim9aHaTFDDEt2tCIqgCIqgCIqgCLoiQRULedNLgwCeq1NasbR8IilvqMhJpe5zrvpFQElYIYiksRsMLdd0aYoLwYqsqW5i9KjLLdHJj6AIiqAIiiCP5J2PpgLrgGXAYkvrA/YBrwF/BTXkmB2XSzqhbDlhZRqaypdLuuiB1ORiCOaDTM2wZLaFNMumZunzDYZ1wJy01ubyPfOazLE6qeIbDMsy0qsl6ngtWpyRfqOFInVKbWFXS9TxWtRXQl9mHR9oXwlQdp2xGt4t8YVt6iMor+/d8EM1OvkRFEERFEH/AWga8CCwFfjJwlZLm5ZHge/pPQ+4z8IKYGJGub+BT4GPLBwvCio7f6QeWfQ13TxgA7ATGPKUG7IyG6xOOj3nxDcFWAl0A/da2sdAL/AJcD6kwAc6bop6gT1kWzUZ6LKb6CbDqrx9dB535704S8BZ1o2zdEpSZ1HQ3MRddtmdp8kQzuKa9d8VBSUl9lEh0Pjro6ZKy00TERRBERRBLQZaCpxh9FHFUqBKiiJZ+n5gFfBHnrsKgUKb7t/j/PCwBNZwapKW1yGp3/KPSDrjKVsalIT0W3ypwZoGSoPU8pY2E/RCCqSiwJ55GdBVBusIlCu0Xpf3Na1guZbb1mnYJwtZtKmALm/Z6EBGUARFUASNV1A70AMcBP60aw9F93ADPkO7pD3mDwxKesOusvT2QP3czkmPKd2YUNpucVl+LlBo4jsITAduAIbrmnMAOAncnqflQn10M26JebgufdjSb8oDyQM6hlv3ru/4dkv/vFmgd4EZwPoErN3iM4BdeUGNjDpJqsrtmzc86mqwHkkH5X4t7JD0tEFyw3INzYwwuwisEVA9bPe/CarBdocsip5qBEVQBP3fQRWyX4jOCpUsZS2xhR2SQdwixq3A2lDhMkcTa7Ie2G6fwzfsmax8clrSJCu3py4vVV/ZphsALtjnFXkqtNwyWlLqR1Ub7obPA5OyKjXLolk+SFmQgEN18eD/PLXEI2j8gYqspwbrRE81giIogiKohUAdzQB1APdk5C3Ends6CXwLbAReBm7J1OZxINdKGpb0VEpeb4pT+aWkx8os0SxJKHlf0iOSOiXNkHQpBbRT0oQyoA5JH6YoPJ6SJknPeHR5+6gTWJ2SPjej/BceXV7QV8AHvsoJucTlvt5o8ZkraZa1fUheD+gJfo9+Bq4JlPkNt4Xgl9CdSJos6UlJF1IsOSvp/hw6vL8mFgCLgCXA44w+730IeIiM89314gP9ACzHHXD9xdIO49476gO2MfJjLCjRgYygCIqgCGqiFFl0WoM7j78ImA8cBQ7gzuaHp/wck1anpO2BqXy7lSu9I9YJ9APXWfycxfuBa4HbzDpwc9ZC4FQZi2qWXJK0WdI0ue3SuRp5P/lRSb8nLCvsQK5JNM2zkiZKeknSkKVdlPSmlX0gUXZNUdAWq3hY7tzj83K++FuS9icU32Hl91p8S1FQn1V8VVKb3Mrw25a3MgHabGkvWrwvTZ/ve7TArqeBq3H+3f66PIBf7VrzkuaTIj7Qj3ZdDJwF9jLy5wJdiXK1t+NrZxuOFgV9bddVwBPAN8ARS5tp15PAZxa/29IOpGrz9FG3Rsscy+uS9IqkBXLD/Z1GRl1yQEjuHANy7vFaSdMlrZa0K1Gm1PcISTMlDZiSbZa2I8VSSTolz2Mo9PQeBO7CvTE1iDtRc2dKuffwPX4CfVQfrpf0sKRjks5Zs27J6pP6EH3vCBp70D8db2VXFPfIagAAAABJRU5ErkJggg==');\n}\n\n.leaflet-oldie .mapbox-logo-true {\n  background-image: none;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "icons-000000@2x.4c2a02.png";
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "icons-ffffff@2x.f9d13b.png";
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(192);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -50264,7 +56630,7 @@ if(false) {
 }
 
 /***/ }),
-/* 155 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -50278,13 +56644,13 @@ exports.push([module.i, ".mapboxgl-map{font:12px/20px Helvetica Neue,Arial,Helve
 
 
 /***/ }),
-/* 156 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(157);
+var content = __webpack_require__(194);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -50309,7 +56675,7 @@ if(false) {
 }
 
 /***/ }),
-/* 157 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -50317,19 +56683,19 @@ exports = module.exports = __webpack_require__(40)(false);
 
 
 // module
-exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content {\n    background: #555555;\n    width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n", ""]);
+exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color: #555555;\n}\n\n.mapbox-logo {\n    display: none;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper {\n    background: #3b3b3b;\n    color: #fff;\n    font-size: 16px;\n    line-height: 24px;\n    border-radius: 3px;\n}\n\n.phrasea-popup .leaflet-popup-content-wrapper a {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.phrasea-popup .leaflet-popup-tip-container {\n    width: 30px;\n    height: 15px;\n}\n\n.phrasea-popup .leaflet-popup-content p {\n    color: #FFF;\n\n}\n\n.phrasea-popup .leaflet-popup-content p.help {\n    text-align: center;\n    font-style: italic;\n}\n\n.phrasea-popup .leaflet-popup-tip {\n    border-top: 10px solid #3b3b3b;\n}\n\n.updated-position {\n    text-align: center;\n}\n\n.ui-widget-content .leaflet-container {\n    color: #555555;\n}\n\n.ui-widget-content .leaflet-container label {\n    color: #555555;\n    display: block;\n    font-size: 12px;\n    padding: 0 15px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin: 10px 0 0 0;\n}\n\n.ui-widget-content .leaflet-container input[type=\"radio\"] {\n    margin: -4px 0 0 0;\n    padding: 0;\n}\n\n.leaflet-control-layers-selector {\n    margin-top: 2px;\n    position: relative;\n    top: 1px;\n}\n\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n    box-shadow: none;\n    font-size: 12px;\n}\n\n.ui-widget-content .leaflet-container form {\n    margin-top: 0;\n}\n\n.mapboxgl-popup-content, .leaflet-popup-content {\n    background: #555555;\n    min-width: 200px;\n    font-size: 15px;\n}\n\n.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {\n    border-bottom-color: #555555;\n}\n\n.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {\n\n    border-bottom-color: #555555;\n}\n.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {\n\n    border-top-color: #555555;\n}\n\n.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {\n\n    border-right-color: #555555;\n}\n\n.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {\n\n    border-left-color: #555555;\n}\n\n.map-selection-container {\n    position: absolute;\n    width: 30px;\n    height: 30px;\n    top: 130px;\n    right: 10px;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n}\n\n.map-selection-container:hover {\n    background-color: #eee;\n}\n\n.map-dropdown-content {\n    display: none;\n    min-width: 80px;\n    position: absolute;\n    right: 0;\n    background: #FFF;\n    padding: 10px;\n    border: 1px solid #ccc;\n    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);\n}\n\n.map-dropdown-content label {\n    color: #555555;\n    display: block;\n    font-size: 13px;\n}\n\n.map-drop-btn {\n    background: transparent;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n    border: none;\n    margin: 0;\n    padding: 0;\n}\n\n.map-drop-btn i {\n    padding: 6px;\n    margin: 0;\n}\n\n.circle-control-container {\n    position: absolute;\n    top: 170px;\n    right: 10px;\n}\n\n#map-notice-btn {\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 110px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-noticeJs-btn {\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-infoJs-btn {\n    position: absolute;\n    bottom: 0px;\n    left: 6px;\n    background: transparent;\n    cursor: pointer;\n    border: none;\n    width: 30px;\n    height: 30px;\n    margin: 0;\n    padding: 0;\n    display: none;\n}\n\n#map-info-btn:focus {\n    outline: 0;\n}\n\n#notice-info-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 125px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#map-notice-btn:focus {\n    outline: 0;\n}\n\n#notice-box {\n    display: block;\n    position: absolute;\n    top: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#noticeJs-box {\n    display: block;\n    position: absolute;\n    bottom: 6px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n#notice-infoJs-box {\n    display: block;\n    position: absolute;\n    bottom: 5px;\n    left: 6px;\n    width: 305px;\n    border-radius: 6px;\n    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);\n    background-color: #ffffff;\n    border: solid 1px #8f8f8f;\n    padding: 4px 5px 5px 6px;\n}\n\n.notice-header {\n    display: block;\n}\n\n.notice-title {\n    font-family: Roboto;\n    font-size: 15px;\n    font-weight: 500;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin-left: 6px;\n    line-height: 20px;\n    vertical-align: middle;\n    margin-right: 20px;\n}\n\n.notice-desc {\n    display: block;\n    font-family: Roboto;\n    font-size: 12px;\n    line-height: 1.17;\n    letter-spacing: 0px;\n    color: #3e3d3d;\n    margin: 6px 10px 0px 10px;\n}\n\n.notice-close-btn {\n    position: absolute;\n    top: 0px;\n    right: 2px;\n    font-family: Roboto;\n    font-size: 16px;\n    color: #3e3d3d;\n    cursor: pointer;\n    padding: 4px;\n}\n\n.draw-icon {\n    margin-bottom: 5px;\n    padding: 0;\n    position: relative;\n    border-radius: 5px;\n    border: 2px solid #ccc;\n    background-color: #fff;\n    cursor: pointer;\n    box-sizing: border-box;\n    display: block;\n}\n\n.draw-icon:hover {\n    background-color: rgba(0, 0, 0, 0.05);\n}\n\n.draw-icon.selected {\n    background-color: #aaa;\n}\n\n.draw-icon i {\n    font-size: 20px;\n    line-height: 26px;\n}\n\n.map-dropdown-content label input[type=\"radio\"] {\n    margin: 0px 0 0 0;\n    padding: 0;\n}\n\n.map-dropdown-content.show {\n    display: block;\n}\n\n/* mapbox Gl search */\n@media screen and (min-width: 640px) {\n    .mapboxgl-ctrl-geocoder--input {\n        height: 36px !important;\n        padding: 6px 35px !important;\n        margin-bottom: 0px !important;\n    }\n}\n\n.mapboxGl-phrasea-marker {\n    background-image: url('/assets/common/images/icons/marker_icon.png');\n    background-size: cover;\n    width: 32px;\n    height: 32px;\n    border-radius: 50%;\n    cursor: pointer;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 158 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(159);
+var content = __webpack_require__(196);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -50354,40 +56720,40 @@ if(false) {
 }
 
 /***/ }),
-/* 159 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(67);
+var escape = __webpack_require__(72);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
 
 // module
-exports.push([module.i, "/* ================================================================== */\n/* Toolbars\n/* ================================================================== */\n\n.leaflet-draw-section {\n\tposition: relative;\n}\n\n.leaflet-draw-toolbar {\n\tmargin-top: 12px;\n}\n\n.leaflet-draw-toolbar-top {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-toolbar-notop a:first-child {\n\tborder-top-right-radius: 0;\n}\n\n.leaflet-draw-toolbar-nobottom a:last-child {\n\tborder-bottom-right-radius: 0;\n}\n\n.leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(160)) + ");\n\tbackground-repeat: no-repeat;\n}\n\n.leaflet-retina .leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(161)) + ");\n\tbackground-size: 270px 30px;\n}\n\n.leaflet-draw a {\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n}\n\n/* ================================================================== */\n/* Toolbar actions menu\n/* ================================================================== */\n\n.leaflet-draw-actions {\n\tdisplay: none;\n\tlist-style: none;\n\tmargin: 0;\n\tpadding: 0;\n\tposition: absolute;\n\tleft: 26px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */\n\ttop: 0;\n\twhite-space: nowrap;\n}\n\n.leaflet-touch .leaflet-draw-actions {\n\tleft: 32px;\n}\n\n.leaflet-right .leaflet-draw-actions {\n\tright:26px;\n\tleft:auto;\n}\n\n.leaflet-touch .leaflet-right .leaflet-draw-actions {\n\tright:32px;\n\tleft:auto;\n}\n\n.leaflet-draw-actions li {\n\tdisplay: inline-block;\n}\n\n.leaflet-draw-actions li:first-child a {\n\tborder-left: none;\n}\n\n.leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0 4px 4px 0;\n\t        border-radius: 0 4px 4px 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0;\n\t        border-radius: 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:first-child a {\n\t-webkit-border-radius: 4px 0 0 4px;\n\t        border-radius: 4px 0 0 4px;\n}\n\n.leaflet-draw-actions a {\n\tbackground-color: #919187;\n\tborder-left: 1px solid #AAA;\n\tcolor: #FFF;\n\tfont: 11px/19px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tline-height: 28px;\n\ttext-decoration: none;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\theight: 28px;\n}\n\n.leaflet-touch .leaflet-draw-actions a {\n\tfont-size: 12px;\n\tline-height: 30px;\n\theight: 30px;\n}\n\n.leaflet-draw-actions-bottom {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-actions-top {\n\tmargin-top: 1px;\n}\n\n.leaflet-draw-actions-top a,\n.leaflet-draw-actions-bottom a {\n\theight: 27px;\n\tline-height: 27px;\n}\n\n.leaflet-draw-actions a:hover {\n\tbackground-color: #A0A098;\n}\n\n.leaflet-draw-actions-top.leaflet-draw-actions-bottom a {\n\theight: 26px;\n\tline-height: 26px;\n}\n\n/* ================================================================== */\n/* Draw toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: -2px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: 0 -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -31px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -29px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -62px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -60px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -92px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -90px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -122px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -120px -1px;\n}\n\n/* ================================================================== */\n/* Edit toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -152px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -150px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -182px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -180px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -212px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -210px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -242px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -240px -2px;\n}\n\n/* ================================================================== */\n/* Drawing styles\n/* ================================================================== */\n\n.leaflet-mouse-marker {\n\tbackground-color: #fff;\n\tcursor: crosshair;\n}\n\n.leaflet-draw-tooltip {\n\tbackground: rgb(54, 54, 54);\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder: 1px solid transparent;\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tcolor: #fff;\n\tfont: 12px/18px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tmargin-left: 20px;\n\tmargin-top: -21px;\n\tpadding: 4px 8px;\n\tposition: absolute;\n\tvisibility: hidden;\n\twhite-space: nowrap;\n\tz-index: 6;\n}\n\n.leaflet-draw-tooltip:before {\n\tborder-right: 6px solid black;\n\tborder-right-color: rgba(0, 0, 0, 0.5);\n\tborder-top: 6px solid transparent;\n\tborder-bottom: 6px solid transparent;\n\tcontent: \"\";\n\tposition: absolute;\n\ttop: 7px;\n\tleft: -7px;\n}\n\n.leaflet-error-draw-tooltip {\n\tbackground-color: #F2DEDE;\n\tborder: 1px solid #E6B6BD;\n\tcolor: #B94A48;\n}\n\n.leaflet-error-draw-tooltip:before {\n\tborder-right-color: #E6B6BD;\n}\n\n.leaflet-draw-tooltip-single {\n\tmargin-top: -12px\n}\n\n.leaflet-draw-tooltip-subtext {\n\tcolor: #f8d5e4;\n}\n\n.leaflet-draw-guide-dash {\n\tfont-size: 1%;\n\topacity: 0.6;\n\tposition: absolute;\n\twidth: 5px;\n\theight: 5px;\n}\n\n/* ================================================================== */\n/* Edit styles\n/* ================================================================== */\n\n.leaflet-edit-marker-selected {\n\tbackground: rgba(254, 87, 161, 0.1);\n\tborder: 4px dashed rgba(254, 87, 161, 0.6);\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tbox-sizing: content-box;\n}\n\n.leaflet-edit-move {\n\tcursor: move;\n}\n\n.leaflet-edit-resize {\n\tcursor: pointer;\n}\n\n/* ================================================================== */\n/* Old IE styles\n/* ================================================================== */\n\n.leaflet-oldie .leaflet-draw-toolbar {\n\tborder: 1px solid #999;\n}", ""]);
+exports.push([module.i, "/* ================================================================== */\n/* Toolbars\n/* ================================================================== */\n\n.leaflet-draw-section {\n\tposition: relative;\n}\n\n.leaflet-draw-toolbar {\n\tmargin-top: 12px;\n}\n\n.leaflet-draw-toolbar-top {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-toolbar-notop a:first-child {\n\tborder-top-right-radius: 0;\n}\n\n.leaflet-draw-toolbar-nobottom a:last-child {\n\tborder-bottom-right-radius: 0;\n}\n\n.leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(197)) + ");\n\tbackground-repeat: no-repeat;\n}\n\n.leaflet-retina .leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(198)) + ");\n\tbackground-size: 270px 30px;\n}\n\n.leaflet-draw a {\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n}\n\n/* ================================================================== */\n/* Toolbar actions menu\n/* ================================================================== */\n\n.leaflet-draw-actions {\n\tdisplay: none;\n\tlist-style: none;\n\tmargin: 0;\n\tpadding: 0;\n\tposition: absolute;\n\tleft: 26px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */\n\ttop: 0;\n\twhite-space: nowrap;\n}\n\n.leaflet-touch .leaflet-draw-actions {\n\tleft: 32px;\n}\n\n.leaflet-right .leaflet-draw-actions {\n\tright:26px;\n\tleft:auto;\n}\n\n.leaflet-touch .leaflet-right .leaflet-draw-actions {\n\tright:32px;\n\tleft:auto;\n}\n\n.leaflet-draw-actions li {\n\tdisplay: inline-block;\n}\n\n.leaflet-draw-actions li:first-child a {\n\tborder-left: none;\n}\n\n.leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0 4px 4px 0;\n\t        border-radius: 0 4px 4px 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0;\n\t        border-radius: 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:first-child a {\n\t-webkit-border-radius: 4px 0 0 4px;\n\t        border-radius: 4px 0 0 4px;\n}\n\n.leaflet-draw-actions a {\n\tbackground-color: #919187;\n\tborder-left: 1px solid #AAA;\n\tcolor: #FFF;\n\tfont: 11px/19px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tline-height: 28px;\n\ttext-decoration: none;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\theight: 28px;\n}\n\n.leaflet-touch .leaflet-draw-actions a {\n\tfont-size: 12px;\n\tline-height: 30px;\n\theight: 30px;\n}\n\n.leaflet-draw-actions-bottom {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-actions-top {\n\tmargin-top: 1px;\n}\n\n.leaflet-draw-actions-top a,\n.leaflet-draw-actions-bottom a {\n\theight: 27px;\n\tline-height: 27px;\n}\n\n.leaflet-draw-actions a:hover {\n\tbackground-color: #A0A098;\n}\n\n.leaflet-draw-actions-top.leaflet-draw-actions-bottom a {\n\theight: 26px;\n\tline-height: 26px;\n}\n\n/* ================================================================== */\n/* Draw toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: -2px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: 0 -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -31px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -29px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -62px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -60px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -92px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -90px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -122px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -120px -1px;\n}\n\n/* ================================================================== */\n/* Edit toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -152px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -150px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -182px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -180px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -212px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -210px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -242px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -240px -2px;\n}\n\n/* ================================================================== */\n/* Drawing styles\n/* ================================================================== */\n\n.leaflet-mouse-marker {\n\tbackground-color: #fff;\n\tcursor: crosshair;\n}\n\n.leaflet-draw-tooltip {\n\tbackground: rgb(54, 54, 54);\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder: 1px solid transparent;\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tcolor: #fff;\n\tfont: 12px/18px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tmargin-left: 20px;\n\tmargin-top: -21px;\n\tpadding: 4px 8px;\n\tposition: absolute;\n\tvisibility: hidden;\n\twhite-space: nowrap;\n\tz-index: 6;\n}\n\n.leaflet-draw-tooltip:before {\n\tborder-right: 6px solid black;\n\tborder-right-color: rgba(0, 0, 0, 0.5);\n\tborder-top: 6px solid transparent;\n\tborder-bottom: 6px solid transparent;\n\tcontent: \"\";\n\tposition: absolute;\n\ttop: 7px;\n\tleft: -7px;\n}\n\n.leaflet-error-draw-tooltip {\n\tbackground-color: #F2DEDE;\n\tborder: 1px solid #E6B6BD;\n\tcolor: #B94A48;\n}\n\n.leaflet-error-draw-tooltip:before {\n\tborder-right-color: #E6B6BD;\n}\n\n.leaflet-draw-tooltip-single {\n\tmargin-top: -12px\n}\n\n.leaflet-draw-tooltip-subtext {\n\tcolor: #f8d5e4;\n}\n\n.leaflet-draw-guide-dash {\n\tfont-size: 1%;\n\topacity: 0.6;\n\tposition: absolute;\n\twidth: 5px;\n\theight: 5px;\n}\n\n/* ================================================================== */\n/* Edit styles\n/* ================================================================== */\n\n.leaflet-edit-marker-selected {\n\tbackground: rgba(254, 87, 161, 0.1);\n\tborder: 4px dashed rgba(254, 87, 161, 0.6);\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tbox-sizing: content-box;\n}\n\n.leaflet-edit-move {\n\tcursor: move;\n}\n\n.leaflet-edit-resize {\n\tcursor: pointer;\n}\n\n/* ================================================================== */\n/* Old IE styles\n/* ================================================================== */\n\n.leaflet-oldie .leaflet-draw-toolbar {\n\tborder: 1px solid #999;\n}", ""]);
 
 // exports
 
 
 /***/ }),
-/* 160 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "spritesheet.429614.png";
 
 /***/ }),
-/* 161 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "spritesheet-2x.2f19f5.png";
 
 /***/ }),
-/* 162 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(163);
+var content = __webpack_require__(200);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -50412,7 +56778,7 @@ if(false) {
 }
 
 /***/ }),
-/* 163 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -50426,7 +56792,7 @@ exports.push([module.i, ".leaflet-contextmenu {\n    display: none;\n\tbox-shado
 
 
 /***/ }),
-/* 164 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -52879,7 +59245,7 @@ if (true) {
 
 
 /***/ }),
-/* 165 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52891,11 +59257,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _fieldCollection = __webpack_require__(51);
+var _fieldCollection = __webpack_require__(53);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
-var _model = __webpack_require__(166);
+var _model = __webpack_require__(203);
 
 var recordModel = _interopRequireWildcard(_model);
 
@@ -53121,7 +59487,7 @@ var RecordCollection = function () {
 exports.default = RecordCollection;
 
 /***/ }),
-/* 166 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53587,7 +59953,7 @@ exports.recordFieldValue = recordFieldValue;
 exports.recordField = recordField;
 
 /***/ }),
-/* 167 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53652,7 +60018,7 @@ var StatusCollection = function () {
 exports.default = StatusCollection;
 
 /***/ }),
-/* 168 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53851,7 +60217,7 @@ var deleteRecord = function deleteRecord(services) {
 exports.default = deleteRecord;
 
 /***/ }),
-/* 169 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54008,7 +60374,7 @@ var propertyRecord = function propertyRecord(services) {
 exports.default = propertyRecord;
 
 /***/ }),
-/* 170 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54026,7 +60392,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(69);
+var _index = __webpack_require__(74);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -54075,7 +60441,7 @@ var pushRecord = function pushRecord(services, datas) {
 exports.default = pushRecord;
 
 /***/ }),
-/* 171 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54091,7 +60457,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(70);
+var _index = __webpack_require__(75);
 
 var _dialog = __webpack_require__(1);
 
@@ -54101,7 +60467,7 @@ var _selectable = __webpack_require__(23);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _addUser = __webpack_require__(71);
+var _addUser = __webpack_require__(76);
 
 var _addUser2 = _interopRequireDefault(_addUser);
 
@@ -54113,7 +60479,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 __webpack_require__(14);
 
 var Feedback = function Feedback(services, options) {
@@ -54312,6 +60678,7 @@ var Feedback = function Feedback(services, options) {
     });
 
     (0, _jquery2.default)('.FeedbackSend', this.container).bind('click', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
         if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
             return;
@@ -54319,32 +60686,51 @@ var Feedback = function Feedback(services, options) {
 
         var buttons = {};
 
-        buttons[localeService.t('annuler')] = function () {
-            $dialog.close();
-        };
+        if ($el.data('feedback-action') === 'adduser') {
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
+                $dialog.close();
+
+                (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
+
+                $FeedBackForm.trigger('submit');
+            };
+        }
 
         buttons[localeService.t('send')] = function () {
-            if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
-                var options = {
-                    size: 'Alert',
-                    closeButton: true,
-                    title: localeService.t('warning')
-                };
-                var $dialogAlert = _dialog2.default.create(services, options, 3);
-                $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
+            if ($el.data('feedback-action') !== 'adduser') {
+                if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
+                    var options = {
+                        size: 'Alert',
+                        closeButton: true,
+                        title: localeService.t('warning')
+                    };
+                    var $dialogAlert = _dialog2.default.create(services, options, 3);
+                    $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
 
-                return false;
+                    return false;
+                }
             }
 
             $dialog.close();
 
-            (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
-            (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
+            if ($el.data('feedback-action') !== 'adduser') {
+                (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
+            }
+
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+            (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
 
             $FeedBackForm.trigger('submit');
+        };
+
+        buttons[localeService.t('annuler')] = function () {
+            $dialog.close();
         };
 
         var options = {
@@ -54355,7 +60741,6 @@ var Feedback = function Feedback(services, options) {
             closeOnEscape: true
         };
 
-        var $el = (0, _jquery2.default)(event.currentTarget);
         if ($el.hasClass('validation')) {
             options.isValidation = true;
             options.size = '558x415';
@@ -54370,19 +60755,38 @@ var Feedback = function Feedback(services, options) {
 
         var $FeedBackForm = (0, _jquery2.default)('form[name="FeedBackForm"]', $container);
 
-        var html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+        var html = '';
+        // if the window is just for adding/removing user
+        if ($el.data('feedback-action') === 'adduser') {
+            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html());
+        } else {
+            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+        }
 
         $dialog.setContent(html);
 
         var feedbackTitle = (0, _jquery2.default)('#feedbackTitle').val();
         var pushTitle = (0, _jquery2.default)('#pushTitle').val();
+
         if (options.isValidation) {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
         } else {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
         }
 
-        (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        if ($el.data('feedback-action') !== 'adduser') {
+            (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        } else {
+            // display the list of new user in the dialog window when add user
+            var lisNewUser = (0, _jquery2.default)('#newParticipantsUser').val();
+            if (lisNewUser == '') {
+                (0, _jquery2.default)('.email-to-notify').hide();
+            } else {
+                (0, _jquery2.default)('.email-to-notify').show();
+                (0, _jquery2.default)('#email-to-notify').empty().append((0, _jquery2.default)('#newParticipantsUser').val());
+            }
+        }
+
         (0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val((0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val());
         (0, _jquery2.default)('.' + $this.Context, $dialog.getDomElement()).show();
 
@@ -54433,6 +60837,22 @@ var Feedback = function Feedback(services, options) {
 
     this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
         var $elem = (0, _jquery2.default)(this).closest('.badge');
+        var userEmailEl = $elem.find('.user-email').val();
+
+        var value = (0, _jquery2.default)('#newParticipantsUser').val();
+        var actualParticipantsName = value.split('; ');
+        // remove the user in the list of new participant if yet exist
+        var key = _jquery2.default.inArray(userEmailEl, actualParticipantsName);
+        if (key > -1) {
+            actualParticipantsName.splice(key, 1);
+            if (actualParticipantsName.length != 0) {
+                value = actualParticipantsName.join('; ');
+                (0, _jquery2.default)('#newParticipantsUser').val(value);
+            } else {
+                (0, _jquery2.default)('#newParticipantsUser').val('');
+            }
+        }
+
         $elem.fadeOut(function () {
             $elem.remove();
         });
@@ -54461,7 +60881,7 @@ var Feedback = function Feedback(services, options) {
 
     (0, _jquery2.default)('form.list_saver', this.container).bind('submit', function () {
         var $form = (0, _jquery2.default)(event.currentTarget);
-        var $input = (0, _jquery2.default)('input[name="name"]', $form);
+        var $input = (0, _jquery2.default)('input[name="list_name"]', $form);
 
         var users = _this.getUsers();
 
@@ -54552,6 +60972,18 @@ Feedback.prototype = {
             return;
         }
 
+        if ((0, _jquery2.default)('input[name="feedbackAction"]').val() == 'adduser') {
+            var actualParticipantsUserIds = (0, _jquery2.default)('#participantsUserIds').val();
+            actualParticipantsUserIds = actualParticipantsUserIds.split('_');
+
+            if (!(_jquery2.default.inArray(user.usr_id.toString(), actualParticipantsUserIds) > -1)) {
+                var value = (0, _jquery2.default)('#newParticipantsUser').val();
+                var glue = value == '' ? '' : '; ';
+                value = value + glue + user.email;
+                (0, _jquery2.default)('#newParticipantsUser').val(value);
+            }
+        }
+
         var html = _.template((0, _jquery2.default)('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
             user: user
         });
@@ -54599,7 +61031,7 @@ Feedback.prototype = {
         });
     },
     appendBadge: function appendBadge(badge) {
-        (0, _jquery2.default)('.user_content .badges', this.container).append(badge);
+        (0, _jquery2.default)('.user_content .badges', this.container).prepend(badge);
     },
     addUser: function addUser(options) {
         var $userForm = options.$userForm,
@@ -54635,7 +61067,7 @@ Feedback.prototype = {
 exports.default = Feedback;
 
 /***/ }),
-/* 172 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54651,13 +61083,13 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(70);
+var _index = __webpack_require__(75);
 
-var _listEditor = __webpack_require__(173);
+var _listEditor = __webpack_require__(210);
 
 var _listEditor2 = _interopRequireDefault(_listEditor);
 
-var _listShare = __webpack_require__(174);
+var _listShare = __webpack_require__(211);
 
 var _listShare2 = _interopRequireDefault(_listShare);
 
@@ -54669,7 +61101,7 @@ var _selectable = __webpack_require__(23);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _addUser = __webpack_require__(71);
+var _addUser = __webpack_require__(76);
 
 var _addUser2 = _interopRequireDefault(_addUser);
 
@@ -54681,7 +61113,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var ListManager = function ListManager(services, options) {
     var _this2 = this;
@@ -55250,7 +61682,7 @@ ListManager.prototype = {
 exports.default = ListManager;
 
 /***/ }),
-/* 173 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55338,7 +61770,7 @@ var listEditor = function listEditor(services, options) {
 exports.default = listEditor;
 
 /***/ }),
-/* 174 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55364,7 +61796,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var listShare = function listShare(services, options) {
     var configService = services.configService,
@@ -55510,7 +61942,7 @@ var listShare = function listShare(services, options) {
 exports.default = listShare;
 
 /***/ }),
-/* 175 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55528,7 +61960,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _publication = __webpack_require__(57);
+var _publication = __webpack_require__(59);
 
 var _publication2 = _interopRequireDefault(_publication);
 
@@ -55557,7 +61989,7 @@ var recordPublishModal = function recordPublishModal(services, datas) {
 exports.default = recordPublishModal;
 
 /***/ }),
-/* 176 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55575,7 +62007,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _sharingManager = __webpack_require__(177);
+var _sharingManager = __webpack_require__(214);
 
 var _sharingManager2 = _interopRequireDefault(_sharingManager);
 
@@ -55587,7 +62019,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 
 var recordToolsModal = function recordToolsModal(services, datas) {
     var activeTab = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -55695,7 +62127,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
 exports.default = recordToolsModal;
 
 /***/ }),
-/* 177 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55767,7 +62199,7 @@ var sharingManager = function sharingManager(services, datas) {
 exports.default = sharingManager;
 
 /***/ }),
-/* 178 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55785,7 +62217,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(69);
+var _index = __webpack_require__(74);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -55835,7 +62267,7 @@ var recordFeedbackModal = function recordFeedbackModal(services, datas) {
 exports.default = recordFeedbackModal;
 
 /***/ }),
-/* 179 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55853,7 +62285,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(180);
+var _index = __webpack_require__(217);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -55891,7 +62323,7 @@ var bridgeRecord = function bridgeRecord(services) {
 exports.default = bridgeRecord;
 
 /***/ }),
-/* 180 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56230,7 +62662,7 @@ var recordBridge = function recordBridge(services) {
 exports.default = recordBridge;
 
 /***/ }),
-/* 181 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56248,7 +62680,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _screenCapture = __webpack_require__(182);
+var _screenCapture = __webpack_require__(219);
 
 var _screenCapture2 = _interopRequireDefault(_screenCapture);
 
@@ -56570,7 +63002,7 @@ var videoScreenCapture = function videoScreenCapture(services, datas) {
 exports.default = videoScreenCapture;
 
 /***/ }),
-/* 182 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56580,7 +63012,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _canvaImage = __webpack_require__(183);
+var _canvaImage = __webpack_require__(220);
 
 var _canvaImage2 = _interopRequireDefault(_canvaImage);
 
@@ -56807,7 +63239,7 @@ var ScreenCapture = function ScreenCapture(videoId, canvaId, outputOptions) {
 exports.default = ScreenCapture;
 
 /***/ }),
-/* 183 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56906,7 +63338,7 @@ Canva.prototype = {
 exports.default = Canva;
 
 /***/ }),
-/* 184 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56916,11 +63348,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _videojsFlash = __webpack_require__(62);
+var _videojsFlash = __webpack_require__(64);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
-var _fieldCollection = __webpack_require__(51);
+var _fieldCollection = __webpack_require__(53);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
@@ -56985,7 +63417,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
             // load videoJs lib
             //require('../../videoEditor/style/main.scss');
-            rangeCapture = __webpack_require__(87).default;
+            rangeCapture = __webpack_require__(92).default;
             var rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
             //render(initData);
@@ -56998,7 +63430,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
 exports.default = videoRangeCapture;
 
 /***/ }),
-/* 185 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57014,7 +63446,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 ;
 
 var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
@@ -57439,13 +63871,13 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
 exports.default = videoSubtitleCapture;
 
 /***/ }),
-/* 186 */
+/* 223 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 187 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57523,7 +63955,7 @@ var keyboard = function keyboard(services) {
 exports.default = keyboard;
 
 /***/ }),
-/* 188 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57545,7 +63977,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var humane = __webpack_require__(8);
+var humane = __webpack_require__(9);
 var cgu = function cgu(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -57611,7 +64043,7 @@ var cgu = function cgu(services) {
 exports.default = cgu;
 
 /***/ }),
-/* 189 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57710,7 +64142,7 @@ var shareRecord = function shareRecord(services) {
 exports.default = shareRecord;
 
 /***/ }),
-/* 190 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57740,7 +64172,7 @@ var addToBasket = function addToBasket(services) {
             var dbId = $el.data('db-id');
             var recordId = $el.data('record-id');
             appEvents.emit('workzone.doAddToBasket', {
-                dbId: dbId, recordId: recordId, event: event.currentTarget
+                dbId: dbId, recordId: recordId, event: event.currentTarget, singleSelection: true
             });
         });
     };
@@ -57751,7 +64183,7 @@ var addToBasket = function addToBasket(services) {
 exports.default = addToBasket;
 
 /***/ }),
-/* 191 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57790,7 +64222,7 @@ var removeFromBasket = function removeFromBasket(services) {
 exports.default = removeFromBasket;
 
 /***/ }),
-/* 192 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -57812,8 +64244,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var highlight = __webpack_require__(193);
-var colorpicker = __webpack_require__(194);
+var highlight = __webpack_require__(230);
+var colorpicker = __webpack_require__(231);
 var preferences = function preferences(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -58126,7 +64558,7 @@ var preferences = function preferences(services) {
 exports.default = preferences;
 
 /***/ }),
-/* 193 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -58163,7 +64595,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 194 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -58649,7 +65081,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 195 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58671,7 +65103,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(75);
+var _index = __webpack_require__(80);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -59436,7 +65868,7 @@ var orderItem = function orderItem(services) {
 exports.default = orderItem;
 
 /***/ }),
-/* 196 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59462,7 +65894,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _mapbox = __webpack_require__(50);
+var _mapbox = __webpack_require__(52);
 
 var _mapbox2 = _interopRequireDefault(_mapbox);
 
@@ -59474,9 +65906,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(197);
+__webpack_require__(234);
 
-var image_enhancer = __webpack_require__(198);
+var image_enhancer = __webpack_require__(235);
 __webpack_require__(14);
 var previewRecordService = function previewRecordService(services) {
     var configService = services.configService,
@@ -59552,13 +65984,12 @@ var previewRecordService = function previewRecordService(services) {
             event.preventDefault();
             closePreview();
         }).on('dblclick', '.open-preview-action', function (event) {
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            // env, pos, contId, reload
-            var reload = $el.data('reload') === true ? true : false;
-            _openPreview(event.currentTarget, $el.data('kind'), $el.data('position'), $el.data('id'), $el.data('kind'));
+            var $element = (0, _jquery2.default)(event.currentTarget);
+            openPreview($element);
         }).on('click', '.to-open-preview-action', function (event) {
             event.preventDefault();
-            (0, _jquery2.default)('.open-preview-action').trigger("dblclick");
+            var $element = (0, _jquery2.default)(event.currentTarget);
+            openPreview($element);
         });
         $previewContainer.on('click', '.preview-navigate-action', function (event) {
             event.preventDefault();
@@ -59773,6 +66204,7 @@ var previewRecordService = function previewRecordService(services) {
                 (0, _jquery2.default)('#PREVIEWIMGDESCINNER').empty().append(data.desc);
                 (0, _jquery2.default)('#HISTORICOPS').empty().append(data.history);
                 (0, _jquery2.default)('#popularity').empty().append(data.popularity);
+                (0, _jquery2.default)('#NOTICE-INNER').empty().append(data.votingNotice);
 
                 if ((0, _jquery2.default)('#popularity .bitly_link').length > 0) {
                     if (window.BitlyCB !== undefined && window.BitlyClient !== undefined) {
@@ -59794,14 +66226,28 @@ var previewRecordService = function previewRecordService(services) {
                 options.current.captions = data.recordCaptions;
 
                 recordPreviewEvents.emit('recordSelection.changed', {
-                    selection: [data.recordCaptions]
+                    selection: [data.recordCaptions],
+                    selectionPos: [relativePos]
                 });
 
                 if ((0, _jquery2.default)('#PREVIEWBOX img.record.zoomable').length > 0) {
                     (0, _jquery2.default)('#PREVIEWBOX img.record.zoomable').draggable();
                 }
 
-                (0, _jquery2.default)('#SPANTITLE').empty().append(data.title);
+                var basketIcon = '';
+                if (data.containerType !== null) {
+                    if (data.containerType === 'feedback') {
+                        basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else if (data.containerType === 'push') {
+                        basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else if (data.containerType === 'regroup') {
+                        basketIcon = "<img src='/assets/common/images/icons/story.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else {
+                        basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    }
+                }
+
+                (0, _jquery2.default)('#SPANTITLE').empty().append(basketIcon + data.title);
                 (0, _jquery2.default)('#PREVIEWTITLE_COLLLOGO').empty().append(data.collection_logo);
                 (0, _jquery2.default)('#PREVIEWTITLE_COLLNAME').empty().append(data.databox_name + ' / ' + data.collection_name);
 
@@ -59864,6 +66310,12 @@ var previewRecordService = function previewRecordService(services) {
         (0, _jquery2.default)("iframe", $sel).css('width', NW).css('height', NH);
     }
 
+    function openPreview($element) {
+        var reload = $element.data('reload') === true ? true : false;
+        // env, pos, contId, reload
+        _openPreview(event.currentTarget, $element.data('kind'), $element.data('position'), $element.data('id'), reload);
+    }
+
     function closePreview() {
         options.open = false;
         if (activeThumbnailFrame !== false) {
@@ -59921,7 +66373,9 @@ var previewRecordService = function previewRecordService(services) {
         } else {
             if (options.mode === 'RESULT') {
                 var posAsk = parseInt(options.current.pos, 10) + 1;
-                posAsk = posAsk >= parseInt(options.navigation.tot, 10) || isNaN(posAsk) ? 0 : posAsk;
+                if (isNaN(posAsk) || posAsk >= parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
+                    posAsk = 0;
+                }
                 _openPreview(false, 'RESULT', posAsk, '', false);
             } else {
                 if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':last-child')) {
@@ -59936,10 +66390,7 @@ var previewRecordService = function previewRecordService(services) {
     function getPrevious() {
         if (options.mode === 'RESULT') {
             var posAsk = parseInt(options.current.pos, 10) - 1;
-            if (options.navigation.page === 1) {
-                // may go to last result
-                posAsk = posAsk < 0 ? parseInt(options.navigation.tot, 10) - 1 : posAsk;
-            }
+            posAsk = posAsk < 0 ? parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10) - 1 : posAsk;
             _openPreview(false, 'RESULT', posAsk, '', false);
         } else {
             if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':first-child')) {
@@ -60186,13 +66637,13 @@ var previewRecordService = function previewRecordService(services) {
 exports.default = previewRecordService;
 
 /***/ }),
-/* 197 */
+/* 234 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 198 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -60208,7 +66659,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(199);
+__webpack_require__(236);
 
 (function ($) {
 
@@ -60437,13 +66888,13 @@ __webpack_require__(199);
 
 
 /***/ }),
-/* 199 */
+/* 236 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 200 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60465,7 +66916,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _alert = __webpack_require__(44);
+var _alert = __webpack_require__(46);
 
 var _alert2 = _interopRequireDefault(_alert);
 
@@ -60490,7 +66941,7 @@ var uploader = function uploader(services) {
 
             __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                 // load uploader manager dep
-                UploaderManager = __webpack_require__(88).default;
+                UploaderManager = __webpack_require__(94).default;
                 openModal($this, []);
             }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
         });
@@ -60505,7 +66956,7 @@ var uploader = function uploader(services) {
 
                     __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                         // load uploader manager dep
-                        UploaderManager = __webpack_require__(88).default;
+                        UploaderManager = __webpack_require__(94).default;
                         openModal((0, _jquery2.default)('.uploader-open-action'), fileList);
                     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 
@@ -60998,7 +67449,7 @@ var uploader = function uploader(services) {
 exports.default = uploader;
 
 /***/ }),
-/* 201 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61026,7 +67477,7 @@ var defaultConfig = {
 exports.default = defaultConfig;
 
 /***/ }),
-/* 202 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61040,11 +67491,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _ui = __webpack_require__(47);
+var _ui = __webpack_require__(49);
 
 var _ui2 = _interopRequireDefault(_ui);
 
-var _notify = __webpack_require__(46);
+var _notify = __webpack_require__(48);
 
 var _notify2 = _interopRequireDefault(_notify);
 
@@ -61116,7 +67567,7 @@ var user = function user(services) {
 exports.default = user;
 
 /***/ }),
-/* 203 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61130,11 +67581,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _ui = __webpack_require__(47);
+var _ui = __webpack_require__(49);
 
 var _ui2 = _interopRequireDefault(_ui);
 
-var _notify = __webpack_require__(46);
+var _notify = __webpack_require__(48);
 
 var _notify2 = _interopRequireDefault(_notify);
 
@@ -61177,7 +67628,7 @@ var basket = function basket() {
 exports.default = basket;
 
 /***/ }),
-/* 204 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61203,11 +67654,11 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _resultInfos = __webpack_require__(76);
+var _resultInfos = __webpack_require__(81);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
-var _index = __webpack_require__(60);
+var _index = __webpack_require__(62);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -61215,7 +67666,7 @@ var _selectable = __webpack_require__(23);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchForm = __webpack_require__(205);
+var _searchForm = __webpack_require__(242);
 
 var _searchForm2 = _interopRequireDefault(_searchForm);
 
@@ -61223,7 +67674,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var lazyload = __webpack_require__(58);
+var lazyload = __webpack_require__(60);
 __webpack_require__(14);
 __webpack_require__(19);
 
@@ -61465,6 +67916,9 @@ var search = function search(services) {
                 } else {
                     (0, _jquery2.default)('#PREV_PAGE').unbind('click');
                 }
+
+                // emptying the facets filter in search zone
+                (0, _jquery2.default)('#facet_filter_in_search').empty();
 
                 updateHiddenFacetsListInPrefsScreen();
                 appEvents.emit('search.doAfterSearch');
@@ -61886,7 +68340,7 @@ var search = function search(services) {
 exports.default = search;
 
 /***/ }),
-/* 205 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61908,11 +68362,11 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _resultInfos = __webpack_require__(76);
+var _resultInfos = __webpack_require__(81);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
-var _user = __webpack_require__(45);
+var _user = __webpack_require__(47);
 
 var _user2 = _interopRequireDefault(_user);
 
@@ -61924,11 +68378,11 @@ var _selectable = __webpack_require__(23);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchAdvancedForm = __webpack_require__(206);
+var _searchAdvancedForm = __webpack_require__(243);
 
 var _searchAdvancedForm2 = _interopRequireDefault(_searchAdvancedForm);
 
-var _searchGeoForm = __webpack_require__(207);
+var _searchGeoForm = __webpack_require__(244);
 
 var _searchGeoForm2 = _interopRequireDefault(_searchGeoForm);
 
@@ -62063,7 +68517,7 @@ var searchForm = function searchForm(services) {
             loading: false,
             closeCallback: function closeCallback(dialog) {
                 // move back search form
-                $container.appendTo($searchFormContainer);
+                $container.prependTo($searchFormContainer);
 
                 // toggle advanced search options
                 (0, _jquery2.default)('.adv_trigger', $container).show();
@@ -62093,7 +68547,7 @@ var searchForm = function searchForm(services) {
 exports.default = searchForm;
 
 /***/ }),
-/* 206 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62115,7 +68569,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _user = __webpack_require__(45);
+var _user = __webpack_require__(47);
 
 var _user2 = _interopRequireDefault(_user);
 
@@ -62527,7 +68981,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
 
         // if one filter shows danger, show it on the query
         /* if (danger) {*/
-        if ((0, _jquery2.default)('#ADVSRCH_DATE_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SB_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SBAS_ZONE', adv_box).hasClass('danger')) {
+        if ((0, _jquery2.default)('#ADVSRCH_DATE_ZONE', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SB_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_FIELDS_ZONE .danger_indicator', adv_box).hasClass('danger') || (0, _jquery2.default)('#ADVSRCH_SBAS_ZONE', adv_box).hasClass('danger')) {
             (0, _jquery2.default)('#EDIT_query').addClass('danger');
         } else {
             (0, _jquery2.default)('#EDIT_query').removeClass('danger');
@@ -62746,7 +69200,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
 exports.default = searchAdvancedForm;
 
 /***/ }),
-/* 207 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62768,7 +69222,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _mapbox = __webpack_require__(50);
+var _mapbox = __webpack_require__(52);
 
 var _mapbox2 = _interopRequireDefault(_mapbox);
 
@@ -62971,7 +69425,7 @@ var searchGeoForm = function searchGeoForm(services) {
 exports.default = searchGeoForm;
 
 /***/ }),
-/* 208 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -63113,13 +69567,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 209 */
+/* 246 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 210 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Arabic Translation for jQuery UI date picker plugin. */
@@ -63149,7 +69603,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 211 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* German initialisation for the jQuery UI date picker plugin. */
@@ -63179,7 +69633,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 212 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Inicialización en español para la extensión 'UI date picker' para jQuery. */
@@ -63209,7 +69663,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 213 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* French initialisation for the jQuery UI date picker plugin. */
@@ -63241,7 +69695,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 214 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Dutch (UTF-8) initialisation for the jQuery UI date picker plugin. */
@@ -63271,7 +69725,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 215 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* English/UK initialisation for the jQuery UI date picker plugin. */
@@ -63301,5 +69755,5 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
-],[89]);
+],[95]);
 });

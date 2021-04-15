@@ -7,13 +7,16 @@ services:
     - ${PHRASEANET_PHPMYADMIN_PORT}:80
     depends_on:
     - db
+    networks:
+      - internal
 
   gateway:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
     - ./docker/nginx/root/entrypoint.sh:/entrypoint.sh
-
+    networks:
+      - internal
   builder:
     build:
       context: .
@@ -37,6 +40,8 @@ services:
       - dev_vol:/home/app
     environment:
       - PHRASEANET_PROJECT_NAME
+    networks:
+      - internal
 
   phraseanet:
     environment:
@@ -46,27 +51,34 @@ services:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
 
   worker:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
-
+    networks:
+      - internal
 
   rabbitmq:
     ports:
     - ${RABBITMQ_MANAGEMENT_PORT}:15672
-
+    networks:
+      - internal
   db:
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
+    networks:
+      - internal
 
   elasticsearch:
     ports:
     - 9200:9200
     volumes:
     - ${PHRASEANET_ELASTICSEARCH_DIR}:/usr/share/elasticsearch/data:rw
-
+    networks:
+      - internal
   kibana:
     image: kibana:4.6.6
     ports:
@@ -75,6 +87,8 @@ services:
     - elasticsearch
     depends_on:
     - elasticsearch
+    networks:
+      - internal
 
   logstash:
     image: logstash:7.6.2
@@ -86,6 +100,8 @@ services:
     depends_on:
     - elasticsearch
     restart: on-failure
+    networks:
+      - internal
 
   filebeat:
     hostname: filebeat
@@ -95,9 +111,17 @@ services:
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:ro
     command: filebeat run -e --strict.perms=false
     restart: on-failure
+    networks:
+      - internal
 
-networks:
-  default:
-    ipam:
-      config:
-        - subnet: $PHRASEANET_SUBNET_IPS
+  ftpd-server:
+    image: stilliard/pure-ftpd:hardened
+    environment:
+      FTP_USER_NAME: "dev"
+      FTP_USER_PASS: "dev"
+      FTP_USER_HOME: "/home/dev"
+    volumes:
+    - ${PHRASEANET_FTP_DIR}:/home/dev
+    restart: on-failure
+    networks:
+      - internal

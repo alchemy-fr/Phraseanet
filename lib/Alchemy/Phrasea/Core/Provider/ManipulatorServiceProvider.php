@@ -57,7 +57,8 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
                 $app['orm.em'],
                 $app['random.medium'],
                 $app['repo.tokens'],
-                $app['tmp.download.path']
+                $app['tmp.download.path'],
+                $app['conf']
             );
         });
 

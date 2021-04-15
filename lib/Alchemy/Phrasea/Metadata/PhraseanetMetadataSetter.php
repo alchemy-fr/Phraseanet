@@ -14,8 +14,11 @@ namespace Alchemy\Phrasea\Metadata;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DateTime;
 use PHPExiftool\Driver\Metadata\Metadata;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhraseanetMetadataSetter
 {
@@ -24,9 +27,12 @@ class PhraseanetMetadataSetter
      */
     private $repository;
 
-    public function __construct(DataboxRepository $repository)
+    private $dispatcher;
+
+    public function __construct(DataboxRepository $repository, EventDispatcherInterface $dispatcher)
     {
         $this->repository = $repository;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -83,6 +89,10 @@ class PhraseanetMetadataSetter
 
         if (! empty($metadataInRecordFormat)) {
             $record->set_metadatas($metadataInRecordFormat, true);
+
+            // order to write meta in file
+            $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
         }
     }
 

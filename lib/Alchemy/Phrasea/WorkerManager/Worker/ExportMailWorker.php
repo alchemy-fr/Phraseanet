@@ -71,6 +71,7 @@ class ExportMailWorker implements WorkerInterface
         $userRepository = $this->app['repo.users'];
 
         $user = $userRepository->find($payload['emitterUserId']);
+        $localeEmitter = $user->getLocale();
 
         /** @var TokenRepository $tokenRepository */
         $tokenRepository = $this->app['repo.tokens'];
@@ -100,11 +101,23 @@ class ExportMailWorker implements WorkerInterface
             } catch (InvalidArgumentException $e) {
                 continue;
             }
+
+            $userTo = $userRepository->findByEmail(trim($mail));
+
+            $locale = null;
+            if ($userTo !== null) {
+                $locale = ($userTo->getLocale() != null) ? $userTo->getLocale() : $localeEmitter;
+            }
+
             $deliverEmails[] = $mail;
 
             $mail = MailRecordsExport::create($this->app, $receiver, $emitter, $params['textmail']);
             $mail->setButtonUrl($params['url']);
             $mail->setExpiration($token->getExpiration());
+
+            if ($locale != null) {
+                $mail->setLocale($locale);
+            }
 
             $this->deliver($mail, $params['reading_confirm']);
 

@@ -57,6 +57,12 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
                 $mail->setTitle($title);
                 $mail->setUser($user_from);
 
+                if (($locale = $user_to->getLocale()) != null) {
+                    $mail->setLocale($locale);
+                } elseif (($locale1 = $user_from->getLocale()) != null) {
+                    $mail->setLocale($locale1);
+                }
+
                 $this->deliver($mail, $event->hasReceipt());
                 $mailed = true;
             }
@@ -99,6 +105,12 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
                 $mail->setButtonUrl($event->getUrl());
                 $mail->setTitle($title);
                 $mail->setUser($user_from);
+
+                if (($locale = $user_to->getLocale()) != null) {
+                    $mail->setLocale($locale);
+                } elseif (($locale1 = $user_from->getLocale()) != null) {
+                    $mail->setLocale($locale1);
+                }
 
                 $this->deliver($mail);
                 $mailed = true;

@@ -2,8 +2,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\AST;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 
@@ -12,6 +11,14 @@ abstract class AbstractTermNode extends Node implements TermInterface
     protected $text;
     protected $context;
     private $concepts = [];
+    /**
+     * pruned concepts is a reduced list of concepts, keeping only high-level ones
+     * by removing concepts-included-in-concept,
+     * e.g.
+     * /1/animal/mamal
+     * /1/animal/mamal/dog      -- removed because included
+     * /2/subject/animal
+     */
     private $pruned_concepts;
 
     public function __construct($text, Context $context = null)
@@ -26,6 +33,9 @@ abstract class AbstractTermNode extends Node implements TermInterface
         $this->concepts = $concepts;
     }
 
+    /**
+     * @return Concept[]
+     */
     private function getPrunedConcepts()
     {
         if ($this->pruned_concepts === null) {
@@ -34,6 +44,10 @@ abstract class AbstractTermNode extends Node implements TermInterface
         return $this->pruned_concepts;
     }
 
+    /**
+     * @param Field[] $fields
+     * @return array
+     */
     protected function buildConceptQueries(array $fields)
     {
         $concepts = $this->getPrunedConcepts();
@@ -43,20 +57,26 @@ abstract class AbstractTermNode extends Node implements TermInterface
 
         $index_fields = [];
         foreach ($fields as $field) {
-            $index_fields[] = $field->getConceptPathIndexField();
-        }
-        if (!$index_fields) {
-            return [];
+            // $db = $field->get_databox_id();
+            foreach ($field->getDependantDataboxes() as $db) {
+                if(!array_key_exists($db, $index_fields)) {
+                    $index_fields[$db] = [];
+                }
+                $index_fields[$db][] = $field->getConceptPathIndexField();
+            }
         }
 
         $queries = [];
         foreach ($concepts as $concept) {
-            $queries[] = [
-                'multi_match' => [
-                    'fields'   => $index_fields,
-                    'query'    => $concept->getPath()
-                ]
-            ];
+            $db = $concept->getDataboxId();
+            if(array_key_exists($db, $index_fields)) {
+                $queries[] = [
+                    'multi_match' => [
+                        'fields' => $index_fields[$db],
+                        'query'  => $concept->getPath()
+                    ]
+                ];
+            }
         }
         return $queries;
     }

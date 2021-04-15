@@ -48,7 +48,7 @@ class SendValidationRemindersCommand extends Command
     /** @var DateTime */
     private $now;
 
-    private $days;
+    private $timeLeftPercent;
 
     public function __construct( /** @noinspection PhpUnusedParameterInspection */ $name = null)
     {
@@ -56,8 +56,8 @@ class SendValidationRemindersCommand extends Command
 
         $this->setDescription('Send validation reminders. <comment>(experimental)</comment>');
         $this->addOption('dry',null, InputOption::VALUE_NONE,'dry run, list but don\'t act');
-        $this->addOption('now', null,InputArgument::OPTIONAL, 'fake today');
-        $this->addOption('days', null,InputArgument::OPTIONAL, 'overwrite validation-reminder-days');
+        $this->addOption('now', null,InputArgument::OPTIONAL, 'fake today as "yyy/mm/dd", "yyyy-mm-dd" or "yyyy-mm-dd hh:mm:ss"');
+        $this->addOption('p', null,InputArgument::OPTIONAL, 'overwrite Validation-reminder-time-left-percent');
     }
 
 
@@ -87,15 +87,15 @@ class SendValidationRemindersCommand extends Command
             $this->now = new DateTime();
         }
 
-        // --days
-        if(($v = $this->input->getOption('days')) !== null) {
-            if(($this->days = (int)$v) <= 0) {
-                $this->output->writeln(sprintf('<error>--days must be > 0 (bad value "%s")</error>', $v));
+        // --p
+        if(($v = $this->input->getOption('p')) !== null) {
+            if(($this->timeLeftPercent = (int)$v) <= 0) {
+                $this->output->writeln(sprintf('<error>--p must be > 0 (bad value "%s")</error>', $v));
                 $r = false;
             }
         }
         else {
-            $this->days = (int)$this->getConf()->get(['registry', 'actions', 'validation-reminder-days']);
+            $this->timeLeftPercent = (int)$this->getConf()->get(['registry', 'actions', 'validation-reminder-time-left-percent']);
         }
 
         return $r;
@@ -112,29 +112,28 @@ class SendValidationRemindersCommand extends Command
             return -1;
         }
 
-        $date_to = clone($this->now);
-        $interval = sprintf('P%dD', $this->days);
-        try {
-            $date_to->add(new DateInterval($interval));
-        }
-        catch(Exception $e) {
-            $this->output->writeln(sprintf('<error>Bad interval "%s" ?</error>', $interval));
-            return -1;
-        }
-
         if($this->dry) {
             $this->output->writeln('<info>dry mode : emails will NOT be sent</info>');
         }
 
-        $output->writeln(sprintf('from "%s" to "%s" (days=%d), ', $this->now->format(self::DATE_FMT), $date_to->format(self::DATE_FMT), $this->days));
+        $output->writeln(sprintf('from "%s" to validation-reminder-time-left-percent "%s" percent, ', $this->now->format(self::DATE_FMT), $this->timeLeftPercent));
 
         $fmt = '   participant: %-11s  user: %-10s %s  token: %-10s ';
         //$output->writeln(sprintf($fmt, 'session', 'basket', 'participant', 'user', 'token', 'email'));
 
         $last_session = null;
-        foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($date_to, $this->now) as $participant) {
+        foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($this->timeLeftPercent, $this->now) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
+
+            $expiresDate = $validationSession->getExpires();
+            $diffInterval = $expiresDate->diff(new DateTime());
+
+            if ($diffInterval->days) {
+                $timeLeft = $diffInterval->format(' %d days %Hh%I ');
+            } else {
+                $timeLeft = $diffInterval->format(' %Hh%I ');
+            }
 
             // change session ? display header
             if($validationSession->getId() !== $last_session) {
@@ -222,7 +221,7 @@ class SendValidationRemindersCommand extends Command
             }
 
             // $this->dispatch(PhraseaEvents::VALIDATION_REMINDER, new ValidationEvent($participant, $basket, $url));
-            $this->doRemind($participant, $basket, $url);
+            $this->doRemind($participant, $basket, $url, $timeLeft);
         }
 
         $this->getEntityManager()->flush();
@@ -254,13 +253,14 @@ class SendValidationRemindersCommand extends Command
         return $s;
     }
 
-    private function doRemind(ValidationParticipant $participant, Basket $basket, $url)
+    private function doRemind(ValidationParticipant $participant, Basket $basket, $url, $timeLeft)
     {
         $params = [
             'from'    => $basket->getValidation()->getInitiator()->getId(),
             'to'      => $participant->getUser()->getId(),
             'ssel_id' => $basket->getId(),
             'url'     => $url,
+            'time_left'=> $timeLeft
         ];
 
         $datas = json_encode($params);
@@ -290,8 +290,15 @@ class SendValidationRemindersCommand extends Command
                 if(!$this->dry) {
                     // for real
                     $mail = MailInfoValidationReminder::create($this->container, $receiver, $emitter);
+                    $mail->setTimeLeft($timeLeft);
                     $mail->setButtonUrl($params['url']);
                     $mail->setTitle($title);
+
+                    if (($locale = $user_to->getLocale()) != null) {
+                        $mail->setLocale($locale);
+                    } elseif (($locale1 = $user_from->getLocale()) != null) {
+                        $mail->setLocale($locale1);
+                    }
 
                     $this->deliver($mail);
                     $mailed = true;

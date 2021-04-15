@@ -13,11 +13,18 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 
 class Concept
 {
+    private $databox_id;
     private $path;
 
-    public function __construct($path)
+    public function __construct($databox_id, $path)
     {
+        $this->databox_id = $databox_id;
         $this->path = (string) $path;
+    }
+
+    public function getDataboxId()
+    {
+        return $this->databox_id;
     }
 
     public function getPath()

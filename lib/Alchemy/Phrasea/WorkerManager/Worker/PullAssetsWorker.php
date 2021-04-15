@@ -82,7 +82,7 @@ class PullAssetsWorker implements WorkerInterface
                     ]
                 ];
 
-                $this->messagePublisher->publishMessage($payload, MessagePublisher::ASSETS_INGEST_QUEUE);
+                $this->messagePublisher->publishMessage($payload, MessagePublisher::ASSETS_INGEST_TYPE);
             }
         }
 

@@ -1,0 +1,25 @@
+<h1>{{ 'admin::workermanager:tab:ftp: description' |trans }}</h1>
+
+{{ form_start(form, {'action': path('worker_admin_ftp')}) }}
+
+<div class="control-group">
+    {{ form_row(form.proxy) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.proxyPort) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.proxyUser) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.proxyPassword) }}
+</div>
+
+<div class="control-group">
+    <input type="submit" class="btn btn-primary" value={{ "Save"|trans }} />
+</div>
+
+{{ form_end(form) }}

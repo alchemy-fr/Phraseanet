@@ -40,7 +40,7 @@ class SearchengineSubscriber implements EventSubscriberInterface
                 ]
             ];
 
-            $this->messagePublisher->publishMessage($payload, MessagePublisher::POPULATE_INDEX_QUEUE);
+            $this->messagePublisher->publishMessage($payload, MessagePublisher::POPULATE_INDEX_TYPE);
         }
     }
 
@@ -83,9 +83,9 @@ class SearchengineSubscriber implements EventSubscriberInterface
             }
         }
 
-        $this->messagePublisher->publishMessage(
+        $this->messagePublisher->publishRetryMessage(
             $payload,
-            MessagePublisher::RETRY_POPULATE_INDEX_QUEUE,
+            MessagePublisher::POPULATE_INDEX_TYPE,
             $event->getCount(),
             $event->getWorkerMessage()
         );

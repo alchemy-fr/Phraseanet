@@ -5,6 +5,9 @@ import workzoneFacets from './facets/index';
 import workzoneBaskets from './baskets/index';
 import Selectable from '../../utils/selectable';
 import Alerts from '../../utils/alert';
+import dialog from './../../../phraseanet-common/components/dialog';
+import feedbackReminder from "../../basket/reminder";
+
 const humane = require('humane-js');
 require('./../../../phraseanet-common/components/tooltip');
 require('./../../../phraseanet-common/components/vendors/contextMenu');
@@ -22,9 +25,26 @@ const workzone = (services) => {
     var nextBasketScroll = false;
     var warnOnRemove = true;
     let $container;
+    let dragBloc = $('#basket-tab').val() ;
+
+    function checkActiveBloc(destBloc) {
+
+        if (document.getElementById('expose_tab') && document.getElementById('expose_tab').getAttribute('aria-expanded') == 'true') {
+            $('#basket-tab').val('#expose_tab');
+        }
+        if (document.getElementById('baskets') && document.getElementById('baskets').getAttribute('aria-expanded') == 'true') {
+            $('#basket-tab').val('#baskets');
+        }
+
+        var destBloc =  $('#basket-tab').val();
+        console.log(destBloc);
+        return destBloc;
+    }
+    checkActiveBloc(dragBloc);
 
     const initialize = () => {
         $container = $('#idFrameC');
+        checkActiveBloc(dragBloc);
 
         $container.resizable({
             handles: 'e',
@@ -68,13 +88,49 @@ const workzone = (services) => {
             }
         });
 
+        $container.on('click', '.feedback-reminder', function (event) {
+            event.preventDefault();
+            let $el = $(event.currentTarget);
+            feedbackReminder(services).openModal($el.data('basket-id'));
+        });
+
+        $('#idFrameC .expose_li').on('click', function (event) {
+            checkActiveBloc(dragBloc);
+        });
+
+        $('.add_publication').on('click',function (event) {
+            openExposePublicationAdd($('#expose_list').val());
+        });
+
+        $('.refresh-list').on('click',function (event) {
+            let exposeName = $('#expose_list').val();
+            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        $('.display-list').on('click',function (event) {
+            let exposeName = $('#expose_list').val();
+            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(exposeName);
+        });
+
+        $('#expose_list').on('change', function () {
+            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            updatePublicationList(this.value);
+        });
+
+        $('.publication-list').on('click', '.top-block' , function (event) {
+            $(this).parent().find('.expose_item_deployed').toggleClass('open');
+            $(this).toggleClass('open');
+        });
+
         $('#idFrameC .ui-tabs-nav li').on('click', function (event) {
             if ($container.attr('data-status') === 'closed') {
                 $('#retractableButton').find('i').removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
                 $container.width(360);
                 $('#rightFrame').css('left', 360);
                 $('#rightFrame').width($(window).width() - 360);
-                $('#baskets, #proposals, #thesaurus_tab').hide();
+                $('#baskets, #expose_tab, #proposals, #thesaurus_tab').hide();
                 $('.ui-resizable-handle, #basket_menu_trigger').show();
                 var IDname = $(this).attr('aria-controls');
                 $('#' + IDname).show();
@@ -95,7 +151,7 @@ const workzone = (services) => {
                 $('#rightFrame').css('left', 80);
                 $('#rightFrame').width($(window).width() - 80);
                 $container.attr('data-status', 'closed');
-                $('#baskets, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
+                $('#baskets, #expose_tab, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
                 $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
                 $('.WZbasketTab').css('background-position', '15px 16px');
                 $container.addClass('closed');
@@ -141,14 +197,22 @@ const workzone = (services) => {
             extraClass: 'tooltip_flat'
         });
 
-        $('#idFrameC .tabs').tabs({
-            activate: function (event, ui) {
-                if (ui.newTab.context.hash === '#thesaurus_tab') {
-                    appEvents.emit('thesaurus.show');
+        $('#idFrameC .tabs')
+            .data('hash', null)  // unknowk for now
+            .tabs({
+                create:   function activate(event, ui) {
+                    $(this).data('hash', ui.tab.context.hash);
+                },
+                activate: function activate(event, ui) {
+                    $(this).data('hash', ui.newTab.context.hash)
+                    if (ui.newTab.context.hash === '#thesaurus_tab') {
+                        appEvents.emit('thesaurus.show');
+                    }
+                    workzoneOptions.open();
+                    console.log("tab is " + $('#idFrameC .tabs').data("hash"));
                 }
-                workzoneOptions.open();
-            }
-        });
+            });
+
         $('.basket_refresher').on('click', function () {
             return workzoneOptions.refresh('current');
         });
@@ -166,11 +230,11 @@ const workzone = (services) => {
             selection: new Selectable(services, $('#baskets'), {selector: '.CHIM'}),
             refresh: refreshBaskets,
             addElementToBasket: function (options) {
-                let {sbas_id, record_id, event, singleSelection} = options;
+                let {dbId, recordId, event, singleSelection} = options;
                 singleSelection = !!singleSelection || false;
 
                 if ($('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, $('#IMGT_' + sbas_id + '_' + record_id), $('#baskets .SSTT.active'), singleSelection);
+                    return dropOnBask(event, $('#IMGT_' + dbId + '_' + recordId), $('#baskets .SSTT.active'), singleSelection);
                 } else {
                     humane.info(localeService.t('noActiveBasket'));
                 }
@@ -224,6 +288,7 @@ const workzone = (services) => {
             }
         };
         filterBaskets();
+        $('#expose_tabs').tabs();
 
     };
 
@@ -324,37 +389,37 @@ const workzone = (services) => {
     });
 
     function WorkZoneElementRemover(el, confirm) {
-        var context = el.data('context');
+        var context = $(el).data('context');
 
-        if (confirm !== true && $(el).hasClass('groupings') && warnOnRemove) {
+        if (confirm !== true && ($(el).hasClass('groupings') || $(el).hasClass('record-remove-from-basket-action') || $(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
-                $('#DIALOG-baskets').dialog('close').remove();
+                dialog.get(1).close();
                 WorkZoneElementRemover(el, true);
             };
 
-            buttons[localeService.t('annuler')] = function () {
-                $('#DIALOG-baskets').dialog('close').remove();
-            };
+            var texte = '';
+            var title = '';
+            if ($(el).hasClass('groupings')) {
+                texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
+                title = localeService.t('removeTitle');
+            } else {
+                texte = '<p>' + localeService.t('confirmRemoveFeedBack') + '</p>';
+                title = localeService.t('removeRecordFeedbackTitle');
+            }
 
-            var texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
-            $('body').append('<div id="DIALOG-baskets"></div>');
-            $('#DIALOG-baskets').attr('title', localeService.t('removeTitle'))
-                .empty()
-                .append(texte)
-                .dialog({
-                    autoOpen: false,
-                    closeOnEscape: true,
-                    resizable: false,
-                    draggable: false,
-                    modal: true,
-                    buttons: buttons,
-                    overlay: {
-                        backgroundColor: '#000',
-                        opacity: 0.7
-                    }
-                }).dialog('open');
+            let dialogWindow = dialog.create(services, {
+                size: 'Medium',
+                title: title,
+                closeButton: true,
+            });
+
+            //Add custom class to dialog wrapper
+            dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+            dialogWindow.setContent(texte);
+
+            dialogWindow.setOption('buttons', buttons);
             return false;
         } else {
 
@@ -451,7 +516,9 @@ const workzone = (services) => {
 
                 uiactive.addClass('ui-state-focus active');
 
+                // reset selection when opening a basket type
                 workzoneOptions.selection.empty();
+                appEvents.emit('broadcast.workzoneResultSelection', {asArray:[], serialized:""});
 
                 getContent(uiactive);
 
@@ -464,6 +531,12 @@ const workzone = (services) => {
 
         $('.bloc', cache).droppable({
             accept: function (elem) {
+// return false;
+                let currentTab = $('#idFrameC .tabs').data('hash');
+                if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false;   // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                     return true;
                 }
@@ -488,6 +561,12 @@ const workzone = (services) => {
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
@@ -523,6 +602,221 @@ const workzone = (services) => {
                 hideTransition: 'hide',
                 shadow: false
             });
+        });
+
+    }
+
+    function activeExpose() {
+        let idFrameC = $('#idFrameC');
+
+        // drop on publication
+        idFrameC.find('.publication-droppable')
+            .droppable({
+                scope: 'objects',
+                hoverClass: 'baskDrop',
+                tolerance: 'pointer',
+                accept: function (elem) {
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
+                    if ($(elem).hasClass('CHIM')) {
+                        if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
+                            return false;
+                        }
+                    }
+                    if ($(elem).hasClass('grouping') || $(elem).parent()[0] === $(this)[0]) {
+                        return false;
+                    }
+                    return true;
+                },
+                drop: function (event, ui) {
+                    dropOnBask(event, ui.draggable, $(this));
+                }
+            });
+
+        // delete an asset from publication
+        idFrameC.find('.publication-droppable').on('click', '.removeAsset', function(){
+            let publicationId = $(this).attr('data-publication-id');
+            let assetId = $(this).attr('data-asset-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_deployed');
+
+            let buttons = {};
+
+            let $dialog = dialog.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
+            });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+                $.ajax({
+                    type: 'POST',
+                    url: `/prod/expose/publication/delete-asset/${publicationId}/${assetId}/?exposeName=${exposeName}`,
+                    beforeSend: function () {
+                        assetsContainer.addClass('loading');
+                    },
+                    success: function (data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            let texte = '<p>' + localeService.t('removeAssetPublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
+        });
+
+        idFrameC.find('.publication-droppable').on('click', '.edit_expose', function (event) {
+            openExposePublicationEdit($(this));
+        });
+
+        // delete a publication
+        idFrameC.find('.publication-droppable').on('click', '.delete-publication', function() {
+            let publicationId = $(this).attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let buttons = {};
+
+            let $dialog = dialog.create(services, {
+                size: '480x160',
+                title: localeService.t('warning')
+            });
+
+            buttons[localeService.t('valider')] = function () {
+                $dialog.setContent('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+                $.ajax({
+                    type: 'POST',
+                    url: `/prod/expose/delete-publication/${publicationId}/?exposeName=${exposeName}`,
+                    success: function (data) {
+                        if (data.success === true) {
+                            $dialog.close();
+                            updatePublicationList(exposeName);
+                        } else {
+                            $dialog.setContent(data.message);
+                            console.log(data);
+                        }
+                    }
+                });
+            };
+
+            buttons[localeService.t('annuler')] = function () {
+                $dialog.close();
+            };
+
+            let texte = '<p>' + localeService.t('removeExposePublication') + '</p>';
+
+            $dialog.setOption('buttons', buttons);
+            $dialog.setContent(texte);
+        });
+
+        // refresh publication content
+        idFrameC.find('.publication-droppable').on('click', '.refresh-publication', function() {
+            let publicationId = $(this).attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_deployed');
+
+            assetsContainer.empty().addClass('loading');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+        });
+
+        // set publication cover
+        idFrameC.find('.publication-droppable').on('click', '.set-cover', function(){
+            let publicationId = $(this).attr('data-publication-id');
+            let assetId = $(this).attr('data-asset-id');
+            let exposeName = $('#expose_list').val();
+            let publicationData = JSON.stringify({"cover":`/assets/${assetId}`}, undefined, 4);
+
+            $.ajax({
+                type: "PUT",
+                url: `/prod/expose/update-publication/${publicationId}`,
+                dataType: 'json',
+                data: {
+                    exposeName: `${exposeName}`,
+                    publicationData: publicationData
+                },
+                success: function (data) {
+                    if (data.success) {
+                        updatePublicationList(exposeName);
+                    } else {
+                        console.log(data.message);
+                    }
+                }
+            });
+        });
+
+        // load more asset and append it at the end
+        idFrameC.find('.publication-droppable').on('click', '.load_more_asset', function() {
+            let publicationId = $(this).attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_bottom').find('.expose_drag_drop');
+            let page = assetsContainer.find('#list_assets_page').val();
+
+            $(this).find('.loading_more').removeClass('hidden');
+            getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
+        });
+    }
+
+    function updatePublicationList(exposeName)
+    {
+        $.ajax({
+            type: 'GET',
+            url: '/prod/expose/list-publication/?exposeName=' + exposeName,
+            success: function (data) {
+                $('.publication-list').empty().html(data);
+
+                $('.expose_basket_item .top_block').on('click', function (event) {
+                    $(this).parent().find('.expose_item_deployed').toggleClass('open');
+                    $(this).toggleClass('open');
+
+                    if ($(this).hasClass('open')) {
+                        let publicationId = $(this).attr('data-publication-id');
+                        let exposeName = $('#expose_list').val();
+                        let assetsContainer = $(this).parents('.expose_basket_item').find('.expose_item_deployed');
+
+                        assetsContainer.addClass('loading');
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                    }
+                });
+
+                activeExpose();
+            }
+        });
+    }
+
+
+    function getPublicationAssetsList(publicationId, exposeName, assetsContainer, page=1) {
+        $.ajax({
+            type: 'GET',
+            url: `/prod/expose/get-publication/${publicationId}/assets?exposeName=${exposeName}&page=${page}`,
+            success: function (data) {
+                if (typeof data.success === 'undefined') {
+                    if (page ===1) {
+                        assetsContainer.removeClass('loading');
+                        assetsContainer.empty().html(data);
+                    } else {
+                        assetsContainer.append(data);
+                        assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
+                        assetsContainer.find('#list_assets_page').val(page);
+                    }
+                } else {
+                    console.log(data);
+                }
+            }
         });
 
     }
@@ -576,6 +870,12 @@ const workzone = (services) => {
 
                 dest.droppable({
                     accept: function (elem) {
+// return false;
+                        let currentTab = $('#idFrameC .tabs').data('hash');
+                        if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                            return false;   // can't drop on baskets if the baskets tab is not front
+                        }
+
                         if ($(elem).hasClass('CHIM')) {
                             if ($(elem).closest('.content')[0] === $(this)[0]) {
                                 return false;
@@ -616,6 +916,10 @@ const workzone = (services) => {
                         left: -20
                     },
                     start: function (event, ui) {
+                        if (!$(this).hasClass('selected')) {
+                            return false;
+                        }
+
                         var baskets = $('#baskets');
                         baskets.append('<div class="top-scroller"></div>' +
                             '<div class="bottom-scroller"></div>');
@@ -633,11 +937,10 @@ const workzone = (services) => {
                     },
                     drag: function (event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping')) {
-                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
+                            $('#dragDropCursor div').empty().append(workzoneOptions.selection.length() + ', ' + localeService.t('movedRecord'));
                         } else {
-                            $('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
-
                     }
                 });
                 window.workzoneOptions = workzoneOptions;
@@ -647,7 +950,94 @@ const workzone = (services) => {
         });
     }
 
+    function openExposePublicationAdd(exposeName) {
+        $('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title'))
+            .dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: true,
+                draggable: true,
+                width: 900,
+                height: 575,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                },
+                close: function(e, ui) {
+                }
+            }).dialog('open');
+        $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        $('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
+            $('#DIALOG-expose-add').dialog('close');
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/list-publication/?format=json&exposeName=` + exposeName,
+            success: function (data) {
+                $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                var i = 0;
+                for ( ;i < data.publications.length; i++) {
+                    $('#DIALOG-expose-add select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                }
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/list-profile?exposeName=` + exposeName,
+            success: function (data) {
+                $('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
+                var i = 0;
+                for (; i < data.profiles.length; i++) {
+                    $('select#profile-field').append('<option ' +
+                        'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                        + data.profiles[i].name +
+                        '</option>'
+                    );
+                }
+            }
+        });
+    }
+
+    function openExposePublicationEdit(edit) {
+        $('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        $('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title'))
+            .dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: true,
+                draggable: true,
+                width: 900,
+                height: 575,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                },
+                close: function(e, ui) {
+                    $('#DIALOG-expose-edit .expose-edit-content').empty();
+                }
+            }).dialog('open');
+        $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+        $('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
+            $('#DIALOG-expose-edit .expose-edit-content').dialog('close');
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}` ,
+            success: function (data) {
+                $('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
+            }
+        });
+    }
+
     function dropOnBask(event, from, destKey, singleSelection) {
+        checkActiveBloc(dragBloc);
+
         let action = '';
         let dest_uri = '';
         let lstbr = [];
@@ -698,7 +1088,7 @@ const workzone = (services) => {
 
         switch (action) {
             case 'CHU2CHU' :
-                if (!appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
+                if (appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
                 break;
             case 'IMGT2REG':
             case 'CHU2REG' :
@@ -747,33 +1137,67 @@ const workzone = (services) => {
                 return false;
         }
 
-        if (window.console) {
-            window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
-        }
+        //save basket after drop elt
+        if ($('#basket-tab').val() === '#baskets') {
 
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: data,
-            dataType: 'json',
-            beforeSend: function () {
-
-            },
-            success: function (data) {
-                if (!data.success) {
-                    humane.error(data.message);
-                } else {
-                    humane.info(data.message);
-                }
-                if (act === 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true) {
-                    $('.CHIM.selected:visible').fadeOut();
-                    workzoneOptions.selection.empty();
-                    return workzoneOptions.reloadCurrent();
-                }
-
-                return true;
+            if (window.console) {
+                window.console.log('About to execute ajax POST on ', url, ' with datas ', data);
             }
-        });
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                dataType: 'json',
+                beforeSend: function () {
+
+                },
+                success: function (data) {
+                    if (!data.success) {
+                        humane.error(data.message);
+                    } else {
+                        humane.info(data.message);
+                    }
+                    if (act === 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true) {
+                        $('.CHIM.selected:visible').fadeOut();
+                        workzoneOptions.selection.empty();
+                        return workzoneOptions.reloadCurrent();
+                    }
+
+                    return true;
+                }
+            });
+
+        } else {
+            console.log(data.lst);
+
+            let publicationId = destKey.attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = destKey.find('.expose_item_deployed');
+
+            if (publicationId !== undefined) {
+                assetsContainer.empty().addClass('loading');
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/add-assets',
+                    data: {
+                        publicationId: publicationId,
+                        exposeName: exposeName,
+                        lst: data.lst
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        setTimeout(function(){
+                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                            }
+                            , 6000);
+
+                        console.log(data.message);
+                    }
+                });
+            }
+        }
     }
 
     function fix() {

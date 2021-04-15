@@ -62,7 +62,7 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="/assets/production/authenticate{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/authenticate{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
     <script>
         authenticateApp.bootstrap({
             state: 'renewEmail'

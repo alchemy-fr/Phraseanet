@@ -122,10 +122,9 @@
     "name": "Florian Blouet",
     "email": "florian.blouet@gmail.com"
   },
-  "bugs": "https://github.com/alchemy-fr/Phraseanet-production-client/issues",
-  "homepage": "https://github.com/alchemy-fr/Phraseanet-production-client",
   "license": "MIT",
   "dependencies": {
+    "@mapbox/mapbox-gl-geocoder": "^4.7.0",
     "@mapbox/mapbox-gl-language": "^0.9.2",
     "@turf/turf": "^5.1.6",
     "axios": "^0.19.2",

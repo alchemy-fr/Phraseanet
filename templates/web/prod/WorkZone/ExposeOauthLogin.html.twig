@@ -1,0 +1,39 @@
+<div style="padding:10px;">
+    <h3>{{ 'prod:expose:connection:Auth connexion' |trans }}</h3>
+    <div class="">
+        <form id="oauth-login-form" method="post" name="login" novalidate action="{{ path('ps_expose_authenticate') }}">
+            <input type="hidden" name="exposeName" value="{{ exposeName }}"/>
+            <div class="control-group">
+                <label for="auth-email">{{ 'prod:expose:connection:Username' |trans }}</label>
+                <input value="" type="text" name="auth-username" id="auth-email" placeholder="Enter your email" required="">
+            </div>
+            <div class="control-group">
+                <label for="auth-password">{{ 'prod:expose:connection:Password' |trans }}</label>
+                <input type="password" name="auth-password" id="auth-password" placeholder="Enter your password" required="">
+            </div>
+            <div>
+                <button class="btn btn-block btn-primary auth-sign-in">{{ 'prod:expose:connection:Sign in' |trans }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('.publication-list').on('click', '.auth-sign-in' , function (e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+
+        $.ajax({
+            dataType: 'json',
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serializeArray(),
+            success: function(datas) {
+                console.log(datas);
+                if (datas.success) {
+                    $('.refresh-list').trigger('click');
+                }
+            }
+        });
+    });
+</script>

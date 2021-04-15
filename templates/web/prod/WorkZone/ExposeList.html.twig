@@ -1,0 +1,19 @@
+{% for publication in publications %}
+    <div class="expose_basket_item publication-droppable basketTips ui-accordion-header ui-state-default
+                    ui-corner-all header" data-publication-id="{{ publication.id }}">
+        <div class="top_block" data-publication-id="{{ publication.id }}">
+            <div class="diapo">
+                {% if publication.cover %}
+                    <img class="top_image" width="60" src="{{ publication.cover.thumbUrl }}" />
+                {% endif %}
+            </div>
+
+            {% set path = publication.slug ?? publication.id %}
+            <a target="_blank" href="{{ exposeFrontBasePath ~ path }}" class="expose_item_title" style="color:#4990e2;"><span>{{ publication.title }}</span><span class="exp_date"></span></a>
+
+        </div>
+        <div class="expose_item_deployed">
+        </div>
+    </div>
+{% endfor %}
+

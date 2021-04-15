@@ -67,10 +67,7 @@ class QueryController extends Controller
         $word = StringHelper::crlfNormalize($word);
         $options = SearchEngineOptions::fromRequest($this->app, $request);
 
-        $search_engine_structure = GlobalStructure::createFromDataboxes(
-            $this->app->getDataboxes(),
-            Structure::WITH_EVERYTHING & ~(Structure::STRUCTURE_WITH_FLAGS | Structure::FIELD_WITH_FACETS | Structure::FIELD_WITH_THESAURUS)
-        );
+        $search_engine_structure = $this->app['search_engine.global_structure'];
 
         $query_context_factory = new QueryContextFactory(
             $search_engine_structure,
@@ -502,6 +499,7 @@ class QueryController extends Controller
                 'records'  => $record->get_train(),
                 'index' => $index,
                 'selected' => $pos,
+                'recordsTotal' => $record->getTotal()
             ])
         ]);
     }

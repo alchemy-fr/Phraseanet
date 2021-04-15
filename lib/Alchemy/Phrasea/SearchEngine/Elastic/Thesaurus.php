@@ -79,7 +79,7 @@ class Thesaurus
      * @param  boolean     $strict Whether to enable strict search or not
      * @return Concept[]           Matching concepts
      */
-    public function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
+    private function findConcepts($term, $lang = null, Filter $filter = null, $strict = false)
     {
         return $strict ?
             $this->findConceptsStrict($term, $lang, $filter)
@@ -126,6 +126,24 @@ class Thesaurus
                 ]
             ];
         }
+/*
+        if(count($databoxIds) > 0) {
+            if(count($databoxIds) == 1) {
+                $filters[] = [
+                    'term' => [
+                        'databox_id' => $databoxIds[0]
+                    ]
+                ];
+            }
+            else {
+                $filters[] = [
+                    'terms' => [
+                        'databox_id' => $databoxIds
+                    ]
+                ];
+            }
+        }
+*/
         if ($lang) {
             $filters[] = [
                 'term' => [
@@ -133,6 +151,7 @@ class Thesaurus
                 ]
             ];
         }
+
         if ($filter) {
             $filters = array_merge($filters, $filter->getQueryFilters());
         }
@@ -166,30 +185,52 @@ class Thesaurus
             $query = $must[0];
         }
 
-        // Path deduplication
-        $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path.raw';
-
         // Search request
-        $params = array();
-        $params['index'] = $this->options->getIndexName();
-        $params['type'] = TermIndexer::TYPE_NAME;
-        $params['body']['query'] = $query;
-        $params['body']['aggs'] = $aggs;
-        // No need to get any hits since we extract data from aggs
-        $params['body']['size'] = 0;
+        $params = [
+            'index' => $this->options->getIndexName(),
+            'type'  => TermIndexer::TYPE_NAME,
+            'body'  => [
+                'query' => $query,
+                'aggs'  => [
+                    // Path deduplication
+                    'db' => [                           // databox_id
+                        'terms' => [
+                            'field' => 'databox_id'
+                        ],
+                        'aggs'  => [
+                            // Path deduplication
+                            'cp' => [                   // concept_path
+                                'terms' => [
+                                    'field' => 'path.raw'
+                                ]
+                            ]
+                        ],
+
+                    ]
+                ],
+                // No need to get any hits since we extract data from aggs
+                'size' => 0
+            ]
+        ];
+
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
 
         // Extract concept paths from response
         $concepts = array();
-        $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
+        $db_buckets = \igorw\get_in($response, ['aggregations', 'db', 'buckets'], []);
         $keys = array();
-        foreach ($buckets as $bucket) {
-            if (isset($bucket['key'])) {
-                $keys[] = $bucket['key'];
-                $concepts[] = new Concept($bucket['key']);
+        foreach ($db_buckets as $db_bucket) {
+            if (isset($db_bucket['key'])) {
+                $db = $db_bucket['key'];
+                $cp_buckets = \igorw\get_in($db_bucket, ['cp', 'buckets'], []);
+                foreach ($cp_buckets as $cp_bucket) {
+                    if (isset($cp_bucket['key'])) {
+                        $keys[] = $cp_bucket['key'];
+                        $concepts[] = new Concept($db, $cp_bucket['key']);
+                    }
+                }
             }
         }
 
@@ -235,7 +276,30 @@ class Thesaurus
             $query['bool']['must'][0] = $value_query;
             $query['bool']['must'][1] = $context_query;
         }
-
+/*
+        if(count($databoxIds) > 0) {
+            if(count($databoxIds) == 1) {
+                $query = self::applyQueryFilter(
+                    $query,
+                    [
+                        'term' => [
+                            'databox_id' => $databoxIds[0]
+                        ]
+                    ]
+                );
+            }
+            else {
+                $query = self::applyQueryFilter(
+                    $query,
+                    [
+                        'terms' => [
+                            'databox_id' => $databoxIds
+                        ]
+                    ]
+                );
+            }
+        }
+*/
         if ($lang) {
             $lang_filter = array();
             $lang_filter['term']['lang'] = $lang;
@@ -246,36 +310,55 @@ class Thesaurus
             $this->logger->debug('Using filter', array('filter' => Filter::dump($filter)));
             $query = self::applyQueryFilter($query, $filter->getQueryFilter());
         }
+        $params = [
+            'index' => $this->options->getIndexName(),
+            'type'  => TermIndexer::TYPE_NAME,
+            'body'  => [
+                'query' => $query,
+                'aggs'  => [
+                    // Path deduplication
+                    'db' => [                           // databox_id
+                        'terms' => [
+                            'field' => 'databox_id'
+                        ],
+                        'aggs'  => [
+                            // Path deduplication
+                            'cp' => [                   // concept_path
+                                'terms' => [
+                                    'field' => 'path.raw'
+                                ]
+                            ]
+                        ],
 
-        // Path deduplication
-        $aggs = array();
-        $aggs['dedup']['terms']['field'] = 'path.raw';
-
-        // Search request
-        $params = array();
-        $params['index'] = $this->options->getIndexName();
-        $params['type'] = TermIndexer::TYPE_NAME;
-        $params['body']['query'] = $query;
-        $params['body']['aggs'] = $aggs;
-        // Arbitrary score low limit, we need find a more granular way to remove
-        // inexact concepts.
-        // We also need to disable TF/IDF on terms, and try to boost score only
-        // when the search match nearly all tokens of term's value field.
-        $params['body']['min_score'] = $this->options->getMinScore();
-        // No need to get any hits since we extract data from aggs
-        $params['body']['size'] = 0;
+                    ]
+                ],
+                // Arbitrary score low limit, we need find a more granular way to remove
+                // inexact concepts.
+                // We also need to disable TF/IDF on terms, and try to boost score only
+                // when the search match nearly all tokens of term's value field.
+                'min_score' => $this->options->getMinScore(),
+                // No need to get any hits since we extract data from aggs
+                'size' => 0
+            ]
+        ];
 
         $this->logger->debug('Sending search', $params['body']);
         $response = $this->client->search($params);
 
         // Extract concept paths from response
-        $concepts = array();
-        $buckets = \igorw\get_in($response, ['aggregations', 'dedup', 'buckets'], []);
+        $concepts = [];
+        $db_buckets = \igorw\get_in($response, ['aggregations', 'db', 'buckets'], []);
         $keys = array();
-        foreach ($buckets as $bucket) {
-            if (isset($bucket['key'])) {
-                $keys[] = $bucket['key'];
-                $concepts[] = new Concept($bucket['key']);
+        foreach ($db_buckets as $db_bucket) {
+            if (isset($db_bucket['key'])) {
+                $db = $db_bucket['key'];
+                $cp_buckets = \igorw\get_in($db_bucket, ['cp', 'buckets'], []);
+                foreach ($cp_buckets as $cp_bucket) {
+                    if (isset($cp_bucket['key'])) {
+                        $keys[] = $cp_bucket['key'];
+                        $concepts[] = new Concept($db, $cp_bucket['key']);
+                    }
+                }
             }
         }
 

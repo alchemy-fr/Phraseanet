@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 221);
+/******/ 	return __webpack_require__(__webpack_require__.s = 258);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -83,31 +83,123 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 /***/ }),
 
 /***/ 10:
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["e"] = makeString;
+/* harmony export (immutable) */ __webpack_exports__["a"] = copy;
+/* harmony export (immutable) */ __webpack_exports__["h"] = setPath;
+/* harmony export (immutable) */ __webpack_exports__["f"] = pushPath;
+/* harmony export (immutable) */ __webpack_exports__["d"] = getPath;
+/* harmony export (immutable) */ __webpack_exports__["b"] = deepExtend;
+/* harmony export (immutable) */ __webpack_exports__["g"] = regexEscape;
+/* harmony export (immutable) */ __webpack_exports__["c"] = escape;
+function makeString(object) {
+  if (object == null) return '';
+  /* eslint prefer-template: 0 */
+  return '' + object;
+}
+
+function copy(a, s, t) {
+  a.forEach(function (m) {
+    if (s[m]) t[m] = s[m];
+  });
+}
+
+function getLastOfPath(object, path, Empty) {
+  function cleanKey(key) {
+    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
+  }
+
+  function canNotTraverseDeeper() {
+    return !object || typeof object === 'string';
+  }
+
+  var stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
+  while (stack.length > 1) {
+    if (canNotTraverseDeeper()) return {};
+
+    var key = cleanKey(stack.shift());
+    if (!object[key] && Empty) object[key] = new Empty();
+    object = object[key];
+  }
+
+  if (canNotTraverseDeeper()) return {};
+  return {
+    obj: object,
+    k: cleanKey(stack.shift())
+  };
+}
+
+function setPath(object, path, newValue) {
+  var _getLastOfPath = getLastOfPath(object, path, Object),
+      obj = _getLastOfPath.obj,
+      k = _getLastOfPath.k;
+
+  obj[k] = newValue;
+}
+
+function pushPath(object, path, newValue, concat) {
+  var _getLastOfPath2 = getLastOfPath(object, path, Object),
+      obj = _getLastOfPath2.obj,
+      k = _getLastOfPath2.k;
+
+  obj[k] = obj[k] || [];
+  if (concat) obj[k] = obj[k].concat(newValue);
+  if (!concat) obj[k].push(newValue);
+}
+
+function getPath(object, path) {
+  var _getLastOfPath3 = getLastOfPath(object, path),
+      obj = _getLastOfPath3.obj,
+      k = _getLastOfPath3.k;
+
+  if (!obj) return undefined;
+  return obj[k];
+}
+
+function deepExtend(target, source, overwrite) {
+  /* eslint no-restricted-syntax: 0 */
+  for (var prop in source) {
+    if (prop in target) {
+      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
+      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
+        if (overwrite) target[prop] = source[prop];
+      } else {
+        deepExtend(target[prop], source[prop], overwrite);
+      }
+    } else {
+      target[prop] = source[prop];
+    }
+  }
+  return target;
+}
+
+function regexEscape(str) {
+  /* eslint no-useless-escape: 0 */
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+}
+
+/* eslint-disable */
+var _entityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
 };
+/* eslint-enable */
 
+function escape(data) {
+  if (typeof data === 'string') {
+    return data.replace(/[&<>"'\/]/g, function (s) {
+      return _entityMap[s];
+    });
+  }
+
+  return data;
+}
 
 /***/ }),
 
@@ -4634,7 +4726,7 @@ exports.default = ApplicationConfigService;
   }
 }());
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(10)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
 
 /***/ }),
 
@@ -4688,7 +4780,7 @@ var LocaleService = function () {
         }
 
         if (options.locale === undefined) {
-            options.locale = 'fr';
+            options.locale = (0, _jquery2.default)('html').attr('lang') || 'fr';
         }
         this.locale = options.locale;
         this.isCached = false;
@@ -4988,427 +5080,12 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 221:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-
-var _bootstrap = __webpack_require__(222);
-
-var _bootstrap2 = _interopRequireDefault(_bootstrap);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var lightboxMobileApplication = {
-    bootstrap: _bootstrap2.default
-};
-
-if (typeof window !== 'undefined') {
-    window.lightboxMobileApplication = lightboxMobileApplication;
-}
-
-/*resize of PDF */
-$(window).on("load resize ", function (e) {
-    if ($('.pdf-iframe').length > 0) {
-        var pdfHeight = $('.pdf-iframe').width() / 0.707;
-        $('.pdf-iframe').css('height', pdfHeight);
-    }
-});
-/*resize of VIDEO */
-$(window).on("load resize ", function (e) {
-    if ($('.video-iframe').length > 0) {
-
-        var $sel = $('.center-image');
-        var $window = $(window).height();
-
-        // V is for "video" ; K is for "container" ; N is for "new"
-        var VH = $('[name=videoHeight]').val();
-        var VW = $('[name=videoWidth]').val();
-        var KW = $sel.width();
-        var KH = $sel.height();
-
-        if ($window <= 375) {
-            KH = 150;
-        } else {
-            if ($window > 375 && $window <= 480) {
-                KH = 200;
-            }
-            if ($window > 480 && $window <= 640) {
-                KH = 300;
-            }
-
-            if ($window > 640 && $window <= 767) {
-                KH = 400;
-            }
-            if ($window > 767) {
-                KH = 550;
-            }
-        }
-
-        var NW, NH;
-        if ((NH = VH / VW * (NW = KW)) > KH) {
-            // try to fit exact horizontally, adjust vertically
-            // too bad... new height overflows container height
-            NW = VW / VH * (NH = KH); // so fit exact vertically, adjust horizontally
-        }
-        $(".video-iframe", $sel).css('width', NW).css('height', NH);
-    }
-});
-
-module.exports = lightboxMobileApplication;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-
-/***/ 222:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-// import lightbox from './../components/lightbox/index';
-// import mainMenu from './../components/mainMenu';
-
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _configService = __webpack_require__(16);
-
-var _configService2 = _interopRequireDefault(_configService);
-
-var _locale = __webpack_require__(20);
-
-var _locale2 = _interopRequireDefault(_locale);
-
-var _config = __webpack_require__(223);
-
-var _config2 = _interopRequireDefault(_config);
-
-var _emitter = __webpack_require__(15);
-
-var _emitter2 = _interopRequireDefault(_emitter);
-
-var _lodash = __webpack_require__(4);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-__webpack_require__(14);
-__webpack_require__(19);
-
-var Bootstrap = function () {
-    function Bootstrap(userConfig) {
-        var _this = this;
-
-        _classCallCheck(this, Bootstrap);
-
-        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
-
-        this.appEvents = new _emitter2.default();
-        this.configService = new _configService2.default(configuration);
-        this.validatorLoaded = false;
-        this.localeService = new _locale2.default({
-            configService: this.configService
-        });
-
-        this.localeService.fetchTranslations().then(function () {
-            _this.onConfigReady();
-        });
-
-        return this;
-    }
-
-    _createClass(Bootstrap, [{
-        key: 'onConfigReady',
-        value: function onConfigReady() {
-            var _this2 = this;
-
-            this.appServices = {
-                configService: this.configService,
-                localeService: this.localeService,
-                appEvents: this.appEvents
-            };
-
-            window.bodySize = {
-                x: 0,
-                y: 0
-            };
-
-            /**
-             * add components
-             */
-
-            (0, _jquery2.default)(document).ready(function () {
-                // let $body = $('body');
-                // window.bodySize.y = $body.height();
-                // window.bodySize.x = $body.width();
-                //
-                // this.appLightbox = lightbox(this.appServices);
-                // this.appLightbox.initialize({$container: $body});
-                //mainMenu(this.appServices).initialize({$container: $body});
-                _this2.mobileValidator();
-                // this.isReleasable = this.configService.get('releasable');
-                //
-                // if (this.isReleasable !== null) {
-                //     this.appLightbox.setReleasable(this.isReleasable);
-                // }
-            });
-        }
-    }, {
-        key: 'mobileValidator',
-        value: function mobileValidator() {
-            var _this4 = this;
-
-            display_basket();
-
-            /*Get status before send validation*/
-            function _getReseaseStatus(el) {
-                _jquery2.default.ajax({
-                    url: '/lightbox/ajax/GET_ELEMENTS/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
-                    dataType: 'json',
-                    error: function error(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    timeout: function timeout(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    success: function success(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                        if (data.datas) {
-                            if (data.datas) {
-                                if (data.datas.counts.nul == 0) {
-                                    _setRelease((0, _jquery2.default)(this));
-                                } else {
-                                    console.log(data.datas.counts);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_accepted").html(data.datas.counts.yes);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_refused").html(data.datas.counts.no);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_null").html(data.datas.counts.nul);
-                                    (0, _jquery2.default)("#FeedbackRelease").modal("show");
-                                }
-                            }
-                        }
-
-                        return;
-                    }
-                });
-            }
-
-            /*Send validation*/
-            function _setRelease(el) {
-                var _this3 = this;
-
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_RELEASE/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
-                    dataType: 'json',
-                    error: function error(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    timeout: function timeout(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    success: function success(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                        if (data.datas) {
-                            //      alert(data.datas);
-                            window.location.href = "/lightbox";
-                        }
-                        if (!data.error) {
-                            _this3.isReleasable = false;
-                            //this.appLightbox.setReleasable(this.isReleasable);
-                        }
-
-                        return;
-                    }
-                });
-            };
-
-            (0, _jquery2.default)('body').on('touchstart click', '.confirm_report', function (event) {
-                event.preventDefault();
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                _getReseaseStatus($el);
-
-                return false;
-            });
-            (0, _jquery2.default)('body').on('touchstart click', '#validate-release', function (event) {
-                event.preventDefault();
-                (0, _jquery2.default)("#FeedbackRelease").modal("hide");
-                _setRelease((0, _jquery2.default)(_this4));
-                console.log('validation is done');
-
-                return false;
-            });
-
-            (0, _jquery2.default)('body').on('touchstart click', '.agreement_radio', function (event) {
-                event.preventDefault();
-                //$('.agreement_radio').on('mousedown', (event) => {
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                var sselcont_id = $el.attr('for').split('_').pop();
-                var agreement = (0, _jquery2.default)('#' + $el.attr('for')).val() === 'yes' ? '1' : '-1';
-
-                _jquery2.default.mobile.loading();
-
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' + sselcont_id + '/',
-                    dataType: 'json',
-                    data: {
-                        agreement: agreement
-                    },
-                    error: function error(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    timeout: function timeout(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    success: function success(datas) {
-                        if (!datas.error) {
-                            if (agreement === 1) {
-                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('disagree').addClass('agree');
-                            } else {
-                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('agree').addClass('disagree');
-                            }
-                            _jquery2.default.mobile.loading();
-                            if (datas.error) {
-                                alert(datas.datas);
-                                return;
-                            }
-                            _this4.isReleasable = datas.release;
-                            //this.appLightbox.setReleasable(this.isReleasable);
-                            window.location.reload();
-                        } else {
-                            console.log(datas.datas);
-                        }
-                        return;
-                    }
-                });
-                //return false;
-            });
-
-            (0, _jquery2.default)('body').on('touchstart click', '.note_area_validate', function (event) {
-
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                var sselcont_id = $el.closest('form').find('input[name="sselcont_id"]').val();
-
-                _jquery2.default.mobile.loading();
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
-                    dataType: 'json',
-                    data: {
-                        note: (0, _jquery2.default)('#note_form_' + sselcont_id).find('textarea').val()
-                    },
-                    error: function error(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    timeout: function timeout(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    success: function success(datas) {
-                        _jquery2.default.mobile.loading();
-                        if (datas.error) {
-                            console.log(datas.datas);
-                            return;
-                        }
-
-                        (0, _jquery2.default)('#notes_' + sselcont_id).empty().append(datas.datas);
-                        window.location.reload();
-                        return;
-                    }
-                });
-                return false;
-            });
-
-            function display_basket() {
-                var sc_wrapper = (0, _jquery2.default)('#sc_wrapper');
-
-                (0, _jquery2.default)('.basket_element', sc_wrapper).parent().bind('click', function (event) {
-                    scid_click(event, this);
-                    adjust_visibility(this);
-                    return false;
-                });
-
-                (0, _jquery2.default)('.agree_button, .disagree_button', sc_wrapper).bind('click', function (event) {
-
-                    var sselcont_id = (0, _jquery2.default)(this).closest('.basket_element').attr('id').split('_').pop();
-
-                    var agreement = (0, _jquery2.default)(this).hasClass('agree_button') ? '1' : '-1';
-
-                    set_agreement(event, (0, _jquery2.default)(this), sselcont_id, agreement);
-                    return false;
-                }).addClass('clickable');
-
-                var n = (0, _jquery2.default)('.basket_element', sc_wrapper).length;
-                (0, _jquery2.default)('#sc_container').width(n * (0, _jquery2.default)('.basket_element_wrapper:first', sc_wrapper).outerWidth() + 1);
-            }
-
-            this.validatorLoaded = true;
-        }
-    }]);
-
-    return Bootstrap;
-}();
-
-var bootstrap = function bootstrap(userConfig) {
-    return new Bootstrap(userConfig);
-};
-
-exports.default = bootstrap;
-
-/***/ }),
-
-/***/ 223:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var defaultConfig = {
-    locale: 'fr',
-    basePath: '/',
-    translations: '/prod/language/'
-};
-
-exports.default = defaultConfig;
-
-/***/ }),
-
 /***/ 24:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(27);
@@ -5831,8 +5508,8 @@ var I18n = function (_EventEmitter) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__EventEmitter__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__EventEmitter__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -5979,15 +5656,411 @@ var ResourceStore = function (_EventEmitter) {
 
 /***/ }),
 
+/***/ 258:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+var _bootstrap = __webpack_require__(259);
+
+var _bootstrap2 = _interopRequireDefault(_bootstrap);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var lightboxMobileApplication = {
+    bootstrap: _bootstrap2.default
+};
+
+if (typeof window !== 'undefined') {
+    window.lightboxMobileApplication = lightboxMobileApplication;
+}
+
+/*resize of PDF */
+$(window).on("load resize ", function (e) {
+    if ($('.pdf-iframe').length > 0) {
+        var pdfHeight = $('.pdf-iframe').width() / 0.707;
+        $('.pdf-iframe').css('height', pdfHeight);
+    }
+});
+/*resize of VIDEO */
+$(window).on("load resize ", function (e) {
+    if ($('.video-iframe').length > 0) {
+
+        var $sel = $('.center-image');
+        var $window = $(window).height();
+
+        // V is for "video" ; K is for "container" ; N is for "new"
+        var VH = $('[name=videoHeight]').val();
+        var VW = $('[name=videoWidth]').val();
+        var KW = $sel.width();
+        var KH = $sel.height();
+
+        if ($window <= 375) {
+            KH = 150;
+        } else {
+            if ($window > 375 && $window <= 480) {
+                KH = 200;
+            }
+            if ($window > 480 && $window <= 640) {
+                KH = 300;
+            }
+
+            if ($window > 640 && $window <= 767) {
+                KH = 400;
+            }
+            if ($window > 767) {
+                KH = 550;
+            }
+        }
+
+        var NW, NH;
+        if ((NH = VH / VW * (NW = KW)) > KH) {
+            // try to fit exact horizontally, adjust vertically
+            // too bad... new height overflows container height
+            NW = VW / VH * (NH = KH); // so fit exact vertically, adjust horizontally
+        }
+        $(".video-iframe", $sel).css('width', NW).css('height', NH);
+    }
+});
+
+module.exports = lightboxMobileApplication;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+
+/***/ 259:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+// import lightbox from './../components/lightbox/index';
+// import mainMenu from './../components/mainMenu';
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _configService = __webpack_require__(16);
+
+var _configService2 = _interopRequireDefault(_configService);
+
+var _locale = __webpack_require__(20);
+
+var _locale2 = _interopRequireDefault(_locale);
+
+var _config = __webpack_require__(260);
+
+var _config2 = _interopRequireDefault(_config);
+
+var _emitter = __webpack_require__(15);
+
+var _emitter2 = _interopRequireDefault(_emitter);
+
+var _lodash = __webpack_require__(4);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+__webpack_require__(14);
+__webpack_require__(19);
+
+var Bootstrap = function () {
+    function Bootstrap(userConfig) {
+        var _this = this;
+
+        _classCallCheck(this, Bootstrap);
+
+        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
+
+        this.appEvents = new _emitter2.default();
+        this.configService = new _configService2.default(configuration);
+        this.validatorLoaded = false;
+        this.localeService = new _locale2.default({
+            configService: this.configService
+        });
+
+        this.localeService.fetchTranslations().then(function () {
+            _this.onConfigReady();
+        });
+
+        return this;
+    }
+
+    _createClass(Bootstrap, [{
+        key: 'onConfigReady',
+        value: function onConfigReady() {
+            var _this2 = this;
+
+            this.appServices = {
+                configService: this.configService,
+                localeService: this.localeService,
+                appEvents: this.appEvents
+            };
+
+            window.bodySize = {
+                x: 0,
+                y: 0
+            };
+
+            /**
+             * add components
+             */
+
+            (0, _jquery2.default)(document).ready(function () {
+                // let $body = $('body');
+                // window.bodySize.y = $body.height();
+                // window.bodySize.x = $body.width();
+                //
+                // this.appLightbox = lightbox(this.appServices);
+                // this.appLightbox.initialize({$container: $body});
+                //mainMenu(this.appServices).initialize({$container: $body});
+                _this2.mobileValidator();
+                // this.isReleasable = this.configService.get('releasable');
+                //
+                // if (this.isReleasable !== null) {
+                //     this.appLightbox.setReleasable(this.isReleasable);
+                // }
+            });
+        }
+    }, {
+        key: 'mobileValidator',
+        value: function mobileValidator() {
+            var _this4 = this;
+
+            display_basket();
+
+            /*Get status before send validation*/
+            function _getReseaseStatus(el) {
+                _jquery2.default.ajax({
+                    url: '/lightbox/ajax/GET_ELEMENTS/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
+                    dataType: 'json',
+                    error: function error(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    timeout: function timeout(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    success: function success(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                        if (data.datas) {
+                            if (data.datas) {
+                                if (data.datas.counts.nul == 0) {
+                                    _setRelease((0, _jquery2.default)(this));
+                                } else {
+                                    console.log(data.datas.counts);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_accepted").html(data.datas.counts.yes);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_refused").html(data.datas.counts.no);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_null").html(data.datas.counts.nul);
+                                    (0, _jquery2.default)("#FeedbackRelease").modal("show");
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+                });
+            }
+
+            /*Send validation*/
+            function _setRelease(el) {
+                var _this3 = this;
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_RELEASE/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
+                    dataType: 'json',
+                    error: function error(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    timeout: function timeout(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    success: function success(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                        if (data.datas) {
+                            //      alert(data.datas);
+                            window.location.href = "/lightbox";
+                        }
+                        if (!data.error) {
+                            _this3.isReleasable = false;
+                            //this.appLightbox.setReleasable(this.isReleasable);
+                        }
+
+                        return;
+                    }
+                });
+            };
+
+            (0, _jquery2.default)('body').on('touchstart click', '.confirm_report', function (event) {
+                event.preventDefault();
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                _getReseaseStatus($el);
+
+                return false;
+            });
+            (0, _jquery2.default)('body').on('touchstart click', '#validate-release', function (event) {
+                event.preventDefault();
+                (0, _jquery2.default)("#FeedbackRelease").modal("hide");
+                _setRelease((0, _jquery2.default)(_this4));
+                console.log('validation is done');
+
+                return false;
+            });
+
+            (0, _jquery2.default)('body').on('touchstart click', '.agreement_radio', function (event) {
+                event.preventDefault();
+                //$('.agreement_radio').on('mousedown', (event) => {
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                var sselcont_id = $el.attr('for').split('_').pop();
+                var agreement = (0, _jquery2.default)('#' + $el.attr('for')).val() === 'yes' ? '1' : '-1';
+
+                _jquery2.default.mobile.loading();
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' + sselcont_id + '/',
+                    dataType: 'json',
+                    data: {
+                        agreement: agreement
+                    },
+                    error: function error(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    timeout: function timeout(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    success: function success(datas) {
+                        if (!datas.error) {
+                            if (agreement === 1) {
+                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('disagree').addClass('agree');
+                            } else {
+                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('agree').addClass('disagree');
+                            }
+                            _jquery2.default.mobile.loading();
+                            if (datas.error) {
+                                alert(datas.datas);
+                                return;
+                            }
+                            _this4.isReleasable = datas.release;
+                            //this.appLightbox.setReleasable(this.isReleasable);
+                            window.location.reload();
+                        } else {
+                            console.log(datas.datas);
+                        }
+                        return;
+                    }
+                });
+                //return false;
+            });
+
+            (0, _jquery2.default)('body').on('touchstart click', '.note_area_validate', function (event) {
+
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                var sselcont_id = $el.closest('form').find('input[name="sselcont_id"]').val();
+
+                _jquery2.default.mobile.loading();
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
+                    dataType: 'json',
+                    data: {
+                        note: (0, _jquery2.default)('#note_form_' + sselcont_id).find('textarea').val()
+                    },
+                    error: function error(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    timeout: function timeout(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    success: function success(datas) {
+                        _jquery2.default.mobile.loading();
+                        if (datas.error) {
+                            console.log(datas.datas);
+                            return;
+                        }
+
+                        (0, _jquery2.default)('#notes_' + sselcont_id).empty().append(datas.datas);
+                        window.location.reload();
+                        return;
+                    }
+                });
+                return false;
+            });
+
+            function display_basket() {
+                var sc_wrapper = (0, _jquery2.default)('#sc_wrapper');
+
+                (0, _jquery2.default)('.basket_element', sc_wrapper).parent().bind('click', function (event) {
+                    scid_click(event, this);
+                    adjust_visibility(this);
+                    return false;
+                });
+
+                (0, _jquery2.default)('.agree_button, .disagree_button', sc_wrapper).bind('click', function (event) {
+
+                    var sselcont_id = (0, _jquery2.default)(this).closest('.basket_element').attr('id').split('_').pop();
+
+                    var agreement = (0, _jquery2.default)(this).hasClass('agree_button') ? '1' : '-1';
+
+                    set_agreement(event, (0, _jquery2.default)(this), sselcont_id, agreement);
+                    return false;
+                }).addClass('clickable');
+
+                var n = (0, _jquery2.default)('.basket_element', sc_wrapper).length;
+                (0, _jquery2.default)('#sc_container').width(n * (0, _jquery2.default)('.basket_element_wrapper:first', sc_wrapper).outerWidth() + 1);
+            }
+
+            this.validatorLoaded = true;
+        }
+    }]);
+
+    return Bootstrap;
+}();
+
+var bootstrap = function bootstrap(userConfig) {
+    return new Bootstrap(userConfig);
+};
+
+exports.default = bootstrap;
+
+/***/ }),
+
 /***/ 26:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__postProcessor__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__compatibility_v1__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6282,6 +6355,25 @@ var Translator = function (_EventEmitter) {
 }(__WEBPACK_IMPORTED_MODULE_1__EventEmitter__["a" /* default */]);
 
 /* harmony default export */ __webpack_exports__["a"] = (Translator);
+
+/***/ }),
+
+/***/ 260:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var defaultConfig = {
+    locale: 'fr',
+    basePath: '/',
+    translations: '/prod/language/'
+};
+
+exports.default = defaultConfig;
 
 /***/ }),
 
@@ -6590,7 +6682,7 @@ var PluralResolver = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(3);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -6867,9 +6959,9 @@ var Logger = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__EventEmitter__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -7162,7 +7254,7 @@ var Connector = function (_EventEmitter) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -9567,11 +9659,39 @@ function stubFalse() {
 
 module.exports = merge;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(10)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
 
 /***/ }),
 
 /***/ 5:
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
+/***/ 6:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9638,34 +9758,6 @@ var EventEmitter = function () {
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (EventEmitter);
-
-/***/ }),
-
-/***/ 6:
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
 
 /***/ }),
 
@@ -22062,128 +22154,36 @@ var ReactiveTest = Rx.ReactiveTest = {
 
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)(module), __webpack_require__(6), __webpack_require__(22)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)(module), __webpack_require__(5), __webpack_require__(22)))
 
 /***/ }),
 
-/***/ 9:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ 8:
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["e"] = makeString;
-/* harmony export (immutable) */ __webpack_exports__["a"] = copy;
-/* harmony export (immutable) */ __webpack_exports__["h"] = setPath;
-/* harmony export (immutable) */ __webpack_exports__["f"] = pushPath;
-/* harmony export (immutable) */ __webpack_exports__["d"] = getPath;
-/* harmony export (immutable) */ __webpack_exports__["b"] = deepExtend;
-/* harmony export (immutable) */ __webpack_exports__["g"] = regexEscape;
-/* harmony export (immutable) */ __webpack_exports__["c"] = escape;
-function makeString(object) {
-  if (object == null) return '';
-  /* eslint prefer-template: 0 */
-  return '' + object;
-}
-
-function copy(a, s, t) {
-  a.forEach(function (m) {
-    if (s[m]) t[m] = s[m];
-  });
-}
-
-function getLastOfPath(object, path, Empty) {
-  function cleanKey(key) {
-    return key && key.indexOf('###') > -1 ? key.replace(/###/g, '.') : key;
-  }
-
-  function canNotTraverseDeeper() {
-    return !object || typeof object === 'string';
-  }
-
-  var stack = typeof path !== 'string' ? [].concat(path) : path.split('.');
-  while (stack.length > 1) {
-    if (canNotTraverseDeeper()) return {};
-
-    var key = cleanKey(stack.shift());
-    if (!object[key] && Empty) object[key] = new Empty();
-    object = object[key];
-  }
-
-  if (canNotTraverseDeeper()) return {};
-  return {
-    obj: object,
-    k: cleanKey(stack.shift())
-  };
-}
-
-function setPath(object, path, newValue) {
-  var _getLastOfPath = getLastOfPath(object, path, Object),
-      obj = _getLastOfPath.obj,
-      k = _getLastOfPath.k;
-
-  obj[k] = newValue;
-}
-
-function pushPath(object, path, newValue, concat) {
-  var _getLastOfPath2 = getLastOfPath(object, path, Object),
-      obj = _getLastOfPath2.obj,
-      k = _getLastOfPath2.k;
-
-  obj[k] = obj[k] || [];
-  if (concat) obj[k] = obj[k].concat(newValue);
-  if (!concat) obj[k].push(newValue);
-}
-
-function getPath(object, path) {
-  var _getLastOfPath3 = getLastOfPath(object, path),
-      obj = _getLastOfPath3.obj,
-      k = _getLastOfPath3.k;
-
-  if (!obj) return undefined;
-  return obj[k];
-}
-
-function deepExtend(target, source, overwrite) {
-  /* eslint no-restricted-syntax: 0 */
-  for (var prop in source) {
-    if (prop in target) {
-      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
-      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
-        if (overwrite) target[prop] = source[prop];
-      } else {
-        deepExtend(target[prop], source[prop], overwrite);
-      }
-    } else {
-      target[prop] = source[prop];
-    }
-  }
-  return target;
-}
-
-function regexEscape(str) {
-  /* eslint no-useless-escape: 0 */
-  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-}
-
-/* eslint-disable */
-var _entityMap = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': '&quot;',
-  "'": '&#39;',
-  "/": '&#x2F;'
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
 };
-/* eslint-enable */
 
-function escape(data) {
-  if (typeof data === 'string') {
-    return data.replace(/[&<>"'\/]/g, function (s) {
-      return _entityMap[s];
-    });
-  }
-
-  return data;
-}
 
 /***/ })
 

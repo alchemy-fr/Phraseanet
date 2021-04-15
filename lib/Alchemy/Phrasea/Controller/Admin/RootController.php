@@ -11,6 +11,9 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
+use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitEvent;
+use Alchemy\Phrasea\Core\Event\Record\Structure\StatusBitUpdatedEvent;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Status\StatusStructureProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -234,6 +237,8 @@ class RootController extends Controller
             $error = true;
         }
 
+        $this->dispatchEvent(RecordStructureEvents::STATUS_BIT_DELETED, new StatusBitUpdatedEvent($databox, $bit, []));
+
         return $this->app->json(['success' => !$error]);
     }
     
@@ -350,9 +355,16 @@ class RootController extends Controller
             }
         }
 
+        $this->dispatchEvent(RecordStructureEvents::STATUS_BIT_UPDATED, new StatusBitUpdatedEvent($databox, $bit, []));
+
         return $this->app->redirectPath('database_display_statusbit', ['databox_id' => $databox_id, 'success' => 1]);
     }
-    
+
+    private function dispatchEvent($eventName, StatusBitEvent $event = null)
+    {
+        $this->app['dispatcher']->dispatch($eventName, $event);
+    }
+
     /**
      * @param string $section
      * @return array

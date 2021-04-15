@@ -25,7 +25,7 @@
         <table width="100%" bgcolor="#f2f2f2;" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0; width:100% !important; line-height: 120% !important;background-color:#f2f2f2;">
             <tr>
                 <td height="40" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; font-weight:normal; color:#999999;line-height:15px;">
-                    {{ 'Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.' | trans }}
+                    {{ 'Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.' | trans({}, "messages", emailLocale) }}
                 </td>
             </tr>
             <tr>
@@ -112,7 +112,7 @@
                                     {% if expiration is not none %}
                                     <tr>
                                         <td height="60" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:13px; line-height:16px; color:#999999;">
-                                            {{ 'This link is valid until' | trans  }} {{ app['date-formatter'].getDate(expiration) }} {{ app['date-formatter'].getTime(expiration) }}
+                                            {{ 'This link is valid until' | trans({}, "messages", emailLocale)  }} {{ app['date-formatter'].getDate(expiration) }} {{ app['date-formatter'].getTime(expiration) }}
                                         </td>
                                     </tr>
                                     {% endif %}
@@ -122,7 +122,7 @@
                         </tr>
                         <tr>
                             <td height="60" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:13px; font-style:italic; color:#dc4848;">
-                                {{ 'Le contenu de cet email est confidentiel, ne le divulguez pas.' | trans }}
+                                {{ 'Le contenu de cet email est confidentiel, ne le divulguez pas.' | trans({}, "messages", emailLocale) }}
                             </td>
                         </tr>
                     </table>
@@ -131,13 +131,13 @@
             </tr>
             <tr>
                 <td height="50" valign="center" align="center" style="font-family: Helvetica, Tahoma, Arial, sans-serif; font-size:12px; line-height: 15px; color:#999999;">
-                    {{ 'Message automatique de Phraseanet' | trans }}<br />
+                    {{ 'Message automatique de Phraseanet' | trans({}, "messages", emailLocale) }}<br />
                     {% set link %}
                     <a href="{{ phraseanetURL }}" target="_blank" style="font-weight:bold; cursor:pointer; color:#999999;">
                         {{ phraseanetTitle }}
                     </a>
                     {% endset %}
-                    {% trans with {'%link%' : link} %}Pour gérer l'envoi d'email automatique, connectez-vous à %link%{% endtrans %}
+                    {% trans with {'%link%' : link} from 'messages' into emailLocale %}Pour gérer l'envoi d'email automatique, connectez-vous à %link%{% endtrans %}
                 </td>
             </tr>
         </table>

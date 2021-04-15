@@ -24,6 +24,6 @@ class WebhookPublisher implements WebhookPublisherInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::WEBHOOK_QUEUE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::WEBHOOK_TYPE);
     }
 }
