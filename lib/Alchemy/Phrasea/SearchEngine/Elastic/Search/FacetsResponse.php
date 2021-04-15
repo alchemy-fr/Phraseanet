@@ -56,7 +56,7 @@ class FacetsResponse
                     if($response['aggregations'][$name . '#empty']['doc_count'] > 0) {  // don't add a facet for 0 results
                         $aggregation['buckets'][] = [
                             'key'       => '_empty_',
-                            'value'     => $this->translator->trans('unset_field_facet_label'),   // special homemade prop to display a human value instead of the key
+                            'value'     => sprintf($this->translator->trans('prod:workzone:facetstab:unset_field_facet_label_(%s)'), $name),   // special homemade prop to display a human value instead of the key
                             'doc_count' => $response['aggregations'][$name . '#empty']['doc_count']
                         ];
                     }

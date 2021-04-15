@@ -761,25 +761,16 @@ class ElasticSearchEngine implements SearchEngineInterface
                 ];
                 $aggs[$name] = AggregationHelper::wrapPrivateFieldAggregation($field, $agg);
 
-                $aggs[$name.'#empty'] = AggregationHelper::wrapPrivateFieldAggregation(
-                    $field,
-                    [
-                        'missing' => [
-                            'field' => $field->getIndexField(true),
+                if($options->getIncludeUnsetFieldFacet() === true) {
+                    $aggs[$name . '#empty'] = AggregationHelper::wrapPrivateFieldAggregation(
+                        $field,
+                        [
+                            'missing' => [
+                                'field' => $field->getIndexField(true),
+                            ]
                         ]
-                    ]
-                );
-/*
-                $aggs[$name.'#notempty'] = AggregationHelper::wrapPrivateFieldAggregation(
-                    $field,
-                    [
-                        'missing' => [
-                            'field' => $name
-                        ]
-                    ]
-                );
-*/
-
+                    );
+                }
             }
         }
 
