@@ -8,7 +8,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 
 class ExistsExpression extends Node
 {
-    const EXISTS_VALUE = '_any_';
+    const EXISTS_VALUE = '_filled_';
 
     private $key;
     private $value;
