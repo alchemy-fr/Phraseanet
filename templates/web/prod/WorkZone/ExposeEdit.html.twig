@@ -118,6 +118,7 @@
                                 class="publication-field">
                             <option value="">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
                             <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                            <option value="grid" {% if publication.layout == 'grid'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Grid' | trans }}</option>
                             <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Mapbox' | trans }}</option>
                             <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Download' | trans }}</option>
                         </select>
