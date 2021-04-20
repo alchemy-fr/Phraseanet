@@ -177,7 +177,7 @@ class ThesaurusController extends Controller
         $zzz = $this->render('prod/Thesaurus/droppedrecords.html.twig', $twp);
 
         return $this->app->json([
-            'dlg_title'   => sprintf("editing %s record(s)", $records->received()->count()),
+            'dlg_title'   => $this->app->trans('thesaurus::edit editing %count% record(s)', ['%count%'=> $records->received()->count()]),
             'dlg_content' => $this->render('prod/Thesaurus/droppedrecords.html.twig', $twp),
             'rec_refs'    => $recRefs,
             'commit_url'  => $this->app->url('prod_edit_applyJSAction')
