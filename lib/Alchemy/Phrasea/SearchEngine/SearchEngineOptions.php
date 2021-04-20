@@ -704,6 +704,7 @@ class SearchEngineOptions
             },
             'first_result' => $optionSetter('setFirstResult'),
             'max_results' => $optionSetter('setMaxResults'),
+            'include_unset_field_facet' => $optionSetter('setIncludeUnsetFieldFacet'),
         ];
     }
 
