@@ -152,7 +152,7 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptDL" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                                    {{ "By checking this box, you accept %beginning_link% Terms of Use %end_link%" | trans({'%beginning_link%' : beginning_link, '%end_link%' : end_link}) }}
                                 </label>
                             </div>
                         {% endif %}
@@ -182,7 +182,7 @@
                                 {% if my_email != '' %}
                                         <label class="checkbox">
                                             <input type="checkbox" name="reading_confirm" value="1" />
-                                            {% trans with {'%my_email%' : my_email} %}Recevoir un accuse de reception a %my_email%{% endtrans %}
+                                            {{ "Recevoir un accuse de reception a %my_email%" | trans({'%my_email%' : my_email}) }}
                                         </label>
                                 {% else %}
                                     <label class="checkbox">
@@ -240,7 +240,7 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptMail" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                                    {{ "By checking this box, you accept %beginning_link% Terms of Use %end_link%" | trans({'%beginning_link%' : beginning_link, '%end_link%' : end_link}) }}
                                 </label>
                             </div>
                         {% endif %}
@@ -260,16 +260,16 @@
                         <div class='well-small'>
                             {% set docs_orderable = values.available %}
                                 {% if docs_orderable <= 1 %}
-                                    {% trans %}Un document commande{% endtrans %}
+                                    {{ "Un document commande" | trans() }}
                                 {% else %}
-                                    {% trans with {'%docs_orderable%' : docs_orderable} %}%docs_orderable% documents commandes{% endtrans %}
+                                    {{ "%docs_orderable% documents commandes" | trans({'%docs_orderable%' : docs_orderable}) }}
                                 {% endif %}
                             {% set docs_not_orderable = values.total - values.available %}
                             {% if docs_not_orderable > 0%}
                                 {% if docs_not_orderable == 1 %}
-                                    {% trans %}Un document ne peut etre commande{% endtrans %}
+                                    {{ "Un document ne peut etre commande" | trans() }}
                                 {% else %}
-                                    {% trans with {'%docs_not_orderable%' : docs_not_orderable} %}%docs_not_orderable% documents ne peuvent pas etre commandes{% endtrans %}
+                                    {{ "%docs_not_orderable% documents ne peuvent pas etre commandes" | trans({'%docs_not_orderable%' : docs_not_orderable}) }}
                                 {% endif %}
                             {% endif %}
                             {% if values.refused|length > 0 %}
@@ -393,7 +393,7 @@
                                 <input type="checkbox" name="TOU_accept" id="TOU_acceptOrder" value="1"  />
                                 {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                 {% set end_link = '</a>' %}
-                                {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                                {{ "By checking this box, you accept %beginning_link% Terms of Use %end_link%" | trans({'%beginning_link%' : beginning_link, '%end_link%' : end_link}) }}
                             </label>
                         </div>
                     {% endif %}
@@ -474,7 +474,7 @@
                                     <input type="checkbox" name="TOU_accept" id="TOU_acceptFTP" value="1"  />
                                     {% set beginning_link = '<a href="' ~ path('get_tou') ~ '" class="TOUview">' %}
                                     {% set end_link = '</a>' %}
-                                    {% trans with {'%beginning_link%' : beginning_link, '%end_link%' : end_link} %}By checking this box, you accept %beginning_link% Terms of Use %end_link%{% endtrans %}
+                                    {{ "By checking this box, you accept %beginning_link% Terms of Use %end_link%" | trans({'%beginning_link%' : beginning_link, '%end_link%' : end_link}) }}
                                 </label>
                             </div>
                         {% endif %}

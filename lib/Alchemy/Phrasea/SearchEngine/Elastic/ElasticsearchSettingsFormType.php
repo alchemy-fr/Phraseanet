@@ -13,6 +13,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
 
@@ -24,7 +25,9 @@ class ElasticsearchSettingsFormType extends AbstractType
     /** @var ElasticsearchOptions  */
     private $esSettings;
 
-    public function  __construct(GlobalStructure $g, ElasticsearchOptions $settings)
+    private $translator;
+
+    public function  __construct(GlobalStructure $g, ElasticsearchOptions $settings, TranslatorInterface $translator)
     {
         $this->globalStructure = $g;
         $this->esSettings = $settings;
@@ -107,14 +110,15 @@ class ElasticsearchSettingsFormType extends AbstractType
             }
             $choices = array_merge(["not aggregated" => 0], $choices);  //  add this option always as first choice
             $aggs[$k] = [   // default value will be replaced by hardcoded tech fields & all databoxes fields
-                'label'              => $label,
+                'label'              =>  /** @Ignore */ $label,
                 'choices_as_values'  => true,
                 'choices' => $choices,
                 'attr'               => [
                     'class' => 'aggregate'
                 ],
                 'disabled'           => $disabled,
-                'help_message'       => $help     // todo : not displayed ?
+                'help_message'       =>  /** @Ignore */ $this->translator->trans($help),     // todo : not displayed ?
+                'translation_domain' => false
             ];
         };
 

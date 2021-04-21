@@ -46,12 +46,12 @@ class ExecutablesFormType extends AbstractType
         ]);
 
         $imagineDoc = '<a href="http://imagine.readthedocs.org/en/latest/usage/introduction.html">http://imagine.readthedocs.org/en/latest/usage/introduction.html</a>';
-        $help = $this->translator->trans('See documentation at %url%', ['%url%' => $imagineDoc]);
 
         $builder->add('imagine-driver', 'choice', [
-            'label'        => 'Imagine driver',
-            'help_message' => $help,
-            'choices'      => ['' => 'Auto', 'gmagick' => 'GraphicsMagick', 'imagick' => 'ImageMagick', 'gd' => 'GD']
+            'label'        => $this->translator->trans('Imagine driver'),
+            'help_message' => /** @Ignore */ $this->translator->trans('See documentation at %url%', ['%url%' => $imagineDoc]),
+            'choices'      => ['' => 'Auto', 'gmagick' => 'GraphicsMagick', 'imagick' => 'ImageMagick', 'gd' => 'GD'],
+            'translation_domain' => false
         ]);
 
         $builder->add('ffmpeg-threads', 'integer', [
