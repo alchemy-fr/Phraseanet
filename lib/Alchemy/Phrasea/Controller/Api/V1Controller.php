@@ -3020,16 +3020,12 @@ class V1Controller extends Controller
             $ret = [ 'success' => true ];
         }
         catch (AccountException $exception) {
-            /** @Ignore */
-            $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
+            $ret = [ 'success' => false, 'message' => $exception->getMessage() ];
         }
 
         return Result::create($request, $ret)->createResponse();
     }
 
-    /**
-     * @Ignore
-     */
     public function updateCurrentUserPasswordAction(Request $request)
     {
         $service = $this->getAccountService();
@@ -3047,8 +3043,8 @@ class V1Controller extends Controller
                 $service->updatePassword($command, null);
                 $ret = ['success' => true];
             } catch (AccountException $exception) {
-                /** @Ignore */
-                $ret = [ 'success' => false, 'message' => $this->app->trans($exception->getMessage()) ];
+
+                $ret = [ 'success' => false, 'message' => $exception->getMessage() ];
             }
         } else {
             $ret = [ 'success' => false, 'message' => (string) $form->getErrorsAsString() ];

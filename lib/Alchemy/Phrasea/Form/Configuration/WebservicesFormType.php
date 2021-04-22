@@ -35,11 +35,10 @@ class WebservicesFormType extends AbstractType
             'label'       => 'Geonames server address',
         ]);
 
-        $help = $this->translator->trans('See documentation at %url%', ['%url%' => $recaptchaDoc]);
-
         $builder->add('captchas-enabled', 'checkbox', [
             'label'        => 'Use recaptcha API',
-            'help_message' => $help
+            'help_message' => /** @Ignore */ $this->translator->trans('See documentation at %url%', ['%url%' => $recaptchaDoc]),
+            'translation_domain' => false
         ]);
         $builder->add('recaptcha-public-key', 'text', [
             'label'       => 'Recaptcha public key',
