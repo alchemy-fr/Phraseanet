@@ -12,7 +12,13 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use JMS\TranslationBundle\Annotation\Ignore;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -38,64 +44,64 @@ class ElasticsearchSettingsFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('host', 'text', [
+            ->add('host', TextType::class, [
                 'label' => 'ElasticSearch server host',
             ])
-            ->add('port', 'integer', [
+            ->add('port', IntegerType::class, [
                 'label' => 'ElasticSearch service port',
                 'constraints' => new Range(['min' => 1, 'max' => 65535]),
             ])
-            ->add('indexName', 'text', [
+            ->add('indexName', TextType::class, [
                 'label' => 'ElasticSearch index name',
                 'constraints' => new NotBlank(),
                 'attr' =>['data-class'=>'inline']
             ])
-            ->add('esSettingsDropIndexButton', 'button', [
+            ->add('esSettingsDropIndexButton', ButtonType::class, [
                 'label' => "Drop index",
                 'attr' => [
                     'data-id' => 'esSettingsDropIndexButton',
                     'class' => 'btn btn-danger'
                 ]
             ])
-            ->add('esSettingsCreateIndexButton', 'button', [
+            ->add('esSettingsCreateIndexButton', ButtonType::class, [
                 'label' => "Create index",
                 'attr' => ['data-id' => "esSettingsCreateIndexButton",
                            'class' => 'btn btn-success'
                 ]
             ])
-            ->add('shards', 'integer', [
+            ->add('shards', IntegerType::class, [
                 'label' => 'Number of shards',
                 'constraints' => new Range(['min' => 1]),
             ])
-            ->add('replicas', 'integer', [
+            ->add('replicas', IntegerType::class, [
                 'label' => 'Number of replicas',
                 'constraints' => new Range(['min' => 0]),
             ])
-            ->add('minScore', 'integer', [
+            ->add('minScore', IntegerType::class, [
                 'label' => 'Thesaurus Min score',
                 'constraints' => new Range(['min' => 0]),
             ])
-            ->add('highlight', 'checkbox', [
+            ->add('highlight', CheckboxType::class, [
                 'label' => 'Activate highlight',
                 'required' => false
             ])
             //                ->add('save', 'submit', [
             //                    'attr' => ['class' => 'btn btn-primary']
             //                ])
-            ->add('esSettingFromIndex', 'button', [
+            ->add('esSettingFromIndex', ButtonType::class, [
                 'label' => 'Get setting form index',
                 'attr' => [
                     'onClick' => 'esSettingFromIndex()',
                     'class' => 'btn'
                 ]
             ])
-            ->add('dumpField', 'textarea', [
+            ->add('dumpField', TextareaType::class, [
                 'label' => false,
                 'required' => false,
                 'mapped' => false,
                 'attr' => ['class' => 'dumpfield hide']
             ])
-            ->add('activeTab', 'hidden');
+            ->add('activeTab', HiddenType::class);
 
         // keep aggregates in configuration order with this intermediate array
         $aggs = [];
@@ -127,7 +133,7 @@ class ElasticsearchSettingsFormType extends AbstractType
         // all fields fron conf
         foreach($this->esSettings->getAggregableFields() as $k=>$f) {
             // default value will be replaced by hardcoded tech fields & all databoxes fields
-            $addAgg($k, "/?\\ " . $k, $this->translator->trans("This field does not exists in current databoxes."), true);
+            $addAgg($k, "/?\\ " . $k, $this->translator->trans("admin:searchengine:aggregates:This field does not exists in current databoxes."), true);
         }
 
         // add or replace hardcoded tech fields
@@ -137,7 +143,7 @@ class ElasticsearchSettingsFormType extends AbstractType
             $label = '#' . $k;
             if(!array_key_exists($k, $aggs)) {
                 $label = "/!\\ " . $label;
-                $help = $this->translator->trans("New field, please confirm setting.");
+                $help = $this->translator->trans("admin:searchengine:aggregates:New field, please confirm setting.");
             }
             $addAgg($k, $label, $help, false, $choices);
         }
@@ -148,7 +154,7 @@ class ElasticsearchSettingsFormType extends AbstractType
             $help = null;
             if(!array_key_exists($field->getName(), $aggs)) {
                 $label = "/!\\ " . $label;
-                $help = $this->translator->trans("New field, please confirm setting.");
+                $help = $this->translator->trans("admin:searchengine:aggregates:New field, please confirm setting.");
             }
             $addAgg($k, $label, $help);     // default choices
         }
