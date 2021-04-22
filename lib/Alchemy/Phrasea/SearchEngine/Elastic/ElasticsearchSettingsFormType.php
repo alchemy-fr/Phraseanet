@@ -10,6 +10,7 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
+use JMS\TranslationBundle\Annotation\Ignore;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,6 +32,7 @@ class ElasticsearchSettingsFormType extends AbstractType
     {
         $this->globalStructure = $g;
         $this->esSettings = $settings;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -110,14 +112,14 @@ class ElasticsearchSettingsFormType extends AbstractType
             }
             $choices = array_merge(["not aggregated" => 0], $choices);  //  add this option always as first choice
             $aggs[$k] = [   // default value will be replaced by hardcoded tech fields & all databoxes fields
-                'label'              =>  /** @Ignore */ $label,
+                'label'              => $label,
                 'choices_as_values'  => true,
                 'choices' => $choices,
                 'attr'               => [
                     'class' => 'aggregate'
                 ],
                 'disabled'           => $disabled,
-                'help_message'       =>  /** @Ignore */ $this->translator->trans($help),     // todo : not displayed ?
+                'help_message'       => /** @Ignore */ $help,     // todo : not displayed ?
                 'translation_domain' => false
             ];
         };
@@ -125,7 +127,7 @@ class ElasticsearchSettingsFormType extends AbstractType
         // all fields fron conf
         foreach($this->esSettings->getAggregableFields() as $k=>$f) {
             // default value will be replaced by hardcoded tech fields & all databoxes fields
-            $addAgg($k, "/?\\ " . $k, "This field does not exists in current databoxes.", true);
+            $addAgg($k, "/?\\ " . $k, $this->translator->trans("This field does not exists in current databoxes."), true);
         }
 
         // add or replace hardcoded tech fields
@@ -135,7 +137,7 @@ class ElasticsearchSettingsFormType extends AbstractType
             $label = '#' . $k;
             if(!array_key_exists($k, $aggs)) {
                 $label = "/!\\ " . $label;
-                $help = "New field, please confirm setting.";
+                $help = $this->translator->trans("New field, please confirm setting.");
             }
             $addAgg($k, $label, $help, false, $choices);
         }
@@ -146,7 +148,7 @@ class ElasticsearchSettingsFormType extends AbstractType
             $help = null;
             if(!array_key_exists($field->getName(), $aggs)) {
                 $label = "/!\\ " . $label;
-                $help = "New field, please confirm setting.";
+                $help = $this->translator->trans("New field, please confirm setting.");
             }
             $addAgg($k, $label, $help);     // default choices
         }

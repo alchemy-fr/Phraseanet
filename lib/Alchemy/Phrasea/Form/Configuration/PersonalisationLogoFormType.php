@@ -11,13 +11,16 @@
 namespace Alchemy\Phrasea\Form\Configuration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class PersonalisationLogoFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('logoChoice', 'choice', [
+        $builder->add('logoChoice', ChoiceType::class, [
             'label'    => false,
             'choices'  => [
                 'original' => 'original logo',
@@ -28,15 +31,15 @@ class PersonalisationLogoFormType extends AbstractType
 
         ]);
 
-        $builder->add('personalizeLogoInput', 'file', [
+        $builder->add('personalizeLogoInput', FileType::class, [
             'label' => false,
         ]);
 
-        $builder->add('personalizeFile', 'hidden', [
+        $builder->add('personalizeFile', HiddenType::class, [
             'label' => false,
         ]);
 
-        $builder->add('fileType', 'hidden', [
+        $builder->add('fileType', HiddenType::class, [
             'label' => false,
         ]);
 
