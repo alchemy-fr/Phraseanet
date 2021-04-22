@@ -197,25 +197,36 @@ class QueryVisitor implements Visit
     private function visitEqualNode(TreeNode $node)
     {
         return $this->handleBinaryExpression($node, function($left, $right) {
+            if($right === AST\KeyValue\MissingExpression::MISSING_VALUE) {
+                return new AST\KeyValue\MissingExpression($left);
+            }
+
+            if($right === AST\KeyValue\ExistsExpression::EXISTS_VALUE) {
+                return new AST\KeyValue\ExistsExpression($left);
+            }
+
             if ($this->isDateKey($left)) {
                 try {
                     // Try to create a range for incomplete dates
                     $range = QueryHelper::getRangeFromDateString($right);
                     if ($range['from'] === $range['to']) {
                         return new AST\KeyValue\EqualExpression($left, $range['from']);
-                    } else {
+                    }
+                    else {
                         return new AST\KeyValue\RangeExpression(
                             $left,
                             $range['from'], true,
                             $range['to'], false
                         );
                     }
-                } catch (\InvalidArgumentException $e) {
+                }
+                catch (\InvalidArgumentException $e) {
                     // Fall back to equal expression
                 }
             }
 
             return new AST\KeyValue\EqualExpression($left, $right);
+
         });
     }
 
