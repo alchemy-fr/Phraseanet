@@ -69,8 +69,9 @@ class AMQPConnection
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
-            'with'            => self::WITH_NOTHING,
+            'with'            => self::WITH_RETRY,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::FTP_TYPE                 => [
             'with'            => self::WITH_RETRY,
@@ -446,7 +447,7 @@ class AMQPConnection
         foreach ($queueNames as $queueName) {
             // re-inject conf values (some may have changed)
             $settings = $this->conf->get(['workers', 'queues', $queueName], []);
-            if(array_key_exists($queueName, $this->queues)) {
+            if($this->isBaseQueue($queueName) && array_key_exists($queueName, $this->queues)) {
                 $this->queues[$queueName]['settings'] = array_merge($this->queues[$queueName]['settings'], $settings);
             }
 
