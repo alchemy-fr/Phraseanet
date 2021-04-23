@@ -31,42 +31,65 @@ class ExposeUploadWorker implements WorkerInterface
     public function process(array $payload)
     {
         $em = $this->repoWorker->getEntityManager();
-        $em->beginTransaction();
-        $date = new \DateTime();
 
         $message = [
             'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
             'payload'       => $payload
         ];
-        $workerRunningJob = new WorkerRunningJob();
-        try {
+
+        if (isset($payload['workerJobId'])) {
+            /** @var WorkerRunningJob $workerRunningJob */
+            $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
+
+            if ($workerRunningJob == null) {
+                $this->messagePublisher->pushLog("Given workerJobId not found !", 'error');
+
+                return ;
+            }
+
             $workerRunningJob
-                ->setWork(MessagePublisher::EXPOSE_UPLOAD_TYPE)
-                ->setDataboxId($payload['databoxId'])
-                ->setRecordId($payload['recordId'])
-                ->setWorkOn($payload['exposeName'])
-                ->setPayload($message)
-                ->setPublished($date->setTimestamp($payload['published']))
-                ->setStatus(WorkerRunningJob::RUNNING)
-            ;
+                ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
+                ->setStatus(WorkerRunningJob::RUNNING);
 
             $em->persist($workerRunningJob);
 
             $em->flush();
 
-            $em->commit();
-        } catch (\Exception $e) {
-            $em->rollback();
+        } else {
+            $em->beginTransaction();
+            $date = new \DateTime();
+
+            $workerRunningJob = new WorkerRunningJob();
+
+            try {
+                $workerRunningJob
+                    ->setWork(MessagePublisher::EXPOSE_UPLOAD_TYPE)
+                    ->setDataboxId($payload['databoxId'])
+                    ->setRecordId($payload['recordId'])
+                    ->setWorkOn($payload['exposeName'])
+                    ->setPayload($message)
+                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setStatus(WorkerRunningJob::RUNNING)
+                ;
+
+                $em->persist($workerRunningJob);
+
+                $em->flush();
+
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
         }
 
-        $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
-
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
-
-        $record = $this->findDataboxById($payload['databoxId'])->get_record($payload['recordId']);
-
         try {
+            $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+            $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
+
+            $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+            $record = $this->findDataboxById($payload['databoxId'])->get_record($payload['recordId']);
+
             $helpers = new PhraseanetExtension($this->app);
             $canSeeBusiness = $helpers->isGrantedOnCollection($record->getBaseId(), [\ACL::CANMODIFRECORD]);
 
@@ -131,7 +154,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             if ($response->getStatusCode() !==201) {
                 $this->messagePublisher->pushLog("An error occurred when creating asset: status-code " . $response->getStatusCode());
-                $this->finishedJob($workerRunningJob, $em);
+                $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
 
                 return ;
             }
@@ -171,8 +194,41 @@ class ExposeUploadWorker implements WorkerInterface
 
             $this->messagePublisher->pushLog("Asset ID :". $assetsResponse['id'] ." successfully uploaded! ");
         } catch (\Exception $e) {
-            $this->messagePublisher->pushLog("An error occurred when creating asset!: ". $e->getMessage());
-            $this->finishedJob($workerRunningJob, $em);
+            $workerMessage = "An error occurred when creating asset!: ". $e->getMessage();
+
+            $this->messagePublisher->pushLog($workerMessage);
+
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+            $this->repoWorker->reconnect();
+            $em->beginTransaction();
+            try {
+                $workerRunningJob
+                    ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
+                    ->setStatus(WorkerRunningJob::ERROR)
+                ;
+
+                $em->persist($workerRunningJob);
+                $em->flush();
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
+
+            $payload['workerJobId'] = $workerRunningJob->getId();
+            $fullPayload = [
+                'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
+                'payload'       => $payload
+            ];
+
+            $this->messagePublisher->publishRetryMessage(
+                $fullPayload,
+                MessagePublisher::EXPOSE_UPLOAD_TYPE,
+                $count,
+                $workerMessage
+            );
+
+            return;
         }
 
         // tell that the upload is finished
@@ -224,12 +280,12 @@ class ExposeUploadWorker implements WorkerInterface
         }
     }
 
-    private function finishedJob(WorkerRunningJob $workerRunningJob, EntityManager $em)
+    private function finishedJob(WorkerRunningJob $workerRunningJob, EntityManager $em, $status = WorkerRunningJob::FINISHED)
     {
         $this->repoWorker->reconnect();
         $em->getConnection()->beginTransaction();
         try {
-            $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+            $workerRunningJob->setStatus($status);
             $workerRunningJob->setFinished(new \DateTime('now'));
             $em->persist($workerRunningJob);
             $em->flush();
