@@ -126,9 +126,16 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
+            $instanceKey = $this->app['conf']->get(['main', 'key']);
+
+            // this is the unique reference for record in phraseanet and assets in expose
+            // instanceKey_basedID_record_id
+            $assetId = $instanceKey.'_'.$record->getId();
+
             $requestBody = [
                 'publication_id' => $payload['publicationId'],
                 'description'    => $description,
+                'asset_id'       => $assetId,
                 'upload' => [
                     'type' => $record->getMimeType(),
                     'size' => $record->getSize(),
