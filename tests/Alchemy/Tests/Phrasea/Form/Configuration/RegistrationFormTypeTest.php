@@ -13,6 +13,6 @@ class RegistrationFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new RegistrationFormType();
+        return new RegistrationFormType(self::$DI['app']['translator']);
     }
 }
