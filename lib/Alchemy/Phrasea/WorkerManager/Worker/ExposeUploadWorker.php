@@ -126,9 +126,16 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
+            $phraseanetLocalKey = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_key']);
+
+            // this is the unique reference for record in phraseanet and assets in expose
+            // phraseanetLocalKey_basedID_record_id
+            $assetId = $phraseanetLocalKey.'_'.$record->getId();
+
             $requestBody = [
                 'publication_id' => $payload['publicationId'],
                 'description'    => $description,
+                'asset_id'       => $assetId,
                 'upload' => [
                     'type' => $record->getMimeType(),
                     'size' => $record->getSize(),
