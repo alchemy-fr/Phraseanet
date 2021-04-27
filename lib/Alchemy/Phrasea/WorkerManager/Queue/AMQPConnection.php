@@ -307,7 +307,7 @@ class AMQPConnection
             try {
                 // if we are in ssl connection type
                 if (isset($this->hostConfig['ssl']) && $this->hostConfig['ssl'] === true) {
-                    $ssl_options = [
+                    $sslOptions = [
                         'verify_peer' => true
                     ];
 
@@ -317,7 +317,7 @@ class AMQPConnection
                         $this->hostConfig['user'],
                         $this->hostConfig['password'],
                         $this->hostConfig['vhost'],
-                        $ssl_options
+                        $sslOptions
                     );
                 } else {
                     $this->connection =  new AMQPStreamConnection(
