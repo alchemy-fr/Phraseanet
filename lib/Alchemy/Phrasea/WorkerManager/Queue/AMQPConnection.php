@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\WorkerManager\Queue;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Exception;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPSSLConnection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -131,6 +132,7 @@ class AMQPConnection
         $defaultConfiguration = [
             'host'      => 'localhost',
             'port'      => 5672,
+            'ssl'       => false,
             'user'      => 'guest',
             'password'  => 'guest',
             'vhost'     => '/'
@@ -302,15 +304,30 @@ class AMQPConnection
     public function getConnection()
     {
         if (!isset($this->connection)) {
-            try{
-                $this->connection =  new AMQPStreamConnection(
-                    $this->hostConfig['host'],
-                    $this->hostConfig['port'],
-                    $this->hostConfig['user'],
-                    $this->hostConfig['password'],
-                    $this->hostConfig['vhost']
-                );
+            try {
+                // if we are in ssl connection type
+                if (isset($this->hostConfig['ssl']) && $this->hostConfig['ssl'] === true) {
+                    $sslOptions = [
+                        'verify_peer' => true
+                    ];
 
+                    $this->connection =  new AMQPSSLConnection(
+                        $this->hostConfig['host'],
+                        $this->hostConfig['port'],
+                        $this->hostConfig['user'],
+                        $this->hostConfig['password'],
+                        $this->hostConfig['vhost'],
+                        $sslOptions
+                    );
+                } else {
+                    $this->connection =  new AMQPStreamConnection(
+                        $this->hostConfig['host'],
+                        $this->hostConfig['port'],
+                        $this->hostConfig['user'],
+                        $this->hostConfig['password'],
+                        $this->hostConfig['vhost']
+                    );
+                }
             }
             catch (Exception $e) {
                 // no-op
