@@ -3,9 +3,8 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Typed;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\ValueChecker;
 
 /**
  * @group unit
@@ -49,9 +48,9 @@ class ValueCheckerTest extends \PHPUnit_Framework_TestCase
             [FieldMapping::TYPE_BYTE   , '42foo'     , true],
             [FieldMapping::TYPE_BYTE   , 'foo'       , true],
 
-            [FieldMapping::TYPE_STRING , 'foo'       , true ],
-            [FieldMapping::TYPE_STRING , '42'        , true ],
-            [FieldMapping::TYPE_STRING ,  42         , true ],
+            [FieldMapping::TYPE_TEXT   , 'foo'       , true ],
+            [FieldMapping::TYPE_TEXT   , '42'        , true ],
+            [FieldMapping::TYPE_TEXT   ,  42         , true ],
 
             [FieldMapping::TYPE_BOOLEAN, true        , true ],
             [FieldMapping::TYPE_BOOLEAN, false       , true ],

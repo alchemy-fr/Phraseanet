@@ -29,7 +29,7 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
     {
         $field = new Field(
             'foo',
-            FieldMapping::TYPE_STRING,
+            FieldMapping::TYPE_TEXT,
             [
                 'private' => false,
                 'used_by_databoxes' => [1, 2]
@@ -70,7 +70,7 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithZeroConcept()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context
             ->getUnrestrictedFields()
@@ -87,11 +87,11 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFields()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, [
+        $public_field = new Field('foo', FieldMapping::TYPE_TEXT, [
             'private' => false,
              'used_by_databoxes' => [1, 2]
        ]);
-        $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
+        $private_field = new Field('bar', FieldMapping::TYPE_TEXT, [
             'private' => true,
             'used_by_collections' => [1, 2, 3],
             'used_by_databoxes' => [1, 2]
@@ -125,13 +125,13 @@ class TermNodeTest extends \PHPUnit_Framework_TestCase
                         "query": "/qux"
                     }
                 }, {
-                    "filtered": {
+                    "bool": {
                         "filter": {
                             "terms": {
                                 "base_id": [1, 2, 3]
                             }
                         },
-                        "query": {
+                        "must": {
                             "bool": {
                                 "should": [{
                                     "multi_match": {

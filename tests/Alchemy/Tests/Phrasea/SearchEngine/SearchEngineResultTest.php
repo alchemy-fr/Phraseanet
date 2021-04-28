@@ -26,7 +26,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $queryText = 'azerty';
         $queryAST = '<text:"azerty">';    // fake, real is really more complex
         $queryCompiled = '{match:"azerty"}';    // fake, real is really more complex
-        $queryESLib = '{index:"test", match:{"azerty"}}';    // fake, real is really more complex
+        $queryESLib = json_decode('{index:"test", match:{"azerty"}}', true);    // fake, real is really more complex
 
         $duration = 1 / 3;
         $offsetStart = 23;
@@ -37,7 +37,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $suggestions = new ArrayCollection([
                         new SearchEngineSuggestion($queryText, 'Richard', 22)
         ]);
-        $propositions = new ArrayCollection();
+        $propositions = [];
         $indexes = 'new-index';
 
         $result = new SearchEngineResult(
@@ -90,7 +90,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
         $queryText = 'azerty';
         $queryAST = '<text:"azerty">';    // fake, real is really more complex
         $queryCompiled = '{match:"azerty"}';    // fake, real is really more complex
-        $queryESLib = '{index:"test", match:{"azerty"}}';    // fake, real is really more complex
+        $queryESLib = json_decode('{index:"test", match:{"azerty"}}', true);    // fake, real is really more complex
 
         $duration = 1 / 3;
         $offsetStart = 0;

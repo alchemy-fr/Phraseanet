@@ -44,7 +44,7 @@ class SearchEngineResult
      * @param string $queryText
      * @param string $queryAST
      * @param string $queryCompiled
-     * @param string $queryESLib
+     * @param array $queryESLib
      * @param float $duration
      * @param int $offsetStart
      * @param int $available
@@ -52,8 +52,8 @@ class SearchEngineResult
      * @param mixed $error
      * @param mixed $warning
      * @param ArrayCollection $suggestions
-     * @param Array $propositions
-     * @param Array $indexes
+     * @param array $propositions
+     * @param string $indexes
      * @param FacetsResponse $facets
      */
     public function __construct(
@@ -228,7 +228,7 @@ class SearchEngineResult
     /**
      * Return HTML proposals
      *
-     * @return string
+     * @return array
      */
     public function getProposals()
     {

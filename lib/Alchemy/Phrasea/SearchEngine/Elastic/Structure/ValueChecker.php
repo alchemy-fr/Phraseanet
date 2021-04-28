@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Assert\Assertion;
 
 class ValueChecker
@@ -18,8 +17,8 @@ class ValueChecker
     public static function filterByValueCompatibility(array $list, $value)
     {
         Assertion::allIsInstanceOf($list, Typed::class);
-        $is_numeric = is_numeric($value);
-        $is_valid_date = (RecordHelper::sanitizeDate($value) !== null);
+        //$is_numeric = is_numeric($value);
+        //$is_valid_date = (RecordHelper::sanitizeDate($value) !== null);
         $filtered = [];
         foreach ($list as $item) {
             switch ($item->getType()) {
@@ -38,7 +37,7 @@ class ValueChecker
                         $filtered[] = $item;
 //                    }
                     break;
-                case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_TEXT:
                 default:
                     $filtered[] = $item;
             }

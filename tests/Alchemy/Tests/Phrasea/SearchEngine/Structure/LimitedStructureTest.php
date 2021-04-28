@@ -16,7 +16,7 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetUnrestrictedFields()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, [
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, [
             'used_by_collections' => [1, 2, 3],
             'used_by_databoxes' => [1],
         ]);
@@ -47,7 +47,7 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         $wrapped->get('foo')
             ->shouldBeCalled()
             ->willReturn(
-                new Field('foo', FieldMapping::TYPE_STRING, [
+                new Field('foo', FieldMapping::TYPE_TEXT, [
                     'private' => false,
                     'used_by_collections' => [1, 2, 3],
                     'used_by_databoxes' => [1]
@@ -64,7 +64,7 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         $structure = new LimitedStructure($wrapped->reveal(), $options->reveal());
 
         $this->assertEquals(
-            new Field('foo', FieldMapping::TYPE_STRING, [
+            new Field('foo', FieldMapping::TYPE_TEXT, [
                 'used_by_collections' => [2],
                 'used_by_databoxes' => [1]
             ]),
@@ -89,24 +89,24 @@ class LimitedStructureTest extends \PHPUnit_Framework_TestCase
         $structure = new LimitedStructure($wrapped->reveal(), $options->reveal());
 
         $wrapped->getAllFields()->willReturn([
-            'foo' => new Field('foo', FieldMapping::TYPE_STRING, [
+            'foo' => new Field('foo', FieldMapping::TYPE_TEXT, [
                 'private' => false,
                 'used_by_collections' => [1, 2, 3],
                 'used_by_databoxes' => [1]
             ]),
-            'bar' => new Field('bar', FieldMapping::TYPE_STRING, [
+            'bar' => new Field('bar', FieldMapping::TYPE_TEXT, [
                 'private' => true,
                 'used_by_collections' => [1, 2, 3],
                 'used_by_databoxes' => [1]
             ])
         ]);
         $this->assertEquals([
-            'foo' => new Field('foo', FieldMapping::TYPE_STRING, [
+            'foo' => new Field('foo', FieldMapping::TYPE_TEXT, [
                 'private' => false,
                 'used_by_collections' => [2],
                 'used_by_databoxes' => [1]
             ]),
-            'bar' => new Field('bar', FieldMapping::TYPE_STRING, [
+            'bar' => new Field('bar', FieldMapping::TYPE_TEXT, [
                 'private' => true,
                 'used_by_collections' => [1, 3],
                 'used_by_databoxes' => [1]

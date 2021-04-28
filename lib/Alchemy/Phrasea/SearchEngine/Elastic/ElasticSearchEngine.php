@@ -11,11 +11,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use ACL;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\LogicException;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\AggregationHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
@@ -29,10 +29,16 @@ use Alchemy\Phrasea\SearchEngine\SearchEngineInterface;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Utilities\Stopwatch;
+use appbox;
 use Closure;
 use databox_field;
+use databox_status;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Elasticsearch\Client;
+use phrasea;
+use record_adapter;
+use stdClass;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -205,7 +211,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function addRecord(\record_adapter $record)
+    public function addRecord(record_adapter $record)
     {
         $this->notImplemented();
     }
@@ -218,7 +224,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function removeRecord(\record_adapter $record)
+    public function removeRecord(record_adapter $record)
     {
         $this->notImplemented();
     }
@@ -226,7 +232,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function updateRecord(\record_adapter $record)
+    public function updateRecord(record_adapter $record)
     {
         $this->notImplemented();
     }
@@ -234,7 +240,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function addStory(\record_adapter $story)
+    public function addStory(record_adapter $story)
     {
         $this->notImplemented();
     }
@@ -242,7 +248,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function removeStory(\record_adapter $story)
+    public function removeStory(record_adapter $story)
     {
         $this->notImplemented();
     }
@@ -250,7 +256,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function updateStory(\record_adapter $story)
+    public function updateStory(record_adapter $story)
     {
         $this->notImplemented();
     }
@@ -346,7 +352,7 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         /** @var QueryCompiler $query_compiler */
         $query_compiler = $this->app['query_compiler'];
-        $queryAST      = $query_compiler->parse($queryText)->dump();
+        // $queryAST      = $query_compiler->parse($queryText)->dump();
 
         $stopwatch->lap("query parse");
 
@@ -410,11 +416,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         ];
     }
 
-    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, \record_adapter $record = null)
+    private function createRecordQueryParams($ESQuery, SearchEngineOptions $options, record_adapter $record = null)
     {
         $params = [
-            'index' => $this->indexName,
-            'type'  => RecordIndexer::TYPE_NAME,
+            'index' => $this->indexName . '.r',
+            // 'type'  => RecordIndexer::TYPE_NAME,
             'body'  => [
                 'sort'   => $this->createSortQueryParams($options),
             ]
@@ -423,14 +429,18 @@ class ElasticSearchEngine implements SearchEngineInterface
         $query_filters = $this->createQueryFilters($options);
         $acl_filters = $this->createACLFilters($options);
 
-        $ESQuery = ['filtered' => ['query' => $ESQuery]];
+        $ESQuery = [
+            'bool' => [
+                'must' => $ESQuery
+            ]
+        ];
 
         if (count($query_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $query_filters;
+            $ESQuery['bool']['filter']['bool']['must'][] = $query_filters;
         }
 
         if (count($acl_filters) > 0) {
-            $ESQuery['filtered']['filter']['bool']['must'][] = $acl_filters;
+            $ESQuery['bool']['filter']['bool']['must'][] = $acl_filters;
         }
 
         $params['body']['query'] = $ESQuery;
@@ -520,7 +530,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $filters;
     }
 
-    private function getFlagsKey(\appbox $appbox)
+    private function getFlagsKey(appbox $appbox)
     {
         $flags = [];
         foreach ($appbox->get_databoxes() as $databox) {
@@ -543,10 +553,10 @@ class ElasticSearchEngine implements SearchEngineInterface
 
         $acl = $this->app->getAclForUser($this->app->getAuthenticatedUser());
 
-        $grantedCollections = array_keys($acl->get_granted_base([\ACL::ACTIF]));
+        $grantedCollections = array_keys($acl->get_granted_base([ACL::ACTIF]));
 
         if (count($grantedCollections) === 0) {
-            return ['bool' => ['must_not' => ['match_all' => new \stdClass()]]];
+            return ['bool' => ['must_not' => ['match_all' => new stdClass()]]];
         }
 
         $appbox = $this->app['phraseanet.appbox'];
@@ -560,11 +570,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         return $this->buildACLsFilters($aclRules, $options);
     }
 
-    private function getFlagsRules(\appbox $appbox, \ACL $acl, array $collections)
+    private function getFlagsRules(appbox $appbox, ACL $acl, array $collections)
     {
         $rules = [];
         foreach ($collections as $collectionId) {
-            $databoxId = \phrasea::sbasFromBas($this->app, $collectionId);
+            $databoxId = phrasea::sbasFromBas($this->app, $collectionId);
             $databox = $appbox->get_databox($databoxId);
 
             $mask_xor = $acl->get_mask_xor($collectionId);
@@ -599,8 +609,8 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private function computeAccess($and, $xor, $bit)
     {
-        $xorBit = \databox_status::bitIsSet($xor, $bit);
-        $andBit = \databox_status::bitIsSet($and, $bit);
+        $xorBit = databox_status::bitIsSet($xor, $bit);
+        $andBit = databox_status::bitIsSet($and, $bit);
 
         if (!$xorBit && !$andBit) {
             return self::FLAG_ALLOW_BOTH;
@@ -697,11 +707,11 @@ class ElasticSearchEngine implements SearchEngineInterface
         $highlighted_fields = [];
         foreach ($context->getHighlightedFields() as $field) {
             switch ($field->getType()) {
-                case FieldMapping::TYPE_STRING:
+                case FieldMapping::TYPE_TEXT:
                 case FieldMapping::TYPE_DOUBLE:
                 case FieldMapping::TYPE_DATE:
                     $index_field = $field->getIndexField();
-                    $raw_index_field = $field->getIndexField(true);
+                    // $raw_index_field = $field->getIndexField(true);
                     $highlighted_fields[$index_field . ".light"] = [
                         // Requires calling Mapping::enableTermVectors() on this field mapping
 //                        'matched_fields' => [$index_field, $raw_index_field],
@@ -828,7 +838,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $search_context = $this->context_factory->createContext($options);
         $fields = $search_context->getUnrestrictedFields();
         foreach ($fields as $field) {
-            if ($field->getType() == FieldMapping::TYPE_STRING) {
+            if ($field->getType() == FieldMapping::TYPE_TEXT) {
                 $k = '' . $field->getName();
                 $body[$k] = [
                     'text'       => $query,
@@ -863,7 +873,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     /**
      * {@inheritdoc}
      */
-    public function clearAllCache(\DateTime $date = null)
+    public function clearAllCache(DateTime $date = null)
     {
     }
 }

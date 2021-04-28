@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\RawNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
@@ -25,7 +24,7 @@ class RawNodeTest extends \PHPUnit_Framework_TestCase
     public function testQueryBuildOnSingleField()
     {
         $field = $this->prophesize(Field::class);
-        $field->getType()->willReturn(FieldMapping::TYPE_STRING);
+        $field->getType()->willReturn(FieldMapping::TYPE_TEXT);
         $field->getIndexField(true)->willReturn('foo.raw');
 
         $query_context = $this->prophesize(QueryContext::class);
@@ -47,10 +46,10 @@ class RawNodeTest extends \PHPUnit_Framework_TestCase
     public function testQueryBuildOnMultipleFields()
     {
         $field_a = $this->prophesize(Field::class);
-        $field_a->getType()->willReturn(FieldMapping::TYPE_STRING);
+        $field_a->getType()->willReturn(FieldMapping::TYPE_TEXT);
         $field_a->getIndexField(true)->willReturn('foo.raw');
         $field_b = $this->prophesize(Field::class);
-        $field_b->getType()->willReturn(FieldMapping::TYPE_STRING);
+        $field_b->getType()->willReturn(FieldMapping::TYPE_TEXT);
         $field_b->getIndexField(true)->willReturn('bar.raw');
 
         $query_context = $this->prophesize(QueryContext::class);

@@ -158,7 +158,6 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
 
         $app['elasticsearch.indexer.term_indexer'] = $app->share(function ($app) {
             return new TermIndexer(
-                $app['phraseanet.appbox'],
                 $app['monolog']
             );
         });

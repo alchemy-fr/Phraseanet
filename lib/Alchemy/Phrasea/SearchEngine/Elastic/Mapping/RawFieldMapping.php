@@ -15,20 +15,11 @@ use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 
 class RawFieldMapping extends FieldMapping
 {
-
     /**
-     * @param string $type
+     * RawFieldMapping constructor.
      */
-    public function __construct($type)
+    public function __construct()
     {
-        parent::__construct('raw', $type);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getProperties()
-    {
-        return [ 'index' => 'not_analyzed' ];
+        parent::__construct('raw', self::TYPE_KEYWORD);
     }
 }

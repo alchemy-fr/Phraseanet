@@ -11,23 +11,16 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\MappingBuilder;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Navigator;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermVisitor;
 use databox;
+use Doctrine\DBAL\DBALException;
 use Psr\Log\LoggerInterface;
 
 class TermIndexer
 {
     const TYPE_NAME = 'term';
-
-    /**
-     * @var \appbox
-     */
-    private $appbox;
 
     /**
      * @var Navigator
@@ -40,12 +33,10 @@ class TermIndexer
     private $logger;
 
     /**
-     * @param \appbox $appbox
      * @param LoggerInterface $logger
      */
-    public function __construct(\appbox $appbox, LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger)
     {
-        $this->appbox = $appbox;
         $this->navigator = new Navigator();
         $this->logger = $logger;
     }
@@ -53,7 +44,7 @@ class TermIndexer
     /**
      * @param BulkOperation $bulk
      * @param databox $databox
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function populateIndex(BulkOperation $bulk, databox $databox)
     {
@@ -73,10 +64,11 @@ class TermIndexer
             $term['databox_id'] = $databoxId;
 
             // Index request
-            $params = array();
-            $params['id'] = $id;
-            $params['type'] = self::TYPE_NAME;
-            $params['body'] = $term;
+            $params = [
+                'id'   => $id,
+                'type' => self::TYPE_NAME,
+                'body' => $term
+            ];
 
             $bulk->index($params, null);
         });
