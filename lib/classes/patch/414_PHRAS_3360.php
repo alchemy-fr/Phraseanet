@@ -89,6 +89,7 @@ class patch_414_PHRAS_3360 implements patchInterface
                         'registry'  => 'alchemy_worker.queue_registry',
                         'host'      => 'rabbitmq',
                         'port'      => 5672,
+                        'ssl'       => false,
                         'user'      => 'alchemy',
                         'password'  => 'vdh4dpe5Wy3R',
                         'vhost'     => '/'
