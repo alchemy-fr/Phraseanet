@@ -3,10 +3,9 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure as Structure;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 
 /**
  * @group unit
@@ -113,7 +112,7 @@ class StructureTest extends \PHPUnit_Framework_TestCase
             'thesaurus_roots' => null
         ]);
         $enabled = new Field('bar', FieldMapping::TYPE_STRING, [
-            'thesaurus_roots' => [new Concept('/foo')]
+            'thesaurus_roots' => [new Concept(1, '/foo')]
         ]);
         $structure = new Structure();
         $structure->add($not_enabled);
@@ -168,15 +167,18 @@ class StructureTest extends \PHPUnit_Framework_TestCase
         $structure = new Structure();
         $structure->add($foo = (new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2]
+            'used_by_collections' => [1, 2],
+            'used_by_databoxes' => [1]
         ])));
         $structure->add(new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]));
         $structure->add(new Field('bar', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]));
         $structure->add(new Field('baz', FieldMapping::TYPE_STRING, ['private' => false]));
         $this->assertEquals([1, 2], $foo->getDependantCollections());

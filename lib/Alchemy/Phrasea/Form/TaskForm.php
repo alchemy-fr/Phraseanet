@@ -13,22 +13,26 @@ namespace Alchemy\Phrasea\Form;
 
 use Alchemy\Phrasea\Model\Entities\Task;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TaskForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', [
+        $builder->add('name', TextType::class, [
             'label'       => 'Task name',
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
             ],
         ]);
-        $builder->add('period', 'integer', [
+        $builder->add('period', IntegerType::class, [
             'label'       => 'Task period (in seconds)',
             'required'    => true,
             'constraints' => [
@@ -36,14 +40,14 @@ class TaskForm extends AbstractType
                 new Assert\GreaterThan(['value' => 0]),
             ],
         ]);
-        $builder->add('status', 'choice', [
+        $builder->add('status', ChoiceType::class, [
             'label'       => 'The task status',
             'choices'   => [
                 Task::STATUS_STARTED   => 'Started',
                 Task::STATUS_STOPPED   => 'Stopped',
             ],
         ]);
-        $builder->add('settings', 'hidden');
+        $builder->add('settings', HiddenType::class);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

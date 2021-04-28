@@ -45,7 +45,7 @@ class BasketRepository extends EntityRepository
     private function trans($id, $parameters = [], $domain = null, $locale = null)
     {
         if ($this->translator) {
-            return $this->translator->trans($id, $parameters, $domain, $locale);
+            return $this->translator->trans( /** @Ignore */ $id, $parameters, $domain, $locale);
         }
 
         return $id;

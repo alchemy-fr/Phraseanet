@@ -1,0 +1,14 @@
+version: "3.4"
+
+services: 
+  db:
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-db:$PHRASEANET_DOCKER_TAG
+    build: ./docker/db
+    restart: on-failure
+    environment:
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_MAX_ALLOWED_PACKET
+    volumes:
+    - ${PHRASEANET_DB_DIR}:/var/lib/mysql
+    networks:
+      - internal

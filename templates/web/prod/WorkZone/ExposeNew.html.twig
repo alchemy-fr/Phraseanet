@@ -1,10 +1,6 @@
 {% macro add_publication(app) %}
     <div id='DIALOG-expose-add' style="display: none">
-        <div class="expose-edit-wrapper" style="margin-top: 100px">
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+        <div class="expose-edit-wrapper">
             <form id="publication-data-form" >
                 <div class="edit-publication-block">
                     <div class="ui-widget">
@@ -83,6 +79,7 @@
                                 class="publication-field">
                             <option value="" selected="selected">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
                             <option value="gallery">{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                            <option value="grid">{{ 'prod:expose:publication:Grid' | trans }}</option>
                             <option value="mapbox">{{ 'prod:expose:publication:Mapbox' | trans }}</option>
                             <option value="download">{{ 'prod:expose:publication:Download' | trans }}</option>
                         </select>

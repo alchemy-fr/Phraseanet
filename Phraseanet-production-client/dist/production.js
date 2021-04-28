@@ -8634,7 +8634,7 @@ module.exports = {
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 88 */
@@ -10229,14 +10229,21 @@ var workzone = function workzone(services) {
             extraClass: 'tooltip_flat'
         });
 
-        (0, _jquery2.default)('#idFrameC .tabs').tabs({
+        (0, _jquery2.default)('#idFrameC .tabs').data('hash', null) // unknowk for now
+        .tabs({
+            create: function activate(event, ui) {
+                (0, _jquery2.default)(this).data('hash', ui.tab.context.hash);
+            },
             activate: function activate(event, ui) {
+                (0, _jquery2.default)(this).data('hash', ui.newTab.context.hash);
                 if (ui.newTab.context.hash === '#thesaurus_tab') {
                     appEvents.emit('thesaurus.show');
                 }
                 workzoneOptions.open();
+                console.log("tab is " + (0, _jquery2.default)('#idFrameC .tabs').data("hash"));
             }
         });
+
         (0, _jquery2.default)('.basket_refresher').on('click', function () {
             return workzoneOptions.refresh('current');
         });
@@ -10423,16 +10430,12 @@ var workzone = function workzone(services) {
     function WorkZoneElementRemover(el, confirm) {
         var context = (0, _jquery2.default)(el).data('context');
 
-        if (confirm !== true && ((0, _jquery2.default)(el).hasClass('groupings') || (0, _jquery2.default)(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
+        if (confirm !== true && ((0, _jquery2.default)(el).hasClass('groupings') || (0, _jquery2.default)(el).hasClass('record-remove-from-basket-action') || (0, _jquery2.default)(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
-                (0, _jquery2.default)('#DIALOG-baskets').dialog('close').remove();
+                _dialog2.default.get(1).close();
                 WorkZoneElementRemover(el, true);
-            };
-
-            buttons[localeService.t('annuler')] = function () {
-                (0, _jquery2.default)('#DIALOG-baskets').dialog('close').remove();
             };
 
             var texte = '';
@@ -10445,19 +10448,17 @@ var workzone = function workzone(services) {
                 title = localeService.t('removeRecordFeedbackTitle');
             }
 
-            (0, _jquery2.default)('body').append('<div id="DIALOG-baskets"></div>');
-            (0, _jquery2.default)('#DIALOG-baskets').attr('title', title).empty().append(texte).dialog({
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: false,
-                draggable: false,
-                modal: true,
-                buttons: buttons,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                }
-            }).dialog('open');
+            var dialogWindow = _dialog2.default.create(services, {
+                size: 'Medium',
+                title: title,
+                closeButton: true
+            });
+
+            //Add custom class to dialog wrapper
+            dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+            dialogWindow.setContent(texte);
+
+            dialogWindow.setOption('buttons', buttons);
             return false;
         } else {
 
@@ -10566,6 +10567,12 @@ var workzone = function workzone(services) {
 
         (0, _jquery2.default)('.bloc', cache).droppable({
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('grouping') && !(0, _jquery2.default)(elem).hasClass('SSTT')) {
                     return true;
                 }
@@ -10589,6 +10596,12 @@ var workzone = function workzone(services) {
             hoverClass: 'baskDrop',
             tolerance: 'pointer',
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                     if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
                         return false;
@@ -10636,6 +10649,12 @@ var workzone = function workzone(services) {
             hoverClass: 'baskDrop',
             tolerance: 'pointer',
             accept: function accept(elem) {
+                // return false;
+                var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                if (currentTab !== '#baskets_wrapper') {
+                    return false; // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                     if ((0, _jquery2.default)(elem).closest('.content').prev()[0] === (0, _jquery2.default)(this)[0]) {
                         return false;
@@ -10883,6 +10902,12 @@ var workzone = function workzone(services) {
 
                 dest.droppable({
                     accept: function accept(elem) {
+                        // return false;
+                        var currentTab = (0, _jquery2.default)('#idFrameC .tabs').data('hash');
+                        if (currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                            return false; // can't drop on baskets if the baskets tab is not front
+                        }
+
                         if ((0, _jquery2.default)(elem).hasClass('CHIM')) {
                             if ((0, _jquery2.default)(elem).closest('.content')[0] === (0, _jquery2.default)(this)[0]) {
                                 return false;
@@ -10996,7 +11021,7 @@ var workzone = function workzone(services) {
     }
 
     function openExposePublicationEdit(edit) {
-        (0, _jquery2.default)('#DIALOG-expose-edit').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+        (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
         (0, _jquery2.default)('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title')).dialog({
             autoOpen: false,
@@ -11011,19 +11036,19 @@ var workzone = function workzone(services) {
                 opacity: 0.7
             },
             close: function close(e, ui) {
-                (0, _jquery2.default)('#DIALOG-expose-edit').empty();
+                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty();
             }
         }).dialog('open');
         (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
-            (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
+            (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').dialog('close');
         });
 
         _jquery2.default.ajax({
             type: "GET",
             url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
             success: function success(data) {
-                (0, _jquery2.default)('#DIALOG-expose-edit').empty().html(data);
+                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }
         });
     }
@@ -11371,6 +11396,15 @@ var thesaurusService = function thesaurusService(services) {
     var sbas = void 0;
     var bas2sbas = void 0;
     var trees = void 0; // @TODO remove global
+
+    var dragging = false; // true when an object is dragged over the th zone
+    var dragTarget = null; // the target where the mouse is over
+    var dragUniqueSbid = null; // will end-up as : null (nothing dragged) ; false (many sbids) ; sbid (same sbid for all)
+    var dragLstRecords = ''; // list or records, format as expected for RecordsRequest::fromRequest
+    var url = configService.get('baseUrl');
+
+    var searchSelection = { asArray: [], serialized: '' };
+
     var initialize = function initialize(params) {
         var $container = params.$container;
 
@@ -11387,6 +11421,7 @@ var thesaurusService = function thesaurusService(services) {
         }
 
         startThesaurus();
+        // console.log("hello from thesaurus ! container=", $container);
         var cclicks = 0;
         var cDelay = 350;
         var cTimer = null;
@@ -11444,8 +11479,353 @@ var thesaurusService = function thesaurusService(services) {
             T_Gfilter(event.currentTarget);
         });
 
+        /**
+         * drag/drop on terms : we will not set each term as droppable (costly), but the whole tx zone.
+         */
+        (0, _jquery2.default)('#THPD_T_tree').droppable({
+            accept: function accept(elem) {
+                var lstbr = searchSelection.asArray;
+
+                dragUniqueSbid = null;
+                lstbr.forEach(function (sbid_rid) {
+                    sbid_rid = sbid_rid.split('_');
+                    var sbid = sbid_rid[0];
+                    var rid = sbid_rid[1];
+                    dragUniqueSbid = dragUniqueSbid === null ? sbid : sbid === dragUniqueSbid ? sbid : false;
+                });
+                dragLstRecords = lstbr.join(';'); // a list as expected for RecordsRequest::fromRequest
+
+                (0, _jquery2.default)(this).removeClass('draggingOver');
+                // console.log("accept", elem);
+                // if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
+                //     return true;
+                // }
+                dragging = false; // == not yet dragging something over th
+
+
+                // the th zone can accet drags only when in front (activated tab)
+                // 'hash' is set by the 'workzone' js code.
+                // return $('#idFrameC .tabs').data('hash') === '#thesaurus_tab';
+
+                if ((0, _jquery2.default)('#idFrameC .tabs').data('hash') !== '#thesaurus_tab') {
+                    return false; // can't drop on th if the th tab is not front
+                }
+
+                // by using classes on both main container AND the (unique) acceptable thesaurus zone
+                // we can have custom drag/drop css for both ok / reject
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver'); // the container
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver'); // all thesaurus
+
+                if (dragUniqueSbid === null || dragUniqueSbid === false) {
+                    // many sbids
+                    // return false;    // don't return false now, as it will prevent "over" and will not apply css (no "not-allowed" cursor)
+                }
+
+                return true;
+            },
+            scope: 'objects',
+            hoverClass: 'groupDrop',
+            tolerance: 'pointer',
+            over: function over(event, ui) {
+                var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
+                : (0, _jquery2.default)(event.toElement); // chrome
+
+                // console.log("over", event, ui, target);
+
+                (0, _jquery2.default)('#THPD_T_tree', $container).addClass('draggingOver').click(function () {
+                    return true;
+                });
+                if (dragUniqueSbid !== null && dragUniqueSbid !== false) {
+                    (0, _jquery2.default)('#TX_P\\.' + dragUniqueSbid + '\\.T', $container).addClass('draggingOver');
+                }
+                //                    $('<style></style>').appendTo($container).remove();
+                /*
+                $(this).addClass('draggingOver');
+                 if(dragTarget) {
+                    // something was already hilighted (should no happen)
+                    dragTarget.removeClass('dragOver');
+                }
+                dragging = true;            // == dragging something over th
+                dragTarget = null;
+                // for now, target can only be a term (which has a sbas_id and tx_term_id props)
+                const target = $(event.toElement);
+                const sbas_id = target.data('sbas_id');
+                const tx_term_id = target.data('tx_term_id');
+                if(sbas_id && tx_term_id) {
+                    dragTarget = target;
+                    dragTarget.addClass('dragOver');
+                    console.log("IN : " + dragTarget.attr('id'));
+                }
+                */
+            },
+            out: function out(event, ui) {
+                var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
+                : (0, _jquery2.default)(event.toElement); // chrome
+
+                // console.log("out", event, ui, target);
+
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+                //                    $('<style></style>').appendTo($container).remove();
+                /*
+                $(this).removeClass('draggingOver');
+                if(dragTarget) {
+                    // something was hilighted
+                    dragTarget.removeClass('dragOver');
+                }
+                dragging = false;    // == no more dragging something over th
+                dragTarget = null;
+                  */
+            },
+            drop: function drop(event, ui) {
+                // the event relates from the whole tx zone (<ul>), we must find the exact element of the mouseup
+                // too bad, jquery does not seem to handle that in a cross-browser way.
+                var target = typeof event.toElement === 'undefined' ? (0, _jquery2.default)(event.originalEvent.target) // ffox
+                : (0, _jquery2.default)(event.toElement); // chrome
+
+                // console.log("drop", event, ui, target);
+
+                (0, _jquery2.default)('#THPD_T_tree', $container).removeClass('draggingOver');
+                (0, _jquery2.default)('#THPD_T_tree>LI', $container).removeClass('draggingOver');
+
+                var sbas_id = target.data('sbas_id'); // set on html by ThesaurusXmlHttpController.php
+                var tx_term_id = target.data('tx_term_id'); // set on html by ThesaurusXmlHttpController.php
+
+                if (sbas_id && tx_term_id) {
+                    sbas_id = sbas_id.toString(); // be carefull because data() will cast digits as int
+                    tx_term_id = tx_term_id.toString();
+                    if (sbas_id === dragUniqueSbid) {
+                        dropRecordsOnTerm(sbas_id, tx_term_id, dragLstRecords);
+                    }
+                }
+
+                /*
+                $(this).removeClass('draggingOver');
+                if(dragTarget) {
+                    // const tid = $(event.toElement).data('tx_term_id');
+                    console.log("DROP ON id=" + dragTarget.attr('id'));
+                    dragTarget.removeClass('dragOver');
+                //                        appEvents.emit('searchAdvancedForm.activateDatabase', { databases: [sbid] });
+                }
+                dragging = false;    // == no more dragging something over th
+                dragTarget = null;
+                  */
+            }
+        })
+        //    .click(function() {return true;})
+        ;
+
+        /*
+                    // track the mouse
+                    .mousemove( (event) => {
+                        if(dragging) {
+                            const target = $(event.toElement);
+                            const sbas_id = target.data('sbas_id');         // set on html by ThesaurusXmlHttpController.php
+                            const tx_term_id = target.data('tx_term_id');   // set on html by ThesaurusXmlHttpController.php
+                            const oldTarget = dragTarget;
+                            dragTarget = (sbas_id && tx_term_id) ? target : null;
+                             // const oldTargetId  = oldTarget ? oldTarget.attr('id') : null;
+                            // const dragTargetId = dragTarget ? dragTarget.attr('id') : null;
+                            // console.log("oldTargetId="+oldTargetId+" ; dragTargetId="+dragTargetId);
+                             if(oldTarget && !oldTarget.is(dragTarget)) {
+                                // the mouse has quit a overed term (oldTargetId)
+                                oldTarget.removeClass('dragOver');
+                                console.log("OUT : " + oldTarget.attr('id'));
+                            }
+                             if(dragTarget && !dragTarget.is(oldTarget)) {
+                                // the mouse just overs a new term
+                                dragTarget.addClass('dragOver');
+                                console.log("IN : " + dragTarget.attr('id'));
+                            }
+                        }
+                     });
+        */
+
         searchValue = _underscore2.default.debounce(searchValue, 300);
     };
+
+    function dropRecordsOnTerm(sbas_id, tx_term_id, lstRecords) {
+        var dlg = _dialog2.default.create(services, {
+            size: 'Custom',
+            customWidth: 770,
+            customHeight: 400,
+            // title: localeService.t('add data'),
+            loading: true
+        }, 0);
+
+        var data = { // declaring data structure avoids phpstorm warnings
+            dlg_title: undefined,
+            dlg_content: undefined,
+            rec_refs: undefined,
+            commit_url: undefined
+        };
+        _jquery2.default.getJSON(url + 'prod/thesaurus/droprecords', {
+            'dlg_level': 0,
+            'sbas_id': sbas_id,
+            'tx_term_id': tx_term_id,
+            'lst': lstRecords
+        }, function (dlgData) {
+
+            var $container = dlg.getDomElement().closest('.ui-dialog'); // the whole dlg, including title & buttons
+            $container.addClass('black-dialog-wrap');
+
+            dlg.setOption("title", dlgData.dlg_title);
+            dlg.setContent(dlgData.dlg_content);
+
+            /**
+             * update the dlg (show/hide selects & buttons) depending on form status
+             */
+            var updateUx = function updateUx() {
+                // console.log("====== update =========================");
+
+                var okbutton = false; // must we show the ok button ?
+
+                /**
+                 * loop on advanced-mode fields
+                 */
+                (0, _jquery2.default)('#TXCLASSIFICATION_ADVANCED .action', $container).each(function () {
+                    var $this = (0, _jquery2.default)(this);
+                    var n = $this.data('n');
+
+                    switch ($this.val()) {// action
+                        case "":
+                            // first "select..." option
+                            (0, _jquery2.default)('.value_container._' + n, $container).hide();
+                            break;
+                        case "clear":
+                            // clear a mono-value : no need value selection
+                            (0, _jquery2.default)('.value_container._' + n, $container).hide();
+                            okbutton = true;
+                            break;
+                        default:
+                            (0, _jquery2.default)('.value_container._' + n, $container).show();
+                            okbutton = true;
+                    }
+                });
+
+                /**
+                 * if the "simple-mode" is front, show "ok" button
+                 */
+                var seltab_idx = (0, _jquery2.default)('.tabs', $container).tabs('option', 'active');
+                var seltab_id = (0, _jquery2.default)('.tabs>UL.ui-tabs-nav>LI:eq(' + seltab_idx + ')', $container).data('tab_id'); // "SIMPLE" or "ADVANCED"
+                if (seltab_id === "SIMPLE") {
+                    // simple ux:  ok is possible
+                    okbutton = true;
+                }
+
+                (0, _jquery2.default)(' .okbutton', $container).toggle(okbutton);
+            };
+
+            /**
+             * add buttons
+             */
+            dlg.setOption("buttons", [
+            /**
+             * OK button
+             */
+            {
+                text: "Ok",
+                class: "fieldSelected okbutton",
+                style: "display:none",
+                click: function click() {
+                    // don't submit the complex form, better build json
+                    var actions = [];
+
+                    /**
+                     * find the active tab ("SIMPLE" or "ADVANCED")
+                     */
+                    var seltab_idx = (0, _jquery2.default)('.tabs', $container).tabs('option', 'active');
+                    var seltab_id = (0, _jquery2.default)('.tabs>UL.ui-tabs-nav>LI:eq(' + seltab_idx + ')', $container).data('tab_id'); // "SIMPLE" or "ADVANCED"
+
+                    /**
+                     * extract data only from the front tab (div)
+                     */
+                    var box = (0, _jquery2.default)("#TXCLASSIFICATION_" + seltab_id, $container);
+                    (0, _jquery2.default)('.action', box).each(function () {
+                        var $this = (0, _jquery2.default)(this);
+                        var n = $this.data('n');
+                        var action = $this.val();
+                        if (action !== "") {
+                            var field = (0, _jquery2.default)('.field._' + n, box).val();
+                            var value = (0, _jquery2.default)('.value._' + n, box).val();
+
+                            switch (action) {
+                                case "replace":
+                                    // replace all multi-values
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': "replace",
+                                        'replace_with': value
+                                    });
+                                    break;
+                                case "clear":
+                                    // clear a mono-value
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': "delete"
+                                    });
+                                    break;
+                                default:
+                                    // all other actions don't need patch
+                                    actions.push({
+                                        'field_name': field,
+                                        'action': action,
+                                        'value': value
+                                    });
+                            }
+                        }
+                    });
+
+                    /**
+                     * post actions
+                     */
+                    data = {
+                        'records': dlgData.rec_refs,
+                        'actions': {
+                            'metadatas': actions
+                        }
+                    };
+
+                    // console.log(data);
+
+                    _jquery2.default.ajax({
+                        url: dlgData.commit_url,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        success: function success() {
+                            dlg.close();
+                        }
+                    });
+
+                    return false;
+                }
+            },
+
+            /**
+             * Cancel button
+             */
+            {
+                text: "Cancel",
+                click: function click() {
+                    (0, _jquery2.default)(this).dialog("close");
+                }
+            }]);
+
+            /**
+             * format the dlg content
+             */
+            (0, _jquery2.default)('SELECT', $container).menu();
+            (0, _jquery2.default)('.tabs', $container).tabs({ 'activate': updateUx });
+            (0, _jquery2.default)('.action', $container).change(updateUx);
+
+            updateUx(); // enforce initial update;
+        }).fail(function (jqxhr, textStatus, error) {
+            // the dlg content failed, report onto the dlg (better than forever loading)
+            var err = textStatus + ", " + error;
+            dlg.setContent("Request Failed: " + err);
+        });
+    }
 
     function show() {
         // first show of thesaurus
@@ -12543,6 +12923,12 @@ var thesaurusService = function thesaurusService(services) {
             }
         });
     }
+
+    appEvents.listenAll({
+        'broadcast.searchResultSelection': function broadcastSearchResultSelection(selection) {
+            searchSelection = selection;
+        }
+    });
 
     return { initialize: initialize, show: show };
 };
@@ -17085,16 +17471,29 @@ var deleteBasket = function deleteBasket(services) {
             case 'SSTT':
 
                 var buttons = {};
-                buttons[localeService.t('valider')] = function (e) {
+
+                buttons[localeService.t('archive')] = function (e) {
+                    _archiveBasket($el);
+                };
+
+                buttons[localeService.t('deleteTitle')] = function (e) {
                     _deleteBasket($el);
                 };
 
-                (0, _jquery2.default)('#DIALOG').empty().append(localeService.t('confirmDel')).attr('title', localeService.t('attention')).dialog({
-                    autoOpen: false,
-                    resizable: false,
-                    modal: true,
-                    draggable: false
-                }).dialog('open').dialog('option', 'buttons', buttons);
+                var dialogWindow = _dialog2.default.create(services, {
+                    size: 'Medium',
+                    title: localeService.t('attention'),
+                    closeButton: true
+                });
+
+                //Add custom class to dialog wrapper
+                dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+
+                var content = '<div class="well-small">' + localeService.t('confirmDel') + '</div>';
+                dialogWindow.setContent(content);
+
+                dialogWindow.setOption('buttons', buttons);
+
                 (0, _jquery2.default)('#tooltip').hide();
                 break;
             /*case 'STORY':
@@ -17106,9 +17505,9 @@ var deleteBasket = function deleteBasket(services) {
     };
 
     var _deleteBasket = function _deleteBasket(item) {
-        if ((0, _jquery2.default)('#DIALOG').data('ui-dialog')) {
-            (0, _jquery2.default)('#DIALOG').dialog('destroy');
-        }
+        var dialogWindow = _dialog2.default.get(1);
+        dialogWindow.close();
+
         // id de chutier
         var k = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
         _jquery2.default.ajax({
@@ -17139,6 +17538,44 @@ var deleteBasket = function deleteBasket(services) {
                     alert(data.message);
                 }
                 return;
+            }
+        });
+    };
+
+    var _archiveBasket = function _archiveBasket(item) {
+        var dialogWindow = _dialog2.default.get(1);
+        dialogWindow.close();
+
+        var basketId = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: url + 'prod/baskets/' + basketId + '/archive/?archive=1',
+            dataType: 'json',
+            success: function success(data) {
+                if (data.success) {
+                    var basket = (0, _jquery2.default)('#SSTT_' + basketId);
+                    var basketNext = basket.next();
+
+                    if (basketNext.data('ui-droppable')) {
+                        basketNext.droppable('destroy');
+                    }
+
+                    basketNext.slideUp().remove();
+
+                    if (basket.data('ui-droppable')) {
+                        basket.droppable('destroy');
+                    }
+
+                    basket.slideUp().remove();
+
+                    if ((0, _jquery2.default)('#baskets .SSTT').length === 0) {
+                        appEvents.emit('workzone.refresh');
+                    }
+                } else {
+                    alert(data.message);
+                }
+
+                return false;
             }
         });
     };
@@ -50210,7 +50647,7 @@ module.exports = VTTRegion;
 /* 148 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 149 */
@@ -60241,6 +60678,7 @@ var Feedback = function Feedback(services, options) {
     });
 
     (0, _jquery2.default)('.FeedbackSend', this.container).bind('click', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
         if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
             return;
@@ -60248,9 +60686,18 @@ var Feedback = function Feedback(services, options) {
 
         var buttons = {};
 
-        buttons[localeService.t('annuler')] = function () {
-            $dialog.close();
-        };
+        if ($el.data('feedback-action') === 'adduser') {
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
+                $dialog.close();
+
+                (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
+
+                $FeedBackForm.trigger('submit');
+            };
+        }
 
         buttons[localeService.t('send')] = function () {
             if ($el.data('feedback-action') !== 'adduser') {
@@ -60277,8 +60724,13 @@ var Feedback = function Feedback(services, options) {
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+            (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
 
             $FeedBackForm.trigger('submit');
+        };
+
+        buttons[localeService.t('annuler')] = function () {
+            $dialog.close();
         };
 
         var options = {
@@ -60289,7 +60741,6 @@ var Feedback = function Feedback(services, options) {
             closeOnEscape: true
         };
 
-        var $el = (0, _jquery2.default)(event.currentTarget);
         if ($el.hasClass('validation')) {
             options.isValidation = true;
             options.size = '558x415';
@@ -60316,6 +60767,7 @@ var Feedback = function Feedback(services, options) {
 
         var feedbackTitle = (0, _jquery2.default)('#feedbackTitle').val();
         var pushTitle = (0, _jquery2.default)('#pushTitle').val();
+
         if (options.isValidation) {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
         } else {
@@ -60324,6 +60776,15 @@ var Feedback = function Feedback(services, options) {
 
         if ($el.data('feedback-action') !== 'adduser') {
             (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        } else {
+            // display the list of new user in the dialog window when add user
+            var lisNewUser = (0, _jquery2.default)('#newParticipantsUser').val();
+            if (lisNewUser == '') {
+                (0, _jquery2.default)('.email-to-notify').hide();
+            } else {
+                (0, _jquery2.default)('.email-to-notify').show();
+                (0, _jquery2.default)('#email-to-notify').empty().append((0, _jquery2.default)('#newParticipantsUser').val());
+            }
         }
 
         (0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val((0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val());
@@ -60376,6 +60837,22 @@ var Feedback = function Feedback(services, options) {
 
     this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
         var $elem = (0, _jquery2.default)(this).closest('.badge');
+        var userEmailEl = $elem.find('.user-email').val();
+
+        var value = (0, _jquery2.default)('#newParticipantsUser').val();
+        var actualParticipantsName = value.split('; ');
+        // remove the user in the list of new participant if yet exist
+        var key = _jquery2.default.inArray(userEmailEl, actualParticipantsName);
+        if (key > -1) {
+            actualParticipantsName.splice(key, 1);
+            if (actualParticipantsName.length != 0) {
+                value = actualParticipantsName.join('; ');
+                (0, _jquery2.default)('#newParticipantsUser').val(value);
+            } else {
+                (0, _jquery2.default)('#newParticipantsUser').val('');
+            }
+        }
+
         $elem.fadeOut(function () {
             $elem.remove();
         });
@@ -60404,7 +60881,7 @@ var Feedback = function Feedback(services, options) {
 
     (0, _jquery2.default)('form.list_saver', this.container).bind('submit', function () {
         var $form = (0, _jquery2.default)(event.currentTarget);
-        var $input = (0, _jquery2.default)('input[name="name"]', $form);
+        var $input = (0, _jquery2.default)('input[name="list_name"]', $form);
 
         var users = _this.getUsers();
 
@@ -60493,6 +60970,18 @@ Feedback.prototype = {
         if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
             humane.info('User already selected');
             return;
+        }
+
+        if ((0, _jquery2.default)('input[name="feedbackAction"]').val() == 'adduser') {
+            var actualParticipantsUserIds = (0, _jquery2.default)('#participantsUserIds').val();
+            actualParticipantsUserIds = actualParticipantsUserIds.split('_');
+
+            if (!(_jquery2.default.inArray(user.usr_id.toString(), actualParticipantsUserIds) > -1)) {
+                var value = (0, _jquery2.default)('#newParticipantsUser').val();
+                var glue = value == '' ? '' : '; ';
+                value = value + glue + user.email;
+                (0, _jquery2.default)('#newParticipantsUser').val(value);
+            }
         }
 
         var html = _.template((0, _jquery2.default)('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
@@ -63778,6 +64267,14 @@ var preferences = function preferences(services) {
             appEvents.emit('search.doRefreshState');
         });
 
+        $container.on('change', '#ADVSRCH_UNSET_FIELD_FACET', function (event) {
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref('show_unset_field_facet', $el.prop('checked') ? '1' : '0');
+            appEvents.emit('search.updateFacetData');
+            appEvents.emit('search.doRefreshState');
+        });
+
         $container.on('click', '.open-preferences', function (event) {
             event.preventDefault();
             openModal(event);
@@ -63834,18 +64331,6 @@ var preferences = function preferences(services) {
         });
 
         $container.on('change', '.preferences-options-technical-display', function (event) {
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            event.preventDefault();
-            appCommons.userModule.setPref('technical_display', $el.val());
-            appEvents.emit('search.doRefreshState');
-        });
-        $container.on('change', '.preferences-options-rollover-preview', function (event) {
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            event.preventDefault();
-            appCommons.userModule.setPref('technical_display', $el.val());
-            appEvents.emit('search.doRefreshState');
-        });
-        $container.on('change', '.preferences-options-rollover-preview', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
             event.preventDefault();
             appCommons.userModule.setPref('technical_display', $el.val());
@@ -65715,6 +66200,7 @@ var previewRecordService = function previewRecordService(services) {
                 (0, _jquery2.default)('#PREVIEWIMGDESCINNER').empty().append(data.desc);
                 (0, _jquery2.default)('#HISTORICOPS').empty().append(data.history);
                 (0, _jquery2.default)('#popularity').empty().append(data.popularity);
+                (0, _jquery2.default)('#NOTICE-INNER').empty().append(data.votingNotice);
 
                 if ((0, _jquery2.default)('#popularity .bitly_link').length > 0) {
                     if (window.BitlyCB !== undefined && window.BitlyClient !== undefined) {
@@ -65883,7 +66369,9 @@ var previewRecordService = function previewRecordService(services) {
         } else {
             if (options.mode === 'RESULT') {
                 var posAsk = parseInt(options.current.pos, 10) + 1;
-                posAsk = posAsk >= parseInt(options.navigation.tot, 10) || isNaN(posAsk) ? 0 : posAsk;
+                if (isNaN(posAsk) || posAsk >= parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
+                    posAsk = 0;
+                }
                 _openPreview(false, 'RESULT', posAsk, '', false);
             } else {
                 if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':last-child')) {
@@ -65898,10 +66386,7 @@ var previewRecordService = function previewRecordService(services) {
     function getPrevious() {
         if (options.mode === 'RESULT') {
             var posAsk = parseInt(options.current.pos, 10) - 1;
-            if (options.navigation.page === 1) {
-                // may go to last result
-                posAsk = posAsk < 0 ? parseInt(options.navigation.tot, 10) - 1 : posAsk;
-            }
+            posAsk = posAsk < 0 ? parseInt((0, _jquery2.default)('#PREVIEWCURRENTCONT').data('records-count'), 10) - 1 : posAsk;
             _openPreview(false, 'RESULT', posAsk, '', false);
         } else {
             if (!(0, _jquery2.default)('#PREVIEWCURRENT li.selected').is(':first-child')) {

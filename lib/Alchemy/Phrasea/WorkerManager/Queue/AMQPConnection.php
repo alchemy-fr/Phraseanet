@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\WorkerManager\Queue;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Exception;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPSSLConnection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -69,8 +70,9 @@ class AMQPConnection
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::EXPOSE_UPLOAD_TYPE       => [
-            'with'            => self::WITH_NOTHING,
+            'with'            => self::WITH_RETRY,
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
         MessagePublisher::FTP_TYPE                 => [
             'with'            => self::WITH_RETRY,
@@ -130,6 +132,7 @@ class AMQPConnection
         $defaultConfiguration = [
             'host'      => 'localhost',
             'port'      => 5672,
+            'ssl'       => false,
             'user'      => 'guest',
             'password'  => 'guest',
             'vhost'     => '/'
@@ -301,15 +304,30 @@ class AMQPConnection
     public function getConnection()
     {
         if (!isset($this->connection)) {
-            try{
-                $this->connection =  new AMQPStreamConnection(
-                    $this->hostConfig['host'],
-                    $this->hostConfig['port'],
-                    $this->hostConfig['user'],
-                    $this->hostConfig['password'],
-                    $this->hostConfig['vhost']
-                );
+            try {
+                // if we are in ssl connection type
+                if (isset($this->hostConfig['ssl']) && $this->hostConfig['ssl'] === true) {
+                    $sslOptions = [
+                        'verify_peer' => true
+                    ];
 
+                    $this->connection =  new AMQPSSLConnection(
+                        $this->hostConfig['host'],
+                        $this->hostConfig['port'],
+                        $this->hostConfig['user'],
+                        $this->hostConfig['password'],
+                        $this->hostConfig['vhost'],
+                        $sslOptions
+                    );
+                } else {
+                    $this->connection =  new AMQPStreamConnection(
+                        $this->hostConfig['host'],
+                        $this->hostConfig['port'],
+                        $this->hostConfig['user'],
+                        $this->hostConfig['password'],
+                        $this->hostConfig['vhost']
+                    );
+                }
             }
             catch (Exception $e) {
                 // no-op
@@ -392,7 +410,9 @@ class AMQPConnection
                 ]);
                 break;
             case self::FAILED_QUEUE:
-                $this->queue_declare_and_bind($queueName, self::RETRY_ALCHEMY_EXCHANGE);
+                $this->queue_declare_and_bind($queueName, self::RETRY_ALCHEMY_EXCHANGE, [
+                    'x-message-ttl' =>  604800*1000  //  message in failed_q to be dead after 7 days by default
+                    ]);
                 break;
             case self::BASE_QUEUE:
                 $this->queue_declare_and_bind($queueName, self::ALCHEMY_EXCHANGE);
@@ -444,7 +464,7 @@ class AMQPConnection
         foreach ($queueNames as $queueName) {
             // re-inject conf values (some may have changed)
             $settings = $this->conf->get(['workers', 'queues', $queueName], []);
-            if(array_key_exists($queueName, $this->queues)) {
+            if($this->isBaseQueue($queueName) && array_key_exists($queueName, $this->queues)) {
                 $this->queues[$queueName]['settings'] = array_merge($this->queues[$queueName]['settings'], $settings);
             }
 

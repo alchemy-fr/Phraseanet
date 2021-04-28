@@ -23,7 +23,7 @@ class SearchEngineOptionsTest extends \PhraseanetTestCase
         /** @var \collection $collection */
         $collection = $this->getCollection();
 
-        $options = new SearchEngineOptions($app);
+        $options = new SearchEngineOptions(self::$DI['app']['repo.collection-references']);
         $options->onBasesIds([$collection->get_base_id()]);
         $options->setRecordType(SearchEngineOptions::TYPE_ALL);
         $options->setSearchType(SearchEngineOptions::RECORD_RECORD);

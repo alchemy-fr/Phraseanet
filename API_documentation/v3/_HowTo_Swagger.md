@@ -13,7 +13,7 @@ to update in swaggerhub (single file) :
 
 - compile sources in a single file for swaggerhub (run from <phraseanet-dir>)
 
-    `swagger-cli bundle API_documentation/v3/api.yaml -o API_documentation/v3/_compiled.yaml -t yaml`
+    `swagger-cli bundle API_documentation/v3/api.yaml -r -o API_documentation/v3/_compiled.yaml -t yaml`
 
 
 - copy/paste the generated content from `_compiled.yaml` to

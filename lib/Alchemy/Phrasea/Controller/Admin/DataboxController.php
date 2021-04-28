@@ -15,6 +15,10 @@ use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -173,19 +177,25 @@ class DataboxController extends Controller
     public function reindex(Request $request, $databox_id)
     {
         $success = false;
+        $options = $this->getElasticsearchOptions();
+
+        $populateInfo = [
+            'host'          => $options->getHost(),
+            'port'          => $options->getPort(),
+            'indexName'     => $options->getIndexName(),
+            'databoxIds'    => [$databox_id]
+        ];
 
         try {
-            $this->findDataboxById($databox_id)->reindex();
+            $this->getDispatcher()->dispatch(WorkerEvents::POPULATE_INDEX, new PopulateIndexEvent($populateInfo));
             $success = true;
         } catch (\Exception $e) {
-
         }
 
         if ('json' === $request->getRequestFormat()) {
             return $this->app->json([
                 'success' => $success,
-                'msg'     => $success ? $this->app->trans('Successful update') : $this->app->trans('An error occured'),
-                'sbas_id' => $databox_id,
+                'sbas_id' => $databox_id
             ]);
         }
 
@@ -757,5 +767,21 @@ class DataboxController extends Controller
             'table'   => $details,
             'total'   => $total
         ]);
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    private function getDispatcher()
+    {
+        return $this->app['dispatcher'];
+    }
+
+    /**
+     * @return ElasticsearchOptions
+     */
+    private function getElasticsearchOptions()
+    {
+        return $this->app['elasticsearch.options'];
     }
 }

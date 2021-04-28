@@ -3,9 +3,9 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
 /**
  * @group functional
@@ -101,7 +101,7 @@ class RecordsTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->mockElasticsearchResult(self::$DI['record_1']);
         $this->authenticate($app);
 
-        $options = new SearchEngineOptions();
+        $options = new SearchEngineOptions(self::$DI['app']['repo.collection-references']);
         $acl = $app->getAclForUser($app->getAuthenticatedUser());
         $searchableBasesIds = $acl->getSearchableBasesIds();
         $options->onBasesIds($searchableBasesIds);

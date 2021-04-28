@@ -9,20 +9,15 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
-use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\Utilities\StringHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -358,10 +353,10 @@ class QueryController extends Controller
             $fieldsInfosByName = [];
             foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
                 $fieldsInfosByName[$k] = $f;
-                $fieldsInfosByName[$k]['trans_label'] = $this->app->trans($f['label']);
+                $fieldsInfosByName[$k]['trans_label'] = $this->app->trans( /** @ignore */ $f['label']);
                 $fieldsInfosByName[$k]['labels'] = [];
                 foreach($this->app->getAvailableLanguages() as $locale => $lng) {
-                    $fieldsInfosByName[$k]['labels'][$locale] = $this->app->trans($f['label'], [], "messages", $locale);
+                    $fieldsInfosByName[$k]['labels'][$locale] = $this->app->trans( /** @ignore */ $f['label'], [], "messages", $locale);
                 }
             }
 
@@ -499,6 +494,7 @@ class QueryController extends Controller
                 'records'  => $record->get_train(),
                 'index' => $index,
                 'selected' => $pos,
+                'recordsTotal' => $record->getTotal()
             ])
         ]);
     }

@@ -14,7 +14,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class PSExposeController extends Controller
 {
     /**
-     * Set access token on session 'password_access_token'
+     * Set access token on session 'password_access_token_' + expose_name
+     *
      * @param PhraseaApplication $app
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -60,8 +61,9 @@ class PSExposeController extends Controller
 
         $tokenBody = json_decode($tokenBody,true);
         $session = $this->getSession();
+        $passSessionName = $this->getPassSessionName($request->request->get('exposeName'));
 
-        $session->set('password_access_token', $tokenBody['access_token']);
+        $session->set($passSessionName, $tokenBody['access_token']);
 
         return $this->app->json([
             'success' => true
@@ -82,7 +84,7 @@ class PSExposeController extends Controller
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
 
         try {
             $guzzleParams = [
@@ -141,14 +143,15 @@ class PSExposeController extends Controller
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
         $session = $this->getSession();
+        $passSessionName = $this->getPassSessionName($request->get('exposeName'));
 
-        if (!$session->has('password_access_token') && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
+        if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
             return $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
                 'exposeName' => $request->get('exposeName')
             ]);
         }
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
 
         if ($exposeConfiguration == null ) {
             return $this->render("prod/WorkZone/ExposeList.html.twig", [
@@ -200,7 +203,7 @@ class PSExposeController extends Controller
 
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
 
         $publication = [];
 
@@ -252,7 +255,7 @@ class PSExposeController extends Controller
 
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
 
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
 
@@ -280,7 +283,7 @@ class PSExposeController extends Controller
 
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
 
         $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
             'headers' => [
@@ -321,7 +324,8 @@ class PSExposeController extends Controller
      */
     public function listProfileAction(PhraseaApplication $app, Request $request)
     {
-        if ( $request->get('exposeName') == null) {
+        $exposeName = $request->get('exposeName');
+        if ( $exposeName == null) {
             return $app->json([
                 'profiles' => [],
                 'basePath' => []
@@ -333,7 +337,7 @@ class PSExposeController extends Controller
 
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+        $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
 
         $profiles = [];
         $basePath = '';
@@ -388,12 +392,12 @@ class PSExposeController extends Controller
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration);
+            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
 
             $response = $this->postPublication($exposeClient, $accessToken, json_decode($request->get('publicationData'), true));
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration);
+                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
 
                 $response = $this->postPublication($exposeClient, $accessToken, json_decode($request->get('publicationData'), true));
             }
@@ -443,12 +447,12 @@ class PSExposeController extends Controller
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration);
+            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
 
             $response = $this->putPublication($exposeClient, $request->get('publicationId'), $accessToken, json_decode($request->get('publicationData'), true));
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration);
+                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
                 $response = $this->putPublication($exposeClient, $request->get('publicationId'), $accessToken, json_decode($request->get('publicationData'), true));
             }
 
@@ -489,12 +493,12 @@ class PSExposeController extends Controller
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration);
+            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
 
             $response = $this->removePublication($exposeClient, $request->get('publicationId'), $accessToken);
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration);
+                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
                 $response = $this->removePublication($exposeClient, $request->get('publicationId'), $accessToken);
             }
 
@@ -535,12 +539,12 @@ class PSExposeController extends Controller
         $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration);
+            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
 
             $response = $this->removeAssetPublication($exposeClient, $request->get('publicationId'), $request->get('assetId'), $accessToken);
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration);
+                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
                 $response = $this->removeAssetPublication($exposeClient, $request->get('publicationId'), $request->get('assetId'), $accessToken);
             }
 
@@ -588,7 +592,7 @@ class PSExposeController extends Controller
 
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$exposeName];
-        $accessToken = $this->getAndSaveToken($exposeConfiguration);
+        $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
 
         $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessToken));
 
@@ -660,21 +664,39 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Get password session name
+     *
+     * @param $exposeName
+     * @return string
+     */
+    private function getPassSessionName($exposeName)
+    {
+        $expose_name = str_replace(' ', '_', $exposeName);
+
+        return 'password_access_token_'.$expose_name;
+    }
+
+    /**
      * Get Token and save in session
      * @param $config
+     * @param $exposeName
      *
      * @return mixed
      */
-    private function getAndSaveToken($config)
+    private function getAndSaveToken($config, $exposeName)
     {
         $session = $this->getSession();
+        $passSessionName = $this->getPassSessionName($exposeName);
+
+        $expose_name = str_replace(' ', '_', $exposeName);
+        $credentialSessionName = 'credential_access_token_'.$expose_name;
 
         $accessToken = '';
         if ($config['connection_kind'] == 'password') {
-            $accessToken = $session->get('password_access_token');
+            $accessToken = $session->get($passSessionName);
         } elseif ($config['connection_kind'] == 'client_credentials') {
-            if ($session->has('credential_access_token')) {
-                $accessToken = $session->get('credential_access_token');
+            if ($session->has($credentialSessionName)) {
+                $accessToken = $session->get($credentialSessionName);
             } else {
                 $oauthClient = new Client();
 
@@ -699,7 +721,7 @@ class PSExposeController extends Controller
 
                 $tokenBody = json_decode($tokenBody,true);
 
-                $session->set('credential_access_token', $tokenBody['access_token']);
+                $session->set($credentialSessionName, $tokenBody['access_token']);
 
                 $accessToken = $tokenBody['access_token'];
             }

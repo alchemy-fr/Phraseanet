@@ -84,40 +84,59 @@ class RegistrationRepository extends EntityRepository
         $data = [];
         $rsm = $this->createResultSetMappingBuilder('d');
         $rsm->addScalarResult('sbas_id','sbas_id');
-        $rsm->addScalarResult('base_id','base_id');
+        $rsm->addScalarResult('bas_id','bas_id');
         $rsm->addScalarResult('dbname','dbname');
         $rsm->addScalarResult('time_limited', 'time_limited');
         $rsm->addScalarResult('limited_from', 'limited_from');
         $rsm->addScalarResult('limited_to', 'limited_to');
         $rsm->addScalarResult('actif', 'actif');
 
-        $sql = "
-        SELECT dbname, sbas.sbas_id, time_limited,
-               UNIX_TIMESTAMP( limited_from ) AS limited_from,
-               UNIX_TIMESTAMP( limited_to ) AS limited_to,
-               bas.server_coll_id, Users.id, basusr.actif,
-               bas.base_id, " . $rsm->generateSelectClause(['d' => 'd',]) . "
-        FROM (Users, bas, sbas)
-          LEFT JOIN basusr ON ( Users.id = basusr.usr_id AND bas.base_id = basusr.base_id )
-          LEFT JOIN Registrations d ON ( d.user_id = Users.id AND bas.base_id = d.base_id )
-        WHERE basusr.actif = 1 AND bas.sbas_id = sbas.sbas_id
-        AND Users.id = ?";
+        // nb: UNIX_TIMESTAMP will return null if date is 0000-00-00 00:00:00
+        $sql = "SELECT dbname, sbas.sbas_id, time_limited,\n"
+            . "  UNIX_TIMESTAMP( limited_from ) AS limited_from,\n"
+            . "  UNIX_TIMESTAMP( limited_to ) AS limited_to,\n"
+            . "  bas.server_coll_id, Users.id, basusr.actif,\n"
+            . "  bas.base_id AS bas_id, " . $rsm->generateSelectClause(['d' => 'd',]) . "\n"
+            . "FROM (Users, bas, sbas)\n"
+            . "  LEFT JOIN basusr ON ( Users.id = basusr.usr_id AND bas.base_id = basusr.base_id )\n"
+            . "  LEFT JOIN Registrations d ON ( d.user_id = Users.id AND bas.base_id = d.base_id )\n"
+            . "WHERE bas.active = 1 AND bas.sbas_id = sbas.sbas_id\n"
+            . "  AND Users.id = ?\n"
+            . "  AND ISNULL(model_of)";
 
         $query = $this->_em->createNativeQuery($sql, $rsm);
         $query->setParameter(1, $user->getId());
 
         foreach ($query->getResult() as $row) {
             $registrationEntity = $row[0];
-            $data[$row['sbas_id']][$row['base_id']] = [
-                'base-id' => $row['base_id'],
+            $in_time = null;
+            if(($row['time_limited'] !== null) && ($row['limited_from'] !== null || $row['limited_to'] !== null)) {
+                $in_time = true;
+                if($row['limited_from'] !== null && time() < $row['limited_from']) {
+                    $in_time = false;
+                }
+                elseif($row['limited_to'] !== null && time() > $row['limited_to']) {
+                    $in_time = false;
+                }
+            }
+            $data[$row['sbas_id']][$row['bas_id']] = [
+                'base-id' => $row['bas_id'],
                 'db-name' => $row['dbname'],
-                'active' => (Boolean) $row['actif'],
-                'time-limited' => (Boolean) $row['time_limited'],
-                'in-time' => $row['time_limited'] && ! ($row['limited_from'] >= time() && $row['limited_to'] <= time()),
+                'active' => self::nullOrBoolean($row['actif']),
+                'time-limited' => self::nullOrBoolean($row['time_limited']),
+                'in-time' => $in_time,
                 'registration' => $registrationEntity
             ];
         }
 
         return $data;
+    }
+
+    public static function nullOrBoolean($v)
+    {
+        if(!is_null($v)) {
+            $v = (boolean)$v;
+        }
+        return $v;
     }
 }

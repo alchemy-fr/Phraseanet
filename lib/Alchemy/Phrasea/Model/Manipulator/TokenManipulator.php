@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Model\Manipulator;
 
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\Token;
@@ -41,6 +42,7 @@ class TokenManipulator implements ManipulatorInterface
     private $om;
     private $random;
     private $repository;
+    private $conf;
 
     private $temporaryDownloadPath;
 
@@ -48,12 +50,14 @@ class TokenManipulator implements ManipulatorInterface
         ObjectManager $om,
         Generator $random,
         TokenRepository $repository,
-        $temporaryDownloadPath)
+        $temporaryDownloadPath,
+        PropertyAccess $configuration)
     {
         $this->om = $om;
         $this->random = $random;
         $this->repository = $repository;
         $this->temporaryDownloadPath = $temporaryDownloadPath;
+        $this->conf = $configuration;
     }
 
     /**
@@ -168,7 +172,9 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createDownloadToken(User $user, $data)
     {
-        return $this->create($user, self::TYPE_DOWNLOAD, new DateTime('+3 hours'), $data);
+        $downloadLinkValidity = (int) $this->conf->get(['registry', 'actions', 'download-link-validity'], 24);
+
+        return $this->create($user, self::TYPE_DOWNLOAD, new DateTime("+{$downloadLinkValidity} hours"), $data);
     }
 
     /**
@@ -178,7 +184,9 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createEmailExportToken($data)
     {
-        return $this->create(null, self::TYPE_EMAIL, new DateTime('+1 day'), $data);
+        $downloadLinkValidity = (int) $this->conf->get(['registry', 'actions', 'download-link-validity'], 24);
+
+        return $this->create(null, self::TYPE_EMAIL, new DateTime("+{$downloadLinkValidity} hours"), $data);
     }
 
     /**

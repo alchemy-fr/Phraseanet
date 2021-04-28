@@ -2301,19 +2301,17 @@ span.ww_winTitle {
   font-size: 16px;
 }
 
-.black-dialog-wrap.ui-dialog.ui-widget-content.move-dialog .ui-dialog-content {
-  height: auto !important;
-}
-
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-content {
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: auto !important;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-content form {
   margin-bottom: 0;
+}
+
+.black-dialog-wrap.ui-dialog.ui-widget-content .ui-menu OPTION {
+  color: #333333;
+  background-color: white;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-titlebar {
@@ -2346,13 +2344,13 @@ span.ww_winTitle {
   min-width: 170px;
   margin: 12px 10px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.36);
-  background: #e6e6e6;
-  color: #000;
-}
-
-.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:first-child {
   background: #787878;
   color: #fff;
+}
+
+.black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:last-child {
+  background: #e6e6e6;
+  color: #000;
 }
 
 .black-dialog-wrap.ui-dialog.ui-widget-content .ui-dialog-buttonpane button:hover {
@@ -6119,6 +6117,17 @@ form.phrasea_query input.query {
   z-index: 1;
 }
 
+/******* Classification using thesaurus ************************************/
+
+#TXCLASSIFICATION FORM {
+  padding: 0;
+  margin: 0;
+}
+
+#TXCLASSIFICATION #TXCLASSIFICATION_ADVANCED TD {
+  padding: 0 5px 0 5px;
+}
+
 .publish-dialog .ui-dialog-content {
   max-height: 575px !important;
 }
@@ -7319,24 +7328,27 @@ div.thesaurus div.c {
   position: absolute;
 }
 
+.treeview ul li {
+  /*
+            &:hover {
+                color: $textPrimaryColor;
+            }
+            span {
+                color: $mediumTextColor;
+                .dragOver {
+                    background-color: $highlightBackgroundColor;
+                    color: $highlightTextColor;
+                }
+            }
+*/
+}
+
 .treeview ul li .hitarea {
   background: url("/assets/common/images/icons/icon_tree.png") 0 0 no-repeat;
   position: relative;
   height: 9px;
   width: 9px;
   margin-top: 5px;
-}
-
-.treeview ul li:hover {
-  color: #333333;
-}
-
-.treeview ul li span {
-  color: #333333;
-}
-
-.treeview ul li span.h {
-  color: #884c92 !important;
 }
 
 #THPD_T_treeBox,
@@ -7381,6 +7393,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #THPD_tabs {
   right: 0;
+  /*
+    .treeview LI.selected SPAN {
+        background-color: $thesaurusColor !important;
+        color: $textPrimaryActiveColor !important;
+    }
+
+    .treeview LI.selected SPAN {
+        background-color: #ff0000;
+    }
+
+    .treeview LI.selected LI SPAN {
+        background-color: transparent;
+    }
+
+    .context-menu-item-disabled {
+        background-color: #ff0000;
+    }
+
+ */
 }
 
 #THPD_tabs .ui-tabs-nav li.th_tab a {
@@ -7417,6 +7448,25 @@ dans l'onglet thesaurus : arbres, menus contextuels
   text-decoration: underline;
 }
 
+#THPD_tabs .treeview {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /*
+        i {
+            // count of hits
+            color: #80ff80;
+            background-color: #606060;
+            font-style: normal;
+            margin-left: 10px;
+            padding-left: 3px;
+            padding-right: 3px;
+            font-family: courier;
+        }
+        */
+}
+
 #THPD_tabs .treeview ul {
   background-color: #bfbfbf;
   margin-left: -16px;
@@ -7428,42 +7478,90 @@ dans l'onglet thesaurus : arbres, menus contextuels
   padding-bottom: 5px;
 }
 
-#THPD_tabs .treeview span {
+#THPD_tabs .treeview span.tx_term {
   cursor: pointer;
+  color: #333333;
+  /*
+            &.dragOver {
+                // highlited as a target for dropping
+                background-color: $highlightBackgroundColor;
+                color: $highlightTextColor;
+            }
+            */
 }
 
-#THPD_tabs .treeview span.h {
-  /* highlighted (filtered) */
-  color: #ffffd0;
+#THPD_tabs .treeview span.tx_term.h {
+  color: #884c92;
   font-weight: bold;
 }
 
-#THPD_tabs .treeview i {
-  /* count of hits */
-  color: #80ff80;
-  background-color: #606060;
-  font-style: normal;
-  margin-left: 10px;
-  padding-left: 3px;
-  padding-right: 3px;
-  font-family: courier;
+#THPD_tabs .treeview span.tx_term:hover {
+  color: #fff;
 }
 
-#THPD_tabs .treeview LI.selected SPAN {
-  background-color: #884c92 !important;
-  color: #1a1a1a !important;
+#THPD_T_tree span.tx_term {
+  /*
+        cursor: pointer;
+        color: $mediumTextColor;
+        &.h {
+            // highlighted (filtered as matching the filter input)
+            color: $thesaurusColor;
+            font-weight: bold;
+        }
+        &:hover {
+            color: $highlightTextColor;
+        }
+        */
+  /*
+        &.dragOver {
+            // highlited as a target for dropping
+            background-color: $highlightBackgroundColor;
+            color: $highlightTextColor;
+        }
+        */
 }
 
-#THPD_tabs .treeview LI.selected SPAN {
-  background-color: #ff0000;
+#THPD_T_tree.draggingOver {
+  cursor: not-allowed;
+  /*
+        &:hover {
+            // background-color: #8F0000; // debug purpose
+            cursor: not-allowed;
+        }
+        */
+  /*  debug purpose
+        span.tx_term:hover {
+            color: #ff00ff;
+        }
+        */
 }
 
-#THPD_tabs .treeview LI.selected LI SPAN {
-  background-color: transparent;
+#THPD_T_tree.draggingOver span.tx_term {
+  color: #333333;
+  cursor: not-allowed;
+  /*   debug purpose
+            &:hover {
+                color: #f9a732;
+            }
+            */
 }
 
-#THPD_tabs .context-menu-item-disabled {
-  background-color: #ff0000;
+#THPD_T_tree.draggingOver LI.draggingOver {
+  cursor: default;
+  /*
+            &:hover {
+                // background-color: #008F00; // debug purpose
+                cursor: default;
+            }
+            */
+}
+
+#THPD_T_tree.draggingOver LI.draggingOver span.tx_term {
+  cursor: copy;
+}
+
+#THPD_T_tree.draggingOver LI.draggingOver span.tx_term:hover {
+  color: #fff;
 }
 
 #idFrameC .ui-tabs #THPD_C.ui-tabs-panel,
@@ -8900,6 +8998,17 @@ TABLE.explain3 TR TD {
   opacity: 0.4;
 }
 
+.feedback-data-list:after {
+  width: 75%;
+  height: 1px;
+  background: #fff;
+  position: absolute;
+  content: '';
+  left: 12.5%;
+  bottom: 0;
+  opacity: 0.4;
+}
+
 #PREVIEWOTHERSINNER li.otherRegToolTip span.title {
   line-height: 25px;
   margin-left: 3px;
@@ -9215,7 +9324,7 @@ input.text_input_white {
   color: #FFFFFF;
 }
 
-.dialog_container.validation .ui-dialog-buttonpane .ui-button:nth-child(2) {
+.dialog_container.validation .ui-dialog-buttonpane .ui-button:last-child {
   background-color: #8bc34a;
   color: #FFFFFF;
 }
@@ -9616,6 +9725,7 @@ input.text_input_white {
   padding: 4px 0px;
   margin-left: 20px;
   margin-bottom: -7px;
+  float: right;
 }
 
 .PushBox .FeedbackSend:hover {
@@ -10010,8 +10120,7 @@ input.text_input_white {
   top: auto;
   right: 20px;
   bottom: 10px;
-  left: 10px;
-  text-align: right;
+  left: 20px;
 }
 
 .PushBox .user_content .badges {

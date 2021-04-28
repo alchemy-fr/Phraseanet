@@ -138,7 +138,7 @@
     </div>
 
     <form method="post" action="{{ path('admin_database_reindex', {'databox_id': databox.get_sbas_id()}) }}">
-        <button type="button" class="btn submiter confirm" data-confirm-msg="{{ 'Confirmez-vous la re-indexation de la base ?' | trans }}">
+        <button type="button" class="btn databox-reindex" data-databox-id="{{ databox.get_sbas_id() }}" data-confirm-msg="{{ 'Confirmez-vous la re-indexation de la base ?' | trans }}">
             {{ "base:: re-indexer" | trans }}
         </button>
     </form>
@@ -351,6 +351,33 @@
                 }
             } else {
                 submitForm($this, form);
+            }
+        });
+
+        $(".databox-reindex").on("click", function() {
+            var form = $(this).closest('form');
+            if(confirm($(this).data('confirm-msg'))) {
+                var sbasIds = [$(this).data('databox-id')];
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/admin/worker-manager/populate-status',
+                    data: {
+                        sbasIds: sbasIds
+                    },
+                    success: function (data) {
+                        if (data == 0) {
+                            $.ajax({
+                                url: form.attr('action'),
+                                type: 'POST',
+                                success: function (data) {
+                                }
+                            });
+                        } else {
+                            alert('{{ "admin::base: Warning Worker is in process to indexing the same databox" |trans }}');
+                        }
+                    }
+                });
             }
         });
 

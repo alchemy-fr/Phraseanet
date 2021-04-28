@@ -331,6 +331,7 @@ const previewRecordService = services => {
                 $('#PREVIEWIMGDESCINNER').empty().append(data.desc);
                 $('#HISTORICOPS').empty().append(data.history);
                 $('#popularity').empty().append(data.popularity);
+                $('#NOTICE-INNER').empty().append(data.votingNotice);
 
                 if ($('#popularity .bitly_link').length > 0) {
                     if (
@@ -543,11 +544,9 @@ const previewRecordService = services => {
         } else {
             if (options.mode === 'RESULT') {
                 let posAsk = parseInt(options.current.pos, 10) + 1;
-                posAsk =
-                    posAsk >= parseInt(options.navigation.tot, 10) ||
-                    isNaN(posAsk)
-                        ? 0
-                        : posAsk;
+                if (isNaN(posAsk) || posAsk >= parseInt($('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
+                    posAsk = 0;
+                }
                 _openPreview(false, 'RESULT', posAsk, '', false);
             } else {
                 if (!$('#PREVIEWCURRENT li.selected').is(':last-child')) {
@@ -567,13 +566,10 @@ const previewRecordService = services => {
     function getPrevious() {
         if (options.mode === 'RESULT') {
             let posAsk = parseInt(options.current.pos, 10) - 1;
-            if (options.navigation.page === 1) {
-                // may go to last result
                 posAsk =
                     posAsk < 0
-                        ? parseInt(options.navigation.tot, 10) - 1
+                        ? parseInt($('#PREVIEWCURRENTCONT').data('records-count'), 10) - 1
                         : posAsk;
-            }
             _openPreview(false, 'RESULT', posAsk, '', false);
         } else {
             if (!$('#PREVIEWCURRENT li.selected').is(':first-child')) {

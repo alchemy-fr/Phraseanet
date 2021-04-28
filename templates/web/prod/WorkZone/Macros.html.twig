@@ -476,7 +476,9 @@
             </div>
         </div>
     </div>
-    <div id='DIALOG-expose-edit' style="display: none"></div>
+    <div id='DIALOG-expose-edit'>
+        <div class="expose-edit-content" style="min-height: 522px;"></div>
+    </div>
 
     {% import 'prod/WorkZone/ExposeNew.html.twig' as ExposeNew %}
     {{ ExposeNew.add_publication(app) }}

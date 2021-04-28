@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
-use Assert\Assertion;
+use InvalidArgumentException;
 
 class GpsPosition
 {
@@ -44,35 +44,35 @@ class GpsPosition
     {
         switch ($tag_name) {
             case self::LONGITUDE_TAG_NAME:
-                Assertion::numeric($value);
-                $value = (float) $value;
-                if($value >= -180.0 && $value <= 180.0 ) {
-                    $this->longitude = $value;
+                if(is_numeric($value)) {
+                    $value = (float)$value;
+                    if ($value >= -180.0 && $value <= 180.0) {
+                        $this->longitude = $value;
+                    }
                 }
                 break;
 
             case self::LATITUDE_TAG_NAME:
-                Assertion::numeric($value);
-                $value = (float) $value;
-                if($value >= -90.0 && $value <= 90.0 ) {
-                    $this->latitude = $value;
+                if(is_numeric($value)) {
+                    $value = (float)$value;
+                    if ($value >= -90.0 && $value <= 90.0) {
+                        $this->latitude = $value;
+                    }
                 }
                 break;
 
             case self::LONGITUDE_REF_TAG_NAME:
                 $normalized = strtoupper($value);
-                if ($normalized !== self::LONGITUDE_REF_EAST && $normalized !== self::LONGITUDE_REF_WEST) {
-                    throw new \InvalidArgumentException(sprintf('Invalid longitude reference "%s" (expecting "%s" or "%s").', $value, self::LONGITUDE_REF_EAST, self::LONGITUDE_REF_WEST));
+                if ($normalized === self::LONGITUDE_REF_EAST || $normalized === self::LONGITUDE_REF_WEST) {
+                    $this->longitude_ref = $value;
                 }
-                $this->longitude_ref = $value;
                 break;
 
             case self::LATITUDE_REF_TAG_NAME:
                 $normalized = strtoupper($value);
-                if ($normalized !== self::LATITUDE_REF_NORTH && $normalized !== self::LATITUDE_REF_SOUTH) {
-                    throw new \InvalidArgumentException(sprintf('Invalid latitude reference "%s" (expecting "%s" or "%s").', $value, self::LATITUDE_REF_NORTH, self::LATITUDE_REF_SOUTH));
+                if ($normalized === self::LATITUDE_REF_NORTH || $normalized === self::LATITUDE_REF_SOUTH) {
+                    $this->latitude_ref = $normalized;
                 }
-                $this->latitude_ref = $normalized;
                 break;
 
             case self::FULL_GEO_NOTATION:
@@ -111,8 +111,6 @@ class GpsPosition
                                     $lon = $v;
                                 }
                                 break;
-                            default:
-                                throw new \InvalidArgumentException(sprintf('Unsupported reference "%s", should be N|S|E|W.', $match[4]));
                         }
                     }
                     if($lat !== null && $lon != null) {
@@ -123,7 +121,7 @@ class GpsPosition
                 break;
 
             default:
-                throw new \InvalidArgumentException(sprintf('Unsupported tag name "%s".', $tag_name));
+                throw new InvalidArgumentException(sprintf('Unsupported tag name "%s".', $tag_name));
         }
     }
 

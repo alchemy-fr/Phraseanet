@@ -11,26 +11,26 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\DataboxFetcherFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Index;
-use Alchemy\Phrasea\SearchEngine\Elastic\IndexLocator;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
-use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticSearchEngine;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
-use Alchemy\Phrasea\SearchEngine\Elastic\IndexerSubscriber;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\RecordIndexer;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer\TermIndexer;
+use Alchemy\Phrasea\SearchEngine\Elastic\IndexerSubscriber;
+use Alchemy\Phrasea\SearchEngine\Elastic\IndexLocator;
 use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\Escaper;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\FacetsResponse;
-use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryCompiler;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContextFactory;
+use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryVisitor;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
+use Alchemy\Phrasea\SearchEngine\SearchEngineLogger;
 use Alchemy\Phrasea\SearchEngine\SearchEngineStructure;
-// use Alchemy\Phrasea\Utilities\Stopwatch;
 use Elasticsearch\ClientBuilder;
 use Hoa\Compiler;
 use Hoa\File;
@@ -42,7 +42,7 @@ use Silex\ServiceProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-use \Alchemy\Phrasea\Application as PhraseaApplication;
+// use Alchemy\Phrasea\Utilities\Stopwatch;
 
 
 class SearchEngineServiceProvider implements ServiceProviderInterface
@@ -117,7 +117,7 @@ class SearchEngineServiceProvider implements ServiceProviderInterface
         });
 
        $app['elasticsearch.facets_response.factory'] = $app->protect(function (array $response) use ($app) {
-            return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $response, $app['search_engine.global_structure']);
+            return new FacetsResponse($app['elasticsearch.options'], new Escaper(), $app['translator'], $response, $app['search_engine.global_structure']);
         });
 
         return $app;

@@ -1,0 +1,38 @@
+ApiResponse_searchraw:
+  type: object
+  properties:
+    meta:
+      $ref: 'common.yaml#/ApiResponse_meta'
+    response:
+      $ref: '#/ApiResponse_searchraw_response'
+
+ApiResponse_searchraw_response:
+  type: object
+  properties:
+    results:
+      type: array
+      items:
+        $ref: 'es.yaml#/ESRecord'
+    took:
+      type: integer
+      description: 'Search duration in msec'
+      example:
+        12
+    #        offset:
+    #            type: integer
+    #            description: 'Pagination offset as passed (or computed from "page/per_page") in request'
+    #        limit:
+    #            type: integer
+    #            description: 'Pagination limit as passed in request'
+    count:
+      type: integer
+      description: 'Number of results in this page [0...limit]'
+      example:
+        1
+    total:
+      type: integer
+      description: 'Total number of results'
+      example:
+        1
+    facets:
+      $ref: 'common.yaml#/FacetsArray'

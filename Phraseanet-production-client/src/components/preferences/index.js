@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import * as appCommons from './../../phraseanet-common';
+
 let highlight = require('imports-loader?$=jquery!../utils/jquery-plugins/highlight');
 let colorpicker = require('imports-loader?$=jquery!../utils/jquery-plugins/colorpicker/colorpicker');
 const preferences = services => {
@@ -14,6 +15,14 @@ const preferences = services => {
             let $el = $(event.currentTarget);
             event.preventDefault();
             appCommons.userModule.setPref('facet', $el.prop('checked'));
+            appEvents.emit('search.updateFacetData');
+            appEvents.emit('search.doRefreshState');
+        });
+
+        $container.on('change', '#ADVSRCH_UNSET_FIELD_FACET', event => {
+            let $el = $(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref('show_unset_field_facet', $el.prop('checked') ? '1' : '0');
             appEvents.emit('search.updateFacetData');
             appEvents.emit('search.doRefreshState');
         });
@@ -98,26 +107,6 @@ const preferences = services => {
         $container.on(
             'change',
             '.preferences-options-technical-display',
-            event => {
-                let $el = $(event.currentTarget);
-                event.preventDefault();
-                appCommons.userModule.setPref('technical_display', $el.val());
-                appEvents.emit('search.doRefreshState');
-            }
-        );
-        $container.on(
-            'change',
-            '.preferences-options-rollover-preview',
-            event => {
-                let $el = $(event.currentTarget);
-                event.preventDefault();
-                appCommons.userModule.setPref('technical_display', $el.val());
-                appEvents.emit('search.doRefreshState');
-            }
-        );
-        $container.on(
-            'change',
-            '.preferences-options-rollover-preview',
             event => {
                 let $el = $(event.currentTarget);
                 event.preventDefault();

@@ -9,7 +9,7 @@
         {% elseif Total == 1 %}
           {{ '1 result' | trans }}
         {% else %}
-          {% trans with {'%Total%' : Total} %}%Total% results{% endtrans %}
+            {{ "%Total% results" | trans({'%Total%' : Total}) }}
         {% endif %}
       </td>
     </tr>
