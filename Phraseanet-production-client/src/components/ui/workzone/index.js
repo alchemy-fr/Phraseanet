@@ -730,8 +730,37 @@ const workzone = (services) => {
             let exposeName = $('#expose_list').val();
             let assetsContainer = $(this).parents('.expose_item_deployed');
 
-            assetsContainer.empty().addClass('loading');
+            assetsContainer.addClass('loading');
             getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+        });
+
+        // Order assets in publication
+        idFrameC.find('.publication-droppable').on('click', '.order-assets', function() {
+            let publicationId = $(this).attr('data-publication-id');
+            let exposeName = $('#expose_list').val();
+            let assetsContainer = $(this).parents('.expose_item_deployed');
+            let positions = [];
+
+            $('.assets_list .chim-wrapper').each(function(i, el){
+                positions[$(this).attr('data-pub-asset-id')] = i + 1;
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: `/prod/expose/publication/update-assets-order/?exposeName=${exposeName}`,
+                data: {
+                    listPositions: JSON.stringify({ ...positions })
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success === true) {
+                        assetsContainer.addClass('loading');
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                    } else {
+                        console.log(data);
+                    }
+                }
+            });
         });
 
         // set publication cover
@@ -805,11 +834,15 @@ const workzone = (services) => {
             url: `/prod/expose/get-publication/${publicationId}/assets?exposeName=${exposeName}&page=${page}`,
             success: function (data) {
                 if (typeof data.success === 'undefined') {
-                    if (page ===1) {
+                    if (page === 1) {
                         assetsContainer.removeClass('loading');
                         assetsContainer.empty().html(data);
+
+                        assetsContainer.find('.assets_list').sortable(
+                        ).disableSelection();
+
                     } else {
-                        assetsContainer.append(data);
+                        assetsContainer.find('.assets_list').append(data);
                         assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
                         assetsContainer.find('#list_assets_page').val(page);
                     }
@@ -1176,7 +1209,7 @@ const workzone = (services) => {
             let assetsContainer = destKey.find('.expose_item_deployed');
 
             if (publicationId !== undefined) {
-                assetsContainer.empty().addClass('loading');
+                assetsContainer.addClass('loading');
 
                 $.ajax({
                     type: 'POST',
