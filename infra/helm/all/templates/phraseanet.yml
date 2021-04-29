@@ -17,22 +17,22 @@ spec:
       volumes:
       - name: phraseanet-config
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.config }}
+          claimName: {{ .Values.app.pvc.config.name }}
       - name: phraseanet-datas
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.data }}
+          claimName: {{ .Values.app.pvc.data.name }}
       - name: phraseanet-thumbnails
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.thumbnails }}
+          claimName: {{ .Values.app.pvc.thumbnails.name }}
       - name: phraseanet-custom
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.custom }}
+          claimName: {{ .Values.app.pvc.custom.name }}
       - name: phraseanet-wwwplugins
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.wwwplugins }}
+          claimName: {{ .Values.app.pvc.wwwplugins.name }}
       - name: phraseanet-tmp
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.tmp }}
+          claimName: {{ .Values.app.pvc.tmp.name }}
       - name: phraseanet-logs
         emptyDir:
       - name: phraseanet-cache

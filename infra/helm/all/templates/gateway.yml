@@ -18,16 +18,16 @@ spec:
       volumes:
       - name: phraseanet-datas
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.data }}
+          claimName: {{ .Values.app.pvc.data.name }}
       - name: phraseanet-thumbnails
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.thumbnails }}
+          claimName: {{ .Values.app.pvc.thumbnails.name }}
       - name: phraseanet-custom
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.custom }}
+          claimName: {{ .Values.app.pvc.custom.name }}
       - name: phraseanet-wwwplugins
         persistentVolumeClaim:
-          claimName: {{ .Values.app.pvc_name.wwwplugins }}
+          claimName: {{ .Values.app.pvc.wwwplugins.name }}
 
       containers:
       - name: gateway

@@ -2,9 +2,9 @@
 image:
   registry:
   tag:
-      phraseanet: master
-      database : master
-      elasticsearch : master
+      phraseanet: 4.1.3
+      database : 4.1.3
+      elasticsearch : 4.1.3
 
 mysql:
   root_password:
@@ -17,6 +17,14 @@ mysql:
     limits:
       cpu: "2000m"
       memory: "4096Mi"
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
 
 elasticsearch:
   pvc_name: phraseanet-elasticsearch
@@ -27,6 +35,14 @@ elasticsearch:
     limits:
       cpu: "2000m"
       memory: "4096Mi"
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
 
 rabbitmq:
   default_user: rabbit
@@ -87,10 +103,72 @@ app:
       limits:
         cpu: "2000m"
         memory: "4096Mi"
-  pvc_name:
-    data: phraseanet-datas
-    thumbnails: phraseanet-thumbnails
-    custom: phraseanet-custom
-    config: phraseanet-config
-    wwwplugins: phraseanet-wwwplugins
-    tmp: phraseanet-tmp
+  pvc:
+    data:
+      name: phraseanet-datas
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    thumbnails:
+      name: phraseanet-thumbnails
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    custom:
+      name: phraseanet-custom
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    config:
+      name: phraseanet-config
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    wwwplugins:
+      name: phraseanet-wwwplugins
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    tmp:
+      name: phraseanet-tmp
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
