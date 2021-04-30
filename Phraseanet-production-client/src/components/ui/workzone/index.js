@@ -838,8 +838,11 @@ const workzone = (services) => {
                         assetsContainer.removeClass('loading');
                         assetsContainer.empty().html(data);
 
-                        assetsContainer.find('.assets_list').sortable(
-                        ).disableSelection();
+                        assetsContainer.find('.assets_list').sortable({
+                            change: function () {
+                                $(this).closest('.expose_item_deployed').find('.order-assets').prop('disabled', false);
+                            }
+                        }).disableSelection();
 
                     } else {
                         assetsContainer.find('.assets_list').append(data);

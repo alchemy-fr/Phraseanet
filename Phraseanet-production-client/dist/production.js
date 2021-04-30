@@ -10873,7 +10873,11 @@ var workzone = function workzone(services) {
                         assetsContainer.removeClass('loading');
                         assetsContainer.empty().html(data);
 
-                        assetsContainer.find('.assets_list').sortable().disableSelection();
+                        assetsContainer.find('.assets_list').sortable({
+                            change: function change() {
+                                (0, _jquery2.default)(this).closest('.expose_item_deployed').find('.order-assets').prop('disabled', false);
+                            }
+                        }).disableSelection();
                     } else {
                         assetsContainer.find('.assets_list').append(data);
                         assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');

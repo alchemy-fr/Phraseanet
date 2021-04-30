@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-04-29T14:30:40Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2021-04-30T13:31:16Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4201,7 +4201,7 @@
       <trans-unit id="9ecde8751aca5fdbd5f84834b14a216f5a911c17" resname="Load More">
         <source>Load More</source>
         <target state="new">Load More</target>
-        <jms:reference-file line="62">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
+        <jms:reference-file line="63">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d199e1a9275786d54f74e5d79f41702274fe5160" resname="Loading database documentary structure ..." approved="yes">
         <source>Loading database documentary structure ...</source>
@@ -12576,6 +12576,11 @@
         <target state="new">prod:expose:publication:Grid</target>
         <jms:reference-file line="82">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="121">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="e2562f49e9bd07c1ac7db0bab221a9dbf209d523" resname="prod:expose:publication:Info drag element and set order">
+        <source>prod:expose:publication:Info drag element and set order</source>
+        <target state="new">prod:expose:publication:Info drag element and set order</target>
+        <jms:reference-file line="22">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="879311e23dbb4491b0144ce49a6d66e83bd660e7" resname="prod:expose:publication:Layout">
         <source>prod:expose:publication:Layout</source>
