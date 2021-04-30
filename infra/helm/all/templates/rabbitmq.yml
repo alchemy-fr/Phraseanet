@@ -18,10 +18,9 @@ spec:
       - name: rabbitmq
         image: rabbitmq:3-management
         terminationMessagePolicy: FallbackToLogsOnError
-        resources:
-{{ toYaml .Values.rabbitmq.resources | indent 12 }}
         env:
         - name: RABBITMQ_DEFAULT_USER
           value: {{ .Values.rabbitmq.default_user }}
         - name: RABBITMQ_DEFAULT_PASS
           value: {{ .Values.rabbitmq.default_pass }}
+          
