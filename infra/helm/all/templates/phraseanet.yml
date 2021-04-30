@@ -104,6 +104,8 @@ spec:
           value: "/var/alchemy/Phraseanet/datas/download"
         - name: PHRASEANET_LAZARET_DIR
           value: "/var/alchemy/Phraseanet/datas/lazaret"
+        - name: "PHRASEANET_WORKER_TMP"
+          value: "/var/alchemy/Phraseanet/tmp/worker"
         - name: PHRASEANET_CAPTION_DIR
           value: "/var/alchemy/Phraseanet/tmp/caption"
         - name: PHRASEANET_FFMPEG_TIMEOUT
