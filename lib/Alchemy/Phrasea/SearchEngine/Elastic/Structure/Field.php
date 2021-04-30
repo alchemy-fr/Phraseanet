@@ -49,6 +49,8 @@ class Field implements Typed
 
     private $used_by_collections;
 
+    private $used_by_databoxes;
+
     public static function createFromLegacyField(databox_field $field)
     {
         $type = self::getTypeFromLegacy($field);
@@ -75,7 +77,8 @@ class Field implements Typed
             'facet' => $facet,
             'thesaurus_roots' => $roots,
             'generate_cterms' => $field->get_generate_cterms(),
-            'used_by_collections' => $databox->get_collection_unique_ids()
+            'used_by_collections' => $databox->get_collection_unique_ids(),
+            'used_by_databoxes' => [$databox->get_sbas_id()]
         ]);
     }
 
@@ -107,6 +110,7 @@ class Field implements Typed
             $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
             $this->generate_cterms = \igorw\get_in($options, ['generate_cterms'], false);
             $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
+            $this->used_by_databoxes = \igorw\get_in($options, ['used_by_databoxes'], []);
         }
         else {
             // todo: this is faster code, but need to fix unit-tests to pass all options
@@ -117,6 +121,7 @@ class Field implements Typed
             $this->thesaurus_roots = $options['thesaurus_roots'];
             $this->generate_cterms = $options['generate_cterms'];
             $this->used_by_collections = $options['used_by_collections'];
+            $this->used_by_databoxes = $options['used_by_databoxes'];
         }
     }
 
@@ -129,7 +134,8 @@ class Field implements Typed
             'facet' => $this->facet,
             'thesaurus_roots' => $this->thesaurus_roots,
             'generate_cterms' => $this->generate_cterms,
-            'used_by_collections' => $this->used_by_collections
+            'used_by_collections' => $this->used_by_collections,
+            'used_by_databoxes' => $this->used_by_databoxes
         ]);
     }
 
@@ -166,6 +172,11 @@ class Field implements Typed
     public function getDependantCollections()
     {
         return $this->used_by_collections;
+    }
+
+    public function getDependantDataboxes()
+    {
+        return $this->used_by_databoxes;
     }
 
     public function isSearchable()
@@ -255,9 +266,20 @@ class Field implements Typed
             )
         );
 
+        $used_by_databoxes = array_values(
+            array_unique(
+                array_merge(
+                    $this->used_by_databoxes,
+                    $other->used_by_databoxes
+                ),
+                SORT_REGULAR
+            )
+        );
+
         return $this->withOptions([
             'thesaurus_roots' => $thesaurus_roots,
-            'used_by_collections' => $used_by_collections
+            'used_by_collections' => $used_by_collections,
+            'used_by_databoxes' => $used_by_databoxes
         ]);
     }
 

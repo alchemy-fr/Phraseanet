@@ -30,10 +30,13 @@ const recordEditorService = services => {
     let $editorContainer = null;
     let $ztextStatus;
     let $editTextArea;
+    let $editDateArea;
+    let $editTimeArea;
     let $editMonoValTextArea;
     let $editMultiValTextArea;
     let $toolsTabs;
     let $idExplain;
+    let $dateFormat = /^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}\/\d{2}\/\d{2}$|^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$|^\d{4}-\d{2}-\d{2}$/;
 
     const initialize = params => {
         let initWith = ({ $container, recordConfig } = params);
@@ -50,6 +53,8 @@ const recordEditorService = services => {
 
         $ztextStatus = $('#ZTextStatus', options.$container);
         $editTextArea = $('#idEditZTextArea', options.$container);
+        $editDateArea = $('#idEditZDateArea', options.$container);
+        $editTimeArea = $('#idEditTimeArea', options.$container);
         $editMonoValTextArea = $('#ZTextMonoValued', options.$container);
         $editMultiValTextArea = $('#EditTextMultiValued', options.$container);
         $toolsTabs = $('#EDIT_MID_R .tabs', options.$container);
@@ -174,7 +179,41 @@ const recordEditorService = services => {
                         break;
                     default:
                 }
-            });
+            })
+            .on('change mouseup mousedown keyup keydown', '#idEditZDateArea', function (e) {
+                let dateText = $(this).val();
+
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                    $editDateArea.css('width',167);
+                    $editTimeArea.show();
+                } else {
+                    $editTimeArea.hide();
+                    $editDateArea.css('width',210);
+                }
+
+                // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                    options.fieldLastValue = $editDateArea.val();
+                    options.textareaIsDirty = true;
+                }
+            })
+            .on('change', '#idEditTimeArea', function (e) {
+                let date = $editDateArea.val();
+                date = date.split(' ');
+                // retrieve the date and add the time to it
+                $editDateArea.val(date[0] + ' ' + $(this).val() + ':00');
+                let dateText = $editDateArea.val();
+
+                // format yyyy/mm/dd or yyyy/mm/dd hh:mm:ss or yyyy-mm-dd or yyyy-mm-dd hh:mm:ss
+                if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                    options.fieldLastValue = $editDateArea.val();
+                    options.textareaIsDirty = true;
+                } else {
+                    $editTimeArea.hide();
+                    $editDateArea.css('width',210);
+                }
+            })
+        ;
     };
 
     const onGlobalKeydown = (event, specialKeyState) => {
@@ -326,11 +365,11 @@ const recordEditorService = services => {
             changeMonth: true,
             dateFormat: 'yy/mm/dd',
             onSelect: function (dateText, inst) {
-                var lval = $editTextArea.val();
+                var lval = $editDateArea.val();
                 if (lval !== dateText) {
                     options.fieldLastValue = lval;
-                    $editTextArea.val(dateText);
-                    $editTextArea.trigger('keyup.maxLength');
+                    $editDateArea.val(dateText);
+                    $editDateArea.trigger('keyup.maxLength');
                     options.textareaIsDirty = true;
                     validateFieldChanges(null, 'ok');
                 }
@@ -396,7 +435,8 @@ const recordEditorService = services => {
         });
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: loadSelectedRecords()
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
         });
     }
 
@@ -496,7 +536,11 @@ const recordEditorService = services => {
                                 var t = $editTextArea.val();
                                 $editTextArea.val(t + (t ? ' ; ' : '') + $(this).val());
                             } else {
-                                $editTextArea.val($(this).val());
+                                if (field.type === 'date') {
+                                    $editDateArea.val($(this).val());
+                                } else {
+                                    $editTextArea.val($(this).val());
+                                }
                             }
                             $editTextArea.trigger('keyup.maxLength');
                             options.textareaIsDirty = true;
@@ -575,10 +619,29 @@ const recordEditorService = services => {
                     $('.editDiaButtons', options.$container).hide();
 
                     if (field.type === 'date') {
-                        $editTextArea.css('height', '16px');
+                        $editTextArea.hide();
+                        $editDateArea.show();
                         $('#idEditDateZone', options.$container).show();
+                        $editDateArea.val(field._value);
+
+                        let dateText= $editDateArea.val();
+
+                        if (dateText === '') {
+                            dateText = field._value;
+                        }
+
+                        if (dateText !== undefined && dateText.match($dateFormat) !== null) {
+                            $editDateArea.css('width',167);
+                            $editTimeArea.show();
+                        } else {
+                            $editTimeArea.hide();
+                            $editDateArea.css('width',210);
+                        }
                     } else {
+                        $editDateArea.hide();
+                        $editTimeArea.hide();
                         $('#idEditDateZone', options.$container).hide();
+                        $editTextArea.show();
                         $editTextArea.css('height', '100%');
                     }
 
@@ -593,10 +656,16 @@ const recordEditorService = services => {
                         $('#idDivButtons', options.$container).show(); // valeurs h�t�rog�nes : les 3 boutons remplacer/ajouter/annuler
                     } else {
                         // homogene
-                        $editTextArea.val(
-                            (options.fieldLastValue = field._value)
-                        );
-                        $editTextArea.removeClass('hetero');
+                        if (field.type === 'date') {
+                            $editDateArea.val(
+                                (options.fieldLastValue = field._value)
+                            );
+                        } else {
+                            $editTextArea.val(
+                                (options.fieldLastValue = field._value)
+                            );
+                            $editTextArea.removeClass('hetero');
+                        }
 
                         $('#idDivButtons', options.$container).hide(); // valeurs homog�nes
                         if (field.type === 'date') {
@@ -953,7 +1022,12 @@ const recordEditorService = services => {
 
         if (action === 'cancel') {
             // on restore le contenu du champ
-            $editTextArea.val(options.fieldLastValue);
+            if (currentField.type === 'date') {
+                $editDateArea.val(options.fieldLastValue);
+            } else {
+                $editTextArea.val(options.fieldLastValue);
+            }
+
             $editTextArea.trigger('keyup.maxLength');
             options.textareaIsDirty = false;
             return true;
@@ -970,6 +1044,11 @@ const recordEditorService = services => {
         let o = document.getElementById('idEditField_' + fieldIndex);
         if (o !== undefined) {
             let t = $editTextArea.val();
+
+            if (currentField.type === 'date') {
+                t = $editDateArea.val();
+            }
+
             for (let recordIndex in records) {
                 let record = options.recordCollection.getRecordByIndex(
                     recordIndex
@@ -1131,7 +1210,8 @@ const recordEditorService = services => {
         }
 
         recordEditorEvents.emit('recordSelection.changed', {
-            selection: loadSelectedRecords()
+            selection: loadSelectedRecords(),
+            selectionPos: getRecordSelection()
         });
 
         /**trigger select all checkbox**/

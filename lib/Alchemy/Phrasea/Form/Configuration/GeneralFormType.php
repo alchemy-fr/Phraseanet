@@ -12,6 +12,11 @@
 namespace Alchemy\Phrasea\Form\Configuration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
@@ -26,28 +31,28 @@ class GeneralFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title', 'text', [
+        $builder->add('title', TextType::class, [
             'label'         => 'Application title',
         ]);
-        $builder->add('keywords', 'text', [
+        $builder->add('keywords', TextType::class, [
             'label'         => 'Keywords used for indexing purposes by search engines robots',
         ]);
-        $builder->add('description', 'textarea', [
+        $builder->add('description', TextareaType::class, [
             'label'         => 'Application description',
         ]);
-        $builder->add('analytics', 'text', [
+        $builder->add('analytics', TextType::class, [
             'label'         => 'Google Analytics identifier',
         ]);
-        $builder->add('matomo-analytics-url', 'text', [
+        $builder->add('matomo-analytics-url', TextType::class, [
             'label'         => 'Matomo Analytics url',
         ]);
-        $builder->add('matomo-analytics-id', 'text', [
+        $builder->add('matomo-analytics-id', TextType::class, [
             'label'         => 'Matomo Analytics identifier',
         ]);
-        $builder->add('allow-indexation', 'checkbox', [
+        $builder->add('allow-indexation', CheckboxType::class, [
             'label'         => 'Allow the website to be indexed by search engines like Google',
         ]);
-        $builder->add('home-presentation-mode', 'choice', [
+        $builder->add('home-presentation-mode', ChoiceType::class, [
             'label'         => 'Homepage slideshow',
             'choices'       => [
                 'DISPLAYx1' => 'Single image',
@@ -57,7 +62,7 @@ class GeneralFormType extends AbstractType
                 'GALLERIA'  => 'Gallery',
             ],
         ]);
-        $builder->add('default-subdef-url-ttl', 'integer', [
+        $builder->add('default-subdef-url-ttl', IntegerType::class, [
             'label'       => 'Default TTL in seconds of sub-definition url',
             'attr'        => ['min' => -1],
             'constraints' => new GreaterThanOrEqual(['value' => -1]),

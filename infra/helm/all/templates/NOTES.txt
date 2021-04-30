@@ -1,5 +1,6 @@
 Phraseanet application.
 
+
 on Minikube
 
 Prerequisites:
@@ -7,3 +8,4 @@ Prerequisites:
 
 How to: run from Phraseanet directory
 /bin/bash infra/dev/deploy-minikube.sh install
+

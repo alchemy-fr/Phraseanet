@@ -70,7 +70,7 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
         });
 
         $app['phraseanet.metadata-setter'] = $app->share(function (Application $app) {
-            return new PhraseanetMetadataSetter($app['repo.databoxes']);
+            return new PhraseanetMetadataSetter($app['repo.databoxes'], $app['dispatcher']);
         });
 
         $app['phraseanet.user-query'] = function (SilexApplication $app) {

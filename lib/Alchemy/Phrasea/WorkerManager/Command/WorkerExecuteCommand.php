@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Command\Command;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessageHandler;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
+use Doctrine\DBAL\Connection;
 use PhpAmqpLib\Channel\AMQPChannel;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,7 +46,7 @@ class WorkerExecuteCommand extends Command
         if ($channel == null) {
             $output->writeln("Can't connect to rabbit, check configuration!");
 
-            return;
+            return 1;
         }
 
         $serverConnection->declareExchange();
@@ -56,7 +57,7 @@ class WorkerExecuteCommand extends Command
         if ($input->getOption('max-processes') != null && $maxProcesses == 0) {
             $output->writeln('<error>Invalid max-processes option.Need an integer</error>');
 
-            return;
+            return 1;
         } elseif($maxProcesses) {
             $workerInvoker->setMaxProcessPoolValue($maxProcesses);
         }
@@ -69,8 +70,26 @@ class WorkerExecuteCommand extends Command
         $messageHandler = $this->container['alchemy_worker.message.handler'];
         $messageHandler->consume($serverConnection, $workerInvoker, $argQueueName, $maxProcesses);
 
+        /** @var Connection $dbConnection */
+        $dbConnection = $this->container['orm.em']->getConnection();
+
         while (count($channel->callbacks)) {
             $output->writeln("[*] Waiting for messages. To exit press CTRL+C");
+
+            // check connection for DB before given message to consumer
+            if($dbConnection->ping() === false){
+                $output->writeln("MySQL server is not available : retry to close and connect ....");
+
+                try {
+                    $dbConnection->close();
+                    $dbConnection->connect();
+                } catch (\Exception $e) {
+                    // Mysql server can't be reconnected, so stop the worker
+                    $serverConnection->connectionClose();
+
+                    return 1;
+                }
+            }
             $channel->wait();
         }
 

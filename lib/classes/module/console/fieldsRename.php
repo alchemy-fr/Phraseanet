@@ -13,6 +13,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 
 class module_console_fieldsRename extends Command
 {
@@ -105,6 +107,11 @@ class module_console_fieldsRename extends Command
                 $record->set_metadatas([]);
                 unset($record);
             }
+
+            // order to write metas for those records
+            $this->container['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
+                new RecordsWriteMetaEvent(array_column($results, 'record_id'), $input->getArgument('sbas_id'))
+            );
 
             $start += $quantity;
         } while (count($results) > 0);

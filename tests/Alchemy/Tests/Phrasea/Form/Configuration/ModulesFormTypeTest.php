@@ -13,6 +13,6 @@ class ModulesFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new ModulesFormType();
+        return new ModulesFormType(self::$DI['app']['translator']);
     }
 }

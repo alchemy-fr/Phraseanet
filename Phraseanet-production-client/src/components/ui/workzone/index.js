@@ -6,6 +6,8 @@ import workzoneBaskets from './baskets/index';
 import Selectable from '../../utils/selectable';
 import Alerts from '../../utils/alert';
 import dialog from './../../../phraseanet-common/components/dialog';
+import feedbackReminder from "../../basket/reminder";
+
 const humane = require('humane-js');
 require('./../../../phraseanet-common/components/tooltip');
 require('./../../../phraseanet-common/components/vendors/contextMenu');
@@ -84,6 +86,12 @@ const workzone = (services) => {
                         appEvents.emit('ui.saveWindow');
                     });
             }
+        });
+
+        $container.on('click', '.feedback-reminder', function (event) {
+            event.preventDefault();
+            let $el = $(event.currentTarget);
+            feedbackReminder(services).openModal($el.data('basket-id'));
         });
 
         $('#idFrameC .expose_li').on('click', function (event) {
@@ -189,14 +197,22 @@ const workzone = (services) => {
             extraClass: 'tooltip_flat'
         });
 
-        $('#idFrameC .tabs').tabs({
-            activate: function (event, ui) {
-                if (ui.newTab.context.hash === '#thesaurus_tab') {
-                    appEvents.emit('thesaurus.show');
+        $('#idFrameC .tabs')
+            .data('hash', null)  // unknowk for now
+            .tabs({
+                create:   function activate(event, ui) {
+                    $(this).data('hash', ui.tab.context.hash);
+                },
+                activate: function activate(event, ui) {
+                    $(this).data('hash', ui.newTab.context.hash)
+                    if (ui.newTab.context.hash === '#thesaurus_tab') {
+                        appEvents.emit('thesaurus.show');
+                    }
+                    workzoneOptions.open();
+                    console.log("tab is " + $('#idFrameC .tabs').data("hash"));
                 }
-                workzoneOptions.open();
-            }
-        });
+            });
+
         $('.basket_refresher').on('click', function () {
             return workzoneOptions.refresh('current');
         });
@@ -214,11 +230,11 @@ const workzone = (services) => {
             selection: new Selectable(services, $('#baskets'), {selector: '.CHIM'}),
             refresh: refreshBaskets,
             addElementToBasket: function (options) {
-                let {sbas_id, record_id, event, singleSelection} = options;
+                let {dbId, recordId, event, singleSelection} = options;
                 singleSelection = !!singleSelection || false;
 
                 if ($('#baskets .SSTT.active').length === 1) {
-                    return dropOnBask(event, $('#IMGT_' + sbas_id + '_' + record_id), $('#baskets .SSTT.active'), singleSelection);
+                    return dropOnBask(event, $('#IMGT_' + dbId + '_' + recordId), $('#baskets .SSTT.active'), singleSelection);
                 } else {
                     humane.info(localeService.t('noActiveBasket'));
                 }
@@ -373,37 +389,37 @@ const workzone = (services) => {
     });
 
     function WorkZoneElementRemover(el, confirm) {
-        var context = el.data('context');
+        var context = $(el).data('context');
 
-        if (confirm !== true && $(el).hasClass('groupings') && warnOnRemove) {
+        if (confirm !== true && ($(el).hasClass('groupings') || $(el).hasClass('record-remove-from-basket-action') || $(el).closest('.chim-wrapper').hasClass('chim-feedback-item')) && warnOnRemove) {
             var buttons = {};
 
             buttons[localeService.t('valider')] = function () {
-                $('#DIALOG-baskets').dialog('close').remove();
+                dialog.get(1).close();
                 WorkZoneElementRemover(el, true);
             };
 
-            buttons[localeService.t('annuler')] = function () {
-                $('#DIALOG-baskets').dialog('close').remove();
-            };
+            var texte = '';
+            var title = '';
+            if ($(el).hasClass('groupings')) {
+                texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
+                title = localeService.t('removeTitle');
+            } else {
+                texte = '<p>' + localeService.t('confirmRemoveFeedBack') + '</p>';
+                title = localeService.t('removeRecordFeedbackTitle');
+            }
 
-            var texte = '<p>' + localeService.t('confirmRemoveReg') + '</p><div><input type="checkbox" onchange="prodApp.appEvents.emit(\'workzone.doRemoveWarning\', this);"/>' + localeService.t('hideMessage') + '</div>';
-            $('body').append('<div id="DIALOG-baskets"></div>');
-            $('#DIALOG-baskets').attr('title', localeService.t('removeTitle'))
-                .empty()
-                .append(texte)
-                .dialog({
-                    autoOpen: false,
-                    closeOnEscape: true,
-                    resizable: false,
-                    draggable: false,
-                    modal: true,
-                    buttons: buttons,
-                    overlay: {
-                        backgroundColor: '#000',
-                        opacity: 0.7
-                    }
-                }).dialog('open');
+            let dialogWindow = dialog.create(services, {
+                size: 'Medium',
+                title: title,
+                closeButton: true,
+            });
+
+            //Add custom class to dialog wrapper
+            dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+            dialogWindow.setContent(texte);
+
+            dialogWindow.setOption('buttons', buttons);
             return false;
         } else {
 
@@ -500,7 +516,9 @@ const workzone = (services) => {
 
                 uiactive.addClass('ui-state-focus active');
 
+                // reset selection when opening a basket type
                 workzoneOptions.selection.empty();
+                appEvents.emit('broadcast.workzoneResultSelection', {asArray:[], serialized:""});
 
                 getContent(uiactive);
 
@@ -513,6 +531,12 @@ const workzone = (services) => {
 
         $('.bloc', cache).droppable({
             accept: function (elem) {
+// return false;
+                let currentTab = $('#idFrameC .tabs').data('hash');
+                if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                    return false;   // can't drop on baskets if the baskets tab is not front
+                }
+
                 if ($(elem).hasClass('grouping') && !$(elem).hasClass('SSTT')) {
                     return true;
                 }
@@ -537,6 +561,12 @@ const workzone = (services) => {
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
@@ -586,6 +616,12 @@ const workzone = (services) => {
                 hoverClass: 'baskDrop',
                 tolerance: 'pointer',
                 accept: function (elem) {
+// return false;
+                    let currentTab = $('#idFrameC .tabs').data('hash');
+                    if(currentTab !== '#baskets_wrapper') {
+                        return false;   // can't drop on baskets if the baskets tab is not front
+                    }
+
                     if ($(elem).hasClass('CHIM')) {
                         if ($(elem).closest('.content').prev()[0] === $(this)[0]) {
                             return false;
@@ -834,6 +870,12 @@ const workzone = (services) => {
 
                 dest.droppable({
                     accept: function (elem) {
+// return false;
+                        let currentTab = $('#idFrameC .tabs').data('hash');
+                        if(currentTab !== '#baskets_wrapper' && currentTab !== '#baskets') {
+                            return false;   // can't drop on baskets if the baskets tab is not front
+                        }
+
                         if ($(elem).hasClass('CHIM')) {
                             if ($(elem).closest('.content')[0] === $(this)[0]) {
                                 return false;
@@ -874,6 +916,10 @@ const workzone = (services) => {
                         left: -20
                     },
                     start: function (event, ui) {
+                        if (!$(this).hasClass('selected')) {
+                            return false;
+                        }
+
                         var baskets = $('#baskets');
                         baskets.append('<div class="top-scroller"></div>' +
                             '<div class="bottom-scroller"></div>');
@@ -891,11 +937,10 @@ const workzone = (services) => {
                     },
                     drag: function (event, ui) {
                         if (appCommons.utilsModule.is_ctrl_key(event) || $(this).closest('.content').hasClass('grouping')) {
-                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
+                            $('#dragDropCursor div').empty().append(workzoneOptions.selection.length() + ', ' + localeService.t('movedRecord'));
                         } else {
-                            $('#dragDropCursor div').empty().append(workzoneOptions.selection.length());
+                            $('#dragDropCursor div').empty().append('+ ' + workzoneOptions.selection.length());
                         }
-
                     }
                 });
                 window.workzoneOptions = workzoneOptions;
@@ -957,7 +1002,7 @@ const workzone = (services) => {
     }
 
     function openExposePublicationEdit(edit) {
-        $('#DIALOG-expose-edit').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+        $('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
         $('#DIALOG-expose-edit').attr('title', localeService.t('Edit expose title'))
             .dialog({
@@ -973,19 +1018,19 @@ const workzone = (services) => {
                     opacity: 0.7
                 },
                 close: function(e, ui) {
-                    $('#DIALOG-expose-edit').empty();
+                    $('#DIALOG-expose-edit .expose-edit-content').empty();
                 }
             }).dialog('open');
         $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         $('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
-            $('#DIALOG-expose-edit').dialog('close');
+            $('#DIALOG-expose-edit .expose-edit-content').dialog('close');
         });
 
         $.ajax({
             type: "GET",
             url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}` ,
             success: function (data) {
-                $('#DIALOG-expose-edit').empty().html(data);
+                $('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }
         });
     }
@@ -1043,7 +1088,7 @@ const workzone = (services) => {
 
         switch (action) {
             case 'CHU2CHU' :
-                if (!appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
+                if (appCommons.utilsModule.is_ctrl_key(event)) act = 'MOV';
                 break;
             case 'IMGT2REG':
             case 'CHU2REG' :
@@ -1129,26 +1174,29 @@ const workzone = (services) => {
             let publicationId = destKey.attr('data-publication-id');
             let exposeName = $('#expose_list').val();
             let assetsContainer = destKey.find('.expose_item_deployed');
-            assetsContainer.empty().addClass('loading');
 
-            $.ajax({
-                type: 'POST',
-                url: '/prod/expose/publication/add-assets',
-                data: {
-                    publicationId: publicationId,
-                    exposeName: exposeName,
-                    lst: data.lst
-                },
-                dataType: 'json',
-                success: function (data) {
-                    setTimeout(function(){
-                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                        }
-                        , 6000);
+            if (publicationId !== undefined) {
+                assetsContainer.empty().addClass('loading');
 
-                    console.log(data.message);
-                }
-            });
+                $.ajax({
+                    type: 'POST',
+                    url: '/prod/expose/publication/add-assets',
+                    data: {
+                        publicationId: publicationId,
+                        exposeName: exposeName,
+                        lst: data.lst
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        setTimeout(function(){
+                                getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                            }
+                            , 6000);
+
+                        console.log(data.message);
+                    }
+                });
+            }
         }
     }
 

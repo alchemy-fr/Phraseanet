@@ -81,20 +81,14 @@ const previewRecordService = services => {
                 closePreview();
             })
             .on('dblclick', '.open-preview-action', event => {
-                let $el = $(event.currentTarget);
-                // env, pos, contId, reload
-                let reload = $el.data('reload') === true ? true : false;
-                _openPreview(
-                    event.currentTarget,
-                    $el.data('kind'),
-                    $el.data('position'),
-                    $el.data('id'),
-                    $el.data('kind')
-                );
+                let $element = $(event.currentTarget);
+                openPreview($element);
+
             })
             .on('click', '.to-open-preview-action', event => {
                 event.preventDefault();
-                $( '.open-preview-action' ).trigger( "dblclick" );
+                let $element = $(event.currentTarget);
+                openPreview($element);
             })
         ;
         $previewContainer
@@ -337,6 +331,7 @@ const previewRecordService = services => {
                 $('#PREVIEWIMGDESCINNER').empty().append(data.desc);
                 $('#HISTORICOPS').empty().append(data.history);
                 $('#popularity').empty().append(data.popularity);
+                $('#NOTICE-INNER').empty().append(data.votingNotice);
 
                 if ($('#popularity .bitly_link').length > 0) {
                     if (
@@ -379,14 +374,28 @@ const previewRecordService = services => {
                 options.current.captions = data.recordCaptions;
 
                 recordPreviewEvents.emit('recordSelection.changed', {
-                    selection: [data.recordCaptions]
+                    selection: [data.recordCaptions],
+                    selectionPos: [relativePos]
                 });
 
                 if ($('#PREVIEWBOX img.record.zoomable').length > 0) {
                     $('#PREVIEWBOX img.record.zoomable').draggable();
                 }
 
-                $('#SPANTITLE').empty().append(data.title);
+                let basketIcon = '';
+                if (data.containerType !== null ) {
+                    if (data.containerType === 'feedback') {
+                        basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else if (data.containerType === 'push') {
+                        basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else if (data.containerType === 'regroup') {
+                        basketIcon = "<img src='/assets/common/images/icons/story.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    } else {
+                        basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    }
+                }
+
+                $('#SPANTITLE').empty().append(basketIcon + data.title);
                 $('#PREVIEWTITLE_COLLLOGO')
                     .empty()
                     .append(data.collection_logo);
@@ -465,6 +474,18 @@ const previewRecordService = services => {
 
     }
 
+    function openPreview($element) {
+        let reload = $element.data('reload') === true ? true : false;
+        // env, pos, contId, reload
+        _openPreview(
+            event.currentTarget,
+            $element.data('kind'),
+            $element.data('position'),
+            $element.data('id'),
+            reload
+        );
+    }
+
     function closePreview() {
         options.open = false;
         if (activeThumbnailFrame !== false) {
@@ -523,11 +544,9 @@ const previewRecordService = services => {
         } else {
             if (options.mode === 'RESULT') {
                 let posAsk = parseInt(options.current.pos, 10) + 1;
-                posAsk =
-                    posAsk >= parseInt(options.navigation.tot, 10) ||
-                    isNaN(posAsk)
-                        ? 0
-                        : posAsk;
+                if (isNaN(posAsk) || posAsk >= parseInt($('#PREVIEWCURRENTCONT').data('records-count'), 10)) {
+                    posAsk = 0;
+                }
                 _openPreview(false, 'RESULT', posAsk, '', false);
             } else {
                 if (!$('#PREVIEWCURRENT li.selected').is(':last-child')) {
@@ -547,13 +566,10 @@ const previewRecordService = services => {
     function getPrevious() {
         if (options.mode === 'RESULT') {
             let posAsk = parseInt(options.current.pos, 10) - 1;
-            if (options.navigation.page === 1) {
-                // may go to last result
                 posAsk =
                     posAsk < 0
-                        ? parseInt(options.navigation.tot, 10) - 1
+                        ? parseInt($('#PREVIEWCURRENTCONT').data('records-count'), 10) - 1
                         : posAsk;
-            }
             _openPreview(false, 'RESULT', posAsk, '', false);
         } else {
             if (!$('#PREVIEWCURRENT li.selected').is(':first-child')) {

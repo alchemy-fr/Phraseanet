@@ -3,9 +3,8 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine\Structure;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 
 /**
  * @group unit
@@ -15,8 +14,10 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testBasicMerge()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['1', '2']]);
-        $other = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['3', '4']]);
+        $field = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['1', '2'],
+                                                              'used_by_databoxes' => [1]]);
+        $other = new Field('foo', FieldMapping::TYPE_STRING, ['used_by_collections' => ['3', '4'],
+                                                              'used_by_databoxes' => [1]]);
         $merged = $field->mergeWith($other);
         $this->assertInstanceOf(Field::class, $merged);
         $this->assertNotSame($field, $merged);
@@ -87,8 +88,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
     public function testMergeWithThesaurusRoots()
     {
-        $foo = new Concept('/foo');
-        $bar = new Concept('/bar');
+        $foo = new Concept(1, '/foo');
+        $bar = new Concept(2, '/bar');
         $field = new Field('foo', FieldMapping::TYPE_STRING);
         $other = new Field('foo', FieldMapping::TYPE_STRING, [
             'thesaurus_roots' => [$foo, $bar]
@@ -96,8 +97,8 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $merged = $field->mergeWith($other);
         $this->assertEquals([$foo, $bar], $merged->getThesaurusRoots());
 
-        $foo = new Concept('/foo');
-        $bar = new Concept('/bar');
+        $foo = new Concept(1, '/foo');
+        $bar = new Concept(2, '/bar');
         $field = new Field('foo', FieldMapping::TYPE_STRING, [
             'thesaurus_roots' => [$foo]
         ]);
@@ -111,10 +112,12 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     public function testMergeWithDependantCollections()
     {
         $field = new Field('foo', FieldMapping::TYPE_STRING, [
-            'used_by_collections' => [1, 2]
+            'used_by_collections' => [1, 2],
+            'used_by_databoxes' => [1]
         ]);
         $other = new Field('foo', FieldMapping::TYPE_STRING, [
-            'used_by_collections' => [2, 3]
+            'used_by_collections' => [2, 3],
+            'used_by_databoxes' => [1]
         ]);
         $merged = $field->mergeWith($other);
         $this->assertEquals([1, 2, 3], $merged->getDependantCollections());

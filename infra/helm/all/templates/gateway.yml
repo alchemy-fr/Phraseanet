@@ -28,7 +28,6 @@ spec:
       - name: phraseanet-wwwplugins
         persistentVolumeClaim:
           claimName: {{ .Values.app.pvc.wwwplugins.name }}
-
       containers:
       - name: gateway
         image: {{ .Values.image.registry }}/phraseanet-nginx:{{ .Values.image.tag.phraseanet }}

@@ -4,10 +4,10 @@ namespace Alchemy\Phrasea\Twig;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Collection\CollectionHelper;
+use Alchemy\Phrasea\Http\StaticFile\StaticMode;
 use Alchemy\Phrasea\Model\Entities\ElasticsearchRecord;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
-use Alchemy\Phrasea\Http\StaticFile\StaticMode;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 
 class PhraseanetExtension extends \Twig_Extension
@@ -53,6 +53,15 @@ class PhraseanetExtension extends \Twig_Extension
 
             new \Twig_SimpleFunction('flag_slugify', array(Flag::class, 'normalizeName')),
         );
+    }
+
+    public function getGlobals()
+    {
+        return [
+            // change this version when you change JS file to force the navigation to reload js file
+            'jsFileVersion' => 17
+        ];
+
     }
 
     /**

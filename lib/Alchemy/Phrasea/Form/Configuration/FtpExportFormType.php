@@ -11,20 +11,31 @@
 
 namespace Alchemy\Phrasea\Form\Configuration;
 
+use JMS\TranslationBundle\Annotation\Ignore;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class FtpExportFormType extends AbstractType
 {
+    /** @var TranslatorInterface  */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('ftp-enabled', 'checkbox', [
+        $builder->add('ftp-enabled', CheckboxType::class, [
             'label'        => 'Enable FTP export',
-            'help_message' => 'Available in multi-export tab',
+            'help_message' => /** @Ignore */ $this->translator->trans('Available in multi-export tab'),
         ]);
-        $builder->add('ftp-user-access', 'checkbox', [
+        $builder->add('ftp-user-access', CheckboxType::class, [
             'label'        => 'Enable FTP for users',
-            'help_message' => 'By default it is available for admins',
+            'help_message' => /** @Ignore */ $this->translator->trans('By default it is available for admins'),
         ]);
     }
 

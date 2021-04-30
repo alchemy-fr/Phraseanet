@@ -6,7 +6,9 @@ set -ex
 BASEDIR="$(dirname $0)"
 DIR="${BASEDIR}"
 
+
 MINIKUBE_NAME=minikube2
+
 
 NS=${NS:-"phraseanet"}
 RELEASE_NAME="phraseanet"
@@ -14,6 +16,7 @@ CHART_DIR="infra/helm/all"
 VALUE_SRC="infra/helm/myvalues.yaml"
 
 kubectl config use-context $MINIKUBE_NAME
+
 
 case $1 in
   uninstall)

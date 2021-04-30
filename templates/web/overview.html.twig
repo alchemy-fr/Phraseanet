@@ -29,7 +29,7 @@
             {% include 'common/caption.html.twig' %}
         </div>
     </div>
-    <script type="text/javascript" src="/assets/production/permaview{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/permaview{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
 
     <script type="text/javascript">
         window.permApp = PermaviewApplication.bootstrap({

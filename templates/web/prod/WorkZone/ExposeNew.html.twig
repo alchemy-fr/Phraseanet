@@ -1,71 +1,67 @@
 {% macro add_publication(app) %}
     <div id='DIALOG-expose-add' style="display: none">
-        <div class="expose-edit-wrapper" style="margin-top: 100px">
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+        <div class="expose-edit-wrapper">
             <form id="publication-data-form" >
                 <div class="edit-publication-block">
                     <div class="ui-widget">
-                        <label>Name </label>
+                        <label>{{ 'prod:expose:publication:Name' | trans }}</label>
                         <input type="text" value="" name="title" class="publication-field"/>
                     </div>
                     <div class="ui-widget">
-                        <label>Slug: </label>
+                        <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
                         <input type="text" value="" name="slug" class=" slug publication-field"/><input type="button"
                                                                                                   class="blue_button"
                                                                                                   value="check slug availability">
                     </div>
                     <div class="ui-widget">
-                        <label>Parent publication </label>
+                        <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
                         <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
                             <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
-                                <option value="">Select a parent publication</option>
+                                <option value="">{{ 'prod:expose:publication:Select a parent publication' | trans }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="ui-widget profile-wrapper hide">
-                        <label>Profile </label>
+                        <label>{{ 'prod:expose:publication:Profile' | trans }} </label>
                         <select id="profile-field" name="profile" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
-                            <option value="">Select Profile</option>
+                            <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
                         </select>
                     </div>
                     <div class="ui-widget">
-                        <label>Enabled </label>
+                        <label>{{ 'prod:expose:publication:Enabled' | trans }}</label>
                         <label class="switch">
                             <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="ui-widget available-wrapper">
-                        <label>Available (leave blank for permanet publication): </label>
+                        <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
-                            <label>From </label>
+                            <label>{{ 'prod:expose:publication:From' | trans }}</label>
                             <input type="text" value="" name="beginsAt" class="use-datepicker publication-field"/>
                         </div>
                         <div class="available-widget">
-                            <label>To </label>
+                            <label>{{ 'prod:expose:publication:To' | trans }} </label>
                             <input type="text" value="" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
                     </div>
                     <div class="ui-widget">
-                        <label>Publicity listing </label>
+                        <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
                         <label class="switch">
                             <input id="publication_publiclyListed" type="checkbox" class="publication-field" name="publiclyListed">
                             <span class="slider round"></span>
                         </label>
                     </div>
                     <div class="ui-widget access-wrapper available-wrapper">
-                        <label>Access rules </label>
+                        <label>{{ 'prod:expose:publication:Access rules' | trans }}</label>
                         <div class="available-widget">
                         <select id="publication_securityMethod" name="securityMethod" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
-                            <option value="">open access</option>
-                            <option value="password">password</option>
-                            <option value="authentication">users</option>
+                            <option value="">{{ 'prod:expose:publication:Open access' | trans }}</option>
+                            <option value="password">{{ 'prod:expose:publication:Password' | trans }}</option>
+                            <option value="authentication">{{ 'prod:expose:publication:Users' | trans }}</option>
                         </select>
                         </div>
                         <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
@@ -78,22 +74,23 @@
                         </div>
                     </div>
                     <div class="ui-widget">
-                        <label>Layout </label>
+                        <label>{{ 'prod:expose:publication:Layout' | trans }}</label>
                         <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
-                            <option value="" selected="selected">Select Layout</option>
-                            <option value="gallery">Gallery</option>
-                            <option value="mapbox">Mapbox</option>
-                            <option value="download">Download</option>
+                            <option value="" selected="selected">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
+                            <option value="gallery">{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                            <option value="grid">{{ 'prod:expose:publication:Grid' | trans }}</option>
+                            <option value="mapbox">{{ 'prod:expose:publication:Mapbox' | trans }}</option>
+                            <option value="download">{{ 'prod:expose:publication:Download' | trans }}</option>
                         </select>
                     </div>
                     <div class="ui-widget">
-                        <label>Theme </label>
+                        <label>{{ 'prod:expose:publication:Theme' | trans }}</label>
                         <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
                                 class="publication-field">
-                            <option value="">Select Theme</option>
-                            <option value="light">Light</option>
-                            <option value="dark">Dark</option>
+                            <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
+                            <option value="light">{{ 'prod:expose:publication:Light' | trans }}</option>
+                            <option value="dark">{{ 'prod:expose:publication:Dark' | trans }}</option>
                         </select>
                     </div>
                 </div>
@@ -101,7 +98,7 @@
 
             <form name="publication-json" id="publication-json" class="text-center">
                 <div id="advancedSettingBlock">
-                    <h3 class="toggleSetting">Advanced setting</h3>
+                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>
                     <div id="advancedSettingInner" class="hidden">
                         <div>
                                     <textarea name="advancedSetting" id="advancedSetting" cols="100"
@@ -116,10 +113,10 @@
                         <div class="ui-dialog-buttonset">
                             <button type="button"
                                     class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
-                                    role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span>
+                                    role="button" aria-disabled="false"><span class="ui-button-text">{{ 'prod:expose:publication:Cancel'| trans }}</span>
                             </button>
                             <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="create-publication">
-                                Create publication {% if lst %} from {{ lst|split(';')|length }} selected {% endif %}
+                                {{ 'prod:expose:publication:Create publication'| trans }}
                             </button>
 
                         </div>
@@ -182,9 +179,6 @@
                 }else{
                     config = {...config, publiclyListed: false};
                 }
-                if (dataValue.securityMethod != '') {
-                    config = {...config, securityMethod: dataValue.securityMethod};
-                }
                 if (dataValue.password) {
                     config = {...config, password: dataValue.password};
                 }
@@ -199,6 +193,8 @@
                 if (dataValue.theme) {
                     config = {...config, theme: dataValue.theme};
                 }
+
+                config = {...config, securityMethod: dataValue.securityMethod};
 
                 dataValue = {...dataValue, config};
 
@@ -215,6 +211,10 @@
 
         function removeSecurityFieldDialogAdd() {
             var datavalueMinus = extractData();
+
+            if ($('#DIALOG-expose-add').find('input[name="slug"]').val() === '') {
+                datavalueMinus['slug'] = null;
+            }
 
             if ($("#DIALOG-expose-add #publication_parent").val() == "") {
                 delete datavalueMinus['parentId'];
@@ -240,6 +240,14 @@
         }
 
         $('#DIALOG-expose-add').find('.publication-field').on('keyup change', function (e) {
+            if ($(this).attr('id') === 'publication_securityMethod') {
+                if ($(this).val() === 'password') {
+                    $(".securityOptions_wrapper").removeClass('visibility-hidden');
+                } else {
+                    $('#DIALOG-expose-add').find("#publication_password").val('');
+                    $(".securityOptions_wrapper").addClass('visibility-hidden');
+                }
+            }
             try {
                 $("#pub-success").addClass("hidden");
                 $("#pub-error").addClass("hidden");

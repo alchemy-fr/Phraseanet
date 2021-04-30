@@ -128,7 +128,11 @@ class RecoveryService
             $mail = MailRequestPasswordUpdate::create($this->application, $receiver);
             $mail->setLogin($user->getLogin());
             $mail->setButtonUrl($url);
-            $mail->setExpiration(new \DateTime('+1 day'));
+            $mail->setExpiration($token->getExpiration());
+
+            if (($locale = $user->getLocale()) != null) {
+                $mail->setLocale($locale);
+            }
 
             $this->mailer->deliver($mail);
         }

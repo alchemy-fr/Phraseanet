@@ -36,7 +36,7 @@ class ExposeSubscriber implements EventSubscriberInterface
                 ]
             ];
 
-            $this->messagePublisher->publishMessage($payload, MessagePublisher::EXPOSE_UPLOAD_QUEUE);
+            $this->messagePublisher->publishMessage($payload, MessagePublisher::EXPOSE_UPLOAD_TYPE);
         }
     }
 

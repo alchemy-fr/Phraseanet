@@ -82,8 +82,8 @@
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
 
     <script type="text/javascript">
 
@@ -183,32 +183,33 @@
                         <div id="retractableButton"><i class="fa fa-angle-double-left" aria-hidden="true"></i></div>
                         {% include 'prod/tab_headers.html.twig' %}
 
-                            {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
-                            {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
-                            {% if expose_activate == 'true' %}
-                                {% block tab_headers_wrapper %}
-                                    <div id="baskets_wrapper" class="PNB">
-                                    <div id="expose_tabs" class="tabs" aria-expanded="false">
-                                        <ul>
-                                            <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
-                                            <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>
-                                        </ul>
-                                        <div class="ui-tabs-panels-container">
-                                            <div id="baskets" class="PNB">
-                                                {{WorkZoneMacros.make_bloc(app, WorkZone)}}
-                                            </div>
-                                            <div id="expose_tab">
-                                                {{ WorkZoneMacros.make_expose_bloc(app, WorkZone) }}
-                                            </div>
+                        {% import 'prod/WorkZone/Macros.html.twig'  as  WorkZoneMacros %}
+
+                        {% set expose_activate = app['conf'].get(['phraseanet-service', 'expose-service', 'activated']) %}
+                        {% if expose_activate == 'true' %}
+                            {% block tab_headers_wrapper %}
+                            <div id="baskets_wrapper" class="PNB">
+                                <div id="expose_tabs" class="tabs" aria-expanded="false">
+                                    <ul>
+                                        <li class="th_tab expose_li"><a href="#baskets"><span>{{ 'prod::basketTab:basket' | trans }}</span></a></li>
+                                        <li class="th_tab expose_li"><a href="#expose_tab"><span>{{ 'prod::basketTab:expose' | trans }}</span></a></li>
+                                    </ul>
+                                    <div class="ui-tabs-panels-container">
+                                        <div id="baskets" class="PNB">
+                                            {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                                        </div>
+                                        <div id="expose_tab">
+                                            {{ WorkZoneMacros.make_expose_bloc(app, WorkZone) }}
                                         </div>
                                     </div>
-                                    </div>
-                                {% endblock %}
-                            {% else %}
-                                <div id="baskets" class="PNB">
-                                   {{WorkZoneMacros.make_bloc(app, WorkZone)}}
                                 </div>
-                            {% endif %}
+                            </div>
+                            {% endblock %}
+                        {% else %}
+                            <div id="baskets" class="PNB">
+                               {{WorkZoneMacros.make_bloc(app, WorkZone)}}
+                            </div>
+                        {% endif %}
 
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
@@ -268,6 +269,7 @@
                             </div>
                             {% include 'prod/tab_thesaurus.html.twig' with {has_access_to_module: app.getAclForUser(app.getAuthenticatedUser()).has_access_to_module('thesaurus')} %}
                         {% endif %}
+
                     {% endblock %}
                     {% if plugins.workzone is not empty %}
                     <div id="plugins" class="PNB {{ plugins.workzone|length > 1 ? 'multiple-plugin' : 'single-plugin' }}" style="top:52px;">
@@ -643,6 +645,8 @@
                             </table>
                         </div>
                     </form>
+                    <div id="facet_filter_in_search" style="width:100%;height:40px;overflow-y: scroll;">
+                    </div>
                 </div>
             </div>
 
@@ -900,13 +904,22 @@
                     </form>
                 </div>
                 <div class="box">
-                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
                     {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                    {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show__empty__facet') %}
+                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
+
                     <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
                         <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
                         {{ 'index::advance_search: disable-facet' | trans }}
                     </label>
+                    <br/>
+                    <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em">
+                        <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == 'true' %}checked="checked"{% endif %}>
+                        {{ 'index::advance_search: show-unset-field-facet' | trans }}
+                    </label>
+
                     <h1>{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h1>
+
                     <div class="hiddenFiltersListContainer"></div>
                 </div>
             </div>
@@ -914,19 +927,19 @@
     </div>
 
     <div id="PREVIEWBOX" class="PNB10 ui-dialog " style="overflow:hidden;">
-        <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
+        <div id="PREVIEWTITLE" style="height:70px;bottom:auto;" class="PNB">
             <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
-                <div style="padding-top: 0px; padding-left: 5px;">
-                    <span id="PREVIEWTITLE_COLLLOGO"> </span>
-                    &nbsp;
-                    <span id="PREVIEWTITLE_COLLNAME"> </span>
-                    &nbsp;
+                <div style="padding-top: 6px; padding-left: 5px;">
                     <span id="SPANTITLE"> </span>
+                    <br/>
+                    <span id="PREVIEWTITLE_COLLNAME"> </span>
+
+                    <span id="PREVIEWTITLE_COLLLOGO" style="margin-left: 10px;"> </span>
                 </div>
             </div>
         </div>
         <div class="PNB" style="right:180px;">
-            <div class="PNB" style="top:55px;">
+            <div class="PNB" style="top:70px;">
                 <div id="PREVIEWLEFT" class="preview_col PNB" style="width:60%;right:auto;overflow:hidden;">
                     <div id="PREVIEWCURRENT" class="ui-corner-bottom PNB10" style="top:11px;height:116px;bottom:auto;">
                         <div id="PREVIEWCURRENTGLOB" style=""></div>
@@ -949,6 +962,7 @@
                         <ul class="PNB" style="height:30px;bottom:auto;">
                             <li><a href="#PREVIEWIMGDESCINNER-BOX">{{ 'preview:: Description' | trans }}</a></li>
                             <li><a href="#HISTORICOPS-BOX">{{ 'preview:: Historique' | trans }}</a></li>
+                            <li><a href="#NOTICE-BOX">{{ 'preview::tab:feedback' | trans }}</a></li>
                             {% if GV_google_api is not empty %}
                             <li><a href="#popularity-BOX">{{ 'preview:: Popularite' | trans }}</a></li>
                             {% endif %}
@@ -958,6 +972,9 @@
                         </div>
                         <div id="HISTORICOPS-BOX" class="descBoxes PNB">
                             <div id="HISTORICOPS" class="PNB10"></div>
+                        </div>
+                        <div id="NOTICE-BOX" class="descBoxes PNB">
+                            <div id="NOTICE-INNER" class="PNB10"></div>
                         </div>
                         {% if GV_google_api is not empty %}
                         <div id="popularity-BOX" class="descBoxes PNB">
@@ -975,7 +992,7 @@
                     <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">close</span>
                 </button>
             </div>
-            <div id="PREVIEWOTHERS" style="top:95px;" class="PNB10 ui-corner-all">
+            <div id="PREVIEWOTHERS" style="top:109px;" class="PNB10 ui-corner-all">
             <div id="PREVIEWOTHERSINNER" style=""></div>
             </div>
         </div>

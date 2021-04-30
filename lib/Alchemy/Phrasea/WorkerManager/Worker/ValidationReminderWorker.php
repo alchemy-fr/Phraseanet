@@ -44,22 +44,26 @@ class ValidationReminderWorker implements WorkerInterface
     {
         $this->setDelivererLocator(new LazyLocator($this->app, 'notification.deliverer'));
 
-        $days = (int)$this->getConf()->get(['registry', 'actions', 'validation-reminder-days']);
+        $timeLeftPercent = (int)$this->getConf()->get(['registry', 'actions', 'validation-reminder-time-left-percent']);
 
-        $interval = sprintf('P%dD', $days);
-        $now = new DateTime();
+        if ($timeLeftPercent == null) {
+            $this->logger->error('validation-reminder-time-left-percent is not set in the configuration!');
 
-        $dateTo = clone($now);
-        try {
-            $dateTo->add(new DateInterval($interval));
-        } catch(\Exception $e) {
-            $this->logger->error(sprintf('<error>Bad interval "%s" ?</error>', $interval));
-            return ;
+            return 0;
         }
 
-        foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByExpireDate($dateTo, $now) as $participant) {
+        foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, new DateTime()) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
+
+            $expiresDate = $validationSession->getExpires();
+            $diffInterval = $expiresDate->diff(new DateTime());
+
+            if ($diffInterval->days) {
+                $timeLeft = $diffInterval->format(' %d days %Hh%I ');
+            } else {
+                $timeLeft = $diffInterval->format(' %Hh%I ');
+            }
 
             $canSend = true;
 
@@ -94,19 +98,20 @@ class ValidationReminderWorker implements WorkerInterface
                 $url = $this->app->url('lightbox_validation', ['basket' => $basket->getId()]);
             }
 
-            $this->doRemind($participant, $basket, $url);
+            $this->doRemind($participant, $basket, $url, $timeLeft);
         }
 
         $this->getEntityManager()->flush();
     }
 
-    private function doRemind(ValidationParticipant $participant, Basket $basket, $url)
+    private function doRemind(ValidationParticipant $participant, Basket $basket, $url, $timeLeft)
     {
         $params = [
             'from'    => $basket->getValidation()->getInitiator()->getId(),
             'to'      => $participant->getUser()->getId(),
             'ssel_id' => $basket->getId(),
             'url'     => $url,
+            'time_left'=> $timeLeft
         ];
 
         $datas = json_encode($params);
@@ -135,8 +140,15 @@ class ValidationReminderWorker implements WorkerInterface
                 $this->logger->info(sprintf('    -> remind "%s" from "%s" to "%s"', $title, $emitter->getEmail(), $receiver->getEmail()));
 
                 $mail = MailInfoValidationReminder::create($this->app, $receiver, $emitter);
+                $mail->setTimeLeft($timeLeft);
                 $mail->setButtonUrl($params['url']);
                 $mail->setTitle($title);
+
+                if (($locale = $userTo->getLocale()) != null) {
+                    $mail->setLocale($locale);
+                } elseif (($locale1 = $userFrom->getLocale()) != null) {
+                    $mail->setLocale($locale1);
+                }
 
                 $this->deliver($mail);
                 $mailed = true;

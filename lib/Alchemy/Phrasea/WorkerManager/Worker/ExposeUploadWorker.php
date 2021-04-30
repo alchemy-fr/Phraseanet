@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 
 class ExposeUploadWorker implements WorkerInterface
@@ -30,42 +31,65 @@ class ExposeUploadWorker implements WorkerInterface
     public function process(array $payload)
     {
         $em = $this->repoWorker->getEntityManager();
-        $em->beginTransaction();
-        $date = new \DateTime();
 
         $message = [
             'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
             'payload'       => $payload
         ];
-        $workerRunningJob = new WorkerRunningJob();
-        try {
+
+        if (isset($payload['workerJobId'])) {
+            /** @var WorkerRunningJob $workerRunningJob */
+            $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
+
+            if ($workerRunningJob == null) {
+                $this->messagePublisher->pushLog("Given workerJobId not found !", 'error');
+
+                return ;
+            }
+
             $workerRunningJob
-                ->setWork(MessagePublisher::EXPOSE_UPLOAD_TYPE)
-                ->setDataboxId($payload['databoxId'])
-                ->setRecordId($payload['recordId'])
-                ->setWorkOn($payload['exposeName'])
-                ->setPayload($message)
-                ->setPublished($date->setTimestamp($payload['published']))
-                ->setStatus(WorkerRunningJob::RUNNING)
-            ;
+                ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
+                ->setStatus(WorkerRunningJob::RUNNING);
 
             $em->persist($workerRunningJob);
 
             $em->flush();
 
-            $em->commit();
-        } catch (\Exception $e) {
-            $em->rollback();
+        } else {
+            $em->beginTransaction();
+            $date = new \DateTime();
+
+            $workerRunningJob = new WorkerRunningJob();
+
+            try {
+                $workerRunningJob
+                    ->setWork(MessagePublisher::EXPOSE_UPLOAD_TYPE)
+                    ->setDataboxId($payload['databoxId'])
+                    ->setRecordId($payload['recordId'])
+                    ->setWorkOn($payload['exposeName'])
+                    ->setPayload($message)
+                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setStatus(WorkerRunningJob::RUNNING)
+                ;
+
+                $em->persist($workerRunningJob);
+
+                $em->flush();
+
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
         }
 
-        $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
-
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
-
-        $record = $this->findDataboxById($payload['databoxId'])->get_record($payload['recordId']);
-
         try {
+            $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+            $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
+
+            $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+
+            $record = $this->findDataboxById($payload['databoxId'])->get_record($payload['recordId']);
+
             $helpers = new PhraseanetExtension($this->app);
             $canSeeBusiness = $helpers->isGrantedOnCollection($record->getBaseId(), [\ACL::CANMODIFRECORD]);
 
@@ -102,60 +126,63 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
-            $multipartData = [
-                [
-                    'name'      => 'file',
-                    'contents'  => fopen($record->get_subdef('document')->getRealPath(), 'r')
-                ],
-                [
-                    'name'      => 'publication_id',
-                    'contents'  => $payload['publicationId'],
+            $phraseanetLocalKey = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_key']);
 
-                ],
-                [
-                    'name'      => 'slug',
-                    'contents'  => 'asset_'. $record->getId()
-                ],
-                [
-                    'name'      => 'description',
-                    'contents'  => $description
+            // this is the unique reference for record in phraseanet and assets in expose
+            // phraseanetLocalKey_basedID_record_id
+            $assetId = $phraseanetLocalKey.'_'.$record->getId();
+
+            $requestBody = [
+                'publication_id' => $payload['publicationId'],
+                'description'    => $description,
+                'asset_id'       => $assetId,
+                'upload' => [
+                    'type' => $record->getMimeType(),
+                    'size' => $record->getSize(),
+                    'name' => $record->getOriginalName()
+
                 ]
             ];
 
             if ($lat !== null) {
-                array_push($multipartData, [
-                    'name'      => 'lat',
-                    'contents'  => $lat
-                ]);
+                $requestBody['lat'] = $lat;
             }
 
             if ($lng !== null) {
-                array_push($multipartData, [
-                    'name'      => 'lng',
-                    'contents'  => $lng
-                ]);
+                $requestBody['lng'] = $lng;
             }
 
             $response = $exposeClient->post('/assets', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $payload['accessToken']
                 ],
-                'multipart' => $multipartData
+                'json' => $requestBody
             ]);
 
             if ($response->getStatusCode() !==201) {
                 $this->messagePublisher->pushLog("An error occurred when creating asset: status-code " . $response->getStatusCode());
+                $this->finishedJob($workerRunningJob, $em, WorkerRunningJob::ERROR);
+
+                return ;
             }
 
             $assetsResponse = json_decode($response->getBody(),true);
+
+            $uploadUrl = new Client();
+            $uploadUrl->put($assetsResponse['uploadURL'], [
+                'headers' => [
+                    'Content-Type' => 'application/binary'
+                ],
+                'body' => fopen($record->get_subdef('document')->getRealPath(), 'r')
+            ]);
 
             // add preview sub-definition
 
             $this->postSubDefinition(
                 $exposeClient,
                 $payload['accessToken'],
-                $record->get_subdef('preview')->getRealPath(),
                 $assetsResponse['id'],
+                $record->get_subdef('preview'),
                 'preview',
                 true
             );
@@ -165,23 +192,107 @@ class ExposeUploadWorker implements WorkerInterface
             $this->postSubDefinition(
                 $exposeClient,
                 $payload['accessToken'],
-                $record->get_subdef('thumbnail')->getRealPath(),
                 $assetsResponse['id'],
+                $record->get_subdef('thumbnail'),
                 'thumbnail',
                 false,
                 true
             );
 
-
+            $this->messagePublisher->pushLog("Asset ID :". $assetsResponse['id'] ." successfully uploaded! ");
         } catch (\Exception $e) {
-            $this->messagePublisher->pushLog("An error occurred when creating asset!");
+            $workerMessage = "An error occurred when creating asset!: ". $e->getMessage();
+
+            $this->messagePublisher->pushLog($workerMessage);
+
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+            $this->repoWorker->reconnect();
+            $em->beginTransaction();
+            try {
+                $workerRunningJob
+                    ->setInfo(WorkerRunningJob::ATTEMPT. ($count - 1))
+                    ->setStatus(WorkerRunningJob::ERROR)
+                ;
+
+                $em->persist($workerRunningJob);
+                $em->flush();
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
+
+            $payload['workerJobId'] = $workerRunningJob->getId();
+            $fullPayload = [
+                'message_type'  => MessagePublisher::EXPOSE_UPLOAD_TYPE,
+                'payload'       => $payload
+            ];
+
+            $this->messagePublisher->publishRetryMessage(
+                $fullPayload,
+                MessagePublisher::EXPOSE_UPLOAD_TYPE,
+                $count,
+                $workerMessage
+            );
+
+            return;
         }
 
         // tell that the upload is finished
+        $this->finishedJob($workerRunningJob, $em);
+    }
+
+    private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false)
+    {
+        $requestBody = [
+            'asset_id' => $assetId,
+            'name'     => $subdefName,
+            'use_as_preview'    => $isPreview,
+            'use_as_thumbnail'  => $isThumbnail,
+            'upload' => [
+                'type' => $subdef->get_mime(),
+                'size' => $subdef->get_size(),
+                'name' => $subdef->get_file()
+
+            ]
+        ];
+
+        $response = $exposeClient->post('/sub-definitions', [
+            'headers' => [
+                'Authorization' => 'Bearer ' .$token
+            ],
+            'json'  => $requestBody
+        ]);
+
+        if ($response->getStatusCode() !==201) {
+            $this->messagePublisher->pushLog("An error occurred when adding sub-definition: status-code " . $response->getStatusCode());
+
+            return ;
+        }
+
+        $subDefResponse = json_decode($response->getBody(),true);
+
+        $uploadUrl = new Client();
+        $res = $uploadUrl->put($subDefResponse['uploadURL'], [
+            'headers' => [
+                'Content-Type' => 'application/binary'
+            ],
+            'body' => fopen($subdef->getRealPath(), 'r')
+        ]);
+
+        if ($res->getStatusCode() !==200) {
+            $this->messagePublisher->pushLog("An error occurred when sending file, status-code : " . $response->getStatusCode());
+
+            return ;
+        }
+    }
+
+    private function finishedJob(WorkerRunningJob $workerRunningJob, EntityManager $em, $status = WorkerRunningJob::FINISHED)
+    {
         $this->repoWorker->reconnect();
         $em->getConnection()->beginTransaction();
         try {
-            $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
+            $workerRunningJob->setStatus($status);
             $workerRunningJob->setFinished(new \DateTime('now'));
             $em->persist($workerRunningJob);
             $em->flush();
@@ -190,37 +301,5 @@ class ExposeUploadWorker implements WorkerInterface
             $this->messagePublisher->pushLog("Error when wanting to update database :" . $e->getMessage());
             $em->rollback();
         }
-    }
-
-    private function postSubDefinition(Client $exposeClient, $token, $path, $assetId, $subdefName, $isPreview = false, $isThumbnail = false)
-    {
-        return $exposeClient->post('/sub-definitions', [
-            'headers' => [
-                'Authorization' => 'Bearer ' .$token
-            ],
-            'multipart' => [
-                [
-                    'name'      => 'file',
-                    'contents'  => fopen($path, 'r')
-                ],
-                [
-                    'name'      => 'asset_id',
-                    'contents'  => $assetId,
-
-                ],
-                [
-                    'name'      => 'name',
-                    'contents'  => $subdefName
-                ],
-                [
-                    'name'      => 'use_as_preview',
-                    'contents'  => $isPreview
-                ],
-                [
-                    'name'      => 'use_as_thumbnail',
-                    'contents'  => $isThumbnail
-                ]
-            ]
-        ]);
     }
 }

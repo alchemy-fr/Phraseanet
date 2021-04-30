@@ -102,7 +102,7 @@ const leafletMap = (services) => {
         if (activeProvider.accessToken === undefined) {
             return;
         }
-        let {selection} = params;
+        let {selection, selectionPos} = params;
 
         if(map != null ) {
             if (shouldUseMapboxGl() && !map.loaded()) {

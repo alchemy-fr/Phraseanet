@@ -11,6 +11,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
@@ -27,11 +28,18 @@ class WorkzoneController extends Controller
 
     public function displayWorkzone(Request $request)
     {
+        $sort = $request->query->get('sort');
+        // if there is no sort, check user setting
+        if ( $sort === '') {
+            $sort = $this->getSettings()->getUserSetting($this->getAuthenticatedUser(), 'workzone_order');
+            $sort = ($sort != null) ? $sort : '';
+        }
+
         return $this->render('prod/WorkZone/WorkZone.html.twig', [
             'WorkZone'      => new WorkzoneHelper($this->app, $request),
             'selected_type' => $request->query->get('type'),
             'selected_id'   => $request->query->get('id'),
-            'srt'           => $request->query->get('sort'),
+            'srt'           => $sort,
         ]);
     }
 
@@ -183,5 +191,13 @@ class WorkzoneController extends Controller
     private function getStoryWZRepository()
     {
         return $this->app['repo.story-wz'];
+    }
+
+    /**
+     * @return DisplaySettingService
+     */
+    private function getSettings()
+    {
+        return $this->app['settings'];
     }
 }

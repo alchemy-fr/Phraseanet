@@ -18,7 +18,7 @@ class MailInfoRecordQuarantined extends AbstractMail
      */
     public function getSubject()
     {
-        return $this->app->trans('A document has been quarantined');
+        return $this->app->trans('A document has been quarantined', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -26,7 +26,7 @@ class MailInfoRecordQuarantined extends AbstractMail
      */
     public function getMessage()
     {
-        return $this->app->trans('A file has been thrown to the quarantine.');
+        return $this->app->trans('A file has been thrown to the quarantine.', [], 'messages', $this->getLocale());
     }
 
     /**
@@ -34,7 +34,7 @@ class MailInfoRecordQuarantined extends AbstractMail
      */
     public function getButtonText()
     {
-        return $this->app->trans('Access quarantine');
+        return $this->app->trans('Access quarantine', [], 'messages', $this->getLocale());
     }
 
     /**

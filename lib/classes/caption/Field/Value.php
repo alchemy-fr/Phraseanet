@@ -293,6 +293,7 @@ class caption_Field_Value implements cache_cacheableInterface
         $connection = $databox_field->get_connection();
 
         // Check consistency
+        // if a field is mono and already has a value, we override it by "set_value()"
         if (!$databox_field->is_multi()) {
             try {
                 $field = $record->get_caption()->get_field($databox_field->get_name());
@@ -311,6 +312,7 @@ class caption_Field_Value implements cache_cacheableInterface
             }
         }
 
+        // here we create a new field
         $data = [
             'record_id' => $record->getRecordId(),
             'meta_struct_id' => $databox_field->get_id(),

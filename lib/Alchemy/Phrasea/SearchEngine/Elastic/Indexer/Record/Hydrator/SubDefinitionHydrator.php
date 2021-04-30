@@ -11,20 +11,76 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
+use Alchemy\Phrasea\Application;
 use databox;
 use Doctrine\DBAL\Connection;
+use media_Permalink_Adapter;
 
 class SubDefinitionHydrator implements HydratorInterface
 {
+    /** @var Application  */
+    private $app;
+
     /** @var databox */
     private $databox;
 
-    public function __construct(databox $databox)
+    /** @var  boolean */
+    private $populatePermalinks;
+
+    public function __construct(Application $app, databox $databox, $populatePermalinks)
     {
+        $this->app = $app;
         $this->databox = $databox;
+        $this->populatePermalinks = $populatePermalinks;
     }
 
     public function hydrateRecords(array &$records)
+    {
+        if ($this->populatePermalinks) {
+            $this->hydrateRecordsWithPermalinks($records);
+        } else {
+            $this->hydrateRecordsWithoutPermalinks($records);
+        }
+    }
+
+    private function hydrateRecordsWithPermalinks(&$records)
+    {
+        foreach(array_keys($records) as $rid) {
+            try {
+                $subdefs = $this->databox->getRecordRepository()->find($rid)->get_subdefs();
+
+                $pls = array_map(
+                /** media_Permalink_Adapter|null $plink */
+                    function($plink) {
+                        return $plink ? ((string) $plink->get_url()) : null;
+                    },
+                    media_Permalink_Adapter::getMany($this->app, $subdefs, false) // false: don't create missing plinks
+                );
+
+                foreach($subdefs as $subdef) {
+                    $name = $subdef->get_name();
+                    if(substr(($path = $subdef->get_path()), -1) !== '/') {
+                        $path .= '/';
+                    }
+                    $records[$rid]['subdefs'][$name] = array(
+                        'path' => $path . $subdef->get_file(),
+                        'width' => $subdef->get_width(),
+                        'height' => $subdef->get_height(),
+                        'size' => $subdef->get_size(),
+                        'mime' => $subdef->get_mime(),
+                        'permalink' => array_key_exists($name, $pls) ? $pls[$name] : null
+                    );
+
+                }
+            }
+            catch (\Exception $e) {
+                // cant get record ? ignore
+            }
+
+        }
+    }
+
+    private function hydrateRecordsWithoutPermalinks(&$records)
     {
         $sql = <<<SQL
             SELECT
@@ -32,6 +88,8 @@ class SubDefinitionHydrator implements HydratorInterface
               s.name,
               s.height,
               s.width,
+              s.size,
+              s.mime,
               CONCAT(TRIM(TRAILING '/' FROM s.path), '/', s.file) AS path
             FROM subdef s
             WHERE s.record_id IN (?)
@@ -44,42 +102,15 @@ SQL;
 
         $current_rid = null;
         $record = null;
-        $pls = [];
         while ($subdef = $statement->fetch()) {
-            /*
-             * for now disable permalink fetch, since if permalink does not exists, it will
-             * be created and it's very sloooow (btw: why ?)
-             *
-            // too bad : to get permalinks we must instantiate a recordadapter
-            // btw : why the unique permalink is not stored in subdef table ???
-            if($subdef['record_id'] !== $current_rid) {
-                // sql is ordered by rid so we won't find the same record twice.
-                $current_rid = $subdef['record_id'];
-                // getting all subdefs once is faster than getting subdef one by one in the main loop
-                $pls = [];  // permalinks, by subdef name
-                try {
-                    $subdefs = $this->databox->getRecordRepository()->find($current_rid)->get_subdefs();
-                    foreach ($subdefs as $s) {
-                        if(!is_null($pl = $s->get_permalink())) {
-                            $pls[$s->get_name()] = (string)($pl->get_url());
-                        }
-                    }
-                }
-                catch (\Exception $e) {
-                    // cant get record ? ignore
-                }
-            }
-            */
             $name = $subdef['name'];
             $records[$subdef['record_id']]['subdefs'][$name] = array(
                 'path' => $subdef['path'],
                 'width' => $subdef['width'],
                 'height' => $subdef['height'],
-                /*
-                 * no permalinks for now
-                 *
-                'permalink' => array_key_exists($name, $pls) ? $pls[$name] : null
-                 */
+                'size'   => $subdef['size'],
+                'mime'   => $subdef['mime'],
+                'permalink' => null
             );
         }
     }

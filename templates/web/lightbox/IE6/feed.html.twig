@@ -4,8 +4,8 @@
 {% import 'common/macro_caption.html.twig' as macro_caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-    <script type="text/javascript" src="/assets/lightbox/js/lightboxIe6{% if not app.debug %}.min{% endif %}.js"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/lightbox/js/lightboxIe6{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
 {% endblock %}
 
 {% block content %}

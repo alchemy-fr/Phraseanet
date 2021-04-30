@@ -46,7 +46,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
             throw new LogicException('You must set a basket before calling getSubject');
         }
 
-        return $this->app->trans('Reception of %basket_name%', ['%basket_name%' => $this->basket->getName()]);
+        return $this->app->trans('Reception of %basket_name%', ['%basket_name%' => $this->basket->getName()], 'messages', $this->getLocale());
     }
 
     /**
@@ -62,7 +62,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
         }
 
         return
-            $this->app->trans('You just received a push containing %quantity% documents from %user%', ['%quantity%' => count($this->basket->getElements()), '%user%' => $this->pusher->getDisplayName()])
+            $this->app->trans('You just received a push containing %quantity% documents from %user%', ['%quantity%' => count($this->basket->getElements()), '%user%' => $this->pusher->getDisplayName()], 'messages', $this->getLocale())
             . "\n" . $this->message;
     }
 
@@ -71,7 +71,7 @@ class MailInfoPushReceived extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Watch it online');
+        return $this->app->trans('Watch it online', [], 'messages', $this->getLocale());
     }
 
     /**

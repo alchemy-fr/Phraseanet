@@ -37,6 +37,7 @@ main:
             maxResultWindow: 500000
             populate_order: RECORD_ID
             populate_direction: DESC
+            populate_permalinks: false
             activeTab: '#elastic-search'
             facets:
                 _base:

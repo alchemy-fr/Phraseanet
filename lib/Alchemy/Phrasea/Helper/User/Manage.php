@@ -195,6 +195,10 @@ class Manage extends Helper
         $mail->setButtonUrl($this->app->url('login_register_confirm', ['code' => $token->getValue()]));
         $mail->setExpiration($token->getExpiration());
 
+        if (($locale = $user->getLocale()) != null) {
+            $mail->setLocale($locale);
+        }
+
         $this->deliver($mail);
     }
 
@@ -207,6 +211,10 @@ class Manage extends Helper
         $mail = MailRequestPasswordSetup::create($this->app, $receiver);
         $mail->setButtonUrl($this->app->url('login_renew_password', ['token' => $token->getValue()]));
         $mail->setLogin($user->getLogin());
+
+        if (($locale = $user->getLocale()) != null) {
+            $mail->setLocale($locale);
+        }
 
         $this->deliver($mail);
     }

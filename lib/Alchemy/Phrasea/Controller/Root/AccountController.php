@@ -129,6 +129,10 @@ class AccountController extends Controller
         $mail->setButtonUrl($url);
         $mail->setExpiration($token->getExpiration());
 
+        if (($locale = $user->getLocale()) != null) {
+            $mail->setLocale($locale);
+        }
+
         $this->deliver($mail);
 
         $this->app->addFlash('info', $this->app->trans('admin::compte-utilisateur un email de confirmation vient de vous etre envoye. Veuillez suivre les instructions contenue pour continuer'));
@@ -355,6 +359,10 @@ class AccountController extends Controller
             $mail->setButtonUrl($url);
             $mail->setExpiration($token->getExpiration());
 
+            if (($locale = $user->getLocale()) != null) {
+                $mail->setLocale($locale);
+            }
+
             $this->deliver($mail);
 
             $this->app->addFlash('info', $this->app->trans('phraseanet::account: A confirmation e-mail has been sent. Please follow the instructions contained to continue account deletion'));
@@ -442,8 +450,7 @@ class AccountController extends Controller
             'form_loginFTP',
             'form_pwdFTP',
             'form_destFTP',
-            'form_prefixFTPfolder',
-            'form_retryFTP'
+            'form_prefixFTPfolder'
         ];
 
         $service = $this->app['accounts.service'];
@@ -483,7 +490,6 @@ class AccountController extends Controller
             $command->setPassiveMode($request->request->get("form_passifFTP"));
             $command->setFolder($request->request->get("form_destFTP"));
             $command->setFolderPrefix($request->request->get("form_prefixFTPfolder"));
-            $command->setRetries($request->request->get("form_retryFTP"));
 
             $service->updateFtpSettings($command);
 
@@ -548,6 +554,9 @@ class AccountController extends Controller
 
             $this->app['manipulator.user']->delete($user, [$user->getId() => $oldGrantedBaseIds]);
             if($mail) {
+                if (($locale = $user->getLocale()) != null) {
+                    $mail->setLocale($locale);
+                }
                 $this->deliver($mail);
             }
 

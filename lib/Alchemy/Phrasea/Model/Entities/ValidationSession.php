@@ -288,4 +288,36 @@ class ValidationSession
 
         throw new NotFoundHttpException('Participant not found' . $user->getEmail());
     }
+
+    /**
+     * Check if an user is a participant
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isParticipant(User $user)
+    {
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() == $user->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get list of participant user Ids
+     *
+     * @return array
+     */
+    public function getListParticipantsUserId()
+    {
+        $userIds = [];
+        foreach ($this->getParticipants() as $participant) {
+            $userIds[] = $participant->getUser()->getId();
+        }
+
+        return $userIds;
+    }
 }

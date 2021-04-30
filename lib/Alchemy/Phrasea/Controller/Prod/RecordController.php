@@ -103,6 +103,23 @@ class RecordController extends Controller
             $recordTitle = htmlspecialchars($record->get_title());
         }
 
+        $containerType = null;
+
+        if ($env === 'BASK') {
+            if ($record->get_container()->getValidation()) {
+                $containerType = 'feedback';
+            } elseif ($record->get_container()->getPusher()) {
+                $containerType = 'push';
+            } else {
+                $containerType = 'basket';
+            }
+        } elseif ($env === 'REG') {
+            $containerType = 'regroup';
+        }
+
+        $basketElementsRepository = $this->getBasketElementRepository();
+        $feedbackElementDatas = $basketElementsRepository->findElementsDatasByRecord($record);
+
         return $this->app->json([
             "desc"            => $this->render('prod/preview/caption.html.twig', [
                 'record'        => $record,
@@ -129,9 +146,13 @@ class RecordController extends Controller
             "tools"           => $this->render('prod/preview/tools.html.twig', [
                 'record'        => $record,
             ]),
+            "votingNotice"  => $this->render('prod/preview/voting_notice.html.twig', [
+                'feedbackElementDatas' => $feedbackElementDatas
+            ]),
             "pos"             => $record->getNumber(),
             "title"           => $recordTitle,
-            "databox_name"    => $record->getDatabox()->get_dbname(),
+            "containerType"   => $containerType,
+            "databox_name"    => $record->getDatabox()->get_label($this->app['locale']),
             "collection_name" => $record->getCollection()->get_name(),
             "collection_logo" => $record->getCollection()->getLogo($record->getBaseId(), $this->app),
         ]);

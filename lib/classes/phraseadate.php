@@ -120,11 +120,23 @@ class phraseadate
         }
     }
 
-    public function getTranslatedDate(DateTime $date = null)
+    public function getFormatedDate(DateTime $date = null)
     {
+        // this force date format to dd MMMM yyyy
         $fmt = new IntlDateFormatter(
             $this->app['locale'] ?: 'en',
             NULL, NULL, NULL, NULL, 'dd MMMM yyyy'
+        );
+
+        return $fmt->format($date);
+    }
+
+    public function getDateTranslated(DateTime $date)
+    {
+        $fmt = new IntlDateFormatter(
+            $this->app['locale'],
+            IntlDateFormatter::LONG,
+            IntlDateFormatter::NONE
         );
 
         return $fmt->format($date);

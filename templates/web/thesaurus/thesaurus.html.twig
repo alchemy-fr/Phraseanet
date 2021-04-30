@@ -18,8 +18,8 @@
         <link rel="shortcut icon" type="image/x-icon" href="/assets/thesaurus/images/favicon.ico">
         <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js"></script>
+        <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
         <script type="text/javascript">
 
             var currentBaseName = "";
@@ -1082,8 +1082,10 @@
                                                             url += "&typ=" + typ;
                                                             url += "&sylng=" + encodeURIComponent(lng);
 
+                                                            var title = typ=="TS" ? "{{ 'thesaurus:: Nouveau terme specifique' | trans }}" : "{{ 'thesaurus:: Nouveau synonyme' | trans }}";
+
                                                           //  w = window.open(url, "NEWTERM", "directories=no, height=290, width=490, location=no, menubar=no, resizable=yes, scrollbars=yes, status=no, toolbar=no");
-                                                            w = loadDataAjax(url,490, 350,"#NEWSY_DLG_CONFIRM",'{% if typ == "TS" %}{{ 'thesaurus:: Nouveau terme specifique' | trans }}{% else %}{{ 'thesaurus:: Nouveau synonyme' | trans }}{% endif %}');
+                                                            w = loadDataAjax(url, 490, 350, "#NEWSY_DLG_CONFIRM", title);
                                                         }
                                                     }
                                                 ],

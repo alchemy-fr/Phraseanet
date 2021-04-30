@@ -54,6 +54,10 @@ class MailNotifier implements ValidationNotifier
 
         $mail->setUser($order->getUser());
 
+        if (($locale = $recipient->getLocale()) != null) {
+            $mail->setLocale($locale);
+        }
+
         $this->getDeliverer()->deliver($mail);
     }
 
@@ -82,6 +86,12 @@ class MailNotifier implements ValidationNotifier
         $mail->setBasket($basket);
         $mail->setDeliverer($delivery->getAdmin());
 
+        if (($locale = $order->getUser()->getLocale()) != null) {
+            $mail->setLocale($locale);
+        } elseif (($locale1 = $delivery->getAdmin()->getLocale()) != null) {
+            $mail->setLocale($locale1);
+        }
+
         $this->getDeliverer()->deliver($mail);
     }
 
@@ -98,6 +108,12 @@ class MailNotifier implements ValidationNotifier
 
         $mail->setQuantity($delivery->getQuantity());
         $mail->setDeliverer($delivery->getAdmin());
+
+        if (($locale = $delivery->getOrder()->getUser()->getLocale()) != null) {
+            $mail->setLocale($locale);
+        } elseif (($locale1 = $delivery->getAdmin()->getLocale()) != null) {
+            $mail->setLocale($locale1);
+        }
 
         $this->getDeliverer()->deliver($mail);
     }

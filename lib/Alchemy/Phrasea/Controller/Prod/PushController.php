@@ -146,7 +146,7 @@ class PushController extends Controller
 
                     $this->getDataboxLogger($element->getDatabox())->log(
                         $element,
-                        Session_Logger::EVENT_VALIDATE,
+                        Session_Logger::EVENT_PUSH,
                         $user_receiver->getId(),
                         ''
                     );
@@ -302,9 +302,12 @@ class PushController extends Controller
             // we always add the author of the validation request (current user) to the participants
             //
             $found = false;
-            foreach ($participants as $participant) {
-                if ($participant['usr_id'] === $this->getAuthenticatedUser()->getId()) {
+            foreach ($participants as $key => $participant) {
+                if ($Validation->isInitiator($this->getAuthenticatedUser()) && $participant['usr_id'] == $this->getAuthenticatedUser()->getId()) {
+                    // the initiator always can see others
+                    $participants[$key]['see_others'] = 1;
                     $found = true;
+
                     break;
                 }
             }
@@ -316,6 +319,13 @@ class PushController extends Controller
                     'agree'      => 0,
                     'HD'         => 0,
                 ];
+            }
+
+            // used to check participant to be removed
+            $feedbackAction = $request->request->get('feedbackAction');
+            $remainingParticipantsUserId = [];
+            if ($feedbackAction == 'adduser') {
+                $remainingParticipantsUserId = $Validation->getListParticipantsUserId();
             }
 
             // add participants to the validationSession
@@ -334,6 +344,10 @@ class PushController extends Controller
                 try {
                     /** @var User $participantUser */
                     $participantUser = $this->getUserRepository()->find($participant['usr_id']);
+                    if ($feedbackAction == 'adduser') {
+                        $remainingParticipantsUserId = array_diff($remainingParticipantsUserId, [$participant['usr_id']]);
+                    }
+
                 }
                 catch (Exception $e) {
                     throw new ControllerException(
@@ -342,9 +356,14 @@ class PushController extends Controller
                 }
                 // end of sanity check
 
-                // if participant already exists, skip insertion
+                // if participant already exists, just update right
                 try {
-                    $Validation->getParticipant($participantUser);
+                    $validationParticipant = $Validation->getParticipant($participantUser);
+                    $validationParticipant->setCanAgree($participant['agree']);
+                    $validationParticipant->setCanSeeOthers($participant['see_others']);
+                    $manager->persist($validationParticipant);
+                    $manager->flush();
+
                     continue;
                 }
                 catch (NotFoundHttpException $e) {
@@ -386,7 +405,7 @@ class PushController extends Controller
 
                     $this->getDataboxLogger($basketElement->getRecord($this->app)->getDatabox())->log(
                         $basketElement->getRecord($this->app),
-                        Session_Logger::EVENT_PUSH,
+                        Session_Logger::EVENT_VALIDATE,
                         $participantUser->getId(),
                         ''
                     );
@@ -426,17 +445,44 @@ class PushController extends Controller
 
                 $receipt = $request->get('recept') ? $this->getAuthenticatedUser()->getEmail() : '';
 
-                $this->dispatch(
-                    PhraseaEvents::VALIDATION_CREATE,
-                    new ValidationEvent(
-                        $validationParticipant,
-                        $basket,
-                        $url,
-                        $request->request->get('message'),
-                        $receipt,
-                        (int)$request->request->get('duration')
-                    )
-                );
+                // send only mail if notify is needed
+                if ($request->request->get('notify') == 1) {
+                    $this->dispatch(
+                        PhraseaEvents::VALIDATION_CREATE,
+                        new ValidationEvent(
+                            $validationParticipant,
+                            $basket,
+                            $url,
+                            $request->request->get('message'),
+                            $receipt,
+                            (int)$request->request->get('duration')
+                        )
+                    );
+                }
+            }
+
+            if ($feedbackAction == 'adduser') {
+                foreach ($remainingParticipantsUserId as $userIdToRemove) {
+                    try {
+                        /** @var  User $participantUser */
+                        $participantUser = $this->getUserRepository()->find($userIdToRemove);
+                    } catch (Exception $e) {
+                        throw new ControllerException(
+                            $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
+                        );
+                    }
+                    $validationParticipant = $Validation->getParticipant($participantUser);
+
+                    // if initiator is removed from the user selection,
+                    // do not remove it to the participant list, just set can_agree to false for it
+                    if ($Validation->isInitiator($participantUser)) {
+                        $validationParticipant->setCanAgree(false);
+                        $manager->persist($validationParticipant);
+                    } else {
+                        $Validation->removeParticipant($validationParticipant);
+                        $manager->remove($validationParticipant);
+                    }
+                }
             }
 
             $manager->merge($basket);
@@ -855,6 +901,24 @@ class PushController extends Controller
     {
         $push = $this->getPushFromRequest($request);
 
+        $feedbackaction = $request->request->get('feedbackaction');
+        $participants = [];
+        $participantUserIds = '';
+        $initiatorUserId = null;
+
+        if ($context === 'Feedback' && $feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
+            $participants = $push->get_original_basket()->getValidation()->getParticipants();
+            $participantUserIds = implode('_', $push->get_original_basket()->getValidation()->getListParticipantsUserId());
+            $initiatorUserId = $push->get_original_basket()->getValidation()->getInitiator()->getId();
+        } elseif ($context === 'Feedback') {
+            // Display the initiator in the participant list window when the first time to create a feedback
+            $validationParticipant =  new ValidationParticipant();
+            $validationParticipant->setUser($this->getAuthenticatedUser());
+            $validationParticipant->setCanSeeOthers(1);
+            array_push($participants, $validationParticipant);
+            $initiatorUserId = $participantUserIds = $this->getAuthenticatedUser()->getId();
+        }
+
         $repository = $this->getUserListRepository();
         $recommendedUsers = $this->getUsersInSelectionExtractor($push->get_elements());
 
@@ -866,6 +930,10 @@ class PushController extends Controller
                 'lists'            => $repository->findUserLists($this->getAuthenticatedUser()),
                 'context'          => $context,
                 'RecommendedUsers' => $recommendedUsers,
+                'participants'     => $participants,
+                'participantUserIds' => $participantUserIds,
+                'feedbackAction'   => $feedbackaction,
+                'initiatorUserId'  => $initiatorUserId
             ]
         );
     }

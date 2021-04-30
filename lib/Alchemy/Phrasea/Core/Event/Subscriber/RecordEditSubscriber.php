@@ -164,6 +164,7 @@ class RecordEditSubscriber implements EventSubscriberInterface
                     'value' => $date->format('Y-m-d H:i:s'),
                 )
             ), true);
+            // when edit record write meta also are dispatched
         }
 
         $record->clearStampCache();
