@@ -7,7 +7,7 @@ BASEDIR="$(dirname $0)"
 DIR="${BASEDIR}"
 
 
-MINIKUBE_NAME=minikube2
+MINIKUBE_NAME=minikube
 
 
 NS=${NS:-"phraseanet"}
