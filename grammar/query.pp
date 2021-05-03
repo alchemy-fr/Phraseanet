@@ -97,6 +97,7 @@ match_key:
 
 key:
     geolocation_key()
+  | native_key()
   | timestamp_key()
   | ::meta_prefix::  meta_key()
   | ::field_prefix:: field_key()

@@ -11,13 +11,14 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchSettingsFormType;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
+use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchSettingsFormType;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
+use databox_descriptionStructure;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use databox_descriptionStructure;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class SearchEngineController extends Controller
 {
@@ -112,7 +113,7 @@ class SearchEngineController extends Controller
         /** @var GlobalStructure $g */
         $g = $this->app['search_engine.global_structure'];
 
-        return $this->app->form(new ElasticsearchSettingsFormType($g, $options), $options, [
+        return $this->app->form(new ElasticsearchSettingsFormType($g, $options, $this->getTranslator()), $options, [
             'action' => $this->app->url('admin_searchengine_form'),
         ]);
     }
@@ -139,5 +140,13 @@ class SearchEngineController extends Controller
             'success' => true,
             'response' => $indexer->getSettings(['index' => $index])
         ]);
+    }
+
+    /**
+     * @return TranslatorInterface
+     */
+    private function getTranslator()
+    {
+        return $this->app['translator'];
     }
 }

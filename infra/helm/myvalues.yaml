@@ -1,0 +1,98 @@
+
+image:
+  registry: alchemyfr
+  tag:
+      phraseanet: 4.1.3
+      database : 4.1.3
+      elasticsearch : 4.1.3
+
+mysql:
+  root_password: phraseanet
+  max_allowed_packet: 16M
+  pvc_name: phraseanet-database
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+
+elasticsearch:
+  pvc_name: phraseanet-elasticsearch
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+
+rabbitmq:
+  default_user: rabbit
+  default_pass: rabbit
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "256Mi"
+    limits:
+      cpu: "2000m"
+      memory: "4096Mi"
+
+http:
+  max_body_size: 2G
+  max_input_vars: 12000
+
+php:
+  opcache_enabled: 1
+  log_level: warning
+  session_cache_limiter: off
+
+ingress:
+  enabled: false
+  hostname: phraseanet
+  tls: false
+
+app:
+  hostname: localhost
+  phraseanet_admin_account_email: admin@alchemy.fr
+  phraseanet_admin_account_password: phraseanet
+  phraseanet_db_host: db
+  phraseanet_db_user: root
+  phraseanet_db_password: phraseanet
+  install_db_template: DublinCore
+  install_appbox: ab_master
+  install_databox: db_databox1
+  phraseanet_server_name: localhost
+  phraseanet_trusted_proxies:
+  gateway:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "32Mi"
+      limits:
+        cpu: "2000m"
+        memory: "4096Mi"
+  web:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "256Mi"
+      limits:
+        cpu: "2000m"
+        memory: "4096Mi"
+  worker:
+    resources:
+      requests:
+        cpu: "50m"
+        memory: "256Mi"
+      limits:
+        cpu: "2000m"
+        memory: "4096Mi"
+  pvc_name:
+    data: phraseanet-datas
+    thumbnails: phraseanet-thumbnails
+    custom: phraseanet-custom
+    config: phraseanet-config
+    wwwplugins: phraseanet-wwwplugins
+    tmp: phraseanet-tmp

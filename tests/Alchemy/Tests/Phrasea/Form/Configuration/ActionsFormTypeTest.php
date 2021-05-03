@@ -13,6 +13,6 @@ class ActionsFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new ActionsFormType();
+        return new ActionsFormType(self::$DI['app']['translator']);
     }
 }

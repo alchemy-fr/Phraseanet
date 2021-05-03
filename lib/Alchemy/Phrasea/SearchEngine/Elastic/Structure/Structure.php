@@ -13,6 +13,11 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Structure;
 interface Structure
 {
     /**
+     * @return mixed
+     */
+    public function getDataboxes();
+
+    /**
      * @return Field[]
      */
     public function getAllFields();

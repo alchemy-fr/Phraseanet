@@ -11,13 +11,18 @@
 namespace Alchemy\Phrasea\Form\Configuration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class CustomLinkFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('linkName', 'text', [
+        $builder->add('linkName', TextType::class, [
             'label' => false,
             'attr'  => [
                 'placeholder' => 'setup::custom-link:name-link',
@@ -25,7 +30,7 @@ class CustomLinkFormType extends AbstractType
                 'maxlength'   => "30"
             ]
         ]);
-        $builder->add('linkLanguage', 'choice', [
+        $builder->add('linkLanguage', ChoiceType::class, [
             'label'   => false,
             'attr'    => [
                 'required' => true
@@ -41,14 +46,14 @@ class CustomLinkFormType extends AbstractType
                 'du'  => 'DU'
             ]
         ]);
-        $builder->add('linkUrl', 'url', [
+        $builder->add('linkUrl', UrlType::class, [
             'label' => false,
             'attr'  => [
                 'placeholder' => 'setup::custom-link:placeholder-link-url',
                 'required'    => true
             ]
         ]);
-        $builder->add('linkLocation', 'choice', [
+        $builder->add('linkLocation', ChoiceType::class, [
             'label'   => false,
             'attr'    => [
                 'required' => true
@@ -59,13 +64,13 @@ class CustomLinkFormType extends AbstractType
                 'navigation-bar' => 'setup::custom-link:navigation-bar',
             ]
         ]);
-        $builder->add('linkOrder', 'integer', [
+        $builder->add('linkOrder', IntegerType::class, [
             'label' => false,
         ]);
-        $builder->add('linkBold', 'checkbox', [
+        $builder->add('linkBold', CheckboxType::class, [
             'label' => false,
         ]);
-        $builder->add('linkColor', 'choice', [
+        $builder->add('linkColor', ChoiceType::class, [
             'label'   => false,
             'choices' => [
                 ''        => '#ad0800',

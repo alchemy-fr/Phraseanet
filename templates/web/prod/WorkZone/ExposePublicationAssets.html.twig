@@ -1,6 +1,7 @@
 {% if page == 1 %}
     <div class="expose_item_top">
         <button class="btn-success refresh-publication pull-right" data-publication-id="{{ publicationId }}">{{ 'prod:expose:publication:Refresh Publication' | trans }}</button>
+        <button class="btn-secondary order-assets pull-right" data-publication-id="{{ publicationId }}" style="margin-right: 5px;" disabled>{{ 'prod:expose:publication:Set order' | trans }}</button>
         <span class="green_button edit_expose" data-id="{{ publicationId }}"><i class="fa fa-edit"></i></span>
         {% if pubAssets[0].publication.children|length == 0 %}
             <button type="button" class="delete-publication btn-danger" data-publication-id="{{ publicationId }}">
@@ -18,12 +19,15 @@
 
             <div>
                 <span class="item_numbers">{{ totalItems }} assets</span>
+                <span class="pull-right" style="margin-right: 20px;">{{ 'prod:expose:publication:Info drag element and set order' | trans }}</span>
             </div>
+
+            <div class="assets_list">
 
 {% endif %}
 
 {% for pubAsset in pubAssets %}
-<div class="chim-wrapper">
+<div class="chim-wrapper" data-pub-asset-id="{{ pubAsset.id }}">
     <div class="chim-content">
         <div class="CHIM diapo">
             <div class="thumb_wrapper">
@@ -50,6 +54,7 @@
 {% endfor %}
 
 {% if page == 1 %}
+            </div>
         </div>
 
         <div class="load_more_asset" data-publication-id="{{ publicationId }}">
