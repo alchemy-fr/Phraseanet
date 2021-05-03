@@ -2,12 +2,12 @@
 image:
   registry:
   tag:
-      phraseanet: master
-      database : master
-      elasticsearch : master
+      phraseanet: 4.1.3
+      database : 4.1.3
+      elasticsearch : 4.1.3
 
 mysql:
-  root_password:
+  root_password: phraseanet
   max_allowed_packet: 16M
   pvc_name: phraseanet-database
   resources:
@@ -17,6 +17,14 @@ mysql:
     limits:
       cpu: "2000m"
       memory: "4096Mi"
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
 
 elasticsearch:
   pvc_name: phraseanet-elasticsearch
@@ -27,10 +35,18 @@ elasticsearch:
     limits:
       cpu: "2000m"
       memory: "4096Mi"
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
 
 rabbitmq:
   default_user: rabbit
-  default_pass:
+  default_pass: rabbit 
   resources:
     requests:
       cpu: "50m"
@@ -50,14 +66,16 @@ php:
 
 ingress:
   enabled: false
+  hostname: phraseanet
+  tls: false
 
 app:
   hostname: localhost
-  phraseanet_admin_account_email: support@alchemy.fr
-  phraseaenet_admin_account_password: phraseanet
+  phraseanet_admin_account_email: admin@alchemy.fr
+  phraseanet_admin_account_password: phraseanet
   phraseanet_db_host: db
   phraseanet_db_user: root
-  phraseanet_db_password: root
+  phraseanet_db_password: phraseanet
   install_db_template: DublinCore
   install_appbox: ab_master
   install_databox: db_databox1
@@ -87,10 +105,72 @@ app:
       limits:
         cpu: "2000m"
         memory: "4096Mi"
-  pvc_name:
-    data: phraseanet-datas
-    thumbnails: phraseanet-thumbnails
-    custom: phraseanet-custom
-    config: phraseanet-config
-    wwwplugins: phraseanet-wwwplugins
-    tmp: phraseanet-tmp
+  pvc:
+    data:
+      name: phraseanet-datas
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    thumbnails:
+      name: phraseanet-thumbnails
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    custom:
+      name: phraseanet-custom
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    config:
+      name: phraseanet-config
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    wwwplugins:
+      name: phraseanet-wwwplugins
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+    tmp:
+      name: phraseanet-tmp
+      persistence:
+        enabled: true
+        existingClaim:
+        storageClass:
+        annotations: {}
+        accessMode: ReadWriteOnce
+        subPath:
+        size: 1Gi
+  persistence:
+    enabled: true
+    existingClaim:
+    storageClass:
+    annotations: {}
+    accessMode: ReadWriteOnce
+    subPath:
+    size: 1Gi
