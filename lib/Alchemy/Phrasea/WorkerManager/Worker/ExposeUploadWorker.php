@@ -99,8 +99,8 @@ class ExposeUploadWorker implements WorkerInterface
 
             foreach ($captionsByfield as $name => $value) {
                 if ($helpers->getCaptionFieldGuiVisible($record, $name) == 1) {
-                    $description .= "<dt>" . $helpers->getCaptionFieldLabel($record, $name). "</dt>";
-                    $description .= "<dd>" . $helpers->getCaptionField($record, $name, $value). "</dd>";
+                    $description .= "<dt class='field-string-title'>" . $helpers->getCaptionFieldLabel($record, $name). "</dt>";
+                    $description .= "<dd class='field-string-value'>" . $helpers->getCaptionField($record, $name, $value). "</dd>";
                 }
             }
 
