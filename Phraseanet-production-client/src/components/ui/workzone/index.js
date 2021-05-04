@@ -108,12 +108,6 @@ const workzone = (services) => {
             updatePublicationList(exposeName);
         });
 
-        $('.display-list').on('click',function (event) {
-            let exposeName = $('#expose_list').val();
-            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
-            updatePublicationList(exposeName);
-        });
-
         $('#expose_list').on('change', function () {
             $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(this.value);
