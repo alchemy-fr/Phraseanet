@@ -31,7 +31,7 @@ class PsSettings
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=32, nullable=false)
+     * @ORM\Column(name="name", type="string", length=32, nullable=true)
      */
     private $name;
 
@@ -40,21 +40,21 @@ class PsSettings
      *
      * @ORM\Column(name="value_text", type="text", length=65535, nullable=true)
      */
-    private $valueText = 'NULL';
+    private $valueText = null;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="value_int", type="integer", nullable=true)
      */
-    private $valueInt = 'NULL';
+    private $valueInt = null;
 
     /**
      * @var string
      *
      * @ORM\Column(name="value_varchar", type="string", length=255, nullable=true)
      */
-    private $valueVarchar = 'NULL';
+    private $valueVarchar = null;
 
     /**
      * @var \Alchemy\Phrasea\Model\Entities\PsSettings
