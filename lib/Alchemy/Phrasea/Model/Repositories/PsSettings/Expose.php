@@ -63,7 +63,7 @@ class Expose
     }
 
     /**
-     * create a new "Expose"
+     * create a new "Expose" without settings yet
      *
      * @param string $name
      * @return Instance

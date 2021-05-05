@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\PsSettings;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
@@ -68,13 +69,13 @@ class PsSettingsRepository extends EntityRepository
      * @return PsSettings
      * @throws NonUniqueResultException
      * @throws OptimisticLockException
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws ConnectionException
      */
     public function getOrCreateUnique(string $role=null, string $name=null, PsSettings $parent=null, array $values = [])
     {
         $this->_em->beginTransaction();
-        $r = $this->get($role, $name, $parent, $values);
-        if(count($r) === 0) {
+        $e = $this->get($role, $name, $parent, $values);
+        if(count($e) === 0) {
             $e = [$this->insert($role, $name, $parent, $values)];
         }
         $this->_em->getConnection()->commit();
@@ -95,7 +96,7 @@ class PsSettingsRepository extends EntityRepository
      * @return PsSettings
      * @throws NonUniqueResultException
      * @throws OptimisticLockException
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws ConnectionException
      */
     public function createUnique(string $role=null, string $name=null, PsSettings $parent=null, array $values = [])
     {
@@ -141,6 +142,16 @@ class PsSettingsRepository extends EntityRepository
         if(!is_null($name)) {
             $e->setName($name);
         }
+        $this->setValues($e, $values);
+
+        $this->_em->persist($e);
+        $this->_em->flush();
+
+        return $e;
+    }
+
+    public function setValues(PsSettings $e, array $values)
+    {
         foreach ($values as $k => $v) {
             switch ($k) {
                 case 'valueText':
@@ -154,10 +165,5 @@ class PsSettingsRepository extends EntityRepository
                     break;
             }
         }
-
-        $this->_em->persist($e);
-        $this->_em->flush();
-
-        return $e;
     }
 }

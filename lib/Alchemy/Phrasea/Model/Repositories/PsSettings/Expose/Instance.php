@@ -3,25 +3,19 @@
 namespace Alchemy\Phrasea\Model\Repositories\PsSettings\Expose;
 
 use Alchemy\Phrasea\Model\Entities\PsSettings;
+use Alchemy\Phrasea\Model\Repositories\PsSettings\App;
 use Alchemy\Phrasea\Model\Repositories\PsSettingsRepository;
 
-class Instance
+class Instance extends App
 {
-    /** @var PsSettingsRepository  */
-    private $psSettingsRepository;
-
-    /** @var PsSettings  */
-    private $instanceEntity;
-
     private $frontUri = null;
     private $clientId = null;
 
     public function __construct(PsSettingsRepository $psSettingsRepository, PsSettings $instanceEntity)
     {
-        $this->psSettingsRepository = $psSettingsRepository;
-        $this->instanceEntity = $instanceEntity;
+        parent::__construct($psSettingsRepository, $instanceEntity);
 
-        foreach($this->psSettingsRepository->get('EXPOSE_SETTING', null, $instanceEntity) as $e) {
+        foreach($this->getSettings() as $e) {
             switch ($e->getName()) {
                 case 'front_uri':
                     $this->frontUri = $e->getValueText();
@@ -37,22 +31,6 @@ class Instance
     }
 
     /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->instanceEntity->getId();
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getName()
-    {
-        return $this->instanceEntity->getValueVarchar();
-    }
-
-    /**
      * @return string|null
      */
     public function getFrontUri()
@@ -63,17 +41,7 @@ class Instance
     public function setFrontUri($frontUri)
     {
         $this->frontUri = $frontUri;
-        return $this->setValueText('EXPOSE_SETTING', 'front_uri', $this->instanceEntity, $frontUri);
-    }
-
-    private function setValueText(string $role, string $name, PsSettings $parent, string $value)
-    {
-        $e = $this->psSettingsRepository->getOrCreateUnique($role, $name, $parent);
-        $e->setValueText($value);
-        $this->psSettingsRepository->getEntityManager()->persist($e);
-        $this->psSettingsRepository->getEntityManager()->flush();
-
-        return $e;
+        $this->setSetting('front_uri', ['valueText' => $frontUri]);
     }
 
     /**
@@ -87,6 +55,8 @@ class Instance
     public function setClientId($clientId)
     {
         $this->clientId = $clientId;
-        return $this->setValueText('EXPOSE_SETTING', 'client_id', $this->instanceEntity, $clientId);
+        $this->setSetting('client_id', ['valueText' => $clientId]);
+
     }
+
 }
