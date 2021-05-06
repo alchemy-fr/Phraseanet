@@ -3360,13 +3360,13 @@
       </trans-unit>
       <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication">
         <source>Force authentication</source>
-        <target state="needs-translation">Benutzer müssen sich mit einem Login und Passwort anmelden</target>
+        <target state="translated">Benutzer müssen sich mit einem Login und Passwort anmelden</target>
         <jms:reference-file line="158">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="206">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info">
         <source>Force authentication : info</source>
-        <target state="needs-translation">Wenn das Kästchen nicht markiert ist, einen Login Authentifizierungslink wird in der Email beinhaltet</target>
+        <target state="translated">Wenn das Kästchen nicht markiert ist, einen Login Authentifizierungslink wird in der Email beinhaltet</target>
         <jms:reference-file line="164">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="212">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -5964,7 +5964,7 @@
       </trans-unit>
       <trans-unit id="a68dd32b578cf2863f4df4362232db4d80a9557c" resname="Save the list">
         <source>Save the list</source>
-        <target state="needs-translation">Als neue Liste speichern</target>
+        <target state="translated">Als neue Liste speichern</target>
         <jms:reference-file line="86">actions/Feedback/list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5c05c39658269a025f4dc37b50af1bb5ab946ca" resname="Save this list" approved="yes">
@@ -10463,12 +10463,12 @@
       </trans-unit>
       <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights">
         <source>feedback:: save users and users rights</source>
-        <target state="needs-translation">Speichern</target>
+        <target state="translated">Speichern</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
         <source>feedback::users to notify</source>
-        <target state="needs-translation">Benutzer benachrichtigen</target>
+        <target state="translated">Benutzer benachrichtigen</target>
         <jms:reference-file line="140">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="373fa5153a6c195e99a654c0098e05bfbf38665a" resname="fevrier" approved="yes">
@@ -11831,7 +11831,7 @@
       </trans-unit>
       <trans-unit id="45e45867cea85ca4966d3753bd9796f17e8c5596" resname="preview::tab:feedback mail subject">
         <source>preview::tab:feedback mail subject</source>
-        <target state="needs-translation">Bestätigung Email Betreff</target>
+        <target state="translated">Bestätigung Email Betreff</target>
         <jms:reference-file line="26">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open" approved="yes">
@@ -12568,7 +12568,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="e2562f49e9bd07c1ac7db0bab221a9dbf209d523" resname="prod:expose:publication:Info drag element and set order">
         <source>prod:expose:publication:Info drag element and set order</source>
-        <target state="needs-translation">Elemente neu anordnen und speichern</target>
+        <target state="needs-translation">Drag &amp; DropElemente, anordnen und speichern</target>
         <jms:reference-file line="22">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="879311e23dbb4491b0144ce49a6d66e83bd660e7" resname="prod:expose:publication:Layout" approved="yes">
@@ -14553,7 +14553,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="d0667dac38f2673134efb588468b259910245c8f" resname="thesaurus::edit editing %count% record(s)">
         <source>thesaurus::edit editing %count% record(s)</source>
-        <target state="needs-translation">Bearbeitung von %count% record(s)</target>
+        <target state="needs-translation">Bearbeitung von %count% Datensatz(e)</target>
         <jms:reference-file line="180">Controller/Prod/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e69e92a4ad2d11f9eb060e4c1210bd3b2c7db08c" resname="thesaurus::edit remove">
