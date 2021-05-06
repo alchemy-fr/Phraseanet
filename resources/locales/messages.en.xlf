@@ -306,9 +306,9 @@
         <target state="translated">%user% is asking for access to one or several %before_link% collections %after_link%</target>
         <jms:reference-file line="42">eventsmanager/notify/register.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7bd59be8150e0bbc0f1033db2bf5b4df93b0c7b0" resname="%user% has just sent its validation report, you can now see it" approved="yes">
+      <trans-unit id="7bd59be8150e0bbc0f1033db2bf5b4df93b0c7b0" resname="%user% has just sent its validation report, you can now see it" approved="no">
         <source>%user% has just sent its validation report, you can now see it</source>
-        <target state="translated">%user% has just sent its feedback report. You can now see it.</target>
+        <target state="translated">%user% has just sent its feedback report. You can now see it</target>
         <jms:reference-file line="71">Notification/Mail/MailInfoValidationDone.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6e05ce34670cecf8f839f24c35f3e48e9bd036f0" resname="%user% has ordered documents" approved="yes">
@@ -12573,7 +12573,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="e2562f49e9bd07c1ac7db0bab221a9dbf209d523" resname="prod:expose:publication:Info drag element and set order">
         <source>prod:expose:publication:Info drag element and set order</source>
-        <target state="needs-translation">Reorder items and save</target>
+        <target state="needs-translation">Drag and drop for order items</target>
         <jms:reference-file line="22">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="879311e23dbb4491b0144ce49a6d66e83bd660e7" resname="prod:expose:publication:Layout" approved="yes">
