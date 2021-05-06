@@ -24,30 +24,30 @@ class PsSettingKeys
     /**
      * @var string
      *
-     * @ORM\Column(name="key", type="string", length=32, nullable=false)
+     * @ORM\Column(name="key_name", type="string", length=32, nullable=false)
      */
-    private $key;
+    private $keyName;
 
     /**
      * @var string
      *
      * @ORM\Column(name="value_varchar", type="string", length=255, nullable=true)
      */
-    private $valueVarchar = 'NULL';
+    private $valueVarchar = null;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="value_int", type="integer", nullable=true)
      */
-    private $valueInt = 'NULL';
+    private $valueInt = null;
 
     /**
      * @var string
      *
      * @ORM\Column(name="value_text", type="text", length=65535, nullable=true)
      */
-    private $valueText = 'NULL';
+    private $valueText = null;
 
     /**
      * @var \Alchemy\Phrasea\Model\Entities\PsSettings
@@ -72,25 +72,25 @@ class PsSettingKeys
     }
 
     /**
-     * Get key
+     * Get keyName
      *
      * @return string
      */
-    public function getKey()
+    public function getKeyName()
     {
-        return $this->key;
+        return $this->keyName;
     }
 
     /**
      * Set key
      *
-     * @param string $key
+     * @param string $keyName
      *
      * @return PsSettingKeys
      */
-    public function setKey($key)
+    public function setKeyName($keyName)
     {
-        $this->key = $key;
+        $this->keyName = $keyName;
 
         return $this;
     }

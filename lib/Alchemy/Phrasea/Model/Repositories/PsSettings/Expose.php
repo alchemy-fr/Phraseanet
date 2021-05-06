@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories\PsSettings;
 
+use Alchemy\Phrasea\Model\Repositories\PsSettingKeysRepository;
 use Alchemy\Phrasea\Model\Repositories\PsSettings\Expose\Instance;
 use Alchemy\Phrasea\Model\Repositories\PsSettingsRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -9,21 +10,30 @@ use Doctrine\ORM\NonUniqueResultException;
 class Expose
 {
     private $psSettingsRepository;
+    private $psSettingKeysRepository;
 
-    public function __construct(PsSettingsRepository $psSettingsRepository)
+    public function __construct(PsSettingsRepository $psSettingsRepository, PsSettingKeysRepository $psSettingKeysRepository)
     {
-        $this->psSettingsRepository = $psSettingsRepository;
+        $this->psSettingsRepository    = $psSettingsRepository;
+        $this->psSettingKeysRepository = $psSettingKeysRepository;
     }
 
     /**
      * @return Instance[]
      */
-    public function getInstances(): array
+    public function getInstances($userId = null): array
     {
         $ret = [];
 
         foreach($this->psSettingsRepository->get('EXPOSE') as $ex) {
-            $ret[]  = new Instance($this->psSettingsRepository, $ex);
+            $ix = new Instance(
+                $this->psSettingsRepository,
+                $this->psSettingKeysRepository,
+                $ex
+            );
+            if(is_null($userId) || $ix->canSee($userId)) {
+                $ret[] = $ix;
+            }
         }
         return $ret;
 
@@ -74,6 +84,7 @@ class Expose
         $e = $this->psSettingsRepository->createUnique('EXPOSE', 'name', null, ['valueVarchar' => $name]);
         return new Instance(
             $this->psSettingsRepository,
+            $this->psSettingKeysRepository,
             $e
         );
     }

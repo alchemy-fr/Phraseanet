@@ -8,13 +8,6 @@ namespace Alchemy\Phrasea\Model\Proxies\__CG__\Alchemy\Phrasea\Model\Entities;
 class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implements \Doctrine\ORM\Proxy\Proxy
 {
     /**
-     * @var array properties to be lazy loaded, with keys being the property
-     *            names and values being their default values
-     *
-     * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
-     */
-    public static $lazyPropertiesDefaults = [];
-    /**
      * @var \Closure the callback responsible for loading properties in the proxy object. This callback is called with
      *      three parameters, being respectively the proxy object to be initialized, the method that triggered the
      *      initialization process and an array of ordered parameters that were passed to that method.
@@ -22,18 +15,30 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
      * @see \Doctrine\Common\Persistence\Proxy::__setInitializer
      */
     public $__initializer__;
+
     /**
      * @var \Closure the callback responsible of loading properties that need to be copied in the cloned object
      *
      * @see \Doctrine\Common\Persistence\Proxy::__setCloner
      */
     public $__cloner__;
+
     /**
      * @var boolean flag indicating if this object was already initialized
      *
      * @see \Doctrine\Common\Persistence\Proxy::__isInitialized
      */
     public $__isInitialized__ = false;
+
+    /**
+     * @var array properties to be lazy loaded, with keys being the property
+     *            names and values being their default values
+     *
+     * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
+     */
+    public static $lazyPropertiesDefaults = [];
+
+
 
     /**
      * @param \Closure $initializer
@@ -59,10 +64,10 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'key', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueVarchar', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueInt', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueText', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'setting'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'keyName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueVarchar', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueInt', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueText', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'setting'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'key', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueVarchar', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueInt', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueText', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'setting'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'keyName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueVarchar', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueInt', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'valueText', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\PsSettingKeys' . "\0" . 'setting'];
     }
 
     /**
@@ -88,17 +93,7 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
     }
 
     /**
-     * {@inheritDoc}
-     * @internal generated method: use only when explicitly handling proxy specific loading logic
-     * @static
-     */
-    public function __getLazyProperties()
-    {
-        return self::$lazyPropertiesDefaults;
-    }
-
-    /**
-     *
+     * 
      */
     public function __clone()
     {
@@ -135,6 +130,15 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
      */
+    public function __setInitializer(\Closure $initializer = null)
+    {
+        $this->__initializer__ = $initializer;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @internal generated method: use only when explicitly handling proxy specific loading logic
+     */
     public function __getInitializer()
     {
         return $this->__initializer__;
@@ -144,9 +148,9 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
      */
-    public function __setInitializer(\Closure $initializer = null)
+    public function __setCloner(\Closure $cloner = null)
     {
-        $this->__initializer__ = $initializer;
+        $this->__cloner__ = $cloner;
     }
 
     /**
@@ -161,12 +165,14 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
     /**
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
+     * @static
      */
-    public function __setCloner(\Closure $cloner = null)
+    public function __getLazyProperties()
     {
-        $this->__cloner__ = $cloner;
+        return self::$lazyPropertiesDefaults;
     }
 
+    
     /**
      * {@inheritDoc}
      */
@@ -185,34 +191,23 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
     /**
      * {@inheritDoc}
      */
-    public function setKey($key)
+    public function getKeyName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setKey', [$key]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getKeyName', []);
 
-        return parent::setKey($key);
+        return parent::getKeyName();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getKey()
+    public function setKeyName($keyName)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getKey', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setKeyName', [$keyName]);
 
-        return parent::getKey();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setValueVarchar($valueVarchar)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValueVarchar', [$valueVarchar]);
-
-        return parent::setValueVarchar($valueVarchar);
+        return parent::setKeyName($keyName);
     }
 
     /**
@@ -229,12 +224,12 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
     /**
      * {@inheritDoc}
      */
-    public function setValueInt($valueInt)
+    public function setValueVarchar($valueVarchar)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValueInt', [$valueInt]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValueVarchar', [$valueVarchar]);
 
-        return parent::setValueInt($valueInt);
+        return parent::setValueVarchar($valueVarchar);
     }
 
     /**
@@ -251,12 +246,12 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
     /**
      * {@inheritDoc}
      */
-    public function setValueText($valueText)
+    public function setValueInt($valueInt)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValueText', [$valueText]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValueInt', [$valueInt]);
 
-        return parent::setValueText($valueText);
+        return parent::setValueInt($valueInt);
     }
 
     /**
@@ -273,12 +268,12 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
     /**
      * {@inheritDoc}
      */
-    public function setSetting(\Alchemy\Phrasea\Model\Entities\PsSettings $setting = NULL)
+    public function setValueText($valueText)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSetting', [$setting]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setValueText', [$valueText]);
 
-        return parent::setSetting($setting);
+        return parent::setValueText($valueText);
     }
 
     /**
@@ -290,6 +285,17 @@ class PsSettingKeys extends \Alchemy\Phrasea\Model\Entities\PsSettingKeys implem
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSetting', []);
 
         return parent::getSetting();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSetting(\Alchemy\Phrasea\Model\Entities\PsSettings $setting = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSetting', [$setting]);
+
+        return parent::setSetting($setting);
     }
 
 }

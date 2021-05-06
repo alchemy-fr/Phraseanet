@@ -7,6 +7,7 @@ use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * PsSettingsRepository
@@ -18,41 +19,64 @@ class PsSettingsRepository extends EntityRepository
 {
     public function exists(string $role=null, string $name=null, PsSettings $parent=null, array $values = []): bool
     {
-        return count($this->get($role, $name, $parent, $values, 1)) > 0;
+        return !empty($this->get($role, $name, $parent, $values, [], 1));
     }
 
     /**
      * get rows that match every non-null arguments
      * consequence : this can't be used to search a null...
      *
+     * eg.
+     *   get(
+     *      'ACE',
+     *      'cansee',
+     *      null,
+     *      ['valueInt' => 1],
+     *      ['user_id' => ['valueVarchar' => '1']]
+     *   );
+     *
      * @param string|null $role
      * @param string|null $name
      * @param PsSettings|null $parent
-     * @param array $values         k=>v, where k = "valueText" | "valueInt" | "valueVarchar"
-     * @param int|null $maxResult
+     * @param array $values k=>v, where k = "valueText" | "valueInt" | "valueVarchar"
+     * @param array $keys   keyname=>[[k1=>v1], [k2=>v2], ...]
+     * @param int|null $limit
      * @return array
      */
-    public function get(string $role=null, string $name=null, PsSettings $parent=null, array $values = [], int $maxResult=null)
+    public function get(string $role=null, string $name=null, PsSettings $parent=null, array $values = [], array $keys = [], int $limit = null)
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('s')
+            ->from('Phraseanet:PsSettings', 's');
         if(!is_null($role)) {
-            $qb->andWhere('s.role = :role');
-            $qb->setParameter('role', $role);
+            $qb->andWhere('s.role = :role')->setParameter('role', $role);
         }
         if(!is_null($name)) {
-            $qb->andWhere('s.name = :name');
-            $qb->setParameter('name', $name);
+            $qb->andWhere('s.name = :name')->setParameter('name', $name);
         }
         if(!is_null($parent)) {
-            $qb->andWhere('s.parent = :parent');
-            $qb->setParameter('parent', $parent);
+            $qb->andWhere('s.parent = :parent')->setParameter('parent', $parent);
         }
         foreach($values as $k => $v) {
-            $qb->andWhere('s.'.$k.' = :'.$k);
-            $qb->setParameter($k, $v);
+            $qb->andWhere('s.'.$k.' = :'.$k)->setParameter($k, $v);
         }
-        if(!is_null($maxResult)) {
-            $qb->setMaxResults(1);
+        $nParm = 1;
+        $nAlias = 1;
+        foreach($keys as $k => $values) {
+            // each key to match have it's own join/alias
+            $alias = 'sk'.$nAlias;
+            $parm  = 'ky'.$nAlias++;
+            $qb->innerJoin('Phraseanet:PsSettingKeys', $alias, Join::WITH, '('.$alias.'.setting'.' = s AND '.$alias.'.keyName = :'.$parm.')')
+                ->setParameter($parm, $k);
+            // each key value to match (valueVarchar, valueInt or valueText) have it's own where
+            foreach($values as $k => $v) {
+                $parm = 'v'.$nParm++;
+                $qb->andWhere($alias.'.'.$k.' = :'.$parm)->setParameter($parm, $v);
+            }
+        }
+
+        if(!is_null($limit)) {
+            $qb->setMaxResults($limit);
         }
 
         return $qb->getQuery()->getResult();
@@ -74,6 +98,7 @@ class PsSettingsRepository extends EntityRepository
     public function getOrCreateUnique(string $role=null, string $name=null, PsSettings $parent=null, array $values = [])
     {
         $this->_em->beginTransaction();
+
         $e = $this->get($role, $name, $parent, $values);
         if(count($e) === 0) {
             $e = [$this->insert($role, $name, $parent, $values)];
