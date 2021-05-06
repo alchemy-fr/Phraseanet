@@ -20,7 +20,7 @@ class PsSettingsServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['ps_settings.expose'] = $app->share(function ($app) {
-            return new Expose($app['repo.ps_settings']);
+            return new Expose($app['repo.ps_settings'], $app['repo.ps_settingkeys']);
         });
     }
 

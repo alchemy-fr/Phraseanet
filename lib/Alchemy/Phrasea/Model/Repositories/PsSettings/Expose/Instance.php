@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Model\Repositories\PsSettings\Expose;
 
 use Alchemy\Phrasea\Model\Entities\PsSettings;
+use Alchemy\Phrasea\Model\Repositories\PsSettingKeysRepository;
 use Alchemy\Phrasea\Model\Repositories\PsSettings\App;
 use Alchemy\Phrasea\Model\Repositories\PsSettingsRepository;
 
@@ -11,9 +12,9 @@ class Instance extends App
     private $frontUri = null;
     private $clientId = null;
 
-    public function __construct(PsSettingsRepository $psSettingsRepository, PsSettings $instanceEntity)
+    public function __construct(PsSettingsRepository $psSettingsRepository, PsSettingKeysRepository $psSettingKeysRepository, PsSettings $instanceEntity)
     {
-        parent::__construct($psSettingsRepository, $instanceEntity);
+        parent::__construct($psSettingsRepository, $psSettingKeysRepository, $instanceEntity);
 
         foreach($this->getSettings() as $e) {
             switch ($e->getName()) {
@@ -56,7 +57,16 @@ class Instance extends App
     {
         $this->clientId = $clientId;
         $this->setSetting('client_id', ['valueText' => $clientId]);
+    }
 
+    public function canSee(int $userId, $value = null)
+    {
+        $this->readOrSetACE($userId, 'cansee', $value);
+    }
+
+    public function canAdd(int $userId, $value = null)
+    {
+        $this->readOrSetACE($userId, 'canadd', $value);
     }
 
 }

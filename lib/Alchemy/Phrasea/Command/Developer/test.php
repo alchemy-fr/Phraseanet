@@ -30,17 +30,21 @@ class test extends Command
     {
         /** @var Expose $ex */
         $ex = $this->container['ps_settings.expose'];
-        foreach($ex->getInstances() as $exposeInstance) {
+
+        foreach($ex->getInstances(1) as $exposeInstance) {
             $output->writeln(sprintf("expose: '%s'", $exposeInstance->getName()));
             $output->writeln(sprintf("  front-uri: '%s'", $exposeInstance->getFrontUri()));
         }
         $output->writeln('');
 
-        $z = $ex->create("rtrrtrtrt");
-        $z->setFrontUri("azeazea");
+        $z = $ex->create("new-expose");
+        $z->setFrontUri("bad uri will be fixed");
         $output->writeln(sprintf("  front-uri: '%s'", $z->getFrontUri()));
-        $z->setFrontUri("wwwwwwww");
+
+        $z->setFrontUri("https://expose.new_expose.phrasea.io");
         $output->writeln(sprintf("  front-uri: '%s'", $z->getFrontUri()));
+
+        $z->canSee(666, true);
 
         $output->writeln('');
         foreach($ex->getInstances() as $exposeInstance) {

@@ -375,4 +375,26 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
         return parent::getParticipant($user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function isParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isParticipant', [$user]);
+
+        return parent::isParticipant($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListParticipantsUserId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getListParticipantsUserId', []);
+
+        return parent::getListParticipantsUserId();
+    }
+
 }
