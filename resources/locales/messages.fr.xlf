@@ -3366,7 +3366,7 @@
       </trans-unit>
       <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info">
         <source>Force authentication : info</source>
-        <target state="needs-translation">Si la case n'est pas cochée, un lien d'authentification sera inclus dans l'email reçu par l'utilisateur</target>
+        <target state="translated">Si la case n'est pas cochée, un lien d'authentification sera inclus dans l'email reçu par l'utilisateur</target>
         <jms:reference-file line="164">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="212">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -5971,7 +5971,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="e5c05c39658269a025f4dc37b50af1bb5ab946ca" resname="Save this list">
         <source>Save this list</source>
-        <target state="needs-translation">Sauvegarder comme nouvelle liste</target>
+        <target state="translated">Sauvegarder comme nouvelle liste</target>
         <jms:reference-file line="318">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fedf2439f275db3b471d35c2e773398bfff1c9eb" resname="Se connecter" approved="yes">
@@ -10466,12 +10466,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights">
         <source>feedback:: save users and users rights</source>
-        <target state="needs-translation">Sauvegarder</target>
+        <target state="translated">Sauvegarder</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
         <source>feedback::users to notify</source>
-        <target state="needs-translation">Utilisateurs à notifier</target>
+        <target state="translated">Utilisateurs à notifier</target>
         <jms:reference-file line="140">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="373fa5153a6c195e99a654c0098e05bfbf38665a" resname="fevrier" approved="yes">
