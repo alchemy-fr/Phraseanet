@@ -10681,7 +10681,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ea214aed2c346724c9b874431706654f560585b6" resname="index::advance_search: show-unset-field-facet">
         <source>index::advance_search: show-unset-field-facet</source>
-        <target state="needs-translation">Afficher la facette "Non définit"</target>
+        <target state="needs-translation">Afficher la facette "Non définie"</target>
         <jms:reference-file line="918">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation" approved="yes">
@@ -12957,7 +12957,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="9fb38743f0e67ac389f4d31a55eff4ec5acac703" resname="prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)">
         <source>prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)</source>
-        <target state="needs-translation">Valeur non définit (%fieldname%)</target>
+        <target state="needs-translation">Valeur non définie (%fieldname%)</target>
         <jms:reference-file line="59">Elastic/Search/FacetsResponse.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
@@ -14584,7 +14584,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="2775ff21e6c238255219119c457b6f75f0eae0d9" resname="thesaurus::edit set to">
         <source>thesaurus::edit set to</source>
-        <target state="needs-translation">égale a</target>
+        <target state="needs-translation">égale à</target>
         <jms:reference-file line="80">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc24c56b4d5b8d5e4d41a2f565da3f7f8bb8626d" resname="thesaurus::edit simple mode">
