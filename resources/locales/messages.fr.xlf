@@ -3360,13 +3360,13 @@
       </trans-unit>
       <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication">
         <source>Force authentication</source>
-        <target state="needs-translation">Les utilisateurs doivent s'authentifier à l'aide d'un identifiant et d'un mot de passe</target>
+        <target state="translated">Les utilisateurs doivent s'authentifier à l'aide d'un identifiant et d'un mot de passe</target>
         <jms:reference-file line="158">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="206">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info">
         <source>Force authentication : info</source>
-        <target state="needs-translation">Si la case n'est pas cochée, un lien d'authentification sera inclus dans l'email reçu par l'utilisateur</target>
+        <target state="translated">Si la case n'est pas cochée, un lien d'authentification sera inclus dans l'email reçu par l'utilisateur</target>
         <jms:reference-file line="164">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="212">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -5971,7 +5971,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="e5c05c39658269a025f4dc37b50af1bb5ab946ca" resname="Save this list">
         <source>Save this list</source>
-        <target state="needs-translation">Sauvegarder comme nouvelle liste</target>
+        <target state="translated">Sauvegarder comme nouvelle liste</target>
         <jms:reference-file line="318">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fedf2439f275db3b471d35c2e773398bfff1c9eb" resname="Se connecter" approved="yes">
@@ -10466,12 +10466,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="45ce9abf6f4d4799ba448fab1f5bf4ee5c97f247" resname="feedback:: save users and users rights">
         <source>feedback:: save users and users rights</source>
-        <target state="needs-translation">Sauvegarder</target>
+        <target state="translated">Sauvegarder</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
         <source>feedback::users to notify</source>
-        <target state="needs-translation">Utilisateurs à notifier</target>
+        <target state="translated">Utilisateurs à notifier</target>
         <jms:reference-file line="140">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="373fa5153a6c195e99a654c0098e05bfbf38665a" resname="fevrier" approved="yes">
@@ -11834,7 +11834,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="45e45867cea85ca4966d3753bd9796f17e8c5596" resname="preview::tab:feedback mail subject">
         <source>preview::tab:feedback mail subject</source>
-        <target state="needs-translation">Objet de l'email de validation</target>
+        <target state="translated">Objet de l'email de validation</target>
         <jms:reference-file line="26">prod/preview/voting_notice.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="27937eed7cd0c1655a7eccc0fa7e7ecf7f2e085b" resname="preview::tab:feedback open" approved="yes">
@@ -12559,9 +12559,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="42">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="79">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="22b12bdabd78e4c9dfcd2a3c202a7ed02af28746" resname="prod:expose:publication:Gallery" approved="yes">
+      <trans-unit id="22b12bdabd78e4c9dfcd2a3c202a7ed02af28746" resname="prod:expose:publication:Gallery" approved="no">
         <source>prod:expose:publication:Gallery</source>
-        <target state="translated">Layout Gallery</target>
+        <target state="translated">Gallerie</target>
         <jms:reference-file line="81">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="120">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -12588,9 +12588,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="92">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="131">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0a35952e92e77bf6a762055c17aab923e4dc3a46" resname="prod:expose:publication:Mapbox" approved="yes">
+      <trans-unit id="0a35952e92e77bf6a762055c17aab923e4dc3a46" resname="prod:expose:publication:Mapbox" approved="no">
         <source>prod:expose:publication:Mapbox</source>
-        <target state="translated">Layout Map</target>
+        <target state="translated">Carte</target>
         <jms:reference-file line="83">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="122">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
