@@ -7,7 +7,15 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * PsSettingKeys
  *
- * @ORM\Table(name="PS_Setting_Keys", indexes={@ORM\Index(name="value_int", columns={"value_int"}), @ORM\Index(name="value_varchar", columns={"value_varchar"}), @ORM\Index(name="setting_id", columns={"setting_id"}), @ORM\Index(name="key", columns={"key"})})
+ * @ORM\Table(
+ *     name="PS_Setting_Keys",
+ *     indexes={
+ *          @ORM\Index(name="value_int", columns={"value_int"}),
+ *          @ORM\Index(name="value_varchar", columns={"value_varchar"}),
+ *          @ORM\Index(name="setting_id", columns={"setting_id"}),
+ *          @ORM\Index(name="key_name", columns={"key_name"})
+ *      }
+ *    )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\PsSettingKeysRepository")
  */
 class PsSettingKeys
@@ -50,11 +58,11 @@ class PsSettingKeys
     private $valueText = null;
 
     /**
-     * @var \Alchemy\Phrasea\Model\Entities\PsSettings
+     * @var PsSettings
      *
-     * @ORM\ManyToOne(targetEntity="Alchemy\Phrasea\Model\Entities\PsSettings")
+     * @ORM\ManyToOne(targetEntity="PsSettings", inversedBy="keys")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="setting_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="setting_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     private $setting;
@@ -82,7 +90,7 @@ class PsSettingKeys
     }
 
     /**
-     * Set key
+     * Set keyName
      *
      * @param string $keyName
      *
@@ -170,7 +178,7 @@ class PsSettingKeys
     /**
      * Get setting
      *
-     * @return \Alchemy\Phrasea\Model\Entities\PsSettings
+     * @return PsSettings
      */
     public function getSetting()
     {
@@ -180,14 +188,34 @@ class PsSettingKeys
     /**
      * Set setting
      *
-     * @param \Alchemy\Phrasea\Model\Entities\PsSettings $setting
+     * @param PsSettings $setting
      *
      * @return PsSettingKeys
      */
-    public function setSetting(\Alchemy\Phrasea\Model\Entities\PsSettings $setting = null)
+    public function setSetting(PsSettings $setting = null)
     {
         $this->setting = $setting;
 
         return $this;
     }
+
+    public function setValues(array $values)
+    {
+        foreach ($values as $k => $v) {
+            switch ($k) {
+                case 'valueText':
+                    $this->setValueText($v);
+                    break;
+                case 'valueInt':
+                    $this->setValueInt($v);
+                    break;
+                case 'valueVarchar':
+                    $this->setValueVarchar($v);
+                    break;
+            }
+        }
+
+        return $this;
+    }
+
 }

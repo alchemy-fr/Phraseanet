@@ -44,7 +44,9 @@ class test extends Command
         $z->setFrontUri("https://expose.new_expose.phrasea.io");
         $output->writeln(sprintf("  front-uri: '%s'", $z->getFrontUri()));
 
-        $z->canSee(666, true);
+        $z->canSee(666, true);  // will create a "ACE"
+
+        $z->canSee(666, false);     // will delete the "ACE" and keys
 
         $output->writeln('');
         foreach($ex->getInstances() as $exposeInstance) {
