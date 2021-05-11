@@ -6,7 +6,10 @@
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Name' | trans }}</label>
                         <input type="text" value="" name="title" class="publication-field"/>
-                        <textarea class="publication-field" name="description" id="description" cols="100" rows="1" style="margin: 2px; height: 25px; width: 200px;"></textarea>
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Description' | trans }}</label>
+                        <textarea name="description" class="publication-field description-field-new" id="description-new" cols="250" rows="5" style="width: 530px;"></textarea>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
@@ -274,6 +277,8 @@
 
         $('#DIALOG-expose-add').on('submit', '#publication-json', function (e) {
             e.preventDefault();
+            removeSecurityFieldDialogAdd();
+
             try {
                 $("#pub-error").addClass("hidden");
 
@@ -305,6 +310,77 @@
             });
         });
 
+
+         $('.add_publication').on('click',function (event) {
+             let exposeName = $('#expose_list').val();
+             $('#DIALOG-expose-add').attr('title', 'Edit expose title')
+                 .dialog({
+                     autoOpen: false,
+                     closeOnEscape: true,
+                     resizable: true,
+                     draggable: true,
+                     width: 900,
+                     height: 575,
+                     modal: true,
+                     overlay: {
+                         backgroundColor: '#000',
+                         opacity: 0.7
+                     },
+                     open : function () {
+
+                     },
+                     close: function(e, ui) {
+                         $(this).dialog('destroy');
+                     }
+                 }).dialog('open');
+
+             tinymce.remove();
+
+             tinymce.init({
+                 selector: '.description-field-new',
+                 init_instance_callback: function (editor) {
+                     editor.on('keyup', function (e) {
+                         $('textarea.description-field-new').val(editor.getContent());
+                         removeSecurityFieldDialogAdd();
+                     });
+                 },
+                 plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
+                 toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+             });
+
+             $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+             $('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
+                 $('#DIALOG-expose-add').dialog('close');
+             });
+
+             $.ajax({
+                 type: "GET",
+                 url: `/prod/expose/list-publication/?format=json&exposeName=` + exposeName,
+                 success: function (data) {
+                     $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                     var i = 0;
+                     for ( ;i < data.publications.length; i++) {
+                         $('#DIALOG-expose-add select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                     }
+                 }
+             });
+
+             $.ajax({
+                 type: "GET",
+                 url: `/prod/expose/list-profile?exposeName=` + exposeName,
+                 success: function (data) {
+                     $('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
+                     var i = 0;
+                     for (; i < data.profiles.length; i++) {
+                         $('select#profile-field').append('<option ' +
+                             'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                             + data.profiles[i].name +
+                             '</option>'
+                         );
+                     }
+                 }
+             });
+         });
     </script>
     <style>
         .visibility-hidden {

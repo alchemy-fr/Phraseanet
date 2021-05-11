@@ -30,13 +30,15 @@
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Name' | trans }}</label>
                         <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
-                        <textarea class="publication-field" name="description" id="description" cols="100" rows="1" style="margin: 2px; height: 25px; width: 200px;">{{ publication.description }}</textarea>
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Description' | trans }}</label>
+                        <textarea class="publication-field description-field-edit" name="description" id="description" cols="250" rows="5" style="width: 530px;">{{ publication.description }}</textarea>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
-                        <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/><input type="button"
-                                                                                                                              class="blue_button"
-                                                                                                                              value="check slug availability">
+                        <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/>
+                        <input type="button" class="blue_button" value="check slug availability">
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
@@ -264,6 +266,19 @@
                 }
             });
 
+            tinymce.remove('.description-field-edit');
+
+            tinymce.init({
+                selector: '.description-field-edit',
+                init_instance_callback: function (editor) {
+                    editor.on('keyup', function (e) {
+                        $('textarea.description-field-edit').val(editor.getContent());
+                        removeSecurityField();
+                    });
+                },
+                plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
+                toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+            });
         });
 
         bindPermissionEvent();
@@ -290,6 +305,8 @@
 
         publicationEdit.find('#publication-json').on('submit', function (e) {
             e.preventDefault();
+
+            removeSecurityField();
 
             try {
                 publicationEdit.find("#pub-error").addClass("hidden");
