@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PsSettings
 {
+    public function __construct()
+    {
+        $this->keys = new ArrayCollection();
+    }
+
     /**
      * @var integer
      *
@@ -57,16 +63,30 @@ class PsSettings
     private $valueVarchar = null;
 
     /**
-     * @var \Alchemy\Phrasea\Model\Entities\PsSettings
+     * @var PsSettings
      *
      * @ORM\ManyToOne(targetEntity="Alchemy\Phrasea\Model\Entities\PsSettings")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     private $parent;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="PsSettingKeys", mappedBy="setting")
+     *
+     */
+    private $keys;
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getKeys()
+    {
+        return $this->keys;
+    }
 
     /**
      * Get id
@@ -201,7 +221,7 @@ class PsSettings
     /**
      * Get parent
      *
-     * @return \Alchemy\Phrasea\Model\Entities\PsSettings
+     * @return PsSettings
      */
     public function getParent()
     {
@@ -211,14 +231,40 @@ class PsSettings
     /**
      * Set parent
      *
-     * @param \Alchemy\Phrasea\Model\Entities\PsSettings $parent
+     * @param PsSettings $parent
      *
      * @return PsSettings
      */
-    public function setParent(\Alchemy\Phrasea\Model\Entities\PsSettings $parent = null)
+    public function setParent(PsSettings $parent = null)
     {
         $this->parent = $parent;
 
         return $this;
+    }
+
+    public function setValues(array $values)
+    {
+        foreach ($values as $k => $v) {
+            switch ($k) {
+                case 'valueText':
+                    $this->setValueText($v);
+                    break;
+                case 'valueInt':
+                    $this->setValueInt($v);
+                    break;
+                case 'valueVarchar':
+                    $this->setValueVarchar($v);
+                    break;
+            }
+        }
+    }
+
+    public function addKey(string $keyName, array $values = [])
+    {
+        $ke = new PsSettingKeys();
+        $ke->setKeyName($keyName)->setSetting($this)->setValues($values);
+        $this->keys->add($ke);
+
+        return $ke;
     }
 }

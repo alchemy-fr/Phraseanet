@@ -41,7 +41,7 @@ class PsSettingsRepository extends EntityRepository
      * @param array $values k=>v, where k = "valueText" | "valueInt" | "valueVarchar"
      * @param array $keys   keyname=>[[k1=>v1], [k2=>v2], ...]
      * @param int|null $limit
-     * @return array
+     * @return PsSettings[]
      */
     public function get(string $role=null, string $name=null, PsSettings $parent=null, array $values = [], array $keys = [], int $limit = null)
     {
@@ -82,6 +82,20 @@ class PsSettingsRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    // todo : use cascade !
+    public function delete(string $role=null, string $name=null, PsSettings $parent=null, array $values = [], array $keys = [])
+    {
+        $this->_em->beginTransaction();
+
+        foreach ($this->get($role, $name, $parent, $values, $keys) as $se) {
+            // delete all keys of this setting
+            $se->getKeys()->clear();
+            // delete the setting
+            $this->_em->remove($se);
+        }
+        $this->_em->flush();
+        $this->_em->commit();
+    }
 
     /**
      * find a unique row, creating it if it did not exist
@@ -103,7 +117,7 @@ class PsSettingsRepository extends EntityRepository
         if(count($e) === 0) {
             $e = [$this->insert($role, $name, $parent, $values)];
         }
-        $this->_em->getConnection()->commit();
+        $this->_em->commit();
 
         if(count($e) !== 1) {
             throw new NonUniqueResultException();
@@ -130,7 +144,7 @@ class PsSettingsRepository extends EntityRepository
         if(!$this->exists($role, $name, $parent, $values)) {
             $e = $this->insert($role, $name, $parent, $values);
 
-            $this->_em->getConnection()->commit();
+            $this->_em->commit();
 
             return $e;
         }
@@ -138,11 +152,6 @@ class PsSettingsRepository extends EntityRepository
             // already exist
             throw new NonUniqueResultException();
         }
-    }
-
-    public function getEntityManager()
-    {
-        return $this->_em;
     }
 
     /**
@@ -167,7 +176,7 @@ class PsSettingsRepository extends EntityRepository
         if(!is_null($name)) {
             $e->setName($name);
         }
-        $this->setValues($e, $values);
+        $e->setValues($values);
 
         $this->_em->persist($e);
         $this->_em->flush();
@@ -175,20 +184,8 @@ class PsSettingsRepository extends EntityRepository
         return $e;
     }
 
-    public function setValues(PsSettings $e, array $values)
+    public function getEntityManager()
     {
-        foreach ($values as $k => $v) {
-            switch ($k) {
-                case 'valueText':
-                    $e->setValueText($v);
-                    break;
-                case 'valueInt':
-                    $e->setValueInt($v);
-                    break;
-                case 'valueVarchar':
-                    $e->setValueVarchar($v);
-                    break;
-            }
-        }
+        return $this->_em;
     }
 }

@@ -2,10 +2,8 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Model\Entities\PsSettingKeys;
 use Alchemy\Phrasea\Model\Entities\PsSettings;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * PsSettingKeysRepository
@@ -31,55 +29,15 @@ class PsSettingKeysRepository extends EntityRepository
         return $this->findBy($crit, null, $maxResult);
     }
 
-    public function getOrCreateUnique(string $key=null, PsSettings $setting=null, array $values = [])
+    public function delete(string $key=null, PsSettings $setting=null, array $values = [])
     {
-        $this->_em->beginTransaction();
-
-        $e = $this->get($key, $setting, $values);
-        if(count($e) === 0) {
-            $e = [$this->insert($key, $setting, $values)];
-        }
-        $this->_em->getConnection()->commit();
-
-        if(count($e) !== 1) {
-            throw new NonUniqueResultException();
-        }
-        return $e[0];
-    }
-
-    private function insert(string $key=null, PsSettings $setting=null, array $values = [])
-    {
-        $e = new PsSettingKeys();
-
-        if(!is_null($setting)) {
-            $e->setSetting($setting);
-        }
-        if(!is_null($key)) {
-            $e->setKeyName($key);
-        }
-        $this->setValues($e, $values);
-
-        $this->_em->persist($e);
-        $this->_em->flush();
-
-        return $e;
-    }
-
-    public function setValues(PsSettingKeys $e, array $values)
-    {
-        foreach ($values as $k => $v) {
-            switch ($k) {
-                case 'valueText':
-                    $e->setValueText($v);
-                    break;
-                case 'valueInt':
-                    $e->setValueInt($v);
-                    break;
-                case 'valueVarchar':
-                    $e->setValueVarchar($v);
-                    break;
-            }
+        foreach ($this->get($key, $setting, $values) as $e) {
+            $this->_em->remove($e);
         }
     }
 
+    public function getEntityManager()
+    {
+        return $this->_em;
+    }
 }
