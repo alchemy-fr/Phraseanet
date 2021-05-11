@@ -130,4 +130,9 @@ class App
     {
         $this->psSettingsRepository->delete('ACE', $aceName, $this->instanceEntity, [], ['user_id'=>['valueVarchar'=>$userId]]);
     }
+
+    public function asArray()
+    {
+        return $this->instanceEntity->asArray();
+    }
 }

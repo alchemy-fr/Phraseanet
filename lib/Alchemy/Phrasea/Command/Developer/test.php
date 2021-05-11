@@ -34,6 +34,8 @@ class test extends Command
         foreach($ex->getInstances(1) as $exposeInstance) {
             $output->writeln(sprintf("expose: '%s'", $exposeInstance->getName()));
             $output->writeln(sprintf("  front-uri: '%s'", $exposeInstance->getFrontUri()));
+
+            $a = $exposeInstance->asArray();
         }
         $output->writeln('');
 
@@ -47,6 +49,8 @@ class test extends Command
         $z->canSee(666, true);  // will create a "ACE"
 
         $z->canSee(666, false);     // will delete the "ACE" and keys
+
+        $a = $z->asArray();
 
         $output->writeln('');
         foreach($ex->getInstances() as $exposeInstance) {
