@@ -32,13 +32,13 @@
                         <input type="text" value="{{ publication.title }}" name="title" class="publication-field"/>
                     </div>
                     <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Description' | trans }}</label>
-                        <textarea class="publication-field description-field-edit" name="description" id="description" cols="250" rows="5" style="width: 530px;">{{ publication.description }}</textarea>
-                    </div>
-                    <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
                         <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/>
-                        <input type="button" class="blue_button" value="check slug availability">
+                        <input type="button" class="blue_button" value="check slug availability" style="height: 31px;">
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Description' | trans }}</label>
+                        <textarea class="publication-field description-field-edit" name="description" id="description" cols="250" rows="5" style="width: 530px;">{{ publication.description }}</textarea>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
@@ -67,15 +67,6 @@
                             {% endif %}
                         </select>
                     </div>
-                    <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Enabled' | trans }} </label>
-                        <label class="switch">
-                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled"
-                                    {% if publication.enabled == 1 %} checked {% endif %}
-                            >
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
                     <div class="ui-widget available-wrapper">
                         <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
@@ -86,6 +77,15 @@
                             <label>{{ 'prod:expose:publication:To' | trans }} </label>
                             <input type="text" value="{{ publication.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Enabled' | trans }} </label>
+                        <label class="switch">
+                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled"
+                                    {% if publication.enabled == 1 %} checked {% endif %}
+                            >
+                            <span class="slider round"></span>
+                        </label>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
@@ -140,12 +140,12 @@
 
             <form name="publication-json" id="publication-json" class="text-center">
                 <div id="advancedSettingBlock">
-                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>
+{#                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>#}
                     <div id="advancedSettingInner" class="hidden">
                         <div>
-                                    <textarea name="advancedSetting" id="advancedSetting" cols="100"
-                                              rows="11"></textarea></div>
-
+                            <textarea name="advancedSetting" id="advancedSetting" cols="100" rows="11">
+                            </textarea>
+                        </div>
                     </div>
                 </div>
                 <div class="publication-btn-container submit-blockr">
@@ -153,14 +153,13 @@
                     <p class="text-center"><span id="pub-success" class="hidden alert alert-success"></span></p>
                     <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
                         <div class="ui-dialog-buttonset">
+                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="update-publication">
+                                {{ 'prod:expose:publication:Update Publication'| trans }}
+                            </button>
                             <button type="button"
                                     class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                     role="button" aria-disabled="false"><span class="ui-button-text">{{ 'prod:expose:publication:Cancel'| trans }}</span>
                             </button>
-                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="update-publication">
-                                {{ 'prod:expose:publication:Update Publication'| trans }}
-                            </button>
-
                         </div>
                     </div>
                 </div>
@@ -276,6 +275,7 @@
                         removeSecurityField();
                     });
                 },
+                menubar: 'edit view insert format table help',
                 plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
                 toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
             });

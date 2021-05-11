@@ -993,12 +993,11 @@ const workzone = (services) => {
                     opacity: 0.7
                 },
                 close: function(e, ui) {
-                    $('#DIALOG-expose-edit .expose-edit-content').empty();
                 }
             }).dialog('open');
         $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         $('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
-            $('#DIALOG-expose-edit .expose-edit-content').dialog('close');
+            $('#DIALOG-expose-edit').dialog('close');
         });
 
         $.ajax({

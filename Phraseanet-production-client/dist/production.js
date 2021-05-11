@@ -11017,13 +11017,11 @@ var workzone = function workzone(services) {
                 backgroundColor: '#000',
                 opacity: 0.7
             },
-            close: function close(e, ui) {
-                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty();
-            }
+            close: function close(e, ui) {}
         }).dialog('open');
         (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
-            (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').dialog('close');
+            (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
         });
 
         _jquery2.default.ajax({
