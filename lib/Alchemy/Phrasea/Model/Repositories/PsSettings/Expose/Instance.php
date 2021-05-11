@@ -61,12 +61,11 @@ class Instance extends App
 
     public function canSee(int $userId, $value = null)
     {
-        $this->readOrSetACE($userId, 'cansee', $value);
+        return $this->readOrSetACE($userId, 'cansee', $value);
     }
 
     public function canAdd(int $userId, $value = null)
     {
-        $this->readOrSetACE($userId, 'canadd', $value);
+        return $this->readOrSetACE($userId, 'canadd', $value);
     }
-
 }

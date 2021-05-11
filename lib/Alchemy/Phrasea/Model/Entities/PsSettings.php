@@ -15,7 +15,8 @@ class PsSettings
 {
     public function __construct()
     {
-        $this->keys = new ArrayCollection();
+        $this->keys     = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -65,12 +66,28 @@ class PsSettings
     /**
      * @var PsSettings
      *
-     * @ORM\ManyToOne(targetEntity="Alchemy\Phrasea\Model\Entities\PsSettings")
+     * @ORM\ManyToOne(targetEntity="PsSettings", inversedBy="children")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     private $parent;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="PsSettings", mappedBy="parent")
+     *
+     */
+    private $children;
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
 
     /**
      * @var ArrayCollection
@@ -266,5 +283,40 @@ class PsSettings
         $this->keys->add($ke);
 
         return $ke;
+    }
+
+    public function asArray()
+    {
+        $r = [
+            'role' => $this->getRole(),
+            'name' => $this->getName(),
+        ];
+        if(!is_null($v = $this->getValueText())) {
+            $r['value_text'] = $v;
+        }
+        if(!is_null($v = $this->getValueVarchar())) {
+            $r['value_string'] = $v;
+        }
+        if(!is_null($v = $this->getValueInt())) {
+            $r['value_int'] = $v;
+        }
+
+        foreach($this->getKeys() as $key) {
+            /** @var PsSettingKeys $key */
+            if(!array_key_exists('keys', $r)) {
+                $r['keys'] = [];
+            }
+            $r['keys'][] = $key->asArray();
+        }
+
+        foreach($this->getChildren() as $child) {
+            /** @var PsSettings $child */
+            if(!array_key_exists('children', $r)) {
+               $r['children'] = [];
+            }
+            $r['children'][] = $child->asArray();
+        }
+
+        return $r;
     }
 }

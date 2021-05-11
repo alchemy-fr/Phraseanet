@@ -218,4 +218,21 @@ class PsSettingKeys
         return $this;
     }
 
+    public function asArray()
+    {
+        $r = [
+            'name' => $this->getKeyName()
+        ];
+        if(!is_null($v = $this->getValueText())) {
+            $r['value_text'] = $v;
+        }
+        if(!is_null($v = $this->getValueVarchar())) {
+            $r['value_string'] = $v;
+        }
+        if(!is_null($v = $this->getValueInt())) {
+            $r['value_int'] = $v;
+        }
+
+        return $r;
+    }
 }
