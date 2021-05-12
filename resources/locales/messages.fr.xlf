@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2021-05-12T07:39:33Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="263">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2524,7 +2524,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -11551,7 +11551,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="564">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12532,13 +12532,13 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="98b7130de090d47c8acbc3005dd740df4b7d6d24" resname="prod:expose:publication:Description">
         <source>prod:expose:publication:Description</source>
-        <target state="new">prod:expose:publication:Description</target>
+        <target state="needs-translation">Description de la publication</target>
         <jms:reference-file line="16">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="40">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download" approved="yes">
+      <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download" approved="no">
         <source>prod:expose:publication:Download</source>
-        <target state="translated">Layout Download</target>
+        <target state="needs-translation">Téléchargement</target>
         <jms:reference-file line="87">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="126">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -12561,7 +12561,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="22b12bdabd78e4c9dfcd2a3c202a7ed02af28746" resname="prod:expose:publication:Gallery">
         <source>prod:expose:publication:Gallery</source>
-        <target state="translated">Gallerie</target>
+        <target state="translated">Galerie</target>
         <jms:reference-file line="84">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="123">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -14162,7 +14162,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1338">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="542">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
