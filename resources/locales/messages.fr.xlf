@@ -12536,9 +12536,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="16">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="40">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download" approved="yes">
+      <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download" approved="no">
         <source>prod:expose:publication:Download</source>
-        <target state="translated">Layout Download</target>
+        <target state="needs-translation">Téléchargement</target>
         <jms:reference-file line="87">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="126">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -12561,13 +12561,13 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="22b12bdabd78e4c9dfcd2a3c202a7ed02af28746" resname="prod:expose:publication:Gallery">
         <source>prod:expose:publication:Gallery</source>
-        <target state="translated">Gallerie</target>
+        <target state="translated">Galerie</target>
         <jms:reference-file line="84">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="123">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="463367775611f53acb3a376254eb491036159c67" resname="prod:expose:publication:Grid">
         <source>prod:expose:publication:Grid</source>
-        <target state="needs-translation">Grille Layout</target>
+        <target state="needs-translation">Grille</target>
         <jms:reference-file line="85">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="124">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
