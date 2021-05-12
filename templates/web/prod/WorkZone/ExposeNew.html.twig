@@ -337,7 +337,7 @@
              tinymce.init({
                  selector: '.description-field-new',
                  init_instance_callback: function (editor) {
-                     editor.on('keyup', function (e) {
+                     editor.on('keyup Change', function (e) {
                          $('textarea.description-field-new').val(editor.getContent());
                          removeSecurityFieldDialogAdd();
                      });
