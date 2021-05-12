@@ -98,17 +98,7 @@ const workzone = (services) => {
             checkActiveBloc(dragBloc);
         });
 
-        $('.add_publication').on('click',function (event) {
-            openExposePublicationAdd($('#expose_list').val());
-        });
-
         $('.refresh-list').on('click',function (event) {
-            let exposeName = $('#expose_list').val();
-            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
-            updatePublicationList(exposeName);
-        });
-
-        $('.display-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
             $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(exposeName);
@@ -986,57 +976,6 @@ const workzone = (services) => {
         });
     }
 
-    function openExposePublicationAdd(exposeName) {
-        $('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title'))
-            .dialog({
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: true,
-                draggable: true,
-                width: 900,
-                height: 575,
-                modal: true,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                },
-                close: function(e, ui) {
-                }
-            }).dialog('open');
-        $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
-        $('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
-            $('#DIALOG-expose-add').dialog('close');
-        });
-
-        $.ajax({
-            type: "GET",
-            url: `/prod/expose/list-publication/?format=json&exposeName=` + exposeName,
-            success: function (data) {
-                $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
-                var i = 0;
-                for ( ;i < data.publications.length; i++) {
-                    $('#DIALOG-expose-add select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
-                }
-            }
-        });
-
-        $.ajax({
-            type: "GET",
-            url: `/prod/expose/list-profile?exposeName=` + exposeName,
-            success: function (data) {
-                $('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
-                var i = 0;
-                for (; i < data.profiles.length; i++) {
-                    $('select#profile-field').append('<option ' +
-                        'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
-                        + data.profiles[i].name +
-                        '</option>'
-                    );
-                }
-            }
-        });
-    }
-
     function openExposePublicationEdit(edit) {
         $('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
@@ -1054,12 +993,11 @@ const workzone = (services) => {
                     opacity: 0.7
                 },
                 close: function(e, ui) {
-                    $('#DIALOG-expose-edit .expose-edit-content').empty();
                 }
             }).dialog('open');
         $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         $('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
-            $('#DIALOG-expose-edit .expose-edit-content').dialog('close');
+            $('#DIALOG-expose-edit').dialog('close');
         });
 
         $.ajax({
