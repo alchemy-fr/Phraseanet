@@ -12486,9 +12486,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Mot de passe</target>
         <jms:reference-file line="11">prod/WorkZone/ExposeOauthLogin.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1417edde7a5adc20001a2352757bb87ff607b1c5" resname="prod:expose:connection:Sign in" approved="yes">
+      <trans-unit id="1417edde7a5adc20001a2352757bb87ff607b1c5" resname="prod:expose:connection:Sign in" approved="no">
         <source>prod:expose:connection:Sign in</source>
-        <target state="translated">S'inscrire</target>
+        <target state="translated">s'identifier</target>
         <jms:reference-file line="15">prod/WorkZone/ExposeOauthLogin.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1a923a2bcaea92b6d38dfae378552c932df0a592" resname="prod:expose:connection:Username" approved="yes">
