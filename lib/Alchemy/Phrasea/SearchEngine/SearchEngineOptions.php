@@ -14,13 +14,13 @@ namespace Alchemy\Phrasea\SearchEngine;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Authentication\ACLProvider;
 use Alchemy\Phrasea\Authentication\Authenticator;
-use Alchemy\Phrasea\Collection\CollectionRepository;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
-use Alchemy\Phrasea\Collection\Reference\DbalCollectionReferenceRepository;
+use Alchemy\Phrasea\Collection\Reference\CollectionReferenceRepository;
+use Alchemy\Phrasea\Core\Configuration\DisplaySettingService;
 use Assert\Assertion;
+use databox_descriptionStructure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use databox_descriptionStructure;
 
 class SearchEngineOptions
 {
@@ -41,7 +41,7 @@ class SearchEngineOptions
     const SORT_MODE_ASC = 'asc';
     const SORT_MODE_DESC = 'desc';
 
-    /** @var DbalCollectionReferenceRepository $dbalCollectionReferenceRepository */
+    /** @var CollectionReferenceRepository */
     private $collectionReferenceRepository;
 
     /** @var string */
@@ -82,14 +82,13 @@ class SearchEngineOptions
     /** @var int[] */
     protected $business_fields = [];
 
-    /**
-     * @var int
-     */
+    /** @var int */
     private $max_results = 10;
 
-    /**
-     * @var int
-     */
+    /** @var bool */
+    private $include_unset_field_facet = false;
+
+    /** @var int */
     private $first_result = 0;
 
     private static $serializable_properties = [
@@ -109,6 +108,7 @@ class SearchEngineOptions
         'max_results',
         'first_result',
         'use_truncation',
+        'include_unset_field_facet',
     ];
 
     /**
@@ -251,6 +251,16 @@ class SearchEngineOptions
     public function isStemmed()
     {
         return $this->stemming;
+    }
+
+    public function setIncludeUnsetFieldFacet(bool $include_unset_field_facet)
+    {
+        $this->include_unset_field_facet = $include_unset_field_facet;
+    }
+
+    public function getIncludeUnsetFieldFacet()
+    {
+        return $this->include_unset_field_facet;
     }
 
     /**
@@ -455,6 +465,20 @@ class SearchEngineOptions
         return $this->date_fields;
     }
 
+    public function __construct(CollectionReferenceRepository $collectionReferenceRepository)
+    {
+        $this->collectionReferenceRepository = $collectionReferenceRepository;
+    }
+
+    /**
+     * @param $app
+     * @return DisplaySettingService
+     */
+    static private function getSettings($app)
+    {
+        return $app['settings'];
+    }
+
     /**
      * Creates options based on a Symfony Request object
      *
@@ -468,10 +492,16 @@ class SearchEngineOptions
         /** @var Authenticator $authenticator */
         $authenticator = $app->getAuthenticator();
         $isAuthenticated = $authenticator->isAuthenticated();
+        $user = $authenticator->getUser();
 
-        $options = new static();
+        $options = new static($app['repo.collection-references']);
 
-        $options->collectionReferenceRepository = $app['repo.collection-references'];
+        if($user) {
+            $options->setIncludeUnsetFieldFacet((Boolean)(self::getSettings($app)->getUserSetting($user, 'show_unset_field_facet', false)));
+        }
+        else {
+            $options->setIncludeUnsetFieldFacet(false);
+        }
 
         $options->disallowBusinessFields();
         $options->setLocale($app['locale']);
@@ -674,6 +704,7 @@ class SearchEngineOptions
             },
             'first_result' => $optionSetter('setFirstResult'),
             'max_results' => $optionSetter('setMaxResults'),
+            'include_unset_field_facet' => $optionSetter('setIncludeUnsetFieldFacet'),
         ];
     }
 
@@ -713,7 +744,7 @@ class SearchEngineOptions
             throw new \InvalidArgumentException('SearchEngineOptions data are corrupted');
         }
 
-        $options = new static();
+        $options = new static($app['repo.collection-references']);
         $options->disallowBusinessFields();
 
         $methods = self::getHydrateMethods($app);

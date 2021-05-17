@@ -3,7 +3,6 @@
 namespace Alchemy\Tests\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Prophecy\Argument;
 
 /**
  * @group functional
@@ -47,7 +46,7 @@ class QueryTest extends \PhraseanetAuthenticatedWebTestCase
         $app = $this->mockElasticsearchResult(self::$DI['record_2']);
         $this->authenticate($app);
 
-        $options = new SearchEngineOptions();
+        $options = new SearchEngineOptions(self::$DI['app']['repo.collection-references']);
         $searchableBasesIds = $app->getAclForUser($app->getAuthenticatedUser())->getSearchableBasesIds();
         $options->onBasesIds($searchableBasesIds);
         $serializedOptions = $options->serialize();

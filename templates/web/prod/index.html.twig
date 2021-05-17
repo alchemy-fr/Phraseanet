@@ -84,6 +84,7 @@
 {% block javascript %}
     <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
     <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
 
     <script type="text/javascript">
 
@@ -904,13 +905,22 @@
                     </form>
                 </div>
                 <div class="box">
-                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
                     {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                    {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show__empty__facet') %}
+                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
+
                     <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
                         <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
                         {{ 'index::advance_search: disable-facet' | trans }}
                     </label>
+                    <br/>
+                    <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em">
+                        <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == 'true' %}checked="checked"{% endif %}>
+                        {{ 'index::advance_search: show-unset-field-facet' | trans }}
+                    </label>
+
                     <h1>{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h1>
+
                     <div class="hiddenFiltersListContainer"></div>
                 </div>
             </div>

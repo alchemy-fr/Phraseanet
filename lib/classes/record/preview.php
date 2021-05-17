@@ -93,7 +93,7 @@ class record_preview extends record_adapter
                     throw new \LogicException('Search Engine should be provided');
                 }
                 if (!$options) {
-                    $options = new SearchEngineOptions();
+                    $options = new SearchEngineOptions($app['repo.collection-references']);
                 }
                 $options->setFirstResult($pos);
                 $options->setMaxResults(1);
@@ -197,7 +197,7 @@ class record_preview extends record_adapter
 
         switch ($this->env) {
             case 'RESULT':
-                $options = $this->options ?: new SearchEngineOptions();
+                $options = $this->options ?: new SearchEngineOptions($this->app['repo.collection-references']);
                 $options->setFirstResult(($this->pos - 3) < 0 ? 0 : ($this->pos - 3));
                 $options->setMaxResults(56);
 

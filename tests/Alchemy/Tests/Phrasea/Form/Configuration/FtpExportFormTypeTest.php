@@ -13,6 +13,6 @@ class FtpExportFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new FtpExportFormType();
+        return new FtpExportFormType(self::$DI['app']['translator']);
     }
 }

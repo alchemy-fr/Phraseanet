@@ -11,16 +11,17 @@
 
 namespace Alchemy\Phrasea\Command\Developer\Utils;
 
+use Doctrine\Common\Annotations\DocParser;
+use JMS\TranslationBundle\Annotation\Desc;
+use JMS\TranslationBundle\Annotation\Ignore;
+use JMS\TranslationBundle\Annotation\Meaning;
 use JMS\TranslationBundle\Exception\RuntimeException;
 use JMS\TranslationBundle\Logger\LoggerAwareInterface;
 use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
-use JMS\TranslationBundle\Annotation\Meaning;
-use JMS\TranslationBundle\Annotation\Desc;
-use JMS\TranslationBundle\Annotation\Ignore;
-use Doctrine\Common\Annotations\DocParser;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use PhpParser\Comment\Doc;
 use PHPParser\Node;
 use PHPParser\Node\Expr\Array_;
 use PHPParser\Node\Scalar\String_;
@@ -94,7 +95,8 @@ class HelpMessageExtractor implements FileVisitorInterface, NodeVisitor, LoggerA
         $docComment = $item->key->getDocComment();
         $docComment = $docComment ? $docComment : $item->value->getDocComment();
         if ($docComment) {
-            foreach ($this->docParser->parse($docComment, 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
+            /** @var Doc $docComment */
+            foreach ($this->docParser->parse($docComment->getText(), 'file '.$this->file.' near line '.$item->value->getLine()) as $annot) {
                 if ($annot instanceof Ignore) {
                     $ignore = true;
                 } elseif ($annot instanceof Desc) {

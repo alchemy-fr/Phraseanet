@@ -91,7 +91,7 @@
     "igorw/get-in": "~1.0",
     "imagine/imagine": "0.6.x-dev",
     "jms/serializer": "~0.10",
-    "jms/translation-bundle": "dev-rebase-2015-10-20",
+    "jms/translation-bundle": "dev-fix-2021-04-19",
     "justinrainbow/json-schema": "2.0.3 as 1.6.1",
     "league/flysystem": "^1.0",
     "league/flysystem-aws-s3-v2": "^1.0",

@@ -5,19 +5,20 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 use Alchemy\Phrasea\Exception\RuntimeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
 use Doctrine\Common\Collections\ArrayCollection;
-use igorw;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class FacetsResponse
 {
     private $escaper;
     private $facets = array();
+    private $translator;
 
-    public function __construct(ElasticsearchOptions $options, Escaper $escaper, array $response, GlobalStructure $structure)
+    public function __construct(ElasticsearchOptions $options, Escaper $escaper, TranslatorInterface $translator, array $response, GlobalStructure $structure)
     {
         $this->escaper = $escaper;
+        $this->translator = $translator;
 
         if (!isset($response['aggregations'])) {
             return;
@@ -48,6 +49,20 @@ class FacetsResponse
             }
 
             $values = [];
+
+            // insert a fake bucket from the "empty" agg ?
+            if(array_key_exists($name.'#empty', $response['aggregations'])) {
+                if (!empty($aggregation['buckets'])) {      // don't add to a field with no aggs (no buckets), since it will enforce display of the irrelevant facet
+                    if($response['aggregations'][$name . '#empty']['doc_count'] > 0) {  // don't add a facet for 0 results
+                        $aggregation['buckets'][] = [
+                            'key'       => '_empty_',
+                            'value'     => $this->translator->trans('prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)', ['%fieldname%' =>$name]),   // special homemade prop to display a human value instead of the key
+                            'doc_count' => $response['aggregations'][$name . '#empty']['doc_count']
+                        ];
+                    }
+                }
+            }
+
             foreach ($aggregation['buckets'] as $bucket) {
                 if (!isset($bucket['key']) || !isset($bucket['doc_count'])) {
                     $this->throwAggregationResponseError();
@@ -65,7 +80,7 @@ class FacetsResponse
                 else {
                     // the field is a normal field
                     $value = [
-                        'value'     => $key,
+                        'value'     => array_key_exists('value', $bucket) ? $bucket['value'] : $key,
                         'raw_value' => $key,
                         'count'     => $bucket['doc_count'],
                         'query'     => sprintf('field.%s=%s', $this->escaper->escapeWord($name), $this->escaper->quoteWord($key))

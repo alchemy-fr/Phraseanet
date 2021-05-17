@@ -2,12 +2,11 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
-use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
-use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Field as ASTField;
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\Flag;
+use Alchemy\Phrasea\SearchEngine\Elastic\Exception\QueryException;
+use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
 
@@ -41,6 +40,11 @@ class QueryContext
         $this->queryLocale = $queryLocale;
         $this->fields = $fields;
         $this->options = $options;
+    }
+
+    public function getDataboxes()
+    {
+        return $this->structure->getDataboxes();
     }
 
     public function narrowToFields(array $fields)

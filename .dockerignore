@@ -11,6 +11,7 @@
 /.travis.yml
 /AUTHORS
 /CONTRIBUTORS
+/doc
 /Dockerfile
 /LICENSE
 /bin

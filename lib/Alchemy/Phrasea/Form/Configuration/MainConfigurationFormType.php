@@ -12,10 +12,10 @@
 namespace Alchemy\Phrasea\Form\Configuration;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class MainConfigurationFormType extends AbstractType
 {
@@ -33,22 +33,22 @@ class MainConfigurationFormType extends AbstractType
         $builder->add('general', new GeneralFormType($this->languages), [
             'label'    => 'General configuration',
         ]);
-        $builder->add('modules', new ModulesFormType(), [
+        $builder->add('modules', new ModulesFormType($this->translator), [
             'label' => 'Additionnal modules',
         ]);
-        $builder->add('actions', new ActionsFormType(), [
+        $builder->add('actions', new ActionsFormType($this->translator), [
             'label' => 'Push configuration',
         ]);
-        $builder->add('ftp', new FtpExportFormType(), [
+        $builder->add('ftp', new FtpExportFormType($this->translator), [
             'label' => 'FTP Export',
         ]);
-        $builder->add('registration', new RegistrationFormType(), [
+        $builder->add('registration', new RegistrationFormType($this->translator), [
             'label' => 'Registration',
         ]);
         $builder->add('maintenance', new MaintenanceFormType(), [
             'label' => 'Maintenance state',
         ]);
-        $builder->add('api-clients', new APIClientsFormType(), [
+        $builder->add('api-clients', new APIClientsFormType($this->translator), [
             'label' => 'Phraseanet client API',
         ]);
         $builder->add('webservices', new WebservicesFormType($this->translator), [
@@ -57,7 +57,7 @@ class MainConfigurationFormType extends AbstractType
         $builder->add('executables', new ExecutablesFormType($this->translator), [
             'label' => 'Executables settings',
         ]);
-        $builder->add('searchengine', new SearchEngineFormType(), [
+        $builder->add('searchengine', new SearchEngineFormType($this->translator), [
             'label' => 'Search engine',
         ]);
         $builder->add('email', new EmailFormType(), [

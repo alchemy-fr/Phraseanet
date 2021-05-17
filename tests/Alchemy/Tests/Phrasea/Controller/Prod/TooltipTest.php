@@ -84,7 +84,7 @@ class TooltipTest extends \PhraseanetAuthenticatedWebTestCase
         ];
 
         foreach ($routes as $route) {
-            $option = new SearchEngineOptions();
+            $option = new SearchEngineOptions(self::$DI['app']['repo.collection-references']);
             $crawler = self::$DI['client']->request('POST', $route, ['options_serial' => $option->serialize()]);
 
             $this->assertTrue(self::$DI['client']->getResponse()->isOk());

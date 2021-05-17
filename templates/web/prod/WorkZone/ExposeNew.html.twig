@@ -9,9 +9,12 @@
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
-                        <input type="text" value="" name="slug" class=" slug publication-field"/><input type="button"
-                                                                                                  class="blue_button"
-                                                                                                  value="check slug availability">
+                        <input type="text" value="" name="slug" class=" slug publication-field"/>
+                        <input type="button" class="blue_button"value="check slug availability" style="height: 31px;">
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Description' | trans }}</label>
+                        <textarea name="description" class="publication-field description-field-new" id="description-new" cols="250" rows="5" style="width: 530px;"></textarea>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
@@ -29,13 +32,6 @@
                             <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
                         </select>
                     </div>
-                    <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Enabled' | trans }}</label>
-                        <label class="switch">
-                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
                     <div class="ui-widget available-wrapper">
                         <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
@@ -46,6 +42,13 @@
                             <label>{{ 'prod:expose:publication:To' | trans }} </label>
                             <input type="text" value="" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
+                    </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Enabled' | trans }}</label>
+                        <label class="switch">
+                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
+                            <span class="slider round"></span>
+                        </label>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
@@ -79,6 +82,7 @@
                                 class="publication-field">
                             <option value="" selected="selected">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
                             <option value="gallery">{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                            <option value="grid">{{ 'prod:expose:publication:Grid' | trans }}</option>
                             <option value="mapbox">{{ 'prod:expose:publication:Mapbox' | trans }}</option>
                             <option value="download">{{ 'prod:expose:publication:Download' | trans }}</option>
                         </select>
@@ -97,7 +101,7 @@
 
             <form name="publication-json" id="publication-json" class="text-center">
                 <div id="advancedSettingBlock">
-                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>
+{#                    <h4 class="toggleSetting">{{ 'prod:expose:publication:Advanced setting' | trans }}</h4>#}
                     <div id="advancedSettingInner" class="hidden">
                         <div>
                                     <textarea name="advancedSetting" id="advancedSetting" cols="100"
@@ -110,14 +114,13 @@
                     <p class="text-center"><span id="pub-success" class="hidden alert alert-success"></span></p>
                     <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
                         <div class="ui-dialog-buttonset">
+                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="create-publication">
+                                {{ 'prod:expose:publication:Create publication'| trans }}
+                            </button>
                             <button type="button"
                                     class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
                                     role="button" aria-disabled="false"><span class="ui-button-text">{{ 'prod:expose:publication:Cancel'| trans }}</span>
                             </button>
-                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="create-publication">
-                                {{ 'prod:expose:publication:Create publication'| trans }}
-                            </button>
-
                         </div>
                     </div>
                 </div>
@@ -272,6 +275,8 @@
 
         $('#DIALOG-expose-add').on('submit', '#publication-json', function (e) {
             e.preventDefault();
+            removeSecurityFieldDialogAdd();
+
             try {
                 $("#pub-error").addClass("hidden");
 
@@ -303,6 +308,78 @@
             });
         });
 
+
+         $('.add_publication').on('click',function (event) {
+             let exposeName = $('#expose_list').val();
+             $('#DIALOG-expose-add').attr('title', 'Edit expose title')
+                 .dialog({
+                     autoOpen: false,
+                     closeOnEscape: true,
+                     resizable: true,
+                     draggable: true,
+                     width: 900,
+                     height: 575,
+                     modal: true,
+                     overlay: {
+                         backgroundColor: '#000',
+                         opacity: 0.7
+                     },
+                     open : function () {
+
+                     },
+                     close: function(e, ui) {
+                         $(this).dialog('destroy');
+                     }
+                 }).dialog('open');
+
+             tinymce.remove();
+
+             tinymce.init({
+                 selector: '.description-field-new',
+                 init_instance_callback: function (editor) {
+                     editor.on('keyup Change', function (e) {
+                         $('textarea.description-field-new').val(editor.getContent());
+                         removeSecurityFieldDialogAdd();
+                     });
+                 },
+                 menubar: 'edit view insert format table help',
+                 plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
+                 toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+             });
+
+             $('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
+             $('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
+                 $('#DIALOG-expose-add').dialog('close');
+             });
+
+             $.ajax({
+                 type: "GET",
+                 url: `/prod/expose/list-publication/?format=json&exposeName=` + exposeName,
+                 success: function (data) {
+                     $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
+                     var i = 0;
+                     for ( ;i < data.publications.length; i++) {
+                         $('#DIALOG-expose-add select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                     }
+                 }
+             });
+
+             $.ajax({
+                 type: "GET",
+                 url: `/prod/expose/list-profile?exposeName=` + exposeName,
+                 success: function (data) {
+                     $('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
+                     var i = 0;
+                     for (; i < data.profiles.length; i++) {
+                         $('select#profile-field').append('<option ' +
+                             'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                             + data.profiles[i].name +
+                             '</option>'
+                         );
+                     }
+                 }
+             });
+         });
     </script>
     <style>
         .visibility-hidden {

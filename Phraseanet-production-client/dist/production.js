@@ -10003,6 +10003,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -10131,17 +10133,7 @@ var workzone = function workzone(services) {
             checkActiveBloc(dragBloc);
         });
 
-        (0, _jquery2.default)('.add_publication').on('click', function (event) {
-            openExposePublicationAdd((0, _jquery2.default)('#expose_list').val());
-        });
-
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
-            var exposeName = (0, _jquery2.default)('#expose_list').val();
-            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
-            updatePublicationList(exposeName);
-        });
-
-        (0, _jquery2.default)('.display-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(exposeName);
@@ -10763,8 +10755,37 @@ var workzone = function workzone(services) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
 
-            assetsContainer.empty().addClass('loading');
+            assetsContainer.addClass('loading');
             getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+        });
+
+        // Order assets in publication
+        idFrameC.find('.publication-droppable').on('click', '.order-assets', function () {
+            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_item_deployed');
+            var positions = [];
+
+            (0, _jquery2.default)('.assets_list .chim-wrapper').each(function (i, el) {
+                positions[(0, _jquery2.default)(this).attr('data-pub-asset-id')] = i + 1;
+            });
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/prod/expose/publication/update-assets-order/?exposeName=' + exposeName,
+                data: {
+                    listPositions: JSON.stringify(_extends({}, positions))
+                },
+                dataType: 'json',
+                success: function success(data) {
+                    if (data.success === true) {
+                        assetsContainer.addClass('loading');
+                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                    } else {
+                        console.log(data);
+                    }
+                }
+            });
         });
 
         // set publication cover
@@ -10841,8 +10862,14 @@ var workzone = function workzone(services) {
                     if (page === 1) {
                         assetsContainer.removeClass('loading');
                         assetsContainer.empty().html(data);
+
+                        assetsContainer.find('.assets_list').sortable({
+                            change: function change() {
+                                (0, _jquery2.default)(this).closest('.expose_item_deployed').find('.order-assets').prop('disabled', false);
+                            }
+                        }).disableSelection();
                     } else {
-                        assetsContainer.append(data);
+                        assetsContainer.find('.assets_list').append(data);
                         assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
                         assetsContainer.find('#list_assets_page').val(page);
                     }
@@ -10975,51 +11002,6 @@ var workzone = function workzone(services) {
         });
     }
 
-    function openExposePublicationAdd(exposeName) {
-        (0, _jquery2.default)('#DIALOG-expose-add').attr('title', localeService.t('Edit expose title')).dialog({
-            autoOpen: false,
-            closeOnEscape: true,
-            resizable: true,
-            draggable: true,
-            width: 900,
-            height: 575,
-            modal: true,
-            overlay: {
-                backgroundColor: '#000',
-                opacity: 0.7
-            },
-            close: function close(e, ui) {}
-        }).dialog('open');
-        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
-        (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.close-expose-modal', function () {
-            (0, _jquery2.default)('#DIALOG-expose-add').dialog('close');
-        });
-
-        _jquery2.default.ajax({
-            type: "GET",
-            url: '/prod/expose/list-publication/?format=json&exposeName=' + exposeName,
-            success: function success(data) {
-                (0, _jquery2.default)('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
-                var i = 0;
-                for (; i < data.publications.length; i++) {
-                    (0, _jquery2.default)('#DIALOG-expose-add select#publication_parent').append('<option value=' + data.publications[i].id + ' >' + data.publications[i].title + '</option>');
-                }
-            }
-        });
-
-        _jquery2.default.ajax({
-            type: "GET",
-            url: '/prod/expose/list-profile?exposeName=' + exposeName,
-            success: function success(data) {
-                (0, _jquery2.default)('#DIALOG-expose-add select#profile-field').empty().html('<option value="">Select Profile</option>');;
-                var i = 0;
-                for (; i < data.profiles.length; i++) {
-                    (0, _jquery2.default)('select#profile-field').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
-                }
-            }
-        });
-    }
-
     function openExposePublicationEdit(edit) {
         (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
@@ -11035,13 +11017,11 @@ var workzone = function workzone(services) {
                 backgroundColor: '#000',
                 opacity: 0.7
             },
-            close: function close(e, ui) {
-                (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty();
-            }
+            close: function close(e, ui) {}
         }).dialog('open');
         (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap publish-dialog');
         (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.close-expose-modal', function () {
-            (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').dialog('close');
+            (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
         });
 
         _jquery2.default.ajax({
@@ -11191,7 +11171,7 @@ var workzone = function workzone(services) {
             var assetsContainer = destKey.find('.expose_item_deployed');
 
             if (publicationId !== undefined) {
-                assetsContainer.empty().addClass('loading');
+                assetsContainer.addClass('loading');
 
                 _jquery2.default.ajax({
                     type: 'POST',
@@ -64267,6 +64247,14 @@ var preferences = function preferences(services) {
             appEvents.emit('search.doRefreshState');
         });
 
+        $container.on('change', '#ADVSRCH_UNSET_FIELD_FACET', function (event) {
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            event.preventDefault();
+            appCommons.userModule.setPref('show_unset_field_facet', $el.prop('checked') ? '1' : '0');
+            appEvents.emit('search.updateFacetData');
+            appEvents.emit('search.doRefreshState');
+        });
+
         $container.on('click', '.open-preferences', function (event) {
             event.preventDefault();
             openModal(event);
@@ -64323,18 +64311,6 @@ var preferences = function preferences(services) {
         });
 
         $container.on('change', '.preferences-options-technical-display', function (event) {
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            event.preventDefault();
-            appCommons.userModule.setPref('technical_display', $el.val());
-            appEvents.emit('search.doRefreshState');
-        });
-        $container.on('change', '.preferences-options-rollover-preview', function (event) {
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            event.preventDefault();
-            appCommons.userModule.setPref('technical_display', $el.val());
-            appEvents.emit('search.doRefreshState');
-        });
-        $container.on('change', '.preferences-options-rollover-preview', function (event) {
             var $el = (0, _jquery2.default)(event.currentTarget);
             event.preventDefault();
             appCommons.userModule.setPref('technical_display', $el.val());

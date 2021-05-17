@@ -12,15 +12,12 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Indexer\Record\Hydrator;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Exception\Exception;
-use Alchemy\Phrasea\SearchEngine\Elastic\RecordHelper;
+use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\CandidateTerms;
-use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Concept;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Filter;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Term;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Structure;
-use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
 class ThesaurusHydrator implements HydratorInterface
 {
@@ -64,12 +61,14 @@ class ThesaurusHydrator implements HydratorInterface
             throw new Exception('Expected a record with the "databox_id" key set.');
         }
 
+        $sbid = $record['databox_id'];
+
         $values = array();
         $terms = array();
         $filters = array();
         $field_names = array();
         /** @var Field[] $dbFields */
-        $dbFields = $this->structure->getAllFieldsByDatabox($record['databox_id']);
+        $dbFields = $this->structure->getAllFieldsByDatabox($sbid);
         foreach ($fields as $name => $field) {
             if(!array_key_exists($name, $dbFields) || !$dbFields[$name]->get_generate_cterms()) {
                 continue;
@@ -82,8 +81,8 @@ class ThesaurusHydrator implements HydratorInterface
                 // Concepts are databox's specific, but when no root concepts are
                 // given we need to make sure we only match in the right databox.
                 $filter = $root_concepts
-                    ? Filter::childOfConcepts($record['databox_id'], $root_concepts)
-                    : Filter::byDatabox($record['databox_id']);
+                    ? Filter::childOfConcepts($sbid, $root_concepts)
+                    : Filter::byDatabox($sbid);
                 foreach ($field_values as $value) {
                     $values[] = $value;
                     $terms[] = Term::parse($value);

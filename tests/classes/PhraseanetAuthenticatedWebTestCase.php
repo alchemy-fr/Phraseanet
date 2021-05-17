@@ -212,7 +212,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $queryESLib = '{index:"test", match:{""}}';    // fake, real is really more complex
 
         $result = new SearchEngineResult(
-            new SearchEngineOptions(),
+            new SearchEngineOptions(self::$DI['app']['repo.collection-references']),
             new ArrayCollection([$elasticsearchRecord]), // Records
             $queryText,    // the query as typed by the user
             $queryAST,

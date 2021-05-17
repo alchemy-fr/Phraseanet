@@ -18,6 +18,7 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 
+
 class Preferences implements ControllerProviderInterface, ServiceProviderInterface
 {
     use ControllerProviderTrait;
@@ -41,9 +42,11 @@ class Preferences implements ControllerProviderInterface, ServiceProviderInterfa
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        /* @uses UserPreferenceController::saveUserPref */
         $controllers->post('/', 'controller.user.preferences:saveUserPref')
             ->bind('save_pref');
 
+        /* @uses UserPreferenceController::saveTemporaryPref */
         $controllers->post('/temporary/', 'controller.user.preferences:saveTemporaryPref')
             ->bind('save_temp_pref');
 

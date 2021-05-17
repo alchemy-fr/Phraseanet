@@ -17,7 +17,8 @@ class AggregationHelperTest extends \PHPUnit_Framework_TestCase
     {
         $field = new Field('foo', FieldMapping::TYPE_STRING, [
             'private' => true,
-            'used_by_collections' => [1, 2, 3]
+            'used_by_collections' => [1, 2, 3],
+            'used_by_databoxes' => [1]
         ]);
         $agg = [
             'terms' => 'bar'

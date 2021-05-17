@@ -3,9 +3,9 @@
 namespace Alchemy\Tests\Phrasea\SearchEngine;
 
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Doctrine\Common\Collections\ArrayCollection;
 use Alchemy\Phrasea\SearchEngine\SearchEngineResult;
 use Alchemy\Phrasea\SearchEngine\SearchEngineSuggestion;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @group functional
@@ -18,7 +18,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
      */
     public function testBasic()
     {
-        $options = new SearchEngineOptions();
+        $options = new SearchEngineOptions(self::$DI['app']['repo.collection-references']);
         $results = new ArrayCollection([
                     self::$DI['record_2']
                 ]);
@@ -82,7 +82,7 @@ class SearchEngineResultTest extends \PhraseanetTestCase
 
     public function testWithOffsetStartAtZero()
     {
-        $options = new SearchEngineOptions();
+        $options = new SearchEngineOptions(self::$DI['app']['repo.collection-references']);
         $results = new ArrayCollection([
                     self::$DI['record_2']
                 ]);

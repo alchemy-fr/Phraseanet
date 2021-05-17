@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Form\Login;
 use Alchemy\Phrasea\Form\Constraint\PasswordToken;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -31,14 +33,14 @@ class PhraseaRecoverPasswordForm extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('token', 'hidden', [
+        $builder->add('token', HiddenType::class, [
             'required'      => true,
             'constraints'   => [
                 new PasswordToken($this->repository)
             ]
         ]);
 
-        $builder->add('password', 'repeated', [
+        $builder->add('password', RepeatedType::class, [
             'type'              => 'password',
             'required'          => true,
             'invalid_message'   => 'Please provide the same passwords.',

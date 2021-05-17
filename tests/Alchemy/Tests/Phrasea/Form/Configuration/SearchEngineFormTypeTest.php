@@ -13,6 +13,6 @@ class SearchEngineFormTypeTest extends FormTestCase
 {
     public function getForm()
     {
-        return new SearchEngineFormType();
+        return new SearchEngineFormType(self::$DI['app']['translator']);
     }
 }
