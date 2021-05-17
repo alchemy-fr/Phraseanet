@@ -48,11 +48,30 @@ class Expose
      */
     public function create(string $name)
     {
-        $e = $this->psSettingsRepository->createUnique('EXPOSE', 'name', null, ['valueVarchar' => $name]);
+        $e = $this->psSettingsRepository->createUnique('EXPOSE', 'name', null, ['valueString' => $name]);
         return new Instance(
             $this->psSettingsRepository,
             $this->psSettingKeysRepository,
             $e
         );
     }
+
+    public function fromArray(array $a)
+    {
+        if(!array_key_exists('role', $a) || $a['role'] !== 'EXPOSE') {
+            throw new \InvalidArgumentException("Expose setting requires role=\"EXPOSE\"");
+        }
+        if(!array_key_exists('name', $a) || $a['name'] !== 'name') {
+            throw new \InvalidArgumentException("Expose setting requires name=\"name\"");
+        }
+        if(!array_key_exists('valueString', $a) || (string)$a['valueString'] == '') {
+            throw new \InvalidArgumentException("Expose setting requires a name in 'value_string' ");
+        }
+
+        $e = $this->psSettingsRepository->createUnique('EXPOSE', 'name', null, ['valueString' => $a['valueString']]);
+        $this->psSettingsRepository->fillFromArray($e, $a);
+
+        return $e;
+    }
+
 }

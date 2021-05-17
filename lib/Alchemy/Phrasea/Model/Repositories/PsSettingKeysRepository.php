@@ -13,14 +13,14 @@ use Doctrine\ORM\EntityRepository;
  */
 class PsSettingKeysRepository extends EntityRepository
 {
-    public function get(string $key=null, PsSettings $setting=null, array $values = [], int $maxResult=null)
+    public function get(string $name=null, PsSettings $parent=null, array $values = [], int $maxResult=null)
     {
         $crit = [];
-        if(!is_null($key)) {
-            $crit['keyName'] = $key;
+        if(!is_null($name)) {
+            $crit['name'] = $name;
         }
-        if(!is_null($setting)) {
-            $crit['setting'] = $setting;
+        if(!is_null($parent)) {
+            $crit['parent'] = $parent;
         }
         foreach($values as $k => $v) {
             $crit[$k] = $v;
@@ -32,7 +32,7 @@ class PsSettingKeysRepository extends EntityRepository
     public function delete(string $key=null, PsSettings $setting=null, array $values = [])
     {
         foreach ($this->get($key, $setting, $values) as $e) {
-            $this->_em->remove($e);
+            $this->getEntityManager()->remove($e);
         }
     }
 
@@ -40,4 +40,5 @@ class PsSettingKeysRepository extends EntityRepository
     {
         return $this->_em;
     }
+
 }

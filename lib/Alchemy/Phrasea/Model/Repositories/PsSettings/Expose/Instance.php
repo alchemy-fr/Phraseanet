@@ -19,10 +19,10 @@ class Instance extends App
         foreach($this->getSettings() as $e) {
             switch ($e->getName()) {
                 case 'front_uri':
-                    $this->frontUri = $e->getValueText();
+                    $this->frontUri = $e->getValueString();
                     break;
                 case 'client_id':
-                    $this->clientId = $e->getValueText();
+                    $this->clientId = $e->getValueString();
                     break;
                 default:
                     // unknown setting ? ignore
@@ -42,7 +42,7 @@ class Instance extends App
     public function setFrontUri($frontUri)
     {
         $this->frontUri = $frontUri;
-        $this->setSetting('front_uri', ['valueText' => $frontUri]);
+        $this->getOrSetSetting('front_uri', ['valueString' => $frontUri]);
     }
 
     /**
@@ -56,16 +56,16 @@ class Instance extends App
     public function setClientId($clientId)
     {
         $this->clientId = $clientId;
-        $this->setSetting('client_id', ['valueText' => $clientId]);
+        $this->getOrSetSetting('client_id', ['valueString' => $clientId]);
     }
 
     public function canSee(int $userId, $value = null)
     {
-        return $this->readOrSetACE($userId, 'cansee', $value);
+        return $this->getOrSetACE($userId, 'cansee', $value);
     }
 
     public function canAdd(int $userId, $value = null)
     {
-        return $this->readOrSetACE($userId, 'canadd', $value);
+        return $this->getOrSetACE($userId, 'canadd', $value);
     }
 }

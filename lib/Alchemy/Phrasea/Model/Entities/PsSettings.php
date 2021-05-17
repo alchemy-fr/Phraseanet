@@ -8,7 +8,16 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * PsSettings
  *
- * @ORM\Table(name="PS_Settings", indexes={@ORM\Index(name="parent_id", columns={"parent_id"}), @ORM\Index(name="role", columns={"role"}), @ORM\Index(name="name", columns={"name"}), @ORM\Index(name="value_int", columns={"value_int"}), @ORM\Index(name="value_char", columns={"value_varchar"})})
+ * @ORM\Table(
+ *     name="PS_Settings",
+ *     indexes={
+ *          @ORM\Index(name="parent_id", columns={"parent_id"}),
+ *          @ORM\Index(name="role", columns={"role"}),
+ *          @ORM\Index(name="name", columns={"name"}),
+ *          @ORM\Index(name="value_int", columns={"value_int"}),
+ *          @ORM\Index(name="value_string", columns={"value_string"})
+ *      }
+ *     )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\PsSettingsRepository")
  */
 class PsSettings
@@ -59,9 +68,9 @@ class PsSettings
     /**
      * @var string
      *
-     * @ORM\Column(name="value_varchar", type="string", length=255, nullable=true)
+     * @ORM\Column(name="value_string", type="string", length=255, nullable=true)
      */
-    private $valueVarchar = null;
+    private $valueString = null;
 
     /**
      * @var PsSettings
@@ -76,7 +85,7 @@ class PsSettings
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="PsSettings", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="PsSettings", mappedBy="parent", cascade={"persist"})
      *
      */
     private $children;
@@ -92,7 +101,7 @@ class PsSettings
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="PsSettingKeys", mappedBy="setting")
+     * @ORM\OneToMany(targetEntity="PsSettingKeys", mappedBy="setting", cascade={"persist"})
      *
      */
     private $keys;
@@ -212,25 +221,25 @@ class PsSettings
     }
 
     /**
-     * Get valueVarchar
+     * Get valueString
      *
      * @return string
      */
-    public function getValueVarchar()
+    public function getValueString()
     {
-        return $this->valueVarchar;
+        return $this->valueString;
     }
 
     /**
-     * Set valueVarchar
+     * Set valueString
      *
-     * @param string $valueVarchar
+     * @param string $valueString
      *
      * @return PsSettings
      */
-    public function setValueVarchar($valueVarchar)
+    public function setValueString($valueString)
     {
-        $this->valueVarchar = $valueVarchar;
+        $this->valueString = $valueString;
 
         return $this;
     }
@@ -269,36 +278,49 @@ class PsSettings
                 case 'valueInt':
                     $this->setValueInt($v);
                     break;
-                case 'valueVarchar':
-                    $this->setValueVarchar($v);
+                case 'valueString':
+                    $this->setValueString($v);
                     break;
             }
         }
+
+        return $this;
     }
 
-    public function addKey(string $keyName, array $values = [])
+    public function setKey(string $keyName, array $values = [])
     {
-        $ke = new PsSettingKeys();
-        $ke->setKeyName($keyName)->setSetting($this)->setValues($values);
-        $this->keys->add($ke);
+        /** @var PsSettingKeys $key */
+        foreach($this->getKeys() as $key) {
+            if($key->getKeyName() === $keyName) {
+                $key->setValues($values);
+                return $key;
+            }
+        }
+        $key = new PsSettingKeys();
+        $key->setKeyName($keyName)->setSetting($this)->setValues($values);
+        $this->keys->add($key);
 
-        return $ke;
+        return $key;
     }
 
     public function asArray()
     {
-        $r = [
-            'role' => $this->getRole(),
-            'name' => $this->getName(),
-        ];
-        if(!is_null($v = $this->getValueText())) {
-            $r['value_text'] = $v;
+        $r = [];
+
+        if(!is_null($v = $this->getRole())) {
+            $r['role'] = $v;
         }
-        if(!is_null($v = $this->getValueVarchar())) {
-            $r['value_string'] = $v;
+        if(!is_null($v = $this->getName())) {
+            $r['name'] = $v;
+        }
+        if(!is_null($v = $this->getValueText())) {
+            $r['valueText'] = $v;
+        }
+        if(!is_null($v = $this->getValueString())) {
+            $r['valueString'] = $v;
         }
         if(!is_null($v = $this->getValueInt())) {
-            $r['value_int'] = $v;
+            $r['valueInt'] = $v;
         }
 
         foreach($this->getKeys() as $key) {
@@ -319,4 +341,5 @@ class PsSettings
 
         return $r;
     }
+
 }
