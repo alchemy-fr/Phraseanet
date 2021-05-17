@@ -10,10 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(
  *     name="PS_Setting_Keys",
  *     indexes={
+ *          @ORM\Index(name="name", columns={"name"}),
  *          @ORM\Index(name="value_int", columns={"value_int"}),
- *          @ORM\Index(name="value_varchar", columns={"value_varchar"}),
- *          @ORM\Index(name="setting_id", columns={"setting_id"}),
- *          @ORM\Index(name="key_name", columns={"key_name"})
+ *          @ORM\Index(name="value_string", columns={"value_string"}),
+ *          @ORM\Index(name="parent_id", columns={"parent_id"})
  *      }
  *    )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\PsSettingKeysRepository")
@@ -32,16 +32,16 @@ class PsSettingKeys
     /**
      * @var string
      *
-     * @ORM\Column(name="key_name", type="string", length=32, nullable=false)
+     * @ORM\Column(name="name", type="string", length=32, nullable=false)
      */
-    private $keyName;
+    private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="value_varchar", type="string", length=255, nullable=true)
+     * @ORM\Column(name="value_string", type="string", length=255, nullable=true)
      */
-    private $valueVarchar = null;
+    private $valueString = null;
 
     /**
      * @var integer
@@ -62,11 +62,10 @@ class PsSettingKeys
      *
      * @ORM\ManyToOne(targetEntity="PsSettings", inversedBy="keys")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="setting_id", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
-    private $setting;
-
+    private $parent;
 
 
     /**
@@ -80,49 +79,49 @@ class PsSettingKeys
     }
 
     /**
-     * Get keyName
+     * Get name
      *
      * @return string
      */
-    public function getKeyName()
+    public function getName()
     {
-        return $this->keyName;
+        return $this->name;
     }
 
     /**
-     * Set keyName
+     * Set name
      *
-     * @param string $keyName
+     * @param string $name
      *
      * @return PsSettingKeys
      */
-    public function setKeyName($keyName)
+    public function setName($name)
     {
-        $this->keyName = $keyName;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get valueVarchar
+     * Get valueString
      *
      * @return string
      */
-    public function getValueVarchar()
+    public function getValueString()
     {
-        return $this->valueVarchar;
+        return $this->valueString;
     }
 
     /**
-     * Set valueVarchar
+     * Set valueString
      *
-     * @param string $valueVarchar
+     * @param string $valueString
      *
      * @return PsSettingKeys
      */
-    public function setValueVarchar($valueVarchar)
+    public function setValueString($valueString)
     {
-        $this->valueVarchar = $valueVarchar;
+        $this->valueString = $valueString;
 
         return $this;
     }
@@ -176,25 +175,25 @@ class PsSettingKeys
     }
 
     /**
-     * Get setting
+     * Get parent
      *
      * @return PsSettings
      */
-    public function getSetting()
+    public function getParent()
     {
-        return $this->setting;
+        return $this->parent;
     }
 
     /**
-     * Set setting
+     * Set parent
      *
      * @param PsSettings $setting
      *
      * @return PsSettingKeys
      */
-    public function setSetting(PsSettings $setting = null)
+    public function setSetting(PsSettings $parent = null)
     {
-        $this->setting = $setting;
+        $this->parent = $parent;
 
         return $this;
     }
@@ -209,8 +208,8 @@ class PsSettingKeys
                 case 'valueInt':
                     $this->setValueInt($v);
                     break;
-                case 'valueVarchar':
-                    $this->setValueVarchar($v);
+                case 'valueString':
+                    $this->setValueString($v);
                     break;
             }
         }
@@ -220,19 +219,39 @@ class PsSettingKeys
 
     public function asArray()
     {
-        $r = [
-            'name' => $this->getKeyName()
-        ];
-        if(!is_null($v = $this->getValueText())) {
-            $r['value_text'] = $v;
+        $r = [];
+        if (!is_null($v = $this->getKeyName())) {
+            $r['name'] = $v;
         }
-        if(!is_null($v = $this->getValueVarchar())) {
-            $r['value_string'] = $v;
+        if (!is_null($v = $this->getValueText())) {
+            $r['valueText'] = $v;
         }
-        if(!is_null($v = $this->getValueInt())) {
-            $r['value_int'] = $v;
+        if (!is_null($v = $this->getValueString())) {
+            $r['valueString'] = $v;
+        }
+        if (!is_null($v = $this->getValueInt())) {
+            $r['valueInt'] = $v;
         }
 
         return $r;
+    }
+
+    public static function fromArray(array $a)
+    {
+        $e = new self();
+        if (array_key_exists('name', $a) && is_scalar(($v = $a['name']))) {
+            $e->setKeyName($v);
+        }
+        if (array_key_exists('valueText', $a) && is_scalar(($v = $a['valueText']))) {
+            $e->setValueText($v);
+        }
+        if (array_key_exists('valueString', $a) && is_scalar(($v = $a['valueString']))) {
+            $e->setValueString($v);
+        }
+        if (array_key_exists('valueInt', $a) && is_scalar(($v = $a['valueInt']))) {
+            $e->setValueInt($v);
+        }
+
+        return $e;
     }
 }

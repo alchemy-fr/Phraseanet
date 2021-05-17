@@ -43,20 +43,26 @@ class App
         return $this->psSettingsRepository->get('SETTING', null, $this->instanceEntity);
     }
 
-    protected function setSetting(string $name, array $values)
+    protected function getOrSetSetting(string $name, array $values = null)
     {
-        $e = $this->psSettingsRepository->getOrCreateUnique('SETTING', $name, $this->instanceEntity);
-        $e->setValues($values);
-        $this->psSettingsRepository->getEntityManager()->persist($e);
+        if(is_null($values)) {
+            // get
+            return $this->psSettingsRepository->getUnique('SETTING', $name, $this->instanceEntity);
+        }
+        // set
+        $child = $this->psSettingsRepository->getOrCreateUnique('SETTING', $name, $this->instanceEntity);
+        $child->setValues($values);
+
+        $this->psSettingsRepository->getEntityManager()->persist($this->instanceEntity);    // cascade child
         $this->psSettingsRepository->getEntityManager()->flush();
 
-        return $e;
+        return $child;
     }
 
     /**
      * a ACE is a bool
-     * to read a ACE, call with no value, e.g. "$cansee = readOrSetACE(666, 'cansee')";
-     * to set a ACE, call by passing value as bool, e.g. "readOrSetACE(666, 'cansee', true)";
+     * to read a ACE, call with no value, e.g. "$cansee = getOrSetACE(666, 'cansee')";
+     * to set a ACE, call by passing value as bool, e.g. "getOrSetACE(666, 'cansee', true)";
      * inspired by jquery...
      *
      * nb : because reading a non-existing ACE returns always false
@@ -68,23 +74,23 @@ class App
      * @param bool|null $value
      * @return bool
      */
-    protected function readOrSetACE(int $userId, string $aceName, $value = null)
+    protected function getOrSetACE(int $userId, string $aceName, bool $value = null)
     {
         $ace = null;
-        if(!is_null($value)) {
-            // write ace
+        if(is_null($value)) {
+            // get ace
+            $ace = $this->getACE($userId, $aceName);
+        }
+        else {
+            // set ace
             if($value) {
                 // we set ace to true
                 $ace = $this->setACE($userId, $aceName, 1);
             }
             else {
                 // we set ace to false : better delete it
-                $this->deleteAce($userId, $aceName);
+                $this->deleteACE($userId, $aceName);
             }
-        }
-        else {
-            // read ace
-            $ace = $this->getACE($userId, $aceName);
         }
 
         return $ace && $ace->getValueInt() == 1;
@@ -102,7 +108,7 @@ class App
             $aceName,
             $this->instanceEntity,
             [],
-            ['user_id' => ['valueVarchar'=>$userId]]
+            ['user_id' => ['valueString'=>$userId]]
         );
 
         return empty($r) ? null : $r[0];
@@ -118,7 +124,7 @@ class App
         )->setValueInt($value ? 1 : 0);
 
         // a ACE has a key that refers to a a user, stored as an id into valueVarchar (could be int... but who says an id is always an int ?)
-        $ke = $ace->addKey('user_id', ['valueVarchar' => (string)$userId]);
+        $ke = $ace->setKey('user_id', ['valueString' => (string)$userId]);
 
         $this->psSettingKeysRepository->getEntityManager()->persist($ke);
         $this->psSettingKeysRepository->getEntityManager()->flush();
@@ -128,10 +134,10 @@ class App
 
     private function deleteACE(int $userId, string $aceName)
     {
-        $this->psSettingsRepository->delete('ACE', $aceName, $this->instanceEntity, [], ['user_id'=>['valueVarchar'=>$userId]]);
+        $this->psSettingsRepository->delete('ACE', $aceName, $this->instanceEntity, [], ['user_id'=>['valueString'=>$userId]]);
     }
 
-    public function asArray()
+    public function asArray(): array
     {
         return $this->instanceEntity->asArray();
     }

@@ -28,6 +28,27 @@ class test extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
+
+        $d0 = new \DateTime("2021/05/12 08:00:00");
+        $d1 = new \DateTime("now");
+        $u = $d1->getTimestamp() - $d0->getTimestamp();  // small unique
+
+//        $one_parent = new PsSettings();
+//        $one_parent->setRole("P_".$u);
+//
+//        $one_child = new PsSettings();
+//        $one_child->setRole("C_".$u);
+//        $one_child->setParent($one_parent);
+//
+//        $one_parent->getChildren()->add($one_child);
+//
+//        /** @var EntityManager $em */
+//        $em = $this->container['orm.em'];
+//        $em->persist($one_parent);
+//        $em->flush();
+//        return 1;
+
+
         /** @var Expose $ex */
         $ex = $this->container['ps_settings.expose'];
 
@@ -39,18 +60,19 @@ class test extends Command
         }
         $output->writeln('');
 
-        $z = $ex->create("new-expose");
+        $z = $ex->create("expose-".$u);
         $z->setFrontUri("bad uri will be fixed");
-        $output->writeln(sprintf("  front-uri: '%s'", $z->getFrontUri()));
-
         $z->setFrontUri("https://expose.new_expose.phrasea.io");
         $output->writeln(sprintf("  front-uri: '%s'", $z->getFrontUri()));
 
         $z->canSee(666, true);  // will create a "ACE"
 
-        $z->canSee(666, false);     // will delete the "ACE" and keys
+        // $z->canSee(666, false);     // will delete the "ACE" and keys
 
         $a = $z->asArray();
+        $a['value_string'] .= "#2";
+
+        $z2 = $ex->fromArray($a);
 
         $output->writeln('');
         foreach($ex->getInstances() as $exposeInstance) {

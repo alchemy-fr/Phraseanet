@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
+use Alchemy\Phrasea\Model\Entities\PsSettingKeys;
 use Alchemy\Phrasea\Model\Entities\PsSettings;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\EntityRepository;
@@ -93,8 +94,8 @@ class PsSettingsRepository extends EntityRepository
             // delete the setting
             $this->_em->remove($se);
         }
-        $this->_em->flush();
-        $this->_em->commit();
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->commit();
     }
 
     /**
@@ -111,18 +112,31 @@ class PsSettingsRepository extends EntityRepository
      */
     public function getOrCreateUnique(string $role=null, string $name=null, PsSettings $parent=null, array $values = [])
     {
-        $this->_em->beginTransaction();
+        $this->getEntityManager()->beginTransaction();
 
         $e = $this->get($role, $name, $parent, $values);
         if(count($e) === 0) {
-            $e = [$this->insert($role, $name, $parent, $values)];
+            $e = $this->insert($role, $name, $parent, $values);
+            if(!is_null($parent)) {
+                $parent->getChildren()->add($e);
+            }
+            $e = [$e];
         }
-        $this->_em->commit();
+        $this->getEntityManager()->commit();
 
         if(count($e) !== 1) {
             throw new NonUniqueResultException();
         }
         return $e[0];
+    }
+
+    public function getUnique(string $role=null, string $name=null, PsSettings $parent=null, array $values = [])
+    {
+        $e = $this->get($role, $name, $parent, $values);
+        if(count($e) > 1) {
+            throw new NonUniqueResultException();
+        }
+        return count($e) === 1 ? $e[0] : null;
     }
 
     /**
@@ -139,12 +153,12 @@ class PsSettingsRepository extends EntityRepository
      */
     public function createUnique(string $role=null, string $name=null, PsSettings $parent=null, array $values = [])
     {
-        $this->_em->beginTransaction();
+        $this->getEntityManager()->beginTransaction();
 
         if(!$this->exists($role, $name, $parent, $values)) {
             $e = $this->insert($role, $name, $parent, $values);
 
-            $this->_em->commit();
+            $this->getEntityManager()->commit();
 
             return $e;
         }
@@ -184,8 +198,51 @@ class PsSettingsRepository extends EntityRepository
         return $e;
     }
 
+    public function fillFromArray(PsSettings $e, array $a, $depth = 0)
+    {
+        if(array_key_exists('role', $a) && is_scalar(($v = $a['role']))) {
+            $e->setRole($v);
+        }
+        if(array_key_exists('name', $a) && is_scalar(($v = $a['name']))) {
+            $e->setName($v);
+        }
+        if(array_key_exists('valueText', $a) && is_scalar(($v = $a['valueText']))) {
+            $e->setValueText($v);
+        }
+        if(array_key_exists('valueString', $a) && is_scalar(($v = $a['valueString']))) {
+            $e->setValueString($v);
+        }
+        if(array_key_exists('valueInt', $a) && is_scalar(($v = $a['valueInt']))) {
+            $e->setValueInt($v);
+        }
+
+        if(array_key_exists('keys', $a)) {
+            foreach ($a['keys'] as $k) {
+                $key = PsSettingKeys::fromArray($k);
+                $key->setSetting($e);
+                $e->getKeys()->add($key);
+            }
+        }
+
+        if(array_key_exists('children', $a)) {
+            foreach ($a['children'] as $c) {
+                $child = new PsSettings();
+                $this->fillFromArray($child, $c, $depth+1);
+                $child->setParent($e);
+                $e->getChildren()->add($child);
+            }
+        }
+
+        if($depth === 0) {
+            // flush only in the end
+            $this->getEntityManager()->persist($e);
+            $this->getEntityManager()->flush();
+        }
+    }
+
     public function getEntityManager()
     {
         return $this->_em;
     }
+
 }
