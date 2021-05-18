@@ -46,6 +46,11 @@ class RecordEditWorker implements WorkerInterface
         $em->beginTransaction();
 
         try {
+            $message = [
+                'message_type'  => MessagePublisher::RECORD_EDIT_TYPE,
+                'payload'       => $payload
+            ];
+
             $date = new \DateTime();
             $workerRunningJob = new WorkerRunningJob();
             $workerRunningJob
@@ -54,6 +59,7 @@ class RecordEditWorker implements WorkerInterface
                 ->setWorkOn("record")
                 ->setPublished($date->setTimestamp($payload['published']))
                 ->setStatus(WorkerRunningJob::RUNNING)
+                ->setPayload($message)
             ;
 
             $em->persist($workerRunningJob);
