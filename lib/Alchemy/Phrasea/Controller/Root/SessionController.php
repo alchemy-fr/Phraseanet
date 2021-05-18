@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Model\Entities\SessionModule;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\SessionRepository;
+use Alchemy\Phrasea\Utilities\Stopwatch;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +32,8 @@ class SessionController extends Controller
      */
     public function getNotifications(Request $request)
     {
+        $stopwatch = new Stopwatch('notif');
+
         if (!$request->isXmlHttpRequest()) {
             $this->app->abort(400);
         }
@@ -90,7 +93,10 @@ class SessionController extends Controller
             }
         }
 
-        return $this->app->json($ret);
+        $stopwatch->lap("fini");
+        $stopwatch->stop();
+
+        return $this->app->json($ret, ['Server-Timing' => $stopwatch->getLapsesAsServerTimingHeader()]);
     }
 
     /**
