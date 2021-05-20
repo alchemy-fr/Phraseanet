@@ -2,78 +2,150 @@
 
 namespace Alchemy\Phrasea\Model\Repositories;
 
-use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use DateTime;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Exception;
 
 class WorkerRunningJobRepository extends EntityRepository
 {
     /**
-     *  return true if we can create subdef
-     * @param $subdefName
-     * @param $recordId
-     * @param $databoxId
-     * @return bool
+     * Acquire a "lock" to create a subdef
+     * @param array $payload
+     * @return WorkerRunningJob
+     * @throws OptimisticLockException
      */
-    public function canCreateSubdef($subdefName, $recordId, $databoxId)
+    public function canCreateSubdef($payload)
     {
-        $rsm = $this->createResultSetMappingBuilder('w');
-        $rsm->addScalarResult('work_on','work_on');
-
-        $sql = 'SELECT work_on
-            FROM WorkerRunningJob
-            WHERE ((work = :write_meta) OR ((work = :make_subdef) AND work_on = :work_on) ) 
-            AND record_id = :record_id 
-            AND databox_id = :databox_id
-            AND status = :status';
-
-        $query = $this->_em->createNativeQuery($sql, $rsm);
-        $query->setParameters([
-            'write_meta' => MessagePublisher::WRITE_METADATAS_TYPE,
-            'make_subdef'=> MessagePublisher::SUBDEF_CREATION_TYPE,
-            'work_on'    => $subdefName,
-            'record_id'  => $recordId,
-            'databox_id' => $databoxId,
-            'status'     => WorkerRunningJob::RUNNING
-            ]
-        );
-
-        return count($query->getResult()) == 0;
+        return $this->getLock($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
     }
 
     /**
-     * return true if we can write meta
-     *
-     * @param $subdefName
-     * @param $recordId
-     * @param $databoxId
-     * @return bool
+     * Acquire a "lock" to write meta into a subdef
+     * @param array $payload
+     * @return WorkerRunningJob
+     * @throws OptimisticLockException
      */
-    public function canWriteMetadata($subdefName, $recordId, $databoxId)
+    public function canWriteMetadata($payload)
     {
-        $rsm = $this->createResultSetMappingBuilder('w');
-        $rsm->addScalarResult('work_on','work_on');
+        return $this->getLock($payload, MessagePublisher::WRITE_METADATAS_TYPE);
+    }
 
-        $sql = 'SELECT work_on
-            FROM WorkerRunningJob
-            WHERE ((work = :make_subdef) OR ((work = :write_meta) AND work_on = :work_on) ) 
-            AND record_id = :record_id 
-            AND databox_id = :databox_id
-            AND status = :status';
+    /**
+     * Acquire a "lock" to work on a (sbid + rid + subdef) by inserting a row in WorkerRunningJob table.
+     * If it fails that means that another worker is already working on this file.
+     *
+     * nb : this work only for "first try" where workerJobId is null (=insert).
+     *      for some retries (lock was acquired but worker job failed), the "count" of existing row is incremented (=update),
+     *      so many workers "could" update the same row...
+     *      __Luckily__, a rabbitmq message is consumed only once by a unique worker,
+     *      and different workers (write-meta, subdef) have their own queues and their own rows on table.
+     *      So working on a file always starts by a "first try", and concurency is not possible.
+     * todo : do not update, but insert a line for every try ?
+     *
+     * @param array $payload
+     * @param string $type
+     * @return WorkerRunningJob      the entity (created or updated) or null if file is already locked (duplicate key)
+     * @throws OptimisticLockException
+     */
+    private function getLock(array $payload, string $type)
+    {
+        if(!isset($payload['workerJobId'])) {
+            // insert a new row WorkerRunningJob : will fail if concurency
+            try {
+                $this->getEntityManager()->beginTransaction();
+                $date = new DateTime();
+                $workerRunningJob = new WorkerRunningJob();
+                $workerRunningJob
+                    ->setDataboxId($payload['databoxId'])
+                    ->setRecordId($payload['recordId'])
+                    ->setWork($type)
+                    ->setWorkOn($payload['subdefName'])
+                    ->setPayload([
+                        'message_type' => $type,
+                        'payload'      => $payload
+                    ])
+                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setStatus(WorkerRunningJob::RUNNING)
+                    ->setFlock($payload['subdefName']);
+                $this->getEntityManager()->persist($workerRunningJob);
 
-        $query = $this->_em->createNativeQuery($sql, $rsm);
-        $query->setParameters([
-                'make_subdef'=> MessagePublisher::SUBDEF_CREATION_TYPE,
-                'write_meta' => MessagePublisher::WRITE_METADATAS_TYPE,
-                'work_on'    => $subdefName,
-                'record_id'  => $recordId,
-                'databox_id' => $databoxId,
-                'status'     => WorkerRunningJob::RUNNING
-            ]
-        );
+                $this->getEntityManager()->flush();
+                $this->getEntityManager()->commit();
 
-        return count($query->getResult()) == 0;
+                return $workerRunningJob;
+            }
+            catch(Exception $e) {
+                // duplicate key ?
+                $this->getEntityManager()->rollback();
+                // for unpredicted other errors we can still ignore and return null (lock failed),
+                // because anyway the worker/rabbit retry-system will stop itself after n failures.
+            }
+        }
+        else {
+            // update an existing row : never fails (except bad id if row was purged)
+            try {
+                $this->getEntityManager()->beginTransaction();
+                $this->getEntityManager()->createQueryBuilder()
+                    ->update()
+                    ->set('info', ':info')->setParameter('info', WorkerRunningJob::ATTEMPT . $payload['count'])
+                    ->set('status', ':status')->setParameter('status', WorkerRunningJob::RUNNING)
+                    ->set('flock', ':flock')->setParameter('flock', $payload['subdefName'])
+                    ->where('id = :id')->setParameter('id', $payload['workerJobId'])
+                    ->getQuery()
+                    ->execute();
+
+                $this->getEntityManager()->flush();
+                $this->getEntityManager()->commit();
+
+                return $this->find($payload['workerJobId']);
+            }
+            catch (Exception $e) {
+                // really bad ? return null anyway
+                $this->getEntityManager()->rollback();
+                //$this->logger->error("Error persisting WorkerRunningJob !");
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     * mark a job a "finished"
+     * nb : after a long job, connection may be lost so we reconnect.
+     *      But sometimes (?) a first commit fails (due to reconnect ?), while the second one is ok.
+     *      So here we try 2 times, just in case...
+     *
+     * @param WorkerRunningJob $workerRunningJob
+     * @param null $info
+     */
+    public function markFinished(WorkerRunningJob $workerRunningJob, $info = null)
+    {
+        $this->reconnect();
+        for($try=1; $try<=2; $try++) {
+            try {
+                $workerRunningJob->setStatus(WorkerRunningJob::FINISHED)
+                    ->setFinished(new DateTime('now'))
+                    ->setStatus(WorkerRunningJob::FINISHED)
+                    ->setFlock(null);
+                if (!is_null($info)) {
+                    $workerRunningJob->setInfo($info);
+                }
+
+                $this->getEntityManager()->beginTransaction();
+                $this->getEntityManager()->persist($workerRunningJob);
+                $this->getEntityManager()->flush();
+                $this->getEntityManager()->commit();
+
+                break;
+            }
+            catch (Exception $e) {
+                $this->getEntityManager()->rollback();
+            }
+        }
     }
 
     /**
@@ -134,8 +206,9 @@ class WorkerRunningJobRepository extends EntityRepository
         $platform = $connection->getDatabasePlatform();
         $this->_em->beginTransaction();
         try {
-        $connection->executeUpdate($platform->getTruncateTableSQL('WorkerRunningJob'));
-        } catch (\Exception $e) {
+            $connection->executeUpdate($platform->getTruncateTableSQL('WorkerRunningJob'));
+        }
+        catch (Exception $e) {
             $this->_em->rollback();
         }
     }
@@ -146,7 +219,8 @@ class WorkerRunningJobRepository extends EntityRepository
         try {
             $this->_em->getConnection()->delete('WorkerRunningJob', ['status' => WorkerRunningJob::FINISHED]);
             $this->_em->commit();
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             $this->_em->rollback();
         }
     }
