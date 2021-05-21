@@ -102,5 +102,10 @@ class patch_414_PHRAS_3360 implements patchInterface
         } elseif (!$conf->has(['workers', 'queues'])) {
             $conf->set(['workers', 'queues'], $queues);
         }
+
+        // if no ssl key, add it
+        if (!$conf->has(['workers', 'queue', 'worker-queue', 'ssl'])) {
+            $conf->set(['workers', 'queue', 'worker-queue', 'ssl'], false);
+        }
     }
 }
