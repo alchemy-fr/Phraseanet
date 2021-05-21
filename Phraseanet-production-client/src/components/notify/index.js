@@ -7,7 +7,7 @@ import merge from 'lodash.merge';
 const notify = (services) => {
 
     const { configService, localeService, appEvents } = services;
-    const defaultPollingTime = 10000;
+    const defaultPollingTime = 60000;   // pull every 60 seconds
     const defaultConfig = {
         url: null,
         moduleId: null,
