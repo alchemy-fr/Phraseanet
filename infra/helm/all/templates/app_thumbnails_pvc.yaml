@@ -1,0 +1,22 @@
+{{- with .Values.app.pvc.thumbnails }}
+{{- if and .persistence.enabled (not .persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+  name: {{ .name }}
+spec:
+  accessModes:
+    - {{ .persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .persistence.size | quote }}
+{{- if .persistence.storageClass }}
+{{- if (eq "-" .persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: {{ .persistence.storageClass | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

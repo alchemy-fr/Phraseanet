@@ -84,6 +84,7 @@
 {% block javascript %}
     <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
     <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
 
     <script type="text/javascript">
 
