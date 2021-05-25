@@ -54,6 +54,7 @@ class SubdefCreationWorker implements WorkerInterface
 
     public function process(array $payload)
     {
+        // mandatory args
         if (!isset($payload['recordId']) || !isset($payload['databoxId']) || !isset($payload['subdefName'])) {
             // bad payload
             $this->logger->error(sprintf("%s (%s) : bad payload", __FILE__, __LINE__));
@@ -64,6 +65,10 @@ class SubdefCreationWorker implements WorkerInterface
         $databoxId      = $payload['databoxId'];
         $subdefName     = $payload['subdefName'];
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("process SubdefCreation for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND|LOCK_EX);
+
         $databox = $this->findDataboxById($databoxId);
         $record = $databox->get_record($recordId);
 
@@ -73,12 +78,11 @@ class SubdefCreationWorker implements WorkerInterface
 
         $oldLogger = $this->subdefGenerator->getLogger();
 
-        // try to "lock" the file, will return null if already locked (key unicity)
-        // = insert a row with unqiue sbid + rid + subdefname (todo : replace the subdefname with a subdef_id ?)
+        // try to "lock" the file, will return null if already locked
         $workerRunningJob = $this->repoWorker->canCreateSubdef($payload);
 
         if (is_null($workerRunningJob)) {
-            // the file was locked by another worker, delay to retry later
+            // the file is written by another worker, delay to retry later
             $this->messagePublisher->publishDelayedMessage(
                 [
                     'message_type'  => MessagePublisher::SUBDEF_CREATION_TYPE,
@@ -86,20 +90,41 @@ class SubdefCreationWorker implements WorkerInterface
                 ],
                 MessagePublisher::SUBDEF_CREATION_TYPE
             );
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("cannot CreateSubdef for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND|LOCK_EX);
             return ;
         }
 
-        // here the entity is "locked" (unique key)
+        // here we can work
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("ready to CreateSubdef for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND|LOCK_EX);
 
         $this->subdefGenerator->setLogger($this->logger);
 
         try {
             $this->subdefGenerator->generateSubdefs($record, [$subdefName]);
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("subdef generated for %s.%s.%s (?)", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND|LOCK_EX);
+
         }
         catch (Exception $e) {
             $this->logger->error("Exception catched: " . $e->getMessage());
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("!!! subdef generation failed (ignored) for %s.%s.%s : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
+            ), FILE_APPEND|LOCK_EX);
+
         }
         catch (Throwable $e) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("subdef generation failed, retry delayed for %s.%s.%s : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
+            ), FILE_APPEND|LOCK_EX);
+
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
             $workerMessage = "Exception throwable catched when create subdef for the recordID: " .$recordId;
 
@@ -118,6 +143,10 @@ class SubdefCreationWorker implements WorkerInterface
             return ;
         }
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("checking subdef file for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND|LOCK_EX);
+
         // begin to check if the subdef is successfully generated
         $subdef = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())->getSubdef($subdefName);
         $filePathToCheck = null;
@@ -129,6 +158,10 @@ class SubdefCreationWorker implements WorkerInterface
         $filePathToCheck = $this->filesystem->generateSubdefPathname($record, $subdef, $filePathToCheck);
 
         if (!$this->filesystem->exists($filePathToCheck)) {
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("!!! subdef file missing, retry delayed for %s.%s.%s", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND|LOCK_EX);
 
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
@@ -148,6 +181,10 @@ class SubdefCreationWorker implements WorkerInterface
         }
 
         // checking ended
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("subdef file exists, order to write meta for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND|LOCK_EX);
 
         // order to write meta for the subdef if needed
         /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
@@ -181,7 +218,7 @@ class SubdefCreationWorker implements WorkerInterface
         // update elastic
         $this->indexer->flushQueue();
 
-        // tell that we have finished to work on this file
+        // tell that we have finished to work on this file (=unlock)
         $this->repoWorker->markFinished($workerRunningJob);
 
     }

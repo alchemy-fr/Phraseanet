@@ -63,20 +63,23 @@ class WriteMetadatasWorker implements WorkerInterface
             return;
         }
 
-        $recordId    = $payload['recordId'];
         $databoxId   = $payload['databoxId'];
+        $recordId    = $payload['recordId'];
         $subdefName  = $payload['subdefName'];
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("process WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND|LOCK_EX);
 
         $MWG         = $payload['MWG'] ?? false;
         $clearDoc    = $payload['clearDoc'] ?? false;
         $databox     = $this->findDataboxById($databoxId);
 
-        // try to "lock" the file, will return null if already locked (key unicity)
-        // = insert a row with unqiue sbid + rid + subdefname (todo : replace the subdefname with a subdef_id ?)
+        // try to "lock" the file, will return null if already locked
         $workerRunningJob = $this->repoWorker->canWriteMetadata($payload);
 
         if (is_null($workerRunningJob)) {
-            // the file was locked by another worker, delay to retry later
+            // the file is written by another worker, delay to retry later
             $this->messagePublisher->publishDelayedMessage(
                 [
                     'message_type'  => MessagePublisher::WRITE_METADATAS_TYPE,
@@ -84,10 +87,18 @@ class WriteMetadatasWorker implements WorkerInterface
                 ],
                 MessagePublisher::WRITE_METADATAS_TYPE
             );
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("cannot WriteMeta for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND|LOCK_EX);
+
             return ;
         }
 
-        // here the entity is "locked" (unique key)
+        // here we can work
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("ready to WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND|LOCK_EX);
 
         $record  = $databox->get_record($recordId);
 
@@ -122,7 +133,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 $workerRunningJob->getId()
             ));
 
-            // the subscriber will "unlock" the row, no need to do it here
+            // the subscriber will mark the job as errored, no need to do it here
             return ;
         }
 
@@ -139,7 +150,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 $workerRunningJob->getId()
             ));
 
-            // the subscriber will "unlock" the row, no need to do it here
+            // the subscriber will mark the job as errored, no need to do it here
             return ;
         }
 
@@ -251,8 +262,17 @@ class WriteMetadatasWorker implements WorkerInterface
             $this->writer->write($subdef->getRealPath(), $metadata);
 
             $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("meta written in %s.%s.%s", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND|LOCK_EX);
+
         }
         catch (Exception $e) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("meta NOT written in %s.%s.%s", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND|LOCK_EX);
+
             $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
             $this->logger->error($workerMessage);
 
@@ -275,7 +295,7 @@ class WriteMetadatasWorker implements WorkerInterface
         // mark write metas finished
         $this->updateJeton($record);
 
-        // tell that we have finished to work on this file
+        // tell that we have finished to work on this file (=unlock)
         $this->repoWorker->markFinished($workerRunningJob);
     }
 

@@ -242,7 +242,6 @@ class RecordSubscriber implements EventSubscriberInterface
                     $workerRunningJob
                         ->setInfo(WorkerRunningJob::ATTEMPT. ($event->getCount() - 1))
                         ->setStatus(WorkerRunningJob::ERROR)
-                        ->setFlock(null)    // unlock !
                     ;
 
                     $em->persist($workerRunningJob);
