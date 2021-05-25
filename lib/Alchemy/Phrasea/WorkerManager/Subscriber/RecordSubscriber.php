@@ -288,7 +288,7 @@ class RecordSubscriber implements EventSubscriberInterface
     {
         //  publish payload to queue
         $payload = [
-            'message_type' => MessagePublisher::RECORD_EDIT_TYPE,
+            'message_type' => MessagePublisher::EDIT_RECORD_TYPE,
             'payload' => [
                 'dataType'       => $event->getDataType(),
                 'data'           => $event->getData(),
@@ -297,7 +297,7 @@ class RecordSubscriber implements EventSubscriberInterface
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::RECORD_EDIT_TYPE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::EDIT_RECORD_TYPE);
     }
 
     public static function getSubscribedEvents()
