@@ -102,6 +102,10 @@ class WriteMetadatasWorker implements WorkerInterface
 
         $record  = $databox->get_record($recordId);
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf(" --!!!-- recordid = %s", $record->getRecordId())
+        ), FILE_APPEND | LOCK_EX);
+
         if ($record->getMimeType() == 'image/svg+xml') {
 
             $this->logger->error("Can't write meta on svg file!");
@@ -115,9 +119,17 @@ class WriteMetadatasWorker implements WorkerInterface
         $this->repoWorker->reconnect();
 
         try {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf(" --!!!-- getsubdef %s", $subdefName)
+            ), FILE_APPEND | LOCK_EX);
+
             $subdef = $record->get_subdef($subdefName);
         }
         catch (Exception $e) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf(" --!!!-- %s", $e->getMessage())
+            ), FILE_APPEND | LOCK_EX);
+
             $workerMessage = "Exception catched when try to get subdef " .$subdefName. " from DB for the recordID: " .$recordId;
             $this->logger->error($workerMessage);
 
@@ -138,6 +150,10 @@ class WriteMetadatasWorker implements WorkerInterface
         }
 
         if (!$subdef->is_physically_present()) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf(" --!!!-- not present")
+            ), FILE_APPEND | LOCK_EX);
+
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
             /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
@@ -249,6 +265,10 @@ class WriteMetadatasWorker implements WorkerInterface
             }
         }
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf(" --!!!-- reset")
+        ), FILE_APPEND | LOCK_EX);
+
         $this->writer->reset();
 
         if ($MWG) {
@@ -256,6 +276,10 @@ class WriteMetadatasWorker implements WorkerInterface
         }
 
         $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf(" --!!!-- erased")
+        ), FILE_APPEND | LOCK_EX);
 
         // write meta in file
         try {
@@ -270,7 +294,7 @@ class WriteMetadatasWorker implements WorkerInterface
         }
         catch (Exception $e) {
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-                sprintf("meta NOT written in %s.%s.%s", $databoxId, $recordId, $subdefName)
+                sprintf("meta NOT written in %s.%s.%s because : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
             ), FILE_APPEND | LOCK_EX);
 
             $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
