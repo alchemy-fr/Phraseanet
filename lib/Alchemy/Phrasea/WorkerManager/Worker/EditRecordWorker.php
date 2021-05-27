@@ -17,7 +17,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class EditRecordWorker implements WorkerInterface
 {
     use ApplicationBoxAware;
-    use DataboxLoggerAware;
 
     private $repoWorker;
     private $dispatcher;
@@ -75,6 +74,7 @@ class EditRecordWorker implements WorkerInterface
                 $workerRunningJob = new WorkerRunningJob();
                 $workerRunningJob
                     ->setDataboxId($payload['databoxId'])
+                    ->setRecordId($payload['record_id'])
                     ->setWork(MessagePublisher::EDIT_RECORD_TYPE)
                     ->setWorkOn("record")
                     ->setPublished($date->setTimestamp($payload['published']))
@@ -136,11 +136,11 @@ class EditRecordWorker implements WorkerInterface
                 $record->write_metas();
 
                 if ($statbits != '') {
-                    $this->getDataboxLogger($databox)
+                    \Session_Logger::loadById($databox, $payload['sessionLogId'])
                         ->log($record, \Session_Logger::EVENT_STATUS, '', '');
                 }
                 if ($editDirty) {
-                    $this->getDataboxLogger($databox)
+                    \Session_Logger::loadById($databox, $payload['sessionLogId'])
                         ->log($record, \Session_Logger::EVENT_EDIT, '', '');
                 }
             } else {

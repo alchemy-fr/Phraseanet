@@ -293,7 +293,8 @@ class RecordSubscriber implements EventSubscriberInterface
                 'type'           => MessagePublisher::EDIT_RECORD_TYPE, // used to specify the final Q to publish message
                 'dataType'       => $event->getDataType(),
                 'data'           => $event->getData(),
-                'databoxId'      => $event->getDataboxId()
+                'databoxId'      => $event->getDataboxId(),
+                'sessionLogId'   => $event->getSessionLogId()
             ]
         ];
 

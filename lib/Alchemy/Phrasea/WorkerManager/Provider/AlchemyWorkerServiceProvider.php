@@ -161,7 +161,6 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EDIT_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new EditRecordWorker($app['repo.worker-running-job'], $app['dispatcher'], $app['alchemy_worker.message.publisher']))
                    ->setApplicationBox($app['phraseanet.appbox'])
-                   ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ;
         }));
     }

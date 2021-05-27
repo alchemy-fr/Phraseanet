@@ -35,8 +35,9 @@ class MainQueueWorker implements WorkerInterface
                 $queue = MessagePublisher::EDIT_RECORD_TYPE;
                 if ($payload['dataType'] == RecordEditInWorkerEvent::MDS_TYPE) {
                     $payloadData = array_map(function($singleMessage) use ($payload) {
-                        $singleMessage['databoxId'] = $payload['databoxId'];
-                        $singleMessage['dataType']  = $payload['dataType'];
+                        $singleMessage['databoxId']     = $payload['databoxId'];
+                        $singleMessage['dataType']      = $payload['dataType'];
+                        $singleMessage['sessionLogId']  = $payload['sessionLogId'];
 
                         return $singleMessage;
                     }, $payload['data']);
@@ -44,9 +45,10 @@ class MainQueueWorker implements WorkerInterface
                     $data = json_decode($payload['data'], true);
 
                     $payloadData = array_map(function($singleMessage) use ($payload, $data) {
-                        $singleMessage['databoxId'] = $payload['databoxId'];
-                        $singleMessage['dataType']  = $payload['dataType'];
-                        $singleMessage['actions']   = $data['actions'];
+                        $singleMessage['databoxId']     = $payload['databoxId'];
+                        $singleMessage['sessionLogId']  = $payload['sessionLogId'];
+                        $singleMessage['dataType']      = $payload['dataType'];
+                        $singleMessage['actions']       = $data['actions'];
                         unset($singleMessage['sbas_id']);
 
                         return $singleMessage;
