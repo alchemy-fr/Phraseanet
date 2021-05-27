@@ -338,7 +338,7 @@ class EditController extends Controller
 
         // order the worker to save values in fields
         $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
-            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), array_keys($records->toArray()))
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id())
         );
 
         return $this->app->json(['success' => true]);

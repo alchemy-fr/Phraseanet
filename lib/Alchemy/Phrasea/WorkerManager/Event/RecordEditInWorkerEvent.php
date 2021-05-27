@@ -11,16 +11,14 @@ class RecordEditInWorkerEvent extends SfEvent
 
     private $dataType;
     private $data;
-    private $elementIds;
     private $databoxId;
 
 
-    public function __construct($dataType, $data, $databoxId, $elementIds = array())
+    public function __construct($dataType, $data, $databoxId)
     {
         $this->dataType      = $dataType;
         $this->data          = $data;
         $this->databoxId     = $databoxId;
-        $this->elementIds    = $elementIds;
     }
 
     public function getDataType()
@@ -30,11 +28,6 @@ class RecordEditInWorkerEvent extends SfEvent
     public function getData()
     {
         return $this->data;
-    }
-
-    public function getElementIds()
-    {
-        return $this->elementIds;
     }
 
     public function getDataboxId()

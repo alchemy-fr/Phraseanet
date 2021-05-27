@@ -93,88 +93,64 @@ class EditRecordWorker implements WorkerInterface
 
         try {
             if ($payload['dataType'] === RecordEditInWorkerEvent::MDS_TYPE) {
-                if (isset($payload['data']) && isset($payload['elementIds'])) {
-                    $recordIds = array_column($payload['data'], 'record_id');
+                $recordIds = [$payload['record_id']];
 
-                    foreach ($payload['data'] as $rec) {
-                        try {
-                            /** @var \record_adapter $record */
-                            $record = $databox->get_record($rec['record_id']);
-                        } catch (\Exception $e) {
-                            continue;
-                        }
+                /** @var \record_adapter $record */
+                $record = $databox->get_record($payload['record_id']);
 
-                        $key = $record->getId();
+                $statbits = $payload['status'];
+                $editDirty = $payload['edit'];
 
-                        if (!in_array($key, $payload['elementIds'])) {
-                            continue;
-                        }
+                if ($editDirty == '0') {
+                    $editDirty = false;
+                } else {
+                    $editDirty = true;
+                }
 
-                        $statbits = $rec['status'];
-                        $editDirty = $rec['edit'];
+                if (isset($payload['metadatas']) && is_array($payload['metadatas'])) {
+                    $record->set_metadatas($payload['metadatas']);
+                    $this->dispatcher->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+                }
 
-                        if ($editDirty == '0') {
-                            $editDirty = false;
-                        } else {
-                            $editDirty = true;
-                        }
+                if (isset($payload['technicalsdatas']) && is_array($payload['technicalsdatas'])) {
+                    $record->insertOrUpdateTechnicalDatas($payload['technicalsdatas']);
+                }
 
-                        if (isset($rec['metadatas']) && is_array($rec['metadatas'])) {
-                            try {
-                                $record->set_metadatas($rec['metadatas']);
-                                $this->dispatcher->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
-                            } catch (\Exception $e) {
-                                continue;
-                            }
-                        }
-
-                        if (isset($rec['technicalsdatas']) && is_array($rec['technicalsdatas'])) {
-                            $record->insertOrUpdateTechnicalDatas($rec['technicalsdatas']);
-                        }
-
-                        $newstat = $record->getStatus();
-                        $statbits = ltrim($statbits, 'x');
-                        if (!in_array($statbits, ['', 'null'])) {
-                            $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
-                            if ($mask_and != '') {
-                                $newstat = \databox_status::operation_and_not($newstat, $mask_and);
-                            }
-
-                            $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
-
-                            if ($mask_or != '') {
-                                $newstat = \databox_status::operation_or($newstat, $mask_or);
-                            }
-
-                            $record->setStatus($newstat);
-                        }
-
-                        $record->write_metas();
-
-                        if ($statbits != '') {
-                            $this->getDataboxLogger($databox)
-                                ->log($record, \Session_Logger::EVENT_STATUS, '', '');
-                        }
-                        if ($editDirty) {
-                            $this->getDataboxLogger($databox)
-                                ->log($record, \Session_Logger::EVENT_EDIT, '', '');
-                        }
+                $newstat = $record->getStatus();
+                $statbits = ltrim($statbits, 'x');
+                if (!in_array($statbits, ['', 'null'])) {
+                    $mask_and = ltrim(str_replace(['x', '0', '1', 'z'], ['1', 'z', '0', '1'], $statbits), '0');
+                    if ($mask_and != '') {
+                        $newstat = \databox_status::operation_and_not($newstat, $mask_and);
                     }
+
+                    $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
+
+                    if ($mask_or != '') {
+                        $newstat = \databox_status::operation_or($newstat, $mask_or);
+                    }
+
+                    $record->setStatus($newstat);
+                }
+
+                $record->write_metas();
+
+                if ($statbits != '') {
+                    $this->getDataboxLogger($databox)
+                        ->log($record, \Session_Logger::EVENT_STATUS, '', '');
+                }
+                if ($editDirty) {
+                    $this->getDataboxLogger($databox)
+                        ->log($record, \Session_Logger::EVENT_EDIT, '', '');
                 }
             } else {
-                $arg = json_decode($payload['data']);
-                $recordIds = array_column($arg->records, 'record_id');
+                $recordIds = [$payload['record_id']];
 
                 // for now call record_adapter. no check, no acl, ...
-                foreach($arg->records as $rec) {
-                    try {
-                        /** @var \record_adapter $r */
-                        $r = $databox->get_record($rec->record_id);
-                        $r->setMetadatasByActions($arg->actions);
-                    } catch(\Exception $e) {
-                        continue;
-                    }
-                }
+                /** @var \record_adapter $r */
+                $r = $databox->get_record($payload['record_id']);
+                // param actions is stdclass type
+                $r->setMetadatasByActions(json_decode(json_encode($payload['actions'])));
             }
         } catch (\Exception $e) {
             $workerMessage = "An error occurred when editing record!: ". $e->getMessage();
@@ -233,5 +209,7 @@ class EditRecordWorker implements WorkerInterface
         } catch (\Exception $e) {
             $em->rollback();
         }
+
+        $this->messagePublisher->pushLog("Record edited for recorid=". $payload['record_id']);
     }
 }
