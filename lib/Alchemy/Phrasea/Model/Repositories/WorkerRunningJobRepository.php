@@ -11,6 +11,7 @@ use Exception;
 
 class WorkerRunningJobRepository extends EntityRepository
 {
+
     /**
      * Check and declare that we want to create a subdef from a document
      *
@@ -33,13 +34,13 @@ class WorkerRunningJobRepository extends EntityRepository
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
             sprintf('canCreateSubdef for %s.%s.%s ?', $databoxId, $recordId, $subdefName)
-        ), FILE_APPEND|LOCK_EX);
+        ), FILE_APPEND | LOCK_EX);
 
         // first protect sql by a critical section
         if( !( $recordMutex = $this->getRecordMutex($databoxId, $recordId)) ) {
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                 'getRecordMutex() failed'
-            ), FILE_APPEND|LOCK_EX);
+            ), FILE_APPEND | LOCK_EX);
 
             return null;
         }
@@ -48,33 +49,34 @@ class WorkerRunningJobRepository extends EntityRepository
         $workerRunningJob = null;
 
         // check the rules
-        /** @var WorkerRunningJob $r */
+        /** @var WorkerRunningJob[] $r */
         $r = $this->createQueryBuilder('w')
             ->select('w')
             ->where('w.status = :status')->setParameter('status', WorkerRunningJob::RUNNING)
             ->andWhere('w.databoxId = :databox_id')->setParameter('databox_id', $databoxId)
             ->andWhere('w.recordId = :record_id')->setParameter('record_id', $recordId)
-            ->andWhere('w.workOn = \'document\' OR w.work_on = :work_on')->setParameter(':work_on', $subdefName)
+            ->andWhere('w.workOn = \'document\' OR w.workOn = :work_on')->setParameter(':work_on', $subdefName)
             ->andWhere('w.work = :work_1 OR w.work = :work_2')
             ->setParameter('work_1', MessagePublisher::WRITE_METADATAS_TYPE)
             ->setParameter('work_2', MessagePublisher::SUBDEF_CREATION_TYPE)
             ->setMaxResults(1)
             ->getQuery()
-            ->getFirstResult()
+            ->getResult()
         ;
 
-        if(!$r) {
+        if(count($r) == 0) {
             // no conflict, create (or update) the job
             $workerRunningJob = $this->creteOrUpdateJob($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
         }
         else {
+            $r = $r[0];
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                 sprintf("job %s already running on %s.%s.%s", $r->getId(), $r->getDataboxId(), $r->getRecordId(), $r->getWorkOn())
-            ), FILE_APPEND|LOCK_EX);
+            ), FILE_APPEND | LOCK_EX);
         }
 
         // end of critical section
-        $this->releaseRecordMutex($recordMutex);
+        $this->releaseRecordMutex($databoxId, $recordId);
 
         return $workerRunningJob;
     }
@@ -100,13 +102,13 @@ class WorkerRunningJobRepository extends EntityRepository
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
             sprintf('canWriteMetadata for %s.%s.%s ?', $databoxId, $recordId, $subdefName)
-        ), FILE_APPEND|LOCK_EX);
+        ), FILE_APPEND | LOCK_EX);
 
         // first protect sql by a critical section
         if( !( $recordMutex = $this->getRecordMutex($databoxId, $recordId)) ) {
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                 'getRecordMutex() failed'
-            ), FILE_APPEND|LOCK_EX);
+            ), FILE_APPEND | LOCK_EX);
 
             return null;
         }
@@ -115,33 +117,35 @@ class WorkerRunningJobRepository extends EntityRepository
         $workerRunningJob = null;
 
         // check the rule
+        /** @var WorkerRunningJob[] $r */
         $r = $this->createQueryBuilder('w')
             ->select('w')
             ->where('w.status = :status')->setParameter('status', WorkerRunningJob::RUNNING)
-            ->andWhere('w.databox_id = :databox_id')->setParameter('databox_id', $databoxId)
-            ->andWhere('w.record_id = :record_id')->setParameter('record_id', $recordId)
-            ->andWhere('w.work_on = :work_on')->setParameter(':work_on', $subdefName)
+            ->andWhere('w.databoxId = :databox_id')->setParameter('databox_id', $databoxId)
+            ->andWhere('w.recordId = :record_id')->setParameter('record_id', $recordId)
+            ->andWhere('w.workOn = :work_on')->setParameter(':work_on', $subdefName)
             ->andWhere('w.work = :work_1 OR w.work = :work_2')
             ->setParameter('work_1', MessagePublisher::WRITE_METADATAS_TYPE)
             ->setParameter('work_2', MessagePublisher::SUBDEF_CREATION_TYPE)
             ->setMaxResults(1)
             ->getQuery()
-            ->getFirstResult()
+            ->getResult()
         ;
 
-        if(!$r) {
+        if(count($r) == 0) {
             // no conflict, create (or update) the job
             $workerRunningJob = $this->creteOrUpdateJob($payload, MessagePublisher::WRITE_METADATAS_TYPE);
         }
         else {
+            $r = $r[0];
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                 sprintf("job %s already running on %s.%s.%s", $r->getId(), $r->getDataboxId(), $r->getRecordId(), $r->getWorkOn())
-            ), FILE_APPEND|LOCK_EX);
+            ), FILE_APPEND | LOCK_EX);
 
         }
 
         // end of critical section
-        $this->releaseRecordMutex($recordMutex);
+        $this->releaseRecordMutex($databoxId, $recordId);
 
         return $workerRunningJob;
     }
@@ -184,7 +188,7 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                     sprintf("created job %s for %s.%s.%s", $type, $payload['databoxId'], $payload['recordId'], $payload['subdefName'])
-                ), FILE_APPEND|LOCK_EX);
+                ), FILE_APPEND | LOCK_EX);
 
             }
             catch (Exception $e) {
@@ -195,7 +199,7 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                     sprintf("!!! error creating job %s for %s.%s.%s", $type, $payload['databoxId'], $payload['recordId'], $payload['subdefName'])
-                ), FILE_APPEND|LOCK_EX);
+                ), FILE_APPEND | LOCK_EX);
 
             }
         }
@@ -215,7 +219,7 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                     sprintf("incremented job %s for %s.%s.%s (count=%s)", $type, $payload['databoxId'], $payload['recordId'], $payload['subdefName'], $payload['count'])
-                ), FILE_APPEND|LOCK_EX);
+                ), FILE_APPEND | LOCK_EX);
 
             }
             else {
@@ -225,7 +229,7 @@ class WorkerRunningJobRepository extends EntityRepository
                 // $this->logger->error("Given workerJobId not found !");
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                     sprintf("!!! error incrementing job %s for %s.%s.%s (count=%s)", $type, $payload['databoxId'], $payload['recordId'], $payload['subdefName'], $payload['count'])
-                ), FILE_APPEND|LOCK_EX);
+                ), FILE_APPEND | LOCK_EX);
 
             }
         }
@@ -237,54 +241,89 @@ class WorkerRunningJobRepository extends EntityRepository
      * Acquire a "mutex" to protect critical section on a (sbid + rid) by trying to insert a row in WorkerRunningJob table.
      * If it fails that means that another critical section is already running on this record.
      *
+     * when many q-messages are consumed at the same time, many process may ask the same mutex immediatly, many fails.
+     * so we retry after a short random delay which gives a good chance to ok, and avoids unnecessary "delayed" q-messages.
+     *
      * @param int $databoxId
      * @param int $recordId
-     * @return WorkerRunningJob|null      // the created mutex entity, or null if mutex already exists
+     * @return bool
      */
     private function getRecordMutex(int $databoxId, int $recordId)
     {
-        try {
-            $this->getEntityManager()->beginTransaction();
-            $workerRunningJob = new WorkerRunningJob();
-            $workerRunningJob
-                ->setDataboxId($databoxId)
-                ->setRecordId($recordId)
-                ->setPublished(new DateTime())
-                ->setStatus('')
-                ->setFlock("_mutex_");
-            $this->getEntityManager()->persist($workerRunningJob);
+        $e = null;  // exception if failed
+        for($tryout=1; $tryout<=3; $tryout++) {
+            try {
+                $this->reconnect();
 
-            $this->getEntityManager()->flush();
-            $this->getEntityManager()->commit();
+                /**
+                 * !!! IMPORTANT !!!
+                 * we CAN'T use the entity manager to insert, because if this fails with exception (possible case),
+                 * the EM will be closed and we will have no other chance for anothe tryout.
+                 * So we do plain sql here.
+                 */
+                $cnx = $this->getEntityManager()->getConnection();
+                $sql = "INSERT INTO WorkerRunningJob (`databox_id`, `record_id`, `published`, `status`, `flock`) VALUES (\n"
+                    . $cnx->quote($databoxId) . ",\n"
+                    . $cnx->quote($recordId) . ",\n"
+                    . "NOW(),\n"
+                    . $cnx->quote('_') . ",\n"
+                    . $cnx->quote('_mutex_') . "\n"
+                    . ")";
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-                sprintf("getMutex for %s.%s OK (%s)", $databoxId, $recordId, $workerRunningJob->getId())
-            ), FILE_APPEND|LOCK_EX);
+                $cnx->exec($sql);
 
-            return $workerRunningJob;
+                file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(true)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                    sprintf("getMutex tryout %s for %s.%s OK", $tryout, $databoxId, $recordId)
+                ), FILE_APPEND | LOCK_EX);
+
+                return true;
+            }
+            catch (Exception $e) {
+                /**
+                 * with plain sql, EM should still be opened here
+                 */
+
+                // duplicate key ?
+                if($tryout < 3) {
+                    //sleep(1);
+                    $rnd = rand(10, 50) * 10;
+
+                    file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(true)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                        sprintf("getMutex retry in %d msec", $rnd)
+                    ), FILE_APPEND | LOCK_EX);
+
+                    usleep($rnd * 1000);   // 100 ms ... 500 ms with 10 ms steps
+                }
+            }
         }
-        catch(Exception $e) {
-            // duplicate key ?
-            $this->getEntityManager()->rollback();
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-                sprintf("getMutex for %s.%s FAILED", $databoxId, $recordId)
-            ), FILE_APPEND|LOCK_EX);
+        file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(true)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("getMutex tryout %s for %s.%s FAILED because (%s)", $tryout, $databoxId, $recordId, $e->getMessage())
+        ), FILE_APPEND | LOCK_EX);
 
-            return null;
-        }
+        return false;
     }
 
-    private function releaseRecordMutex(WorkerRunningJob $workerRunningJob)
+    private function releaseRecordMutex(int $databoxId, int $recordId)
     {
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-            sprintf("releaseMutex (%s) for %s.%s", $workerRunningJob->getId(), $workerRunningJob->getDataboxId(), $workerRunningJob->getRecordId())
-        ), FILE_APPEND|LOCK_EX);
+            sprintf("releaseMutex for %s.%s", $databoxId, $recordId)
+        ), FILE_APPEND | LOCK_EX);
 
-        $this->getEntityManager()->remove($workerRunningJob);
+        $this->reconnect();
+
+        /**
+         * because we did not create an entity for mutex row,
+         * we must use plain sql also to delete it
+         */
+        $cnx = $this->getEntityManager()->getConnection();
+        $sql = "DELETE FROM WorkerRunningJob\n"
+            . " WHERE `databox_id` = " . $cnx->quote($databoxId)
+            . "   AND `record_id` = " . $cnx->quote($recordId)
+            . "   AND `flock` = " . $cnx->quote("_mutex_");
+
+        $cnx->exec($sql);
     }
-
-
 
     /**
      * mark a job a "finished"
@@ -314,14 +353,14 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                     sprintf("job %s (%d) finished for %s.%s.%s", $workerRunningJob->getWork(), $workerRunningJob->getId(), $workerRunningJob->getDataboxId(), $workerRunningJob->getRecordId(), $workerRunningJob->getWorkOn())
-                ), FILE_APPEND|LOCK_EX);
+                ), FILE_APPEND | LOCK_EX);
 
                 break;
             }
             catch (Exception $e) {
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                     sprintf("!!! failed to mark job %s (%d) as finished (try %s/2) for %s.%s.%s", $workerRunningJob->getWork(), $workerRunningJob->getId(), $try, $workerRunningJob->getDataboxId(), $workerRunningJob->getRecordId(), $workerRunningJob->getWorkOn())
-                ), FILE_APPEND|LOCK_EX);
+                ), FILE_APPEND | LOCK_EX);
 
                 $this->getEntityManager()->rollback();
             }
@@ -412,6 +451,16 @@ class WorkerRunningJobRepository extends EntityRepository
 
     public function reconnect()
     {
+//        if(!$this->getEntityManager()->isOpen()) {
+//            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(true)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+//                sprintf("recreate _em")
+//            ), FILE_APPEND | LOCK_EX);
+//            $this->_em = $this->_em->create(
+//                $this->_em->getConnection(),
+//                $this->_em->getConfiguration(),
+//                $this->_em->getEventManager()
+//            );
+//        }
         if($this->_em->getConnection()->ping() === false) {
             $this->_em->getConnection()->close();
             $this->_em->getConnection()->connect();

@@ -69,7 +69,7 @@ class WriteMetadatasWorker implements WorkerInterface
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
             sprintf("process WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
-        ), FILE_APPEND|LOCK_EX);
+        ), FILE_APPEND | LOCK_EX);
 
         $MWG         = $payload['MWG'] ?? false;
         $clearDoc    = $payload['clearDoc'] ?? false;
@@ -89,7 +89,7 @@ class WriteMetadatasWorker implements WorkerInterface
             );
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                 sprintf("cannot WriteMeta for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
-            ), FILE_APPEND|LOCK_EX);
+            ), FILE_APPEND | LOCK_EX);
 
             return ;
         }
@@ -98,7 +98,7 @@ class WriteMetadatasWorker implements WorkerInterface
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
             sprintf("ready to WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
-        ), FILE_APPEND|LOCK_EX);
+        ), FILE_APPEND | LOCK_EX);
 
         $record  = $databox->get_record($recordId);
 
@@ -265,13 +265,13 @@ class WriteMetadatasWorker implements WorkerInterface
 
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                 sprintf("meta written in %s.%s.%s", $databoxId, $recordId, $subdefName)
-            ), FILE_APPEND|LOCK_EX);
+            ), FILE_APPEND | LOCK_EX);
 
         }
         catch (Exception $e) {
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
                 sprintf("meta NOT written in %s.%s.%s", $databoxId, $recordId, $subdefName)
-            ), FILE_APPEND|LOCK_EX);
+            ), FILE_APPEND | LOCK_EX);
 
             $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
             $this->logger->error($workerMessage);
