@@ -60539,6 +60539,26 @@ var Feedback = function Feedback(services, options) {
         _.each((0, _jquery2.default)('.badges.selectionnable').children(), function (item) {
             var $elem = (0, _jquery2.default)(item);
             if ($elem.hasClass('selected')) {
+                var userEmail = $elem.find('.user-email').val();
+
+                var action = (0, _jquery2.default)('input[name="feedbackAction"]').val();
+
+                if (action == 'adduser') {
+                    var value = (0, _jquery2.default)('#newParticipantsUser').val();
+                    var actualParticipantsName = value.split('; ');
+                    // remove the user in the list of new participant if yet exist
+                    var key = _jquery2.default.inArray(userEmail, actualParticipantsName);
+                    if (key > -1) {
+                        actualParticipantsName.splice(key, 1);
+                        if (actualParticipantsName.length != 0) {
+                            value = actualParticipantsName.join('; ');
+                            (0, _jquery2.default)('#newParticipantsUser').val(value);
+                        } else {
+                            (0, _jquery2.default)('#newParticipantsUser').val('');
+                        }
+                    }
+                }
+
                 $elem.fadeOut(function () {
                     $elem.remove();
                 });
@@ -60818,18 +60838,21 @@ var Feedback = function Feedback(services, options) {
     this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
         var $elem = (0, _jquery2.default)(this).closest('.badge');
         var userEmailEl = $elem.find('.user-email').val();
+        var action = (0, _jquery2.default)('input[name="feedbackAction"]').val();
 
-        var value = (0, _jquery2.default)('#newParticipantsUser').val();
-        var actualParticipantsName = value.split('; ');
-        // remove the user in the list of new participant if yet exist
-        var key = _jquery2.default.inArray(userEmailEl, actualParticipantsName);
-        if (key > -1) {
-            actualParticipantsName.splice(key, 1);
-            if (actualParticipantsName.length != 0) {
-                value = actualParticipantsName.join('; ');
-                (0, _jquery2.default)('#newParticipantsUser').val(value);
-            } else {
-                (0, _jquery2.default)('#newParticipantsUser').val('');
+        if (action == 'adduser') {
+            var value = (0, _jquery2.default)('#newParticipantsUser').val();
+            var actualParticipantsName = value.split('; ');
+            // remove the user in the list of new participant if yet exist
+            var key = _jquery2.default.inArray(userEmailEl, actualParticipantsName);
+            if (key > -1) {
+                actualParticipantsName.splice(key, 1);
+                if (actualParticipantsName.length != 0) {
+                    value = actualParticipantsName.join('; ');
+                    (0, _jquery2.default)('#newParticipantsUser').val(value);
+                } else {
+                    (0, _jquery2.default)('#newParticipantsUser').val('');
+                }
             }
         }
 
