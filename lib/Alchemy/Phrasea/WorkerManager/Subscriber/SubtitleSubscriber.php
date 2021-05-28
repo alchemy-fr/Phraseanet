@@ -27,10 +27,6 @@ class SubtitleSubscriber implements EventSubscriberInterface
 
     public function onRecordAutoSubtitle(RecordAutoSubtitleEvent $event)
     {
-        $this->repoWorkerJob = $this->getRepoWorkerJob();
-
-        $em = $this->repoWorkerJob->getEntityManager();
-
         $data = [
             "databoxId"                     => $event->getRecord()->getDataboxId(),
             "recordId"                      => $event->getRecord()->getRecordId(),
@@ -38,37 +34,16 @@ class SubtitleSubscriber implements EventSubscriberInterface
             "languageSource"                => $event->getLanguageSource(),
             "metaStructureIdSource"         => $event->getMetaStructureIdSource(),
             "languageDestination"           => $event->getLanguageDestination(),
-            "metaStructureIdDestination"    => $event->getMetaStructureIdDestination()
+            "metaStructureIdDestination"    => $event->getMetaStructureIdDestination(),
+            "type"                          => MessagePublisher::SUBTITLE_TYPE  // used to specify the final Q to publish message
         ];
 
-        $this->repoWorkerJob->reconnect();
-        $em->beginTransaction();
+        $payload = [
+            'message_type' => MessagePublisher::MAIN_QUEUE_TYPE,
+            'payload' => $data
+        ];
 
-        try {
-            $workerJob = new WorkerJob();
-            $workerJob
-                ->setType(MessagePublisher::SUBTITLE_TYPE)
-                ->setData($data)
-                ->setStatus(WorkerJob::WAITING)
-            ;
-
-            $em->persist($workerJob);
-            $em->flush();
-
-            $em->commit();
-
-            $data['workerId'] = $workerJob->getId();
-            $data['type'] =  MessagePublisher::SUBTITLE_TYPE;
-
-            $payload = [
-                'message_type' => MessagePublisher::MAIN_QUEUE_TYPE,
-                'payload' => $data
-            ];
-
-            $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
-        } catch (\Exception $e) {
-            $em->rollback();
-        }
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
     }
 
     public static function getSubscribedEvents()

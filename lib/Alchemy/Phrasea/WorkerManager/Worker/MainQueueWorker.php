@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
+use Alchemy\Phrasea\Model\Entities\WorkerJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\RecordEditInWorkerEvent;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
@@ -23,6 +24,29 @@ class MainQueueWorker implements WorkerInterface
 
     public function process(array $payload)
     {
+        $message = [
+            'message_type'  => $payload['type'],
+            'payload'       => $payload
+        ];
+
+        $em = $this->repoWorkerJob->getEntityManager();
+        $em->getConnection()->beginTransaction();
+        /** @var WorkerJob $workerJob */
+
+        // Actually the main Q use the WorkerJob table to save the payload
+        $workerJob = new WorkerJob();
+        $workerJob
+            ->setType($payload['type'])
+            ->setData($message)
+            ->setStatus(WorkerJob::RUNNING)
+            ->setStarted(new \DateTime())
+        ;
+
+        $em->persist($workerJob);
+
+        $em->flush();
+        $em->commit();
+
         // if needed, do treatement here depending on the type
         $queue = null;
         $childMessageCount = 1;
@@ -79,5 +103,17 @@ class MainQueueWorker implements WorkerInterface
         }
 
         $this->messagePublisher->pushLog("Message processed in mainQueue >> ". json_encode($payload));
+
+        $this->repoWorkerJob->reconnect();
+        $em->getConnection()->beginTransaction();
+        $workerJob
+            ->setStatus(WorkerJob::FINISHED)
+            ->setFinished(new \DateTime())
+        ;
+
+        $em->persist($workerJob);
+
+        $em->flush();
+        $em->commit();
     }
 }
