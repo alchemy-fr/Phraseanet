@@ -286,18 +286,19 @@ class RecordSubscriber implements EventSubscriberInterface
 
     public function onRecordEditInWorker(RecordEditInWorkerEvent $event)
     {
-        //  publish payload to queue
+        //  publish payload to mainQ to split message per record
         $payload = [
-            'message_type' => MessagePublisher::RECORD_EDIT_TYPE,
+            'message_type' => MessagePublisher::MAIN_QUEUE_TYPE,
             'payload' => [
+                'type'           => MessagePublisher::EDIT_RECORD_TYPE, // used to specify the final Q to publish message
                 'dataType'       => $event->getDataType(),
                 'data'           => $event->getData(),
-                'elementIds'     => $event->getElementIds(),
-                'databoxId'      => $event->getDataboxId()
+                'databoxId'      => $event->getDataboxId(),
+                'sessionLogId'   => $event->getSessionLogId()
             ]
         ];
 
-        $this->messagePublisher->publishMessage($payload, MessagePublisher::RECORD_EDIT_TYPE);
+        $this->messagePublisher->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
     }
 
     public static function getSubscribedEvents()

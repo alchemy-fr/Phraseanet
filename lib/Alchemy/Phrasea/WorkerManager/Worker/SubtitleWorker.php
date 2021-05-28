@@ -4,10 +4,11 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\Model\Entities\WorkerJob;
-use Alchemy\Phrasea\Model\Repositories\WorkerJobRepository;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,14 +25,14 @@ class SubtitleWorker implements WorkerInterface
     private $logger;
     private $conf;
 
-    /** @var WorkerJobRepository  $repoWorkerJob*/
-    private $repoWorkerJob;
+    /** @var WorkerRunningJobRepository  $repoWorker*/
+    private $repoWorker;
 
     private $dispatcher;
 
-    public function __construct(WorkerJobRepository $repoWorkerJob, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger, EventDispatcherInterface $dispatcher)
+    public function __construct(WorkerRunningJobRepository $repoWorker, PropertyAccess $conf, callable $appboxLocator, LoggerInterface $logger, EventDispatcherInterface $dispatcher)
     {
-        $this->repoWorkerJob = $repoWorkerJob;
+        $this->repoWorker    = $repoWorker;
         $this->conf          = $conf;
         $this->appboxLocator = $appboxLocator;
         $this->logger        = $logger;
@@ -49,22 +50,36 @@ class SubtitleWorker implements WorkerInterface
 
             return 0;
         }
+        $workerRunningJob = null;
+        $em = $this->repoWorker->getEntityManager();
 
-        /** @var WorkerJob $workerJob */
-        $workerJob = $this->repoWorkerJob->find($payload['workerId']);
-        if ($workerJob == null) {
-            $this->logger->error("WorkerId not found");
+        $em->beginTransaction();
 
-            return 0;
+        try {
+            $message = [
+                'message_type'  => MessagePublisher::SUBTITLE_TYPE,
+                'payload'       => $payload
+            ];
+
+            $date = new \DateTime();
+            $workerRunningJob = new WorkerRunningJob();
+            $workerRunningJob
+                ->setDataboxId($payload['databoxId'])
+                ->setRecordId($payload['recordId'])
+                ->setWork(MessagePublisher::SUBTITLE_TYPE)
+                ->setWorkOn("record")
+                ->setPublished($date->setTimestamp($payload['published']))
+                ->setStatus(WorkerRunningJob::RUNNING)
+                ->setPayload($message)
+            ;
+
+            $em->persist($workerRunningJob);
+            $em->flush();
+
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
         }
-
-        $workerJob->setStatus(WorkerJob::RUNNING)
-            ->setStarted(new \DateTime('now'));
-
-        $em = $this->repoWorkerJob->getEntityManager();
-        $this->repoWorkerJob->reconnect();
-        $em->persist($workerJob);
-        $em->flush();
 
         switch ($gingaTranscriptFormat) {
             case 'text/srt,':
@@ -105,14 +120,14 @@ class SubtitleWorker implements WorkerInterface
                 ]);
             } catch(\Exception $e) {
                 $this->logger->error($e->getMessage());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
 
             if ($response->getStatusCode() !== 201) {
                 $this->logger->error("response status /media/ : ". $response->getStatusCode());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
@@ -150,7 +165,7 @@ class SubtitleWorker implements WorkerInterface
 
             if (!$checkStatus) {
                 $this->logger->error("can't check status");
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
@@ -167,14 +182,14 @@ class SubtitleWorker implements WorkerInterface
                 ]);
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
 
             if ($response->getStatusCode() !== 200) {
                 $this->logger->error("response status /media/uuid : ". $response->getStatusCode());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
@@ -200,7 +215,7 @@ class SubtitleWorker implements WorkerInterface
                     new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
@@ -245,14 +260,14 @@ class SubtitleWorker implements WorkerInterface
                 ]);
             } catch(\Exception $e) {
                 $this->logger->error($e->getMessage());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
 
             if ($response->getStatusCode() !== 200) {
                 $this->logger->error("response status /translate/ : ". $response->getStatusCode());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
@@ -274,7 +289,7 @@ class SubtitleWorker implements WorkerInterface
                     new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
-                $this->jobFinished($workerJob);
+                $this->jobFinished($workerRunningJob);
 
                 return 0;
             }
@@ -282,7 +297,7 @@ class SubtitleWorker implements WorkerInterface
             $this->logger->info("Translate subtitle on language destination SUCCESS");
         }
 
-        $this->jobFinished($workerJob);
+        $this->jobFinished($workerRunningJob);
 
         return 0;
     }
@@ -297,16 +312,18 @@ class SubtitleWorker implements WorkerInterface
         return $callable();
     }
 
-    private function jobFinished(WorkerJob $workerJob)
+    private function jobFinished(WorkerRunningJob $workerRunningJob)
     {
-        $workerJob->setStatus(WorkerJob::FINISHED)
-            ->setFinished(new \DateTime('now'));
+        if ($workerRunningJob != null) {
+            $workerRunningJob->setStatus(WorkerRunningJob::FINISHED)
+                ->setFinished(new \DateTime('now'));
 
-        $em = $this->repoWorkerJob->getEntityManager();
-        $this->repoWorkerJob->reconnect();
+            $em = $this->repoWorker->getEntityManager();
+            $this->repoWorker->reconnect();
 
-        $em->persist($workerJob);
-        $em->flush();
+            $em->persist($workerRunningJob);
+            $em->flush();
+        }
     }
 
     private function getLanguageFormat($language)
