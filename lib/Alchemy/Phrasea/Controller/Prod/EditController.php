@@ -50,6 +50,7 @@ class EditController extends Controller
         $status = $ids = $elements = $suggValues = $fields = $JSFields = [];
         $databox = null;
         $databoxes = $records->databoxes();
+        $multipleStories = count($records->stories()) > 1;
 
         $multipleDataboxes = count($databoxes) > 1;
 
@@ -229,6 +230,7 @@ class EditController extends Controller
         $conf = $this->getConf();
         $params = [
             'multipleDataboxes' => $multipleDataboxes,
+            'multipleStories'   => $multipleStories,
             'recordsRequest'    => $records,
             'videoEditorConfig' => $conf->get(['video-editor']),
             'databox'           => $databox,
