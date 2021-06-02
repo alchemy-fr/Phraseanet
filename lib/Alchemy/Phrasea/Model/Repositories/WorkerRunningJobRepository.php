@@ -186,6 +186,7 @@ class WorkerRunningJobRepository extends EntityRepository
                     . " `work` = " . $cnx->quote($type) . ",\n"
                     . " `work_on` = " . $cnx->quote($payload['subdefName']) . ",\n"
                     . " `payload` = " . $cnx->quote($pl) . ",\n"
+                    . " `created` = NOW(),\n"
                     . " `published` = " . $cnx->quote($datePublished->format('Y-m-d H:i:s')) . ",\n"
                     . " `status` = " . $cnx->quote(WorkerRunningJob::RUNNING);
 
