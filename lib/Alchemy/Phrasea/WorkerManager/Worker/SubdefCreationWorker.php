@@ -79,9 +79,9 @@ class SubdefCreationWorker implements WorkerInterface
         $oldLogger = $this->subdefGenerator->getLogger();
 
         // try to "lock" the file, will return null if already locked
-        $workerRunningJob = $this->repoWorker->canCreateSubdef($payload);
+        $workerRunningJobId = $this->repoWorker->canCreateSubdef($payload);
 
-        if (is_null($workerRunningJob)) {
+        if (is_null($workerRunningJobId)) {
             // the file is written by another worker, delay to retry later
             $this->messagePublisher->publishDelayedMessage(
                 [
@@ -136,7 +136,7 @@ class SubdefCreationWorker implements WorkerInterface
                 $subdefName,
                 $workerMessage,
                 $count,
-                $workerRunningJob->getId()
+                $workerRunningJobId
             ));
 
             // the subscriber will "unlock" the row, no need to do it here
@@ -171,7 +171,7 @@ class SubdefCreationWorker implements WorkerInterface
                 $subdefName,
                 'Subdef generation failed !',
                 $count,
-                $workerRunningJob->getId()
+                $workerRunningJobId
             ));
 
             $this->subdefGenerator->setLogger($oldLogger);
@@ -219,7 +219,7 @@ class SubdefCreationWorker implements WorkerInterface
         $this->indexer->flushQueue();
 
         // tell that we have finished to work on this file (=unlock)
-        $this->repoWorker->markFinished($workerRunningJob);
+        $this->repoWorker->markFinished($workerRunningJobId);
 
     }
 

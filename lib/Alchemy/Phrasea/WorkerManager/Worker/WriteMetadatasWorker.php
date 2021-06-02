@@ -76,9 +76,9 @@ class WriteMetadatasWorker implements WorkerInterface
         $databox     = $this->findDataboxById($databoxId);
 
         // try to "lock" the file, will return null if already locked
-        $workerRunningJob = $this->repoWorker->canWriteMetadata($payload);
+        $workerRunningJobId = $this->repoWorker->canWriteMetadata($payload);
 
-        if (is_null($workerRunningJob)) {
+        if (is_null($workerRunningJobId)) {
             // the file is written by another worker, delay to retry later
             $this->messagePublisher->publishDelayedMessage(
                 [
@@ -103,7 +103,7 @@ class WriteMetadatasWorker implements WorkerInterface
         $record  = $databox->get_record($recordId);
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-            sprintf(" --!!!-- recordid = %s", $record->getRecordId())
+            sprintf(" - recordid = %s", $record->getRecordId())
         ), FILE_APPEND | LOCK_EX);
 
         if ($record->getMimeType() == 'image/svg+xml') {
@@ -111,7 +111,7 @@ class WriteMetadatasWorker implements WorkerInterface
             $this->logger->error("Can't write meta on svg file!");
 
             // tell that we have finished to work on this file ("unlock")
-            $this->repoWorker->markFinished($workerRunningJob, "Can't write meta on svg file!");
+            $this->repoWorker->markFinished($workerRunningJobId, "Can't write meta on svg file!");
 
             return;
         }
@@ -120,14 +120,14 @@ class WriteMetadatasWorker implements WorkerInterface
 
         try {
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-                sprintf(" --!!!-- getsubdef %s", $subdefName)
+                sprintf(" - getsubdef %s", $subdefName)
             ), FILE_APPEND | LOCK_EX);
 
             $subdef = $record->get_subdef($subdefName);
         }
         catch (Exception $e) {
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-                sprintf(" --!!!-- %s", $e->getMessage())
+                sprintf(" - %s", $e->getMessage())
             ), FILE_APPEND | LOCK_EX);
 
             $workerMessage = "Exception catched when try to get subdef " .$subdefName. " from DB for the recordID: " .$recordId;
@@ -142,7 +142,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 SubdefinitionWritemetaEvent::FAILED,
                 $workerMessage,
                 $count,
-                $workerRunningJob->getId()
+                $workerRunningJobId
             ));
 
             // the subscriber will mark the job as errored, no need to do it here
@@ -151,7 +151,7 @@ class WriteMetadatasWorker implements WorkerInterface
 
         if (!$subdef->is_physically_present()) {
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-                sprintf(" --!!!-- not present")
+                sprintf(" - not present")
             ), FILE_APPEND | LOCK_EX);
 
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
@@ -163,7 +163,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 SubdefinitionWritemetaEvent::FAILED,
                 'Subdef is not physically present!',
                 $count,
-                $workerRunningJob->getId()
+                $workerRunningJobId
             ));
 
             // the subscriber will mark the job as errored, no need to do it here
@@ -266,7 +266,7 @@ class WriteMetadatasWorker implements WorkerInterface
         }
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-            sprintf(" --!!!-- reset")
+            sprintf(" - reset")
         ), FILE_APPEND | LOCK_EX);
 
         $this->writer->reset();
@@ -278,7 +278,7 @@ class WriteMetadatasWorker implements WorkerInterface
         $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-            sprintf(" --!!!-- erased")
+            sprintf(" - erased")
         ), FILE_APPEND | LOCK_EX);
 
         // write meta in file
@@ -309,7 +309,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 SubdefinitionWritemetaEvent::FAILED,
                 $workerMessage,
                 $count,
-                $workerRunningJob->getId()
+                $workerRunningJobId
             ));
 
             // the subscriber will "unlock" the row, no need to do it here
@@ -320,7 +320,7 @@ class WriteMetadatasWorker implements WorkerInterface
         $this->updateJeton($record);
 
         // tell that we have finished to work on this file (=unlock)
-        $this->repoWorker->markFinished($workerRunningJob);
+        $this->repoWorker->markFinished($workerRunningJobId);
     }
 
     private function removeNulChar($value)
