@@ -65,8 +65,10 @@ class MessageHandler
                             continue;
                         }
 
-                        $count = $xdeath['count'];
-                        $data['payload']['count'] = $count;
+                        if (isset($xdeath['count'])) {
+                            $count = $xdeath['count'];
+                            $data['payload']['count'] = $count;
+                        }
                     }
                 }
             }
