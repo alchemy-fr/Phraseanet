@@ -8,6 +8,12 @@ services:
     environment:
     - MYSQL_ROOT_PASSWORD
     - MYSQL_MAX_ALLOWED_PACKET
+    - MYSQL_MAX_CONNECTION
+    - MYSQL_LONG_QUERY_TIME
+    - MYSQL_SLOW_QUERY_LOG
+    - MYSQL_QUERY_CACHE_LIMIT
+    - MYSQL_QUERY_CACHE_SIZE
+    - MYSQL_KEY_BUFFER_SIZE
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql
     networks:
