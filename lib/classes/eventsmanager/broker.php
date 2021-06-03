@@ -189,20 +189,31 @@ class eventsmanager_broker
         return $total;
     }
 
-    public function get_notifications()
+    public function get_notifications(\Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
     {
         $unread = 0;
 
         $sql = 'SELECT count(id) as total, sum(unread) as unread
             FROM notifications WHERE usr_id = :usr_id';
 
-        $usr_id = $this->app->getAuthenticatedUser()->getId();
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!! FAKE USER FOR TESTING !!!!!!!!!!!!!!!!!!!!!!!!
+
+        // $usr_id = $this->app->getAuthenticatedUser()->getId();
+
         $usr_id = 29882;
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        if($stopwatch) $stopwatch->lap("broker start");
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $usr_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
+
+        if($stopwatch) $stopwatch->lap("sql 1");
 
         if ($row) {
             $unread = $row['unread'];
@@ -219,10 +230,13 @@ class eventsmanager_broker
         $ret = [];
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $usr_id]);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        // $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //$stmt->closeCursor();
 
-        foreach ($rs as $row) {
+        if($stopwatch) $stopwatch->lap("sql 2");
+
+        // foreach ($rs as $row) {
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $type = 'eventsmanager_' . $row['type'];
             if ( ! isset($this->pool_classes[$type])) {
                 continue;
@@ -235,13 +249,13 @@ class eventsmanager_broker
 
             $datas = $this->pool_classes[$type]->datas($data, $row['unread']);
 
-            if ( ! isset($this->pool_classes[$type]) || count($datas) === 0) {
-                $sql = 'DELETE FROM notifications WHERE id = :id';
-                $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-                $stmt->execute([':id' => $row['id']]);
-                $stmt->closeCursor();
-                continue;
-            }
+//            if ( ! isset($this->pool_classes[$type]) || count($datas) === 0) {
+//                $sql = 'DELETE FROM notifications WHERE id = :id';
+//                $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+//                $stmt->execute([':id' => $row['id']]);
+//                $stmt->closeCursor();
+//                continue;
+//            }
 
             $ret[] = array_merge(
                 $datas
@@ -253,6 +267,9 @@ class eventsmanager_broker
                 ]
             );
         }
+        $stmt->closeCursor();
+
+        if($stopwatch) $stopwatch->lap("broker ret");
 
         return $ret;
     }

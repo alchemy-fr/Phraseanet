@@ -73,11 +73,21 @@ class SessionController extends Controller
 
         $ret['status'] = 'ok';
 
+        $stopwatch->lap("start");
+
+        $notifs = $this->getEventsManager()->get_notifications($stopwatch);
+
+        $stopwatch->lap("get_notifications done");
+
         $ret['notifications'] = $this->render('prod/notifications.html.twig', [
-            'notifications' => $this->getEventsManager()->get_notifications()
+            'notifications' => $notifs
         ]);
 
+        $stopwatch->lap("render done");
+
         $baskets = $this->getBasketRepository()->findUnreadActiveByUser($authenticator->getUser());
+
+        $stopwatch->lap("baskets::findUnreadActiveByUser done");
 
         foreach ($baskets as $basket) {
             $ret['changed'][] = $basket->getId();
@@ -93,10 +103,22 @@ class SessionController extends Controller
             }
         }
 
+        // return $this->app->json($ret);//, ['Server-Timing' => $stopwatch->getLapsesAsServerTimingHeader()]);
+
         $stopwatch->lap("fini");
         $stopwatch->stop();
 
-        return $this->app->json($ret, ['Server-Timing' => $stopwatch->getLapsesAsServerTimingHeader()]);
+        $response = new JsonResponse($ret);
+        // add specific timing debug
+        $response->headers->set('Server-Timing', $stopwatch->getLapsesAsServerTimingHeader(), false);
+        $response->setCharset('UTF-8');
+
+        // add general timing debug
+        $duration = (microtime(true) - $request->server->get('REQUEST_TIME_FLOAT')) * 1000.0;
+        $h = '_global;' . 'dur=' . $duration;
+        $response->headers->set('Server-Timing', $h, false);    // false : add header (don't replace)
+
+        return $response;
     }
 
     /**
