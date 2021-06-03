@@ -135,11 +135,11 @@ class EditRecordWorker implements WorkerInterface
 
                 $record->write_metas();
 
-                if ($statbits != '') {
+                if ($statbits != '' && isset($payload['sessionLogId'])) {
                     \Session_Logger::loadById($databox, $payload['sessionLogId'])
                         ->log($record, \Session_Logger::EVENT_STATUS, '', '');
                 }
-                if ($editDirty) {
+                if ($editDirty && isset($payload['sessionLogId'])) {
                     \Session_Logger::loadById($databox, $payload['sessionLogId'])
                         ->log($record, \Session_Logger::EVENT_EDIT, '', '');
                 }

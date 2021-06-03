@@ -25,7 +25,7 @@ class MainQueueWorker implements WorkerInterface
     public function process(array $payload)
     {
         $message = [
-            'message_type'  => $payload['type'],
+            'message_type'  => MessagePublisher::MAIN_QUEUE_TYPE,
             'payload'       => $payload
         ];
 
@@ -61,7 +61,9 @@ class MainQueueWorker implements WorkerInterface
                     $payloadData = array_map(function($singleMessage) use ($payload) {
                         $singleMessage['databoxId']     = $payload['databoxId'];
                         $singleMessage['dataType']      = $payload['dataType'];
-                        $singleMessage['sessionLogId']  = $payload['sessionLogId'];
+                        if (isset($payload['sessionLogId'])) {
+                            $singleMessage['sessionLogId']  = $payload['sessionLogId'];
+                        }
 
                         return $singleMessage;
                     }, $payload['data']);
@@ -70,9 +72,11 @@ class MainQueueWorker implements WorkerInterface
 
                     $payloadData = array_map(function($singleMessage) use ($payload, $data) {
                         $singleMessage['databoxId']     = $payload['databoxId'];
-                        $singleMessage['sessionLogId']  = $payload['sessionLogId'];
                         $singleMessage['dataType']      = $payload['dataType'];
                         $singleMessage['actions']       = $data['actions'];
+                        if (isset($payload['sessionLogId'])) {
+                            $singleMessage['sessionLogId']  = $payload['sessionLogId'];
+                        }
                         unset($singleMessage['sbas_id']);
 
                         return $singleMessage;
