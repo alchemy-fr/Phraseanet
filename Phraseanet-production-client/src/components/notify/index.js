@@ -1,5 +1,5 @@
 import $ from 'jquery';
-// import user from '../user/index.js';
+import user from '../user/index.js';
 import notifyLayout from './notifyLayout';
 import notifyService from './notifyService';
 import * as Rx from 'rx';
@@ -64,6 +64,8 @@ const notify = (services) => {
         }
         // append notification content
         notifyLayout(services).addNotifications(data.notifications);
+
+        user(services).manageSession(data, true);
 
         let t = 120000;
         if (data.apps && parseInt(data.apps, 10) > 1) {

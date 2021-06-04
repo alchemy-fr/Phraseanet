@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.userModule = exports.utilsModule = exports.commonModule = exports.dialogModule = undefined;
 
-var _common = __webpack_require__(96);
+var _common = __webpack_require__(97);
 
 var _common2 = _interopRequireDefault(_common);
 
@@ -316,20 +316,7 @@ Selectable.prototype = {
 exports.default = Selectable;
 
 /***/ }),
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = extend
@@ -354,6 +341,19 @@ function extend() {
 
 
 /***/ }),
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
 /* 38 */,
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -873,7 +873,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(186);
+var	fixUrls = __webpack_require__(185);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1423,11 +1423,15 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _notifyLayout = __webpack_require__(115);
+var _index = __webpack_require__(63);
+
+var _index2 = _interopRequireDefault(_index);
+
+var _notifyLayout = __webpack_require__(237);
 
 var _notifyLayout2 = _interopRequireDefault(_notifyLayout);
 
-var _notifyService = __webpack_require__(116);
+var _notifyService = __webpack_require__(238);
 
 var _notifyService2 = _interopRequireDefault(_notifyService);
 
@@ -1443,7 +1447,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import user from '../user/index.js';
 var notify = function notify(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -1508,6 +1511,8 @@ var notify = function notify(services) {
         // append notification content
         (0, _notifyLayout2.default)(services).addNotifications(data.notifications);
 
+        (0, _index2.default)(services).manageSession(data, true);
+
         var t = 120000;
         if (data.apps && parseInt(data.apps, 10) > 1) {
             t = Math.round(Math.sqrt(parseInt(data.apps, 10) - 1) * 1.3 * 60000);
@@ -1558,59 +1563,59 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _toolbar = __webpack_require__(117);
+var _toolbar = __webpack_require__(116);
 
 var _toolbar2 = _interopRequireDefault(_toolbar);
 
-var _mainMenu = __webpack_require__(79);
+var _mainMenu = __webpack_require__(80);
 
 var _mainMenu2 = _interopRequireDefault(_mainMenu);
 
-var _keyboard = __webpack_require__(224);
+var _keyboard = __webpack_require__(223);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
-var _cgu = __webpack_require__(225);
+var _cgu = __webpack_require__(224);
 
 var _cgu2 = _interopRequireDefault(_cgu);
 
-var _edit = __webpack_require__(63);
+var _edit = __webpack_require__(64);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _export = __webpack_require__(73);
+var _export = __webpack_require__(74);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _share = __webpack_require__(226);
+var _share = __webpack_require__(225);
 
 var _share2 = _interopRequireDefault(_share);
 
-var _index = __webpack_require__(78);
+var _index = __webpack_require__(79);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _addToBasket = __webpack_require__(227);
+var _addToBasket = __webpack_require__(226);
 
 var _addToBasket2 = _interopRequireDefault(_addToBasket);
 
-var _removeFromBasket = __webpack_require__(228);
+var _removeFromBasket = __webpack_require__(227);
 
 var _removeFromBasket2 = _interopRequireDefault(_removeFromBasket);
 
-var _print = __webpack_require__(77);
+var _print = __webpack_require__(78);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _preferences = __webpack_require__(229);
+var _preferences = __webpack_require__(228);
 
 var _preferences2 = _interopRequireDefault(_preferences);
 
-var _order = __webpack_require__(80);
+var _order = __webpack_require__(81);
 
 var _order2 = _interopRequireDefault(_order);
 
-var _recordPreview = __webpack_require__(233);
+var _recordPreview = __webpack_require__(232);
 
 var _recordPreview2 = _interopRequireDefault(_recordPreview);
 
@@ -1618,7 +1623,7 @@ var _alert = __webpack_require__(46);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _uploader = __webpack_require__(237);
+var _uploader = __webpack_require__(236);
 
 var _uploader2 = _interopRequireDefault(_uploader);
 
@@ -2050,7 +2055,7 @@ exports.default = ui;
 "use strict";
 
 
-var implementation = __webpack_require__(130);
+var implementation = __webpack_require__(129);
 
 module.exports = Function.prototype.bind || implementation;
 
@@ -2122,21 +2127,21 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _markerCollection = __webpack_require__(151);
+var _markerCollection = __webpack_require__(150);
 
 var _markerCollection2 = _interopRequireDefault(_markerCollection);
 
-var _markerGLCollection = __webpack_require__(152);
+var _markerGLCollection = __webpack_require__(151);
 
 var _markerGLCollection2 = _interopRequireDefault(_markerGLCollection);
 
 var _utils = __webpack_require__(42);
 
-var _provider = __webpack_require__(153);
+var _provider = __webpack_require__(152);
 
 var _provider2 = _interopRequireDefault(_provider);
 
-var _fr = __webpack_require__(154);
+var _fr = __webpack_require__(153);
 
 var _fr2 = _interopRequireDefault(_fr);
 
@@ -2144,19 +2149,19 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _mapboxGlGeocoder = __webpack_require__(155);
+var _mapboxGlGeocoder = __webpack_require__(154);
 
 var _mapboxGlGeocoder2 = _interopRequireDefault(_mapboxGlGeocoder);
 
-__webpack_require__(184);
+__webpack_require__(183);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(187);
-__webpack_require__(191);
-__webpack_require__(193);
-__webpack_require__(195);
-__webpack_require__(199);
+__webpack_require__(186);
+__webpack_require__(190);
+__webpack_require__(192);
+__webpack_require__(194);
+__webpack_require__(198);
 
 var leafletMap = function leafletMap(services) {
     var configService = services.configService,
@@ -2294,7 +2299,7 @@ var leafletMap = function leafletMap(services) {
             mapbox = __webpack_require__(296);
             leafletDraw = __webpack_require__(297);
             __webpack_require__(298);
-            mapboxgl = __webpack_require__(68);
+            mapboxgl = __webpack_require__(69);
             var MapboxClient = __webpack_require__(299);
             var MapboxLanguage = __webpack_require__(300);
             MapboxCircle = __webpack_require__(301);
@@ -3000,7 +3005,7 @@ var leafletMap = function leafletMap(services) {
                         // To draw a circle overlay with a radius in meters, use L.circle()
                         return L.circleMarker(latlng, { radius: feature.properties.radius || 10 });
                     } else {
-                        var marker = __webpack_require__(85); //L.marker(feature);
+                        var marker = __webpack_require__(86); //L.marker(feature);
                         return marker.style(feature, latlng, { accessToken: activeProvider.accessToken });
                     }
                 }
@@ -4394,10 +4399,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(103);
+__webpack_require__(104);
 
 __webpack_require__(38);
-__webpack_require__(104);
+__webpack_require__(105);
 
 
 var workzoneFacets = function workzoneFacets(services) {
@@ -4943,7 +4948,97 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(119);
+var _ui = __webpack_require__(49);
+
+var _ui2 = _interopRequireDefault(_ui);
+
+var _notify = __webpack_require__(48);
+
+var _notify2 = _interopRequireDefault(_notify);
+
+var _phraseanetCommon = __webpack_require__(11);
+
+var appCommons = _interopRequireWildcard(_phraseanetCommon);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var user = function user(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+
+    var initialize = function initialize() {};
+
+    var onUserDisconnect = function onUserDisconnect() {
+        // @TODO refactor - display modal in here
+        (0, _ui2.default)(services).showModal('disconnected', { title: localeService.t('serverDisconnected') });
+    };
+
+    appEvents.listenAll({
+        'user.disconnected': onUserDisconnect
+    });
+
+    var manageSession = function manageSession() {
+        for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
+            params[_key] = arguments[_key];
+        }
+
+        var data = params[0],
+            showMessages = params[1];
+
+
+        if (typeof showMessages === 'undefined') {
+            showMessages = false;
+        }
+
+        if (showMessages) {
+            // @todo: to be moved
+            if (_jquery2.default.trim(data.message) !== '') {
+                if ((0, _jquery2.default)('#MESSAGE').length === 0) {
+                    (0, _jquery2.default)('body').append('<div id="#MESSAGE"></div>');
+                }
+                (0, _jquery2.default)('#MESSAGE').empty().append(data.message + '<div style="margin:20px;"><input type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>').attr('title', 'Global Message').dialog({
+                    autoOpen: false,
+                    closeOnEscape: true,
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    close: function close() {
+                        if ((0, _jquery2.default)('.dialog_remove:checked', (0, _jquery2.default)(this)).length > 0) {
+                            // @TODO get from module
+                            appCommons.userModule.setTemporaryPref('message', 0);
+                        }
+                    }
+                }).dialog('open');
+            }
+        }
+        return true;
+    };
+
+    return { initialize: initialize, manageSession: manageSession };
+};
+
+exports.default = user;
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _index = __webpack_require__(118);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -5109,14 +5204,14 @@ var editRecord = function editRecord(services) {
 exports.default = editRecord;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js__ = __webpack_require__(124);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_video_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__ = __webpack_require__(147);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_global_window__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_global_window___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_global_window__);
@@ -6568,13 +6663,13 @@ Flash.VERSION = version$1;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var keys = __webpack_require__(131);
+var keys = __webpack_require__(130);
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
 
 var toStr = Object.prototype.toString;
@@ -6633,14 +6728,14 @@ module.exports = defineProperties;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var bind = __webpack_require__(50);
-var ES = __webpack_require__(133);
+var ES = __webpack_require__(132);
 var replace = bind.call(Function.call, String.prototype.replace);
 
 var leftWhitespace = /^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/;
@@ -6653,13 +6748,13 @@ module.exports = function trim() {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var implementation = __webpack_require__(66);
+var implementation = __webpack_require__(67);
 
 var zeroWidthSpace = '\u200b';
 
@@ -6672,7 +6767,7 @@ module.exports = function getPolyfill() {
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.11.0/LICENSE.txt */
@@ -6720,14 +6815,14 @@ return mapboxgl;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var browser = __webpack_require__(163);
-var MapiClient = __webpack_require__(70);
+var browser = __webpack_require__(162);
+var MapiClient = __webpack_require__(71);
 
 function BrowserClient(options) {
   MapiClient.call(this, options);
@@ -6754,14 +6849,14 @@ module.exports = createBrowserClient;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseToken = __webpack_require__(71);
-var MapiRequest = __webpack_require__(169);
+var parseToken = __webpack_require__(72);
+var MapiRequest = __webpack_require__(168);
 var constants = __webpack_require__(45);
 
 /**
@@ -6799,13 +6894,13 @@ module.exports = MapiClient;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var base64 = __webpack_require__(168);
+var base64 = __webpack_require__(167);
 
 var tokenCache = {};
 
@@ -6855,7 +6950,7 @@ module.exports = parseToken;
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports) {
 
 module.exports = function escape(url) {
@@ -6877,7 +6972,7 @@ module.exports = function escape(url) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7295,7 +7390,7 @@ var exportRecord = function exportRecord(services) {
 exports.default = exportRecord;
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7309,11 +7404,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _feedback = __webpack_require__(208);
+var _feedback = __webpack_require__(207);
 
 var _feedback2 = _interopRequireDefault(_feedback);
 
-var _listManager = __webpack_require__(209);
+var _listManager = __webpack_require__(208);
 
 var _listManager2 = _interopRequireDefault(_listManager);
 
@@ -7423,7 +7518,7 @@ var pushRecord = function pushRecord(services) {
 exports.default = pushRecord;
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7638,7 +7733,7 @@ exports.Lists = Lists;
 exports.List = List;
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7812,7 +7907,7 @@ var pushAddUser = function pushAddUser(services) {
 exports.default = pushAddUser;
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7903,7 +7998,7 @@ var printRecord = function printRecord(services) {
 exports.default = printRecord;
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7921,15 +8016,15 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _videoScreenCapture = __webpack_require__(218);
+var _videoScreenCapture = __webpack_require__(217);
 
 var _videoScreenCapture2 = _interopRequireDefault(_videoScreenCapture);
 
-var _videoRangeCapture = __webpack_require__(221);
+var _videoRangeCapture = __webpack_require__(220);
 
 var _videoRangeCapture2 = _interopRequireDefault(_videoRangeCapture);
 
-var _videoSubtitleCapture = __webpack_require__(222);
+var _videoSubtitleCapture = __webpack_require__(221);
 
 var _videoSubtitleCapture2 = _interopRequireDefault(_videoSubtitleCapture);
 
@@ -7941,7 +8036,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(223);
+__webpack_require__(222);
 
 
 var humane = __webpack_require__(9);
@@ -8032,8 +8127,8 @@ var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
 exports.default = recordVideoEditorModal;
 
 /***/ }),
-/* 79 */,
-/* 80 */
+/* 80 */,
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8047,7 +8142,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _orderItem = __webpack_require__(232);
+var _orderItem = __webpack_require__(231);
 
 var _orderItem2 = _interopRequireDefault(_orderItem);
 
@@ -8292,7 +8387,7 @@ var order = function order(services) {
 exports.default = order;
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8401,7 +8496,7 @@ var resultInfos = function resultInfos(services) {
 exports.default = resultInfos;
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8453,10 +8548,10 @@ module.exports = {
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var html_sanitize = __webpack_require__(201);
+var html_sanitize = __webpack_require__(200);
 
 module.exports = function(_) {
     if (!_) return '';
@@ -8477,14 +8572,14 @@ function cleanId(id) { return id; }
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var config = __webpack_require__(86),
-    version = __webpack_require__(87).version;
+var config = __webpack_require__(87),
+    version = __webpack_require__(88).version;
 
 module.exports = function(path, accessToken) {
     accessToken = accessToken || L.mapbox.accessToken;
@@ -8544,15 +8639,15 @@ module.exports.style = function(styleURL, accessToken) {
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var format_url = __webpack_require__(84),
-    util = __webpack_require__(82),
-    sanitize = __webpack_require__(83);
+var format_url = __webpack_require__(85),
+    util = __webpack_require__(83),
+    sanitize = __webpack_require__(84);
 
 // mapbox-related markers functionality
 // provide an icon from mapbox's simple-style spec and hosted markers
@@ -8616,7 +8711,7 @@ module.exports = {
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8631,18 +8726,18 @@ module.exports = {
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
-var minDoc = __webpack_require__(126);
+var minDoc = __webpack_require__(125);
 
 var doccy;
 
@@ -8661,7 +8756,7 @@ module.exports = doccy;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports) {
 
 function clean (s) {
@@ -8680,7 +8775,7 @@ module.exports = function tsml (sa) {
 }
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports = SafeParseTuple
@@ -8700,15 +8795,15 @@ function SafeParseTuple(obj, reviver) {
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var window = __webpack_require__(44)
-var isFunction = __webpack_require__(127)
-var parseHeaders = __webpack_require__(128)
-var xtend = __webpack_require__(37)
+var isFunction = __webpack_require__(126)
+var parseHeaders = __webpack_require__(127)
+var xtend = __webpack_require__(24)
 
 module.exports = createXHR
 createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
@@ -8948,8 +9043,8 @@ function noop() {}
 
 
 /***/ }),
-/* 92 */,
-/* 93 */
+/* 93 */,
+/* 94 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -9257,8 +9352,8 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 94 */,
-/* 95 */
+/* 95 */,
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9272,7 +9367,7 @@ var _utils = __webpack_require__(42);
 
 var utils = _interopRequireWildcard(_utils);
 
-var _bootstrap = __webpack_require__(98);
+var _bootstrap = __webpack_require__(99);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -9304,7 +9399,7 @@ if (typeof window !== 'undefined') {
 module.exports = ProductionApplication;
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9361,7 +9456,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* eslint-disable semi*/
 /* eslint-disable no-loop-func*/
 
-var cookie = __webpack_require__(97);
+var cookie = __webpack_require__(98);
 
 var initialize = function initialize() {
     // $(document).ready(function () {
@@ -9456,7 +9551,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -9629,7 +9724,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9653,7 +9748,7 @@ var _publication = __webpack_require__(59);
 
 var _publication2 = _interopRequireDefault(_publication);
 
-var _workzone = __webpack_require__(99);
+var _workzone = __webpack_require__(100);
 
 var _workzone2 = _interopRequireDefault(_workzone);
 
@@ -9677,7 +9772,7 @@ var _i18next = __webpack_require__(21);
 
 var _i18next2 = _interopRequireDefault(_i18next);
 
-var _config = __webpack_require__(238);
+var _config = __webpack_require__(239);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -9685,7 +9780,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _user = __webpack_require__(239);
+var _user = __webpack_require__(63);
 
 var _user2 = _interopRequireDefault(_user);
 
@@ -9993,7 +10088,7 @@ var bootstrap = function bootstrap(userConfig) {
 exports.default = bootstrap;
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10013,7 +10108,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(100);
+var _index = __webpack_require__(101);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -10021,7 +10116,7 @@ var _index3 = __webpack_require__(62);
 
 var _index4 = _interopRequireDefault(_index3);
 
-var _index5 = __webpack_require__(105);
+var _index5 = __webpack_require__(106);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -10037,7 +10132,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _reminder = __webpack_require__(114);
+var _reminder = __webpack_require__(115);
 
 var _reminder2 = _interopRequireDefault(_reminder);
 
@@ -11265,7 +11360,7 @@ var workzone = function workzone(services) {
 exports.default = workzone;
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11279,13 +11374,13 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(101);
+var _index = __webpack_require__(102);
 
 var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(102);
+__webpack_require__(103);
 
 var workzoneThesaurus = function workzoneThesaurus(services) {
     var configService = services.configService,
@@ -11332,7 +11427,7 @@ var workzoneThesaurus = function workzoneThesaurus(services) {
 exports.default = workzoneThesaurus;
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12916,12 +13011,6 @@ var thesaurusService = function thesaurusService(services) {
 exports.default = thesaurusService;
 
 /***/ }),
-/* 102 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 103 */
 /***/ (function(module, exports) {
 
@@ -12929,6 +13018,12 @@ exports.default = thesaurusService;
 
 /***/ }),
 /* 104 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*!
@@ -17275,7 +17370,7 @@ $.extend($.ui.fancytree,
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17289,35 +17384,35 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _delete = __webpack_require__(106);
+var _delete = __webpack_require__(107);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _archive = __webpack_require__(107);
+var _archive = __webpack_require__(108);
 
 var _archive2 = _interopRequireDefault(_archive);
 
-var _create = __webpack_require__(108);
+var _create = __webpack_require__(109);
 
 var _create2 = _interopRequireDefault(_create);
 
-var _create3 = __webpack_require__(109);
+var _create3 = __webpack_require__(110);
 
 var _create4 = _interopRequireDefault(_create3);
 
-var _update = __webpack_require__(110);
+var _update = __webpack_require__(111);
 
 var _update2 = _interopRequireDefault(_update);
 
-var _browse = __webpack_require__(111);
+var _browse = __webpack_require__(112);
 
 var _browse2 = _interopRequireDefault(_browse);
 
-var _reorderContent = __webpack_require__(112);
+var _reorderContent = __webpack_require__(113);
 
 var _reorderContent2 = _interopRequireDefault(_reorderContent);
 
-var _reorderContent3 = __webpack_require__(113);
+var _reorderContent3 = __webpack_require__(114);
 
 var _reorderContent4 = _interopRequireDefault(_reorderContent3);
 
@@ -17398,7 +17493,7 @@ var workzoneBaskets = function workzoneBaskets(services) {
 exports.default = workzoneBaskets;
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17587,7 +17682,7 @@ var deleteBasket = function deleteBasket(services) {
 exports.default = deleteBasket;
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17659,7 +17754,7 @@ var archiveBasket = function archiveBasket(services) {
 exports.default = archiveBasket;
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17782,7 +17877,7 @@ var basketCreate = function basketCreate(services) {
 exports.default = basketCreate;
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17908,7 +18003,7 @@ var storyCreate = function storyCreate(services) {
 exports.default = storyCreate;
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18025,7 +18120,7 @@ var basketUpdate = function basketUpdate(services) {
 exports.default = basketUpdate;
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18328,7 +18423,7 @@ var basketBrowse = function basketBrowse(services) {
 exports.default = basketBrowse;
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18612,7 +18707,7 @@ var basketReorderContent = function basketReorderContent(services) {
 exports.default = basketReorderContent;
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18896,7 +18991,7 @@ var storyReorderContent = function storyReorderContent(services) {
 exports.default = storyReorderContent;
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19003,254 +19098,6 @@ var feedbackReminder = function feedbackReminder(services) {
 exports.default = feedbackReminder;
 
 /***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// import user from '../user/index.js';
-
-
-var notifyLayout = function notifyLayout(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var $notificationBoxContainer = (0, _jquery2.default)('#notification_box');
-    var $notificationTrigger = (0, _jquery2.default)('.notification_trigger');
-    var $notificationDialog = (0, _jquery2.default)('#notifications-dialog');
-    var initialize = function initialize() {
-        $notificationTrigger.on('mousedown', function (event) {
-            event.stopPropagation();
-            var $target = (0, _jquery2.default)(event.currentTarget);
-            if ($target.hasClass('open')) {
-                $notificationBoxContainer.hide();
-                $target.removeClass('open');
-                clear_notifications();
-            } else {
-                $notificationBoxContainer.show();
-
-                setBoxHeight();
-
-                $target.addClass('open');
-                read_notifications();
-            }
-        });
-
-        (0, _jquery2.default)(document).on('mousedown', function () {
-            if ($notificationTrigger.hasClass('open')) {
-                $notificationTrigger.trigger('click');
-            }
-
-            if ($notificationTrigger.hasClass('open')) {
-                $notificationBoxContainer.hide();
-                $notificationTrigger.removeClass('open');
-                clear_notifications();
-            }
-        });
-
-        $notificationBoxContainer.on('mousedown', function (event) {
-            event.stopPropagation();
-        }).on('mouseover', '.notification', function (event) {
-            (0, _jquery2.default)(event.currentTarget).addClass('hover');
-        }).on('mouseout', '.notification', function (event) {
-            (0, _jquery2.default)(event.currentTarget).removeClass('hover');
-        }).on('click', '.notification__print-action', function (event) {
-            event.preventDefault();
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var page = $el.data('page');
-            print_notifications(page);
-        });
-
-        (0, _jquery2.default)(window).bind('resize', function () {
-            setBoxPosition();
-        });
-        setBoxPosition();
-    };
-
-    var addNotifications = function addNotifications(notificationContent) {
-        // var box = $('#notification_box');
-        $notificationBoxContainer.empty().append(notificationContent);
-
-        if ($notificationBoxContainer.is(':visible')) {
-            setBoxHeight();
-        }
-
-        if ((0, _jquery2.default)('.notification.unread', $notificationBoxContainer).length > 0) {
-            (0, _jquery2.default)('.counter', $notificationTrigger).empty().append((0, _jquery2.default)('.notification.unread', $notificationBoxContainer).length);
-            (0, _jquery2.default)('.counter', $notificationTrigger).css('visibility', 'visible');
-        } else {
-            (0, _jquery2.default)('.notification_trigger .counter').css('visibility', 'hidden').empty();
-        }
-    };
-
-    var setBoxHeight = function setBoxHeight() {
-        //var box = $('#notification_box');
-        var not = (0, _jquery2.default)('.notification', $notificationBoxContainer);
-        var n = not.length;
-        var not_t = (0, _jquery2.default)('.notification_title', $notificationBoxContainer);
-        var n_t = not_t.length;
-
-        var h = not.outerHeight() * n + not_t.outerHeight() * n_t;
-        h = h > 350 ? 350 : h;
-
-        $notificationBoxContainer.stop().animate({ height: h });
-    };
-
-    var setBoxPosition = function setBoxPosition() {
-        if ($notificationTrigger.length > 0) {
-            var leftOffset = Math.round($notificationTrigger.offset().left);
-            if (leftOffset == 0) {
-                $notificationBoxContainer.css({
-                    left: 20
-                });
-            } else {
-                $notificationBoxContainer.css({
-                    left: Math.round($notificationTrigger.offset().left - 1)
-                });
-            }
-        }
-    };
-
-    var print_notifications = function print_notifications(page) {
-
-        page = parseInt(page, 10);
-        var buttons = {};
-
-        buttons[localeService.t('fermer')] = function () {
-            $notificationDialog.dialog('close');
-        };
-
-        if ($notificationDialog.length === 0) {
-            (0, _jquery2.default)('body').append('<div id="notifications-dialog" class="loading"></div>');
-            $notificationDialog = (0, _jquery2.default)('#notifications-dialog');
-        }
-
-        $notificationDialog.dialog({
-            title: (0, _jquery2.default)('#notification-title').val(),
-            autoOpen: false,
-            closeOnEscape: true,
-            resizable: false,
-            draggable: false,
-            modal: true,
-            width: 500,
-            height: 400,
-            overlay: {
-                backgroundColor: '#000',
-                opacity: 0.7
-            },
-            close: function close(event, ui) {
-                $notificationDialog.dialog('destroy').remove();
-            }
-        }).dialog('option', 'buttons', buttons).dialog('open').on('click', '.notification_next .notification__print-action', function (event) {
-            event.preventDefault();
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var page = $el.data('page');
-            print_notifications(page);
-        });
-
-        _jquery2.default.ajax({
-            type: 'GET',
-            url: '/user/notifications/',
-            dataType: 'json',
-            data: {
-                page: page
-            },
-            error: function error(data) {
-                $notificationDialog.removeClass('loading');
-            },
-            timeout: function timeout(data) {
-                $notificationDialog.removeClass('loading');
-            },
-            success: function success(data) {
-                $notificationDialog.removeClass('loading');
-
-                if (page === 0) {
-                    $notificationDialog.empty();
-                } else {
-                    (0, _jquery2.default)('.notification_next', $notificationDialog).remove();
-                }
-
-                var i = 0;
-                for (i in data.notifications) {
-                    var id = 'notif_date_' + i;
-                    var date_cont = (0, _jquery2.default)('#' + id);
-                    if (date_cont.length === 0) {
-                        $notificationDialog.append('<div id="' + id + '"><div class="notification_title">' + data.notifications[i].display + '</div></div>');
-                        date_cont = (0, _jquery2.default)('#' + id);
-                    }
-
-                    var j = 0;
-                    for (j in data.notifications[i].notifications) {
-                        var loc_dat = data.notifications[i].notifications[j];
-                        var html = '<div style="position:relative;" id="notification_' + loc_dat.id + '" class="notification">' + '<table style="width:100%;" cellspacing="0" cellpadding="0" border="0"><tr><td style="width:25px;">' + loc_dat.icon + '</td><td>' + '<div style="position:relative;" class="' + loc_dat.classname + '">' + loc_dat.text + ' <span class="time">' + loc_dat.time + '</span></div>' + '</td></tr></table>' + '</div>';
-                        date_cont.append(html);
-                    }
-                }
-
-                var next_ln = _jquery2.default.trim(data.next);
-
-                if (next_ln !== '') {
-                    $notificationDialog.append('<div class="notification_next">' + next_ln + '</div>');
-                }
-            }
-        });
-    };
-
-    var read_notifications = function read_notifications() {
-        var notifications = [];
-
-        (0, _jquery2.default)('#notification_box .unread').each(function () {
-            notifications.push((0, _jquery2.default)(this).attr('id').split('_').pop());
-        });
-
-        _jquery2.default.ajax({
-            type: 'POST',
-            url: '/user/notifications/read/',
-            data: {
-                notifications: notifications.join('_')
-            },
-            success: function success(data) {
-                (0, _jquery2.default)('.notification_trigger .counter').css('visibility', 'hidden').empty();
-            }
-        });
-    };
-
-    var clear_notifications = function clear_notifications() {
-        var unread = (0, _jquery2.default)('#notification_box .unread');
-
-        if (unread.length === 0) {
-            return;
-        }
-
-        unread.removeClass('unread');
-        (0, _jquery2.default)('.notification_trigger .counter').css('visibility', 'hidden').empty();
-    };
-
-    return {
-        initialize: initialize,
-        addNotifications: addNotifications
-    };
-};
-
-exports.default = notifyLayout;
-
-/***/ }),
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19261,118 +19108,55 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _rx = __webpack_require__(7);
-
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var notifyService = function notifyService(services) {
-    var configService = services.configService;
-
-    var url = configService.get('baseUrl');
-    var notificationEndPoint = 'session/notifications/';
-    var initialize = function initialize() {};
-
-    var getNotification = function getNotification(data) {
-        /*return ajax({
-         type: 'POST',
-         url: `${notificationEndPoint}`,
-         data: data,
-         dataType: 'json'
-         }).promise();*/
-        var notificationPromise = _jquery2.default.Deferred();
-
-        _jquery2.default.ajax({
-            type: 'POST',
-            url: '' + url + notificationEndPoint,
-            data: data,
-            dataType: 'json'
-        }).done(function (data) {
-            data.status = data.status || false;
-            if (data.status === 'ok') {
-                notificationPromise.resolve(data);
-            } else {
-                notificationPromise.reject(data);
-            }
-        }).fail(function (data) {
-            notificationPromise.reject(data);
-        });
-        return notificationPromise.promise();
-    };
-
-    var stream = _rx.Observable.fromPromise(getNotification);
-    return {
-        initialize: initialize,
-        getNotification: getNotification,
-        stream: stream
-    };
-};
-// import {ajax} from 'jquery';
-exports.default = notifyService;
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _move = __webpack_require__(118);
+var _move = __webpack_require__(117);
 
 var _move2 = _interopRequireDefault(_move);
 
-var _edit = __webpack_require__(63);
+var _edit = __webpack_require__(64);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _delete = __webpack_require__(205);
+var _delete = __webpack_require__(204);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _export = __webpack_require__(73);
+var _export = __webpack_require__(74);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _property = __webpack_require__(206);
+var _property = __webpack_require__(205);
 
 var _property2 = _interopRequireDefault(_property);
 
-var _push = __webpack_require__(207);
+var _push = __webpack_require__(206);
 
 var _push2 = _interopRequireDefault(_push);
 
-var _publish = __webpack_require__(212);
+var _publish = __webpack_require__(211);
 
 var _publish2 = _interopRequireDefault(_publish);
 
-var _index = __webpack_require__(213);
+var _index = __webpack_require__(212);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _print = __webpack_require__(77);
+var _print = __webpack_require__(78);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _feedback = __webpack_require__(215);
+var _feedback = __webpack_require__(214);
 
 var _feedback2 = _interopRequireDefault(_feedback);
 
-var _bridge = __webpack_require__(216);
+var _bridge = __webpack_require__(215);
 
 var _bridge2 = _interopRequireDefault(_bridge);
 
-var _index3 = __webpack_require__(78);
+var _index3 = __webpack_require__(79);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -19754,7 +19538,7 @@ var toolbar = function toolbar(services) {
 exports.default = toolbar;
 
 /***/ }),
-/* 118 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19869,7 +19653,7 @@ var moveRecord = function moveRecord(services) {
 exports.default = moveRecord;
 
 /***/ }),
-/* 119 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19901,27 +19685,27 @@ var _utils = __webpack_require__(42);
 
 var _sprintfJs = __webpack_require__(61);
 
-var _layout = __webpack_require__(120);
+var _layout = __webpack_require__(119);
 
 var _layout2 = _interopRequireDefault(_layout);
 
-var _presets = __webpack_require__(121);
+var _presets = __webpack_require__(120);
 
 var _presets2 = _interopRequireDefault(_presets);
 
-var _searchReplace = __webpack_require__(122);
+var _searchReplace = __webpack_require__(121);
 
 var _searchReplace2 = _interopRequireDefault(_searchReplace);
 
-var _preview = __webpack_require__(123);
+var _preview = __webpack_require__(122);
 
 var _preview2 = _interopRequireDefault(_preview);
 
-var _thesaurusDatasource = __webpack_require__(149);
+var _thesaurusDatasource = __webpack_require__(148);
 
 var _thesaurusDatasource2 = _interopRequireDefault(_thesaurusDatasource);
 
-var _geonameDatasource = __webpack_require__(150);
+var _geonameDatasource = __webpack_require__(149);
 
 var _geonameDatasource2 = _interopRequireDefault(_geonameDatasource);
 
@@ -19933,7 +19717,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _recordCollection = __webpack_require__(202);
+var _recordCollection = __webpack_require__(201);
 
 var _recordCollection2 = _interopRequireDefault(_recordCollection);
 
@@ -19941,7 +19725,7 @@ var _fieldCollection = __webpack_require__(53);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
-var _statusCollection = __webpack_require__(204);
+var _statusCollection = __webpack_require__(203);
 
 var _statusCollection2 = _interopRequireDefault(_statusCollection);
 
@@ -21637,7 +21421,7 @@ var recordEditorService = function recordEditorService(services) {
 exports.default = recordEditorService;
 
 /***/ }),
-/* 120 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21797,7 +21581,7 @@ var recordEditorLayout = function recordEditorLayout(services) {
 exports.default = recordEditorLayout;
 
 /***/ }),
-/* 121 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22053,7 +21837,7 @@ var presetsModule = function presetsModule(services) {
 exports.default = presetsModule;
 
 /***/ }),
-/* 122 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22178,7 +21962,7 @@ var searchReplace = function searchReplace(services) {
 exports.default = searchReplace;
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22196,7 +21980,7 @@ var _pym = __webpack_require__(17);
 
 var _pym2 = _interopRequireDefault(_pym);
 
-var _videoEditor = __webpack_require__(124);
+var _videoEditor = __webpack_require__(123);
 
 var _videoEditor2 = _interopRequireDefault(_videoEditor);
 
@@ -22402,7 +22186,7 @@ var preview = function preview(services) {
 exports.default = preview;
 
 /***/ }),
-/* 124 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22416,7 +22200,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _videojsFlash = __webpack_require__(64);
+var _videojsFlash = __webpack_require__(65);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -22463,7 +22247,7 @@ var videoEditor = function videoEditor(services) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
 
             // load videoJs lib
-            rangeCapture = __webpack_require__(92).default;
+            rangeCapture = __webpack_require__(93).default;
             rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
 
@@ -22499,7 +22283,7 @@ var videoEditor = function videoEditor(services) {
 exports.default = videoEditor;
 
 /***/ }),
-/* 125 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -22517,11 +22301,11 @@ exports.default = videoEditor;
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var window = _interopDefault(__webpack_require__(44));
-var document = _interopDefault(__webpack_require__(88));
-var tsml = _interopDefault(__webpack_require__(89));
-var safeParseTuple = _interopDefault(__webpack_require__(90));
-var xhr = _interopDefault(__webpack_require__(91));
-var vtt = _interopDefault(__webpack_require__(144));
+var document = _interopDefault(__webpack_require__(89));
+var tsml = _interopDefault(__webpack_require__(90));
+var safeParseTuple = _interopDefault(__webpack_require__(91));
+var xhr = _interopDefault(__webpack_require__(92));
+var vtt = _interopDefault(__webpack_require__(143));
 
 var version = "6.13.0";
 
@@ -47841,13 +47625,13 @@ module.exports = videojs;
 
 
 /***/ }),
-/* 126 */
+/* 125 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 127 */
+/* 126 */
 /***/ (function(module, exports) {
 
 module.exports = isFunction
@@ -47868,11 +47652,11 @@ function isFunction (fn) {
 
 
 /***/ }),
-/* 128 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var trim = __webpack_require__(129)
-  , forEach = __webpack_require__(143)
+var trim = __webpack_require__(128)
+  , forEach = __webpack_require__(142)
   , isArray = function(arg) {
       return Object.prototype.toString.call(arg) === '[object Array]';
     }
@@ -47905,18 +47689,18 @@ module.exports = function (headers) {
 
 
 /***/ }),
-/* 129 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var bind = __webpack_require__(50);
-var define = __webpack_require__(65);
+var define = __webpack_require__(66);
 
-var implementation = __webpack_require__(66);
-var getPolyfill = __webpack_require__(67);
-var shim = __webpack_require__(142);
+var implementation = __webpack_require__(67);
+var getPolyfill = __webpack_require__(68);
+var shim = __webpack_require__(141);
 
 var boundTrim = bind.call(Function.call, getPolyfill());
 
@@ -47930,7 +47714,7 @@ module.exports = boundTrim;
 
 
 /***/ }),
-/* 130 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47989,7 +47773,7 @@ module.exports = function bind(that) {
 
 
 /***/ }),
-/* 131 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47999,7 +47783,7 @@ module.exports = function bind(that) {
 var has = Object.prototype.hasOwnProperty;
 var toStr = Object.prototype.toString;
 var slice = Array.prototype.slice;
-var isArgs = __webpack_require__(132);
+var isArgs = __webpack_require__(131);
 var isEnumerable = Object.prototype.propertyIsEnumerable;
 var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
 var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
@@ -48137,7 +47921,7 @@ module.exports = keysShim;
 
 
 /***/ }),
-/* 132 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48161,28 +47945,28 @@ module.exports = function isArguments(value) {
 
 
 /***/ }),
-/* 133 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var GetIntrinsic = __webpack_require__(134);
+var GetIntrinsic = __webpack_require__(133);
 
 var $Object = GetIntrinsic('%Object%');
 var $TypeError = GetIntrinsic('%TypeError%');
 var $String = GetIntrinsic('%String%');
 
-var $isNaN = __webpack_require__(135);
-var $isFinite = __webpack_require__(136);
+var $isNaN = __webpack_require__(134);
+var $isFinite = __webpack_require__(135);
 
-var sign = __webpack_require__(137);
-var mod = __webpack_require__(138);
+var sign = __webpack_require__(136);
+var mod = __webpack_require__(137);
 
 var IsCallable = __webpack_require__(51);
-var toPrimitive = __webpack_require__(139);
+var toPrimitive = __webpack_require__(138);
 
-var has = __webpack_require__(141);
+var has = __webpack_require__(140);
 
 // https://es5.github.io/#x9
 var ES5 = {
@@ -48410,7 +48194,7 @@ module.exports = ES5;
 
 
 /***/ }),
-/* 134 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48594,7 +48378,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 
 
 /***/ }),
-/* 135 */
+/* 134 */
 /***/ (function(module, exports) {
 
 module.exports = Number.isNaN || function isNaN(a) {
@@ -48603,7 +48387,7 @@ module.exports = Number.isNaN || function isNaN(a) {
 
 
 /***/ }),
-/* 136 */
+/* 135 */
 /***/ (function(module, exports) {
 
 var $isNaN = Number.isNaN || function (a) { return a !== a; };
@@ -48612,7 +48396,7 @@ module.exports = Number.isFinite || function (x) { return typeof x === 'number' 
 
 
 /***/ }),
-/* 137 */
+/* 136 */
 /***/ (function(module, exports) {
 
 module.exports = function sign(number) {
@@ -48621,7 +48405,7 @@ module.exports = function sign(number) {
 
 
 /***/ }),
-/* 138 */
+/* 137 */
 /***/ (function(module, exports) {
 
 module.exports = function mod(number, modulo) {
@@ -48631,7 +48415,7 @@ module.exports = function mod(number, modulo) {
 
 
 /***/ }),
-/* 139 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48639,7 +48423,7 @@ module.exports = function mod(number, modulo) {
 
 var toStr = Object.prototype.toString;
 
-var isPrimitive = __webpack_require__(140);
+var isPrimitive = __webpack_require__(139);
 
 var isCallable = __webpack_require__(51);
 
@@ -48675,7 +48459,7 @@ module.exports = function ToPrimitive(input, PreferredType) {
 
 
 /***/ }),
-/* 140 */
+/* 139 */
 /***/ (function(module, exports) {
 
 module.exports = function isPrimitive(value) {
@@ -48684,7 +48468,7 @@ module.exports = function isPrimitive(value) {
 
 
 /***/ }),
-/* 141 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48696,14 +48480,14 @@ module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
 
 /***/ }),
-/* 142 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var define = __webpack_require__(65);
-var getPolyfill = __webpack_require__(67);
+var define = __webpack_require__(66);
+var getPolyfill = __webpack_require__(68);
 
 module.exports = function shimStringTrim() {
 	var polyfill = getPolyfill();
@@ -48713,7 +48497,7 @@ module.exports = function shimStringTrim() {
 
 
 /***/ }),
-/* 143 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48782,7 +48566,7 @@ module.exports = forEach;
 
 
 /***/ }),
-/* 144 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48809,9 +48593,9 @@ module.exports = forEach;
 var window = __webpack_require__(44);
 
 var vttjs = module.exports = {
-  WebVTT: __webpack_require__(145),
-  VTTCue: __webpack_require__(146),
-  VTTRegion: __webpack_require__(147)
+  WebVTT: __webpack_require__(144),
+  VTTCue: __webpack_require__(145),
+  VTTRegion: __webpack_require__(146)
 };
 
 window.vttjs = vttjs;
@@ -48838,7 +48622,7 @@ if (!window.VTTCue) {
 
 
 /***/ }),
-/* 145 */
+/* 144 */
 /***/ (function(module, exports) {
 
 /**
@@ -50173,7 +49957,7 @@ module.exports = WebVTT;
 
 
 /***/ }),
-/* 146 */
+/* 145 */
 /***/ (function(module, exports) {
 
 /**
@@ -50484,7 +50268,7 @@ module.exports = VTTCue;
 
 
 /***/ }),
-/* 147 */
+/* 146 */
 /***/ (function(module, exports) {
 
 /**
@@ -50624,13 +50408,13 @@ module.exports = VTTRegion;
 
 
 /***/ }),
-/* 148 */
+/* 147 */
 /***/ (function(module, exports) {
 
 module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
-/* 149 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50851,7 +50635,7 @@ var thesaurusDatasource = function thesaurusDatasource(services) {
 exports.default = thesaurusDatasource;
 
 /***/ }),
-/* 150 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51165,7 +50949,7 @@ var geonameDatasource = function geonameDatasource(services) {
 exports.default = geonameDatasource;
 
 /***/ }),
-/* 151 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51294,7 +51078,7 @@ var markerCollection = function markerCollection(services) {
 exports.default = markerCollection;
 
 /***/ }),
-/* 152 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51310,7 +51094,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapboxgl = __webpack_require__(68);
+var mapboxgl = __webpack_require__(69);
 
 var markerGLCollection = function markerGLCollection(services) {
     var configService = services.configService,
@@ -51475,7 +51259,7 @@ var markerGLCollection = function markerGLCollection(services) {
 exports.default = markerGLCollection;
 
 /***/ }),
-/* 153 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51659,7 +51443,7 @@ exports.default = provider;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 154 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51767,22 +51551,22 @@ var leafletLocaleFr = {
 exports.default = leafletLocaleFr;
 
 /***/ }),
-/* 155 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Typeahead = __webpack_require__(156);
-var debounce = __webpack_require__(160);
-var extend = __webpack_require__(37);
-var EventEmitter = __webpack_require__(93).EventEmitter;
-var exceptions = __webpack_require__(161);
-var MapboxClient = __webpack_require__(162);
-var mbxGeocoder = __webpack_require__(172);
-var MapboxEventManager = __webpack_require__(180);
-var localization = __webpack_require__(182);
-var subtag = __webpack_require__(183);
+var Typeahead = __webpack_require__(155);
+var debounce = __webpack_require__(159);
+var extend = __webpack_require__(24);
+var EventEmitter = __webpack_require__(94).EventEmitter;
+var exceptions = __webpack_require__(160);
+var MapboxClient = __webpack_require__(161);
+var mbxGeocoder = __webpack_require__(171);
+var MapboxEventManager = __webpack_require__(179);
+var localization = __webpack_require__(181);
+var subtag = __webpack_require__(182);
 
 /**
  * A geocoder component using the [Mapbox Geocoding API](https://docs.mapbox.com/api/search/#geocoding)
@@ -52805,7 +52589,7 @@ module.exports = MapboxGeocoder;
 
 
 /***/ }),
-/* 156 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -52866,20 +52650,20 @@ module.exports = MapboxGeocoder;
  *
  * new Suggestions(input, data);
  */
-var Suggestions = __webpack_require__(157);
+var Suggestions = __webpack_require__(156);
 window.Suggestions = module.exports = Suggestions;
 
 
 /***/ }),
-/* 157 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var extend = __webpack_require__(37);
-var fuzzy = __webpack_require__(158);
-var List = __webpack_require__(159);
+var extend = __webpack_require__(24);
+var fuzzy = __webpack_require__(157);
+var List = __webpack_require__(158);
 
 var Suggestions = function(el, data, options) {
   options = options || {};
@@ -53134,7 +52918,7 @@ module.exports = Suggestions;
 
 
 /***/ }),
-/* 158 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -53284,7 +53068,7 @@ fuzzy.filter = function(pattern, arr, opts) {
 
 
 /***/ }),
-/* 159 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53402,7 +53186,7 @@ module.exports = List;
 
 
 /***/ }),
-/* 160 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -53786,7 +53570,7 @@ module.exports = debounce;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 161 */
+/* 160 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -53810,28 +53594,28 @@ module.exports = {
 
 
 /***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var client = __webpack_require__(70);
+
+module.exports = client;
+
+
+/***/ }),
 /* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var client = __webpack_require__(69);
-
-module.exports = client;
-
-
-/***/ }),
-/* 163 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var MapiResponse = __webpack_require__(164);
-var MapiError = __webpack_require__(166);
+var MapiResponse = __webpack_require__(163);
+var MapiError = __webpack_require__(165);
 var constants = __webpack_require__(45);
-var parseHeaders = __webpack_require__(167);
+var parseHeaders = __webpack_require__(166);
 
 // Keys are request IDs, values are XHRs.
 var requestsUnderway = {};
@@ -53954,13 +53738,13 @@ module.exports = {
 
 
 /***/ }),
-/* 164 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseLinkHeader = __webpack_require__(165);
+var parseLinkHeader = __webpack_require__(164);
 
 /**
  * A Mapbox API response.
@@ -54021,7 +53805,7 @@ module.exports = MapiResponse;
 
 
 /***/ }),
-/* 165 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54103,7 +53887,7 @@ module.exports = parseLinkHeader;
 
 
 /***/ }),
-/* 166 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54174,7 +53958,7 @@ module.exports = MapiError;
 
 
 /***/ }),
-/* 167 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54224,7 +54008,7 @@ module.exports = parseHeaders;
 
 
 /***/ }),
-/* 168 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
@@ -54395,16 +54179,16 @@ module.exports = parseHeaders;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)(module), __webpack_require__(5)))
 
 /***/ }),
-/* 169 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseToken = __webpack_require__(71);
-var xtend = __webpack_require__(37);
-var EventEmitter = __webpack_require__(170);
-var urlUtils = __webpack_require__(171);
+var parseToken = __webpack_require__(72);
+var xtend = __webpack_require__(24);
+var EventEmitter = __webpack_require__(169);
+var urlUtils = __webpack_require__(170);
 var constants = __webpack_require__(45);
 
 var requestId = 1;
@@ -54664,7 +54448,7 @@ module.exports = MapiRequest;
 
 
 /***/ }),
-/* 170 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55007,7 +54791,7 @@ if (true) {
 
 
 /***/ }),
-/* 171 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55134,17 +54918,17 @@ module.exports = {
 
 
 /***/ }),
-/* 172 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var xtend = __webpack_require__(37);
-var v = __webpack_require__(173);
-var pick = __webpack_require__(176);
-var stringifyBooleans = __webpack_require__(177);
-var createServiceFactory = __webpack_require__(179);
+var xtend = __webpack_require__(24);
+var v = __webpack_require__(172);
+var pick = __webpack_require__(175);
+var stringifyBooleans = __webpack_require__(176);
+var createServiceFactory = __webpack_require__(178);
 
 /**
  * Geocoding API service.
@@ -55340,14 +55124,14 @@ module.exports = createServiceFactory(Geocoding);
 
 
 /***/ }),
-/* 173 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
-var xtend = __webpack_require__(37);
-var v = __webpack_require__(174);
+var xtend = __webpack_require__(24);
+var v = __webpack_require__(173);
 
 function file(value) {
   // If we're in a browser so Blob is available, the file must be that.
@@ -55397,7 +55181,7 @@ module.exports = xtend(v, {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 174 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55408,8 +55192,8 @@ module.exports = xtend(v, {
  * to display a helpful error message.
  * They can also return a function for a custom error message.
  */
-var isPlainObject = __webpack_require__(175);
-var xtend = __webpack_require__(37);
+var isPlainObject = __webpack_require__(174);
+var xtend = __webpack_require__(24);
 
 var DEFAULT_ERROR_PATH = 'value';
 var NEWLINE_INDENT = '\n  ';
@@ -55784,7 +55568,7 @@ module.exports = v;
 
 
 /***/ }),
-/* 175 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55798,7 +55582,7 @@ module.exports = function (x) {
 
 
 /***/ }),
-/* 176 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55835,13 +55619,13 @@ module.exports = pick;
 
 
 /***/ }),
-/* 177 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var objectMap = __webpack_require__(178);
+var objectMap = __webpack_require__(177);
 
 /**
  * Stringify all the boolean values in an object, so true becomes "true".
@@ -55859,7 +55643,7 @@ module.exports = stringifyBoolean;
 
 
 /***/ }),
-/* 178 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55876,15 +55660,15 @@ module.exports = objectMap;
 
 
 /***/ }),
-/* 179 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var MapiClient = __webpack_require__(70);
+var MapiClient = __webpack_require__(71);
 // This will create the environment-appropriate client.
-var createClient = __webpack_require__(69);
+var createClient = __webpack_require__(70);
 
 function createServiceFactory(ServicePrototype) {
   return function(clientOrConfig) {
@@ -55904,12 +55688,12 @@ module.exports = createServiceFactory;
 
 
 /***/ }),
-/* 180 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var nanoid = __webpack_require__(181)
+var nanoid = __webpack_require__(180)
 
 /**
  * Construct a new mapbox event client to send interaction events to the mapbox event service
@@ -56222,7 +56006,7 @@ module.exports = MapboxEventManager;
 
 
 /***/ }),
-/* 181 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // This file replaces `index.js` in bundlers like webpack or Rollup,
@@ -56282,7 +56066,7 @@ module.exports = function (size) {
 
 
 /***/ }),
-/* 182 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56325,7 +56109,7 @@ module.exports = {placeholder: placeholder};
 
 
 /***/ }),
-/* 183 */
+/* 182 */
 /***/ (function(module, exports) {
 
 !function(root, name, make) {
@@ -56381,13 +56165,13 @@ module.exports = {placeholder: placeholder};
 
 
 /***/ }),
-/* 184 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(185);
+var content = __webpack_require__(184);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56412,7 +56196,7 @@ if(false) {
 }
 
 /***/ }),
-/* 185 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56426,7 +56210,7 @@ exports.push([module.i, "/* Basics */\n.mapboxgl-ctrl-geocoder,\n.mapboxgl-ctrl-
 
 
 /***/ }),
-/* 186 */
+/* 185 */
 /***/ (function(module, exports) {
 
 
@@ -56521,13 +56305,13 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 187 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(188);
+var content = __webpack_require__(187);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56552,40 +56336,40 @@ if(false) {
 }
 
 /***/ }),
-/* 188 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(72);
+var escape = __webpack_require__(73);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
 
 // module
-exports.push([module.i, "/* general typography */\n.leaflet-container {\n  background:#fff;\n  font:12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  outline:0;\n  overflow:hidden;\n  -ms-touch-action:none;\n  }\n\n.leaflet-container *,\n.leaflet-container *:after,\n.leaflet-container *:before {\n  -webkit-box-sizing:border-box;\n     -moz-box-sizing:border-box;\n          box-sizing:border-box;\n  }\n\n.leaflet-container h1,\n.leaflet-container h2,\n.leaflet-container h3,\n.leaflet-container h4,\n.leaflet-container h5,\n.leaflet-container h6,\n.leaflet-container p {\n  font-size:15px;\n  line-height:20px;\n  margin:0 0 10px;\n  }\n\n.leaflet-container .marker-description img {\n  margin-bottom: 10px;\n  }\n\n.leaflet-container a {\n  color:#3887BE;\n  font-weight:normal;\n  text-decoration:none;\n  }\n  .leaflet-container a:hover      { color:#63b6e5; }\n  .leaflet-container.dark a       { color:#63b6e5; }\n  .leaflet-container.dark a:hover { color:#8fcaec; }\n\n.leaflet-container.dark .mapbox-button,\n.leaflet-container .mapbox-button {\n  background-color:#3887be;\n  display:inline-block;\n  height:40px;\n  line-height:40px;\n  text-decoration:none;\n  color:#fff;\n  font-size:12px;\n  white-space:nowrap;\n  text-overflow:ellipsis;\n  }\n  .leaflet-container.dark .mapbox-button:hover,\n  .leaflet-container .mapbox-button:hover {\n    color:#fff;\n    background-color:#3bb2d0;\n    }\n\n/* Base Leaflet\n------------------------------------------------------- */\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n  position:absolute;\n  left:0;\n  top:0;\n  }\n\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  -webkit-user-drag:none;\n  -webkit-user-select:none;\n     -moz-user-select:none;\n          user-select:none;\n  }\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  display: block;\n  }\n\n.leaflet-tile {\n  filter:inherit;\n  visibility:hidden;\n  }\n.leaflet-tile-loaded {\n  visibility:inherit;\n  }\n.leaflet-zoom-box {\n  width:0;\n  height:0;\n  }\n\n.leaflet-tile-pane    { z-index:2; }\n.leaflet-objects-pane { z-index:3; }\n.leaflet-overlay-pane { z-index:4; }\n.leaflet-shadow-pane  { z-index:5; }\n.leaflet-marker-pane  { z-index:6; }\n.leaflet-popup-pane   { z-index:7; }\n\n.leaflet-control {\n  position:relative;\n  z-index:7;\n  pointer-events:auto;\n  float:left;\n  clear:both;\n  }\n  .leaflet-right .leaflet-control   { float:right; }\n  .leaflet-top .leaflet-control     { margin-top:10px; }\n  .leaflet-bottom .leaflet-control  { margin-bottom:10px; }\n  .leaflet-left .leaflet-control    { margin-left:10px; }\n  .leaflet-right .leaflet-control   { margin-right:10px; }\n\n.leaflet-top,\n.leaflet-bottom {\n  position:absolute;\n  z-index:1000;\n  pointer-events:none;\n  }\n  .leaflet-top    { top:0; }\n  .leaflet-right  { right:0; }\n  .leaflet-bottom { bottom:0; }\n  .leaflet-left   { left:0; }\n\n/* zoom and fade animations */\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n  opacity:0;\n  -webkit-transition:opacity 0.2s linear;\n     -moz-transition:opacity 0.2s linear;\n       -o-transition:opacity 0.2s linear;\n          transition:opacity 0.2s linear;\n  }\n  .leaflet-fade-anim .leaflet-tile-loaded,\n  .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n    opacity:1;\n    }\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n  -webkit-transition:-webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n     -moz-transition:   -moz-transform 0.25s cubic-bezier(0,0,0.25,1);\n       -o-transition:     -o-transform 0.25s cubic-bezier(0,0,0.25,1);\n          transition:        transform 0.25s cubic-bezier(0,0,0.25,1);\n  }\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n  -webkit-transition:none;\n     -moz-transition:none;\n       -o-transition:none;\n          transition:none;\n  }\n.leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; }\n\n/* cursors */\n.leaflet-container {\n  cursor:-webkit-grab;\n  cursor:   -moz-grab;\n  }\n.leaflet-overlay-pane path,\n.leaflet-marker-icon,\n.leaflet-container.map-clickable,\n.leaflet-container.leaflet-clickable {\n  cursor:pointer;\n  }\n.leaflet-popup-pane,\n.leaflet-control {\n  cursor:auto;\n  }\n.leaflet-dragging,\n.leaflet-dragging .map-clickable,\n.leaflet-dragging .leaflet-clickable,\n.leaflet-dragging .leaflet-container {\n  cursor:move;\n  cursor:-webkit-grabbing;\n  cursor:   -moz-grabbing;\n  }\n\n.leaflet-zoom-box {\n  background:#fff;\n  border:2px dotted #202020;\n  opacity:0.5;\n  }\n\n/* general toolbar styles */\n.leaflet-control-layers,\n.leaflet-bar {\n  background-color:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-radius:3px;\n  box-shadow:none;\n  }\n.leaflet-bar a,\n.leaflet-bar a:hover {\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  border-bottom:1px solid #ddd;\n  border-bottom-color:rgba(0,0,0,0.10);\n  }\n  .leaflet-bar a:hover,\n  .leaflet-bar a:active {\n    background-color:#f8f8f8;\n    cursor:pointer;\n    }\n  .leaflet-bar a:hover:first-child {\n    border-radius:3px 3px 0 0;\n    }\n  .leaflet-bar a:hover:last-child {\n    border-bottom:none;\n    border-radius:0 0 3px 3px;\n    }\n  .leaflet-bar a:hover:only-of-type {\n    border-radius:3px;\n    }\n\n.leaflet-bar .leaflet-disabled {\n  cursor:default;\n  opacity:0.75;\n  }\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n  display:block;\n  content:'';\n  text-indent:-999em;\n  }\n\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n  display:none;\n  }\n  .leaflet-control-layers-expanded .leaflet-control-layers-list {\n    display:block;\n    position:relative;\n    }\n\n.leaflet-control-layers-expanded {\n  background:#fff;\n  padding:6px 10px 6px 6px;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  }\n.leaflet-control-layers-selector {\n  margin-top:2px;\n  position:relative;\n  top:1px;\n  }\n.leaflet-control-layers label {\n  display: block;\n  }\n.leaflet-control-layers-separator {\n  height:0;\n  border-top:1px solid #ddd;\n  border-top-color:rgba(0,0,0,0.10);\n  margin:5px -10px 5px -6px;\n  }\n\n.leaflet-container .leaflet-control-attribution {\n  background-color:rgba(255,255,255,0.5);\n  margin:0;\n  box-shadow:none;\n  }\n  .leaflet-container .leaflet-control-attribution a,\n  .leaflet-container .map-info-container a {\n    color:#404040;\n    }\n    .leaflet-control-attribution a:hover,\n    .map-info-container a:hover {\n      color:inherit;\n      text-decoration:underline;\n      }\n\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n  padding:0 5px;\n  }\n  .leaflet-left .leaflet-control-scale    { margin-left:5px; }\n  .leaflet-bottom .leaflet-control-scale  { margin-bottom:5px; }\n\n/* Used for smaller map containers & triggered by container size */\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution { margin:10px; }\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution {\n  background:#fff;\n  border-radius:3px 13px 13px 3px;\n  padding:3px 31px 3px 3px;\n  visibility:hidden;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover {\n    visibility:visible;\n    }\n\n.leaflet-control-attribution.leaflet-compact-attribution:after {\n  content:'';\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  background-position:0 -78px;\n  border-radius:50%;\n  position:absolute;\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  bottom:0;\n  z-index:1;\n  visibility:visible;\n  cursor:pointer;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover:after { background-color:#fff; }\n\n.leaflet-right .leaflet-control-attribution.leaflet-compact-attribution:after { right:0; }\n.leaflet-left .leaflet-control-attribution.leaflet-compact-attribution:after { left:0; }\n\n.leaflet-control-scale-line {\n  background-color:rgba(255,255,255,0.5);\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-top:none;\n  padding:2px 5px 1px;\n  white-space:nowrap;\n  overflow:hidden;\n  }\n  .leaflet-control-scale-line:not(:first-child) {\n    border-top:2px solid #ddd;\n    border-top-color:rgba(0,0,0,0.10);\n    border-bottom:none;\n    margin-top:-2px;\n    }\n  .leaflet-control-scale-line:not(:first-child):not(:last-child) {\n    border-bottom:2px solid #777;\n    }\n\n/* popup */\n.leaflet-popup {\n  position:absolute;\n  text-align:center;\n  pointer-events:none;\n  }\n.leaflet-popup-content-wrapper {\n  padding:1px;\n  text-align:left;\n  pointer-events:all;\n  }\n.leaflet-popup-content {\n  padding:10px 10px 15px;\n  margin:0;\n  line-height:inherit;\n  }\n  .leaflet-popup-close-button + .leaflet-popup-content-wrapper .leaflet-popup-content {\n    padding-top:15px;\n    }\n\n.leaflet-popup-tip-container {\n  width:20px;\n  height:20px;\n  margin:0 auto;\n  position:relative;\n  }\n.leaflet-popup-tip {\n  width:0;\n\theight:0;\n  margin:0;\n\tborder-left:10px solid transparent;\n\tborder-right:10px solid transparent;\n\tborder-top:10px solid #fff;\n  box-shadow:none;\n  }\n.leaflet-popup-close-button {\n  text-indent:-999em;\n  position:absolute;\n  top:0;right:0;\n  pointer-events:all;\n  }\n  .leaflet-popup-close-button:hover {\n    background-color:#f8f8f8;\n    }\n\n.leaflet-popup-scrolled {\n  overflow:auto;\n  border-bottom:1px solid #ddd;\n  border-top:1px solid #ddd;\n  }\n\n/* div icon */\n.leaflet-div-icon {\n  background:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  }\n.leaflet-editing-icon {\n  border-radius:3px;\n  }\n\n/* Leaflet + Mapbox\n------------------------------------------------------- */\n.leaflet-bar a,\n.mapbox-icon,\n.map-tooltip.closable .close,\n.leaflet-control-layers-toggle,\n.leaflet-popup-close-button,\n.mapbox-button-icon:before {\n  content:'';\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  background-repeat:no-repeat;\n  }\n.leaflet-bar a {\n  display:block;\n  }\n\n.leaflet-control-attribution:after,\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out,\n.leaflet-popup-close-button,\n.leaflet-control-layers-toggle,\n.leaflet-container.dark .map-tooltip .close,\n.map-tooltip .close,\n.mapbox-icon {\n  opacity: .75;\n  background-image:url(" + escape(__webpack_require__(189)) + ");\n  background-repeat:no-repeat;\n  background-size:26px 260px;\n  }\n  .leaflet-container.dark .leaflet-control-attribution:after,\n  .mapbox-button-icon:before,\n  .leaflet-container.dark .leaflet-control-zoom-in,\n  .leaflet-container.dark .leaflet-control-zoom-out,\n  .leaflet-container.dark .leaflet-control-layers-toggle,\n  .leaflet-container.dark .mapbox-icon {\n    opacity: 1;\n    background-image:url(" + escape(__webpack_require__(190)) + ");\n    background-size:26px 260px;\n    }\n  .leaflet-bar .leaflet-control-zoom-in                 { background-position:0 0; }\n  .leaflet-bar .leaflet-control-zoom-out                { background-position:0 -26px; }\n  .map-tooltip.closable .close,\n  .leaflet-popup-close-button {\n    background-position:-3px -55px;\n    width:20px;\n    height:20px;\n    border-radius:0 3px 0 0;\n    }\n  .mapbox-icon-info                                     { background-position:0 -78px; }\n  .leaflet-control-layers-toggle                        { background-position:0 -104px; }\n  .mapbox-icon.mapbox-icon-share:before, .mapbox-icon.mapbox-icon-share         { background-position:0 -130px; }\n  .mapbox-icon.mapbox-icon-geocoder:before, .mapbox-icon.mapbox-icon-geocoder   { background-position:0 -156px; }\n  .mapbox-icon-facebook:before, .mapbox-icon-facebook   { background-position:0 -182px; }\n  .mapbox-icon-twitter:before, .mapbox-icon-twitter     { background-position:0 -208px; }\n  .mapbox-icon-pinterest:before, .mapbox-icon-pinterest { background-position:0 -234px; }\n\n.leaflet-popup-content-wrapper,\n.map-legends,\n.map-tooltip {\n  background:#fff;\n  border-radius:3px;\n  box-shadow:0 1px 2px rgba(0,0,0,0.10);\n  }\n.map-legends,\n.map-tooltip {\n  max-width:300px;\n  }\n.map-legends .map-legend {\n  padding:10px;\n  }\n.map-tooltip {\n  z-index:999999;\n  padding:10px;\n  min-width:180px;\n  max-height:400px;\n  overflow:auto;\n  opacity:1;\n  -webkit-transition:opacity 150ms;\n     -moz-transition:opacity 150ms;\n       -o-transition:opacity 150ms;\n          transition:opacity 150ms;\n  }\n\n.map-tooltip .close {\n  text-indent:-999em;\n  overflow:hidden;\n  display:none;\n  }\n  .map-tooltip.closable .close {\n    position:absolute;\n    top:0;right:0;\n    border-radius:3px;\n    }\n    .map-tooltip.closable .close:active  {\n      background-color:#f8f8f8;\n      }\n\n.leaflet-control-interaction {\n  position:absolute;\n  top:10px;\n  right:10px;\n  width:300px;\n  }\n.leaflet-popup-content .marker-title {\n  font-weight:bold;\n  }\n.leaflet-control .mapbox-button {\n  background-color:#fff;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  padding:5px 10px;\n  border-radius:3px;\n  }\n\n/* Share modal\n------------------------------------------------------- */\n.mapbox-modal > div {\n  position:absolute;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  z-index:-1;\n  overflow-y:auto;\n  }\n  .mapbox-modal.active > div {\n    z-index:99999;\n    transition:all .2s, z-index 0 0;\n    }\n\n.mapbox-modal .mapbox-modal-mask {\n  background:rgba(0,0,0,0.5);\n  opacity:0;\n  }\n  .mapbox-modal.active .mapbox-modal-mask { opacity:1; }\n\n.mapbox-modal .mapbox-modal-content {\n  -webkit-transform:translateY(-100%);\n     -moz-transform:translateY(-100%);\n      -ms-transform:translateY(-100%);\n          transform:translateY(-100%);\n  }\n  .mapbox-modal.active .mapbox-modal-content {\n    -webkit-transform:translateY(0);\n       -moz-transform:translateY(0);\n        -ms-transform:translateY(0);\n            transform:translateY(0);\n    }\n\n.mapbox-modal-body {\n  position:relative;\n  background:#fff;\n  padding:20px;\n  z-index:1000;\n  width:50%;\n  margin:20px 0 20px 25%;\n  }\n.mapbox-share-buttons {\n  margin:0 0 20px;\n  }\n.mapbox-share-buttons a {\n  width:33.3333%;\n  border-left:1px solid #fff;\n  text-align:center;\n  border-radius:0;\n  }\n  .mapbox-share-buttons a:last-child  { border-radius:0 3px 3px 0; }\n  .mapbox-share-buttons a:first-child { border:none; border-radius:3px 0 0 3px; }\n\n.mapbox-modal input {\n  width:100%;\n  height:40px;\n  padding:10px;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  color:rgba(0,0,0,0.5);\n  }\n\n/* Info Control\n------------------------------------------------------- */\n.leaflet-control.mapbox-control-info {\n  margin:5px 30px 10px 10px;\n  min-height:26px;\n  }\n  .leaflet-right .leaflet-control.mapbox-control-info {\n    margin:5px 10px 10px 30px;\n    }\n\n.mapbox-info-toggle {\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  border-radius:50%;\n  position:absolute;\n  bottom:0;left:0;\n  z-index:1;\n  }\n  .leaflet-right .mapbox-control-info .mapbox-info-toggle  { left:auto; right:0; }\n  .mapbox-info-toggle:hover { background-color:#fff; }\n\n.map-info-container {\n  background:#fff;\n  padding:3px 5px 3px 27px;\n  display:none;\n  position:relative;\n  bottom:0;left:0;\n  border-radius:13px 3px 3px 13px;\n  }\n  .leaflet-right .map-info-container {\n    left:auto;\n    right:0;\n    padding:3px 27px 3px 5px;\n    border-radius:3px 13px 13px 3px;\n    }\n\n.mapbox-control-info.active .map-info-container { display:inline-block; }\n.leaflet-container .mapbox-improve-map { font-weight:bold; }\n\n/* Geocoder\n------------------------------------------------------- */\n.leaflet-control-mapbox-geocoder {\n  position:relative;\n  }\n.leaflet-control-mapbox-geocoder.searching {\n  opacity:0.75;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-wrap {\n  background:#fff;\n  position:absolute;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  overflow:hidden;\n  left:26px;\n  height:28px;\n  width:0;\n  top:-1px;\n  border-radius:0 3px 3px 0;\n  opacity:0;\n  -webkit-transition:opacity 100ms;\n     -moz-transition:opacity 100ms;\n       -o-transition:opacity 100ms;\n          transition:opacity 100ms;\n  }\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-wrap {\n  width:180px;\n  opacity:1;\n  }\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle,\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle:hover {\n  border-bottom:none;\n  }\n.leaflet-control-mapbox-geocoder-toggle {\n  border-radius:3px;\n  }\n.leaflet-control-mapbox-geocoder.active,\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-top-right-radius:0;\n  border-bottom-right-radius:0;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n  background:transparent;\n  border:0;\n  width:180px;\n  padding:0 0 0 10px;\n  height:26px;\n  outline:none;\n  }\n.leaflet-control-mapbox-geocoder-results {\n  width:180px;\n  position:absolute;\n  left:26px;\n  top:25px;\n  border-radius:0 0 3px 3px;\n  }\n  .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-results {\n    background:#fff;\n    border:1px solid #999;\n    border-color:rgba(0,0,0,0.4);\n    }\n.leaflet-control-mapbox-geocoder-results a,\n.leaflet-control-mapbox-geocoder-results span {\n  padding:0 10px;\n  text-overflow:ellipsis;\n  white-space:nowrap;\n  display:block;\n  width:100%;\n  font-size:12px;\n  line-height:26px;\n  text-align:left;\n  overflow:hidden;\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a:hover,\n  .leaflet-control-mapbox-geocoder-results a:hover {\n    background:#f8f8f8;\n    opacity:1;\n    }\n\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap,\n.leaflet-right .leaflet-control-mapbox-geocoder-results {\n  left:auto;\n  right:26px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap {\n  border-radius:3px 0 0 3px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder.active,\n.leaflet-right .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-radius:0 3px 3px 0;\n  }\n\n.leaflet-bottom .leaflet-control-mapbox-geocoder-results {\n  top:auto;\n  bottom:25px;\n  border-radius:3px 3px 0 0;\n  }\n\n/* Mapbox Logo\n------------------------------------------------------- */\n.mapbox-logo-true:before {\n  content:'';\n  display:inline-block;\n  width:61px;\n  height:19px;\n  vertical-align:middle;\n}\n.mapbox-logo-true {\n  background-repeat:no-repeat;\n  background-size:61px 19px;\n  background-image:url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI2NSIgaGVpZ2h0PSIyMCI+PGRlZnMvPjxtZXRhZGF0YT48cmRmOlJERj48Y2M6V29yayByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIvPjxkYzp0aXRsZS8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNjEuODQ4MywtOTguNTAzOTUpIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0ib3BhY2l0eTowLjI1O2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLW9wYWNpdHk6MTtzdHJva2UtZGFzaGFycmF5Om5vbmUiPjxwYXRoIGQ9Ik0gNS4yOCAxLjUgQyA0LjU0IDEuNTYgMy45IDIuMjUgMy45MSAzIGwgMCAxMS44OCBjIDAuMDIgMC43NyAwLjcyIDEuNDcgMS41IDEuNDcgbCAxLjc1IDAgYyAwLjc4IDAgMS40OCAtMC42OSAxLjUgLTEuNDcgbCAwIC00LjI4IDAuNzIgMS4xOSBjIDAuNTMgMC44NyAyLjAzIDAuODcgMi41NiAwIGwgMC43MiAtMS4xOSAwIDQuMjggYyAwLjAyIDAuNzYgMC43IDEuNDUgMS40NyAxLjQ3IGwgMS43NSAwIGMgMC43OCAwIDEuNDggLTAuNjkgMS41IC0xLjQ3IGwgMCAtMC4xNiBjIDEuMDIgMS4xMiAyLjQ2IDEuODEgNC4wOSAxLjgxIGwgNC4wOSAwIDAgMS40NyBjIC0wIDAuNzggMC42OSAxLjQ4IDEuNDcgMS41IGwgMS43NSAwIGMgMC43OSAtMCAxLjUgLTAuNzEgMS41IC0xLjUgbCAwLjAyIC0xLjQ3IGMgMS43MiAwIDMuMDggLTAuNjQgNC4xNCAtMS42OSBsIDAgMC4xOSBjIDAgMC4zOSAwLjE2IDAuNzkgMC40NCAxLjA2IDAuMjggMC4yOCAwLjY3IDAuNDQgMS4wNiAwLjQ0IGwgMy4zMSAwIGMgMi4wMyAwIDMuODUgLTEuMDYgNC45MSAtMi42OSAxLjA1IDEuNjEgMi44NCAyLjY5IDQuODggMi42OSAxLjAzIDAgMS45OCAtMC4yNyAyLjgxIC0wLjc1IDAuMjggMC4zNSAwLjczIDAuNTcgMS4xOSAwLjU2IGwgMi4xMiAwIGMgMC40OCAwLjAxIDAuOTcgLTAuMjMgMS4yNSAtMC42MiBsIDAuOTEgLTEuMjggMC45MSAxLjI4IGMgMC4yOCAwLjM5IDAuNzQgMC42MyAxLjIyIDAuNjIgbCAyLjE2IDAgQyA2Mi42NyAxNi4zMyA2My40MiAxNC44OSA2Mi44MSAxNCBMIDYwLjIyIDEwLjM4IDYyLjYyIDcgQyA2My4yNiA2LjExIDYyLjUgNC42MiA2MS40MSA0LjYyIGwgLTIuMTYgMCBDIDU4Ljc4IDQuNjIgNTguMzEgNC44NiA1OC4wMyA1LjI1IEwgNTcuMzEgNi4yOCA1Ni41NiA1LjI1IEMgNTYuMjkgNC44NiA1NS44MiA0LjYyIDU1LjM0IDQuNjIgbCAtMi4xNiAwIGMgLTAuNDkgLTAgLTAuOTcgMC4yNSAtMS4yNSAwLjY2IC0wLjg2IC0wLjUxIC0xLjg0IC0wLjgxIC0yLjkxIC0wLjgxIC0yLjAzIDAgLTMuODMgMS4wOCAtNC44OCAyLjY5IEMgNDMuMSA1LjUzIDQxLjI3IDQuNDcgMzkuMTkgNC40NyBMIDM5LjE5IDMgQyAzOS4xOSAyLjYxIDM5LjAzIDIuMjEgMzguNzUgMS45NCAzOC40NyAxLjY2IDM4LjA4IDEuNSAzNy42OSAxLjUgbCAtMS43NSAwIGMgLTAuNzEgMCAtMS41IDAuODMgLTEuNSAxLjUgbCAwIDMuMTYgQyAzMy4zOCA1LjEgMzEuOTYgNC40NyAzMC4zOCA0LjQ3IGwgLTMuMzQgMCBjIC0wLjc3IDAuMDIgLTEuNDcgMC43MiAtMS40NyAxLjUgbCAwIDAuMzEgYyAtMS4wMiAtMS4xMiAtMi40NiAtMS44MSAtNC4wOSAtMS44MSAtMS42MyAwIC0zLjA3IDAuNyAtNC4wOSAxLjgxIEwgMTcuMzggMyBjIC0wIC0wLjc5IC0wLjcxIC0xLjUgLTEuNSAtMS41IEwgMTQuNSAxLjUgQyAxMy41NSAxLjUgMTIuMjggMS44NyAxMS42NiAyLjk0IGwgLTEgMS42OSAtMSAtMS42OSBDIDkuMDMgMS44NyA3Ljc3IDEuNSA2LjgxIDEuNSBsIC0xLjQxIDAgQyA1LjM2IDEuNSA1LjMyIDEuNSA1LjI4IDEuNSB6IG0gMTYuMTkgNy43MiBjIDAuNTMgMCAwLjk0IDAuMzUgMC45NCAxLjI4IGwgMCAxLjI4IC0wLjk0IDAgYyAtMC41MiAwIC0wLjk0IC0wLjM4IC0wLjk0IC0xLjI4IC0wIC0wLjkgMC40MiAtMS4yOCAwLjk0IC0xLjI4IHogbSA4LjgxIDAgYyAwLjgzIDAgMS4xOCAwLjY4IDEuMTkgMS4yOCAwLjAxIDAuOTQgLTAuNjIgMS4yOCAtMS4xOSAxLjI4IHogbSA4LjcyIDAgYyAwLjcyIDAgMS4zNyAwLjYgMS4zNyAxLjI4IDAgMC43NyAtMC41MSAxLjI4IC0xLjM3IDEuMjggeiBtIDEwLjAzIDAgYyAwLjU4IDAgMS4wOSAwLjUgMS4wOSAxLjI4IDAgMC43OCAtMC41MSAxLjI4IC0xLjA5IDEuMjggLTAuNTggMCAtMS4xMiAtMC41IC0xLjEyIC0xLjI4IDAgLTAuNzggMC41NCAtMS4yOCAxLjEyIC0xLjI4IHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZm9udC1zaXplOm1lZGl1bTtmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTtsaW5lLWhlaWdodDpub3JtYWw7bGV0dGVyLXNwYWNpbmc6bm9ybWFsO3dvcmQtc3BhY2luZzpub3JtYWw7dGV4dC10cmFuc2Zvcm06bm9uZTtkaXJlY3Rpb246bHRyO2Jsb2NrLXByb2dyZXNzaW9uOnRiO3dyaXRpbmctbW9kZTpsci10Yjt0ZXh0LWFuY2hvcjpzdGFydDtiYXNlbGluZS1zaGlmdDpiYXNlbGluZTtjb2xvcjojMDAwMDAwO2ZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZTtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7bWFya2VyOm5vbmU7dmlzaWJpbGl0eTp2aXNpYmxlO2Rpc3BsYXk6aW5saW5lO292ZXJmbG93OnZpc2libGU7ZW5hYmxlLWJhY2tncm91bmQ6YWNjdW11bGF0ZTtmb250LWZhbWlseTpTYW5zOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246U2FucyIvPjwvZz48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0iZmlsbDojZmZmZmZmIj48cGF0aCBkPSJtIDUuNDEgMyAwIDEyIDEuNzUgMCAwIC05LjkxIDMuNSA1Ljk0IDMuNDcgLTUuOTQgMCA5LjkxIDEuNzUgMCAwIC0xMiBMIDE0LjUgMyBDIDEzLjggMyAxMy4yNSAzLjE2IDEyLjk0IDMuNjkgTCAxMC42NiA3LjU5IDguMzggMy42OSBDIDguMDcgMy4xNiA3LjUxIDMgNi44MSAzIHogTSAzNiAzIGwgMCAxMi4wMyAzLjI1IDAgYyAyLjQ0IDAgNC4zOCAtMS45MSA0LjM4IC00LjUzIDAgLTIuNjIgLTEuOTMgLTQuNDcgLTQuMzggLTQuNDcgQyAzOC43IDYuMDMgMzguMzIgNiAzNy43NSA2IGwgMCAtMyB6IE0gMjEuNDcgNS45NyBjIC0yLjQ0IDAgLTQuMTkgMS45MSAtNC4xOSA0LjUzIDAgMi42MiAxLjc1IDQuNTMgNC4xOSA0LjUzIGwgNC4xOSAwIDAgLTQuNTMgYyAwIC0yLjYyIC0xLjc1IC00LjUzIC00LjE5IC00LjUzIHogbSAyNy41NiAwIGMgLTIuNDEgMCAtNC4zOCAyLjAzIC00LjM4IDQuNTMgMCAyLjUgMS45NyA0LjUzIDQuMzggNC41MyAyLjQxIDAgNC4zNCAtMi4wMyA0LjM0IC00LjUzIDAgLTIuNSAtMS45NCAtNC41MyAtNC4zNCAtNC41MyB6IG0gLTIyIDAuMDMgMCAxMiAxLjc1IDAgMCAtMi45NyBjIDAuNTcgMCAxLjA0IC0wIDEuNTkgMCAyLjQ0IDAgNC4zNCAtMS45MSA0LjM0IC00LjUzIDAgLTIuNjIgLTEuOSAtNC41IC00LjM0IC00LjUgeiBtIDI2LjE2IDAgMy4wMyA0LjM4IC0zLjE5IDQuNjIgMi4xMiAwIEwgNTcuMzEgMTEuOTEgNTkuNDQgMTUgNjEuNTkgMTUgNTguMzggMTAuMzggNjEuNDEgNiA1OS4yNSA2IDU3LjMxIDguODEgNTUuMzQgNiB6IE0gMjEuNDcgNy43MiBjIDEuNCAwIDIuNDQgMS4xOSAyLjQ0IDIuNzggbCAwIDIuNzggLTIuNDQgMCBjIC0xLjQgMCAtMi40NCAtMS4yMSAtMi40NCAtMi43OCAtMCAtMS41NyAxLjA0IC0yLjc4IDIuNDQgLTIuNzggeiBtIDI3LjU2IDAgYyAxLjQ0IDAgMi41OSAxLjI0IDIuNTkgMi43OCAwIDEuNTQgLTEuMTUgMi43OCAtMi41OSAyLjc4IC0xLjQ0IDAgLTIuNjIgLTEuMjQgLTIuNjIgLTIuNzggMCAtMS41NCAxLjE4IC0yLjc4IDIuNjIgLTIuNzggeiBtIC0yMC4yNSAwLjAzIDEuNTkgMCBjIDEuNTkgMCAyLjU5IDEuMjggMi41OSAyLjc1IDAgMS40NyAtMS4xMyAyLjc4IC0yLjU5IDIuNzggbCAtMS41OSAwIHogbSA4Ljk3IDAgMS41IDAgYyAxLjQ3IDAgMi42MiAxLjI4IDIuNjIgMi43NSAwIDEuNDcgLTEuMDQgMi43OCAtMi42MiAyLjc4IGwgLTEuNSAwIHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIi8+PC9nPjwvZz48L3N2Zz4=');\n}\n\n/* Dark Theme\n------------------------------------------------------- */\n.leaflet-container.dark .leaflet-bar {\n  background-color:#404040;\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-bar a {\n    color:#404040;\n    border-color:rgba(0,0,0,0.5);\n    }\n  .leaflet-container.dark .leaflet-bar a:active,\n  .leaflet-container.dark .leaflet-bar a:hover {\n    background-color:#505050;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:after,\n.leaflet-container.dark .mapbox-info-toggle,\n.leaflet-container.dark .map-info-container,\n.leaflet-container.dark .leaflet-control-attribution {\n  background-color:rgba(0,0,0,0.5);\n  color:#f8f8f8;\n  }\n  .leaflet-container.dark .leaflet-control-attribution a,\n  .leaflet-container.dark .leaflet-control-attribution a:hover,\n  .leaflet-container.dark .map-info-container a,\n  .leaflet-container.dark .map-info-container a:hover {\n    color:#fff;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:hover:after {\n  background-color:#000;\n  }\n.leaflet-container.dark .leaflet-control-layers-list span {\n  color:#f8f8f8;\n  }\n.leaflet-container.dark .leaflet-control-layers-separator {\n  border-top-color:rgba(255,255,255,0.10);\n  }\n.leaflet-container.dark .leaflet-bar a.leaflet-disabled,\n.leaflet-container.dark .leaflet-control .mapbox-button.disabled {\n  background-color:#252525;\n  color:#404040;\n  }\n.leaflet-container.dark .leaflet-control-mapbox-geocoder > div {\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a {\n    border-color:#ddd #202020;\n    border-color:rgba(0,0,0,0.10) rgba(0,0,0,0.75);\n    }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results span {\n    border-color:#202020;\n    border-color:rgba(0,0,0,0.75);\n    }\n\n/* Larger Screens\n------------------------------------------------------- */\n@media only screen and (max-width:800px) {\n.mapbox-modal-body {\n  width:83.3333%;\n  margin-left:8.3333%;\n  }\n}\n\n/* Smaller Screens\n------------------------------------------------------- */\n@media only screen and (max-width:640px) {\n.mapbox-modal-body {\n  width:100%;\n  height:100%;\n  margin:0;\n  }\n}\n\n/* Print\n------------------------------------------------------- */\n@media print { .mapbox-improve-map { display:none; } }\n\n/* Browser Fixes\n------------------------------------------------------- */\n/* VML support for IE8 */\n.leaflet-vml-shape { width:1px; height:1px; }\n.lvml { behavior:url(#default#VML); display:inline-block; position:absolute; }\n/* Map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img.leaflet-tile { max-width:none !important; }\n/* Markers are broken in FF/IE if you have max-width: 100% on marker images */\n.leaflet-container img.leaflet-marker-icon { max-width:none; }\n/* Stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer { max-width:15000px !important; }\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg { -moz-user-select:none; }\n/* Older IEs don't support the translateY property for display animation */\n.leaflet-oldie .mapbox-modal .mapbox-modal-content        { display:none; }\n.leaflet-oldie .mapbox-modal.active .mapbox-modal-content { display:block; }\n.map-tooltip { width:280px\\8; /* < IE9 */ }\n\n/* < IE8 */\n.leaflet-oldie .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-popup-close-button,\n.leaflet-oldie .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .map-tooltip .close,\n.leaflet-oldie .map-tooltip .close,\n.leaflet-oldie .mapbox-icon {\n  background-image:url('data:image/png;base64,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');\n}\n.leaflet-oldie .mapbox-button-icon:before,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .mapbox-icon {\n  background-image:url('data:image/png;base64,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');\n}\n\n.leaflet-oldie .mapbox-logo-true {\n  background-image: none;\n}\n", ""]);
+exports.push([module.i, "/* general typography */\n.leaflet-container {\n  background:#fff;\n  font:12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  outline:0;\n  overflow:hidden;\n  -ms-touch-action:none;\n  }\n\n.leaflet-container *,\n.leaflet-container *:after,\n.leaflet-container *:before {\n  -webkit-box-sizing:border-box;\n     -moz-box-sizing:border-box;\n          box-sizing:border-box;\n  }\n\n.leaflet-container h1,\n.leaflet-container h2,\n.leaflet-container h3,\n.leaflet-container h4,\n.leaflet-container h5,\n.leaflet-container h6,\n.leaflet-container p {\n  font-size:15px;\n  line-height:20px;\n  margin:0 0 10px;\n  }\n\n.leaflet-container .marker-description img {\n  margin-bottom: 10px;\n  }\n\n.leaflet-container a {\n  color:#3887BE;\n  font-weight:normal;\n  text-decoration:none;\n  }\n  .leaflet-container a:hover      { color:#63b6e5; }\n  .leaflet-container.dark a       { color:#63b6e5; }\n  .leaflet-container.dark a:hover { color:#8fcaec; }\n\n.leaflet-container.dark .mapbox-button,\n.leaflet-container .mapbox-button {\n  background-color:#3887be;\n  display:inline-block;\n  height:40px;\n  line-height:40px;\n  text-decoration:none;\n  color:#fff;\n  font-size:12px;\n  white-space:nowrap;\n  text-overflow:ellipsis;\n  }\n  .leaflet-container.dark .mapbox-button:hover,\n  .leaflet-container .mapbox-button:hover {\n    color:#fff;\n    background-color:#3bb2d0;\n    }\n\n/* Base Leaflet\n------------------------------------------------------- */\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n  position:absolute;\n  left:0;\n  top:0;\n  }\n\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  -webkit-user-drag:none;\n  -webkit-user-select:none;\n     -moz-user-select:none;\n          user-select:none;\n  }\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  display: block;\n  }\n\n.leaflet-tile {\n  filter:inherit;\n  visibility:hidden;\n  }\n.leaflet-tile-loaded {\n  visibility:inherit;\n  }\n.leaflet-zoom-box {\n  width:0;\n  height:0;\n  }\n\n.leaflet-tile-pane    { z-index:2; }\n.leaflet-objects-pane { z-index:3; }\n.leaflet-overlay-pane { z-index:4; }\n.leaflet-shadow-pane  { z-index:5; }\n.leaflet-marker-pane  { z-index:6; }\n.leaflet-popup-pane   { z-index:7; }\n\n.leaflet-control {\n  position:relative;\n  z-index:7;\n  pointer-events:auto;\n  float:left;\n  clear:both;\n  }\n  .leaflet-right .leaflet-control   { float:right; }\n  .leaflet-top .leaflet-control     { margin-top:10px; }\n  .leaflet-bottom .leaflet-control  { margin-bottom:10px; }\n  .leaflet-left .leaflet-control    { margin-left:10px; }\n  .leaflet-right .leaflet-control   { margin-right:10px; }\n\n.leaflet-top,\n.leaflet-bottom {\n  position:absolute;\n  z-index:1000;\n  pointer-events:none;\n  }\n  .leaflet-top    { top:0; }\n  .leaflet-right  { right:0; }\n  .leaflet-bottom { bottom:0; }\n  .leaflet-left   { left:0; }\n\n/* zoom and fade animations */\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n  opacity:0;\n  -webkit-transition:opacity 0.2s linear;\n     -moz-transition:opacity 0.2s linear;\n       -o-transition:opacity 0.2s linear;\n          transition:opacity 0.2s linear;\n  }\n  .leaflet-fade-anim .leaflet-tile-loaded,\n  .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n    opacity:1;\n    }\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n  -webkit-transition:-webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n     -moz-transition:   -moz-transform 0.25s cubic-bezier(0,0,0.25,1);\n       -o-transition:     -o-transform 0.25s cubic-bezier(0,0,0.25,1);\n          transition:        transform 0.25s cubic-bezier(0,0,0.25,1);\n  }\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n  -webkit-transition:none;\n     -moz-transition:none;\n       -o-transition:none;\n          transition:none;\n  }\n.leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; }\n\n/* cursors */\n.leaflet-container {\n  cursor:-webkit-grab;\n  cursor:   -moz-grab;\n  }\n.leaflet-overlay-pane path,\n.leaflet-marker-icon,\n.leaflet-container.map-clickable,\n.leaflet-container.leaflet-clickable {\n  cursor:pointer;\n  }\n.leaflet-popup-pane,\n.leaflet-control {\n  cursor:auto;\n  }\n.leaflet-dragging,\n.leaflet-dragging .map-clickable,\n.leaflet-dragging .leaflet-clickable,\n.leaflet-dragging .leaflet-container {\n  cursor:move;\n  cursor:-webkit-grabbing;\n  cursor:   -moz-grabbing;\n  }\n\n.leaflet-zoom-box {\n  background:#fff;\n  border:2px dotted #202020;\n  opacity:0.5;\n  }\n\n/* general toolbar styles */\n.leaflet-control-layers,\n.leaflet-bar {\n  background-color:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-radius:3px;\n  box-shadow:none;\n  }\n.leaflet-bar a,\n.leaflet-bar a:hover {\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  border-bottom:1px solid #ddd;\n  border-bottom-color:rgba(0,0,0,0.10);\n  }\n  .leaflet-bar a:hover,\n  .leaflet-bar a:active {\n    background-color:#f8f8f8;\n    cursor:pointer;\n    }\n  .leaflet-bar a:hover:first-child {\n    border-radius:3px 3px 0 0;\n    }\n  .leaflet-bar a:hover:last-child {\n    border-bottom:none;\n    border-radius:0 0 3px 3px;\n    }\n  .leaflet-bar a:hover:only-of-type {\n    border-radius:3px;\n    }\n\n.leaflet-bar .leaflet-disabled {\n  cursor:default;\n  opacity:0.75;\n  }\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n  display:block;\n  content:'';\n  text-indent:-999em;\n  }\n\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n  display:none;\n  }\n  .leaflet-control-layers-expanded .leaflet-control-layers-list {\n    display:block;\n    position:relative;\n    }\n\n.leaflet-control-layers-expanded {\n  background:#fff;\n  padding:6px 10px 6px 6px;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  }\n.leaflet-control-layers-selector {\n  margin-top:2px;\n  position:relative;\n  top:1px;\n  }\n.leaflet-control-layers label {\n  display: block;\n  }\n.leaflet-control-layers-separator {\n  height:0;\n  border-top:1px solid #ddd;\n  border-top-color:rgba(0,0,0,0.10);\n  margin:5px -10px 5px -6px;\n  }\n\n.leaflet-container .leaflet-control-attribution {\n  background-color:rgba(255,255,255,0.5);\n  margin:0;\n  box-shadow:none;\n  }\n  .leaflet-container .leaflet-control-attribution a,\n  .leaflet-container .map-info-container a {\n    color:#404040;\n    }\n    .leaflet-control-attribution a:hover,\n    .map-info-container a:hover {\n      color:inherit;\n      text-decoration:underline;\n      }\n\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n  padding:0 5px;\n  }\n  .leaflet-left .leaflet-control-scale    { margin-left:5px; }\n  .leaflet-bottom .leaflet-control-scale  { margin-bottom:5px; }\n\n/* Used for smaller map containers & triggered by container size */\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution { margin:10px; }\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution {\n  background:#fff;\n  border-radius:3px 13px 13px 3px;\n  padding:3px 31px 3px 3px;\n  visibility:hidden;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover {\n    visibility:visible;\n    }\n\n.leaflet-control-attribution.leaflet-compact-attribution:after {\n  content:'';\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  background-position:0 -78px;\n  border-radius:50%;\n  position:absolute;\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  bottom:0;\n  z-index:1;\n  visibility:visible;\n  cursor:pointer;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover:after { background-color:#fff; }\n\n.leaflet-right .leaflet-control-attribution.leaflet-compact-attribution:after { right:0; }\n.leaflet-left .leaflet-control-attribution.leaflet-compact-attribution:after { left:0; }\n\n.leaflet-control-scale-line {\n  background-color:rgba(255,255,255,0.5);\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-top:none;\n  padding:2px 5px 1px;\n  white-space:nowrap;\n  overflow:hidden;\n  }\n  .leaflet-control-scale-line:not(:first-child) {\n    border-top:2px solid #ddd;\n    border-top-color:rgba(0,0,0,0.10);\n    border-bottom:none;\n    margin-top:-2px;\n    }\n  .leaflet-control-scale-line:not(:first-child):not(:last-child) {\n    border-bottom:2px solid #777;\n    }\n\n/* popup */\n.leaflet-popup {\n  position:absolute;\n  text-align:center;\n  pointer-events:none;\n  }\n.leaflet-popup-content-wrapper {\n  padding:1px;\n  text-align:left;\n  pointer-events:all;\n  }\n.leaflet-popup-content {\n  padding:10px 10px 15px;\n  margin:0;\n  line-height:inherit;\n  }\n  .leaflet-popup-close-button + .leaflet-popup-content-wrapper .leaflet-popup-content {\n    padding-top:15px;\n    }\n\n.leaflet-popup-tip-container {\n  width:20px;\n  height:20px;\n  margin:0 auto;\n  position:relative;\n  }\n.leaflet-popup-tip {\n  width:0;\n\theight:0;\n  margin:0;\n\tborder-left:10px solid transparent;\n\tborder-right:10px solid transparent;\n\tborder-top:10px solid #fff;\n  box-shadow:none;\n  }\n.leaflet-popup-close-button {\n  text-indent:-999em;\n  position:absolute;\n  top:0;right:0;\n  pointer-events:all;\n  }\n  .leaflet-popup-close-button:hover {\n    background-color:#f8f8f8;\n    }\n\n.leaflet-popup-scrolled {\n  overflow:auto;\n  border-bottom:1px solid #ddd;\n  border-top:1px solid #ddd;\n  }\n\n/* div icon */\n.leaflet-div-icon {\n  background:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  }\n.leaflet-editing-icon {\n  border-radius:3px;\n  }\n\n/* Leaflet + Mapbox\n------------------------------------------------------- */\n.leaflet-bar a,\n.mapbox-icon,\n.map-tooltip.closable .close,\n.leaflet-control-layers-toggle,\n.leaflet-popup-close-button,\n.mapbox-button-icon:before {\n  content:'';\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  background-repeat:no-repeat;\n  }\n.leaflet-bar a {\n  display:block;\n  }\n\n.leaflet-control-attribution:after,\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out,\n.leaflet-popup-close-button,\n.leaflet-control-layers-toggle,\n.leaflet-container.dark .map-tooltip .close,\n.map-tooltip .close,\n.mapbox-icon {\n  opacity: .75;\n  background-image:url(" + escape(__webpack_require__(188)) + ");\n  background-repeat:no-repeat;\n  background-size:26px 260px;\n  }\n  .leaflet-container.dark .leaflet-control-attribution:after,\n  .mapbox-button-icon:before,\n  .leaflet-container.dark .leaflet-control-zoom-in,\n  .leaflet-container.dark .leaflet-control-zoom-out,\n  .leaflet-container.dark .leaflet-control-layers-toggle,\n  .leaflet-container.dark .mapbox-icon {\n    opacity: 1;\n    background-image:url(" + escape(__webpack_require__(189)) + ");\n    background-size:26px 260px;\n    }\n  .leaflet-bar .leaflet-control-zoom-in                 { background-position:0 0; }\n  .leaflet-bar .leaflet-control-zoom-out                { background-position:0 -26px; }\n  .map-tooltip.closable .close,\n  .leaflet-popup-close-button {\n    background-position:-3px -55px;\n    width:20px;\n    height:20px;\n    border-radius:0 3px 0 0;\n    }\n  .mapbox-icon-info                                     { background-position:0 -78px; }\n  .leaflet-control-layers-toggle                        { background-position:0 -104px; }\n  .mapbox-icon.mapbox-icon-share:before, .mapbox-icon.mapbox-icon-share         { background-position:0 -130px; }\n  .mapbox-icon.mapbox-icon-geocoder:before, .mapbox-icon.mapbox-icon-geocoder   { background-position:0 -156px; }\n  .mapbox-icon-facebook:before, .mapbox-icon-facebook   { background-position:0 -182px; }\n  .mapbox-icon-twitter:before, .mapbox-icon-twitter     { background-position:0 -208px; }\n  .mapbox-icon-pinterest:before, .mapbox-icon-pinterest { background-position:0 -234px; }\n\n.leaflet-popup-content-wrapper,\n.map-legends,\n.map-tooltip {\n  background:#fff;\n  border-radius:3px;\n  box-shadow:0 1px 2px rgba(0,0,0,0.10);\n  }\n.map-legends,\n.map-tooltip {\n  max-width:300px;\n  }\n.map-legends .map-legend {\n  padding:10px;\n  }\n.map-tooltip {\n  z-index:999999;\n  padding:10px;\n  min-width:180px;\n  max-height:400px;\n  overflow:auto;\n  opacity:1;\n  -webkit-transition:opacity 150ms;\n     -moz-transition:opacity 150ms;\n       -o-transition:opacity 150ms;\n          transition:opacity 150ms;\n  }\n\n.map-tooltip .close {\n  text-indent:-999em;\n  overflow:hidden;\n  display:none;\n  }\n  .map-tooltip.closable .close {\n    position:absolute;\n    top:0;right:0;\n    border-radius:3px;\n    }\n    .map-tooltip.closable .close:active  {\n      background-color:#f8f8f8;\n      }\n\n.leaflet-control-interaction {\n  position:absolute;\n  top:10px;\n  right:10px;\n  width:300px;\n  }\n.leaflet-popup-content .marker-title {\n  font-weight:bold;\n  }\n.leaflet-control .mapbox-button {\n  background-color:#fff;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  padding:5px 10px;\n  border-radius:3px;\n  }\n\n/* Share modal\n------------------------------------------------------- */\n.mapbox-modal > div {\n  position:absolute;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  z-index:-1;\n  overflow-y:auto;\n  }\n  .mapbox-modal.active > div {\n    z-index:99999;\n    transition:all .2s, z-index 0 0;\n    }\n\n.mapbox-modal .mapbox-modal-mask {\n  background:rgba(0,0,0,0.5);\n  opacity:0;\n  }\n  .mapbox-modal.active .mapbox-modal-mask { opacity:1; }\n\n.mapbox-modal .mapbox-modal-content {\n  -webkit-transform:translateY(-100%);\n     -moz-transform:translateY(-100%);\n      -ms-transform:translateY(-100%);\n          transform:translateY(-100%);\n  }\n  .mapbox-modal.active .mapbox-modal-content {\n    -webkit-transform:translateY(0);\n       -moz-transform:translateY(0);\n        -ms-transform:translateY(0);\n            transform:translateY(0);\n    }\n\n.mapbox-modal-body {\n  position:relative;\n  background:#fff;\n  padding:20px;\n  z-index:1000;\n  width:50%;\n  margin:20px 0 20px 25%;\n  }\n.mapbox-share-buttons {\n  margin:0 0 20px;\n  }\n.mapbox-share-buttons a {\n  width:33.3333%;\n  border-left:1px solid #fff;\n  text-align:center;\n  border-radius:0;\n  }\n  .mapbox-share-buttons a:last-child  { border-radius:0 3px 3px 0; }\n  .mapbox-share-buttons a:first-child { border:none; border-radius:3px 0 0 3px; }\n\n.mapbox-modal input {\n  width:100%;\n  height:40px;\n  padding:10px;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  color:rgba(0,0,0,0.5);\n  }\n\n/* Info Control\n------------------------------------------------------- */\n.leaflet-control.mapbox-control-info {\n  margin:5px 30px 10px 10px;\n  min-height:26px;\n  }\n  .leaflet-right .leaflet-control.mapbox-control-info {\n    margin:5px 10px 10px 30px;\n    }\n\n.mapbox-info-toggle {\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  border-radius:50%;\n  position:absolute;\n  bottom:0;left:0;\n  z-index:1;\n  }\n  .leaflet-right .mapbox-control-info .mapbox-info-toggle  { left:auto; right:0; }\n  .mapbox-info-toggle:hover { background-color:#fff; }\n\n.map-info-container {\n  background:#fff;\n  padding:3px 5px 3px 27px;\n  display:none;\n  position:relative;\n  bottom:0;left:0;\n  border-radius:13px 3px 3px 13px;\n  }\n  .leaflet-right .map-info-container {\n    left:auto;\n    right:0;\n    padding:3px 27px 3px 5px;\n    border-radius:3px 13px 13px 3px;\n    }\n\n.mapbox-control-info.active .map-info-container { display:inline-block; }\n.leaflet-container .mapbox-improve-map { font-weight:bold; }\n\n/* Geocoder\n------------------------------------------------------- */\n.leaflet-control-mapbox-geocoder {\n  position:relative;\n  }\n.leaflet-control-mapbox-geocoder.searching {\n  opacity:0.75;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-wrap {\n  background:#fff;\n  position:absolute;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  overflow:hidden;\n  left:26px;\n  height:28px;\n  width:0;\n  top:-1px;\n  border-radius:0 3px 3px 0;\n  opacity:0;\n  -webkit-transition:opacity 100ms;\n     -moz-transition:opacity 100ms;\n       -o-transition:opacity 100ms;\n          transition:opacity 100ms;\n  }\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-wrap {\n  width:180px;\n  opacity:1;\n  }\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle,\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle:hover {\n  border-bottom:none;\n  }\n.leaflet-control-mapbox-geocoder-toggle {\n  border-radius:3px;\n  }\n.leaflet-control-mapbox-geocoder.active,\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-top-right-radius:0;\n  border-bottom-right-radius:0;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n  background:transparent;\n  border:0;\n  width:180px;\n  padding:0 0 0 10px;\n  height:26px;\n  outline:none;\n  }\n.leaflet-control-mapbox-geocoder-results {\n  width:180px;\n  position:absolute;\n  left:26px;\n  top:25px;\n  border-radius:0 0 3px 3px;\n  }\n  .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-results {\n    background:#fff;\n    border:1px solid #999;\n    border-color:rgba(0,0,0,0.4);\n    }\n.leaflet-control-mapbox-geocoder-results a,\n.leaflet-control-mapbox-geocoder-results span {\n  padding:0 10px;\n  text-overflow:ellipsis;\n  white-space:nowrap;\n  display:block;\n  width:100%;\n  font-size:12px;\n  line-height:26px;\n  text-align:left;\n  overflow:hidden;\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a:hover,\n  .leaflet-control-mapbox-geocoder-results a:hover {\n    background:#f8f8f8;\n    opacity:1;\n    }\n\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap,\n.leaflet-right .leaflet-control-mapbox-geocoder-results {\n  left:auto;\n  right:26px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap {\n  border-radius:3px 0 0 3px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder.active,\n.leaflet-right .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-radius:0 3px 3px 0;\n  }\n\n.leaflet-bottom .leaflet-control-mapbox-geocoder-results {\n  top:auto;\n  bottom:25px;\n  border-radius:3px 3px 0 0;\n  }\n\n/* Mapbox Logo\n------------------------------------------------------- */\n.mapbox-logo-true:before {\n  content:'';\n  display:inline-block;\n  width:61px;\n  height:19px;\n  vertical-align:middle;\n}\n.mapbox-logo-true {\n  background-repeat:no-repeat;\n  background-size:61px 19px;\n  background-image:url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI2NSIgaGVpZ2h0PSIyMCI+PGRlZnMvPjxtZXRhZGF0YT48cmRmOlJERj48Y2M6V29yayByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIvPjxkYzp0aXRsZS8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNjEuODQ4MywtOTguNTAzOTUpIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0ib3BhY2l0eTowLjI1O2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLW9wYWNpdHk6MTtzdHJva2UtZGFzaGFycmF5Om5vbmUiPjxwYXRoIGQ9Ik0gNS4yOCAxLjUgQyA0LjU0IDEuNTYgMy45IDIuMjUgMy45MSAzIGwgMCAxMS44OCBjIDAuMDIgMC43NyAwLjcyIDEuNDcgMS41IDEuNDcgbCAxLjc1IDAgYyAwLjc4IDAgMS40OCAtMC42OSAxLjUgLTEuNDcgbCAwIC00LjI4IDAuNzIgMS4xOSBjIDAuNTMgMC44NyAyLjAzIDAuODcgMi41NiAwIGwgMC43MiAtMS4xOSAwIDQuMjggYyAwLjAyIDAuNzYgMC43IDEuNDUgMS40NyAxLjQ3IGwgMS43NSAwIGMgMC43OCAwIDEuNDggLTAuNjkgMS41IC0xLjQ3IGwgMCAtMC4xNiBjIDEuMDIgMS4xMiAyLjQ2IDEuODEgNC4wOSAxLjgxIGwgNC4wOSAwIDAgMS40NyBjIC0wIDAuNzggMC42OSAxLjQ4IDEuNDcgMS41IGwgMS43NSAwIGMgMC43OSAtMCAxLjUgLTAuNzEgMS41IC0xLjUgbCAwLjAyIC0xLjQ3IGMgMS43MiAwIDMuMDggLTAuNjQgNC4xNCAtMS42OSBsIDAgMC4xOSBjIDAgMC4zOSAwLjE2IDAuNzkgMC40NCAxLjA2IDAuMjggMC4yOCAwLjY3IDAuNDQgMS4wNiAwLjQ0IGwgMy4zMSAwIGMgMi4wMyAwIDMuODUgLTEuMDYgNC45MSAtMi42OSAxLjA1IDEuNjEgMi44NCAyLjY5IDQuODggMi42OSAxLjAzIDAgMS45OCAtMC4yNyAyLjgxIC0wLjc1IDAuMjggMC4zNSAwLjczIDAuNTcgMS4xOSAwLjU2IGwgMi4xMiAwIGMgMC40OCAwLjAxIDAuOTcgLTAuMjMgMS4yNSAtMC42MiBsIDAuOTEgLTEuMjggMC45MSAxLjI4IGMgMC4yOCAwLjM5IDAuNzQgMC42MyAxLjIyIDAuNjIgbCAyLjE2IDAgQyA2Mi42NyAxNi4zMyA2My40MiAxNC44OSA2Mi44MSAxNCBMIDYwLjIyIDEwLjM4IDYyLjYyIDcgQyA2My4yNiA2LjExIDYyLjUgNC42MiA2MS40MSA0LjYyIGwgLTIuMTYgMCBDIDU4Ljc4IDQuNjIgNTguMzEgNC44NiA1OC4wMyA1LjI1IEwgNTcuMzEgNi4yOCA1Ni41NiA1LjI1IEMgNTYuMjkgNC44NiA1NS44MiA0LjYyIDU1LjM0IDQuNjIgbCAtMi4xNiAwIGMgLTAuNDkgLTAgLTAuOTcgMC4yNSAtMS4yNSAwLjY2IC0wLjg2IC0wLjUxIC0xLjg0IC0wLjgxIC0yLjkxIC0wLjgxIC0yLjAzIDAgLTMuODMgMS4wOCAtNC44OCAyLjY5IEMgNDMuMSA1LjUzIDQxLjI3IDQuNDcgMzkuMTkgNC40NyBMIDM5LjE5IDMgQyAzOS4xOSAyLjYxIDM5LjAzIDIuMjEgMzguNzUgMS45NCAzOC40NyAxLjY2IDM4LjA4IDEuNSAzNy42OSAxLjUgbCAtMS43NSAwIGMgLTAuNzEgMCAtMS41IDAuODMgLTEuNSAxLjUgbCAwIDMuMTYgQyAzMy4zOCA1LjEgMzEuOTYgNC40NyAzMC4zOCA0LjQ3IGwgLTMuMzQgMCBjIC0wLjc3IDAuMDIgLTEuNDcgMC43MiAtMS40NyAxLjUgbCAwIDAuMzEgYyAtMS4wMiAtMS4xMiAtMi40NiAtMS44MSAtNC4wOSAtMS44MSAtMS42MyAwIC0zLjA3IDAuNyAtNC4wOSAxLjgxIEwgMTcuMzggMyBjIC0wIC0wLjc5IC0wLjcxIC0xLjUgLTEuNSAtMS41IEwgMTQuNSAxLjUgQyAxMy41NSAxLjUgMTIuMjggMS44NyAxMS42NiAyLjk0IGwgLTEgMS42OSAtMSAtMS42OSBDIDkuMDMgMS44NyA3Ljc3IDEuNSA2LjgxIDEuNSBsIC0xLjQxIDAgQyA1LjM2IDEuNSA1LjMyIDEuNSA1LjI4IDEuNSB6IG0gMTYuMTkgNy43MiBjIDAuNTMgMCAwLjk0IDAuMzUgMC45NCAxLjI4IGwgMCAxLjI4IC0wLjk0IDAgYyAtMC41MiAwIC0wLjk0IC0wLjM4IC0wLjk0IC0xLjI4IC0wIC0wLjkgMC40MiAtMS4yOCAwLjk0IC0xLjI4IHogbSA4LjgxIDAgYyAwLjgzIDAgMS4xOCAwLjY4IDEuMTkgMS4yOCAwLjAxIDAuOTQgLTAuNjIgMS4yOCAtMS4xOSAxLjI4IHogbSA4LjcyIDAgYyAwLjcyIDAgMS4zNyAwLjYgMS4zNyAxLjI4IDAgMC43NyAtMC41MSAxLjI4IC0xLjM3IDEuMjggeiBtIDEwLjAzIDAgYyAwLjU4IDAgMS4wOSAwLjUgMS4wOSAxLjI4IDAgMC43OCAtMC41MSAxLjI4IC0xLjA5IDEuMjggLTAuNTggMCAtMS4xMiAtMC41IC0xLjEyIC0xLjI4IDAgLTAuNzggMC41NCAtMS4yOCAxLjEyIC0xLjI4IHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZm9udC1zaXplOm1lZGl1bTtmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTtsaW5lLWhlaWdodDpub3JtYWw7bGV0dGVyLXNwYWNpbmc6bm9ybWFsO3dvcmQtc3BhY2luZzpub3JtYWw7dGV4dC10cmFuc2Zvcm06bm9uZTtkaXJlY3Rpb246bHRyO2Jsb2NrLXByb2dyZXNzaW9uOnRiO3dyaXRpbmctbW9kZTpsci10Yjt0ZXh0LWFuY2hvcjpzdGFydDtiYXNlbGluZS1zaGlmdDpiYXNlbGluZTtjb2xvcjojMDAwMDAwO2ZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZTtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7bWFya2VyOm5vbmU7dmlzaWJpbGl0eTp2aXNpYmxlO2Rpc3BsYXk6aW5saW5lO292ZXJmbG93OnZpc2libGU7ZW5hYmxlLWJhY2tncm91bmQ6YWNjdW11bGF0ZTtmb250LWZhbWlseTpTYW5zOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246U2FucyIvPjwvZz48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0iZmlsbDojZmZmZmZmIj48cGF0aCBkPSJtIDUuNDEgMyAwIDEyIDEuNzUgMCAwIC05LjkxIDMuNSA1Ljk0IDMuNDcgLTUuOTQgMCA5LjkxIDEuNzUgMCAwIC0xMiBMIDE0LjUgMyBDIDEzLjggMyAxMy4yNSAzLjE2IDEyLjk0IDMuNjkgTCAxMC42NiA3LjU5IDguMzggMy42OSBDIDguMDcgMy4xNiA3LjUxIDMgNi44MSAzIHogTSAzNiAzIGwgMCAxMi4wMyAzLjI1IDAgYyAyLjQ0IDAgNC4zOCAtMS45MSA0LjM4IC00LjUzIDAgLTIuNjIgLTEuOTMgLTQuNDcgLTQuMzggLTQuNDcgQyAzOC43IDYuMDMgMzguMzIgNiAzNy43NSA2IGwgMCAtMyB6IE0gMjEuNDcgNS45NyBjIC0yLjQ0IDAgLTQuMTkgMS45MSAtNC4xOSA0LjUzIDAgMi42MiAxLjc1IDQuNTMgNC4xOSA0LjUzIGwgNC4xOSAwIDAgLTQuNTMgYyAwIC0yLjYyIC0xLjc1IC00LjUzIC00LjE5IC00LjUzIHogbSAyNy41NiAwIGMgLTIuNDEgMCAtNC4zOCAyLjAzIC00LjM4IDQuNTMgMCAyLjUgMS45NyA0LjUzIDQuMzggNC41MyAyLjQxIDAgNC4zNCAtMi4wMyA0LjM0IC00LjUzIDAgLTIuNSAtMS45NCAtNC41MyAtNC4zNCAtNC41MyB6IG0gLTIyIDAuMDMgMCAxMiAxLjc1IDAgMCAtMi45NyBjIDAuNTcgMCAxLjA0IC0wIDEuNTkgMCAyLjQ0IDAgNC4zNCAtMS45MSA0LjM0IC00LjUzIDAgLTIuNjIgLTEuOSAtNC41IC00LjM0IC00LjUgeiBtIDI2LjE2IDAgMy4wMyA0LjM4IC0zLjE5IDQuNjIgMi4xMiAwIEwgNTcuMzEgMTEuOTEgNTkuNDQgMTUgNjEuNTkgMTUgNTguMzggMTAuMzggNjEuNDEgNiA1OS4yNSA2IDU3LjMxIDguODEgNTUuMzQgNiB6IE0gMjEuNDcgNy43MiBjIDEuNCAwIDIuNDQgMS4xOSAyLjQ0IDIuNzggbCAwIDIuNzggLTIuNDQgMCBjIC0xLjQgMCAtMi40NCAtMS4yMSAtMi40NCAtMi43OCAtMCAtMS41NyAxLjA0IC0yLjc4IDIuNDQgLTIuNzggeiBtIDI3LjU2IDAgYyAxLjQ0IDAgMi41OSAxLjI0IDIuNTkgMi43OCAwIDEuNTQgLTEuMTUgMi43OCAtMi41OSAyLjc4IC0xLjQ0IDAgLTIuNjIgLTEuMjQgLTIuNjIgLTIuNzggMCAtMS41NCAxLjE4IC0yLjc4IDIuNjIgLTIuNzggeiBtIC0yMC4yNSAwLjAzIDEuNTkgMCBjIDEuNTkgMCAyLjU5IDEuMjggMi41OSAyLjc1IDAgMS40NyAtMS4xMyAyLjc4IC0yLjU5IDIuNzggbCAtMS41OSAwIHogbSA4Ljk3IDAgMS41IDAgYyAxLjQ3IDAgMi42MiAxLjI4IDIuNjIgMi43NSAwIDEuNDcgLTEuMDQgMi43OCAtMi42MiAyLjc4IGwgLTEuNSAwIHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIi8+PC9nPjwvZz48L3N2Zz4=');\n}\n\n/* Dark Theme\n------------------------------------------------------- */\n.leaflet-container.dark .leaflet-bar {\n  background-color:#404040;\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-bar a {\n    color:#404040;\n    border-color:rgba(0,0,0,0.5);\n    }\n  .leaflet-container.dark .leaflet-bar a:active,\n  .leaflet-container.dark .leaflet-bar a:hover {\n    background-color:#505050;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:after,\n.leaflet-container.dark .mapbox-info-toggle,\n.leaflet-container.dark .map-info-container,\n.leaflet-container.dark .leaflet-control-attribution {\n  background-color:rgba(0,0,0,0.5);\n  color:#f8f8f8;\n  }\n  .leaflet-container.dark .leaflet-control-attribution a,\n  .leaflet-container.dark .leaflet-control-attribution a:hover,\n  .leaflet-container.dark .map-info-container a,\n  .leaflet-container.dark .map-info-container a:hover {\n    color:#fff;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:hover:after {\n  background-color:#000;\n  }\n.leaflet-container.dark .leaflet-control-layers-list span {\n  color:#f8f8f8;\n  }\n.leaflet-container.dark .leaflet-control-layers-separator {\n  border-top-color:rgba(255,255,255,0.10);\n  }\n.leaflet-container.dark .leaflet-bar a.leaflet-disabled,\n.leaflet-container.dark .leaflet-control .mapbox-button.disabled {\n  background-color:#252525;\n  color:#404040;\n  }\n.leaflet-container.dark .leaflet-control-mapbox-geocoder > div {\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a {\n    border-color:#ddd #202020;\n    border-color:rgba(0,0,0,0.10) rgba(0,0,0,0.75);\n    }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results span {\n    border-color:#202020;\n    border-color:rgba(0,0,0,0.75);\n    }\n\n/* Larger Screens\n------------------------------------------------------- */\n@media only screen and (max-width:800px) {\n.mapbox-modal-body {\n  width:83.3333%;\n  margin-left:8.3333%;\n  }\n}\n\n/* Smaller Screens\n------------------------------------------------------- */\n@media only screen and (max-width:640px) {\n.mapbox-modal-body {\n  width:100%;\n  height:100%;\n  margin:0;\n  }\n}\n\n/* Print\n------------------------------------------------------- */\n@media print { .mapbox-improve-map { display:none; } }\n\n/* Browser Fixes\n------------------------------------------------------- */\n/* VML support for IE8 */\n.leaflet-vml-shape { width:1px; height:1px; }\n.lvml { behavior:url(#default#VML); display:inline-block; position:absolute; }\n/* Map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img.leaflet-tile { max-width:none !important; }\n/* Markers are broken in FF/IE if you have max-width: 100% on marker images */\n.leaflet-container img.leaflet-marker-icon { max-width:none; }\n/* Stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer { max-width:15000px !important; }\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg { -moz-user-select:none; }\n/* Older IEs don't support the translateY property for display animation */\n.leaflet-oldie .mapbox-modal .mapbox-modal-content        { display:none; }\n.leaflet-oldie .mapbox-modal.active .mapbox-modal-content { display:block; }\n.map-tooltip { width:280px\\8; /* < IE9 */ }\n\n/* < IE8 */\n.leaflet-oldie .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-popup-close-button,\n.leaflet-oldie .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .map-tooltip .close,\n.leaflet-oldie .map-tooltip .close,\n.leaflet-oldie .mapbox-icon {\n  background-image:url('data:image/png;base64,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');\n}\n.leaflet-oldie .mapbox-button-icon:before,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .mapbox-icon {\n  background-image:url('data:image/png;base64,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');\n}\n\n.leaflet-oldie .mapbox-logo-true {\n  background-image: none;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 189 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "icons-000000@2x.4c2a02.png";
 
 /***/ }),
-/* 190 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "icons-ffffff@2x.f9d13b.png";
 
 /***/ }),
-/* 191 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(192);
+var content = __webpack_require__(191);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56610,7 +56394,7 @@ if(false) {
 }
 
 /***/ }),
-/* 192 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56624,13 +56408,13 @@ exports.push([module.i, ".mapboxgl-map{font:12px/20px Helvetica Neue,Arial,Helve
 
 
 /***/ }),
-/* 193 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(194);
+var content = __webpack_require__(193);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56655,7 +56439,7 @@ if(false) {
 }
 
 /***/ }),
-/* 194 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56669,13 +56453,13 @@ exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color:
 
 
 /***/ }),
-/* 195 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(196);
+var content = __webpack_require__(195);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56700,40 +56484,40 @@ if(false) {
 }
 
 /***/ }),
-/* 196 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(72);
+var escape = __webpack_require__(73);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
 
 // module
-exports.push([module.i, "/* ================================================================== */\n/* Toolbars\n/* ================================================================== */\n\n.leaflet-draw-section {\n\tposition: relative;\n}\n\n.leaflet-draw-toolbar {\n\tmargin-top: 12px;\n}\n\n.leaflet-draw-toolbar-top {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-toolbar-notop a:first-child {\n\tborder-top-right-radius: 0;\n}\n\n.leaflet-draw-toolbar-nobottom a:last-child {\n\tborder-bottom-right-radius: 0;\n}\n\n.leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(197)) + ");\n\tbackground-repeat: no-repeat;\n}\n\n.leaflet-retina .leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(198)) + ");\n\tbackground-size: 270px 30px;\n}\n\n.leaflet-draw a {\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n}\n\n/* ================================================================== */\n/* Toolbar actions menu\n/* ================================================================== */\n\n.leaflet-draw-actions {\n\tdisplay: none;\n\tlist-style: none;\n\tmargin: 0;\n\tpadding: 0;\n\tposition: absolute;\n\tleft: 26px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */\n\ttop: 0;\n\twhite-space: nowrap;\n}\n\n.leaflet-touch .leaflet-draw-actions {\n\tleft: 32px;\n}\n\n.leaflet-right .leaflet-draw-actions {\n\tright:26px;\n\tleft:auto;\n}\n\n.leaflet-touch .leaflet-right .leaflet-draw-actions {\n\tright:32px;\n\tleft:auto;\n}\n\n.leaflet-draw-actions li {\n\tdisplay: inline-block;\n}\n\n.leaflet-draw-actions li:first-child a {\n\tborder-left: none;\n}\n\n.leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0 4px 4px 0;\n\t        border-radius: 0 4px 4px 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0;\n\t        border-radius: 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:first-child a {\n\t-webkit-border-radius: 4px 0 0 4px;\n\t        border-radius: 4px 0 0 4px;\n}\n\n.leaflet-draw-actions a {\n\tbackground-color: #919187;\n\tborder-left: 1px solid #AAA;\n\tcolor: #FFF;\n\tfont: 11px/19px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tline-height: 28px;\n\ttext-decoration: none;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\theight: 28px;\n}\n\n.leaflet-touch .leaflet-draw-actions a {\n\tfont-size: 12px;\n\tline-height: 30px;\n\theight: 30px;\n}\n\n.leaflet-draw-actions-bottom {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-actions-top {\n\tmargin-top: 1px;\n}\n\n.leaflet-draw-actions-top a,\n.leaflet-draw-actions-bottom a {\n\theight: 27px;\n\tline-height: 27px;\n}\n\n.leaflet-draw-actions a:hover {\n\tbackground-color: #A0A098;\n}\n\n.leaflet-draw-actions-top.leaflet-draw-actions-bottom a {\n\theight: 26px;\n\tline-height: 26px;\n}\n\n/* ================================================================== */\n/* Draw toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: -2px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: 0 -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -31px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -29px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -62px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -60px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -92px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -90px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -122px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -120px -1px;\n}\n\n/* ================================================================== */\n/* Edit toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -152px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -150px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -182px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -180px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -212px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -210px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -242px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -240px -2px;\n}\n\n/* ================================================================== */\n/* Drawing styles\n/* ================================================================== */\n\n.leaflet-mouse-marker {\n\tbackground-color: #fff;\n\tcursor: crosshair;\n}\n\n.leaflet-draw-tooltip {\n\tbackground: rgb(54, 54, 54);\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder: 1px solid transparent;\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tcolor: #fff;\n\tfont: 12px/18px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tmargin-left: 20px;\n\tmargin-top: -21px;\n\tpadding: 4px 8px;\n\tposition: absolute;\n\tvisibility: hidden;\n\twhite-space: nowrap;\n\tz-index: 6;\n}\n\n.leaflet-draw-tooltip:before {\n\tborder-right: 6px solid black;\n\tborder-right-color: rgba(0, 0, 0, 0.5);\n\tborder-top: 6px solid transparent;\n\tborder-bottom: 6px solid transparent;\n\tcontent: \"\";\n\tposition: absolute;\n\ttop: 7px;\n\tleft: -7px;\n}\n\n.leaflet-error-draw-tooltip {\n\tbackground-color: #F2DEDE;\n\tborder: 1px solid #E6B6BD;\n\tcolor: #B94A48;\n}\n\n.leaflet-error-draw-tooltip:before {\n\tborder-right-color: #E6B6BD;\n}\n\n.leaflet-draw-tooltip-single {\n\tmargin-top: -12px\n}\n\n.leaflet-draw-tooltip-subtext {\n\tcolor: #f8d5e4;\n}\n\n.leaflet-draw-guide-dash {\n\tfont-size: 1%;\n\topacity: 0.6;\n\tposition: absolute;\n\twidth: 5px;\n\theight: 5px;\n}\n\n/* ================================================================== */\n/* Edit styles\n/* ================================================================== */\n\n.leaflet-edit-marker-selected {\n\tbackground: rgba(254, 87, 161, 0.1);\n\tborder: 4px dashed rgba(254, 87, 161, 0.6);\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tbox-sizing: content-box;\n}\n\n.leaflet-edit-move {\n\tcursor: move;\n}\n\n.leaflet-edit-resize {\n\tcursor: pointer;\n}\n\n/* ================================================================== */\n/* Old IE styles\n/* ================================================================== */\n\n.leaflet-oldie .leaflet-draw-toolbar {\n\tborder: 1px solid #999;\n}", ""]);
+exports.push([module.i, "/* ================================================================== */\n/* Toolbars\n/* ================================================================== */\n\n.leaflet-draw-section {\n\tposition: relative;\n}\n\n.leaflet-draw-toolbar {\n\tmargin-top: 12px;\n}\n\n.leaflet-draw-toolbar-top {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-toolbar-notop a:first-child {\n\tborder-top-right-radius: 0;\n}\n\n.leaflet-draw-toolbar-nobottom a:last-child {\n\tborder-bottom-right-radius: 0;\n}\n\n.leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(196)) + ");\n\tbackground-repeat: no-repeat;\n}\n\n.leaflet-retina .leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(197)) + ");\n\tbackground-size: 270px 30px;\n}\n\n.leaflet-draw a {\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n}\n\n/* ================================================================== */\n/* Toolbar actions menu\n/* ================================================================== */\n\n.leaflet-draw-actions {\n\tdisplay: none;\n\tlist-style: none;\n\tmargin: 0;\n\tpadding: 0;\n\tposition: absolute;\n\tleft: 26px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */\n\ttop: 0;\n\twhite-space: nowrap;\n}\n\n.leaflet-touch .leaflet-draw-actions {\n\tleft: 32px;\n}\n\n.leaflet-right .leaflet-draw-actions {\n\tright:26px;\n\tleft:auto;\n}\n\n.leaflet-touch .leaflet-right .leaflet-draw-actions {\n\tright:32px;\n\tleft:auto;\n}\n\n.leaflet-draw-actions li {\n\tdisplay: inline-block;\n}\n\n.leaflet-draw-actions li:first-child a {\n\tborder-left: none;\n}\n\n.leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0 4px 4px 0;\n\t        border-radius: 0 4px 4px 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0;\n\t        border-radius: 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:first-child a {\n\t-webkit-border-radius: 4px 0 0 4px;\n\t        border-radius: 4px 0 0 4px;\n}\n\n.leaflet-draw-actions a {\n\tbackground-color: #919187;\n\tborder-left: 1px solid #AAA;\n\tcolor: #FFF;\n\tfont: 11px/19px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tline-height: 28px;\n\ttext-decoration: none;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\theight: 28px;\n}\n\n.leaflet-touch .leaflet-draw-actions a {\n\tfont-size: 12px;\n\tline-height: 30px;\n\theight: 30px;\n}\n\n.leaflet-draw-actions-bottom {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-actions-top {\n\tmargin-top: 1px;\n}\n\n.leaflet-draw-actions-top a,\n.leaflet-draw-actions-bottom a {\n\theight: 27px;\n\tline-height: 27px;\n}\n\n.leaflet-draw-actions a:hover {\n\tbackground-color: #A0A098;\n}\n\n.leaflet-draw-actions-top.leaflet-draw-actions-bottom a {\n\theight: 26px;\n\tline-height: 26px;\n}\n\n/* ================================================================== */\n/* Draw toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: -2px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: 0 -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -31px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -29px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -62px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -60px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -92px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -90px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -122px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -120px -1px;\n}\n\n/* ================================================================== */\n/* Edit toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -152px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -150px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -182px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -180px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -212px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -210px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -242px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -240px -2px;\n}\n\n/* ================================================================== */\n/* Drawing styles\n/* ================================================================== */\n\n.leaflet-mouse-marker {\n\tbackground-color: #fff;\n\tcursor: crosshair;\n}\n\n.leaflet-draw-tooltip {\n\tbackground: rgb(54, 54, 54);\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder: 1px solid transparent;\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tcolor: #fff;\n\tfont: 12px/18px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tmargin-left: 20px;\n\tmargin-top: -21px;\n\tpadding: 4px 8px;\n\tposition: absolute;\n\tvisibility: hidden;\n\twhite-space: nowrap;\n\tz-index: 6;\n}\n\n.leaflet-draw-tooltip:before {\n\tborder-right: 6px solid black;\n\tborder-right-color: rgba(0, 0, 0, 0.5);\n\tborder-top: 6px solid transparent;\n\tborder-bottom: 6px solid transparent;\n\tcontent: \"\";\n\tposition: absolute;\n\ttop: 7px;\n\tleft: -7px;\n}\n\n.leaflet-error-draw-tooltip {\n\tbackground-color: #F2DEDE;\n\tborder: 1px solid #E6B6BD;\n\tcolor: #B94A48;\n}\n\n.leaflet-error-draw-tooltip:before {\n\tborder-right-color: #E6B6BD;\n}\n\n.leaflet-draw-tooltip-single {\n\tmargin-top: -12px\n}\n\n.leaflet-draw-tooltip-subtext {\n\tcolor: #f8d5e4;\n}\n\n.leaflet-draw-guide-dash {\n\tfont-size: 1%;\n\topacity: 0.6;\n\tposition: absolute;\n\twidth: 5px;\n\theight: 5px;\n}\n\n/* ================================================================== */\n/* Edit styles\n/* ================================================================== */\n\n.leaflet-edit-marker-selected {\n\tbackground: rgba(254, 87, 161, 0.1);\n\tborder: 4px dashed rgba(254, 87, 161, 0.6);\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tbox-sizing: content-box;\n}\n\n.leaflet-edit-move {\n\tcursor: move;\n}\n\n.leaflet-edit-resize {\n\tcursor: pointer;\n}\n\n/* ================================================================== */\n/* Old IE styles\n/* ================================================================== */\n\n.leaflet-oldie .leaflet-draw-toolbar {\n\tborder: 1px solid #999;\n}", ""]);
 
 // exports
 
 
 /***/ }),
-/* 197 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "spritesheet.429614.png";
 
 /***/ }),
-/* 198 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "spritesheet-2x.2f19f5.png";
 
 /***/ }),
-/* 199 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(200);
+var content = __webpack_require__(199);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56758,7 +56542,7 @@ if(false) {
 }
 
 /***/ }),
-/* 200 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56772,7 +56556,7 @@ exports.push([module.i, ".leaflet-contextmenu {\n    display: none;\n\tbox-shado
 
 
 /***/ }),
-/* 201 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -59225,7 +59009,7 @@ if (true) {
 
 
 /***/ }),
-/* 202 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59241,7 +59025,7 @@ var _fieldCollection = __webpack_require__(53);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
-var _model = __webpack_require__(203);
+var _model = __webpack_require__(202);
 
 var recordModel = _interopRequireWildcard(_model);
 
@@ -59467,7 +59251,7 @@ var RecordCollection = function () {
 exports.default = RecordCollection;
 
 /***/ }),
-/* 203 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59933,7 +59717,7 @@ exports.recordFieldValue = recordFieldValue;
 exports.recordField = recordField;
 
 /***/ }),
-/* 204 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59998,7 +59782,7 @@ var StatusCollection = function () {
 exports.default = StatusCollection;
 
 /***/ }),
-/* 205 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60197,7 +59981,7 @@ var deleteRecord = function deleteRecord(services) {
 exports.default = deleteRecord;
 
 /***/ }),
-/* 206 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60354,7 +60138,7 @@ var propertyRecord = function propertyRecord(services) {
 exports.default = propertyRecord;
 
 /***/ }),
-/* 207 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60372,7 +60156,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(74);
+var _index = __webpack_require__(75);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -60421,7 +60205,7 @@ var pushRecord = function pushRecord(services, datas) {
 exports.default = pushRecord;
 
 /***/ }),
-/* 208 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60437,7 +60221,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(75);
+var _index = __webpack_require__(76);
 
 var _dialog = __webpack_require__(1);
 
@@ -60447,7 +60231,7 @@ var _selectable = __webpack_require__(23);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _addUser = __webpack_require__(76);
+var _addUser = __webpack_require__(77);
 
 var _addUser2 = _interopRequireDefault(_addUser);
 
@@ -61070,7 +60854,7 @@ Feedback.prototype = {
 exports.default = Feedback;
 
 /***/ }),
-/* 209 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61086,13 +60870,13 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(75);
+var _index = __webpack_require__(76);
 
-var _listEditor = __webpack_require__(210);
+var _listEditor = __webpack_require__(209);
 
 var _listEditor2 = _interopRequireDefault(_listEditor);
 
-var _listShare = __webpack_require__(211);
+var _listShare = __webpack_require__(210);
 
 var _listShare2 = _interopRequireDefault(_listShare);
 
@@ -61104,7 +60888,7 @@ var _selectable = __webpack_require__(23);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _addUser = __webpack_require__(76);
+var _addUser = __webpack_require__(77);
 
 var _addUser2 = _interopRequireDefault(_addUser);
 
@@ -61685,7 +61469,7 @@ ListManager.prototype = {
 exports.default = ListManager;
 
 /***/ }),
-/* 210 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61773,7 +61557,7 @@ var listEditor = function listEditor(services, options) {
 exports.default = listEditor;
 
 /***/ }),
-/* 211 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61945,7 +61729,7 @@ var listShare = function listShare(services, options) {
 exports.default = listShare;
 
 /***/ }),
-/* 212 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61992,7 +61776,7 @@ var recordPublishModal = function recordPublishModal(services, datas) {
 exports.default = recordPublishModal;
 
 /***/ }),
-/* 213 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62010,7 +61794,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _sharingManager = __webpack_require__(214);
+var _sharingManager = __webpack_require__(213);
 
 var _sharingManager2 = _interopRequireDefault(_sharingManager);
 
@@ -62130,7 +61914,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
 exports.default = recordToolsModal;
 
 /***/ }),
-/* 214 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62202,7 +61986,7 @@ var sharingManager = function sharingManager(services, datas) {
 exports.default = sharingManager;
 
 /***/ }),
-/* 215 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62220,7 +62004,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(74);
+var _index = __webpack_require__(75);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -62270,7 +62054,7 @@ var recordFeedbackModal = function recordFeedbackModal(services, datas) {
 exports.default = recordFeedbackModal;
 
 /***/ }),
-/* 216 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62288,7 +62072,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(217);
+var _index = __webpack_require__(216);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -62326,7 +62110,7 @@ var bridgeRecord = function bridgeRecord(services) {
 exports.default = bridgeRecord;
 
 /***/ }),
-/* 217 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62665,7 +62449,7 @@ var recordBridge = function recordBridge(services) {
 exports.default = recordBridge;
 
 /***/ }),
-/* 218 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62683,7 +62467,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _screenCapture = __webpack_require__(219);
+var _screenCapture = __webpack_require__(218);
 
 var _screenCapture2 = _interopRequireDefault(_screenCapture);
 
@@ -63005,7 +62789,7 @@ var videoScreenCapture = function videoScreenCapture(services, datas) {
 exports.default = videoScreenCapture;
 
 /***/ }),
-/* 219 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63015,7 +62799,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _canvaImage = __webpack_require__(220);
+var _canvaImage = __webpack_require__(219);
 
 var _canvaImage2 = _interopRequireDefault(_canvaImage);
 
@@ -63242,7 +63026,7 @@ var ScreenCapture = function ScreenCapture(videoId, canvaId, outputOptions) {
 exports.default = ScreenCapture;
 
 /***/ }),
-/* 220 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63341,7 +63125,7 @@ Canva.prototype = {
 exports.default = Canva;
 
 /***/ }),
-/* 221 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63351,7 +63135,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _videojsFlash = __webpack_require__(64);
+var _videojsFlash = __webpack_require__(65);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -63420,7 +63204,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
             // load videoJs lib
             //require('../../videoEditor/style/main.scss');
-            rangeCapture = __webpack_require__(92).default;
+            rangeCapture = __webpack_require__(93).default;
             var rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
             //render(initData);
@@ -63433,7 +63217,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
 exports.default = videoRangeCapture;
 
 /***/ }),
-/* 222 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63874,13 +63658,13 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
 exports.default = videoSubtitleCapture;
 
 /***/ }),
-/* 223 */
+/* 222 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 224 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63958,7 +63742,7 @@ var keyboard = function keyboard(services) {
 exports.default = keyboard;
 
 /***/ }),
-/* 225 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64046,7 +63830,7 @@ var cgu = function cgu(services) {
 exports.default = cgu;
 
 /***/ }),
-/* 226 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64145,7 +63929,7 @@ var shareRecord = function shareRecord(services) {
 exports.default = shareRecord;
 
 /***/ }),
-/* 227 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64186,7 +63970,7 @@ var addToBasket = function addToBasket(services) {
 exports.default = addToBasket;
 
 /***/ }),
-/* 228 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64225,7 +64009,7 @@ var removeFromBasket = function removeFromBasket(services) {
 exports.default = removeFromBasket;
 
 /***/ }),
-/* 229 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64247,8 +64031,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var highlight = __webpack_require__(230);
-var colorpicker = __webpack_require__(231);
+var highlight = __webpack_require__(229);
+var colorpicker = __webpack_require__(230);
 var preferences = function preferences(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -64557,7 +64341,7 @@ var preferences = function preferences(services) {
 exports.default = preferences;
 
 /***/ }),
-/* 230 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -64594,7 +64378,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 231 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -65080,7 +64864,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 232 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65102,7 +64886,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(80);
+var _index = __webpack_require__(81);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -65867,7 +65651,7 @@ var orderItem = function orderItem(services) {
 exports.default = orderItem;
 
 /***/ }),
-/* 233 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65905,9 +65689,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(234);
+__webpack_require__(233);
 
-var image_enhancer = __webpack_require__(235);
+var image_enhancer = __webpack_require__(234);
 __webpack_require__(14);
 var previewRecordService = function previewRecordService(services) {
     var configService = services.configService,
@@ -66636,13 +66420,13 @@ var previewRecordService = function previewRecordService(services) {
 exports.default = previewRecordService;
 
 /***/ }),
-/* 234 */
+/* 233 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 235 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -66658,7 +66442,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(236);
+__webpack_require__(235);
 
 (function ($) {
 
@@ -66887,13 +66671,13 @@ __webpack_require__(236);
 
 
 /***/ }),
-/* 236 */
+/* 235 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 237 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66940,7 +66724,7 @@ var uploader = function uploader(services) {
 
             __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                 // load uploader manager dep
-                UploaderManager = __webpack_require__(94).default;
+                UploaderManager = __webpack_require__(95).default;
                 openModal($this, []);
             }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
         });
@@ -66955,7 +66739,7 @@ var uploader = function uploader(services) {
 
                     __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                         // load uploader manager dep
-                        UploaderManager = __webpack_require__(94).default;
+                        UploaderManager = __webpack_require__(95).default;
                         openModal((0, _jquery2.default)('.uploader-open-action'), fileList);
                     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 
@@ -67448,7 +67232,318 @@ var uploader = function uploader(services) {
 exports.default = uploader;
 
 /***/ }),
+/* 237 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import user from '../user/index.js';
+
+
+var notifyLayout = function notifyLayout(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var $notificationBoxContainer = (0, _jquery2.default)('#notification_box');
+    var $notificationTrigger = (0, _jquery2.default)('.notification_trigger');
+    var $notificationDialog = (0, _jquery2.default)('#notifications-dialog');
+    var initialize = function initialize() {
+        $notificationTrigger.on('mousedown', function (event) {
+            event.stopPropagation();
+            var $target = (0, _jquery2.default)(event.currentTarget);
+            if ($target.hasClass('open')) {
+                $notificationBoxContainer.hide();
+                $target.removeClass('open');
+                clear_notifications();
+            } else {
+                $notificationBoxContainer.show();
+
+                setBoxHeight();
+
+                $target.addClass('open');
+                read_notifications();
+            }
+        });
+
+        (0, _jquery2.default)(document).on('mousedown', function () {
+            if ($notificationTrigger.hasClass('open')) {
+                $notificationTrigger.trigger('click');
+            }
+
+            if ($notificationTrigger.hasClass('open')) {
+                $notificationBoxContainer.hide();
+                $notificationTrigger.removeClass('open');
+                clear_notifications();
+            }
+        });
+
+        $notificationBoxContainer.on('mousedown', function (event) {
+            event.stopPropagation();
+        }).on('mouseover', '.notification', function (event) {
+            (0, _jquery2.default)(event.currentTarget).addClass('hover');
+        }).on('mouseout', '.notification', function (event) {
+            (0, _jquery2.default)(event.currentTarget).removeClass('hover');
+        }).on('click', '.notification__print-action', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var page = $el.data('page');
+            print_notifications(page);
+        });
+
+        (0, _jquery2.default)(window).bind('resize', function () {
+            setBoxPosition();
+        });
+        setBoxPosition();
+    };
+
+    var addNotifications = function addNotifications(notificationContent) {
+        // var box = $('#notification_box');
+        $notificationBoxContainer.empty().append(notificationContent);
+
+        if ($notificationBoxContainer.is(':visible')) {
+            setBoxHeight();
+        }
+
+        if ((0, _jquery2.default)('.notification.unread', $notificationBoxContainer).length > 0) {
+            (0, _jquery2.default)('.counter', $notificationTrigger).empty().append((0, _jquery2.default)('.notification.unread', $notificationBoxContainer).length);
+            (0, _jquery2.default)('.counter', $notificationTrigger).css('visibility', 'visible');
+        } else {
+            (0, _jquery2.default)('.notification_trigger .counter').css('visibility', 'hidden').empty();
+        }
+    };
+
+    var setBoxHeight = function setBoxHeight() {
+        //var box = $('#notification_box');
+        var not = (0, _jquery2.default)('.notification', $notificationBoxContainer);
+        var n = not.length;
+        var not_t = (0, _jquery2.default)('.notification_title', $notificationBoxContainer);
+        var n_t = not_t.length;
+
+        var h = not.outerHeight() * n + not_t.outerHeight() * n_t;
+        h = h > 350 ? 350 : h;
+
+        $notificationBoxContainer.stop().animate({ height: h });
+    };
+
+    var setBoxPosition = function setBoxPosition() {
+        if ($notificationTrigger.length > 0) {
+            var leftOffset = Math.round($notificationTrigger.offset().left);
+            if (leftOffset == 0) {
+                $notificationBoxContainer.css({
+                    left: 20
+                });
+            } else {
+                $notificationBoxContainer.css({
+                    left: Math.round($notificationTrigger.offset().left - 1)
+                });
+            }
+        }
+    };
+
+    var print_notifications = function print_notifications(page) {
+
+        page = parseInt(page, 10);
+        var buttons = {};
+
+        buttons[localeService.t('fermer')] = function () {
+            $notificationDialog.dialog('close');
+        };
+
+        if ($notificationDialog.length === 0) {
+            (0, _jquery2.default)('body').append('<div id="notifications-dialog" class="loading"></div>');
+            $notificationDialog = (0, _jquery2.default)('#notifications-dialog');
+        }
+
+        $notificationDialog.dialog({
+            title: (0, _jquery2.default)('#notification-title').val(),
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: false,
+            draggable: false,
+            modal: true,
+            width: 500,
+            height: 400,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(event, ui) {
+                $notificationDialog.dialog('destroy').remove();
+            }
+        }).dialog('option', 'buttons', buttons).dialog('open').on('click', '.notification_next .notification__print-action', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var page = $el.data('page');
+            print_notifications(page);
+        });
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: '/user/notifications/',
+            dataType: 'json',
+            data: {
+                page: page
+            },
+            error: function error(data) {
+                $notificationDialog.removeClass('loading');
+            },
+            timeout: function timeout(data) {
+                $notificationDialog.removeClass('loading');
+            },
+            success: function success(data) {
+                $notificationDialog.removeClass('loading');
+
+                if (page === 0) {
+                    $notificationDialog.empty();
+                } else {
+                    (0, _jquery2.default)('.notification_next', $notificationDialog).remove();
+                }
+
+                var i = 0;
+                for (i in data.notifications) {
+                    var id = 'notif_date_' + i;
+                    var date_cont = (0, _jquery2.default)('#' + id);
+                    if (date_cont.length === 0) {
+                        $notificationDialog.append('<div id="' + id + '"><div class="notification_title">' + data.notifications[i].display + '</div></div>');
+                        date_cont = (0, _jquery2.default)('#' + id);
+                    }
+
+                    var j = 0;
+                    for (j in data.notifications[i].notifications) {
+                        var loc_dat = data.notifications[i].notifications[j];
+                        var html = '<div style="position:relative;" id="notification_' + loc_dat.id + '" class="notification">' + '<table style="width:100%;" cellspacing="0" cellpadding="0" border="0"><tr><td style="width:25px;">' + loc_dat.icon + '</td><td>' + '<div style="position:relative;" class="' + loc_dat.classname + '">' + loc_dat.text + ' <span class="time">' + loc_dat.time + '</span></div>' + '</td></tr></table>' + '</div>';
+                        date_cont.append(html);
+                    }
+                }
+
+                var next_ln = _jquery2.default.trim(data.next);
+
+                if (next_ln !== '') {
+                    $notificationDialog.append('<div class="notification_next">' + next_ln + '</div>');
+                }
+            }
+        });
+    };
+
+    var read_notifications = function read_notifications() {
+        var notifications = [];
+
+        (0, _jquery2.default)('#notification_box .unread').each(function () {
+            notifications.push((0, _jquery2.default)(this).attr('id').split('_').pop());
+        });
+
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: '/user/notifications/read/',
+            data: {
+                notifications: notifications.join('_')
+            },
+            success: function success(data) {
+                (0, _jquery2.default)('.notification_trigger .counter').css('visibility', 'hidden').empty();
+            }
+        });
+    };
+
+    var clear_notifications = function clear_notifications() {
+        var unread = (0, _jquery2.default)('#notification_box .unread');
+
+        if (unread.length === 0) {
+            return;
+        }
+
+        unread.removeClass('unread');
+        (0, _jquery2.default)('.notification_trigger .counter').css('visibility', 'hidden').empty();
+    };
+
+    return {
+        initialize: initialize,
+        addNotifications: addNotifications
+    };
+};
+
+exports.default = notifyLayout;
+
+/***/ }),
 /* 238 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _rx = __webpack_require__(7);
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var notifyService = function notifyService(services) {
+    var configService = services.configService;
+
+    var url = configService.get('baseUrl');
+    var notificationEndPoint = 'session/notifications/';
+    var initialize = function initialize() {};
+
+    var getNotification = function getNotification(data) {
+        /*return ajax({
+         type: 'POST',
+         url: `${notificationEndPoint}`,
+         data: data,
+         dataType: 'json'
+         }).promise();*/
+        var notificationPromise = _jquery2.default.Deferred();
+
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: '' + url + notificationEndPoint,
+            data: data,
+            dataType: 'json'
+        }).done(function (data) {
+            data.status = data.status || false;
+            if (data.status === 'ok') {
+                notificationPromise.resolve(data);
+            } else {
+                notificationPromise.reject(data);
+            }
+        }).fail(function (data) {
+            notificationPromise.reject(data);
+        });
+        return notificationPromise.promise();
+    };
+
+    var stream = _rx.Observable.fromPromise(getNotification);
+    return {
+        initialize: initialize,
+        getNotification: getNotification,
+        stream: stream
+    };
+};
+// import {ajax} from 'jquery';
+exports.default = notifyService;
+
+/***/ }),
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67474,96 +67569,6 @@ var defaultConfig = {
 };
 
 exports.default = defaultConfig;
-
-/***/ }),
-/* 239 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _ui = __webpack_require__(49);
-
-var _ui2 = _interopRequireDefault(_ui);
-
-var _notify = __webpack_require__(48);
-
-var _notify2 = _interopRequireDefault(_notify);
-
-var _phraseanetCommon = __webpack_require__(11);
-
-var appCommons = _interopRequireWildcard(_phraseanetCommon);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var user = function user(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-
-    var initialize = function initialize() {};
-
-    var onUserDisconnect = function onUserDisconnect() {
-        // @TODO refactor - display modal in here
-        (0, _ui2.default)(services).showModal('disconnected', { title: localeService.t('serverDisconnected') });
-    };
-
-    appEvents.listenAll({
-        'user.disconnected': onUserDisconnect
-    });
-
-    var manageSession = function manageSession() {
-        for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-            params[_key] = arguments[_key];
-        }
-
-        var data = params[0],
-            showMessages = params[1];
-
-
-        if (typeof showMessages === 'undefined') {
-            showMessages = false;
-        }
-
-        if (showMessages) {
-            // @todo: to be moved
-            if (_jquery2.default.trim(data.message) !== '') {
-                if ((0, _jquery2.default)('#MESSAGE').length === 0) {
-                    (0, _jquery2.default)('body').append('<div id="#MESSAGE"></div>');
-                }
-                (0, _jquery2.default)('#MESSAGE').empty().append(data.message + '<div style="margin:20px;"><input type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>').attr('title', 'Global Message').dialog({
-                    autoOpen: false,
-                    closeOnEscape: true,
-                    resizable: false,
-                    draggable: false,
-                    modal: true,
-                    close: function close() {
-                        if ((0, _jquery2.default)('.dialog_remove:checked', (0, _jquery2.default)(this)).length > 0) {
-                            // @TODO get from module
-                            appCommons.userModule.setTemporaryPref('message', 0);
-                        }
-                    }
-                }).dialog('open');
-            }
-        }
-        return true;
-    };
-
-    return { initialize: initialize, manageSession: manageSession };
-};
-
-exports.default = user;
 
 /***/ }),
 /* 240 */
@@ -67653,7 +67658,7 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _resultInfos = __webpack_require__(81);
+var _resultInfos = __webpack_require__(82);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
@@ -68361,7 +68366,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _resultInfos = __webpack_require__(81);
+var _resultInfos = __webpack_require__(82);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
@@ -69754,5 +69759,5 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
-],[95]);
+],[96]);
 });
