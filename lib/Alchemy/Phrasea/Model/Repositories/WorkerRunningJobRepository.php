@@ -404,7 +404,7 @@ class WorkerRunningJobRepository extends EntityRepository
                     . " `finished` = NOW(),\n"
                     . " `status` = " . $cnx->quote(WorkerRunningJob::FINISHED);
                 if(!is_null($info)) {
-                    $sql .= ",\n `info` = " . $cnx->quote(WorkerRunningJob::FINISHED);
+                    $sql .= ",\n `info` = " . $cnx->quote($info);
                 }
                 $sql .= "\n WHERE `id` = " . $cnx->quote($workerRunningJobId, PDO::PARAM_INT);
 

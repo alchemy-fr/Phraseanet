@@ -293,26 +293,51 @@ class WriteMetadatasWorker implements WorkerInterface
 
         }
         catch (Exception $e) {
+
+            // try to interpret the reason of the failure, to see if we retry or stop
+            $msg = $e->getMessage();
+
+            $matches = null;
+            $stopInfo = false;
+            if( preg_match('/\\(looks more like a .*\\)/', $msg,$matches) ) {
+                $stopInfo = $matches[0];
+            }
+
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
-                sprintf("meta NOT written in %s.%s.%s because : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
+                sprintf("meta NOT written in %s.%s.%s because (%s)\n  Will %sretry", $databoxId, $recordId, $subdefName, $msg, ($stopInfo ? "not ":""))
             ), FILE_APPEND | LOCK_EX);
 
-            $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
+            $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"',
+                $databox->get_sbas_id(),
+                $recordId,
+                $subdef->get_name(),
+                $msg
+            );
             $this->logger->error($workerMessage);
 
-            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+            if(!$stopInfo) {
+                // we don't know what failed so we retry
+                $count = isset($payload['count']) ? $payload['count'] + 1 : 2;
 
-            /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
-            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
-                $record,
-                $subdefName,
-                SubdefinitionWritemetaEvent::FAILED,
-                $workerMessage,
-                $count,
-                $workerRunningJobId
-            ));
+                /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
+                $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                    $record,
+                    $subdefName,
+                    SubdefinitionWritemetaEvent::FAILED,
+                    $workerMessage,
+                    $count,
+                    $workerRunningJobId
+                ));
+                // the subscriber will "unlock" the row, no need to do it here
+            }
+            else {
+                // failed with known error message like "Not a valid JPG (looks more like a PSD)"
+                // mark write metas finished
+                $this->updateJeton($record);
 
-            // the subscriber will "unlock" the row, no need to do it here
+                // tell that we have finished to work on this file (=unlock)
+                $this->repoWorker->markFinished($workerRunningJobId, $stopInfo);
+            }
             return ;
         }
 
