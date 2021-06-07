@@ -5000,7 +5000,7 @@ var user = function user(services) {
                 if ((0, _jquery2.default)('#MESSAGE').length === 0) {
                     (0, _jquery2.default)('body').append('<div id="#MESSAGE"></div>');
                 }
-                (0, _jquery2.default)('#MESSAGE').empty().append(data.message + '<div style="margin:20px;"><input type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>').attr('title', 'Global Message').dialog({
+                (0, _jquery2.default)('#MESSAGE').empty().append(data.message + '<div style="margin:20px;"><input style="margin-right:10px;" type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>').attr('title', 'Global Message').dialog({
                     autoOpen: false,
                     closeOnEscape: true,
                     resizable: false,
@@ -5008,8 +5008,18 @@ var user = function user(services) {
                     modal: true,
                     close: function close() {
                         if ((0, _jquery2.default)('.dialog_remove:checked', (0, _jquery2.default)(this)).length > 0) {
-                            // @TODO get from module
-                            appCommons.userModule.setTemporaryPref('message', 0);
+                            // setTemporaryPref
+                            _jquery2.default.ajax({
+                                type: "POST",
+                                url: "/user/preferences/temporary/",
+                                data: {
+                                    prop: 'message',
+                                    value: 0
+                                },
+                                success: function success(data) {
+                                    return;
+                                }
+                            });
                         }
                     }
                 }).dialog('open');
