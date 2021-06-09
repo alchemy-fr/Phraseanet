@@ -34,7 +34,7 @@ const user = (services) => {
                 }
                 $('#MESSAGE')
                     .empty()
-                    .append(data.message + '<div style="margin:20px;"><input type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>')
+                    .append(data.message + '<div style="margin:20px;"><input style="margin-right:10px;" type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>')
                     .attr('title', 'Global Message')
                     .dialog({
                         autoOpen: false,
@@ -44,8 +44,18 @@ const user = (services) => {
                         modal: true,
                         close: function () {
                             if ($('.dialog_remove:checked', $(this)).length > 0) {
-                                // @TODO get from module
-                                appCommons.userModule.setTemporaryPref('message', 0);
+                                // setTemporaryPref
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/user/preferences/temporary/",
+                                    data: {
+                                        prop: 'message',
+                                        value: 0
+                                    },
+                                    success: function (data) {
+                                        return;
+                                    }
+                                });
                             }
                         }
                     })
