@@ -5,6 +5,7 @@ import * as AppCommons from './../phraseanet-common';
 import publication from '../components/publication';
 import workzone from '../components/ui/workzone';
 import notify from '../components/notify/index';
+import notifyLayout from '../components/notify/notifyLayout';
 import Locale from '../components/locale';
 import ui from '../components/ui';
 import ConfigService from './../components/core/configService';
@@ -69,27 +70,28 @@ class Bootstrap {
 
         const userSession = user(this.appServices);
 
-        let appProdNotification = {
-            url: this.configService.get('notify.url'),
-            moduleId: this.configService.get('notify.moduleId'),
-            userId: this.configService.get('notify.userId')
-        };
+        // let appProdNotification = {
+        //     url: this.configService.get('notify.url'),
+        //     moduleId: this.configService.get('notify.moduleId'),
+        //     userId: this.configService.get('notify.userId')
+        // };
+
+        notifyLayout(this.appServices).initialize();
 
         /**
-         * Initialize notifier
-         * @type {{bindEvents, createNotifier, isValid, poll}}
+         * Poll just in menu_bar
          */
-        const notifier = notify(this.appServices);
-        notifier.initialize();
-
-        // create a new notification poll:
-        appProdNotification = notifier.createNotifier(appProdNotification);
-
-        if (notifier.isValid(appProdNotification)) {
-            notifier.poll(appProdNotification);
-        } else {
-            throw new Error('implementation error: failed to configure new notifier');
-        }
+        // const notifier = notify(this.appServices);
+        // notifier.initialize();
+        //
+        // // create a new notification poll:
+        // appProdNotification = notifier.createNotifier(appProdNotification);
+        //
+        // if (notifier.isValid(appProdNotification)) {
+        //     notifier.poll(appProdNotification);
+        // } else {
+        //     throw new Error('implementation error: failed to configure new notifier');
+        // }
 
         // @TODO remove global variables
         // register some global variables,

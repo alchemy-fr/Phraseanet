@@ -21,35 +21,38 @@ define([
         eventManager: _.extend({}, Backbone.Events)
     };
 
-    window.pullNotifications = function (){
-        $.ajax({
-            type: "POST",
-            url:  AdminApp.$scope.data("notif-url"),
-            dataType: 'json',
-            data: {
-                module : 3,
-                usr : AdminApp.$scope.data("usr")
-            },
-            error: function(){
-                window.setTimeout("pullNotifications();", 10000);
-            },
-            timeout: function(){
-                window.setTimeout("pullNotifications();", 10000);
-            },
-            success: function(data){
-                if (data) {
-                    if (data.status == 'disconnected' || data.status == 'session') {
-                        self.location.replace(self.location.href);
-                    }
-                }
-                var t = 120000;
-                if (data.apps && parseInt(data.apps) > 1) {
-                    t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
-                }
-                window.setTimeout("pullNotifications();", t);
-            }
-        });
-    };
+    // pull notification is called from menu bar
+
+    // window.pullNotifications = function (){
+    //     $.ajax({
+    //         type: "POST",
+    //         url:  AdminApp.$scope.data("notif-url"),
+    //         dataType: 'json',
+    //         data: {
+    //             module : 3,
+    //             usr : AdminApp.$scope.data("usr")
+    //         },
+    //         error: function(){
+    //             window.setTimeout("pullNotifications();", 10000);
+    //         },
+    //         timeout: function(){
+    //             window.setTimeout("pullNotifications();", 10000);
+    //         },
+    //         success: function(data){
+    //             if (data) {
+    //                 if (data.status == 'disconnected' || data.status == 'session') {
+    //                     self.location.replace(self.location.href);
+    //                 }
+    //             }
+    //             var t = 120000;
+    //             if (data.apps && parseInt(data.apps) > 1) {
+    //                 t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+    //             }
+    //             window.setTimeout("pullNotifications();", t);
+    //         }
+    //     });
+    // };
+
     window.enableForms = function (forms) {
         forms.bind('submit', function(event){
             var method = $(this).attr('method');

@@ -99,7 +99,7 @@
                   {% if basket.getValidation is null %}
                       {% set basket_length = basket.getElements().count() %}
                       {% set counter = ( counter | default(0) ) + 1 %}
-                      {% set counter_length = baskets_collection.length() %}
+                      {% set counter_length = baskets_collection | length %}
 
       <tr class="{% if counter >=4 %}other_basket hidden{% endif %}">
           <td colspan="2">

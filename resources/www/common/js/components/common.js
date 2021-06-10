@@ -110,8 +110,6 @@ var commonModule = (function ($, p4) {
             }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'hidden', 'padding': '0'});
     }
 
-
-    // @deprecated
     function manageSession(data, showMessages) {
         if (typeof(showMessages) == "undefined")
             showMessages = false;
@@ -121,10 +119,13 @@ var commonModule = (function ($, p4) {
         }
         if (showMessages) {
             var box = $('#notification_box');
+
+            // add notification in bar
             box.empty().append(data.notifications);
 
-            if (box.is(':visible'))
+            if (box.is(':visible')) {
                 fix_notification_height();
+            }
 
             if ($('.notification.unread', box).length > 0) {
                 var trigger = $('.notification_trigger');
@@ -133,10 +134,11 @@ var commonModule = (function ($, p4) {
                     .append($('.notification.unread', box).length);
                 $('.counter', trigger).css('visibility', 'visible');
 
-            }
-            else
+            } else {
                 $('.notification_trigger .counter').css('visibility', 'hidden').empty();
+            }
 
+            // add notification on basket if exist
             if (data.changed.length > 0) {
                 var current_open = $('.SSTT.ui-state-active');
                 var current_sstt = current_open.length > 0 ? current_open.attr('id').split('_').pop() : false;
@@ -196,6 +198,20 @@ var commonModule = (function ($, p4) {
         }
         return true;
     }
+
+    function fix_notification_height() {
+        var $notificationBoxContainer = $('#notification_box');
+        var not = $('.notification', $notificationBoxContainer);
+        var n = not.length;
+        var not_t = $('.notification_title', $notificationBoxContainer);
+        var n_t = not_t.length;
+
+        var h = not.outerHeight() * n + not_t.outerHeight() * n_t;
+        h = h > 350 ? 350 : h;
+
+        $notificationBoxContainer.stop().animate({height: h});
+    }
+
     return {
         showOverlay: showOverlay,
         hideOverlay: hideOverlay,

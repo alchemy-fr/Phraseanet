@@ -62,24 +62,24 @@ const notifyLayout = (services) => {
 
     };
 
-    const addNotifications = (notificationContent) => {
-        // var box = $('#notification_box');
-        $notificationBoxContainer.empty().append(notificationContent);
-
-        if ($notificationBoxContainer.is(':visible')) {
-            setBoxHeight();
-        }
-
-        if ($('.notification.unread', $notificationBoxContainer).length > 0) {
-            $('.counter', $notificationTrigger)
-                .empty()
-                .append($('.notification.unread', $notificationBoxContainer).length);
-            $('.counter', $notificationTrigger).css('visibility', 'visible');
-
-        } else {
-            $('.notification_trigger .counter').css('visibility', 'hidden').empty();
-        }
-    };
+    // const addNotifications = (notificationContent) => {
+    //     // var box = $('#notification_box');
+    //     $notificationBoxContainer.empty().append(notificationContent);
+    //
+    //     if ($notificationBoxContainer.is(':visible')) {
+    //         setBoxHeight();
+    //     }
+    //
+    //     if ($('.notification.unread', $notificationBoxContainer).length > 0) {
+    //         $('.counter', $notificationTrigger)
+    //             .empty()
+    //             .append($('.notification.unread', $notificationBoxContainer).length);
+    //         $('.counter', $notificationTrigger).css('visibility', 'visible');
+    //
+    //     } else {
+    //         $('.notification_trigger .counter').css('visibility', 'hidden').empty();
+    //     }
+    // };
 
 
     const setBoxHeight = () => {
@@ -141,13 +141,20 @@ const notifyLayout = (services) => {
                 close: function (event, ui) {
                     $notificationDialog.dialog('destroy').remove();
                 }
-            }).dialog('option', 'buttons', buttons).dialog('open').on('click','.notification_next .notification__print-action', function (event) {
-                event.preventDefault();
-                var $el = $(event.currentTarget);
-                var page = $el.data('page');
-                print_notifications(page);
-            });
+            })
+            .dialog('option', 'buttons', buttons)
+            .dialog('open');
 
+           // only load on the first time
+           if (page === 0 ) {
+               $notificationDialog
+                   .on('click','.notification_next .notification__print-action', function (event) {
+                       event.preventDefault();
+                       var $el = $(event.currentTarget);
+                       var page = $el.data('page');
+                       print_notifications(page);
+                   });
+           }
 
         $.ajax({
             type: 'GET',
@@ -237,8 +244,7 @@ const notifyLayout = (services) => {
     };
 
     return {
-        initialize,
-        addNotifications
+        initialize
     };
 };
 

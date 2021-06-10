@@ -4,6 +4,8 @@ import notifyLayout from './notifyLayout';
 import notifyService from './notifyService';
 import * as Rx from 'rx';
 import merge from 'lodash.merge';
+
+// this module is now unused, poll notification is from menu bar
 const notify = (services) => {
 
     const { configService, localeService, appEvents } = services;
@@ -63,9 +65,9 @@ const notify = (services) => {
             appEvents.emit('notification.refresh', data);
         }
         // append notification content
-        notifyLayout(services).addNotifications(data.notifications);
+        // notifyLayout(services).addNotifications(data.notifications);
 
-        user(services).manageSession(data, true);
+        // user(services).manageSession(data, true);
 
         let t = 120000;
         if (data.apps && parseInt(data.apps, 10) > 1) {

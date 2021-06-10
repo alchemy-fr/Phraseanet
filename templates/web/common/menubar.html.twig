@@ -431,13 +431,33 @@
     });
 /**manage session and redirect to login page**/
     var usrId = '{{ app.getAuthenticator().user.getId }}' ;
+    var module = '{{ module }}';
+    var moduleId = 1;
+    // there is no notification bar nor a basket notification if not on prod module
+    var showMessage = (module === 'prod');
+
+    switch (module) {
+        case 'admin':
+            moduleId = 3;
+            break;
+        case 'lightbox':
+            moduleId = 6;
+            break;
+        case 'report':
+            moduleId = 10;
+            break;
+        case 'prod':
+        default:
+            moduleId = 1;
+    }
+
     function pollNotifications() {
         $.ajax({
             type: "POST",
             url: "/session/notifications/",
             dataType: 'json',
             data: {
-                module: 10,
+                module: moduleId,
                 usr: usrId
             },
             error: function () {
@@ -448,7 +468,7 @@
             },
             success: function (data) {
                 if (data) {
-                    commonModule.manageSession(data);
+                    commonModule.manageSession(data, showMessage);
                 }
                 window.setTimeout("pollNotifications();", 60000);
                 return;
