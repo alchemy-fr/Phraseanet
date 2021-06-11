@@ -10619,7 +10619,7 @@ var workzone = function workzone(services) {
             }
         });
 
-        (0, _jquery2.default)('.basket_refresher').on('click', function () {
+        (0, _jquery2.default)('#idFrameC').on('click', '.basket_refresher', function () {
             return workzoneOptions.refresh('current');
         });
         activeBaskets();

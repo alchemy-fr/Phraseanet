@@ -203,7 +203,7 @@ const workzone = (services) => {
                 }
             });
 
-        $('.basket_refresher').on('click', function () {
+        $('#idFrameC').on('click', '.basket_refresher', function () {
             return workzoneOptions.refresh('current');
         });
         activeBaskets();
