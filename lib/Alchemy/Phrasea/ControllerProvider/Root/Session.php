@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\ControllerProvider\Root;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Root\SessionController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -41,12 +41,12 @@ class Session implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createCollection($app);
 
-        $controllers->post('/update/', 'controller.session:updateSession')
-            ->bind('update_session');
-
+        /** @uses SessionController::getNotifications() */
         $controllers->post('/notifications/', 'controller.session:getNotifications')
             ->bind('list_notifications');
 
+        /** @uses SessionController::deleteSession() */
+        // used in admin/connected_users to kill a session
         $controller = $controllers->post('/delete/{id}', 'controller.session:deleteSession')
             ->bind('delete_session');
 

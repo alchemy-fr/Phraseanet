@@ -96,15 +96,29 @@ class eventsmanager_broker
         return true;
     }
 
+    /*
     public function get_notifications_as_array($page = 0)
     {
+        $r = $this->get_notifications($page * 10, 10);
+
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!! FAKE USER FOR TESTING !!!!!!!!!!!!!!!!!!!!!!!!
+
+        // $usr_id = $this->app->getAuthenticatedUser()->getId();
+
+        $usr_id = 15826;
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         $total = 0;
 
         $sql = 'SELECT count(id) as total, sum(unread) as unread
             FROM notifications WHERE usr_id = :usr_id';
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
+        $stmt->execute([':usr_id' => $usr_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -122,7 +136,7 @@ class eventsmanager_broker
         $data = ['notifications' => [], 'next' => ''];
 
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $this->app->getAuthenticatedUser()->getId()]);
+        $stmt->execute([':usr_id' => $usr_id]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
@@ -134,7 +148,9 @@ class eventsmanager_broker
                 continue;
             }
 
-            $content = $this->pool_classes[$type]->datas($json, $row['unread']);
+            /** @var eventsmanager_notifyAbstract $obj * /
+            $obj = $this->pool_classes[$type];
+            $content = $obj->datas($json, $row['unread']);
 
             if ( ! isset($this->pool_classes[$type]) || count($content) === 0) {
                 $sql = 'DELETE FROM notifications WHERE id = :id';
@@ -169,7 +185,8 @@ class eventsmanager_broker
 
         return $data;
     }
-
+    */
+/*
     public function get_unread_notifications_number()
     {
         $total = 0;
@@ -188,92 +205,152 @@ class eventsmanager_broker
 
         return $total;
     }
+*/
+    const READ = 1;
+    const UNREAD = 2;
 
-    public function get_notifications(\Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
+    public function get_notifications(int $offset=0, int $limit=10, $readFilter = self::READ | self::UNREAD, \Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
     {
-        $unread = 0;
-
-        $sql = 'SELECT count(id) as total, sum(unread) as unread
-            FROM notifications WHERE usr_id = :usr_id';
+        if($stopwatch) $stopwatch->lap("broker start");
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!! FAKE USER FOR TESTING !!!!!!!!!!!!!!!!!!!!!!!!
 
-        // $usr_id = $this->app->getAuthenticatedUser()->getId();
+        $usr_id = $this->app->getAuthenticatedUser()->getId();
 
-        $usr_id = 29882;
+        // $usr_id = 29882;
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        if($stopwatch) $stopwatch->lap("broker start");
 
+
+
+        // delete old already read notifs (nb: we do this for everybody - not only the current user -)
+        // todo: for now we use "created_on" since there is no timestamp set when reading.
+        //
+        $sql = "DELETE FROM `notifications` WHERE `unread`=0 AND TIMESTAMPDIFF(HOUR, `created_on`, NOW()) > 10";
+        $this->app->getApplicationBox()->get_connection()->exec($sql);
+
+        // get count of unread notifications (to be displayed on navbar)
+        //
+        $total = 0;
+        $unread = 0;
+        $sql = 'SELECT COUNT(`id`) AS `total`, SUM(`unread`) AS `unread` FROM `notifications` WHERE `usr_id` = :usr_id';
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $usr_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if( ($row = $stmt->fetch(PDO::FETCH_ASSOC)) ) {
+            $total  = (int)$row['total'];
+            $unread = (int)$row['unread'];
+        }
         $stmt->closeCursor();
 
-        if($stopwatch) $stopwatch->lap("sql 1");
+        if($stopwatch) $stopwatch->lap("sql count unread");
 
-        if ($row) {
-            $unread = $row['unread'];
+        $notifications = [];
+
+        // fetch notifications
+        //
+        $sql = "SELECT * FROM `notifications` WHERE `usr_id` = :usr_id";
+        switch ($readFilter) {
+            case self::READ:
+                $sql .= " AND `unread`=0";
+                $total -= $unread;          // fix total to match the filter
+                break;
+            case self::UNREAD:
+                $sql .= " AND `unread`=1";
+                $total = $unread;           // fix total to match the filter
+                break;
+            default:
+                // any other case : fetch both ; no need to fix total
+                break;
         }
+        $sql .= " ORDER BY created_on DESC LIMIT " . $offset . ", " . $limit;
 
-        if ($unread < 3) {
-            $sql = 'SELECT * FROM notifications
-              WHERE usr_id = :usr_id ORDER BY created_on DESC LIMIT 0,4';
-        } else {
-            $sql = 'SELECT * FROM notifications
-              WHERE usr_id = :usr_id AND unread="1" ORDER BY created_on DESC';
-        }
-
-        $ret = [];
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-        $stmt->execute([':usr_id' => $usr_id]);
-        // $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        //$stmt->closeCursor();
+        $stmt->execute([':usr_id' => $usr_id]); // , ':offset' => $offset, ':limit' => $limit]);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
         if($stopwatch) $stopwatch->lap("sql 2");
 
-        // foreach ($rs as $row) {
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $bad_ids = [];
+        // nb : we asked for a "page" of notifs (limit), but since some notifications may be ignored (bad type, bad json, ...)
+        //      the result array may contain less than expected.
+        foreach ($rs as $row) {
             $type = 'eventsmanager_' . $row['type'];
             if ( ! isset($this->pool_classes[$type])) {
+                $bad_ids[] = $row['id'];
                 continue;
             }
+
             $data = @json_decode($row['datas'], true);
-
             if (json_last_error() !== JSON_ERROR_NONE) {
+                $bad_ids[] = $row['id'];
                 continue;
             }
 
-            $datas = $this->pool_classes[$type]->datas($data, $row['unread']);
+            /** @var eventsmanager_notifyAbstract $obj */
+            $obj = $this->pool_classes[$type];
+            $datas = $obj->datas($data, $row['unread']);
+            // $datas = [
+            //           'text' => "blabla"
+            //           'class' => "" | "relaod_baskets"
+            // ]
 
-//            if ( ! isset($this->pool_classes[$type]) || count($datas) === 0) {
-//                $sql = 'DELETE FROM notifications WHERE id = :id';
-//                $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
-//                $stmt->execute([':id' => $row['id']]);
-//                $stmt->closeCursor();
-//                continue;
-//            }
+            if (count($datas) === 0) {
+                $bad_ids[] = $row['id'];
+                continue;
+            }
 
-            $ret[] = array_merge(
-                $datas
-                , [
-                'created_on' => $this->app['date-formatter']->getPrettyString(new DateTime($row['created_on']))
-                , 'icon'       => $this->pool_classes[$type]->icon_url()
-                , 'id'         => $row['id']
-                , 'unread'     => $row['unread']
+            // add infos to the notification and add to list
+            //
+            $created_on = new DateTime($row['created_on']);
+            $notifications[] = array_merge(
+                $datas,
+                [
+                    'created_on_day'    => $created_on->format('Ymd'),
+                    'created_on'        => $this->app['date-formatter']->getPrettyString($created_on),
+                    'time'              => $this->app['date-formatter']->getTime($created_on),
+                    //, 'icon'      => '<img src="' . $this->pool_classes[$type]->icon_url() . '" style="vertical-align:middle;width:16px;margin:2px;" />'
+                    'icon'              => $this->pool_classes[$type]->icon_url(),
+                    'id'                => $row['id'],
+                    'unread'            => $row['unread']
                 ]
             );
         }
         $stmt->closeCursor();
 
-        if($stopwatch) $stopwatch->lap("broker ret");
+        if($stopwatch) $stopwatch->lap("fetch");
+
+        if(!empty($bad_ids)) {
+            // delete broken notifs
+            $sql = 'DELETE FROM `notifications` WHERE `id` IN (' . join(',', $bad_ids) . ')';
+            $stmt = $this->app->getApplicationBox()->get_connection()->exec($sql);
+        }
+
+        $next_offset = $offset+$limit;
+        $ret = [
+            'unread_count' => $unread,
+            'offset' => $offset,
+            'limit' => $limit,
+            // 'prev_offset' => $offset === 0 ? null : max(0, $offset-$limit),
+            'next_offset' => $next_offset < $total ? $next_offset : null,
+            'next_page_html' => $next_offset < $total ?  '<a href="#" class="notification__print-action" data-offset="' . $next_offset . '">' . $this->app->trans('charger d\'avantages de notifications') . '</a>' : null,
+            'notifications' => $notifications
+        ];
 
         return $ret;
     }
 
+    /**
+     * mark a notification as read
+     * todo : add a "read_on" datetime so we can delete read notifs after N days. For now we use "created_on"
+     *
+     * @param array $notifications
+     * @param $usr_id
+     * @return $this|false
+     */
     public function read(Array $notifications, $usr_id)
     {
         if (count($notifications) == 0) {

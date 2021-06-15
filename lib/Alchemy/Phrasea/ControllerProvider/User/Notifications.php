@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\ControllerProvider\User;
 
-use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Controller\User\UserNotificationController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
@@ -24,9 +22,12 @@ class Notifications implements ControllerProviderInterface, ServiceProviderInter
 
     public function register(Application $app)
     {
+        /* remove in favor of existing /session/ route
+        *
         $app['controller.user.notifications'] = $app->share(function (PhraseaApplication $app) {
             return (new UserNotificationController($app));
         });
+        */
     }
 
     public function boot(Application $app)
@@ -46,11 +47,16 @@ class Notifications implements ControllerProviderInterface, ServiceProviderInter
             $firewall->requireNotGuest();
         });
 
+        /* remove in favor of existing /session/ route
+        *
+        /** @uses  UserNotificationController::listNotifications * /
         $controllers->get('/', 'controller.user.notifications:listNotifications')
             ->bind('get_notifications');
 
+        /** @uses  UserNotificationController::readNotifications() * /
         $controllers->post('/read/', 'controller.user.notifications:readNotifications')
             ->bind('set_notifications_readed');
+        */
 
         return $controllers;
     }

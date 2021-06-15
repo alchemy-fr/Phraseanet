@@ -21,6 +21,7 @@ class UserNotificationController extends Controller
      * @param  Request $request
      * @return JsonResponse
      */
+    /* remove in favor of existing /session/ route
     public function readNotifications(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
@@ -38,6 +39,7 @@ class UserNotificationController extends Controller
             return $this->app->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+    */
 
     /**
      * Get all notifications
@@ -45,6 +47,7 @@ class UserNotificationController extends Controller
      * @param  Request $request
      * @return JsonResponse
      */
+    /* remove in favor of existing /session/ route
     public function listNotifications(Request $request)
     {
         if (!$request->isXmlHttpRequest()) {
@@ -55,12 +58,15 @@ class UserNotificationController extends Controller
 
         return $this->app->json($this->getEventsManager()->get_notifications_as_array(($page < 0 ? 0 : $page)));
     }
+    */
 
     /**
      * @return \eventsmanager_broker
      */
+    /* remove in favor of existing /session/ route
     private function getEventsManager()
     {
         return $this->app['events-manager'];
     }
+    */
 }

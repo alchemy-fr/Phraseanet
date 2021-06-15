@@ -1,3 +1,4 @@
+// import notifyLayout from "../../../../../Phraseanet-production-client/src/components/notify/notifyLayout";
 
 var p4 = p4 || {};
 var datepickerLang = [];
@@ -32,7 +33,6 @@ var commonModule = (function ($, p4) {
             $(this).removeClass('context-menu-item-hover');
         });
 
-
         $('body').on('click', '.infoDialog', function (event) {
             infoDialog($(this));
         });
@@ -42,11 +42,13 @@ var commonModule = (function ($, p4) {
     function showOverlay(n, appendto, callback, zIndex) {
 
         var div = "OVERLAY";
-        if (typeof(n) != "undefined")
+        if (typeof(n) != "undefined") {
             div += n;
+        }
         if ($('#' + div).length === 0) {
-            if (typeof(appendto) == 'undefined')
+            if (typeof(appendto) == 'undefined') {
                 appendto = 'body';
+            }
             $(appendto).append('<div id="' + div + '" style="display:none;">&nbsp;</div>');
         }
 
@@ -61,12 +63,13 @@ var commonModule = (function ($, p4) {
             left: 0
         };
 
-        if (parseInt(zIndex) > 0)
+        if (parseInt(zIndex) > 0) {
             css['zIndex'] = parseInt(zIndex);
+        }
 
-        if (typeof(callback) != 'function')
-            callback = function () {
-            };
+        if (typeof(callback) != 'function') {
+            callback = function () {};
+        }
         $('#' + div).css(css).addClass('overlay').fadeTo(500, 0.7).bind('click', function () {
             (callback)();
         });
@@ -85,8 +88,9 @@ var commonModule = (function ($, p4) {
             });
         }
         var div = "OVERLAY";
-        if (typeof(n) != "undefined")
+        if (typeof(n) != "undefined") {
             div += n;
+        }
         $('#' + div).hide().remove();
     }
 
@@ -110,92 +114,118 @@ var commonModule = (function ($, p4) {
             }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'hidden', 'padding': '0'});
     }
 
-
-    // @deprecated
-    function manageSession(data, showMessages) {
-        if (typeof(showMessages) == "undefined")
-            showMessages = false;
-
+    function manageSession(data)
+    {
         if (data.status == 'disconnected' || data.status == 'session') {
             self.location.replace(self.location.href);
         }
-        if (showMessages) {
-            var box = $('#notification_box');
-            box.empty().append(data.notifications);
 
-            if (box.is(':visible'))
-                fix_notification_height();
+        // add notification in bar
 
-            if ($('.notification.unread', box).length > 0) {
-                var trigger = $('.notification_trigger');
-                $('.counter', trigger)
-                    .empty()
-                    .append($('.notification.unread', box).length);
-                $('.counter', trigger).css('visibility', 'visible');
+        // fill the pseudo-dropdown with pre-formatted list of notifs (10 unread)
+        //
+        var box = $('#notification_box');
+        box.empty().append(data.notifications_html);
 
-            }
-            else
-                $('.notification_trigger .counter').css('visibility', 'hidden').empty();
+        if (box.is(':visible')) {
+            fix_notification_height();  // duplicated, better call  notifyLayout.setBoxHeight();
+        }
 
-            if (data.changed.length > 0) {
-                var current_open = $('.SSTT.ui-state-active');
-                var current_sstt = current_open.length > 0 ? current_open.attr('id').split('_').pop() : false;
+        // fill the count of uread (red button)
+        //
+        var trigger = $('.notification_trigger');
+        if(data.notifications.unread_count > 0) {
+            $('.counter', trigger)
+                .empty()
+                .append(data.notifications.unread_count).show();
+        }
+        else {
+            $('.counter', trigger)
+                .hide()
+                .empty();
+        }
 
-                var main_open = false;
-                for (var i = 0; i != data.changed.length; i++) {
-                    var sstt = $('#SSTT_' + data.changed[i]);
-                    if (sstt.size() === 0) {
-                        if (main_open === false) {
-                            $('#baskets .bloc').animate({'top': 30}, function () {
-                                $('#baskets .alert_datas_changed:first').show()
-                            });
-                            main_open = true;
-                        }
+        // diplay notification about unread baskets
+        //
+        if (data.unread_basket_ids.length > 0) {
+            var current_open = $('.SSTT.ui-state-active');
+            var current_sstt = current_open.length > 0 ? current_open.attr('id').split('_').pop() : false;
+
+            var main_open = false;
+            for (var i = 0; i != data.unread_basket_ids.length; i++) {
+                var sstt = $('#SSTT_' + data.unread_basket_ids[i]);
+                if (sstt.size() === 0) {
+                    if (main_open === false) {
+                        $('#baskets .bloc').animate({'top': 30}, function () {
+                            $('#baskets .alert_datas_changed:first').show()
+                        });
+                        main_open = true;
+                    }
+                }
+                else {
+                    if (!sstt.hasClass('active')) {
+                        sstt.addClass('unread');
                     }
                     else {
-                        if (!sstt.hasClass('active'))
-                            sstt.addClass('unread');
-                        else {
-                            $('.alert_datas_changed', $('#SSTT_content_' + data.changed[i])).show();
-                        }
+                        $('.alert_datas_changed', $('#SSTT_content_' + data.unread_basket_ids[i])).show();
                     }
                 }
             }
-            if ('' !== $.trim(data.message)) {
-                if ($('#MESSAGE').length === 0)
-                    $('body').append('<div id="#MESSAGE"></div>');
-                $('#MESSAGE')
-                    .empty()
-                    .append('<div style="margin:30px 10px;"><h4><b>' + data.message + '</b></h4></div><div style="margin:20px 0px 10px;"><label class="checkbox"><input type="checkbox" class="dialog_remove" />' + language.hideMessage + '</label></div>')
-                    .attr('title', 'Global Message')
-                    .dialog({
-                        autoOpen: false,
-                        closeOnEscape: true,
-                        resizable: false,
-                        draggable: false,
-                        modal: true,
-                        close: function () {
-                            if ($('.dialog_remove:checked', $(this)).length > 0) {
-                                // setTemporaryPref
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/user/preferences/temporary/",
-                                    data: {
-                                        prop: 'message',
-                                        value: 0
-                                    },
-                                    success: function (data) {
-                                        return;
-                                    }
-                                });
-                            }
-                        }
-                    })
-                    .dialog('open');
-            }
         }
+
+        if ('' !== $.trim(data.message)) {
+            if ($('#MESSAGE').length === 0) {
+                $('body').append('<div id="#MESSAGE"></div>');
+            }
+            $('#MESSAGE')
+                .empty()
+                .append('<div style="margin:30px 10px;"><h4><b>' + data.message + '</b></h4></div><div style="margin:20px 0px 10px;"><label class="checkbox"><input type="checkbox" class="dialog_remove" />' + language.hideMessage + '</label></div>')
+                .attr('title', 'Global Message')
+                .dialog({
+                    autoOpen: false,
+                    closeOnEscape: true,
+                    resizable: false,
+                    draggable: false,
+                    modal: true,
+                    close: function () {
+                        if ($('.dialog_remove:checked', $(this)).length > 0) {
+                            // setTemporaryPref
+                            $.ajax({
+                                type: "POST",
+                                url: "/user/preferences/temporary/",
+                                data: {
+                                    prop: 'message',
+                                    value: 0
+                                },
+                                success: function (data) {
+                                    return;
+                                }
+                            });
+                        }
+                    }
+                })
+                .dialog('open');
+        }
+
         return true;
     }
+
+    /**
+     * duplicated from production_client::notifyLayout.js
+     */
+    function fix_notification_height() {
+        const $notificationBoxContainer = $('#notification_box');
+        const not = $('.notification', $notificationBoxContainer);
+        const n     = not.length;
+        const not_t = $('.notification_title', $notificationBoxContainer);
+        const n_t = not_t.length;
+
+        var h = not.outerHeight() * n + not_t.outerHeight() * n_t;
+        h = h > 350 ? 350 : h;
+
+        $notificationBoxContainer.stop().animate({height: h});
+    }
+
     return {
         showOverlay: showOverlay,
         hideOverlay: hideOverlay,

@@ -242,7 +242,12 @@
             type: "GET",
             url: "/admin/databox/{{ databox.get_sbas_id() }}/informations/documents/",
             dataType: 'json',
-            data: {},
+            headers: {
+                'update-session': '0'           // polling should not maintain the session alive
+                                                // also : use lowercase as recomended / normalized
+            },
+            data: {
+            },
             success: function (data) {
                 try {
                     if (data.viewname === '') {

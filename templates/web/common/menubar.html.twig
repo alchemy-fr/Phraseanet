@@ -202,19 +202,13 @@
     <div class="PNB right desktopmenu" style="left:auto;overflow:hidden;">
         <ol>
             {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
-                <li class="notification_trigger">
-                    <a href="#" style="font-weight:bold;text-decoration:none;">
-            <span>
-              <button class="counter btn btn-danger"
-                      style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                  {% if app['events-manager'].get_unread_notifications_number > 0 %}
-                      {{ app['events-manager'].get_unread_notifications_number }}
-                  {% endif %}
-              </button>
-                {{ 'Notifications' | trans }}
-            </span>
-                    </a>
-                </li>
+            <li class="notification_trigger">
+                <a href="#" style="font-weight:bold;text-decoration:none;">
+                    <span>
+                      <button class="counter btn btn-danger"></button>&nbsp;{{ 'Notifications' | trans }}
+                    </span>
+                </a>
+            </li>
             {% endif %}
             <li class="user">
                 {% if app.getAuthenticator().isAuthenticated() %}
@@ -274,26 +268,19 @@
 
     <div class="mobilemenu" style="float: right;margin-right: 50px;">
         {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
-            <li class="notification_trigger">
-                <a href="#" style="font-weight:bold;text-decoration:none;">
-            <span>
-              <button class="counter btn btn-danger"
-                      style="visibility:{% if app['events-manager'].get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
-                  {% if app['events-manager'].get_unread_notifications_number > 0 %}
-                      {{ app['events-manager'].get_unread_notifications_number }}
-                  {% endif %}
-              </button>
-                {{ 'Notifications' | trans }}
-            </span>
-                </a>
-            </li>
+        <li class="notification_trigger">
+            <a href="#" style="font-weight:bold;text-decoration:none;">
+                <span>
+                    <button class="counter btn btn-danger"></button>&nbsp;{{ 'Notifications' | trans }}
+                </span>
+            </a>
+        </li>
         {% endif %}
     </div>
 </div>
 
 {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
     <div style="display:none;z-index:30000;" id="notification_box">
-        {% set notifications = app['events-manager'].get_notifications %}
         {% include 'prod/notifications.html.twig' %}
     </div>
 {% endif %}
@@ -430,31 +417,36 @@
         });
     });
 /**manage session and redirect to login page**/
-    var usrId = '{{ app.getAuthenticator().user.getId }}' ;
+    // var usrId = '{{ app.getAuthenticator().user.getId }}' ;
+    var module = '{{ module }}';
+
     function pollNotifications() {
         $.ajax({
             type: "POST",
             url: "/session/notifications/",
             dataType: 'json',
             data: {
-                module: 10,
-                usr: usrId
+                'offset': 0,
+                'limit': 10,
+                'what': 2,      // 2 : only unread
             },
-            error: function () {
-                window.setTimeout("pollNotifications();", 10000);
+            error: function (data) {
+                if(data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
             },
             timeout: function () {
                 window.setTimeout("pollNotifications();", 10000);
             },
             success: function (data) {
-                if (data) {
+                // there is no notification bar nor a basket notification if not on prod module
+                if (module === 'prod' && data) {
                     commonModule.manageSession(data);
                 }
                 window.setTimeout("pollNotifications();", 60000);
-                return;
             }
         });
-    };
+    }
 
-    window.setTimeout("pollNotifications();", 10000);
+    window.setTimeout("pollNotifications();", 2000);
 </script>

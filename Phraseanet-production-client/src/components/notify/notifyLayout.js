@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import dialog from './../../phraseanet-common/components/dialog';
 // import user from '../user/index.js';
 
 
@@ -8,34 +7,34 @@ const notifyLayout = (services) => {
     const $notificationBoxContainer = $('#notification_box');
     const $notificationTrigger = $('.notification_trigger');
     let $notificationDialog = $('#notifications-dialog');
+    let $notificationsContent = null;
+    let $notificationsNavigation = null;
+
     const initialize = () => {
+        /**
+         * click on menubar/notifications : drop a box with last 10 notification, and a button "see all"
+         * the box content is already set by poll notifications
+         */
         $notificationTrigger.on('mousedown', (event) => {
             event.stopPropagation();
-            const $target = $(event.currentTarget);
-            if ($target.hasClass('open')) {
-                $notificationBoxContainer.hide();
-                $target.removeClass('open');
-                clear_notifications();
-            } else {
-                $notificationBoxContainer.show();
-
-                setBoxHeight();
-
-                $target.addClass('open');
-                read_notifications();
-            }
-        });
-
-        $(document).on('mousedown', () => {
-            if ($notificationTrigger.hasClass('open')) {
-                $notificationTrigger.trigger('click');
-            }
-
+            // toggle
             if ($notificationTrigger.hasClass('open')) {
                 $notificationBoxContainer.hide();
                 $notificationTrigger.removeClass('open');
-                clear_notifications();
             }
+            else {
+                $notificationTrigger.addClass('open');
+                $notificationBoxContainer.show();
+                setBoxHeight();
+            }
+        });
+
+        /**
+         * close on every mousedown
+         */
+        $(document).on('mousedown', () => {
+            $notificationBoxContainer.hide();
+            $notificationTrigger.removeClass('open');
         });
 
         $notificationBoxContainer
@@ -48,11 +47,14 @@ const notifyLayout = (services) => {
             .on('mouseout', '.notification', (event) => {
                 $(event.currentTarget).removeClass('hover');
             })
+            /**
+             * click on "see all notification"
+             */
             .on('click', '.notification__print-action', (event) => {
                 event.preventDefault();
-                const $el = $(event.currentTarget);
-                const page = $el.data('page');
-                print_notifications(page);
+                $notificationBoxContainer.hide();
+                $notificationTrigger.removeClass('open');
+                print_notifications(0);
             });
 
         $(window).bind('resize', function () {
@@ -62,24 +64,24 @@ const notifyLayout = (services) => {
 
     };
 
-    const addNotifications = (notificationContent) => {
-        // var box = $('#notification_box');
-        $notificationBoxContainer.empty().append(notificationContent);
-
-        if ($notificationBoxContainer.is(':visible')) {
-            setBoxHeight();
-        }
-
-        if ($('.notification.unread', $notificationBoxContainer).length > 0) {
-            $('.counter', $notificationTrigger)
-                .empty()
-                .append($('.notification.unread', $notificationBoxContainer).length);
-            $('.counter', $notificationTrigger).css('visibility', 'visible');
-
-        } else {
-            $('.notification_trigger .counter').css('visibility', 'hidden').empty();
-        }
-    };
+    // const addNotifications = (notificationContent) => {
+    //     // var box = $('#notification_box');
+    //     $notificationBoxContainer.empty().append(notificationContent);
+    //
+    //     if ($notificationBoxContainer.is(':visible')) {
+    //         setBoxHeight();
+    //     }
+    //
+    //     if ($('.notification.unread', $notificationBoxContainer).length > 0) {
+    //         $('.counter', $notificationTrigger)
+    //             .empty()
+    //             .append($('.notification.unread', $notificationBoxContainer).length);
+    //         $('.counter', $notificationTrigger).css('visibility', 'visible');
+    //
+    //     } else {
+    //         $('.notification_trigger .counter').css('visibility', 'hidden').empty();
+    //     }
+    // };
 
 
     const setBoxHeight = () => {
@@ -110,20 +112,32 @@ const notifyLayout = (services) => {
         }
     };
 
-    const print_notifications = (page) => {
+    /**
+     * add 10 notifications into the dlgbox
+     * display the button "load more" while relevant
+     *
+     * @param offset
+     */
+    const print_notifications = (offset) => {
 
-        page = parseInt(page, 10);
+        offset = parseInt(offset, 10);
         var buttons = {};
 
         buttons[localeService.t('fermer')] = function () {
             $notificationDialog.dialog('close');
         };
 
+        // create the dlg div if it does not exists
+        //
         if ($notificationDialog.length === 0) {
-            $('body').append('<div id="notifications-dialog" class="loading"></div>');
+            $('body').append('<div id="notifications-dialog"><div class="content"></div><div class="navigation"></div></div>');
             $notificationDialog = $('#notifications-dialog');
+            $notificationsContent = $('.content', $notificationDialog);
+            $notificationsNavigation = $('.navigation', $notificationDialog);
         }
 
+        // open the dlg (even if it is already opened when "load more")
+        //
         $notificationDialog
             .dialog({
                 title: $('#notification-title').val(),
@@ -141,20 +155,22 @@ const notifyLayout = (services) => {
                 close: function (event, ui) {
                     $notificationDialog.dialog('destroy').remove();
                 }
-            }).dialog('option', 'buttons', buttons).dialog('open').on('click','.notification_next .notification__print-action', function (event) {
-                event.preventDefault();
-                var $el = $(event.currentTarget);
-                var page = $el.data('page');
-                print_notifications(page);
-            });
+            })
+            .dialog('option', 'buttons', buttons)
+            .dialog('open');
 
-
+        // load 10 (more) notifications
+        //
+        $notificationDialog.addClass('loading');
         $.ajax({
-            type: 'GET',
-            url: '/user/notifications/',
+            type: 'POST',
+            // url: '/user/notifications/',
+            url: '/session/notifications/',
             dataType: 'json',
             data: {
-                page: page
+                'offset': offset,
+                'limit': 10,
+                'what': 3,          // 3 = read | unread
             },
             error: function (data) {
                 $notificationDialog.removeClass('loading');
@@ -165,47 +181,55 @@ const notifyLayout = (services) => {
             success: function (data) {
                 $notificationDialog.removeClass('loading');
 
-
-                if (page === 0) {
-                    $notificationDialog.empty();
-                } else {
-                    $('.notification_next', $notificationDialog).remove();
+                if (offset === 0) {
+                    $notificationsContent.empty();
                 }
 
+                const notifications = data.notifications.notifications;
                 let i = 0;
-                for (i in data.notifications) {
-                    var id = 'notif_date_' + i;
-                    var date_cont = $('#' + id);
-                    if (date_cont.length === 0) {
-                        $notificationDialog.append('<div id="' + id + '"><div class="notification_title">' + data.notifications[i].display + '</div></div>');
-                        date_cont = $('#' + id);
-                    }
+                for (i in notifications) {
+                    const notification = notifications[i];
 
-                    let j = 0;
-                    for (j in data.notifications[i].notifications) {
-                        var loc_dat = data.notifications[i].notifications[j];
-                        var html = '<div style="position:relative;" id="notification_' + loc_dat.id + '" class="notification">' +
-                            '<table style="width:100%;" cellspacing="0" cellpadding="0" border="0"><tr><td style="width:25px;">' +
-                            loc_dat.icon +
-                            '</td><td>' +
-                            '<div style="position:relative;" class="' + loc_dat.classname + '">' +
-                            loc_dat.text + ' <span class="time">' + loc_dat.time + '</span></div>' +
-                            '</td></tr></table>' +
-                            '</div>';
-                        date_cont.append(html);
+                    // group notifs by day
+                    //
+                    const date    = notification.created_on_day;
+                    const id      = 'notif_date_' + date;
+                    let date_cont = $('#' + id, $notificationsContent);
+                    if (date_cont.length === 0) {
+                        $notificationsContent.append('<div id="' + id + '"><div class="notification_title">' + notifications[i].created_on + '</div></div>');
+                        date_cont = $('#' + id, $notificationsContent);
                     }
+                    // write notif
+                    let html = '<div style="position:relative;" id="notification_' + notification.id + '" class="notification">' +
+                        '<table style="width:100%;" cellspacing="0" cellpadding="0" border="0"><tr style="border-top: 1px grey solid"><td style="width:25px; vertical-align: top;">' +
+                        '<img src="' + notification.icon + '" style="vertical-align:middle;width:16px;margin:2px;" />' +
+                        '</td><td style="vertical-align: top;">' +
+                        '<div style="position:relative;" class="' + notification.classname + '">' +
+                        notification.text + ' <span class="time">' + notification.time + '</span></div>' +
+                        '</td></tr></table>' +
+                        '</div>';
+                    date_cont.append(html);
                 }
 
-                var next_ln = $.trim(data.next);
-
-                if (next_ln !== '') {
-                    $notificationDialog.append('<div class="notification_next">' + next_ln + '</div>');
+                if (data.notifications.next_page_html) {
+                    $notificationsNavigation
+                        .off('click', '.notification__print-action');
+                    $notificationsNavigation.empty().show().append(data.notifications.next_page_html);
+                    $notificationsNavigation
+                        .on('click', '.notification__print-action', function (event) {
+                            event.preventDefault();
+                            let $el  = $(event.currentTarget);
+                            let offset = $el.data('offset');
+                            print_notifications(offset);
+                        });
+                }
+                else {
+                    $notificationsNavigation.empty().hide();
                 }
             }
         });
-
     };
-
+    /* remove in favor of existing /session/ route
     const read_notifications = () => {
         var notifications = [];
 
@@ -236,9 +260,10 @@ const notifyLayout = (services) => {
         $('.notification_trigger .counter').css('visibility', 'hidden').empty();
     };
 
+     */
+
     return {
-        initialize,
-        addNotifications
+        initialize
     };
 };
 

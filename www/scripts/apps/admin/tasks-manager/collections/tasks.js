@@ -15,7 +15,7 @@ define([
     var TaskCollection = Backbone.Collection.extend({
         model: TaskModel,
         url: function () {
-            return "/admin/task-manager/tasks";
+            return "/admin/task-manager/tasks?update_session=0";
         }
     });
 
