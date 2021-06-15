@@ -47,22 +47,12 @@ class SessionController extends Controller
         ];
 
         $authenticator = $this->getAuthenticator();
-        // every request is catched by SessionManagerSubscriber, which handles disconnect
-        // so this code is probably useless
-        /*
-        if ($authenticator->isAuthenticated()) {
-            $usr_id = $authenticator->getUser()->getId();
-            if ($usr_id != $request->request->get('usr')) { // I logged with another user
-                $ret['status'] = 'disconnected';
 
-                return $this->app->json($ret);
-            }
-        } else {
+        if (!$authenticator->isAuthenticated()) {
             $ret['status'] = 'disconnected';
 
             return $this->app->json($ret);
         }
-        */
 
         try {
             $this->getApplicationBox()->get_connection();

@@ -70,8 +70,12 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $moduleIName= $this->getModuleName($request->getPathInfo());
         $moduleId = $this->getModuleId($request->getPathInfo());
 
+        if(is_null($moduleId) && $moduleIName !== "login") {
+            return;
+        }
         // if we are already disconnected (ex. from another window), quit immediately
         //
         if (!($this->app->getAuthenticator()->isAuthenticated())) {

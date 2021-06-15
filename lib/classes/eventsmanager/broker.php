@@ -211,6 +211,10 @@ class eventsmanager_broker
 
     public function get_notifications(int $offset=0, int $limit=10, $readFilter = self::READ | self::UNREAD, \Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
     {
+        if(!$this->app->getAuthenticatedUser()) {
+            return;
+        }
+
         if($stopwatch) $stopwatch->lap("broker start");
 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
