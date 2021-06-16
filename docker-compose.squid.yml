@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  squid:
+    image: sameersbn/squid:3.5.27-2
+    ports:
+      - "3128:3128"
+    volumes:
+      - ${PHRASEANET_SQUID_DIR}:/var/spool/squid
+      - ${PHRASEANET_SQUID_CONF}:/etc/squid/conf.d/squid.conf
+      - ${PHRASEANET_LOGS_DIR}/squid:/var/log/squid
+    restart: always
