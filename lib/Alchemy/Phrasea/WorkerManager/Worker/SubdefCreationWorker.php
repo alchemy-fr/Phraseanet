@@ -196,6 +196,10 @@ class SubdefCreationWorker implements WorkerInterface
             )
         );
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("Event WorkerEvents::SUBDEFINITION_WRITE_META posted  for %s.%s.%s", $record->getDataboxId(), $record->getRecordId(), $subdefName)
+        ), FILE_APPEND | LOCK_EX);
+
         $this->subdefGenerator->setLogger($oldLogger);
 
         //  update jeton when subdef is created
