@@ -233,8 +233,16 @@ class eventsmanager_broker
         // delete old already read notifs (nb: we do this for everybody - not only the current user -)
         // todo: for now we use "created_on" since there is no timestamp set when reading.
         //
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // do restore : for testing we do not yet delete
+
         $sql = "DELETE FROM `notifications` WHERE `unread`=0 AND TIMESTAMPDIFF(HOUR, `created_on`, NOW()) > 10";
-        $this->app->getApplicationBox()->get_connection()->exec($sql);
+        // $this->app->getApplicationBox()->get_connection()->exec($sql);
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // get count of unread notifications (to be displayed on navbar)
         //

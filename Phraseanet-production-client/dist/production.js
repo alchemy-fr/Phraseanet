@@ -18905,8 +18905,8 @@ var notifyLayout = function notifyLayout(services) {
     var $notificationBoxContainer = (0, _jquery2.default)('#notification_box');
     var $notificationTrigger = (0, _jquery2.default)('.notification_trigger');
     var $notificationDialog = (0, _jquery2.default)('#notifications-dialog');
-    var $notifications = null;
-    var $navigation = null;
+    var $notifications = (0, _jquery2.default)('.notifications', $notificationDialog);
+    var $navigation = (0, _jquery2.default)('.navigation', $notificationDialog);
 
     var initialize = function initialize() {
         /**
@@ -19020,15 +19020,6 @@ var notifyLayout = function notifyLayout(services) {
             $notificationDialog.dialog('close');
         };
 
-        // create the dlg div if it does not exists
-        //
-        //        if ($notificationDialog.length === 0) {
-        //            $('body').append('<div id="notifications-dialog"><div class="content"></div><div class="navigation"></div></div>');
-        //            $notificationDialog = $('#notifications-dialog');
-        $notifications = (0, _jquery2.default)('.notifications', $notificationDialog);
-        $navigation = (0, _jquery2.default)('.navigation', $notificationDialog);
-        //        }
-
         // open the dlg (even if it is already opened when "load more")
         //
         $notificationDialog.dialog({
@@ -19076,7 +19067,8 @@ var notifyLayout = function notifyLayout(services) {
 
                 var notifications = data.notifications.notifications;
                 var i = 0;
-                for (i in notifications) {
+
+                var _loop = function _loop() {
                     var notification = notifications[i];
 
                     // group notifs by day
@@ -19093,6 +19085,13 @@ var notifyLayout = function notifyLayout(services) {
 
                     // add pre-formatted notif
                     date_cont.append(notification.html);
+                    (0, _jquery2.default)('.notification_' + notification.id + '_unread', $notifications).tooltip().click(function () {
+                        mark_read(notification.id);
+                    });
+                };
+
+                for (i in notifications) {
+                    _loop();
                 }
 
                 // handle "show more" button
@@ -19109,52 +19108,36 @@ var notifyLayout = function notifyLayout(services) {
                     // no more ? no button
                     $navigation.hide();
                 }
-                /*
-                if (data.notifications.next_page_html) {
-                    $navigation
-                        .off('click', '.notification__print-action');
-                    $navigation.empty().show().append(data.notifications.next_page_html);
-                    $navigation
-                        .on('click', '.notification__print-action', function (event) {
-                            event.preventDefault();
-                            let $el  = $(event.currentTarget);
-                            let offset = $el.data('offset');
-                            print_notifications(offset);
-                        });
-                }
-                else {
-                    $navigation.empty().hide();
-                }
-                */
             }
         });
     };
-    /* remove in favor of existing /session/ route
-    const read_notifications = () => {
-        var notifications = [];
-         $('#notification_box .unread').each(function () {
-            notifications.push($(this).attr('id').split('_').pop());
-        });
-         $.ajax({
-            type: 'POST',
-            url: '/user/notifications/read/',
+
+    var mark_read = function mark_read(notification_id) {
+        _jquery2.default.ajax({
+            type: 'PATCH',
+            url: '/user/notifications/' + notification_id + '/',
             data: {
-                notifications: notifications.join('_')
+                'read': 1
             },
-            success: function (data) {
-                $('.notification_trigger .counter').css('visibility', 'hidden').empty();
+            success: function success(data) {
+                (0, _jquery2.default)('.notification_' + notification_id + '_unread', $notifications).hide();
+                (0, _jquery2.default)('.notification_' + notification_id + '_read', $notifications).show();
             }
         });
     };
-     const clear_notifications = () => {
-        var unread = $('#notification_box .unread');
-         if (unread.length === 0) {
-            return;
-        }
-         unread.removeClass('unread');
-        $('.notification_trigger .counter').css('visibility', 'hidden').empty();
-    };
-      */
+    /*
+        const clear_notifications = () => {
+            var unread = $('#notification_box .unread');
+    
+            if (unread.length === 0) {
+                return;
+            }
+    
+            unread.removeClass('unread');
+            $('.notification_trigger .counter').css('visibility', 'hidden').empty();
+        };
+    
+         */
 
     return {
         initialize: initialize

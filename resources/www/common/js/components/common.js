@@ -135,8 +135,16 @@ var commonModule = (function ($, p4) {
         }
         else {
             $('.no_notifications', $box).hide();
-            for (n in data.notifications.notifications) {
-                $box_notifications.append(data.notifications.notifications[n].html);
+            for (var n in data.notifications.notifications) {
+                var notification = data.notifications.notifications[n];
+                $box_notifications.append(notification.html);
+
+                $('.notification_' + notification.id + '_read', $box_notifications).click(
+                    function (event) {
+                        console.log("++++++++++ clicked("+notification.id+")")
+                    });
+
+
             }
             $('.show_all', $box).show();
         }

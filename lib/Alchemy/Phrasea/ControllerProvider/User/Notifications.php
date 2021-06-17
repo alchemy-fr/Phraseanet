@@ -54,8 +54,11 @@ class Notifications implements ControllerProviderInterface, ServiceProviderInter
 //            ->bind('get_notifications')
         ;
 
-        /* todo : re-implement "read" route
-        *
+        $controllers->patch('/{notification_id}/', 'controller.user.notifications:patchNotification')
+            ->assert('notification_id', '\d+')
+            ->bind('set_notifications_readed');
+
+        /*
         /** @uses  UserNotificationController::listNotifications * /
         $controllers->get('/', 'controller.user.notifications:getNotifications')
             ->bind('get_notifications');

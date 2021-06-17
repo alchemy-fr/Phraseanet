@@ -194,6 +194,10 @@ const notifyLayout = (services) => {
 
                     // add pre-formatted notif
                     date_cont.append(notification.html);
+                    $('.notification_' + notification.id + '_unread', $notifications).tooltip().click(
+                        function () {
+                            mark_read(notification.id);
+                        });
                 }
 
                 // handle "show more" button
@@ -216,26 +220,21 @@ const notifyLayout = (services) => {
             }
         });
     };
-    /* remove in favor of existing /session/ route
-    const read_notifications = () => {
-        var notifications = [];
 
-        $('#notification_box .unread').each(function () {
-            notifications.push($(this).attr('id').split('_').pop());
-        });
-
+    const mark_read = (notification_id) => {
         $.ajax({
-            type: 'POST',
-            url: '/user/notifications/read/',
+            type: 'PATCH',
+            url: '/user/notifications/' + notification_id + '/',
             data: {
-                notifications: notifications.join('_')
+                'read': 1
             },
             success: function (data) {
-                $('.notification_trigger .counter').css('visibility', 'hidden').empty();
+                $('.notification_' + notification_id + '_unread', $notifications).hide();
+                $('.notification_' + notification_id + '_read', $notifications).show();
             }
         });
     };
-
+/*
     const clear_notifications = () => {
         var unread = $('#notification_box .unread');
 

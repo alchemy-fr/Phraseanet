@@ -130,37 +130,35 @@ class UserNotificationController extends Controller
     }
 
 
-
-
-
-
-
-
     /**
-     * Set notifications as read
+     * patch a notification
+     * for now the only usefull thing is to mark it as "read"
      *
      * @param  Request $request
      * @return JsonResponse
      */
-    /* remove in favor of existing /session/ route
-    public function readNotifications(Request $request)
+    public function patchNotification(Request $request, $notification_id)
     {
         if (!$request->isXmlHttpRequest()) {
             $this->app->abort(400);
         }
 
-        try {
-            $this->getEventsManager()->read(
-                explode('_', (string) $request->request->get('notifications')),
-                $this->getAuthenticatedUser()->getId()
-            );
+        if($request->get('read', '0') === '1') {
+            // mark as read
+            try {
+                $this->getEventsManager()->read(
+                    [$notification_id],
+                    $this->getAuthenticatedUser()->getId()
+                );
 
-            return $this->app->json(['success' => true, 'message' => '']);
-        } catch (\Exception $e) {
-            return $this->app->json(['success' => false, 'message' => $e->getMessage()]);
+                return $this->app->json(['success' => true, 'message' => '']);
+            }
+            catch (\Exception $e) {
+                return $this->app->json(['success' => false, 'message' => $e->getMessage()]);
+            }
         }
     }
-    */
+
 
     /**
      * Get all notifications
