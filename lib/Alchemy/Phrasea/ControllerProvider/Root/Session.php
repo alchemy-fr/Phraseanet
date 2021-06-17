@@ -41,6 +41,10 @@ class Session implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createCollection($app);
 
+        /** @uses SessionController::updateSession() */
+        $controllers->post('/update/', 'controller.session:updateSession')
+            ->bind('update_session');
+
         /** @uses SessionController::deleteSession() */
         // used in admin/connected_users to kill a session
         $controller = $controllers->post('/delete/{id}', 'controller.session:deleteSession')
