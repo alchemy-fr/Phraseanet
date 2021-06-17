@@ -31,6 +31,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         'thesaurus' => 5,
         'report' => 10,
         'lightbox' => 6,
+        'user' => 7,
     ];
 
     public function __construct(Application $app)
@@ -73,9 +74,9 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         $moduleName= $this->getModuleName($request->getPathInfo());
         $moduleId = $this->getModuleId($request->getPathInfo());
 
-        // "/" and "/login" routes do not keep session alive, nor close session, nor redirect to login
+        // "unknown" modules do not keep session alive, nor close session, nor redirect to login
         //
-        if(is_null($moduleName) || $moduleName == "login") {
+        if(is_null($moduleId)) {
             return;
         }
 
@@ -110,11 +111,6 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         }
 
         // only routes from "modules" (prod, admin, ...) are considered as "user activity"
-        //
-        if(is_null($moduleId)) {
-            return;
-        }
-
         // we must still ignore some "polling" (js) routes
         //
         if ($this->isJsPollingRoute($request)) {
@@ -211,6 +207,11 @@ class SessionManagerSubscriber implements EventSubscriberInterface
         }
 
         $pathInfo = $request->getPathInfo();
+
+        // nutifications poll in menubar (header "update-session=0") sent
+        if ($pathInfo === '/user/notifications/' && $request->getContentType() === 'json') {
+            return true;
+        }
 
         // admin/task managers poll tasks
         if ($pathInfo === '/admin/task-manager/tasks/' && $request->getContentType() === 'json') {
