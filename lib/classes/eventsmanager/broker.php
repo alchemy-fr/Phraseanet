@@ -280,7 +280,7 @@ class eventsmanager_broker
 
         $bad_ids = [];
         // nb : we asked for a "page" of notifs (limit), but since some notifications may be ignored (bad type, bad json, ...)
-        //      the result array may contain less than expected.
+        //      the result array may contain less than expected (but this should not happen).
         foreach ($rs as $row) {
             $type = 'eventsmanager_' . $row['type'];
             if ( ! isset($this->pool_classes[$type])) {
@@ -297,10 +297,6 @@ class eventsmanager_broker
             /** @var eventsmanager_notifyAbstract $obj */
             $obj = $this->pool_classes[$type];
             $datas = $obj->datas($data, $row['unread']);
-            // $datas = [
-            //           'text' => "blabla"
-            //           'class' => "" | "relaod_baskets"
-            // ]
 
             if (count($datas) === 0) {
                 $bad_ids[] = $row['id'];
@@ -313,13 +309,12 @@ class eventsmanager_broker
             $notifications[] = array_merge(
                 $datas,
                 [
+                    'id'                => $row['id'],
                     'created_on_day'    => $created_on->format('Ymd'),
                     'created_on'        => $this->app['date-formatter']->getPrettyString($created_on),
                     'time'              => $this->app['date-formatter']->getTime($created_on),
-                    //, 'icon'      => '<img src="' . $this->pool_classes[$type]->icon_url() . '" style="vertical-align:middle;width:16px;margin:2px;" />'
                     'icon'              => $this->pool_classes[$type]->icon_url(),
-                    'id'                => $row['id'],
-                    'unread'            => $row['unread']
+                    'unread'            => $row['unread'],
                 ]
             );
         }
@@ -334,17 +329,16 @@ class eventsmanager_broker
         }
 
         $next_offset = $offset+$limit;
-        $ret = [
+
+        return [
             'unread_count' => $unread,
             'offset' => $offset,
             'limit' => $limit,
             // 'prev_offset' => $offset === 0 ? null : max(0, $offset-$limit),
             'next_offset' => $next_offset < $total ? $next_offset : null,
-            'next_page_html' => $next_offset < $total ?  '<a href="#" class="notification__print-action" data-offset="' . $next_offset . '">' . $this->app->trans('charger d\'avantages de notifications') . '</a>' : null,
             'notifications' => $notifications
         ];
 
-        return $ret;
     }
 
     /**

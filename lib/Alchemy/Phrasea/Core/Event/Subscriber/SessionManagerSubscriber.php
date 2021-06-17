@@ -70,27 +70,25 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $moduleIName= $this->getModuleName($request->getPathInfo());
+        $moduleName= $this->getModuleName($request->getPathInfo());
         $moduleId = $this->getModuleId($request->getPathInfo());
 
-        if(is_null($moduleId) && $moduleIName !== "login") {
+        // "/" and "/login" routes do not keep session alive, nor close session, nor redirect to login
+        //
+        if(is_null($moduleName) || $moduleName == "login") {
             return;
         }
+
+        // any other route can redirect to login if user is diconnected
+
         // if we are already disconnected (ex. from another window), quit immediately
         //
         if (!($this->app->getAuthenticator()->isAuthenticated())) {
             $this->setDisconnectResponse($event);
-
             return;
         }
 
-        // we must still ignore some "polling" (js) routes
-        //
-        if ($this->isJsPollingRoute($moduleId, $request)) {
-            return;
-        }
-
-        // ANY route can disconnect the user if idle duration is over
+        // ANY route can disconnect the user if idle duration is passed
         //
         /** @var Session $session */
         $session = $this->app['repo.sessions']->find($this->app['session']->get('session_id'));
@@ -117,6 +115,12 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // we must still ignore some "polling" (js) routes
+        //
+        if ($this->isJsPollingRoute($request)) {
+            return;
+        }
+
         // here the route is considered as "user activity" : update session
         //
         $entityManager = $this->app['orm.em'];
@@ -135,10 +139,8 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if($this->getModuleName($request->getPathInfo()) !== 'login') { // prevent infinite redirections
-            $response = $request->isXmlHttpRequest() ? $this->getXmlHttpResponse() : $this->getRedirectResponse($request);
-            $event->setResponse($response);
-        }
+        $response = $request->isXmlHttpRequest() ? $this->getXmlHttpResponse() : $this->getRedirectResponse($request);
+        $event->setResponse($response);
     }
 
     /**
@@ -193,7 +195,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * returns true is the route match a "polling" route (databox progressionbar, task manager, notifications, ...)
+     * returns true is the route match a "polling" route (databox progressionbar, task manager, ...)
      * polling routes (sent every n seconds with no user action) must not update the session
      *
      * the request should contain a "update-session=0" header, but for now we still test hardcoded routes
@@ -202,7 +204,7 @@ class SessionManagerSubscriber implements EventSubscriberInterface
      * @param Request $request
      * @return bool
      */
-    private function isJsPollingRoute($moduleId, Request $request)
+    private function isJsPollingRoute(Request $request)
     {
         if($request->headers->get('update-session', '1') === '0') {
             return true;
@@ -217,11 +219,6 @@ class SessionManagerSubscriber implements EventSubscriberInterface
 
         // admin/databox poll to update the indexation progress bar (header "update-session=0") sent
         if(preg_match('#^/admin/databox/\d+/informations/documents/#', $pathInfo)) {
-            return true;
-        }
-
-        // admin/databox poll to update the indexation progress bar
-        if(preg_match('#^/.*/notifications/#', $pathInfo)) {
             return true;
         }
 

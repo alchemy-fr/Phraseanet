@@ -1,0 +1,15 @@
+<div style="position:relative;" id="notification_{{notification['id']}}" class="notification {% if notification['unread'] == '1' %}unread{% endif %}">
+    <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+        <tr style="border-top: 1px grey solid">
+            <td style="width:25px; vertical-align: top;">
+                <img src="{{notification['icon']}}" style="vertical-align:middle;width:16px;margin:2px;" />
+            </td>
+            <td>
+                <p style="margin:0;padding:0;" class="{{notification['class']}}">
+                    {{notification['text']|raw}}
+                    <span class="time">{{notification['created_on']}}</span>
+                </p>
+            </td>
+        </tr>
+  </table>
+</div>

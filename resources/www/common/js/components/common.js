@@ -114,7 +114,7 @@ var commonModule = (function ($, p4) {
             }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'hidden', 'padding': '0'});
     }
 
-    function manageSession(data)
+    function updateNotifications(data)
     {
         if (data.status == 'disconnected' || data.status == 'session') {
             self.location.replace(self.location.href);
@@ -122,12 +122,26 @@ var commonModule = (function ($, p4) {
 
         // add notification in bar
 
-        // fill the pseudo-dropdown with pre-formatted list of notifs (10 unread)
+        // fill the dropdown with pre-formatted notifs (10 unread)
         //
-        var box = $('#notification_box');
-        box.empty().append(data.notifications_html);
+        var $box = $('#notification_box');
+        var $box_notifications = $('.notifications', $box);
 
-        if (box.is(':visible')) {
+        $box_notifications.empty();
+        if(data.notifications.notifications.length === 0) {
+            // no notification
+            $('.show_all', $box).hide();
+            $('.no_notifications', $box).show();
+        }
+        else {
+            $('.no_notifications', $box).hide();
+            for (n in data.notifications.notifications) {
+                $box_notifications.append(data.notifications.notifications[n].html);
+            }
+            $('.show_all', $box).show();
+        }
+
+        if ($box.is(':visible')) {
             fix_notification_height();  // duplicated, better call  notifyLayout.setBoxHeight();
         }
 
@@ -229,7 +243,7 @@ var commonModule = (function ($, p4) {
     return {
         showOverlay: showOverlay,
         hideOverlay: hideOverlay,
-        manageSession: manageSession
+        updateNotifications: updateNotifications
     }
 
 })(jQuery, p4);

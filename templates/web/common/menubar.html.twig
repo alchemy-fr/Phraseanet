@@ -280,9 +280,8 @@
 </div>
 
 {% if app.getAuthenticator().isAuthenticated()  and module == "prod" %}
-    <div style="display:none;z-index:30000;" id="notification_box">
-        {% include 'prod/notifications.html.twig' %}
-    </div>
+    {% include 'prod/notifications_dropdown.html.twig' %}
+    {% include 'prod/notifications_dialog.html.twig' %}
 {% endif %}
 
 <script type="text/javascript">
@@ -422,8 +421,8 @@
 
     function pollNotifications() {
         $.ajax({
-            type: "POST",
-            url: "/session/notifications/",
+            type: "GET",
+            url: "/user/notifications/",
             dataType: 'json',
             data: {
                 'offset': 0,
@@ -441,9 +440,9 @@
             success: function (data) {
                 // there is no notification bar nor a basket notification if not on prod module
                 if (module === 'prod' && data) {
-                    commonModule.manageSession(data);
+                    commonModule.updateNotifications(data);
                 }
-                window.setTimeout("pollNotifications();", 60000);
+                window.setTimeout("pollNotifications();", 30000);
             }
         });
     }

@@ -41,10 +41,6 @@ class Session implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createCollection($app);
 
-        /** @uses SessionController::getNotifications() */
-        $controllers->post('/notifications/', 'controller.session:getNotifications')
-            ->bind('list_notifications');
-
         /** @uses SessionController::deleteSession() */
         // used in admin/connected_users to kill a session
         $controller = $controllers->post('/delete/{id}', 'controller.session:deleteSession')

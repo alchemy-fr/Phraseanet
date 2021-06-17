@@ -7,8 +7,8 @@ const notifyLayout = (services) => {
     const $notificationBoxContainer = $('#notification_box');
     const $notificationTrigger = $('.notification_trigger');
     let $notificationDialog = $('#notifications-dialog');
-    let $notificationsContent = null;
-    let $notificationsNavigation = null;
+    let $notifications = $('.notifications', $notificationDialog);
+    let $navigation = $('.navigation', $notificationDialog);
 
     const initialize = () => {
         /**
@@ -127,15 +127,6 @@ const notifyLayout = (services) => {
             $notificationDialog.dialog('close');
         };
 
-        // create the dlg div if it does not exists
-        //
-        if ($notificationDialog.length === 0) {
-            $('body').append('<div id="notifications-dialog"><div class="content"></div><div class="navigation"></div></div>');
-            $notificationDialog = $('#notifications-dialog');
-            $notificationsContent = $('.content', $notificationDialog);
-            $notificationsNavigation = $('.navigation', $notificationDialog);
-        }
-
         // open the dlg (even if it is already opened when "load more")
         //
         $notificationDialog
@@ -163,9 +154,8 @@ const notifyLayout = (services) => {
         //
         $notificationDialog.addClass('loading');
         $.ajax({
-            type: 'POST',
-            // url: '/user/notifications/',
-            url: '/session/notifications/',
+            type: 'GET',
+            url: '/user/notifications/',
             dataType: 'json',
             data: {
                 'offset': offset,
@@ -182,7 +172,7 @@ const notifyLayout = (services) => {
                 $notificationDialog.removeClass('loading');
 
                 if (offset === 0) {
-                    $notificationsContent.empty();
+                    $notifications.empty();
                 }
 
                 const notifications = data.notifications.notifications;
@@ -194,37 +184,34 @@ const notifyLayout = (services) => {
                     //
                     const date    = notification.created_on_day;
                     const id      = 'notif_date_' + date;
-                    let date_cont = $('#' + id, $notificationsContent);
+                    let date_cont = $('#' + id, $notifications);
+
+                    // new day ? create the container
                     if (date_cont.length === 0) {
-                        $notificationsContent.append('<div id="' + id + '"><div class="notification_title">' + notifications[i].created_on + '</div></div>');
-                        date_cont = $('#' + id, $notificationsContent);
+                        $notifications.append('<div id="' + id + '"><div class="notification_title">' + notifications[i].created_on + '</div></div>');
+                        date_cont = $('#' + id, $notifications);
                     }
-                    // write notif
-                    let html = '<div style="position:relative;" id="notification_' + notification.id + '" class="notification">' +
-                        '<table style="width:100%;" cellspacing="0" cellpadding="0" border="0"><tr style="border-top: 1px grey solid"><td style="width:25px; vertical-align: top;">' +
-                        '<img src="' + notification.icon + '" style="vertical-align:middle;width:16px;margin:2px;" />' +
-                        '</td><td style="vertical-align: top;">' +
-                        '<div style="position:relative;" class="' + notification.classname + '">' +
-                        notification.text + ' <span class="time">' + notification.time + '</span></div>' +
-                        '</td></tr></table>' +
-                        '</div>';
-                    date_cont.append(html);
+
+                    // add pre-formatted notif
+                    date_cont.append(notification.html);
                 }
 
-                if (data.notifications.next_page_html) {
-                    $notificationsNavigation
+                // handle "show more" button
+                //
+                if(data.notifications.next_offset) {
+                    // update the "more" button
+                    $navigation
                         .off('click', '.notification__print-action');
-                    $notificationsNavigation.empty().show().append(data.notifications.next_page_html);
-                    $notificationsNavigation
+                    $navigation
                         .on('click', '.notification__print-action', function (event) {
                             event.preventDefault();
-                            let $el  = $(event.currentTarget);
-                            let offset = $el.data('offset');
-                            print_notifications(offset);
+                            print_notifications(data.notifications.next_offset);
                         });
+                    $navigation.show();
                 }
                 else {
-                    $notificationsNavigation.empty().hide();
+                    // no more ? no button
+                    $navigation.hide();
                 }
             }
         });

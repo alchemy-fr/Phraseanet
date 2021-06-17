@@ -18905,8 +18905,8 @@ var notifyLayout = function notifyLayout(services) {
     var $notificationBoxContainer = (0, _jquery2.default)('#notification_box');
     var $notificationTrigger = (0, _jquery2.default)('.notification_trigger');
     var $notificationDialog = (0, _jquery2.default)('#notifications-dialog');
-    var $notificationsContent = null;
-    var $notificationsNavigation = null;
+    var $notifications = null;
+    var $navigation = null;
 
     var initialize = function initialize() {
         /**
@@ -19022,12 +19022,12 @@ var notifyLayout = function notifyLayout(services) {
 
         // create the dlg div if it does not exists
         //
-        if ($notificationDialog.length === 0) {
-            (0, _jquery2.default)('body').append('<div id="notifications-dialog"><div class="content"></div><div class="navigation"></div></div>');
-            $notificationDialog = (0, _jquery2.default)('#notifications-dialog');
-            $notificationsContent = (0, _jquery2.default)('.content', $notificationDialog);
-            $notificationsNavigation = (0, _jquery2.default)('.navigation', $notificationDialog);
-        }
+        //        if ($notificationDialog.length === 0) {
+        //            $('body').append('<div id="notifications-dialog"><div class="content"></div><div class="navigation"></div></div>');
+        //            $notificationDialog = $('#notifications-dialog');
+        $notifications = (0, _jquery2.default)('.notifications', $notificationDialog);
+        $navigation = (0, _jquery2.default)('.navigation', $notificationDialog);
+        //        }
 
         // open the dlg (even if it is already opened when "load more")
         //
@@ -19053,9 +19053,8 @@ var notifyLayout = function notifyLayout(services) {
         //
         $notificationDialog.addClass('loading');
         _jquery2.default.ajax({
-            type: 'POST',
-            // url: '/user/notifications/',
-            url: '/session/notifications/',
+            type: 'GET',
+            url: '/user/notifications/',
             dataType: 'json',
             data: {
                 'offset': offset,
@@ -19072,7 +19071,7 @@ var notifyLayout = function notifyLayout(services) {
                 $notificationDialog.removeClass('loading');
 
                 if (offset === 0) {
-                    $notificationsContent.empty();
+                    $notifications.empty();
                 }
 
                 var notifications = data.notifications.notifications;
@@ -19084,28 +19083,49 @@ var notifyLayout = function notifyLayout(services) {
                     //
                     var date = notification.created_on_day;
                     var id = 'notif_date_' + date;
-                    var date_cont = (0, _jquery2.default)('#' + id, $notificationsContent);
+                    var date_cont = (0, _jquery2.default)('#' + id, $notifications);
+
+                    // new day ? create the container
                     if (date_cont.length === 0) {
-                        $notificationsContent.append('<div id="' + id + '"><div class="notification_title">' + notifications[i].created_on + '</div></div>');
-                        date_cont = (0, _jquery2.default)('#' + id, $notificationsContent);
+                        $notifications.append('<div id="' + id + '"><div class="notification_title">' + notifications[i].created_on + '</div></div>');
+                        date_cont = (0, _jquery2.default)('#' + id, $notifications);
                     }
-                    // write notif
-                    var html = '<div style="position:relative;" id="notification_' + notification.id + '" class="notification">' + '<table style="width:100%;" cellspacing="0" cellpadding="0" border="0"><tr style="border-top: 1px grey solid"><td style="width:25px; vertical-align: top;">' + '<img src="' + notification.icon + '" style="vertical-align:middle;width:16px;margin:2px;" />' + '</td><td style="vertical-align: top;">' + '<div style="position:relative;" class="' + notification.classname + '">' + notification.text + ' <span class="time">' + notification.time + '</span></div>' + '</td></tr></table>' + '</div>';
-                    date_cont.append(html);
+
+                    // add pre-formatted notif
+                    date_cont.append(notification.html);
                 }
 
-                if (data.notifications.next_page_html) {
-                    $notificationsNavigation.off('click', '.notification__print-action');
-                    $notificationsNavigation.empty().show().append(data.notifications.next_page_html);
-                    $notificationsNavigation.on('click', '.notification__print-action', function (event) {
+                // handle "show more" button
+                //
+                if (data.notifications.next_offset) {
+                    // update the "more" button
+                    $navigation.off('click', '.notification__print-action');
+                    $navigation.on('click', '.notification__print-action', function (event) {
                         event.preventDefault();
-                        var $el = (0, _jquery2.default)(event.currentTarget);
-                        var offset = $el.data('offset');
-                        print_notifications(offset);
+                        print_notifications(data.notifications.next_offset);
                     });
+                    $navigation.show();
                 } else {
-                    $notificationsNavigation.empty().hide();
+                    // no more ? no button
+                    $navigation.hide();
                 }
+                /*
+                if (data.notifications.next_page_html) {
+                    $navigation
+                        .off('click', '.notification__print-action');
+                    $navigation.empty().show().append(data.notifications.next_page_html);
+                    $navigation
+                        .on('click', '.notification__print-action', function (event) {
+                            event.preventDefault();
+                            let $el  = $(event.currentTarget);
+                            let offset = $el.data('offset');
+                            print_notifications(offset);
+                        });
+                }
+                else {
+                    $navigation.empty().hide();
+                }
+                */
             }
         });
     };
