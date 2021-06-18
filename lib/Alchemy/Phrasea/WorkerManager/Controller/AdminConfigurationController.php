@@ -157,10 +157,10 @@ class AdminConfigurationController extends Controller
         /** @var WorkerRunningJob $workerRunningJob */
         $workerRunningJob = $repoWorker->find($workerId);
 
-        $workerRunningJob
-            ->setStatus($request->request->get('status'))
-            ->setFinished(new \DateTime('now'))
-        ;
+        $workerRunningJob->setStatus($request->request->get('status'));
+        if($request->request->get('finished') == '1') {
+            $workerRunningJob->setFinished(new \DateTime('now'))->setFlock(null);
+        }
 
         $em = $repoWorker->getEntityManager();
         $em->persist($workerRunningJob);

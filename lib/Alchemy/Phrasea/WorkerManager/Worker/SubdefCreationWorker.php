@@ -6,7 +6,6 @@ use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\SubdefGenerator;
-use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\Indexer;
 use Alchemy\Phrasea\WorkerManager\Event\StoryCreateCoverEvent;
@@ -14,8 +13,10 @@ use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 class SubdefCreationWorker implements WorkerInterface
 {
@@ -53,182 +54,177 @@ class SubdefCreationWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        if (isset($payload['recordId']) && isset($payload['databoxId'])) {
-            $recordId       = $payload['recordId'];
-            $databoxId      = $payload['databoxId'];
-            $wantedSubdef   = [$payload['subdefName']];
+        // mandatory args
+        if (!isset($payload['recordId']) || !isset($payload['databoxId']) || !isset($payload['subdefName'])) {
+            // bad payload
+            $this->logger->error(sprintf("%s (%s) : bad payload", __FILE__, __LINE__));
+            return;
+        }
 
-            $databox = $this->findDataboxById($databoxId);
-            $record = $databox->get_record($recordId);
+        $recordId       = $payload['recordId'];
+        $databoxId      = $payload['databoxId'];
+        $subdefName     = $payload['subdefName'];
 
-            $oldLogger = $this->subdefGenerator->getLogger();
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("process SubdefCreation for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND | LOCK_EX);
 
-            $message = [
-                'message_type'  => MessagePublisher::SUBDEF_CREATION_TYPE,
-                'payload'       => $payload
-            ];
+        $databox = $this->findDataboxById($databoxId);
+        $record = $databox->get_record($recordId);
 
-            if (!$record->isStory()) {
-                // check if there is a write meta running for the record or the same task running
-                $canCreateSubdef = $this->repoWorker->canCreateSubdef($payload['subdefName'], $recordId, $databoxId);
+        if ($record->isStory()) {
+            return;
+        }
 
-                if (!$canCreateSubdef) {
-                    // the file is in used to write meta
+        $oldLogger = $this->subdefGenerator->getLogger();
 
-                    $this->messagePublisher->publishDelayedMessage($message, MessagePublisher::SUBDEF_CREATION_TYPE);
+        // try to "lock" the file, will return null if already locked
+        $workerRunningJobId = $this->repoWorker->canCreateSubdef($payload);
 
-                    return ;
-                }
+        if (is_null($workerRunningJobId)) {
+            // the file is written by another worker, delay to retry later
+            $this->messagePublisher->publishDelayedMessage(
+                [
+                    'message_type'  => MessagePublisher::SUBDEF_CREATION_TYPE,
+                    'payload'       => $payload
+                ],
+                MessagePublisher::SUBDEF_CREATION_TYPE
+            );
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("cannot CreateSubdef for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND | LOCK_EX);
+            return ;
+        }
 
-                // tell that a file is in used to create subdef
-                $em = $this->repoWorker->getEntityManager();
-                $this->repoWorker->reconnect();
+        // here we can work
 
-                if (isset($payload['workerJobId'])) {
-                    /** @var WorkerRunningJob $workerRunningJob */
-                    $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("ready to CreateSubdef for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND | LOCK_EX);
 
-                    if ($workerRunningJob == null) {
-                        $this->logger->error("Given workerJobId not found !");
+        $this->subdefGenerator->setLogger($this->logger);
 
-                        return ;
-                    }
-                    
-                    $workerRunningJob
-                        ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
-                        ->setStatus(WorkerRunningJob::RUNNING);
+        try {
+            $this->subdefGenerator->generateSubdefs($record, [$subdefName]);
 
-                    $em->persist($workerRunningJob);
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("subdef generated for %s.%s.%s (?)", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND | LOCK_EX);
 
-                    $em->flush();
+        }
+        catch (Exception $e) {
+            $this->logger->error("Exception catched: " . $e->getMessage());
 
-                } else {
-                    $em->beginTransaction();
-                    try {
-                        $date = new \DateTime();
-                        $workerRunningJob = new WorkerRunningJob();
-                        $workerRunningJob
-                            ->setDataboxId($databoxId)
-                            ->setRecordId($recordId)
-                            ->setWork(MessagePublisher::SUBDEF_CREATION_TYPE)
-                            ->setWorkOn($payload['subdefName'])
-                            ->setPayload($message)
-                            ->setPublished($date->setTimestamp($payload['published']))
-                            ->setStatus(WorkerRunningJob::RUNNING)
-                        ;
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("!!! subdef generation failed (ignored) for %s.%s.%s : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
+            ), FILE_APPEND | LOCK_EX);
 
-                        $em->persist($workerRunningJob);
-                        $em->flush();
+        }
+        catch (Throwable $e) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("subdef generation failed, retry delayed for %s.%s.%s : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
+            ), FILE_APPEND | LOCK_EX);
 
-                        $em->commit();
-                    } catch (\Exception $e) {
-                        $em->rollback();
-                    }
-                }
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+            $workerMessage = "Exception throwable catched when create subdef for the recordID: " .$recordId;
 
-                $this->subdefGenerator->setLogger($this->logger);
+            $this->logger->error($workerMessage);
 
-                try {
-                    $this->subdefGenerator->generateSubdefs($record, $wantedSubdef);
-                } catch (\Exception $e) {
-                    $this->logger->error("Exception catched: " . $e->getMessage());
+            /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionCreationFailure() */
+            $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+                $record,
+                $subdefName,
+                $workerMessage,
+                $count,
+                $workerRunningJobId
+            ));
 
-                } catch (\Throwable $e) {
-                    $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
-                    $workerMessage = "Exception throwable catched when create subdef for the recordID: " .$recordId;
+            // the subscriber will "unlock" the row, no need to do it here
+            return ;
+        }
 
-                    $this->logger->error($workerMessage);
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("checking subdef file for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND | LOCK_EX);
 
-                    $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
-                        $record,
-                        $payload['subdefName'],
-                        $workerMessage,
-                        $count,
-                        $workerRunningJob->getId()
-                    ));
+        // begin to check if the subdef is successfully generated
+        $subdef = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())->getSubdef($subdefName);
+        $filePathToCheck = null;
 
-                    return ;
-                }
+        if ($record->has_subdef($subdefName) ) {
+            $filePathToCheck = $record->get_subdef($subdefName)->getRealPath();
+        }
 
-                // begin to check if the subdef is successfully generated
-                $subdef = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType())->getSubdef($payload['subdefName']);
-                $filePathToCheck = null;
+        $filePathToCheck = $this->filesystem->generateSubdefPathname($record, $subdef, $filePathToCheck);
 
-                if ($record->has_subdef($payload['subdefName']) ) {
-                    $filePathToCheck = $record->get_subdef($payload['subdefName'])->getRealPath();
-                }
+        if (!$this->filesystem->exists($filePathToCheck)) {
 
-                $filePathToCheck = $this->filesystem->generateSubdefPathname($record, $subdef, $filePathToCheck);
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("!!! subdef file missing, retry delayed for %s.%s.%s", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND | LOCK_EX);
 
-                if (!$this->filesystem->exists($filePathToCheck)) {
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
-                    $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+            /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionCreationFailure() */
+            $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+                $record,
+                $subdefName,
+                'Subdef generation failed !',
+                $count,
+                $workerRunningJobId
+            ));
 
-                    $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
-                        $record,
-                        $payload['subdefName'],
-                        'Subdef generation failed !',
-                        $count,
-                        $workerRunningJob->getId()
-                    ));
+            $this->subdefGenerator->setLogger($oldLogger);
 
-                    $this->subdefGenerator->setLogger($oldLogger);
-                    return ;
-                }
-                // checking ended
+            // the subscriber will "unlock" the row, no need to do it here
+            return ;
+        }
 
-                // order to write meta for the subdef if needed
-                $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
-                    $record,
-                    $payload['subdefName'])
-                );
+        // checking ended
 
-                $this->subdefGenerator->setLogger($oldLogger);
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("subdef file exists, order to write meta for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND | LOCK_EX);
 
-                //  update jeton when subdef is created
-                $this->updateJeton($record);
+        // order to write meta for the subdef if needed
+        /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
+        $this->dispatcher->dispatch(
+            WorkerEvents::SUBDEFINITION_WRITE_META,
+            new SubdefinitionWritemetaEvent(
+                $record,
+                $subdefName
+            )
+        );
 
-                $parents = $record->get_grouping_parents();
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("Event WorkerEvents::SUBDEFINITION_WRITE_META posted  for %s.%s.%s", $record->getDataboxId(), $record->getRecordId(), $subdefName)
+        ), FILE_APPEND | LOCK_EX);
 
-                //  create a cover for a story
-                //  used when uploaded via uploader-service and grouped as a story
-                if (!$parents->is_empty() && isset($payload['status']) && $payload['status'] == MessagePublisher::NEW_RECORD_MESSAGE  && in_array($payload['subdefName'], array('thumbnail', 'preview'))) {
-                    foreach ($parents->get_elements() as $story) {
-                        if (self::checkIfFirstChild($story, $record)) {
-                            $data = implode('_', [$databoxId, $story->getRecordId(), $recordId, $payload['subdefName']]);
+        $this->subdefGenerator->setLogger($oldLogger);
 
-                            $this->dispatcher->dispatch(WorkerEvents::STORY_CREATE_COVER, new StoryCreateCoverEvent($data));
-                        }
-                    }
-                }
+        //  update jeton when subdef is created
+        $this->updateJeton($record);
 
-                // update elastic
-                $this->indexer->flushQueue();
+        $parents = $record->get_grouping_parents();
 
-                // tell that we have finished to work on this file
-                $this->repoWorker->reconnect();
-                $em->getConnection()->beginTransaction();
-                try {
-                    $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-                    $workerRunningJob->setFinished(new \DateTime('now'));
-                    $em->persist($workerRunningJob);
-                    $em->flush();
-                    $em->commit();
-                } catch (\Exception $e) {
-                    try {
-                        $em->getConnection()->beginTransaction();
-                        $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-                        $em->persist($workerRunningJob);
-                        $em->flush();
-                        $em->commit();
-                    } catch (\Exception $e) {
-                        $this->messagePublisher->pushLog("rollback on recordID :" . $workerRunningJob->getRecordId());
-                        $em->rollback();
-                    }
+        //  create a cover for a story
+        //  used when uploaded via uploader-service and grouped as a story
+        if (!$parents->is_empty() && isset($payload['status']) && $payload['status'] == MessagePublisher::NEW_RECORD_MESSAGE  && in_array($payload['subdefName'], array('thumbnail', 'preview'))) {
+            foreach ($parents->get_elements() as $story) {
+                if (self::checkIfFirstChild($story, $record)) {
+                    $data = implode('_', [$databoxId, $story->getRecordId(), $recordId, $payload['subdefName']]);
 
+                    $this->dispatcher->dispatch(WorkerEvents::STORY_CREATE_COVER, new StoryCreateCoverEvent($data));
                 }
             }
         }
+
+        // update elastic
+        $this->indexer->flushQueue();
+
+        // tell that we have finished to work on this file (=unlock)
+        $this->repoWorker->markFinished($workerRunningJobId);
+
     }
 
     public static function checkIfFirstChild(\record_adapter $story, \record_adapter $record)
