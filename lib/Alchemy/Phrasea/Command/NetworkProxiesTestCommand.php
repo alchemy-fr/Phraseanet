@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Command;
 
 
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,28 +23,28 @@ class NetworkProxiesTestCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $proxiesConfig = $this->container['conf']->get(['network-proxies']);
         $urlTest = $input->getOption('url');
 
         if ($urlTest == null) {
             $urlTest = 'www.google.fr';
         }
 
+        $proxyConfig = new NetworkProxiesConfiguration($this->container['conf']);
+        $clientOptions = [];
+
         // test http-proxy
-        if (isset($proxiesConfig['http-proxy']) && $proxiesConfig['http-proxy']['enabled'] && $proxiesConfig['http-proxy']['host'] && $proxiesConfig['http-proxy']['port']) {
-            $output->writeln("Begin to check http proxy, maybe it's take a few seconds ....");
-            $httpProxy = $proxiesConfig['http-proxy'];
-            $client = new Client([
-                'http_errors' => true,
-                'proxy' => $httpProxy['host'] . ':' . $httpProxy['port']
-            ]);
+        if ($proxyConfig->getHttpProxyConfiguration() != null) {
+            $httpProxy = $proxyConfig->getHttpProxyConfiguration();
+            array_merge($clientOptions, ['proxy' => $httpProxy]);
+
+            $client = new Client($clientOptions);
 
             try {
                 $response = $client->get($urlTest);
 
-                $output->writeln("<info>Test outgoing connection with proxy " .$httpProxy['host'] . ':' . $httpProxy['port']." success with status code : " . $response->getStatusCode() . " </info>");
+                $output->writeln("<info>Test outgoing connection with proxy " . $httpProxy ." success with status code : " . $response->getStatusCode() . " </info>");
             } catch(\Exception $e) {
-                $output->writeln("<comment>Outgoing connection error with proxy " . $httpProxy['host'] . ':' . $httpProxy['port'] . " , " . $e->getMessage() . "</comment>");
+                $output->writeln("<comment>Outgoing connection error with proxy " . $httpProxy . " , " . $e->getMessage() . "</comment>");
             }
         }
 

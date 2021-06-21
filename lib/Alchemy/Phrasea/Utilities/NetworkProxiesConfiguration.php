@@ -24,6 +24,9 @@ class NetworkProxiesConfiguration
             $httpProxy = $this->congif->get(['network-proxies', 'http-proxy']);
 
             $proxy = '';
+            // if user and pass defined
+            // proxy is like this
+            //     user:password@IP:PORT
             if (!empty($httpProxy['user']) && !empty($httpProxy['password'])) {
                 $proxy .= $httpProxy['user'] . ':' . $httpProxy['password'];
             }
