@@ -29,6 +29,7 @@ class NetworkProxiesTestCommand extends Command
             $urlTest = 'www.google.fr';
         }
 
+        // test http-proxy
         if (isset($proxiesConfig['http-proxy']) && $proxiesConfig['http-proxy']['enabled'] && $proxiesConfig['http-proxy']['host'] && $proxiesConfig['http-proxy']['port']) {
             $output->writeln("Begin to check http proxy, maybe it's take a few seconds ....");
             $httpProxy = $proxiesConfig['http-proxy'];
@@ -45,6 +46,8 @@ class NetworkProxiesTestCommand extends Command
                 $output->writeln("<comment>Outgoing connection error with proxy " . $httpProxy['host'] . ':' . $httpProxy['port'] . " , " . $e->getMessage() . "</comment>");
             }
         }
+
+        // TODO: add test for ftp and socket proxy
 
         return 0;
     }

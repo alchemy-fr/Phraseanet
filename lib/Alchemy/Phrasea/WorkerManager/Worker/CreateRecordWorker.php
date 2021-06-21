@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationRecordFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
@@ -58,7 +59,15 @@ class CreateRecordWorker implements WorkerInterface
         $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
         $em = $this->repoWorkerJob->getEntityManager();
 
-        $uploaderClient = new Client(['base_uri' => $payload['base_url']]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $payload['base_url']];
+
+        // add proxy in each request if defined in configuration
+        if ($proxyConfig->getHttpProxyConfiguration() != null) {
+            array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
+        }
+
+        $uploaderClient = new Client($clientOptions);
 
         //get asset informations
         $body = $uploaderClient->get('/assets/'.$payload['asset'], [
@@ -84,8 +93,14 @@ class CreateRecordWorker implements WorkerInterface
 
         $em->flush();
 
+        $clientOptions = [];
+        // add proxy in each request if defined in configuration
+        if ($proxyConfig->getHttpProxyConfiguration() != null) {
+            array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
+        }
+
         //download the asset
-        $client = new Client();
+        $client = new Client($clientOptions);
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
 
         try {
@@ -94,11 +109,13 @@ class CreateRecordWorker implements WorkerInterface
             ]);
         } catch (\Exception $e) {
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+            $workerMessage = sprintf('Error when downloading assets!Send to %s_retry Q : %s', MessagePublisher::CREATE_RECORD_TYPE, $e->getMessage());
+            $this->messagePublisher->pushLog($workerMessage);
 
             //  send to retry queue
             $this->dispatch(WorkerEvents::ASSETS_CREATION_RECORD_FAILURE, new AssetsCreationRecordFailureEvent(
                 $payload,
-                'Error when downloading assets!',
+                $workerMessage,
                 $count,
                 $workerRunningJob->getId()
             ));
