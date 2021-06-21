@@ -114,12 +114,70 @@ var commonModule = (function ($, p4) {
             }).dialog('open').css({'overflow-x': 'auto', 'overflow-y': 'hidden', 'padding': '0'});
     }
 
+    /**
+     * pool notifications on route /user/notifications
+     *
+     * @param update        // bool to refresh the counter/dropdown
+     * @param recurse       // bool to re-run recursively (used by menubar)
+     */
+    function pollNotifications(update, recurse) {
+        $.ajax({
+            type: "GET",
+            url: "/user/notifications/",
+            dataType: 'json',
+            data: {
+                'offset': 0,
+                'limit': 10,
+                'what': 2,      // 2 : only unread
+            },
+            headers: {
+                'update-session': '0'           // polling should not maintain the session alive
+                                                // also : use lowercase as recomended / normalized
+            },
+            error: function (data) {
+                if(data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
+            },
+            timeout: function () {
+                if(recurse) {
+                    window.setTimeout(function() { pollNotifications(update, recurse); }, 10000);
+                }
+            },
+            success: function (data) {
+                // there is no notification bar nor a basket notification if not on prod module
+                if (update) {
+                    updateNotifications(data);
+                }
+                if(recurse) {
+                    window.setTimeout(function() { pollNotifications(update, recurse); }, 30000);
+                }
+            }
+        })
+    }
+
+    /**
+     * mark a notification as read
+     *
+     * @param notification_id
+     * @returns {*}         // ajax promise, so the caller can add his own post-process
+     */
+    function markNotificationRead(notification_id) {
+        return $.ajax({
+            type: 'PATCH',
+            url: '/user/notifications/' + notification_id + '/',
+            data: {
+                'read': 1
+            },
+            success: function () {
+                // update the counter & dropdown
+                pollNotifications(true, false);     // true:update ; false : do not recurse
+            }
+        });
+    }
+
     function updateNotifications(data)
     {
-        if (data.status == 'disconnected' || data.status == 'session') {
-            self.location.replace(self.location.href);
-        }
-
         // add notification in bar
 
         // fill the dropdown with pre-formatted notifs (10 unread)
@@ -130,27 +188,26 @@ var commonModule = (function ($, p4) {
         $box_notifications.empty();
         if(data.notifications.notifications.length === 0) {
             // no notification
-            $('.show_all', $box).hide();
+            // $('.show_all', $box).hide();     // the "show in dlg" is alway visible since it's the only way to see already read notifs.
             $('.no_notifications', $box).show();
         }
         else {
             $('.no_notifications', $box).hide();
             for (var n in data.notifications.notifications) {
                 var notification = data.notifications.notifications[n];
-                $box_notifications.append(notification.html);
+                var $z = $box_notifications.append(notification.html);
 
-                $('.notification_' + notification.id + '_read', $box_notifications).click(
+                $('.notification_' + notification.id + '_unread', $z).click(
+                    notification.id,
                     function (event) {
-                        console.log("++++++++++ clicked("+notification.id+")")
+                        markNotificationRead(event.data);
                     });
-
-
             }
-            $('.show_all', $box).show();
+            // $('.show_all', $box).show();
         }
 
         if ($box.is(':visible')) {
-            fix_notification_height();  // duplicated, better call  notifyLayout.setBoxHeight();
+            fixNotificationsHeight();
         }
 
         // fill the count of uread (red button)
@@ -235,7 +292,7 @@ var commonModule = (function ($, p4) {
     /**
      * duplicated from production_client::notifyLayout.js
      */
-    function fix_notification_height() {
+    function fixNotificationsHeight() {
         const $notificationBoxContainer = $('#notification_box');
         const not = $('.notification', $notificationBoxContainer);
         const n     = not.length;
@@ -251,7 +308,9 @@ var commonModule = (function ($, p4) {
     return {
         showOverlay: showOverlay,
         hideOverlay: hideOverlay,
-        updateNotifications: updateNotifications
+        markNotificationRead: markNotificationRead,
+        pollNotifications: pollNotifications,
+        fixNotificationsHeight: fixNotificationsHeight
     }
 
 })(jQuery, p4);

@@ -18916,13 +18916,14 @@ var notifyLayout = function notifyLayout(services) {
         $notificationTrigger.on('mousedown', function (event) {
             event.stopPropagation();
             // toggle
-            if ($notificationTrigger.hasClass('open')) {
+            //if ($notificationTrigger.hasClass('open')) {
+            if ((0, _jquery2.default)('#notification_box').is(':visible')) {
                 $notificationBoxContainer.hide();
-                $notificationTrigger.removeClass('open');
+                //$notificationTrigger.removeClass('open');
             } else {
-                $notificationTrigger.addClass('open');
+                //$notificationTrigger.addClass('open');
                 $notificationBoxContainer.show();
-                setBoxHeight();
+                commonModule.fixNotificationsHeight();
             }
         });
 
@@ -18931,7 +18932,7 @@ var notifyLayout = function notifyLayout(services) {
          */
         (0, _jquery2.default)(document).on('mousedown', function () {
             $notificationBoxContainer.hide();
-            $notificationTrigger.removeClass('open');
+            //$notificationTrigger.removeClass('open');
         });
 
         $notificationBoxContainer.on('mousedown', function (event) {
@@ -18954,40 +18955,8 @@ var notifyLayout = function notifyLayout(services) {
         (0, _jquery2.default)(window).bind('resize', function () {
             setBoxPosition();
         });
+
         setBoxPosition();
-    };
-
-    // const addNotifications = (notificationContent) => {
-    //     // var box = $('#notification_box');
-    //     $notificationBoxContainer.empty().append(notificationContent);
-    //
-    //     if ($notificationBoxContainer.is(':visible')) {
-    //         setBoxHeight();
-    //     }
-    //
-    //     if ($('.notification.unread', $notificationBoxContainer).length > 0) {
-    //         $('.counter', $notificationTrigger)
-    //             .empty()
-    //             .append($('.notification.unread', $notificationBoxContainer).length);
-    //         $('.counter', $notificationTrigger).css('visibility', 'visible');
-    //
-    //     } else {
-    //         $('.notification_trigger .counter').css('visibility', 'hidden').empty();
-    //     }
-    // };
-
-
-    var setBoxHeight = function setBoxHeight() {
-        //var box = $('#notification_box');
-        var not = (0, _jquery2.default)('.notification', $notificationBoxContainer);
-        var n = not.length;
-        var not_t = (0, _jquery2.default)('.notification_title', $notificationBoxContainer);
-        var n_t = not_t.length;
-
-        var h = not.outerHeight() * n + not_t.outerHeight() * n_t;
-        h = h > 350 ? 350 : h;
-
-        $notificationBoxContainer.stop().animate({ height: h });
     };
 
     var setBoxPosition = function setBoxPosition() {
@@ -19067,8 +19036,7 @@ var notifyLayout = function notifyLayout(services) {
 
                 var notifications = data.notifications.notifications;
                 var i = 0;
-
-                var _loop = function _loop() {
+                for (i in notifications) {
                     var notification = notifications[i];
 
                     // group notifs by day
@@ -19084,14 +19052,10 @@ var notifyLayout = function notifyLayout(services) {
                     }
 
                     // add pre-formatted notif
-                    date_cont.append(notification.html);
-                    (0, _jquery2.default)('.notification_' + notification.id + '_unread', $notifications).tooltip().click(function () {
-                        mark_read(notification.id);
+                    var $z = date_cont.append(notification.html);
+                    (0, _jquery2.default)('.notification_' + notification.id + '_unread', $z).tooltip().click(notification.id, function (event) {
+                        mark_read(event.data);
                     });
-                };
-
-                for (i in notifications) {
-                    _loop();
                 }
 
                 // handle "show more" button
@@ -19113,31 +19077,22 @@ var notifyLayout = function notifyLayout(services) {
     };
 
     var mark_read = function mark_read(notification_id) {
-        _jquery2.default.ajax({
-            type: 'PATCH',
-            url: '/user/notifications/' + notification_id + '/',
-            data: {
-                'read': 1
-            },
-            success: function success(data) {
-                (0, _jquery2.default)('.notification_' + notification_id + '_unread', $notifications).hide();
-                (0, _jquery2.default)('.notification_' + notification_id + '_read', $notifications).show();
-            }
+        commonModule.markNotificationRead(notification_id).success(function (data) {
+            // xhttp ok : update button
+            (0, _jquery2.default)('.notification_' + notification_id + '_unread', $notifications).hide();
+            (0, _jquery2.default)('.notification_' + notification_id + '_read', $notifications).show();
         });
     };
     /*
         const clear_notifications = () => {
             var unread = $('#notification_box .unread');
-    
-            if (unread.length === 0) {
+             if (unread.length === 0) {
                 return;
             }
-    
-            unread.removeClass('unread');
+             unread.removeClass('unread');
             $('.notification_trigger .counter').css('visibility', 'hidden').empty();
         };
-    
-         */
+          */
 
     return {
         initialize: initialize

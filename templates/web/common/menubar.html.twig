@@ -415,42 +415,11 @@
             }
         });
     });
-/**manage session and redirect to login page**/
-    // var usrId = '{{ app.getAuthenticator().user.getId }}' ;
+
+    /**manage session and redirect to login page**/
+
     var module = '{{ module }}';
 
-    function pollNotifications() {
-        $.ajax({
-            type: "GET",
-            url: "/user/notifications/",
-            dataType: 'json',
-            data: {
-                'offset': 0,
-                'limit': 10,
-                'what': 2,      // 2 : only unread
-            },
-            headers: {
-                'update-session': '0'           // polling should not maintain the session alive
-                                                // also : use lowercase as recomended / normalized
-            },
-            error: function (data) {
-                if(data.getResponseHeader('x-phraseanet-end-session')) {
-                    // self.location.replace(self.location.href);  // refresh will redirect to login
-                    console.log("======= GO HOME ======");
-                }
-            },
-            timeout: function () {
-                window.setTimeout("pollNotifications();", 10000);
-            },
-            success: function (data) {
-                // there is no notification bar nor a basket notification if not on prod module
-                if (module === 'prod' && data) {
-                    commonModule.updateNotifications(data);
-                }
-                window.setTimeout("pollNotifications();", 30000);
-            }
-        });
-    }
-
-    window.setTimeout("pollNotifications();", 2000);
+    // start pooling recursively
+    window.setTimeout( function() { commonModule.pollNotifications(module === 'prod', true); }, 2000);
 </script>

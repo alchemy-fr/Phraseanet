@@ -20,12 +20,12 @@ const notifyLayout = (services) => {
             // toggle
             if ($notificationTrigger.hasClass('open')) {
                 $notificationBoxContainer.hide();
-                $notificationTrigger.removeClass('open');
+                $notificationTrigger.removeClass('open');   // revert background in menubar
             }
             else {
-                $notificationTrigger.addClass('open');
+                $notificationTrigger.addClass('open');      // highlight background in menubar
                 $notificationBoxContainer.show();
-                setBoxHeight();
+                commonModule.fixNotificationsHeight();
             }
         });
 
@@ -60,41 +60,8 @@ const notifyLayout = (services) => {
         $(window).bind('resize', function () {
             setBoxPosition();
         });
+
         setBoxPosition();
-
-    };
-
-    // const addNotifications = (notificationContent) => {
-    //     // var box = $('#notification_box');
-    //     $notificationBoxContainer.empty().append(notificationContent);
-    //
-    //     if ($notificationBoxContainer.is(':visible')) {
-    //         setBoxHeight();
-    //     }
-    //
-    //     if ($('.notification.unread', $notificationBoxContainer).length > 0) {
-    //         $('.counter', $notificationTrigger)
-    //             .empty()
-    //             .append($('.notification.unread', $notificationBoxContainer).length);
-    //         $('.counter', $notificationTrigger).css('visibility', 'visible');
-    //
-    //     } else {
-    //         $('.notification_trigger .counter').css('visibility', 'hidden').empty();
-    //     }
-    // };
-
-
-    const setBoxHeight = () => {
-        //var box = $('#notification_box');
-        var not = $('.notification', $notificationBoxContainer);
-        var n = not.length;
-        var not_t = $('.notification_title', $notificationBoxContainer);
-        var n_t = not_t.length;
-
-        var h = not.outerHeight() * n + not_t.outerHeight() * n_t;
-        h = h > 350 ? 350 : h;
-
-        $notificationBoxContainer.stop().animate({height: h});
     };
 
     const setBoxPosition = () => {
@@ -193,10 +160,11 @@ const notifyLayout = (services) => {
                     }
 
                     // add pre-formatted notif
-                    date_cont.append(notification.html);
-                    $('.notification_' + notification.id + '_unread', $notifications).tooltip().click(
-                        function () {
-                            mark_read(notification.id);
+                    const $z = date_cont.append(notification.html);
+                    $('.notification_' + notification.id + '_unread', $z).tooltip().click(
+                        notification.id,
+                        function (event) {
+                            mark_read(event.data);
                         });
                 }
 
@@ -222,31 +190,13 @@ const notifyLayout = (services) => {
     };
 
     const mark_read = (notification_id) => {
-        $.ajax({
-            type: 'PATCH',
-            url: '/user/notifications/' + notification_id + '/',
-            data: {
-                'read': 1
-            },
-            success: function (data) {
+        commonModule.markNotificationRead(notification_id,)
+            .success(function (data) {
+                // xhttp ok : update button
                 $('.notification_' + notification_id + '_unread', $notifications).hide();
                 $('.notification_' + notification_id + '_read', $notifications).show();
-            }
-        });
+            })
     };
-/*
-    const clear_notifications = () => {
-        var unread = $('#notification_box .unread');
-
-        if (unread.length === 0) {
-            return;
-        }
-
-        unread.removeClass('unread');
-        $('.notification_trigger .counter').css('visibility', 'hidden').empty();
-    };
-
-     */
 
     return {
         initialize
