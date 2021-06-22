@@ -119,14 +119,14 @@ network-proxies:
         enabled: false
         host: false
         port: false
-        authmod: none, basis, NTML
+        authmod: basic
         user: false
         password: false
     ftp-proxy:
         enabled: true
         host: false
         port: false
-        authmod: basis
+        authmod: basic
         user: false
         password: false
 debugger:
