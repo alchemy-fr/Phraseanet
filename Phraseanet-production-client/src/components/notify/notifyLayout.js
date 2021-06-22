@@ -48,7 +48,7 @@ const notifyLayout = (services) => {
                 $(event.currentTarget).removeClass('hover');
             })
             /**
-             * click on "see all notification"
+             * click on "see all notifications"
              */
             .on('click', '.notification__print-action', (event) => {
                 event.preventDefault();

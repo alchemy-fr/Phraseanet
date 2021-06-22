@@ -10111,7 +10111,8 @@ var workzone = function workzone(services) {
             }
         });
 
-        (0, _jquery2.default)('.basket_refresher').on('click', function () {
+        (0, _jquery2.default)('#idFrameC').on('click', '.basket_refresher', function () {
+            console.log("======= CLINK ======");
             return workzoneOptions.refresh('current');
         });
         activeBaskets();
@@ -18916,12 +18917,11 @@ var notifyLayout = function notifyLayout(services) {
         $notificationTrigger.on('mousedown', function (event) {
             event.stopPropagation();
             // toggle
-            //if ($notificationTrigger.hasClass('open')) {
-            if ((0, _jquery2.default)('#notification_box').is(':visible')) {
+            if ($notificationTrigger.hasClass('open')) {
                 $notificationBoxContainer.hide();
-                //$notificationTrigger.removeClass('open');
+                $notificationTrigger.removeClass('open'); // revert background in menubar
             } else {
-                //$notificationTrigger.addClass('open');
+                $notificationTrigger.addClass('open'); // highlight background in menubar
                 $notificationBoxContainer.show();
                 commonModule.fixNotificationsHeight();
             }
@@ -18932,7 +18932,7 @@ var notifyLayout = function notifyLayout(services) {
          */
         (0, _jquery2.default)(document).on('mousedown', function () {
             $notificationBoxContainer.hide();
-            //$notificationTrigger.removeClass('open');
+            $notificationTrigger.removeClass('open');
         });
 
         $notificationBoxContainer.on('mousedown', function (event) {
@@ -18943,7 +18943,7 @@ var notifyLayout = function notifyLayout(services) {
             (0, _jquery2.default)(event.currentTarget).removeClass('hover');
         })
         /**
-         * click on "see all notification"
+         * click on "see all notifications"
          */
         .on('click', '.notification__print-action', function (event) {
             event.preventDefault();
@@ -19083,16 +19083,6 @@ var notifyLayout = function notifyLayout(services) {
             (0, _jquery2.default)('.notification_' + notification_id + '_read', $notifications).show();
         });
     };
-    /*
-        const clear_notifications = () => {
-            var unread = $('#notification_box .unread');
-             if (unread.length === 0) {
-                return;
-            }
-             unread.removeClass('unread');
-            $('.notification_trigger .counter').css('visibility', 'hidden').empty();
-        };
-          */
 
     return {
         initialize: initialize
