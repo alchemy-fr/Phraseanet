@@ -117,10 +117,18 @@ var commonModule = (function ($, p4) {
     /**
      * pool notifications on route /user/notifications
      *
+     * @param usr_id        // the id of the user originally logged (immutable from twig)
      * @param update        // bool to refresh the counter/dropdown
      * @param recurse       // bool to re-run recursively (used by menubar)
      */
-    function pollNotifications(update, recurse) {
+    function pollNotifications(usr_id, update, recurse) {
+        var headers = {
+            'update-session': recurse ? '0' : '1'       // polling should not maintain the session alive
+                                                        // also : use lowercase as recomended / normalized
+        };
+        if(usr_id !== null) {
+            headers['user-id'] = usr_id;
+        }
         $.ajax({
             type: "GET",
             url: "/user/notifications/",
@@ -130,10 +138,7 @@ var commonModule = (function ($, p4) {
                 'limit': 10,
                 'what': 2,      // 2 : only unread
             },
-            headers: {
-                'update-session': '0'           // polling should not maintain the session alive
-                                                // also : use lowercase as recomended / normalized
-            },
+            headers: headers,
             error: function (data) {
                 if(data.getResponseHeader('x-phraseanet-end-session')) {
                     self.location.replace(self.location.href);  // refresh will redirect to login
@@ -141,7 +146,7 @@ var commonModule = (function ($, p4) {
             },
             timeout: function () {
                 if(recurse) {
-                    window.setTimeout(function() { pollNotifications(update, recurse); }, 10000);
+                    window.setTimeout(function() { pollNotifications(usr_id, update, recurse); }, 10000);
                 }
             },
             success: function (data) {
@@ -150,7 +155,7 @@ var commonModule = (function ($, p4) {
                     updateNotifications(data);
                 }
                 if(recurse) {
-                    window.setTimeout(function() { pollNotifications(update, recurse); }, 30000);
+                    window.setTimeout(function() { pollNotifications(usr_id, update, recurse); }, 30000);
                 }
             }
         })
@@ -171,7 +176,7 @@ var commonModule = (function ($, p4) {
             },
             success: function () {
                 // update the counter & dropdown
-                pollNotifications(true, false);     // true:update ; false : do not recurse
+                pollNotifications(null, true, false);     // true:update ; false : do not recurse
             }
         });
     }

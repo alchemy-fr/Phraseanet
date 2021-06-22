@@ -417,9 +417,9 @@
     });
 
     /**manage session and redirect to login page**/
-
+    var usr_id = '{{ app.getAuthenticator().user.getId }}';
     var module = '{{ module }}';
 
     // start pooling recursively
-    window.setTimeout( function() { commonModule.pollNotifications(module === 'prod', true); }, 2000);
+    window.setTimeout( function() { commonModule.pollNotifications(usr_id, module === 'prod', true); }, 2000);
 </script>

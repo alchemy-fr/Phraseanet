@@ -89,6 +89,14 @@ class SessionManagerSubscriber implements EventSubscriberInterface
             return;
         }
 
+        if(!is_null($h_usr_id = $request->headers->get('user-id'))) {
+            $a_usr_id = $this->app->getAuthenticator()->getUser()->getId();
+            if((int)$h_usr_id !== (int)$a_usr_id) {
+                $this->setDisconnectResponse($event);
+                return;
+            }
+        }
+
         // ANY route can disconnect the user if idle duration is passed
         //
         /** @var Session $session */

@@ -10112,7 +10112,6 @@ var workzone = function workzone(services) {
         });
 
         (0, _jquery2.default)('#idFrameC').on('click', '.basket_refresher', function () {
-            console.log("======= CLINK ======");
             return workzoneOptions.refresh('current');
         });
         activeBaskets();
