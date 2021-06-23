@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import ui from '../ui';
-import notify from '../notify';
 
+// poll notification is now from menu bar
+// so this is never called
 const basket = () => {
 
     const onUpdatedContent = (data) => {

@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\ControllerProvider\User;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\User\UserNotificationController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -25,7 +26,9 @@ class Notifications implements ControllerProviderInterface, ServiceProviderInter
     public function register(Application $app)
     {
         $app['controller.user.notifications'] = $app->share(function (PhraseaApplication $app) {
-            return (new UserNotificationController($app));
+            return (new UserNotificationController($app))
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'))
+                ;
         });
     }
 
@@ -46,11 +49,24 @@ class Notifications implements ControllerProviderInterface, ServiceProviderInter
             $firewall->requireNotGuest();
         });
 
-        $controllers->get('/', 'controller.user.notifications:listNotifications')
+        /** @uses UserNotificationController::getNotifications() */
+        $controllers->get('/', 'controller.user.notifications:getNotifications')
+//            ->bind('get_notifications')
+        ;
+
+        $controllers->patch('/{notification_id}/', 'controller.user.notifications:patchNotification')
+            ->assert('notification_id', '\d+')
+            ->bind('set_notifications_readed');
+
+        /*
+        /** @uses  UserNotificationController::listNotifications * /
+        $controllers->get('/', 'controller.user.notifications:getNotifications')
             ->bind('get_notifications');
 
+        /** @uses  UserNotificationController::readNotifications() * /
         $controllers->post('/read/', 'controller.user.notifications:readNotifications')
             ->bind('set_notifications_readed');
+        */
 
         return $controllers;
     }
