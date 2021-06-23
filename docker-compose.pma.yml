@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: on-failure
+    ports:
+      - ${PHRASEANET_PHPMYADMIN_PORT}:80
+    depends_on:
+      - db
+    networks:
+      - internal
