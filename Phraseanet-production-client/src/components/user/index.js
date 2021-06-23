@@ -1,7 +1,4 @@
-import $ from 'jquery';
 import ui from '../ui';
-import notify from '../notify';
-import * as appCommons from './../../phraseanet-common';
 
 const user = (services) => {
     const { configService, localeService, appEvents } = services;
@@ -19,53 +16,43 @@ const user = (services) => {
         'user.disconnected': onUserDisconnect
     });
 
-    const manageSession = (...params) => {
-        let [data, showMessages] = params;
+    // const manageSession = (...params) => {
+    //     let [data, showMessages] = params;
+    //
+    //     if (typeof (showMessages) === 'undefined') {
+    //         showMessages = false;
+    //     }
+    //
+    //     if (showMessages) {
+    //         // @todo: to be moved
+    //         if ($.trim(data.message) !== '') {
+    //             if ($('#MESSAGE').length === 0) {
+    //                 $('body').append('<div id="#MESSAGE"></div>');
+    //             }
+    //             $('#MESSAGE')
+    //                 .empty()
+    //                 .append(data.message + '<div style="margin:20px;"><input type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>')
+    //                 .attr('title', 'Global Message')
+    //                 .dialog({
+    //                     autoOpen: false,
+    //                     closeOnEscape: true,
+    //                     resizable: false,
+    //                     draggable: false,
+    //                     modal: true,
+    //                     close: function () {
+    //                         if ($('.dialog_remove:checked', $(this)).length > 0) {
+    //                             // @TODO get from module
+    //                             appCommons.userModule.setTemporaryPref('message', 0);
+    //                         }
+    //                     }
+    //                 })
+    //                 .dialog('open');
+    //         }
+    //     }
+    //     return true;
+    // };
 
-        if (typeof (showMessages) === 'undefined') {
-            showMessages = false;
-        }
-
-        if (showMessages) {
-            // @todo: to be moved
-            if ($.trim(data.message) !== '') {
-                if ($('#MESSAGE').length === 0) {
-                    $('body').append('<div id="#MESSAGE"></div>');
-                }
-                $('#MESSAGE')
-                    .empty()
-                    .append(data.message + '<div style="margin:20px;"><input style="margin-right:10px;" type="checkbox" class="dialog_remove" />' + localeService.t('hideMessage') + '</div>')
-                    .attr('title', 'Global Message')
-                    .dialog({
-                        autoOpen: false,
-                        closeOnEscape: true,
-                        resizable: false,
-                        draggable: false,
-                        modal: true,
-                        close: function () {
-                            if ($('.dialog_remove:checked', $(this)).length > 0) {
-                                // setTemporaryPref
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/user/preferences/temporary/",
-                                    data: {
-                                        prop: 'message',
-                                        value: 0
-                                    },
-                                    success: function (data) {
-                                        return;
-                                    }
-                                });
-                            }
-                        }
-                    })
-                    .dialog('open');
-            }
-        }
-        return true;
-    };
-
-    return {initialize, manageSession};
+    return {initialize};
 };
 
 export default user;

@@ -201,34 +201,35 @@ function reportDatePicker() {
     });
 }
 
+// poll only from menu bar
 
-function pollNotifications() {
-    $.ajax({
-        type: "POST",
-        url: "/session/notifications/",
-        dataType: 'json',
-        data: {
-            module: 10,
-            usr: usrId
-        },
-        error: function () {
-            window.setTimeout("pollNotifications();", 10000);
-        },
-        timeout: function () {
-            window.setTimeout("pollNotifications();", 10000);
-        },
-        success: function (data) {
-            if (data) {
-                commonModule.manageSession(data);
-            }
-            var t = 120000;
-            if (data.apps && parseInt(data.apps) > 1) {
-                t = Math.round((Math.sqrt(parseInt(data.apps) - 1) * 1.3 * 120000));
-            }
-            window.setTimeout("pollNotifications();", t);
-            return;
-        }
-    });
-};
-
-window.setTimeout("pollNotifications();", 10000);
+// function pollNotifications() {
+//     $.ajax({
+//         type: "POST",
+//         url: "/session/notifications/",
+//         dataType: 'json',
+//         data: {
+//             module: 10,
+//             usr: usrId
+//         },
+//         error: function () {
+//             window.setTimeout("pollNotifications();", 10000);
+//         },
+//         timeout: function () {
+//             window.setTimeout("pollNotifications();", 10000);
+//         },
+//         success: function (data) {
+//             if (data) {
+//                 commonModule.manageSession(data);
+//             }
+//             var t = 120000;
+//             if (data.apps && parseInt(data.apps) > 1) {
+//                 t = Math.round((Math.sqrt(parseInt(data.apps) - 1) * 1.3 * 120000));
+//             }
+//             window.setTimeout("pollNotifications();", t);
+//             return;
+//         }
+//     });
+// };
+//
+// window.setTimeout("pollNotifications();", 10000);

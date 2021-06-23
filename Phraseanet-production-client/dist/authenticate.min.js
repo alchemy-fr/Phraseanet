@@ -152,7 +152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.oe = function(err) { console.error(err); throw err; };
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 265);
+/******/ 	return __webpack_require__(__webpack_require__.s = 263);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -472,7 +472,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _rx = __webpack_require__(7);
+var _rx = __webpack_require__(8);
 
 var Rx = _interopRequireWildcard(_rx);
 
@@ -2409,7 +2409,7 @@ exports.default = ApplicationConfigService;
   }
 }());
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)(module)))
 
 /***/ }),
 
@@ -2425,11 +2425,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _i18next = __webpack_require__(21);
+var _i18next = __webpack_require__(23);
 
 var _i18next2 = _interopRequireDefault(_i18next);
 
-var _i18nextXhrBackend = __webpack_require__(34);
+var _i18nextXhrBackend = __webpack_require__(33);
 
 var _i18nextXhrBackend2 = _interopRequireDefault(_i18nextXhrBackend);
 
@@ -2437,7 +2437,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _rx = __webpack_require__(7);
+var _rx = __webpack_require__(8);
 
 var Rx = _interopRequireWildcard(_rx);
 
@@ -2530,49 +2530,6 @@ exports.default = LocaleService;
 /***/ }),
 
 /***/ 21:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "changeLanguage", function() { return changeLanguage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneInstance", function() { return cloneInstance; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createInstance", function() { return createInstance; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dir", function() { return dir; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "exists", function() { return exists; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFixedT", function() { return getFixedT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadLanguages", function() { return loadLanguages; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadNamespaces", function() { return loadNamespaces; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadResources", function() { return loadResources; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "off", function() { return off; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "on", function() { return on; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDefaultNamespace", function() { return setDefaultNamespace; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return t; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "use", function() { return use; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__i18next__ = __webpack_require__(25);
-
-
-/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-
-var changeLanguage = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].changeLanguage.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var cloneInstance = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].cloneInstance.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var createInstance = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].createInstance.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var dir = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].dir.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var exists = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].exists.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var getFixedT = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].getFixedT.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var init = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].init.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var loadLanguages = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].loadLanguages.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var loadNamespaces = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].loadNamespaces.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var loadResources = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].loadResources.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var off = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].off.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var on = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].on.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var setDefaultNamespace = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].setDefaultNamespace.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var t = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].t.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-var use = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].use.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
-
-/***/ }),
-
-/***/ 22:
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -2763,20 +2720,63 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 25:
+/***/ 23:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "changeLanguage", function() { return changeLanguage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "cloneInstance", function() { return cloneInstance; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createInstance", function() { return createInstance; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dir", function() { return dir; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "exists", function() { return exists; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFixedT", function() { return getFixedT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadLanguages", function() { return loadLanguages; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadNamespaces", function() { return loadNamespaces; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadResources", function() { return loadResources; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "off", function() { return off; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "on", function() { return on; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setDefaultNamespace", function() { return setDefaultNamespace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "t", function() { return t; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "use", function() { return use; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__i18next__ = __webpack_require__(24);
+
+
+/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+
+var changeLanguage = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].changeLanguage.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var cloneInstance = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].cloneInstance.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var createInstance = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].createInstance.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var dir = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].dir.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var exists = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].exists.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var getFixedT = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].getFixedT.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var init = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].init.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var loadLanguages = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].loadLanguages.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var loadNamespaces = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].loadNamespaces.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var loadResources = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].loadResources.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var off = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].off.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var on = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].on.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var setDefaultNamespace = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].setDefaultNamespace.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var t = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].t.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+var use = __WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */].use.bind(__WEBPACK_IMPORTED_MODULE_0__i18next__["a" /* default */]);
+
+/***/ }),
+
+/***/ 24:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__logger__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PluralResolver__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Interpolator__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__BackendConnector__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CacheConnector__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__defaults__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ResourceStore__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Translator__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__LanguageUtils__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__PluralResolver__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Interpolator__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__BackendConnector__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__CacheConnector__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__defaults__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__postProcessor__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__compatibility_v1__ = __webpack_require__(13);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -3187,7 +3187,7 @@ var I18n = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 26:
+/***/ 25:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3339,312 +3339,7 @@ var ResourceStore = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 265:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(266);
-
-
-/***/ }),
-
-/***/ 266:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _bootstrap = __webpack_require__(267);
-
-var _bootstrap2 = _interopRequireDefault(_bootstrap);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var authenticateApp = {
-    bootstrap: _bootstrap2.default
-};
-
-if (typeof window !== 'undefined') {
-    window.authenticateApp = authenticateApp;
-}
-
-module.exports = authenticateApp;
-
-/***/ }),
-
-/***/ 267:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _configService = __webpack_require__(16);
-
-var _configService2 = _interopRequireDefault(_configService);
-
-var _locale = __webpack_require__(20);
-
-var _locale2 = _interopRequireDefault(_locale);
-
-var _lodash = __webpack_require__(4);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _config = __webpack_require__(268);
-
-var _config2 = _interopRequireDefault(_config);
-
-var _emitter = __webpack_require__(15);
-
-var _emitter2 = _interopRequireDefault(_emitter);
-
-var _authentication = __webpack_require__(269);
-
-var _authentication2 = _interopRequireDefault(_authentication);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Bootstrap = function () {
-    function Bootstrap(userConfig) {
-        var _this = this;
-
-        _classCallCheck(this, Bootstrap);
-
-        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
-
-        this.appEvents = new _emitter2.default();
-        this.configService = new _configService2.default(configuration);
-        this.localeService = new _locale2.default({
-            configService: this.configService
-        });
-
-        this.localeService.fetchTranslations().then(function () {
-            _this.onConfigReady();
-        });
-        return this;
-    }
-
-    _createClass(Bootstrap, [{
-        key: 'onConfigReady',
-        value: function onConfigReady() {
-            var _this2 = this;
-
-            this.appServices = {
-                configService: this.configService,
-                localeService: this.localeService,
-                appEvents: this.appEvents
-            };
-
-            // export translation for backward compatibility:
-            // window.language = this.localeService.getTranslations();
-
-            /**
-             * add components
-             */
-
-            (0, _jquery2.default)(document).ready(function () {
-                var authService = (0, _authentication2.default)(_this2.appServices);
-
-                authService.initialize();
-
-                switch (_this2.configService.get('state')) {
-                    case 'login':
-                        authService.login();
-                        break;
-                    case 'forgotPassword':
-                        authService.forgotPassword();
-                        break;
-                    case 'renewPassword':
-                        authService.renewPassword();
-                        break;
-                    case 'register':
-                        authService.register();
-                        break;
-                    case 'registerProvider':
-                        authService.registerProvider();
-                        break;
-                    case 'renewEmail':
-                        authService.renewEmail();
-                        break;
-                    case 'changePassword':
-                        authService.changePassword();
-                        break;
-                    default:
-                }
-            });
-        }
-    }]);
-
-    return Bootstrap;
-}();
-
-var bootstrap = function bootstrap(userConfig) {
-    return new Bootstrap(userConfig);
-};
-
-exports.default = bootstrap;
-
-/***/ }),
-
-/***/ 268:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var defaultConfig = {
-    locale: 'fr',
-    basePath: '/',
-    translations: '/login/language.json'
-};
-
-exports.default = defaultConfig;
-
-/***/ }),
-
-/***/ 269:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _login = __webpack_require__(270);
-
-var _login2 = _interopRequireDefault(_login);
-
-var _forgotPassword = __webpack_require__(275);
-
-var _forgotPassword2 = _interopRequireDefault(_forgotPassword);
-
-var _renewPassword = __webpack_require__(276);
-
-var _renewPassword2 = _interopRequireDefault(_renewPassword);
-
-var _register = __webpack_require__(277);
-
-var _register2 = _interopRequireDefault(_register);
-
-var _registerProvider = __webpack_require__(278);
-
-var _registerProvider2 = _interopRequireDefault(_registerProvider);
-
-var _renewEmail = __webpack_require__(279);
-
-var _renewEmail2 = _interopRequireDefault(_renewEmail);
-
-var _changePassword = __webpack_require__(280);
-
-var _changePassword2 = _interopRequireDefault(_changePassword);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2016 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-__webpack_require__(281); // multiselect
-
-var authentication = function authentication(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-
-    var initialize = function initialize() {
-        // close alerts
-        (0, _jquery2.default)(document).on('click', '.alert .alert-block-close a', function (e) {
-            e.preventDefault();
-            (0, _jquery2.default)(this).closest('.alert').alert('close');
-            return false;
-        });
-
-        (0, _jquery2.default)('select[multiple="multiple"]').multiselect({
-            buttonWidth: '100%',
-            buttonClass: 'btn btn-inverse',
-            maxHeight: 185,
-            includeSelectAllOption: true,
-            selectAllValue: 'all',
-            selectAllText: localeService.t('all_collections'),
-            buttonText: function buttonText(options, select) {
-                if (options.length === 0) {
-                    return localeService.t('no_collection_selected') + '<b class="caret"></b>';
-                } else {
-                    return localeService.t(options.length === 1 ? 'one_collection_selected' : 'collections_selected', {
-                        postProcess: 'sprintf',
-                        sprintf: [options.length]
-                    }) + ' <b class="caret"></b>';
-                }
-            }
-        });
-        (0, _jquery2.default)('form[name="registerForm"]').on('submit', function () {
-            // must deselect the 'select all' checkbox for server side validation.
-            (0, _jquery2.default)('select[multiple="multiple"]').multiselect('deselect', 'all');
-        });
-    };
-
-    var login = function login() {
-        // init login form
-        (0, _login2.default)(services).initialize();
-    };
-    var forgotPassword = function forgotPassword() {
-        // init login form
-        (0, _forgotPassword2.default)(services).initialize();
-    };
-    var renewPassword = function renewPassword() {
-        // init login form
-        (0, _renewPassword2.default)(services).initialize();
-    };
-    var register = function register() {
-        // init login form
-        (0, _register2.default)(services).initialize();
-    };
-    var registerProvider = function registerProvider() {
-        // init login form
-        (0, _registerProvider2.default)(services).initialize();
-    };
-    var renewEmail = function renewEmail() {
-        // init login form
-        (0, _renewEmail2.default)(services).initialize();
-    };
-    var changePassword = function changePassword() {
-        // init login form
-        (0, _changePassword2.default)(services).initialize();
-    };
-
-    return { initialize: initialize, login: login, forgotPassword: forgotPassword, renewPassword: renewPassword, register: register, registerProvider: registerProvider, renewEmail: renewEmail, changePassword: changePassword };
-};
-exports.default = authentication;
-
-/***/ }),
-
-/***/ 27:
+/***/ 26:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3950,7 +3645,312 @@ var Translator = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 270:
+/***/ 263:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(264);
+
+
+/***/ }),
+
+/***/ 264:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _bootstrap = __webpack_require__(265);
+
+var _bootstrap2 = _interopRequireDefault(_bootstrap);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var authenticateApp = {
+    bootstrap: _bootstrap2.default
+};
+
+if (typeof window !== 'undefined') {
+    window.authenticateApp = authenticateApp;
+}
+
+module.exports = authenticateApp;
+
+/***/ }),
+
+/***/ 265:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _configService = __webpack_require__(16);
+
+var _configService2 = _interopRequireDefault(_configService);
+
+var _locale = __webpack_require__(20);
+
+var _locale2 = _interopRequireDefault(_locale);
+
+var _lodash = __webpack_require__(4);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _config = __webpack_require__(266);
+
+var _config2 = _interopRequireDefault(_config);
+
+var _emitter = __webpack_require__(15);
+
+var _emitter2 = _interopRequireDefault(_emitter);
+
+var _authentication = __webpack_require__(267);
+
+var _authentication2 = _interopRequireDefault(_authentication);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Bootstrap = function () {
+    function Bootstrap(userConfig) {
+        var _this = this;
+
+        _classCallCheck(this, Bootstrap);
+
+        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
+
+        this.appEvents = new _emitter2.default();
+        this.configService = new _configService2.default(configuration);
+        this.localeService = new _locale2.default({
+            configService: this.configService
+        });
+
+        this.localeService.fetchTranslations().then(function () {
+            _this.onConfigReady();
+        });
+        return this;
+    }
+
+    _createClass(Bootstrap, [{
+        key: 'onConfigReady',
+        value: function onConfigReady() {
+            var _this2 = this;
+
+            this.appServices = {
+                configService: this.configService,
+                localeService: this.localeService,
+                appEvents: this.appEvents
+            };
+
+            // export translation for backward compatibility:
+            // window.language = this.localeService.getTranslations();
+
+            /**
+             * add components
+             */
+
+            (0, _jquery2.default)(document).ready(function () {
+                var authService = (0, _authentication2.default)(_this2.appServices);
+
+                authService.initialize();
+
+                switch (_this2.configService.get('state')) {
+                    case 'login':
+                        authService.login();
+                        break;
+                    case 'forgotPassword':
+                        authService.forgotPassword();
+                        break;
+                    case 'renewPassword':
+                        authService.renewPassword();
+                        break;
+                    case 'register':
+                        authService.register();
+                        break;
+                    case 'registerProvider':
+                        authService.registerProvider();
+                        break;
+                    case 'renewEmail':
+                        authService.renewEmail();
+                        break;
+                    case 'changePassword':
+                        authService.changePassword();
+                        break;
+                    default:
+                }
+            });
+        }
+    }]);
+
+    return Bootstrap;
+}();
+
+var bootstrap = function bootstrap(userConfig) {
+    return new Bootstrap(userConfig);
+};
+
+exports.default = bootstrap;
+
+/***/ }),
+
+/***/ 266:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var defaultConfig = {
+    locale: 'fr',
+    basePath: '/',
+    translations: '/login/language.json'
+};
+
+exports.default = defaultConfig;
+
+/***/ }),
+
+/***/ 267:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _login = __webpack_require__(268);
+
+var _login2 = _interopRequireDefault(_login);
+
+var _forgotPassword = __webpack_require__(273);
+
+var _forgotPassword2 = _interopRequireDefault(_forgotPassword);
+
+var _renewPassword = __webpack_require__(274);
+
+var _renewPassword2 = _interopRequireDefault(_renewPassword);
+
+var _register = __webpack_require__(275);
+
+var _register2 = _interopRequireDefault(_register);
+
+var _registerProvider = __webpack_require__(276);
+
+var _registerProvider2 = _interopRequireDefault(_registerProvider);
+
+var _renewEmail = __webpack_require__(277);
+
+var _renewEmail2 = _interopRequireDefault(_renewEmail);
+
+var _changePassword = __webpack_require__(278);
+
+var _changePassword2 = _interopRequireDefault(_changePassword);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+__webpack_require__(279); // multiselect
+
+var authentication = function authentication(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+
+    var initialize = function initialize() {
+        // close alerts
+        (0, _jquery2.default)(document).on('click', '.alert .alert-block-close a', function (e) {
+            e.preventDefault();
+            (0, _jquery2.default)(this).closest('.alert').alert('close');
+            return false;
+        });
+
+        (0, _jquery2.default)('select[multiple="multiple"]').multiselect({
+            buttonWidth: '100%',
+            buttonClass: 'btn btn-inverse',
+            maxHeight: 185,
+            includeSelectAllOption: true,
+            selectAllValue: 'all',
+            selectAllText: localeService.t('all_collections'),
+            buttonText: function buttonText(options, select) {
+                if (options.length === 0) {
+                    return localeService.t('no_collection_selected') + '<b class="caret"></b>';
+                } else {
+                    return localeService.t(options.length === 1 ? 'one_collection_selected' : 'collections_selected', {
+                        postProcess: 'sprintf',
+                        sprintf: [options.length]
+                    }) + ' <b class="caret"></b>';
+                }
+            }
+        });
+        (0, _jquery2.default)('form[name="registerForm"]').on('submit', function () {
+            // must deselect the 'select all' checkbox for server side validation.
+            (0, _jquery2.default)('select[multiple="multiple"]').multiselect('deselect', 'all');
+        });
+    };
+
+    var login = function login() {
+        // init login form
+        (0, _login2.default)(services).initialize();
+    };
+    var forgotPassword = function forgotPassword() {
+        // init login form
+        (0, _forgotPassword2.default)(services).initialize();
+    };
+    var renewPassword = function renewPassword() {
+        // init login form
+        (0, _renewPassword2.default)(services).initialize();
+    };
+    var register = function register() {
+        // init login form
+        (0, _register2.default)(services).initialize();
+    };
+    var registerProvider = function registerProvider() {
+        // init login form
+        (0, _registerProvider2.default)(services).initialize();
+    };
+    var renewEmail = function renewEmail() {
+        // init login form
+        (0, _renewEmail2.default)(services).initialize();
+    };
+    var changePassword = function changePassword() {
+        // init login form
+        (0, _changePassword2.default)(services).initialize();
+    };
+
+    return { initialize: initialize, login: login, forgotPassword: forgotPassword, renewPassword: renewPassword, register: register, registerProvider: registerProvider, renewEmail: renewEmail, changePassword: changePassword };
+};
+exports.default = authentication;
+
+/***/ }),
+
+/***/ 268:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4006,7 +4006,7 @@ exports.default = login;
 
 /***/ }),
 
-/***/ 271:
+/***/ 269:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4305,666 +4305,7 @@ exports.default = FormValidator;
 
 /***/ }),
 
-/***/ 272:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _backbone = __webpack_require__(54);
-
-var _backbone2 = _interopRequireDefault(_backbone);
-
-var _error = __webpack_require__(273);
-
-var _error2 = _interopRequireDefault(_error);
-
-var _multiviews = __webpack_require__(274);
-
-var _multiviews2 = _interopRequireDefault(_multiviews);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var InputView = _backbone2.default.View.extend(_underscore2.default.extend({}, _multiviews2.default, {
-    initialize: function initialize(options) {
-        options = options || {};
-        if (options.name === undefined) {
-            throw 'Missing name attribute in input view';
-        }
-
-        if (options.errorTemplate === undefined) {
-            throw 'Missing errorTemplate attribute in input view';
-        }
-
-        this.name = options.name;
-
-        this.errorView = new _error2.default({
-            name: this.name,
-            errorTemplate: options.errorTemplate,
-            onRenderError: options.onRenderError || null
-        });
-    },
-    render: function render() {
-        this._assignView({ '.error-view': this.errorView });
-    },
-    showErrors: function showErrors(errors) {
-        this.render();
-
-        this.errorView.renderErrors(errors);
-
-        return this;
-    },
-    resetErrors: function resetErrors() {
-        this.errorView.reset();
-    }
-})); /*
-      * This file is part of Phraseanet
-      *
-      * (c) 2005-2016 Alchemy
-      *
-      * For the full copyright and license information, please view the LICENSE
-      * file that was distributed with this source code.
-      */
-
-exports.default = InputView;
-
-/***/ }),
-
-/***/ 273:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _backbone = __webpack_require__(54);
-
-var _backbone2 = _interopRequireDefault(_backbone);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ErrorView = _backbone2.default.View.extend({
-    tagName: 'div',
-    initialize: function initialize(options) {
-        options = options || {};
-
-        if (options.name === undefined) {
-            throw 'Missing name attribute in error view';
-        }
-
-        if (options.errorTemplate === undefined) {
-            throw 'Missing errorTemplate attribute in error view';
-        }
-
-        this.name = options.name;
-        this.errorTemplate = options.errorTemplate;
-
-        this.errors = options.errors || {};
-        this.onRenderError = options.onRenderError || null;
-    },
-    render: function render() {
-        if (this.errors.length > 0) {
-            var template = _underscore2.default.template((0, _jquery2.default)(this.errorTemplate).html(), {
-                errors: this.errors
-            });
-
-            this.$el.html(template);
-
-            if (_underscore2.default.isFunction(this.onRenderError)) {
-                this.onRenderError(this.name, this.$el);
-            }
-        } else {
-            this.reset();
-        }
-
-        return this;
-    },
-    renderErrors: function renderErrors(errors) {
-        this.errors = errors;
-        this.render();
-
-        return this;
-    },
-    reset: function reset() {
-        this.$el.empty();
-    }
-}); /*
-     * This file is part of Phraseanet
-     *
-     * (c) 2005-2016 Alchemy
-     *
-     * For the full copyright and license information, please view the LICENSE
-     * file that was distributed with this source code.
-     */
-
-exports.default = ErrorView;
-
-/***/ }),
-
-/***/ 274:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    // bind a subview to a DOM element
-    _assignView: function _assignView(selector, view) {
-        var selectors;
-        if (_underscore2.default.isObject(selector)) {
-            selectors = selector;
-        } else {
-            selectors = {};
-            selectors[selector] = view;
-        }
-        if (!selectors) return;
-        _underscore2.default.each(selectors, function (view, selector) {
-            view.setElement(this.$(selector)).render();
-        }, this);
-    }
-}; /*
-    * This file is part of Phraseanet
-    *
-    * (c) 2005-2016 Alchemy
-    *
-    * For the full copyright and license information, please view the LICENSE
-    * file that was distributed with this source code.
-    */
-
-/***/ }),
-
-/***/ 275:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _form = __webpack_require__(43);
-
-var _form2 = _interopRequireDefault(_form);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2016 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-var forgotPassword = function forgotPassword(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var initialize = function initialize() {
-        new _form2.default({
-            el: (0, _jquery2.default)('form[name=forgottenPasswordForm]'),
-            rules: [{
-                name: 'email',
-                rules: 'required',
-                message: localeService.t('validation_blank')
-            }, {
-                name: 'email',
-                rules: 'valid_email',
-                message: localeService.t('validation_email')
-            }]
-        });
-    };
-
-    return { initialize: initialize };
-};
-exports.default = forgotPassword;
-
-/***/ }),
-
-/***/ 276:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _passwordSetter = __webpack_require__(55);
-
-var _passwordSetter2 = _interopRequireDefault(_passwordSetter);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2016 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-var renewPassword = function renewPassword(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var initialize = function initialize() {
-
-        __webpack_require__.e/* require.ensure */(0/* duplicate */).then((function () {
-            services.zxcvbn = __webpack_require__(57);
-            new _passwordSetter2.default({
-                services: services,
-                el: (0, _jquery2.default)('form[name=passwordRenewForm]'),
-                rules: [{
-                    name: 'password[password]',
-                    rules: 'required',
-                    message: localeService.t('validation_blank')
-                }, {
-                    name: 'password[password]',
-                    rules: 'min_length[5]',
-                    message: localeService.t('validation_length_min', {
-                        postProcess: 'sprintf',
-                        sprintf: ['5']
-                    })
-                }, {
-                    name: 'password[confirm]',
-                    rules: 'matches[password[password]]',
-                    message: localeService.t('password_match')
-                }]
-            });
-        }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
-    };
-
-    return { initialize: initialize };
-};
-exports.default = renewPassword;
-
-/***/ }),
-
-/***/ 277:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _passwordSetter = __webpack_require__(55);
-
-var _passwordSetter2 = _interopRequireDefault(_passwordSetter);
-
-var _geonames = __webpack_require__(56);
-
-var _geonames2 = _interopRequireDefault(_geonames);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2016 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-// launch application
-var regiser = function regiser(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var initialize = function initialize() {
-        var fieldsConfiguration = [];
-
-        _jquery2.default.when.apply(_jquery2.default, [_jquery2.default.ajax({
-            url: '/login/registration-fields/',
-            success: function success(config) {
-                fieldsConfiguration = config;
-            }
-        })]).done(function () {
-
-            var rules = [];
-            var defaultRules = [{
-                name: 'email',
-                rules: 'required',
-                message: localeService.t('validation_blank')
-            }, {
-                name: 'email',
-                rules: 'valid_email',
-                message: localeService.t('validation_email')
-            }, {
-                name: 'password[password]',
-                rules: 'required',
-                message: localeService.t('validation_blank')
-            }, {
-                name: 'password[password]',
-                rules: 'min_length[5]',
-                message: localeService.t('validation_length_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['5']
-                })
-            }, {
-                name: 'password[confirm]',
-                rules: 'matches[password[password]]',
-                message: localeService.t('password_match')
-            }, {
-                name: 'accept-tou',
-                rules: 'required',
-                message: localeService.t('accept_tou'),
-                type: 'checkbox'
-            }, {
-                name: 'collections[]',
-                rules: 'min_length[1]',
-                message: localeService.t('validation_choice_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['1']
-                }),
-                type: 'multiple'
-            }];
-
-            _underscore2.default.each(fieldsConfiguration, function (field) {
-                if (field.required) {
-                    var rule = {
-                        name: field.name,
-                        rules: 'required',
-                        message: localeService.t('validation_blank')
-                    };
-
-                    defaultRules.push(rule);
-                }
-            });
-
-            _underscore2.default.each(defaultRules, function (rule) {
-                // add rule if element exists
-                if ((0, _jquery2.default)('[name="' + rule.name + '"]').length >= 1) {}
-            });
-
-            var $form = (0, _jquery2.default)('form[name=registerForm]');
-
-            __webpack_require__.e/* require.ensure */(0/* duplicate */).then((function () {
-                services.zxcvbn = __webpack_require__(57);
-                new _passwordSetter2.default({
-                    el: $form,
-                    rules: rules,
-                    services: services
-                });
-            }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
-
-            var geocompleter = _geonames2.default.init((0, _jquery2.default)('#geonameid'), {
-                server: $form.data('geonames-server-adress'),
-                limit: 40,
-                'init-input': false,
-                onInit: function onInit(input, autoinput) {
-                    // Set default name to geonameid-completer
-                    autoinput.prop('name', 'geonameid-completer');
-                }
-            });
-
-            // Positioning menu below input
-            geocompleter.geocompleter('autocompleter', 'option', 'position', {
-                of: geocompleter.closest('.input-table'),
-                my: 'left top',
-                at: 'left bottom'
-            });
-
-            // On open menu calculate max-width
-            geocompleter.geocompleter('autocompleter', 'on', 'autocompleteopen', function (event, ui) {
-                (0, _jquery2.default)(this).autocomplete('widget').css('min-width', geocompleter.closest('.input-table').outerWidth());
-            });
-        });
-    };
-
-    return { initialize: initialize };
-};
-exports.default = regiser;
-
-/***/ }),
-
-/***/ 278:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _form = __webpack_require__(43);
-
-var _form2 = _interopRequireDefault(_form);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var registerProvider = function registerProvider(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var initialize = function initialize() {
-        var fieldsConfiguration = [];
-
-        _jquery2.default.when.apply(_jquery2.default, [_jquery2.default.ajax({
-            url: '/login/registration-fields/',
-            success: function success(config) {
-                fieldsConfiguration = config;
-            }
-        })]).done(function () {
-
-            var rules = [];
-            var defaultRules = [{
-                name: 'email',
-                rules: 'required',
-                message: localeService.t('validation_blank')
-            }, {
-                name: 'email',
-                rules: 'valid_email',
-                message: localeService.t('validation_email')
-            }, {
-                name: 'password',
-                rules: 'required',
-                message: localeService.t('validation_blank')
-            }, {
-                name: 'password',
-                rules: 'min_length[5]',
-                message: localeService.t('validation_length_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['5']
-                })
-            }, {
-                name: 'passwordConfirm',
-                rules: 'matches[password]',
-                message: localeService.t('password_match')
-            }, {
-                name: 'accept-tou',
-                rules: 'required',
-                message: localeService.t('accept_tou'),
-                type: 'checkbox'
-            }, {
-                name: 'collections[]',
-                rules: 'min_length[1]',
-                message: localeService.t('validation_choice_min', {
-                    postProcess: 'sprintf',
-                    sprintf: ['1']
-                }),
-                type: 'multiple'
-            }];
-
-            _underscore2.default.each(fieldsConfiguration, function (field) {
-                if (field.required) {
-                    var rule = {
-                        name: field.name,
-                        rules: 'required',
-                        message: localeService.t('validation_blank')
-                    };
-
-                    defaultRules.push(rule);
-                }
-            });
-
-            _underscore2.default.each(defaultRules, function (rule) {
-                // add rule if element exists
-                if ((0, _jquery2.default)('[name="' + rule.name + '"]').length >= 1) {
-                    rules.push(rule);
-                }
-            });
-
-            new _form2.default({
-                el: (0, _jquery2.default)('form[name=registerForm]'),
-                rules: rules
-            });
-        });
-    };
-
-    return { initialize: initialize };
-}; /*
-    * This file is part of Phraseanet
-    *
-    * (c) 2005-2016 Alchemy
-    *
-    * For the full copyright and license information, please view the LICENSE
-    * file that was distributed with this source code.
-    */
-
-// launch application
-exports.default = registerProvider;
-
-/***/ }),
-
-/***/ 279:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _form = __webpack_require__(43);
-
-var _form2 = _interopRequireDefault(_form);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2016 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-var renewEmail = function renewEmail(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var initialize = function initialize() {
-        new _form2.default({
-            el: (0, _jquery2.default)('form[name=changeEmail]'),
-            errorTemplate: '#field_errors_block',
-            onRenderError: function onRenderError(name, $el) {
-                $el.closest('.control-group').addClass('error');
-            },
-            rules: [{
-                name: 'form_password',
-                rules: 'required',
-                message: localeService.t('validation_blank')
-            }, {
-                name: 'form_email',
-                rules: 'required',
-                message: localeService.t('validation_blank')
-            }, {
-                name: 'form_email',
-                rules: 'email',
-                message: localeService.t('validation_email')
-            }, {
-                name: 'form_email_confirm',
-                rules: 'matches[form_email]',
-                message: localeService.t('email_match')
-            }]
-        });
-    };
-
-    return { initialize: initialize };
-};
-exports.default = renewEmail;
-
-/***/ }),
-
-/***/ 28:
+/***/ 27:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5095,7 +4436,7 @@ var LanguageUtil = function () {
 
 /***/ }),
 
-/***/ 280:
+/***/ 270:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5109,7 +4450,666 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _passwordSetter = __webpack_require__(55);
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _backbone = __webpack_require__(52);
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+var _error = __webpack_require__(271);
+
+var _error2 = _interopRequireDefault(_error);
+
+var _multiviews = __webpack_require__(272);
+
+var _multiviews2 = _interopRequireDefault(_multiviews);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var InputView = _backbone2.default.View.extend(_underscore2.default.extend({}, _multiviews2.default, {
+    initialize: function initialize(options) {
+        options = options || {};
+        if (options.name === undefined) {
+            throw 'Missing name attribute in input view';
+        }
+
+        if (options.errorTemplate === undefined) {
+            throw 'Missing errorTemplate attribute in input view';
+        }
+
+        this.name = options.name;
+
+        this.errorView = new _error2.default({
+            name: this.name,
+            errorTemplate: options.errorTemplate,
+            onRenderError: options.onRenderError || null
+        });
+    },
+    render: function render() {
+        this._assignView({ '.error-view': this.errorView });
+    },
+    showErrors: function showErrors(errors) {
+        this.render();
+
+        this.errorView.renderErrors(errors);
+
+        return this;
+    },
+    resetErrors: function resetErrors() {
+        this.errorView.reset();
+    }
+})); /*
+      * This file is part of Phraseanet
+      *
+      * (c) 2005-2016 Alchemy
+      *
+      * For the full copyright and license information, please view the LICENSE
+      * file that was distributed with this source code.
+      */
+
+exports.default = InputView;
+
+/***/ }),
+
+/***/ 271:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _backbone = __webpack_require__(52);
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ErrorView = _backbone2.default.View.extend({
+    tagName: 'div',
+    initialize: function initialize(options) {
+        options = options || {};
+
+        if (options.name === undefined) {
+            throw 'Missing name attribute in error view';
+        }
+
+        if (options.errorTemplate === undefined) {
+            throw 'Missing errorTemplate attribute in error view';
+        }
+
+        this.name = options.name;
+        this.errorTemplate = options.errorTemplate;
+
+        this.errors = options.errors || {};
+        this.onRenderError = options.onRenderError || null;
+    },
+    render: function render() {
+        if (this.errors.length > 0) {
+            var template = _underscore2.default.template((0, _jquery2.default)(this.errorTemplate).html(), {
+                errors: this.errors
+            });
+
+            this.$el.html(template);
+
+            if (_underscore2.default.isFunction(this.onRenderError)) {
+                this.onRenderError(this.name, this.$el);
+            }
+        } else {
+            this.reset();
+        }
+
+        return this;
+    },
+    renderErrors: function renderErrors(errors) {
+        this.errors = errors;
+        this.render();
+
+        return this;
+    },
+    reset: function reset() {
+        this.$el.empty();
+    }
+}); /*
+     * This file is part of Phraseanet
+     *
+     * (c) 2005-2016 Alchemy
+     *
+     * For the full copyright and license information, please view the LICENSE
+     * file that was distributed with this source code.
+     */
+
+exports.default = ErrorView;
+
+/***/ }),
+
+/***/ 272:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    // bind a subview to a DOM element
+    _assignView: function _assignView(selector, view) {
+        var selectors;
+        if (_underscore2.default.isObject(selector)) {
+            selectors = selector;
+        } else {
+            selectors = {};
+            selectors[selector] = view;
+        }
+        if (!selectors) return;
+        _underscore2.default.each(selectors, function (view, selector) {
+            view.setElement(this.$(selector)).render();
+        }, this);
+    }
+}; /*
+    * This file is part of Phraseanet
+    *
+    * (c) 2005-2016 Alchemy
+    *
+    * For the full copyright and license information, please view the LICENSE
+    * file that was distributed with this source code.
+    */
+
+/***/ }),
+
+/***/ 273:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _form = __webpack_require__(43);
+
+var _form2 = _interopRequireDefault(_form);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+var forgotPassword = function forgotPassword(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var initialize = function initialize() {
+        new _form2.default({
+            el: (0, _jquery2.default)('form[name=forgottenPasswordForm]'),
+            rules: [{
+                name: 'email',
+                rules: 'required',
+                message: localeService.t('validation_blank')
+            }, {
+                name: 'email',
+                rules: 'valid_email',
+                message: localeService.t('validation_email')
+            }]
+        });
+    };
+
+    return { initialize: initialize };
+};
+exports.default = forgotPassword;
+
+/***/ }),
+
+/***/ 274:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _passwordSetter = __webpack_require__(53);
+
+var _passwordSetter2 = _interopRequireDefault(_passwordSetter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+var renewPassword = function renewPassword(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var initialize = function initialize() {
+
+        __webpack_require__.e/* require.ensure */(0/* duplicate */).then((function () {
+            services.zxcvbn = __webpack_require__(55);
+            new _passwordSetter2.default({
+                services: services,
+                el: (0, _jquery2.default)('form[name=passwordRenewForm]'),
+                rules: [{
+                    name: 'password[password]',
+                    rules: 'required',
+                    message: localeService.t('validation_blank')
+                }, {
+                    name: 'password[password]',
+                    rules: 'min_length[5]',
+                    message: localeService.t('validation_length_min', {
+                        postProcess: 'sprintf',
+                        sprintf: ['5']
+                    })
+                }, {
+                    name: 'password[confirm]',
+                    rules: 'matches[password[password]]',
+                    message: localeService.t('password_match')
+                }]
+            });
+        }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+    };
+
+    return { initialize: initialize };
+};
+exports.default = renewPassword;
+
+/***/ }),
+
+/***/ 275:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _passwordSetter = __webpack_require__(53);
+
+var _passwordSetter2 = _interopRequireDefault(_passwordSetter);
+
+var _geonames = __webpack_require__(54);
+
+var _geonames2 = _interopRequireDefault(_geonames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+// launch application
+var regiser = function regiser(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var initialize = function initialize() {
+        var fieldsConfiguration = [];
+
+        _jquery2.default.when.apply(_jquery2.default, [_jquery2.default.ajax({
+            url: '/login/registration-fields/',
+            success: function success(config) {
+                fieldsConfiguration = config;
+            }
+        })]).done(function () {
+
+            var rules = [];
+            var defaultRules = [{
+                name: 'email',
+                rules: 'required',
+                message: localeService.t('validation_blank')
+            }, {
+                name: 'email',
+                rules: 'valid_email',
+                message: localeService.t('validation_email')
+            }, {
+                name: 'password[password]',
+                rules: 'required',
+                message: localeService.t('validation_blank')
+            }, {
+                name: 'password[password]',
+                rules: 'min_length[5]',
+                message: localeService.t('validation_length_min', {
+                    postProcess: 'sprintf',
+                    sprintf: ['5']
+                })
+            }, {
+                name: 'password[confirm]',
+                rules: 'matches[password[password]]',
+                message: localeService.t('password_match')
+            }, {
+                name: 'accept-tou',
+                rules: 'required',
+                message: localeService.t('accept_tou'),
+                type: 'checkbox'
+            }, {
+                name: 'collections[]',
+                rules: 'min_length[1]',
+                message: localeService.t('validation_choice_min', {
+                    postProcess: 'sprintf',
+                    sprintf: ['1']
+                }),
+                type: 'multiple'
+            }];
+
+            _underscore2.default.each(fieldsConfiguration, function (field) {
+                if (field.required) {
+                    var rule = {
+                        name: field.name,
+                        rules: 'required',
+                        message: localeService.t('validation_blank')
+                    };
+
+                    defaultRules.push(rule);
+                }
+            });
+
+            _underscore2.default.each(defaultRules, function (rule) {
+                // add rule if element exists
+                if ((0, _jquery2.default)('[name="' + rule.name + '"]').length >= 1) {}
+            });
+
+            var $form = (0, _jquery2.default)('form[name=registerForm]');
+
+            __webpack_require__.e/* require.ensure */(0/* duplicate */).then((function () {
+                services.zxcvbn = __webpack_require__(55);
+                new _passwordSetter2.default({
+                    el: $form,
+                    rules: rules,
+                    services: services
+                });
+            }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
+
+            var geocompleter = _geonames2.default.init((0, _jquery2.default)('#geonameid'), {
+                server: $form.data('geonames-server-adress'),
+                limit: 40,
+                'init-input': false,
+                onInit: function onInit(input, autoinput) {
+                    // Set default name to geonameid-completer
+                    autoinput.prop('name', 'geonameid-completer');
+                }
+            });
+
+            // Positioning menu below input
+            geocompleter.geocompleter('autocompleter', 'option', 'position', {
+                of: geocompleter.closest('.input-table'),
+                my: 'left top',
+                at: 'left bottom'
+            });
+
+            // On open menu calculate max-width
+            geocompleter.geocompleter('autocompleter', 'on', 'autocompleteopen', function (event, ui) {
+                (0, _jquery2.default)(this).autocomplete('widget').css('min-width', geocompleter.closest('.input-table').outerWidth());
+            });
+        });
+    };
+
+    return { initialize: initialize };
+};
+exports.default = regiser;
+
+/***/ }),
+
+/***/ 276:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _form = __webpack_require__(43);
+
+var _form2 = _interopRequireDefault(_form);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var registerProvider = function registerProvider(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var initialize = function initialize() {
+        var fieldsConfiguration = [];
+
+        _jquery2.default.when.apply(_jquery2.default, [_jquery2.default.ajax({
+            url: '/login/registration-fields/',
+            success: function success(config) {
+                fieldsConfiguration = config;
+            }
+        })]).done(function () {
+
+            var rules = [];
+            var defaultRules = [{
+                name: 'email',
+                rules: 'required',
+                message: localeService.t('validation_blank')
+            }, {
+                name: 'email',
+                rules: 'valid_email',
+                message: localeService.t('validation_email')
+            }, {
+                name: 'password',
+                rules: 'required',
+                message: localeService.t('validation_blank')
+            }, {
+                name: 'password',
+                rules: 'min_length[5]',
+                message: localeService.t('validation_length_min', {
+                    postProcess: 'sprintf',
+                    sprintf: ['5']
+                })
+            }, {
+                name: 'passwordConfirm',
+                rules: 'matches[password]',
+                message: localeService.t('password_match')
+            }, {
+                name: 'accept-tou',
+                rules: 'required',
+                message: localeService.t('accept_tou'),
+                type: 'checkbox'
+            }, {
+                name: 'collections[]',
+                rules: 'min_length[1]',
+                message: localeService.t('validation_choice_min', {
+                    postProcess: 'sprintf',
+                    sprintf: ['1']
+                }),
+                type: 'multiple'
+            }];
+
+            _underscore2.default.each(fieldsConfiguration, function (field) {
+                if (field.required) {
+                    var rule = {
+                        name: field.name,
+                        rules: 'required',
+                        message: localeService.t('validation_blank')
+                    };
+
+                    defaultRules.push(rule);
+                }
+            });
+
+            _underscore2.default.each(defaultRules, function (rule) {
+                // add rule if element exists
+                if ((0, _jquery2.default)('[name="' + rule.name + '"]').length >= 1) {
+                    rules.push(rule);
+                }
+            });
+
+            new _form2.default({
+                el: (0, _jquery2.default)('form[name=registerForm]'),
+                rules: rules
+            });
+        });
+    };
+
+    return { initialize: initialize };
+}; /*
+    * This file is part of Phraseanet
+    *
+    * (c) 2005-2016 Alchemy
+    *
+    * For the full copyright and license information, please view the LICENSE
+    * file that was distributed with this source code.
+    */
+
+// launch application
+exports.default = registerProvider;
+
+/***/ }),
+
+/***/ 277:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _form = __webpack_require__(43);
+
+var _form2 = _interopRequireDefault(_form);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2016 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+var renewEmail = function renewEmail(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var initialize = function initialize() {
+        new _form2.default({
+            el: (0, _jquery2.default)('form[name=changeEmail]'),
+            errorTemplate: '#field_errors_block',
+            onRenderError: function onRenderError(name, $el) {
+                $el.closest('.control-group').addClass('error');
+            },
+            rules: [{
+                name: 'form_password',
+                rules: 'required',
+                message: localeService.t('validation_blank')
+            }, {
+                name: 'form_email',
+                rules: 'required',
+                message: localeService.t('validation_blank')
+            }, {
+                name: 'form_email',
+                rules: 'email',
+                message: localeService.t('validation_email')
+            }, {
+                name: 'form_email_confirm',
+                rules: 'matches[form_email]',
+                message: localeService.t('email_match')
+            }]
+        });
+    };
+
+    return { initialize: initialize };
+};
+exports.default = renewEmail;
+
+/***/ }),
+
+/***/ 278:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _passwordSetter = __webpack_require__(53);
 
 var _passwordSetter2 = _interopRequireDefault(_passwordSetter);
 
@@ -5132,7 +5132,7 @@ var changePassword = function changePassword(services) {
     var initialize = function initialize() {
 
         __webpack_require__.e/* require.ensure */(0/* duplicate */).then((function () {
-            services.zxcvbn = __webpack_require__(57);
+            services.zxcvbn = __webpack_require__(55);
             new _passwordSetter2.default({
                 services: services,
                 el: (0, _jquery2.default)('form[name=passwordChangeForm]'),
@@ -5166,7 +5166,7 @@ exports.default = changePassword;
 
 /***/ }),
 
-/***/ 281:
+/***/ 279:
 /***/ (function(module, exports) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -6593,7 +6593,7 @@ exports.default = changePassword;
 
 /***/ }),
 
-/***/ 29:
+/***/ 28:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6763,108 +6763,7 @@ var PluralResolver = function () {
 
 /***/ }),
 
-/***/ 3:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var consoleLogger = {
-  type: 'logger',
-
-  log: function log(args) {
-    this.output('log', args);
-  },
-  warn: function warn(args) {
-    this.output('warn', args);
-  },
-  error: function error(args) {
-    this.output('error', args);
-  },
-  output: function output(type, args) {
-    var _console;
-
-    /* eslint no-console: 0 */
-    if (console && console[type]) (_console = console)[type].apply(_console, _toConsumableArray(args));
-  }
-};
-
-var Logger = function () {
-  function Logger(concreteLogger) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    _classCallCheck(this, Logger);
-
-    this.init(concreteLogger, options);
-  }
-
-  Logger.prototype.init = function init(concreteLogger) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    this.prefix = options.prefix || 'i18next:';
-    this.logger = concreteLogger || consoleLogger;
-    this.options = options;
-    this.debug = options.debug;
-  };
-
-  Logger.prototype.setDebug = function setDebug(bool) {
-    this.debug = bool;
-  };
-
-  Logger.prototype.log = function log() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return this.forward(args, 'log', '', true);
-  };
-
-  Logger.prototype.warn = function warn() {
-    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-      args[_key2] = arguments[_key2];
-    }
-
-    return this.forward(args, 'warn', '', true);
-  };
-
-  Logger.prototype.error = function error() {
-    for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-      args[_key3] = arguments[_key3];
-    }
-
-    return this.forward(args, 'error', '');
-  };
-
-  Logger.prototype.deprecate = function deprecate() {
-    for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-      args[_key4] = arguments[_key4];
-    }
-
-    return this.forward(args, 'warn', 'WARNING DEPRECATED: ', true);
-  };
-
-  Logger.prototype.forward = function forward(args, lvl, prefix, debugOnly) {
-    if (debugOnly && !this.debug) return null;
-    if (typeof args[0] === 'string') args[0] = '' + prefix + this.prefix + ' ' + args[0];
-    return this.logger[lvl](args);
-  };
-
-  Logger.prototype.create = function create(moduleName) {
-    return new Logger(this.logger, _extends({ prefix: this.prefix + ':' + moduleName + ':' }, this.options));
-  };
-
-  return Logger;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (new Logger());
-
-/***/ }),
-
-/***/ 30:
+/***/ 29:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7040,7 +6939,108 @@ var Interpolator = function () {
 
 /***/ }),
 
-/***/ 31:
+/***/ 3:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var consoleLogger = {
+  type: 'logger',
+
+  log: function log(args) {
+    this.output('log', args);
+  },
+  warn: function warn(args) {
+    this.output('warn', args);
+  },
+  error: function error(args) {
+    this.output('error', args);
+  },
+  output: function output(type, args) {
+    var _console;
+
+    /* eslint no-console: 0 */
+    if (console && console[type]) (_console = console)[type].apply(_console, _toConsumableArray(args));
+  }
+};
+
+var Logger = function () {
+  function Logger(concreteLogger) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    _classCallCheck(this, Logger);
+
+    this.init(concreteLogger, options);
+  }
+
+  Logger.prototype.init = function init(concreteLogger) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    this.prefix = options.prefix || 'i18next:';
+    this.logger = concreteLogger || consoleLogger;
+    this.options = options;
+    this.debug = options.debug;
+  };
+
+  Logger.prototype.setDebug = function setDebug(bool) {
+    this.debug = bool;
+  };
+
+  Logger.prototype.log = function log() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return this.forward(args, 'log', '', true);
+  };
+
+  Logger.prototype.warn = function warn() {
+    for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    return this.forward(args, 'warn', '', true);
+  };
+
+  Logger.prototype.error = function error() {
+    for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+      args[_key3] = arguments[_key3];
+    }
+
+    return this.forward(args, 'error', '');
+  };
+
+  Logger.prototype.deprecate = function deprecate() {
+    for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+      args[_key4] = arguments[_key4];
+    }
+
+    return this.forward(args, 'warn', 'WARNING DEPRECATED: ', true);
+  };
+
+  Logger.prototype.forward = function forward(args, lvl, prefix, debugOnly) {
+    if (debugOnly && !this.debug) return null;
+    if (typeof args[0] === 'string') args[0] = '' + prefix + this.prefix + ' ' + args[0];
+    return this.logger[lvl](args);
+  };
+
+  Logger.prototype.create = function create(moduleName) {
+    return new Logger(this.logger, _extends({ prefix: this.prefix + ':' + moduleName + ':' }, this.options));
+  };
+
+  return Logger;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (new Logger());
+
+/***/ }),
+
+/***/ 30:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7334,7 +7334,7 @@ var Connector = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 32:
+/***/ 31:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7420,7 +7420,7 @@ var Connector = function (_EventEmitter) {
 
 /***/ }),
 
-/***/ 33:
+/***/ 32:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7502,15 +7502,15 @@ function transformOptions(options) {
 
 /***/ }),
 
-/***/ 34:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(35).default;
+module.exports = __webpack_require__(34).default;
 
 
 /***/ }),
 
-/***/ 35:
+/***/ 34:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7522,11 +7522,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _utils = __webpack_require__(36);
+var _utils = __webpack_require__(35);
 
 var utils = _interopRequireWildcard(_utils);
 
-var _ajax = __webpack_require__(37);
+var _ajax = __webpack_require__(36);
 
 var _ajax2 = _interopRequireDefault(_ajax);
 
@@ -7640,7 +7640,7 @@ exports.default = Backend;
 
 /***/ }),
 
-/***/ 36:
+/***/ 35:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7679,7 +7679,7 @@ function extend(obj) {
 
 /***/ }),
 
-/***/ 37:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25147,7 +25147,7 @@ function stubFalse() {
 
 module.exports = merge;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(8)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(7)(module)))
 
 /***/ }),
 
@@ -25169,15 +25169,15 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _backbone = __webpack_require__(54);
+var _backbone = __webpack_require__(52);
 
 var _backbone2 = _interopRequireDefault(_backbone);
 
-var _validator = __webpack_require__(271);
+var _validator = __webpack_require__(269);
 
 var _validator2 = _interopRequireDefault(_validator);
 
-var _input = __webpack_require__(272);
+var _input = __webpack_require__(270);
 
 var _input2 = _interopRequireDefault(_input);
 
@@ -25296,7 +25296,7 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 54:
+/***/ 52:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Backbone.js 1.3.3
@@ -27225,7 +27225,7 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 55:
+/***/ 53:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27322,7 +27322,7 @@ exports.default = PasswordSetterForm;
 
 /***/ }),
 
-/***/ 56:
+/***/ 54:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27454,6 +27454,35 @@ var EventEmitter = function () {
 /***/ }),
 
 /***/ 7:
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global, process) {var __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c) Microsoft, All rights reserved. See License.txt in the project root for license information.
@@ -39846,36 +39875,7 @@ var ReactiveTest = Rx.ReactiveTest = {
 
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)(module), __webpack_require__(5), __webpack_require__(22)))
-
-/***/ }),
-
-/***/ 8:
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module), __webpack_require__(5), __webpack_require__(21)))
 
 /***/ })
 
