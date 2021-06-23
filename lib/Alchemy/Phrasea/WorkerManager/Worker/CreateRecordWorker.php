@@ -64,7 +64,7 @@ class CreateRecordWorker implements WorkerInterface
 
         // add proxy in each request if defined in configuration
         if ($proxyConfig->getHttpProxyConfiguration() != null) {
-            array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
+            $clientOptions = array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
         }
 
         $uploaderClient = new Client($clientOptions);
@@ -96,7 +96,7 @@ class CreateRecordWorker implements WorkerInterface
         $clientOptions = [];
         // add proxy in each request if defined in configuration
         if ($proxyConfig->getHttpProxyConfiguration() != null) {
-            array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
+            $clientOptions = array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
         }
 
         //download the asset

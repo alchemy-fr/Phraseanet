@@ -35,13 +35,12 @@ class NetworkProxiesTestCommand extends Command
         // test http-proxy
         if ($proxyConfig->getHttpProxyConfiguration() != null) {
             $httpProxy = $proxyConfig->getHttpProxyConfiguration();
-            array_merge($clientOptions, ['proxy' => $httpProxy]);
+            $clientOptions = array_merge($clientOptions, ['proxy' => $httpProxy]);
 
             $client = new Client($clientOptions);
 
             try {
                 $response = $client->get($urlTest);
-
                 $output->writeln("<info>Test outgoing connection with proxy " . $httpProxy ." success with status code : " . $response->getStatusCode() . " </info>");
             } catch(\Exception $e) {
                 $output->writeln("<comment>Outgoing connection error with proxy " . $httpProxy . " , " . $e->getMessage() . "</comment>");
