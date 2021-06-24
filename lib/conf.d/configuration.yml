@@ -117,16 +117,16 @@ trusted-proxies: []
 network-proxies:
     http-proxy:
         enabled: false
-        host: false
-        port: false
-        user: null
-        password: null
+        host:
+        port:
+        user:
+        password:
     ftp-proxy:
         enabled: false
-        host: false
-        port: false
-        user: null
-        password: null
+        host:
+        port:
+        user:
+        password:
 debugger:
     allowed-ips: []
 border-manager:
