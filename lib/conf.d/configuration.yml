@@ -119,14 +119,14 @@ network-proxies:
         enabled: false
         host: false
         port: false
-        user: false
-        password: false
+        user: null
+        password: null
     ftp-proxy:
         enabled: false
         host: false
         port: false
-        user: false
-        password: false
+        user: null
+        password: null
 debugger:
     allowed-ips: []
 border-manager:
