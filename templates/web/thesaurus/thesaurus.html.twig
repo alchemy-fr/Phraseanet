@@ -150,7 +150,7 @@
                             alert("{{ 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' | trans }}");
                             self.location.replace(self.location.href);
                         }
-                        window.setTimeout("pollNotifications();", 10000);
+                        window.setTimeout("pollNotifications();", 60000);
 
                         return;
                     }

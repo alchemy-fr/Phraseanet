@@ -13,9 +13,8 @@ namespace Alchemy\Phrasea\ControllerProvider\Admin;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Admin\DataboxController;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
-use Alchemy\Phrasea\Security\Firewall;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -89,6 +88,7 @@ class Databox implements ControllerProviderInterface, ServiceProviderInterface
             ->before([$this, 'requireChangeSbasStructureRight'])
             ->bind('admin_database_submit_cgus');
 
+        // polled by admin/databox to display indexation progress bar
         $controllers->get('/{databox_id}/informations/documents/', 'controller.admin.databox:progressBarInfos')
             ->before([$this, 'requireManageRightOnSbas'])
             ->bind('admin_database_display_document_information');
