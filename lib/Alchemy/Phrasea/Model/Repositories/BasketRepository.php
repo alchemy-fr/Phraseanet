@@ -14,6 +14,7 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use PDO;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -88,22 +89,23 @@ class BasketRepository extends EntityRepository
      */
     public function findUnreadActiveByUser(User $user)
     {
-        // checked : 2 usages, "b.elements" is useless
-        $dql = "SELECT b\n"
-            . " FROM Phraseanet:Basket b\n"
-            // . "  JOIN b.elements e\n"
-            . "  LEFT JOIN b.validation s\n"
-            . "  LEFT JOIN s.participants p\n"
-            . " WHERE b.archived = false\n"
-            . " AND (\n"
-            . "   (b.user = :usr_id_owner AND b.isRead = false)\n"
-            . "    OR \n"
-            . "   (b.user != :usr_id_ownertwo\n"
-            . "      AND p.user = :usr_id_participant\n"
-            . "      AND p.is_aware = false\n"
-            . "      AND s.expires > CURRENT_TIMESTAMP()\n"
-            . "   )\n"
-            . " )";
+        // too bad dql does not support "UNION" so we first get ids in sql...
+        // grouping the 2 parts as 1 requires "LEFT JOIN"'s , it was really slow.
+        $sql = "SELECT b.id\n"
+            . "   FROM Baskets b\n"
+            . "   WHERE b.archived = 0\n"
+            . "     AND b.user_id = :usr_id_owner\n"
+            . "     AND b.is_read = 0\n"
+            . " UNION\n"
+            . "SELECT b.id\n"
+            . " FROM Baskets b\n"
+            . "  INNER JOIN ValidationSessions s\n"
+            . "  INNER JOIN ValidationParticipants p\n"
+            . " WHERE b.archived = 0\n"
+            . "   AND b.user_id != :usr_id_ownertwo\n"
+            . "   AND p.user_id = :usr_id_participant\n"
+            . "   AND p.is_aware = 0\n"
+            . "   AND s.expires > CURRENT_TIMESTAMP()";
 
         $params = [
             'usr_id_owner'       => $user->getId(),
@@ -111,8 +113,16 @@ class BasketRepository extends EntityRepository
             'usr_id_participant' => $user->getId()
         ];
 
+        $stmt = $this->_em->getConnection()->executeQuery($sql, $params);
+        $basket_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $stmt->closeCursor();
+
+        // ... then we fetch the basket objects in dql
+        $dql = "SELECT b FROM Phraseanet:Basket b\n"
+            . " WHERE b.id IN (:basket_ids)";
+
         $query = $this->_em->createQuery($dql);
-        $query->setParameters($params);
+        $query->setParameter('basket_ids', $basket_ids);
 
         return $query->getResult();
     }
