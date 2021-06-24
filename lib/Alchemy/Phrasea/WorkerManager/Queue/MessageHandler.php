@@ -65,8 +65,10 @@ class MessageHandler
                             continue;
                         }
 
-                        $count = $xdeath['count'];
-                        $data['payload']['count'] = $count;
+                        if (isset($xdeath['count'])) {
+                            $count = $xdeath['count'];
+                            $data['payload']['count'] = $count;
+                        }
                     }
                 }
             }
@@ -127,6 +129,6 @@ class MessageHandler
 
         //  give prefetch message to a worker consumer at a time
         $channel->basic_qos(null, $prefetchCount, null);
-        $channel->basic_consume($queueName, Uuid::uuid4(), false, false, false, false, $callback);
+        $channel->basic_consume($queueName, Uuid::uuid4()->toString(), false, false, false, false, $callback);
     }
 }

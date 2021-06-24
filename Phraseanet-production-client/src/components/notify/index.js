@@ -1,13 +1,15 @@
-import $ from 'jquery';
 // import user from '../user/index.js';
 import notifyLayout from './notifyLayout';
 import notifyService from './notifyService';
 import * as Rx from 'rx';
 import merge from 'lodash.merge';
+
+
+// this module is now unused, poll notification is from menu bar
 const notify = (services) => {
 
     const { configService, localeService, appEvents } = services;
-    const defaultPollingTime = 10000;
+    const defaultPollingTime = 60000;   // pull every 60 seconds
     const defaultConfig = {
         url: null,
         moduleId: null,
@@ -63,14 +65,9 @@ const notify = (services) => {
             appEvents.emit('notification.refresh', data);
         }
         // append notification content
-        notifyLayout(services).addNotifications(data.notifications);
+        // notifyLayout(services).addNotifications(data.notifications);
 
-        let t = 120000;
-        if (data.apps && parseInt(data.apps, 10) > 1) {
-            t = Math.round((Math.sqrt(parseInt(data.apps, 10) - 1) * 1.3 * 60000));
-        }
-
-        window.setTimeout(poll, t, notificationInstance);
+        // window.setTimeout(poll, defaultPollingTime, notificationInstance);
 
         return true;
     };

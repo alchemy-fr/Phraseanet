@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-05-12T07:39:52Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2021-05-31T12:48:34Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -7466,7 +7466,7 @@
       <trans-unit id="f5bd306a7ccf0851eeefd7659ac5c01c382df934" resname="Vocabulary not found" approved="yes">
         <source>Vocabulary not found</source>
         <target state="translated">Vocabulary niet gevonden</target>
-        <jms:reference-file line="262">Controller/Prod/EditController.php</jms:reference-file>
+        <jms:reference-file line="264">Controller/Prod/EditController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1e3e6d2f9b416cfab10df81ce100f4fc43eb90a" resname="Vocabulary type" approved="yes">
         <source>Vocabulary type</source>
@@ -12053,10 +12053,15 @@
         <target state="translated">De collectie en de bijhorende documenten werden verplaats bij deze hergroepering</target>
         <jms:reference-file line="34">prod/actions/collection_default.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="ffe867917118d6e90dc4430f499ebd75370c51f1" resname="prod::edit cannot edit multiple stories">
+        <source>prod::edit cannot edit multiple stories</source>
+        <target state="new">prod::edit cannot edit multiple stories</target>
+        <jms:reference-file line="418">prod/actions/edit_default.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="64c5b2559a8a7877b0218fd056b3bc89d48a0937" resname="prod::edit: Confirmation Edition latitude longitude">
         <source>prod::edit: Confirmation Edition latitude longitude</source>
         <target state="new">prod::edit: Confirmation Edition latitude longitude</target>
-        <jms:reference-file line="422">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="424">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="063431f63e0c593c52fffb55f390d1d9c216ee4a" resname="prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes" approved="yes">
         <source>prod::edit: Impossible d'editer simultanement des documents provenant de bases differentes</source>
@@ -12066,17 +12071,17 @@
       <trans-unit id="c3411dbdb5fa1963791b5e8d97b6f2c9532dded8" resname="prod::edit:confirm: Edition latitude longitude">
         <source>prod::edit:confirm: Edition latitude longitude</source>
         <target state="new">prod::edit:confirm: Edition latitude longitude</target>
-        <jms:reference-file line="421">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="423">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e625a89e837b1b0b9450fb89ddc4f29b570df7ab" resname="prod::edit:confirm: No">
         <source>prod::edit:confirm: No</source>
         <target state="new">prod::edit:confirm: No</target>
-        <jms:reference-file line="425">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="427">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="683af4416e59f0bfc4663f1627063c50c9205df1" resname="prod::edit:confirm: Yes">
         <source>prod::edit:confirm: Yes</source>
         <target state="new">prod::edit:confirm: Yes</target>
-        <jms:reference-file line="424">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="426">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc14b0cfd6da32eb4f1c2c2697dbb13a44c114f2" resname="prod::edit:story select all">
         <source>prod::edit:story select all</source>
@@ -12091,12 +12096,12 @@
       <trans-unit id="b4647a860e97f9b173747e8736ae36630631fbb4" resname="prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants" approved="yes">
         <source>prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants</source>
         <target state="translated">%not_actionable% documenten kunnen niet bewerkt worden omdat u niet voldoende rechten heeft</target>
-        <jms:reference-file line="449">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="451">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e58fe53260dcb47548d687b0aac89a231f8fd349" resname="prod::editing: 1 document ne peut etre edite car vos droits sont induffisants" approved="yes">
         <source>prod::editing: 1 document ne peut etre edite car vos droits sont induffisants</source>
         <target state="translated">1 document kan niet worden bewerkt omdat u niet voldoende rechten heeft</target>
-        <jms:reference-file line="451">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="453">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d06429358cfa7814d995cffec515505b4babbdf3" resname="prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants" approved="yes">
         <source>prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants</source>

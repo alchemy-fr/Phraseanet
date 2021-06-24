@@ -7,7 +7,6 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\TagFactory;
-use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\WorkerManager\Event\SubdefinitionWritemetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
@@ -57,262 +56,296 @@ class WriteMetadatasWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        if (isset($payload['recordId']) && isset($payload['databoxId'])) {
-            $recordId  = $payload['recordId'];
-            $databoxId = $payload['databoxId'];
+        // mandatory args
+        if (!isset($payload['recordId']) || !isset($payload['databoxId']) || !isset($payload['subdefName'])) {
+            // bad payload
+            $this->logger->error(sprintf("%s (%s) : bad payload", __FILE__, __LINE__));
+            return;
+        }
 
-            $MWG      = isset($payload['MWG']) ? $payload['MWG'] : false;
-            $clearDoc = isset($payload['clearDoc']) ? $payload['clearDoc'] : false;
-            $databox = $this->findDataboxById($databoxId);
+        $databoxId   = $payload['databoxId'];
+        $recordId    = $payload['recordId'];
+        $subdefName  = $payload['subdefName'];
 
-            // check if there is a make subdef running for the record or the same task running
-            $canWriteMeta = $this->repoWorker->canWriteMetadata($payload['subdefName'], $recordId, $databoxId);
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("process WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND | LOCK_EX);
 
-            $message = [
-                'message_type'  => MessagePublisher::WRITE_METADATAS_TYPE,
-                'payload'       => $payload
-            ];
+        $MWG         = $payload['MWG'] ?? false;
+        $clearDoc    = $payload['clearDoc'] ?? false;
+        $databox     = $this->findDataboxById($databoxId);
 
-            if (!$canWriteMeta) {
-                // the file is in used to generate subdef
+        // try to "lock" the file, will return null if already locked
+        $workerRunningJobId = $this->repoWorker->canWriteMetadata($payload);
 
-                $this->messagePublisher->publishDelayedMessage($message, MessagePublisher::WRITE_METADATAS_TYPE);
+        if (is_null($workerRunningJobId)) {
+            // the file is written by another worker, delay to retry later
+            $this->messagePublisher->publishDelayedMessage(
+                [
+                    'message_type'  => MessagePublisher::WRITE_METADATAS_TYPE,
+                    'payload'       => $payload
+                ],
+                MessagePublisher::WRITE_METADATAS_TYPE
+            );
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("cannot WriteMeta for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND | LOCK_EX);
 
-                return ;
+            return ;
+        }
+
+        // here we can work
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf("ready to WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND | LOCK_EX);
+
+        $record  = $databox->get_record($recordId);
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf(" - recordid = %s", $record->getRecordId())
+        ), FILE_APPEND | LOCK_EX);
+
+        if ($record->getMimeType() == 'image/svg+xml') {
+
+            $this->logger->error("Can't write meta on svg file!");
+
+            // tell that we have finished to work on this file ("unlock")
+            $this->repoWorker->markFinished($workerRunningJobId, "Can't write meta on svg file!");
+
+            return;
+        }
+
+        $this->repoWorker->reconnect();
+
+        try {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf(" - getsubdef %s", $subdefName)
+            ), FILE_APPEND | LOCK_EX);
+
+            $subdef = $record->get_subdef($subdefName);
+        }
+        catch (Exception $e) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf(" - %s", $e->getMessage())
+            ), FILE_APPEND | LOCK_EX);
+
+            $workerMessage = "Exception catched when try to get subdef " .$subdefName. " from DB for the recordID: " .$recordId;
+            $this->logger->error($workerMessage);
+
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+            /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
+            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                $record,
+                $subdefName,
+                SubdefinitionWritemetaEvent::FAILED,
+                $workerMessage,
+                $count,
+                $workerRunningJobId
+            ));
+
+            // the subscriber will mark the job as errored, no need to do it here
+            return ;
+        }
+
+        if (!$subdef->is_physically_present()) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf(" - not present")
+            ), FILE_APPEND | LOCK_EX);
+
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+            /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
+            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                $record,
+                $subdefName,
+                SubdefinitionWritemetaEvent::FAILED,
+                'Subdef is not physically present!',
+                $count,
+                $workerRunningJobId
+            ));
+
+            // the subscriber will mark the job as errored, no need to do it here
+            return ;
+        }
+
+        // here we can try to do the job
+
+        $metadata = new MetadataBag();
+
+        // add Uuid in metadatabag
+        if ($record->getUuid()) {
+            $metadata->add(
+                new Metadata(
+                    new Tag\XMPExif\ImageUniqueID(),
+                    new Mono($record->getUuid())
+                )
+            );
+            $metadata->add(
+                new Metadata(
+                    new Tag\ExifIFD\ImageUniqueID(),
+                    new Mono($record->getUuid())
+                )
+            );
+            $metadata->add(
+                new Metadata(
+                    new Tag\IPTC\UniqueDocumentID(),
+                    new Mono($record->getUuid())
+                )
+            );
+        }
+
+        // read document fields and add to metadatabag
+        $caption = $record->get_caption();
+        foreach ($databox->get_meta_structure() as $fieldStructure) {
+
+            $tagName = $fieldStructure->get_tag()->getTagname();
+            $fieldName = $fieldStructure->get_name();
+
+            // skip fields with no src
+            if ($tagName == '' || $tagName == 'Phraseanet:no-source') {
+                continue;
             }
 
-            $record  = $databox->get_record($recordId);
-
-            if ($record->getMimeType() == 'image/svg+xml') {
-
-                $this->logger->error("Can't write meta on svg file!");
-
-                return;
-            }
-
-            // tell that a file is in used to create subdef
-            $em = $this->getEntityManager();
-            $this->repoWorker->reconnect();
-
-            if (isset($payload['workerJobId'])) {
-                /** @var WorkerRunningJob $workerRunningJob */
-                $workerRunningJob = $this->repoWorker->find($payload['workerJobId']);
-
-                if ($workerRunningJob == null) {
-                    $this->logger->error("Given workerJobId not found !");
-
-                    return ;
+            // check exiftool known tags to skip Phraseanet:tf-*
+            try {
+                $tag = TagFactory::getFromRDFTagname($tagName);
+                if(!$tag->isWritable()) {
+                    continue;
                 }
-
-                $workerRunningJob
-                    ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
-                    ->setStatus(WorkerRunningJob::RUNNING)
-                ;
-
-                $em->persist($workerRunningJob);
-
-                $em->flush();
-            } else {
-                $em->beginTransaction();
-
-                try {
-                    $date = new DateTime();
-                    $workerRunningJob = new WorkerRunningJob();
-                    $workerRunningJob
-                        ->setDataboxId($databoxId)
-                        ->setRecordId($recordId)
-                        ->setWork(MessagePublisher::WRITE_METADATAS_TYPE)
-                        ->setWorkOn($payload['subdefName'])
-                        ->setPayload($message)
-                        ->setPublished($date->setTimestamp($payload['published']))
-                        ->setStatus(WorkerRunningJob::RUNNING)
-                    ;
-
-                    $em->persist($workerRunningJob);
-                    $em->flush();
-
-                    $em->commit();
-                } catch (Exception $e) {
-                    $em->rollback();
-                    $this->logger->error("Error persisting WorkerRunningJob !");
-
-                    return ;
-                }
+            } catch (TagUnknown $e) {
+                continue;
             }
 
             try {
-                $subdef = $record->get_subdef($payload['subdefName']);
-            } catch (Exception $e) {
-                $workerMessage = "Exception catched when try to get subdef " .$payload['subdefName']. " from DB for the recordID: " .$recordId;
-                $this->logger->error($workerMessage);
+                $field = $caption->get_field($fieldName);
+                $fieldValues = $field->get_values();
 
-                $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+                if ($fieldStructure->is_multi()) {
+                    $values = array();
+                    foreach ($fieldValues as $value) {
+                        $values[] = $this->removeNulChar($value->getValue());
+                    }
 
+                    $value = new Multi($values);
+                } else {
+                    $fieldValue = array_pop($fieldValues);
+                    $value = $this->removeNulChar($fieldValue->getValue());
+
+                    // fix the dates edited into phraseanet
+                    if($fieldStructure->get_type() === $fieldStructure::TYPE_DATE) {
+                        try {
+                            $value = self::fixDate($value); // will return NULL if the date is not valid
+                        }
+                        catch (Exception $e) {
+                            $value = null;    // do NOT write back to iptc
+                        }
+                    }
+
+                    if($value !== null) {   // do not write invalid dates
+                        $value = new Mono($value);
+                    }
+                }
+            }
+            catch(Exception $e) {
+                // the field is not set in the record, erase it
+                if ($fieldStructure->is_multi()) {
+                    $value = new Multi(array(''));
+                }
+                else {
+                    $value = new Mono('');
+                }
+            }
+
+            if($value !== null) {   // do not write invalid data
+                $metadata->add(
+                    new Metadata($fieldStructure->get_tag(), $value)
+                );
+            }
+        }
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf(" - reset")
+        ), FILE_APPEND | LOCK_EX);
+
+        $this->writer->reset();
+
+        if ($MWG) {
+            $this->writer->setModule(Writer::MODULE_MWG, true);
+        }
+
+        $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            sprintf(" - erased")
+        ), FILE_APPEND | LOCK_EX);
+
+        // write meta in file
+        try {
+            $this->writer->write($subdef->getRealPath(), $metadata);
+
+            $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("meta written in %s.%s.%s", $databoxId, $recordId, $subdefName)
+            ), FILE_APPEND | LOCK_EX);
+
+        }
+        catch (Exception $e) {
+
+            // try to interpret the reason of the failure, to see if we retry or stop
+            $msg = $e->getMessage();
+
+            $matches = null;
+            $stopInfo = false;
+            if( preg_match('/\\(looks more like a .*\\)/', $msg,$matches) ) {
+                $stopInfo = $matches[0];
+            }
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+                sprintf("meta NOT written in %s.%s.%s because (%s)\n  Will %sretry", $databoxId, $recordId, $subdefName, $msg, ($stopInfo ? "not ":""))
+            ), FILE_APPEND | LOCK_EX);
+
+            $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"',
+                $databox->get_sbas_id(),
+                $recordId,
+                $subdef->get_name(),
+                $msg
+            );
+            $this->logger->error($workerMessage);
+
+            if(!$stopInfo) {
+                // we don't know what failed so we retry
+                $count = isset($payload['count']) ? $payload['count'] + 1 : 2;
+
+                /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
                 $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
                     $record,
-                    $payload['subdefName'],
+                    $subdefName,
                     SubdefinitionWritemetaEvent::FAILED,
                     $workerMessage,
                     $count,
-                    $workerRunningJob->getId()
+                    $workerRunningJobId
                 ));
-
-                return ;
+                // the subscriber will "unlock" the row, no need to do it here
             }
-
-            if ($subdef->is_physically_present()) {
-                $metadata = new MetadataBag();
-
-                // add Uuid in metadatabag
-                if ($record->getUuid()) {
-                    $metadata->add(
-                        new Metadata(
-                            new Tag\XMPExif\ImageUniqueID(),
-                            new Mono($record->getUuid())
-                        )
-                    );
-                    $metadata->add(
-                        new Metadata(
-                            new Tag\ExifIFD\ImageUniqueID(),
-                            new Mono($record->getUuid())
-                        )
-                    );
-                    $metadata->add(
-                        new Metadata(
-                            new Tag\IPTC\UniqueDocumentID(),
-                            new Mono($record->getUuid())
-                        )
-                    );
-                }
-
-                // read document fields and add to metadatabag
-                $caption = $record->get_caption();
-                foreach ($databox->get_meta_structure() as $fieldStructure) {
-
-                    $tagName = $fieldStructure->get_tag()->getTagname();
-                    $fieldName = $fieldStructure->get_name();
-
-                    // skip fields with no src
-                    if ($tagName == '' || $tagName == 'Phraseanet:no-source') {
-                        continue;
-                    }
-
-                    // check exiftool known tags to skip Phraseanet:tf-*
-                    try {
-                        $tag = TagFactory::getFromRDFTagname($tagName);
-                        if(!$tag->isWritable()) {
-                            continue;
-                        }
-                    } catch (TagUnknown $e) {
-                        continue;
-                    }
-
-                    try {
-                        $field = $caption->get_field($fieldName);
-                        $fieldValues = $field->get_values();
-
-                        if ($fieldStructure->is_multi()) {
-                            $values = array();
-                            foreach ($fieldValues as $value) {
-                                $values[] = $this->removeNulChar($value->getValue());
-                            }
-
-                            $value = new Multi($values);
-                        } else {
-                            $fieldValue = array_pop($fieldValues);
-                            $value = $this->removeNulChar($fieldValue->getValue());
-
-                            // fix the dates edited into phraseanet
-                            if($fieldStructure->get_type() === $fieldStructure::TYPE_DATE) {
-                                try {
-                                    $value = self::fixDate($value); // will return NULL if the date is not valid
-                                }
-                                catch (Exception $e) {
-                                    $value = null;    // do NOT write back to iptc
-                                }
-                            }
-
-                            if($value !== null) {   // do not write invalid dates
-                                $value = new Mono($value);
-                            }
-                        }
-                    } catch(Exception $e) {
-                        // the field is not set in the record, erase it
-                        if ($fieldStructure->is_multi()) {
-                            $value = new Multi(array(''));
-                        }
-                        else {
-                            $value = new Mono('');
-                        }
-                    }
-
-                    if($value !== null) {   // do not write invalid data
-                        $metadata->add(
-                            new Metadata($fieldStructure->get_tag(), $value)
-                        );
-                    }
-                }
-
-                $this->writer->reset();
-
-                if ($MWG) {
-                    $this->writer->setModule(Writer::MODULE_MWG, true);
-                }
-
-                $this->writer->erase($subdef->get_name() != 'document' || $clearDoc, true);
-
-                // write meta in file
-                try {
-                    $this->writer->write($subdef->getRealPath(), $metadata);
-
-                    $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
-                } catch (Exception $e) {
-                    $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"', $databox->get_sbas_id(), $recordId, $subdef->get_name() , $e->getMessage());
-                    $this->logger->error($workerMessage);
-
-                    $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
-
-                    $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
-                        $record,
-                        $payload['subdefName'],
-                        SubdefinitionWritemetaEvent::FAILED,
-                        $workerMessage,
-                        $count,
-                        $workerRunningJob->getId()
-                    ));
-                }
-
+            else {
+                // failed with known error message like "Not a valid JPG (looks more like a PSD)"
                 // mark write metas finished
                 $this->updateJeton($record);
-            } else {
-                $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
 
-                $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
-                    $record,
-                    $payload['subdefName'],
-                    SubdefinitionWritemetaEvent::FAILED,
-                    'Subdef is not physically present!',
-                    $count,
-                    $workerRunningJob->getId()
-                ));
+                // tell that we have finished to work on this file (=unlock)
+                $this->repoWorker->markFinished($workerRunningJobId, $stopInfo);
             }
-
-
-            // tell that we have finished to work on this file
-            $this->repoWorker->reconnect();
-            $em->beginTransaction();
-            try {
-                $workerRunningJob->setStatus(WorkerRunningJob::FINISHED);
-                $workerRunningJob->setFinished(new DateTime('now'));
-                $em->persist($workerRunningJob);
-                $em->flush();
-                $em->commit();
-            } catch (Exception $e) {
-                $em->rollback();
-            }
-
+            return ;
         }
 
+        // mark write metas finished
+        $this->updateJeton($record);
+
+        // tell that we have finished to work on this file (=unlock)
+        $this->repoWorker->markFinished($workerRunningJobId);
     }
 
     private function removeNulChar($value)
