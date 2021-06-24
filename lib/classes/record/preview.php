@@ -335,7 +335,7 @@ class record_preview extends record_adapter
         $sql .= 'ORDER BY d.date, usrid DESC';
 
         foreach ($this->getDataboxConnection()->executeQuery($sql, $params)->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $hour = $this->app['date-formatter']->getPrettyString(new DateTime($row['date']));
+            $hour = $row['date'];
 
             if ( ! isset($tab[$hour]))
                 $tab[$hour] = [];
