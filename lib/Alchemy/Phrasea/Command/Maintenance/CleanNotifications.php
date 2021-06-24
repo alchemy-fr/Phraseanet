@@ -24,11 +24,19 @@ class CleanNotifications extends Command
 
         $this
             ->setDescription('Delete old user notifications')
-            ->addOption('what', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, '"read" and/or "unread" (default both)')
-            ->addOption('older_than', null, InputOption::VALUE_REQUIRED, 'delete older than \<OLDER_THAN>')
-            ->addOption('dry_run', null, InputOption::VALUE_NONE, 'count but not delete')
-            ->setHelp("\<OLDER_THAN> can be absolute or relative from now, e.g.:\n- <info>2022-01-01</info>\n- <info>10 days</info>\n- <info>2 weeks</info>\n- <info>6 months</info>\n- <info>1 year</info>")
-        ;
+            ->addOption('what',       null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, '"read" and/or "unread" (default both)')
+            ->addOption('older_than', null, InputOption::VALUE_REQUIRED,                             'delete older than \<OLDER_THAN>')
+            ->addOption('dry',        null, InputOption::VALUE_NONE,                                 'dry run, count but don\'t delete')
+            ->addOption('show_sql',   null, InputOption::VALUE_NONE,                                 'show sql pre-selecting records')
+
+            ->setHelp(
+                "\<OLDER_THAN> can be absolute or relative from now, e.g.:\n"
+                . "- <info>2022-01-01</info> (please use strict date format, do not add time)\n"
+                . "- <info>10 days</info>\n"
+                . "- <info>2 weeks</info>\n"
+                . "- <info>6 months</info>\n"
+                . "- <info>1 year</info>"
+            );
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
@@ -36,8 +44,10 @@ class CleanNotifications extends Command
         $clauses = [];  // sql clauses
         $dry = false;
 
-        // sanity check
+        // sanity check options
         //
+
+        // --what
 
         $what = $input->getOption('what');
         if(empty($what)) {
@@ -59,14 +69,15 @@ class CleanNotifications extends Command
                 return 1;
         }
 
+        // --older_than
+
         $older_than = str_replace(['-', '/', ' '], '-', $input->getOption('older_than'));
         if($older_than === "") {
             $output->writeln("<error>set '--older_than' option</error>");
             return 1;
         }
-        $matches = null;
-        $n = preg_match("/(\d{4}-\d{2}-\d{2})|(\d+)-(day|week|month|year)s?/i", $older_than, $matches);
-        var_dump($matches, $n);
+        $matches = [];
+        preg_match("/(\d{4}-\d{2}-\d{2})|(\d+)-(day|week|month|year)s?/i", $older_than, $matches);
         $n = count($matches);
         if($n === 2) {
             // yyyy-mm-dd
@@ -83,25 +94,37 @@ class CleanNotifications extends Command
             return 1;
         }
 
-        if($input->getOption('dry_run')) {
+        // --dry
+
+        if($input->getOption('dry')) {
             $dry = true;
         }
 
-        var_dump($clauses);
-        var_dump($dry);
 
+        // do the job
+        //
+        $sql_0      = "FROM `notifications` WHERE (" . join(") AND (", $clauses) . ")";
+        $sql_count  = "SELECT COUNT(`id`) AS n " . $sql_0;
+        $sql_delete = "DELETE " . $sql_0;
 
-        $sql = "SELECT COUNT(`id`) AS n FROM `notifications` WHERE (" . join(") AND (", $clauses) . ")";
-        $stmt = $this->container->getApplicationBox()->get_connection()->prepare($sql);
+        if($input->getOption('show_sql')) {
+            $output->writeln(sprintf("sql: \"<info>%s</info>\"", $sql_delete));
+        }
+
+        $stmt = $this->container->getApplicationBox()->get_connection()->prepare($sql_count);
         $stmt->execute();
-        $r = $stmt->fetchColumn(0);
+        $n = $stmt->fetchColumn(0);
         $stmt->closeCursor();
 
+        $output->writeln(sprintf("%d notifications will be deleted.", $n));
 
-        var_dump($r);
-
-
-        $sql = "DELETE FROM `notifications` WHERE (" . join(") AND (", $clauses) . ")";
+        if(!$dry) {
+            $n = $this->container->getApplicationBox()->get_connection()->exec($sql_delete);
+            $output->writeln(sprintf("%d notifications have been be deleted.", $n));
+        }
+        else {
+            $output->writeln("Dry mode: Not executed.");
+        }
 
         return 0;
     }
