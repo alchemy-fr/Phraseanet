@@ -14,6 +14,7 @@ namespace KonsoleKommander;
 use Alchemy\Phrasea\Command\BuildMissingSubdefs;
 use Alchemy\Phrasea\Command\BuildPermalinks;
 use Alchemy\Phrasea\Command\BuildSubdefs;
+use Alchemy\Phrasea\Command\NetworkProxiesTestCommand;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;
 use Alchemy\Phrasea\Command\SearchEngine\Debug\QueryParseCommand;
 use Alchemy\Phrasea\Command\SearchEngine\Debug\QuerySampleCommand;
@@ -172,6 +173,8 @@ $cli->command(new WorkerRunServiceCommand());
 $cli->command(new WorkerShowConfigCommand());
 
 $cli->command(new SendValidationRemindersCommand());
+
+$cli->command(new NetworkProxiesTestCommand('network-proxies:test'));
 
 $cli->command(new BuildPermalinks());
 
