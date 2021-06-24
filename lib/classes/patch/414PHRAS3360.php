@@ -4,7 +4,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 
-class patch_414_PHRAS_3360 implements patchInterface
+class patch_414PHRAS3360 implements patchInterface
 {
     /** @var string */
     private $release = '4.1.4';
@@ -106,6 +106,28 @@ class patch_414_PHRAS_3360 implements patchInterface
         // if no ssl key, add it
         if (!$conf->has(['workers', 'queue', 'worker-queue', 'ssl'])) {
             $conf->set(['workers', 'queue', 'worker-queue', 'ssl'], false);
+        }
+
+        // add bloc network proxy if not yet exist
+        if (!$conf->has(['network-proxies'])) {
+            $proxies = [
+                'http-proxy' => [
+                    'enabled'   => false,
+                    'host'      => null,
+                    'port'      => null,
+                    'user'      => null,
+                    'password'  => null
+                ],
+                'ftp-proxy' => [
+                    'enabled' => false,
+                    'host'      => null,
+                    'port'      => null,
+                    'user'      => null,
+                    'password'  => null
+                ]
+            ];
+
+            $conf->set(['network-proxies'], $proxies);
         }
     }
 }
