@@ -58,8 +58,9 @@
           {% endif %}
 
           </span>
-           <p style="font-size:10px;text-decoration:italic;">{{hour}}</p>
+           <p style="font-size:10px;text-decoration:italic;">{{ app['date-formatter'].getPrettyString(date(hour)) }}</p>
        </div>
+      </div>
 
       {% endfor %}
     {% endfor %}
