@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\PhraseanetService\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\ExposeUploadEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use GuzzleHttp\Client;
@@ -15,6 +16,7 @@ class PSExposeController extends Controller
 {
     /**
      * Set access token on session 'password_access_token_' + expose_name
+     * Save also login on session 'expose_connected_login_' + expose_name
      *
      * @param PhraseaApplication $app
      * @param Request $request
@@ -32,7 +34,10 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $oauthClient = new Client(['base_uri' => $exposeConfiguration['auth_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['auth_base_uri'], 'http_errors' => false];
+
+        $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
             $response = $oauthClient->post('/oauth/v2/token', [
@@ -66,6 +71,18 @@ class PSExposeController extends Controller
         $session->set($passSessionName, $tokenBody['access_token']);
 
         return $this->app->json([
+            'success' => true
+        ]);
+    }
+
+    public function logoutAction(PhraseaApplication $app, Request $request)
+    {
+        $session = $this->getSession();
+        $loginSessionName = $this->getLoginSessionName($request->get('exposeName'));
+
+        $session->remove($loginSessionName);
+
+        return $app->json([
             'success' => true
         ]);
     }
@@ -163,7 +180,10 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         $response = $exposeClient->get('/publications?flatten=true&order[createdAt]=desc', [
             'headers' => [
@@ -205,7 +225,10 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
@@ -257,9 +280,11 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
 
@@ -290,6 +315,7 @@ class PSExposeController extends Controller
                 'message' => "Expose configuration not set!"
             ]);
         }
+
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
@@ -398,7 +424,10 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$exposeName];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
             $accessToken = $this->getAndSaveToken($exposeName);
@@ -733,6 +762,19 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Get login session name
+     *
+     * @param $exposeName
+     * @return string
+     */
+    private function getLoginSessionName($exposeName)
+    {
+        $expose_name = str_replace(' ', '_', $exposeName);
+
+        return 'expose_connected_login_'.$expose_name;
+    }
+
+    /**
      * Get Token and save in session
      * @param $exposeName
      *
@@ -754,7 +796,9 @@ class PSExposeController extends Controller
             if ($session->has($credentialSessionName)) {
                 $accessToken = $session->get($credentialSessionName);
             } else {
-                $oauthClient = new Client();
+                $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+
+                $oauthClient = $proxyConfig->getClientWithOptions([]);
 
                 try {
                     $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
@@ -848,7 +892,10 @@ class PSExposeController extends Controller
             return null;
         }
 
-        return new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        return $proxyConfig->getClientWithOptions($clientOptions);
     }
 
     /**
