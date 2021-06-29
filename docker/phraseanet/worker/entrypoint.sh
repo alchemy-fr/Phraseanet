@@ -63,16 +63,12 @@ if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1
   if [ ! -z "$PHRASEANET_WORKERS_LAUNCH_METHOD" ] && [ ${PHRASEANET_WORKERS_LAUNCH_METHOD} == "supervisor" ]; then
    for i in `env | grep PHRASEANET_WORKER_`
    do
-      wcount=0    
       worker_env_name="$(echo $i | cut -d'=' -f1)"
       worker_parallelism="$(echo $i | cut -d'=' -f2)"
       worker_job_file="$(echo $worker_env_name | cut -d'_' -f3).conf"
-      # echo "Worker job file: " $worker_job_file " -- worker_parallelism: " $worker_parallelism  " -- from env var: " $worker_env_name
       if [ $worker_parallelism -gt "0" ] ; then
         envsubst < "/var/alchemy/Phraseanet/docker/phraseanet/worker/supervisor_conf.d/$worker_job_file" > /etc/supervisor/conf.d/$worker_job_file
         echo "set Worker : " $worker_job_file " -- with parallelism: " $worker_parallelism 
-        # ((wcount++))
-        wcount=$(( wcount+1 ))
       else
         echo "NO Worker define for : " $worker_job_file " -- because parallelism is set to : " $worker_parallelism 
       fi
@@ -80,7 +76,7 @@ if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1
    command="/usr/bin/supervisord -n -c /etc/supervisor/supervisor.conf"
    echo $command >> bin/run-worker.sh
    PHR_USER=root
-   echo "$wcount Phraseanet workers will be launched by supervisor"
+   echo "Phraseanet workers will be launched by supervisor"
   
   else
    for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
