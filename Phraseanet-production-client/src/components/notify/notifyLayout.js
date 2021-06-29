@@ -11,6 +11,11 @@ const notifyLayout = (services) => {
     let $navigation = $('.navigation', $notificationDialog);
 
     const initialize = () => {
+
+        //   the dialog MUST be created during print_notifications(), else the first clik on a "read" button
+        //   is badly interpreted (no action, but scrolls the content ???
+        // $notificationDialog.dialog({});
+
         /**
          * click on menubar/notifications : drop a box with last 10 notification, and a button "see all"
          * the box content is already set by poll notifications
@@ -25,7 +30,6 @@ const notifyLayout = (services) => {
             else {
                 $notificationTrigger.addClass('open');      // highlight background in menubar
                 $notificationBoxContainer.show();
-                commonModule.fixNotificationsHeight();
             }
         });
 
@@ -88,6 +92,11 @@ const notifyLayout = (services) => {
     const print_notifications = (offset) => {
 
         offset = parseInt(offset, 10);
+
+        if(offset == 0) {
+            $notifications.empty();
+        }
+
         var buttons = {};
 
         buttons[localeService.t('fermer')] = function () {
@@ -97,23 +106,26 @@ const notifyLayout = (services) => {
         // open the dlg (even if it is already opened when "load more")
         //
         $notificationDialog
-            .dialog({
-                title: $('#notification-title').val(),
-                autoOpen: false,
-                closeOnEscape: true,
-                resizable: false,
-                draggable: false,
-                modal: true,
-                width: 500,
-                height: 400,
-                overlay: {
-                    backgroundColor: '#000',
-                    opacity: 0.7
-                },
-                close: function (event, ui) {
-                    $notificationDialog.dialog('destroy').remove();
+            .dialog(
+                {
+                    title:         $('#notification-title').val(),
+                    autoOpen:      false,
+                    closeOnEscape: true,
+                    resizable:     false,
+                    draggable:     false,
+                    modal:         true,
+                    width:         500,
+                    height:        400,
+                    overlay:       {
+                        backgroundColor: '#000',
+                        opacity:         0.7
+                    },
+                    close:         function (event, ui) {
+                        // destroy so it will be "fresh" on next open (scrollbar on top)
+                        $notificationDialog.dialog('destroy').remove();
+                    }
                 }
-            })
+            )
             .dialog('option', 'buttons', buttons)
             .dialog('open');
 
@@ -160,12 +172,14 @@ const notifyLayout = (services) => {
                     }
 
                     // add pre-formatted notif
-                    const $z = date_cont.append(notification.html);
-                    $('.notification_' + notification.id + '_unread', $z).tooltip().click(
-                        notification.id,
+                    const $z = $(notification.html);
+                    // the "unread" icon is clickable to mark as read
+                    $('.icon_unread', $z).tooltip().click(
+                        {'z':$z, 'id':notification.id},
                         function (event) {
-                            mark_read(event.data);
+                            markNotificationRead(event.data['id'], $z);
                         });
+                    date_cont.append($z);
                 }
 
                 // handle "show more" button
@@ -173,13 +187,12 @@ const notifyLayout = (services) => {
                 if(data.notifications.next_offset) {
                     // update the "more" button
                     $navigation
-                        .off('click', '.notification__print-action');
-                    $navigation
+                        .off('click', '.notification__print-action')   // remove previous, else we load 10, 20, 40...
                         .on('click', '.notification__print-action', function (event) {
                             event.preventDefault();
                             print_notifications(data.notifications.next_offset);
-                        });
-                    $navigation.show();
+                        })
+                        .show();
                 }
                 else {
                     // no more ? no button
@@ -189,12 +202,11 @@ const notifyLayout = (services) => {
         });
     };
 
-    const mark_read = (notification_id) => {
-        commonModule.markNotificationRead(notification_id,)
+    const markNotificationRead = (notification_id, $notification) => {
+        commonModule.markNotificationRead(notification_id)
             .success(function (data) {
-                // xhttp ok : update button
-                $('.notification_' + notification_id + '_unread', $notifications).hide();
-                $('.notification_' + notification_id + '_read', $notifications).show();
+                // xhttp ok : update notif
+                $notification.removeClass('unread');
             })
     };
 

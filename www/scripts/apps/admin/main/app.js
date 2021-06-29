@@ -126,7 +126,7 @@ define([
         AdminApp.LeftView.activeTree();
         AdminApp.LeftView.clickSelected();
 
-        window.setTimeout(function() {pullNotifications();}, 15000);
+//        window.setTimeout(function() {pullNotifications();}, 15000);
     };
 
     return {
