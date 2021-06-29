@@ -70,8 +70,13 @@ class PSExposeController extends Controller
 
         $session->set($passSessionName, $tokenBody['access_token']);
 
+        $loginSessionName = $this->getLoginSessionName($request->request->get('exposeName'));
+        $session->set($loginSessionName, $request->request->get('auth-username'));
+
         return $this->app->json([
-            'success' => true
+            'success'       => true,
+            'exposeName'    => $request->request->get('exposeName'),
+            'exposeLogin'   => $request->request->get('auth-username')
         ]);
     }
 
@@ -79,8 +84,10 @@ class PSExposeController extends Controller
     {
         $session = $this->getSession();
         $loginSessionName = $this->getLoginSessionName($request->get('exposeName'));
+        $passSessionName = $this->getPassSessionName($request->get('exposeName'));
 
         $session->remove($loginSessionName);
+        $session->remove($passSessionName);
 
         return $app->json([
             'success' => true
@@ -155,8 +162,10 @@ class PSExposeController extends Controller
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
         if ($request->get('exposeName') == null) {
-            return $this->render("prod/WorkZone/ExposeList.html.twig", [
-                'publications' => [],
+            return $app->json([
+                'twig' => $this->render("prod/WorkZone/ExposeList.html.twig", [
+                    'publications' => [],
+                ])
             ]);
         }
 
@@ -167,16 +176,20 @@ class PSExposeController extends Controller
         $passSessionName = $this->getPassSessionName($request->get('exposeName'));
 
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
-            return $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
-                'exposeName' => $request->get('exposeName')
+             return $app->json([
+                'twig'  => $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
+                    'exposeName' => $request->get('exposeName')
+                ])
             ]);
         }
 
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         if ($exposeConfiguration == null ) {
-            return $this->render("prod/WorkZone/ExposeList.html.twig", [
-                'publications' => [],
+            return $app->json([
+                'twig'  =>  $this->render("prod/WorkZone/ExposeList.html.twig", [
+                    'publications' => [],
+                ])
             ]);
         }
 
@@ -200,15 +213,26 @@ class PSExposeController extends Controller
             $publications = $body['hydra:member'];
         }
 
-        if ($request->get('format') == 'json') {
+        if ($request->get('format') == 'pub-list') {
             return $app->json([
                 'publications' => $publications
             ]);
         }
 
-        return $this->render("prod/WorkZone/ExposeList.html.twig", [
+        $exposeListTwig = $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications'          => $publications,
             'exposeFrontBasePath'   => $exposeFrontBasePath
+        ]);
+
+        // not called on june 2021
+        if ($request->get('format') == 'twig') {
+            return $exposeListTwig;
+        }
+
+        return $app->json([
+            'twig'          => $exposeListTwig,
+            'exposeName'    => $request->get('exposeName'),
+            'exposeLogin'   => $session->get($this->getLoginSessionName($request->get('exposeName')))
         ]);
     }
 
