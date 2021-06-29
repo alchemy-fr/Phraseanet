@@ -5,6 +5,7 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use GuzzleHttp\Client;
 
@@ -33,7 +34,15 @@ class PullAssetsWorker implements WorkerInterface
             return;
         }
 
-        $uploaderClient = new Client(['base_uri' => $config['UploaderApiBaseUri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->conf);
+        $clientOptions = ['base_uri' => $config['UploaderApiBaseUri'], 'http_errors' => false];
+
+        // add proxy in each request if defined in configuration
+        if ($proxyConfig->getHttpProxyConfiguration() != null) {
+            $clientOptions = array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
+        }
+
+        $uploaderClient = new Client($clientOptions);
 
         // if a token exist , use it
         if (isset($config['assetToken'])) {
