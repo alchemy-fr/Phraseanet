@@ -1,18 +1,17 @@
-<div style="position:relative;" class="notification {% if notification['unread'] == '1' %}unread{% endif %}">
+{# css from resources/www/_shared/styles/_notification.scss #}
+<div class="notification {% if notification['unread'] == '1' %}unread{% endif %}" data-notification_id="{{notification['id']}}">
     <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
-        <tr style="border-top: 1px grey solid">
+        <tr>
             <td style="width:25px; vertical-align: top;">
                 <img src="{{notification['icon']}}" style="vertical-align:middle;width:16px;margin:2px;" />
             </td>
-            <td>
-                <p style="margin:0;padding:0;" class="{{notification['class']}}">
-                    {{notification['text']|raw}}
-                    <span class="time">{{notification['created_on']}}</span>
-                </p>
+            <td class="{{notification['class']}}">
+                {{notification['text']|raw}}
+                <span class="time">{{notification['created_on']}}</span>
             </td>
             <td style="width:25px; vertical-align: bottom;">
-                <span class="notification_{{notification['id']}}_read" title="{{ 'notification::read:tooltip' | trans }}" style="display: {{ notification['unread'] == '1' ? 'none' : 'inherit' }}">&#9989;</span>
-                <span class="notification_{{notification['id']}}_unread" title="{{ 'notification::unread:tooltip' | trans }}" style="cursor: pointer; display: {{ notification['unread'] == '1' ? 'inherit' : 'none' }}">&#x1F441;</span>
+                <span class="icon_read" title="{{ 'notification::read:tooltip' | trans }}"></span>
+                <span class="icon_unread" title="{{ 'notification::unread:tooltip' | trans }}"></span>
             </td>
         </tr>
   </table>
