@@ -63,11 +63,7 @@ class CreateRecordWorker implements WorkerInterface
         $clientOptions = ['base_uri' => $payload['base_url']];
 
         // add proxy in each request if defined in configuration
-        if ($proxyConfig->getHttpProxyConfiguration() != null) {
-            $clientOptions = array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
-        }
-
-        $uploaderClient = new Client($clientOptions);
+        $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get asset informations
         $body = $uploaderClient->get('/assets/'.$payload['asset'], [
@@ -93,14 +89,8 @@ class CreateRecordWorker implements WorkerInterface
 
         $em->flush();
 
-        $clientOptions = [];
-        // add proxy in each request if defined in configuration
-        if ($proxyConfig->getHttpProxyConfiguration() != null) {
-            $clientOptions = array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
-        }
-
         //download the asset
-        $client = new Client($clientOptions);
+        $client = $proxyConfig->getClientWithOptions();
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
 
         try {
