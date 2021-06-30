@@ -225,6 +225,15 @@ CMD ["php-fpm", "-F"]
 #########################################################################
 
 FROM phraseanet-fpm as phraseanet-worker
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        supervisor \
+    && mkdir -p /var/log/supervisor \
+    && chown -R app: /var/log/supervisor \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists 
+
+COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
 ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
 CMD ["/bin/bash", "bin/run-worker.sh"]
 

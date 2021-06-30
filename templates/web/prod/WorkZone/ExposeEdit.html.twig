@@ -228,7 +228,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `/prod/expose/list-publication/?format=json&exposeName={{ exposeName }}`,
+                url: `/prod/expose/list-publication/?format=pub-list&exposeName={{ exposeName }}`,
                 success: function (data) {
                     publicationParent.empty().html('<option value="">Select a parent publication</option>');
                     for (i = 0; i < data.publications.length; i++) {

@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
@@ -86,7 +87,11 @@ class ExposeUploadWorker implements WorkerInterface
             $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
             $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
 
-            $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+            $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+            $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+            // add proxy in each request if defined in configuration
+            $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
             $record = $this->findDataboxById($payload['databoxId'])->get_record($payload['recordId']);
 
@@ -171,7 +176,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             $assetsResponse = json_decode($response->getBody(),true);
 
-            $uploadUrl = new Client();
+            $uploadUrl = $proxyConfig->getClientWithOptions();
             $uploadUrl->put($assetsResponse['uploadURL'], [
                 'headers' => [
                     'Content-Type' => 'application/binary'
@@ -275,7 +280,10 @@ class ExposeUploadWorker implements WorkerInterface
 
         $subDefResponse = json_decode($response->getBody(),true);
 
-        $uploadUrl = new Client();
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+
+        $uploadUrl = $proxyConfig->getClientWithOptions();
+
         $res = $uploadUrl->put($subDefResponse['uploadURL'], [
             'headers' => [
                 'Content-Type' => 'application/binary'
