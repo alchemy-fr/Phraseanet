@@ -193,26 +193,22 @@ var commonModule = (function ($, p4) {
         $box_notifications.empty();
         if(data.notifications.notifications.length === 0) {
             // no notification
-            // $('.show_all', $box).hide();     // the "show in dlg" is alway visible since it's the only way to see already read notifs.
             $('.no_notifications', $box).show();
         }
         else {
             $('.no_notifications', $box).hide();
             for (var n in data.notifications.notifications) {
                 var notification = data.notifications.notifications[n];
-                var $z = $box_notifications.append(notification.html);
-
-                $('.notification_' + notification.id + '_unread', $z).click(
+                // add pre-formatted notif
+                var $z = $(notification.html)
+                // the "unread" icon is clickable to mark as read
+                $('.icon_unread', $z).click(
                     notification.id,
                     function (event) {
                         markNotificationRead(event.data);
                     });
+                $box_notifications.append($z);
             }
-            // $('.show_all', $box).show();
-        }
-
-        if ($box.is(':visible')) {
-            fixNotificationsHeight();
         }
 
         // fill the count of uread (red button)
@@ -229,7 +225,7 @@ var commonModule = (function ($, p4) {
                 .empty();
         }
 
-        // diplay notification about unread baskets
+        // display notification about unread baskets
         //
         if (data.unread_basket_ids.length > 0) {
             var current_open = $('.SSTT.ui-state-active');
@@ -294,28 +290,11 @@ var commonModule = (function ($, p4) {
         return true;
     }
 
-    /**
-     * duplicated from production_client::notifyLayout.js
-     */
-    function fixNotificationsHeight() {
-        const $notificationBoxContainer = $('#notification_box');
-        const not = $('.notification', $notificationBoxContainer);
-        const n     = not.length;
-        const not_t = $('.notification_title', $notificationBoxContainer);
-        const n_t = not_t.length;
-
-        var h = not.outerHeight() * n + not_t.outerHeight() * n_t;
-        h = h > 350 ? 350 : h;
-
-        $notificationBoxContainer.stop().animate({height: h});
-    }
-
     return {
         showOverlay: showOverlay,
         hideOverlay: hideOverlay,
         markNotificationRead: markNotificationRead,
         pollNotifications: pollNotifications,
-        fixNotificationsHeight: fixNotificationsHeight
     }
 
 })(jQuery, p4);
