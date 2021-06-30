@@ -234,7 +234,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists 
 
 COPY ./docker/phraseanet/worker/supervisor.conf /etc/supervisor/
-
 ENTRYPOINT ["docker/phraseanet/worker/entrypoint.sh"]
 CMD ["/bin/bash", "bin/run-worker.sh"]
 
