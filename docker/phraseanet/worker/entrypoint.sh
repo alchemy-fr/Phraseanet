@@ -61,41 +61,51 @@ fi
 rm -rf bin/run-worker.sh
 if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
   if [ ! -z "$PHRASEANET_WORKERS_LAUNCH_METHOD" ] && [ ${PHRASEANET_WORKERS_LAUNCH_METHOD} == "supervisor" ]; then
-   for i in `env | grep PHRASEANET_WORKER_`
+   echo "Multiples Phraseanet workers will be launched by supervisor"
+   for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
    do
-      worker_env_name="$(echo $i | cut -d'=' -f1)"
-      worker_parallelism="$(echo $i | cut -d'=' -f2)"
-      worker_job_file="$(echo $worker_env_name | cut -d'_' -f3).conf"
-      if [ $worker_parallelism -gt "0" ] ; then
+      worker_job_file="$(echo $i | cut -d'_' -f3).conf"
+      if [ ${!i} -gt "0" ] ; then
         envsubst < "/var/alchemy/Phraseanet/docker/phraseanet/worker/supervisor_conf.d/$worker_job_file" > /etc/supervisor/conf.d/$worker_job_file
-        echo "set Worker : " $worker_job_file " -- with parallelism: " $worker_parallelism 
+        echo "Add Worker : " $worker_job_file " -- with parallelism: (-m) " ${!i} 
       else
-        echo "NO Worker define for : " $worker_job_file " -- because parallelism is set to : " $worker_parallelism 
+        echo "NO Worker define for : " $worker_job_file " -- because parallelism (-m) is set to : " ${!i} 
       fi
     done     
    command="/usr/bin/supervisord -n -c /etc/supervisor/supervisor.conf"
    echo $command >> bin/run-worker.sh
    PHR_USER=root
-   echo "Phraseanet workers will be launched by supervisor"
-  
   else
+   echo "Multiples Phraseanet workers will be launched with bin/console worker:execute"
+   NBR_WORKERS=0
    for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
    do
       queue_name="$(echo $i | cut -d'_' -f3)"
       m=$i
+      if [ ${!m} -gt "0" ] ; then
       command="bin/console worker:execute --queue-name=$queue_name -m ${!m} &"
       echo $command >> bin/run-worker.sh
+      echo "Worker " $queue_name " define with parallelism " ${!m}
+      NBR_WORKERS=$(expr $NBR_WORKERS + 1)
+    else
+      echo " NO Worker defined for : " $m " -- because parallelism (-m) is set to : " ${!m}
+    fi
    done
-
-  echo 'WORKER_NB_QUEUES=`env | grep PHRASEANET_WORKER_ | wc -l`
-        WORKER_LOOP_VALUE=20s
+  
+  echo $NBR_WORKERS " workers define"
+  echo $NBR_WORKERS > bin/workers_count.txt
+  chown root:app bin/workers_count.txt
+  chmod 760 bin/workers_count.txt
+  echo '
+  NBR_WORKERS=$(< bin/workers_count.txt)
+  WORKER_LOOP_VALUE=20s
     while true;
     do
       sleep $WORKER_LOOP_VALUE
       nb_process=`ps faux | grep "worker:execute" | grep php | wc -l`
       date_time_process=`date +"%Y-%m-%d %H:%M:%S"`
       echo $date_time_process "-" $nb_process "running workers"
-      if [ $nb_process -lt $WORKER_NB_QUEUES ]
+      if [ $nb_process -lt $NBR_WORKERS ]
         then
           exit 1
           break
