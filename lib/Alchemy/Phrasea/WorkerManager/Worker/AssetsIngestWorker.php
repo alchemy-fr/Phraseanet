@@ -12,7 +12,6 @@ use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use GuzzleHttp\Client;
 
 class AssetsIngestWorker implements WorkerInterface
 {
@@ -42,12 +41,7 @@ class AssetsIngestWorker implements WorkerInterface
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
         $clientOptions = ['base_uri' => $payload['base_url']];
 
-        // add proxy in each request if defined in configuration
-        if ($proxyConfig->getHttpProxyConfiguration() != null) {
-            $clientOptions = array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
-        }
-
-        $uploaderClient = new Client($clientOptions);
+        $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get first asset informations to check if it's a story
         try {

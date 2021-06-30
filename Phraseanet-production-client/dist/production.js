@@ -8503,7 +8503,7 @@ module.exports = {
 /* 86 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 87 */
@@ -10019,6 +10019,36 @@ var workzone = function workzone(services) {
             updatePublicationList(this.value);
         });
 
+        (0, _jquery2.default)('.expose_logout_link').on('click', function (event) {
+            event.preventDefault();
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            _jquery2.default.ajax({
+                type: 'GET',
+                url: '/prod/expose/logout/?exposeName=' + exposeName,
+                success: function success(data) {
+                    updatePublicationList(exposeName);
+                }
+            });
+        });
+
+        // sign in expose
+        (0, _jquery2.default)('#idFrameC').find('.publication-list').on('click', '.auth-sign-in', function (e) {
+            e.preventDefault();
+            var form = (0, _jquery2.default)(this).closest('form');
+
+            _jquery2.default.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                success: function success(datas) {
+                    if (datas.success) {
+                        (0, _jquery2.default)('.refresh-list').trigger('click');
+                    }
+                }
+            });
+        });
+
         (0, _jquery2.default)('.publication-list').on('click', '.top-block', function (event) {
             (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
             (0, _jquery2.default)(this).toggleClass('open');
@@ -10705,23 +10735,35 @@ var workzone = function workzone(services) {
             type: 'GET',
             url: '/prod/expose/list-publication/?exposeName=' + exposeName,
             success: function success(data) {
-                (0, _jquery2.default)('.publication-list').empty().html(data);
+                if ('twig' in data) {
+                    (0, _jquery2.default)('.publication-list').empty().html(data.twig);
 
-                (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
-                    (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
-                    (0, _jquery2.default)(this).toggleClass('open');
+                    (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
+                        (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        (0, _jquery2.default)(this).toggleClass('open');
 
-                    if ((0, _jquery2.default)(this).hasClass('open')) {
-                        var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
-                        var _exposeName = (0, _jquery2.default)('#expose_list').val();
-                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
+                        if ((0, _jquery2.default)(this).hasClass('open')) {
+                            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+                            var _exposeName = (0, _jquery2.default)('#expose_list').val();
+                            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
 
-                        assetsContainer.addClass('loading');
-                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
-                    }
-                });
+                            assetsContainer.addClass('loading');
+                            getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
+                        }
+                    });
 
-                activeExpose();
+                    activeExpose();
+                }
+
+                if ('exposeLogin' in data) {
+                    var loggedMessage = data.exposeLogin + " " + localeService.t('loggedIn') + " " + data.exposeName;
+
+                    (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
+                    (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
+                } else {
+                    (0, _jquery2.default)('.expose_connected').empty();
+                    (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
+                }
             }
         });
     }
@@ -18909,6 +18951,11 @@ var notifyLayout = function notifyLayout(services) {
     var $navigation = (0, _jquery2.default)('.navigation', $notificationDialog);
 
     var initialize = function initialize() {
+
+        //   the dialog MUST be created during print_notifications(), else the first clik on a "read" button
+        //   is badly interpreted (no action, but scrolls the content ???
+        // $notificationDialog.dialog({});
+
         /**
          * click on menubar/notifications : drop a box with last 10 notification, and a button "see all"
          * the box content is already set by poll notifications
@@ -18922,7 +18969,6 @@ var notifyLayout = function notifyLayout(services) {
             } else {
                 $notificationTrigger.addClass('open'); // highlight background in menubar
                 $notificationBoxContainer.show();
-                commonModule.fixNotificationsHeight();
             }
         });
 
@@ -18982,6 +19028,11 @@ var notifyLayout = function notifyLayout(services) {
     var print_notifications = function print_notifications(offset) {
 
         offset = parseInt(offset, 10);
+
+        if (offset == 0) {
+            $notifications.empty();
+        }
+
         var buttons = {};
 
         buttons[localeService.t('fermer')] = function () {
@@ -19004,6 +19055,7 @@ var notifyLayout = function notifyLayout(services) {
                 opacity: 0.7
             },
             close: function close(event, ui) {
+                // destroy so it will be "fresh" on next open (scrollbar on top)
                 $notificationDialog.dialog('destroy').remove();
             }
         }).dialog('option', 'buttons', buttons).dialog('open');
@@ -19035,7 +19087,8 @@ var notifyLayout = function notifyLayout(services) {
 
                 var notifications = data.notifications.notifications;
                 var i = 0;
-                for (i in notifications) {
+
+                var _loop = function _loop() {
                     var notification = notifications[i];
 
                     // group notifs by day
@@ -19051,22 +19104,27 @@ var notifyLayout = function notifyLayout(services) {
                     }
 
                     // add pre-formatted notif
-                    var $z = date_cont.append(notification.html);
-                    (0, _jquery2.default)('.notification_' + notification.id + '_unread', $z).tooltip().click(notification.id, function (event) {
-                        mark_read(event.data);
+                    var $z = (0, _jquery2.default)(notification.html);
+                    // the "unread" icon is clickable to mark as read
+                    (0, _jquery2.default)('.icon_unread', $z).tooltip().click({ 'z': $z, 'id': notification.id }, function (event) {
+                        markNotificationRead(event.data['id'], $z);
                     });
+                    date_cont.append($z);
+                };
+
+                for (i in notifications) {
+                    _loop();
                 }
 
                 // handle "show more" button
                 //
                 if (data.notifications.next_offset) {
                     // update the "more" button
-                    $navigation.off('click', '.notification__print-action');
-                    $navigation.on('click', '.notification__print-action', function (event) {
+                    $navigation.off('click', '.notification__print-action') // remove previous, else we load 10, 20, 40...
+                    .on('click', '.notification__print-action', function (event) {
                         event.preventDefault();
                         print_notifications(data.notifications.next_offset);
-                    });
-                    $navigation.show();
+                    }).show();
                 } else {
                     // no more ? no button
                     $navigation.hide();
@@ -19075,11 +19133,10 @@ var notifyLayout = function notifyLayout(services) {
         });
     };
 
-    var mark_read = function mark_read(notification_id) {
+    var markNotificationRead = function markNotificationRead(notification_id, $notification) {
         commonModule.markNotificationRead(notification_id).success(function (data) {
-            // xhttp ok : update button
-            (0, _jquery2.default)('.notification_' + notification_id + '_unread', $notifications).hide();
-            (0, _jquery2.default)('.notification_' + notification_id + '_read', $notifications).show();
+            // xhttp ok : update notif
+            $notification.removeClass('unread');
         });
     };
 
@@ -50404,7 +50461,7 @@ module.exports = VTTRegion;
 /* 146 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 147 */

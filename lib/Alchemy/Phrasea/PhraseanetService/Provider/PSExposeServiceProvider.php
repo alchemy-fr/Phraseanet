@@ -34,6 +34,10 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('POST')
             ->bind('ps_expose_authenticate');
 
+        $controllers->match('/logout/', 'controller.ps.expose:logoutAction')
+            ->method('GET')
+            ->bind('ps_expose_logout');
+
         $controllers->match('/create-publication/', 'controller.ps.expose:createPublicationAction')
             ->method('POST')
             ->bind('ps_expose_create_publication');

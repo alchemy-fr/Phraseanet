@@ -354,7 +354,7 @@
 
              $.ajax({
                  type: "GET",
-                 url: `/prod/expose/list-publication/?format=json&exposeName=` + exposeName,
+                 url: `/prod/expose/list-publication/?format=pub-list&exposeName=` + exposeName,
                  success: function (data) {
                      $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
                      var i = 0;
