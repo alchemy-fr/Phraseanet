@@ -10,10 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(
  *     name="PS_Setting_Keys",
  *     indexes={
- *          @ORM\Index(name="name", columns={"name"}),
- *          @ORM\Index(name="value_int", columns={"value_int"}),
- *          @ORM\Index(name="value_string", columns={"value_string"}),
- *          @ORM\Index(name="parent_id", columns={"parent_id"})
+ *          @ORM\Index(name="idk_name", columns={"name"}),
+ *          @ORM\Index(name="idk_value_int", columns={"value_int"}),
+ *          @ORM\Index(name="idk_value_string", columns={"value_string"}),
+ *          @ORM\Index(name="idk_parent_id", columns={"parent_id"})
  *      }
  *    )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\PsSettingKeysRepository")

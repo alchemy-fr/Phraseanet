@@ -11,11 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(
  *     name="PS_Settings",
  *     indexes={
- *          @ORM\Index(name="parent_id", columns={"parent_id"}),
- *          @ORM\Index(name="role", columns={"role"}),
- *          @ORM\Index(name="name", columns={"name"}),
- *          @ORM\Index(name="value_int", columns={"value_int"}),
- *          @ORM\Index(name="value_string", columns={"value_string"})
+ *          @ORM\Index(name="idx_parent_id", columns={"parent_id"}),
+ *          @ORM\Index(name="idx_role", columns={"role"}),
+ *          @ORM\Index(name="idx_name", columns={"name"}),
+ *          @ORM\Index(name="idx_value_int", columns={"value_int"}),
+ *          @ORM\Index(name="idx_value_string", columns={"value_string"})
  *      }
  *     )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\PsSettingsRepository")
