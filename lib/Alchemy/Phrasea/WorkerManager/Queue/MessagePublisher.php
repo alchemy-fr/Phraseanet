@@ -19,7 +19,7 @@ class MessagePublisher
     const FTP_TYPE             = 'ftp';
     const POPULATE_INDEX_TYPE  = 'populateIndex';
     const PULL_ASSETS_TYPE     = 'pullAssets';
-    const RECORD_EDIT_TYPE     = 'recordEdit';
+    const EDIT_RECORD_TYPE     = 'editRecord';
     const SUBDEF_CREATION_TYPE = 'subdefCreation';
     const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const WRITE_METADATAS_TYPE = 'writeMetadatas';

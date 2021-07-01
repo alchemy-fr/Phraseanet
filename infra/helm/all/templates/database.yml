@@ -26,8 +26,6 @@ spec:
         image: {{ .Values.image.registry }}/phraseanet-db:{{ .Values.image.tag.phraseanet }}
         imagePullPolicy: Always
         terminationMessagePolicy: FallbackToLogsOnError
-        resources:
-{{ toYaml .Values.mysql.resources | indent 12 }}
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: {{ .Values.mysql.root_password }}

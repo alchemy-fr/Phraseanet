@@ -170,6 +170,27 @@ class Session_Logger
         return new self($databox, $row['id']);
     }
 
+    public static function loadById($databox, $logId)
+    {
+        $sql = 'SELECT id, site FROM log
+            WHERE id = :log_id ';
+
+        $params = [
+            ':log_id'   => $logId
+        ];
+
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        if (!$row) {
+            throw new Exception_Session_LoggerNotFound('Logger not found');
+        }
+
+        return new self($databox, $logId);
+    }
+
     public static function updateClientInfos(Application $app, $appId)
     {
         if (!$app->getAuthenticator()->isAuthenticated()) {

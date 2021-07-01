@@ -84,6 +84,7 @@
 {% block javascript %}
     <script type="text/javascript" src="/assets/production/commons{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
     <script type="text/javascript" src="/assets/production/production{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/vendors/tinymce/tinymce.min.js"></script>
 
     <script type="text/javascript">
 
@@ -100,11 +101,11 @@
             lang: "{{ app.locale }}",
             baseUrl: '{{ app['request'].getUriForPath('/') }}',
             basePath: '{{ app.request.basePath|e('js') }}',
-            notify: {
-                url: "{{ path('list_notifications') }}",
-                moduleId: 1,
-                userId: {{app.getAuthenticatedUser().getId()}}
-            },
+            {#notify: {#}
+            {#    url: "{{ path('list_notifications') }}",#}
+            {#    moduleId: 1,#}
+            {#    userId: {{app.getAuthenticatedUser().getId()}}#}
+            {#},#}
             debug: {% if app.debug %}true{% else %}false{% endif %},
             initialState: "{{ initialAppState }}",
             geonameServerUrl: '{{ app['geonames.server-uri'] }}',

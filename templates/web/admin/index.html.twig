@@ -64,7 +64,7 @@
     {#<script type="text/javascript" src="{{ path('minifier', { 'f' : '/assets/requirejs/require.js,/scripts/apps/admin/require.config.js,/scripts/apps/admin/main/main.js' }) }}"></script>#}
 {% endblock %}
 {% block content %}
-    <div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}" data-notif-url="{{ path('list_notifications') }}">
+    <div id="admin-app" data-usr="{{ app.getAuthenticatedUser().getId() }}">
     <div id="left" class="PNB left-view" style="width:250px;right:auto;" data-tree-url="{{ path("admin_display_tree") }}" data-websocket="{{ "ws://" ~ app["conf"].get(["main" ,"websocket-server", "host"]) ~ ":" ~ app["conf"].get(["main" ,"websocket-server", "port"]) ~ "/websockets" }}">
         <div class="PNB10" style="right:0; top:0px;">
             <div id="FNDR">

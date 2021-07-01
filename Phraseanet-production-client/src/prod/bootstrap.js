@@ -1,15 +1,11 @@
 import $ from 'jquery';
-const humane = require('humane-js');
-require('imports-loader?define=>false&exports=>false!./../components/utils/jquery-plugins/colorAnimation');
 import * as AppCommons from './../phraseanet-common';
 import publication from '../components/publication';
 import workzone from '../components/ui/workzone';
-import notify from '../components/notify/index';
-import Locale from '../components/locale';
+import notifyLayout from '../components/notify/notifyLayout';
+import LocaleService from '../components/locale';
 import ui from '../components/ui';
 import ConfigService from './../components/core/configService';
-import LocaleService from '../components/locale';
-import i18next from 'i18next';
 import defaultConfig from './config';
 import Emitter from '../components/core/emitter';
 import user from '../components/user';
@@ -18,6 +14,10 @@ import search from '../components/search';
 import utils from './../components/utils/utils';
 import dialog from './../phraseanet-common/components/dialog';
 import merge from 'lodash.merge';
+
+const humane = require('humane-js');
+require('imports-loader?define=>false&exports=>false!./../components/utils/jquery-plugins/colorAnimation');
+
 class Bootstrap {
 
     app;
@@ -69,27 +69,28 @@ class Bootstrap {
 
         const userSession = user(this.appServices);
 
-        let appProdNotification = {
-            url: this.configService.get('notify.url'),
-            moduleId: this.configService.get('notify.moduleId'),
-            userId: this.configService.get('notify.userId')
-        };
+        // let appProdNotification = {
+        //     url: this.configService.get('notify.url'),
+        //     moduleId: this.configService.get('notify.moduleId'),
+        //     userId: this.configService.get('notify.userId')
+        // };
+
+        notifyLayout(this.appServices).initialize();
 
         /**
-         * Initialize notifier
-         * @type {{bindEvents, createNotifier, isValid, poll}}
+         * Poll just in menu_bar
          */
-        const notifier = notify(this.appServices);
-        notifier.initialize();
-
-        // create a new notification poll:
-        appProdNotification = notifier.createNotifier(appProdNotification);
-
-        if (notifier.isValid(appProdNotification)) {
-            notifier.poll(appProdNotification);
-        } else {
-            throw new Error('implementation error: failed to configure new notifier');
-        }
+        // const notifier = notify(this.appServices);
+        // notifier.initialize();
+        //
+        // // create a new notification poll:
+        // appProdNotification = notifier.createNotifier(appProdNotification);
+        //
+        // if (notifier.isValid(appProdNotification)) {
+        //     notifier.poll(appProdNotification);
+        // } else {
+        //     throw new Error('implementation error: failed to configure new notifier');
+        // }
 
         // @TODO remove global variables
         // register some global variables,

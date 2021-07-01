@@ -114,6 +114,19 @@ main:
         worker_tmp_files: null
 
 trusted-proxies: []
+network-proxies:
+    http-proxy:
+        enabled: false
+        host:
+        port:
+        user:
+        password:
+    ftp-proxy:
+        enabled: false
+        host:
+        port:
+        user:
+        password:
 debugger:
     allowed-ips: []
 border-manager:

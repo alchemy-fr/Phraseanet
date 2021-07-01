@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\PhraseanetService\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\ExposeUploadEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use GuzzleHttp\Client;
@@ -15,6 +16,7 @@ class PSExposeController extends Controller
 {
     /**
      * Set access token on session 'password_access_token_' + expose_name
+     * Save also login on session 'expose_connected_login_' + expose_name
      *
      * @param PhraseaApplication $app
      * @param Request $request
@@ -32,7 +34,10 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $oauthClient = new Client(['base_uri' => $exposeConfiguration['auth_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['auth_base_uri'], 'http_errors' => false];
+
+        $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
             $response = $oauthClient->post('/oauth/v2/token', [
@@ -65,7 +70,26 @@ class PSExposeController extends Controller
 
         $session->set($passSessionName, $tokenBody['access_token']);
 
+        $loginSessionName = $this->getLoginSessionName($request->request->get('exposeName'));
+        $session->set($loginSessionName, $request->request->get('auth-username'));
+
         return $this->app->json([
+            'success'       => true,
+            'exposeName'    => $request->request->get('exposeName'),
+            'exposeLogin'   => $request->request->get('auth-username')
+        ]);
+    }
+
+    public function logoutAction(PhraseaApplication $app, Request $request)
+    {
+        $session = $this->getSession();
+        $loginSessionName = $this->getLoginSessionName($request->get('exposeName'));
+        $passSessionName = $this->getPassSessionName($request->get('exposeName'));
+
+        $session->remove($loginSessionName);
+        $session->remove($passSessionName);
+
+        return $app->json([
             'success' => true
         ]);
     }
@@ -80,11 +104,15 @@ class PSExposeController extends Controller
      */
     public function updatePublicationPermissionAction(PhraseaApplication $app, Request $request)
     {
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $exposeClient = $this->getExposeClient($request->get('exposeName'));
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         try {
             $guzzleParams = [
@@ -134,8 +162,10 @@ class PSExposeController extends Controller
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
         if ($request->get('exposeName') == null) {
-            return $this->render("prod/WorkZone/ExposeList.html.twig", [
-                'publications' => [],
+            return $app->json([
+                'twig' => $this->render("prod/WorkZone/ExposeList.html.twig", [
+                    'publications' => [],
+                ])
             ]);
         }
 
@@ -146,20 +176,27 @@ class PSExposeController extends Controller
         $passSessionName = $this->getPassSessionName($request->get('exposeName'));
 
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
-            return $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
-                'exposeName' => $request->get('exposeName')
+             return $app->json([
+                'twig'  => $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
+                    'exposeName' => $request->get('exposeName')
+                ])
             ]);
         }
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         if ($exposeConfiguration == null ) {
-            return $this->render("prod/WorkZone/ExposeList.html.twig", [
-                'publications' => [],
+            return $app->json([
+                'twig'  =>  $this->render("prod/WorkZone/ExposeList.html.twig", [
+                    'publications' => [],
+                ])
             ]);
         }
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         $response = $exposeClient->get('/publications?flatten=true&order[createdAt]=desc', [
             'headers' => [
@@ -176,15 +213,26 @@ class PSExposeController extends Controller
             $publications = $body['hydra:member'];
         }
 
-        if ($request->get('format') == 'json') {
+        if ($request->get('format') == 'pub-list') {
             return $app->json([
                 'publications' => $publications
             ]);
         }
 
-        return $this->render("prod/WorkZone/ExposeList.html.twig", [
+        $exposeListTwig = $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications'          => $publications,
             'exposeFrontBasePath'   => $exposeFrontBasePath
+        ]);
+
+        // not called on june 2021
+        if ($request->get('format') == 'twig') {
+            return $exposeListTwig;
+        }
+
+        return $app->json([
+            'twig'          => $exposeListTwig,
+            'exposeName'    => $request->get('exposeName'),
+            'exposeLogin'   => $session->get($this->getLoginSessionName($request->get('exposeName')))
         ]);
     }
 
@@ -201,9 +249,12 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
+
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         $publication = [];
 
@@ -253,9 +304,11 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
 
@@ -278,12 +331,16 @@ class PSExposeController extends Controller
     {
         $page = $request->get('page')?:1;
 
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
+        $exposeClient = $this->getExposeClient($request->get('exposeName'));
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
             'headers' => [
@@ -332,12 +389,14 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
-
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
-
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+        $accessToken = $this->getAndSaveToken($exposeName);
 
         $profiles = [];
         $basePath = '';
@@ -389,15 +448,18 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$exposeName];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+            $accessToken = $this->getAndSaveToken($exposeName);
 
             $response = $this->postPublication($exposeClient, $accessToken, json_decode($request->get('publicationData'), true));
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+                $accessToken = $this->getAndSaveToken($exposeName);
 
                 $response = $this->postPublication($exposeClient, $accessToken, json_decode($request->get('publicationData'), true));
             }
@@ -440,19 +502,21 @@ class PSExposeController extends Controller
     public function updatePublicationAction(PhraseaApplication $app, Request $request)
     {
         $exposeName = $request->get('exposeName');
-
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$exposeName];
-
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+            $accessToken = $this->getAndSaveToken($exposeName);
 
             $response = $this->putPublication($exposeClient, $request->get('publicationId'), $accessToken, json_decode($request->get('publicationData'), true));
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+                $accessToken = $this->getAndSaveToken($exposeName);
                 $response = $this->putPublication($exposeClient, $request->get('publicationId'), $accessToken, json_decode($request->get('publicationData'), true));
             }
 
@@ -476,6 +540,46 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Update assets positions
+     * Require params "exposeName" and "listPositions" of the assets
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function updatePublicationAssetsOrderAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+
+        $exposeClient = $this->getExposeClient($exposeName);
+
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        try {
+            $accessToken = $this->getAndSaveToken($exposeName);
+            $listPositions = json_decode($request->get('listPositions'), true);
+            foreach ($listPositions as $pubAssetId => $pos) {
+                $this->putPublicationAsset($exposeClient, $pubAssetId, $accessToken, ['position' => $pos]);
+            }
+        } catch (\Exception $e) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when updating assets order! ". $e->getMessage()
+            ]);
+        }
+
+        return $app->json([
+            'success' => true,
+            'message' => "Assets order successfully updated!"
+        ]);
+    }
+
+    /**
      * Delete a Publication
      * require params "exposeName" and "publicationId"
      *
@@ -487,18 +591,21 @@ class PSExposeController extends Controller
     {
         $exposeName = $request->get('exposeName');
 
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$exposeName];
-
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+            $accessToken = $this->getAndSaveToken($exposeName);
 
             $response = $this->removePublication($exposeClient, $request->get('publicationId'), $accessToken);
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+                $accessToken = $this->getAndSaveToken($exposeName);
                 $response = $this->removePublication($exposeClient, $request->get('publicationId'), $accessToken);
             }
 
@@ -533,18 +640,22 @@ class PSExposeController extends Controller
     {
         $exposeName = $request->get('exposeName');
 
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$exposeName];
+        $exposeClient = $this->getExposeClient($exposeName);
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
 
         try {
-            $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+            $accessToken = $this->getAndSaveToken($exposeName);
 
             $response = $this->removeAssetPublication($exposeClient, $request->get('publicationId'), $request->get('assetId'), $accessToken);
 
             if ($response->getStatusCode() == 401) {
-                $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+                $accessToken = $this->getAndSaveToken($exposeName);
                 $response = $this->removeAssetPublication($exposeClient, $request->get('publicationId'), $request->get('assetId'), $accessToken);
             }
 
@@ -590,9 +701,7 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
-        $exposeConfiguration = $exposeConfiguration[$exposeName];
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $exposeName);
+        $accessToken = $this->getAndSaveToken($exposeName);
 
         $this->getEventDispatcher()->dispatch(WorkerEvents::EXPOSE_UPLOAD_ASSETS, new ExposeUploadEvent($lst, $exposeName, $publicationId, $accessToken));
 
@@ -677,14 +786,27 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Get login session name
+     *
+     * @param $exposeName
+     * @return string
+     */
+    private function getLoginSessionName($exposeName)
+    {
+        $expose_name = str_replace(' ', '_', $exposeName);
+
+        return 'expose_connected_login_'.$expose_name;
+    }
+
+    /**
      * Get Token and save in session
-     * @param $config
      * @param $exposeName
      *
      * @return mixed
      */
-    private function getAndSaveToken($config, $exposeName)
+    private function getAndSaveToken($exposeName)
     {
+        $config = $this->getExposeConfiguration($exposeName);
         $session = $this->getSession();
         $passSessionName = $this->getPassSessionName($exposeName);
 
@@ -698,7 +820,9 @@ class PSExposeController extends Controller
             if ($session->has($credentialSessionName)) {
                 $accessToken = $session->get($credentialSessionName);
             } else {
-                $oauthClient = new Client();
+                $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+
+                $oauthClient = $proxyConfig->getClientWithOptions([]);
 
                 try {
                     $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
@@ -752,6 +876,17 @@ class PSExposeController extends Controller
         ]);
     }
 
+    private function putPublicationAsset(Client $exposeClient, $publicationAssetId, $token, $publicationAssetData)
+    {
+        return $exposeClient->put('/publication-assets/' . $publicationAssetId, [
+            'headers' => [
+                'Authorization' => 'Bearer '. $token,
+                'Content-Type'  => 'application/json'
+            ],
+            'json' => $publicationAssetData
+        ]);
+    }
+
     private function removePublication(Client $exposeClient, $publicationId, $token)
     {
         return $exposeClient->delete('/publications/' . $publicationId, [
@@ -770,6 +905,38 @@ class PSExposeController extends Controller
         ]);
     }
 
+    /**
+     * @param $exposeName
+     * @return Client|null
+     */
+    private function getExposeClient($exposeName)
+    {
+        $exposeConfiguration = $this->getExposeConfiguration($exposeName);
+        if ($exposeConfiguration === null) {
+            return null;
+        }
+
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        return $proxyConfig->getClientWithOptions($clientOptions);
+    }
+
+    /**
+     * @param $exposeName
+     * @return array|null
+     */
+    private function getExposeConfiguration($exposeName)
+    {
+        $exposeConfiguration = $this->app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
+        try {
+            $exposeConfiguration = $exposeConfiguration[$exposeName];
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $exposeConfiguration;
+    }
 
     /**
      * @return EventDispatcherInterface

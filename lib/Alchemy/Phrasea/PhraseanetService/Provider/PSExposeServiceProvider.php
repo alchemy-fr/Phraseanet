@@ -34,6 +34,10 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('POST')
             ->bind('ps_expose_authenticate');
 
+        $controllers->match('/logout/', 'controller.ps.expose:logoutAction')
+            ->method('GET')
+            ->bind('ps_expose_logout');
+
         $controllers->match('/create-publication/', 'controller.ps.expose:createPublicationAction')
             ->method('POST')
             ->bind('ps_expose_create_publication');
@@ -69,6 +73,10 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
         $controllers->match('/publication/add-assets', 'controller.ps.expose:addPublicationAssetsAction')
             ->method('POST')
             ->bind('ps_expose_publication_add_assets');
+
+        $controllers->match('/publication/update-assets-order/', 'controller.ps.expose:updatePublicationAssetsOrderAction')
+            ->method('POST|PUT')
+            ->bind('ps_expose_publication_update_assets_order');
 
         $controllers->match('/publication/permission/update', 'controller.ps.expose:updatePublicationPermissionAction')
             ->method('POST')

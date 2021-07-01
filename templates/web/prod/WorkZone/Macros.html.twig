@@ -444,7 +444,7 @@
 
 {% macro make_expose_bloc(app, WorkZone) %}
     <div id="expose_workzone" class="expose_workzone">
-        <div id="expose_sel" class="custom_select_dark" style="display: inline-block;padding:10px;">
+        <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
             {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
 
             <select id="expose_list" name="expose_list" class="expose_list">
@@ -455,20 +455,20 @@
                     {% endif %}
                 {% endfor %}
             </select>
+
+            <span class="expose_connected">
+            </span>
+            <a href="#" class="pull-right expose_logout_link hidden" style="padding-top: 5px;">
+                <span>{{ 'expose:: logout' | trans }}</span>
+            </a>
+
         </div>
         <div class="add_expose_block" style="padding:10px;">
             <a id="add_publication" class="add_publication" href="#" >
                 <span>{{ 'prod:expose:Add publication' | trans }}</span>
                 <img src="/assets/common/images/icons/Basket-New.png" title="{{ 'prod:expose:Add publication' | trans }}">
             </a>
-            <button class="btn-success refresh-list" style="margin-bottom: 5px;">{{ 'prod:expose:Refresh' | trans }}</button>
-
-            <button class="btn display-tree pull-right" style="padding-bottom: 2px;padding-top: 2px;">
-                <img src="/assets/common/images/icons/tree-icon.png" title="Display hierarchical">
-            </button>
-            <button class="btn display-list pull-right" style="padding-bottom: 2px;padding-top: 2px;">
-                <img src="/assets/common/images/icons/menu-icon.png" title="Display list">
-            </button>
+            <button class="btn-success refresh-list pull-right" style="margin-bottom: 5px;">{{ 'prod:expose:Refresh' | trans }}</button>
         </div>
 
         <div class="insidebloc expose_insidebloc">

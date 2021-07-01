@@ -17,7 +17,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\MainQueueWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\PopulateIndexWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\PullAssetsWorker;
-use Alchemy\Phrasea\WorkerManager\Worker\RecordEditWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\EditRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
 use Alchemy\Phrasea\WorkerManager\Worker\SubdefCreationWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubtitleWorker;
@@ -141,7 +141,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SUBTITLE_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new SubtitleWorker($app['repo.worker-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger'], $app['dispatcher']))
+            return (new SubtitleWorker($app['repo.worker-running-job'], $app['conf'], new LazyLocator($app, 'phraseanet.appbox'), $app['alchemy_worker.logger'], $app['dispatcher']))
                 ->setFileSystemLocator(new LazyLocator($app, 'filesystem'))
                 ->setTemporaryFileSystemLocator(new LazyLocator($app, 'temporary-filesystem'));
         }));
@@ -158,10 +158,9 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
             return new ValidationReminderWorker($app);
         }));
 
-        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::RECORD_EDIT_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new RecordEditWorker($app['repo.worker-running-job'], $app['dispatcher']))
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EDIT_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return (new EditRecordWorker($app['repo.worker-running-job'], $app['dispatcher'], $app['alchemy_worker.message.publisher']))
                    ->setApplicationBox($app['phraseanet.appbox'])
-                   ->setDataboxLoggerLocator($app['phraseanet.logger'])
                 ;
         }));
     }

@@ -6,14 +6,17 @@ set -ex
 BASEDIR="$(dirname $0)"
 DIR="${BASEDIR}"
 
-#MINIKUBE_NAME:${MINIKUBE_NAME:-"minikube"}
+
+MINIKUBE_NAME=minikube
+
 
 NS=${NS:-"phraseanet"}
 RELEASE_NAME="phraseanet"
 CHART_DIR="infra/helm/all"
 VALUE_SRC="infra/helm/myvalues.yaml"
 
-#kubectl config use-context $MINIKUBE_NAME
+kubectl config use-context $MINIKUBE_NAME
+
 
 case $1 in
   uninstall)
