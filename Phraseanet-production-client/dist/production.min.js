@@ -10024,6 +10024,21 @@ var workzone = function workzone(services) {
             updatePublicationList(this.value);
         });
 
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-field-mapping', function (e) {
+            e.preventDefault();
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/field-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    console.log(data);
+                }
+            });
+        });
+
         (0, _jquery2.default)('.expose_logout_link').on('click', function (event) {
             event.preventDefault();
             var exposeName = (0, _jquery2.default)('#expose_list').val();
@@ -10979,21 +10994,6 @@ var workzone = function workzone(services) {
 
         dialogFieldMapping.on('click', '.close-expose-modal', function () {
             (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
-        });
-
-        dialogFieldMapping.on('click', '#save-field-mapping', function (e) {
-            e.preventDefault();
-            var formData = dialogFieldMapping.find('#field-mapping-form').serializeArray();
-
-            _jquery2.default.ajax({
-                type: "POST",
-                url: '/prod/expose/field-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
-                dataType: 'json',
-                data: formData,
-                success: function success(data) {
-                    console.log(data);
-                }
-            });
         });
 
         _jquery2.default.ajax({

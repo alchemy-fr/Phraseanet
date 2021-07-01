@@ -114,6 +114,21 @@ const workzone = (services) => {
             updatePublicationList(this.value);
         });
 
+        $('#DIALOG-field-mapping').on('click', '#save-field-mapping', function(e) {
+            e.preventDefault();
+            let formData = $('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: `/prod/expose/field-mapping?exposeName=${$("#expose_list").val()}`,
+                dataType: 'json',
+                data: formData,
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+
         $('.expose_logout_link').on('click', function(event) {
             event.preventDefault();
             let exposeName = $('#expose_list').val();
@@ -1085,21 +1100,6 @@ const workzone = (services) => {
 
         dialogFieldMapping.on('click', '.close-expose-modal', function () {
             $('#DIALOG-field-mapping').dialog('close');
-        });
-
-        dialogFieldMapping.on('click', '#save-field-mapping', function(e) {
-            e.preventDefault();
-            let formData = dialogFieldMapping.find('#field-mapping-form').serializeArray();
-
-            $.ajax({
-                type: "POST",
-                url: `/prod/expose/field-mapping?exposeName=${$("#expose_list").val()}`,
-                dataType: 'json',
-                data: formData,
-                success: function (data) {
-                    console.log(data);
-                }
-            });
         });
 
         $.ajax({
