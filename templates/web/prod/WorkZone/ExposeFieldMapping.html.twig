@@ -1,0 +1,31 @@
+{% if exposeName %}
+    <p>{{ 'expose::setting Check all field to be uploaded in %exposeName% expose' |trans({'%exposeName%': exposeName}) }}</p>
+    <form id="field-mapping-form" style="margin-left:20px;">
+        {% for dbName, field in fields %}
+            <fieldset>
+                <legend>{{ dbName }}</legend>
+                {% for metaField in field %}
+                    <label class="checkbox" for="fields[{{ metaField.id }}]">
+                        <input type="checkbox" id="fields[{{ metaField.id }}]" name="fields[{{ metaField.id }}]" value="1">
+                        {{ metaField.name }}
+                    </label>
+                {% endfor %}
+            </fieldset>
+        {% endfor %}
+        <div class="publication-btn-container submit-blockr">
+            <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                <div class="ui-dialog-buttonset">
+                    <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="save-field-mapping">
+                        <span class="ui-button-text">{{ 'expose::setting Save field'| trans }}</span>
+                    </button>
+                    <button type="button"
+                            class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                            role="button" aria-disabled="false"><span class="ui-button-text">{{ 'expose::setting Cancel'| trans }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+{% else %}
+    <h3>{{ 'expose::setting You have to select an expose to continue' | trans }}</h3>
+{% endif %}

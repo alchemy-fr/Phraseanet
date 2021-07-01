@@ -82,6 +82,14 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('GET')
             ->bind('ps_expose_publication_permission_list');
 
+        $controllers->match('/databoxes-field', 'controller.ps.expose:getDataboxesFieldAction')
+            ->method('GET')
+            ->bind('ps_expose_get_databoxes_field');
+
+        $controllers->match('/field-mapping', 'controller.ps.expose:saveFieldMappingAction')
+            ->method('POST')
+            ->bind('ps_expose_save_field_mapping');
+
         return $controllers;
     }
 

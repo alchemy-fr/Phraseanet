@@ -659,6 +659,46 @@ class PSExposeController extends Controller
     }
 
     /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return string
+     */
+    public function getDataboxesFieldAction(PhraseaApplication $app, Request $request)
+    {
+        $databoxes = $this->getApplicationBox()->get_databoxes();
+
+        $fields = [];
+        foreach ($databoxes as $databox) {
+            foreach ($databox->get_meta_structure() as $meta) {
+                // get databoxID_metaID for the checkbox name
+                $fields[$databox->get_viewname()][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
+                $fields[$databox->get_viewname()][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
+            }
+        }
+
+        return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
+            'fields'        => $fields,
+            'exposeName'    => $request->get('exposeName')
+        ]);
+    }
+
+    /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function saveFieldMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $fields = array_keys($request->request->get('fields'));
+
+        return $app->json([
+            'exposeName'        => $exposeName,
+            'listFieldMapping'  => $fields
+        ]);
+    }
+
+    /**
      * @param Client $exposeClient
      * @param $publicationId
      * @param $accessToken

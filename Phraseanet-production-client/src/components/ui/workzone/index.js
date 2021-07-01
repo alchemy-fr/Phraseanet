@@ -98,6 +98,11 @@ const workzone = (services) => {
             checkActiveBloc(dragBloc);
         });
 
+        $('.expose_field_mapping').on('click', function(e){
+            e.preventDefault();
+            openFieldMapping();
+        });
+
         $('.refresh-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
             $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
@@ -1005,6 +1010,58 @@ const workzone = (services) => {
             url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}` ,
             success: function (data) {
                 $('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
+            }
+        });
+    }
+
+    function openFieldMapping() {
+        let dialogFieldMapping = $('#DIALOG-field-mapping .expose-field-content');
+
+        dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        $('#DIALOG-field-mapping').attr('title', localeService.t('ExposeFieldMapping'))
+            .dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: true,
+                draggable: true,
+                width: 400,
+                height: 500,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                },
+                close: function(e, ui) {
+                }
+            }).dialog('open');
+
+        $('.ui-dialog').addClass('black-dialog-wrap');
+
+        dialogFieldMapping.on('click', '.close-expose-modal', function () {
+            $('#DIALOG-field-mapping').dialog('close');
+        });
+
+        dialogFieldMapping.on('click', '#save-field-mapping', function(e) {
+            e.preventDefault();
+            let formData = dialogFieldMapping.find('#field-mapping-form').serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: `/prod/expose/field-mapping?exposeName=${$("#expose_list").val()}`,
+                dataType: 'json',
+                data: formData,
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/databoxes-field?exposeName=${$("#expose_list").val()}` ,
+            success: function (data) {
+                dialogFieldMapping.empty().html(data);
             }
         });
     }
