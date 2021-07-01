@@ -101,7 +101,7 @@ class PsSettings
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="PsSettingKeys", mappedBy="setting", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="PsSettingKeys", mappedBy="parent", cascade={"persist"})
      *
      */
     private $keys;
@@ -291,13 +291,13 @@ class PsSettings
     {
         /** @var PsSettingKeys $key */
         foreach($this->getKeys() as $key) {
-            if($key->getKeyName() === $keyName) {
+            if($key->getName() === $keyName) {
                 $key->setValues($values);
                 return $key;
             }
         }
         $key = new PsSettingKeys();
-        $key->setKeyName($keyName)->setSetting($this)->setValues($values);
+        $key->setName($keyName)->setSetting($this)->setValues($values);
         $this->keys->add($key);
 
         return $key;

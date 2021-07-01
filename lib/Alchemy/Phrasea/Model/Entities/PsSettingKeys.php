@@ -187,8 +187,7 @@ class PsSettingKeys
     /**
      * Set parent
      *
-     * @param PsSettings $setting
-     *
+     * @param PsSettings|null $parent
      * @return PsSettingKeys
      */
     public function setSetting(PsSettings $parent = null)
@@ -220,7 +219,7 @@ class PsSettingKeys
     public function asArray()
     {
         $r = [];
-        if (!is_null($v = $this->getKeyName())) {
+        if (!is_null($v = $this->getName())) {
             $r['name'] = $v;
         }
         if (!is_null($v = $this->getValueText())) {
@@ -240,7 +239,7 @@ class PsSettingKeys
     {
         $e = new self();
         if (array_key_exists('name', $a) && is_scalar(($v = $a['name']))) {
-            $e->setKeyName($v);
+            $e->setName($v);
         }
         if (array_key_exists('valueText', $a) && is_scalar(($v = $a['valueText']))) {
             $e->setValueText($v);

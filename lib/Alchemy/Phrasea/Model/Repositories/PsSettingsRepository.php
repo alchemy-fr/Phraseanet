@@ -67,7 +67,7 @@ class PsSettingsRepository extends EntityRepository
             // each key to match have it's own join/alias
             $alias = 'sk'.$nAlias;
             $parm  = 'ky'.$nAlias++;
-            $qb->innerJoin('Phraseanet:PsSettingKeys', $alias, Join::WITH, '('.$alias.'.setting'.' = s AND '.$alias.'.keyName = :'.$parm.')')
+            $qb->innerJoin('Phraseanet:PsSettingKeys', $alias, Join::WITH, '('.$alias.'.parent'.' = s AND '.$alias.'.name = :'.$parm.')')
                 ->setParameter($parm, $k);
             // each key value to match (valueVarchar, valueInt or valueText) have it's own where
             foreach($values as $k => $v) {

@@ -35,7 +35,7 @@ class App
      */
     public function getName()
     {
-        return $this->instanceEntity->getValueVarchar();
+        return $this->instanceEntity->getValueString();
     }
 
     protected function getSettings()
