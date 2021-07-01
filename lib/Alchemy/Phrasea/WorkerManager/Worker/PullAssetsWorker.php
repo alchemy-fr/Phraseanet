@@ -38,11 +38,7 @@ class PullAssetsWorker implements WorkerInterface
         $clientOptions = ['base_uri' => $config['UploaderApiBaseUri'], 'http_errors' => false];
 
         // add proxy in each request if defined in configuration
-        if ($proxyConfig->getHttpProxyConfiguration() != null) {
-            $clientOptions = array_merge($clientOptions, ['proxy' => $proxyConfig->getHttpProxyConfiguration()]);
-        }
-
-        $uploaderClient = new Client($clientOptions);
+        $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         // if a token exist , use it
         if (isset($config['assetToken'])) {

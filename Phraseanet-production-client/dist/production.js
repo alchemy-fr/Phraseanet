@@ -10024,6 +10024,36 @@ var workzone = function workzone(services) {
             updatePublicationList(this.value);
         });
 
+        (0, _jquery2.default)('.expose_logout_link').on('click', function (event) {
+            event.preventDefault();
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            _jquery2.default.ajax({
+                type: 'GET',
+                url: '/prod/expose/logout/?exposeName=' + exposeName,
+                success: function success(data) {
+                    updatePublicationList(exposeName);
+                }
+            });
+        });
+
+        // sign in expose
+        (0, _jquery2.default)('#idFrameC').find('.publication-list').on('click', '.auth-sign-in', function (e) {
+            e.preventDefault();
+            var form = (0, _jquery2.default)(this).closest('form');
+
+            _jquery2.default.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                success: function success(datas) {
+                    if (datas.success) {
+                        (0, _jquery2.default)('.refresh-list').trigger('click');
+                    }
+                }
+            });
+        });
+
         (0, _jquery2.default)('.publication-list').on('click', '.top-block', function (event) {
             (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
             (0, _jquery2.default)(this).toggleClass('open');
@@ -10710,23 +10740,35 @@ var workzone = function workzone(services) {
             type: 'GET',
             url: '/prod/expose/list-publication/?exposeName=' + exposeName,
             success: function success(data) {
-                (0, _jquery2.default)('.publication-list').empty().html(data);
+                if ('twig' in data) {
+                    (0, _jquery2.default)('.publication-list').empty().html(data.twig);
 
-                (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
-                    (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
-                    (0, _jquery2.default)(this).toggleClass('open');
+                    (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
+                        (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        (0, _jquery2.default)(this).toggleClass('open');
 
-                    if ((0, _jquery2.default)(this).hasClass('open')) {
-                        var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
-                        var _exposeName = (0, _jquery2.default)('#expose_list').val();
-                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
+                        if ((0, _jquery2.default)(this).hasClass('open')) {
+                            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+                            var _exposeName = (0, _jquery2.default)('#expose_list').val();
+                            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
 
-                        assetsContainer.addClass('loading');
-                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
-                    }
-                });
+                            assetsContainer.addClass('loading');
+                            getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
+                        }
+                    });
 
-                activeExpose();
+                    activeExpose();
+                }
+
+                if ('exposeLogin' in data) {
+                    var loggedMessage = data.exposeLogin + " " + localeService.t('loggedIn') + " " + data.exposeName;
+
+                    (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
+                    (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
+                } else {
+                    (0, _jquery2.default)('.expose_connected').empty();
+                    (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
+                }
             }
         });
     }

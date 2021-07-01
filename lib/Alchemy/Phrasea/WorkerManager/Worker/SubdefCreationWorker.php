@@ -65,7 +65,7 @@ class SubdefCreationWorker implements WorkerInterface
         $databoxId      = $payload['databoxId'];
         $subdefName     = $payload['subdefName'];
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("process SubdefCreation for %s.%s.%s", $databoxId, $recordId, $subdefName)
         ), FILE_APPEND | LOCK_EX);
 
@@ -90,7 +90,7 @@ class SubdefCreationWorker implements WorkerInterface
                 ],
                 MessagePublisher::SUBDEF_CREATION_TYPE
             );
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("cannot CreateSubdef for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
             ), FILE_APPEND | LOCK_EX);
             return ;
@@ -98,7 +98,7 @@ class SubdefCreationWorker implements WorkerInterface
 
         // here we can work
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("ready to CreateSubdef for %s.%s.%s", $databoxId, $recordId, $subdefName)
         ), FILE_APPEND | LOCK_EX);
 
@@ -107,7 +107,7 @@ class SubdefCreationWorker implements WorkerInterface
         try {
             $this->subdefGenerator->generateSubdefs($record, [$subdefName]);
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("subdef generated for %s.%s.%s (?)", $databoxId, $recordId, $subdefName)
             ), FILE_APPEND | LOCK_EX);
 
@@ -115,13 +115,13 @@ class SubdefCreationWorker implements WorkerInterface
         catch (Exception $e) {
             $this->logger->error("Exception catched: " . $e->getMessage());
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("!!! subdef generation failed (ignored) for %s.%s.%s : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
             ), FILE_APPEND | LOCK_EX);
 
         }
         catch (Throwable $e) {
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("subdef generation failed, retry delayed for %s.%s.%s : %s", $databoxId, $recordId, $subdefName, $e->getMessage())
             ), FILE_APPEND | LOCK_EX);
 
@@ -143,7 +143,7 @@ class SubdefCreationWorker implements WorkerInterface
             return ;
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("checking subdef file for %s.%s.%s", $databoxId, $recordId, $subdefName)
         ), FILE_APPEND | LOCK_EX);
 
@@ -159,7 +159,7 @@ class SubdefCreationWorker implements WorkerInterface
 
         if (!$this->filesystem->exists($filePathToCheck)) {
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("!!! subdef file missing, retry delayed for %s.%s.%s", $databoxId, $recordId, $subdefName)
             ), FILE_APPEND | LOCK_EX);
 
@@ -182,7 +182,7 @@ class SubdefCreationWorker implements WorkerInterface
 
         // checking ended
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("subdef file exists, order to write meta for %s.%s.%s", $databoxId, $recordId, $subdefName)
         ), FILE_APPEND | LOCK_EX);
 
@@ -196,7 +196,7 @@ class SubdefCreationWorker implements WorkerInterface
             )
         );
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (\DateTime::createFromFormat('U.u', microtime(TRUE)))->format('Y-m-d\TH:i:s.u'), getmypid(), __FILE__, __LINE__,
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("Event WorkerEvents::SUBDEFINITION_WRITE_META posted  for %s.%s.%s", $record->getDataboxId(), $record->getRecordId(), $subdefName)
         ), FILE_APPEND | LOCK_EX);
 
