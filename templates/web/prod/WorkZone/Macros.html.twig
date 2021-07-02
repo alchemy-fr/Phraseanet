@@ -463,6 +463,9 @@
             </a>
 
         </div>
+        <div style="padding:10px;">
+            <a class="expose_field_mapping" href="#">{{ 'prod:expose field mapping' |trans }}</a>
+        </div>
         <div class="add_expose_block" style="padding:10px;">
             <a id="add_publication" class="add_publication" href="#" >
                 <span>{{ 'prod:expose:Add publication' | trans }}</span>
@@ -478,6 +481,9 @@
     </div>
     <div id='DIALOG-expose-edit'>
         <div class="expose-edit-content" style="min-height: 522px;"></div>
+    </div>
+    <div id="DIALOG-field-mapping" >
+        <div class="expose-field-content" style="min-height: 300px!important;max-height: 500px!important"></div>
     </div>
 
     {% import 'prod/WorkZone/ExposeNew.html.twig' as ExposeNew %}

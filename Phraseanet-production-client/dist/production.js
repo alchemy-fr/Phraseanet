@@ -10008,6 +10008,11 @@ var workzone = function workzone(services) {
             checkActiveBloc(dragBloc);
         });
 
+        (0, _jquery2.default)('.expose_field_mapping').on('click', function (e) {
+            e.preventDefault();
+            openFieldMapping();
+        });
+
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
@@ -10017,6 +10022,21 @@ var workzone = function workzone(services) {
         (0, _jquery2.default)('#expose_list').on('change', function () {
             (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(this.value);
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-field-mapping', function (e) {
+            e.preventDefault();
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/field-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    console.log(data);
+                }
+            });
         });
 
         (0, _jquery2.default)('.expose_logout_link').on('click', function (event) {
@@ -10946,6 +10966,41 @@ var workzone = function workzone(services) {
             url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
             success: function success(data) {
                 (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
+            }
+        });
+    }
+
+    function openFieldMapping() {
+        var dialogFieldMapping = (0, _jquery2.default)('#DIALOG-field-mapping .expose-field-content');
+
+        dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').attr('title', localeService.t('ExposeFieldMapping')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 400,
+            height: 500,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {}
+        }).dialog('open');
+
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap');
+
+        dialogFieldMapping.on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/databoxes-field?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+            success: function success(data) {
+                dialogFieldMapping.empty().html(data);
             }
         });
     }

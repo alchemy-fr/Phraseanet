@@ -177,6 +177,7 @@ class LanguageController
             'prod:videoeditor:subtitletab:message:: error'     => $translator->trans('prod:videoeditor:subtitletab:message:: error'),
             'prod:videoeditor:subtitletab:message:: success'     => $translator->trans('prod:videoeditor:subtitletab:message:: success'),
             'Edit expose title'     => $translator->trans('prod:workzone:expose:modal:: title'),
-        ]);
+            'ExposeFieldMapping'    => $translator->trans('expose:: Field mapping'),
+            ]);
     }
 }
