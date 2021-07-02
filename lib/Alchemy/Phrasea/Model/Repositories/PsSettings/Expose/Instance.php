@@ -7,9 +7,31 @@ use Alchemy\Phrasea\Model\Repositories\PsSettingKeysRepository;
 use Alchemy\Phrasea\Model\Repositories\PsSettings\App;
 use Alchemy\Phrasea\Model\Repositories\PsSettingsRepository;
 
+/*
+
+"app" is a class that covers any kind of phraseanet service (ps) application, like "expose" or "uploader"
+app provides helpers like "ace" (acl) that may be usefull to all kind of ps applications.
+
+here we implement a class to wrap "expose" settings
+
+for now we store only 2 settings for a expose instance : "frontUri" and "clientId"
+we can also set acl for "canSee" and "canAdd"
+
+*/
+
 class Instance extends App
 {
+
+    /**
+     * stored into "valueString" because varchar(255) should be long enough
+     * @var string|null
+     */
     private $frontUri = null;
+
+    /**
+     * stored into "valueString" because varchar(255) should be long enough
+     * @var string|null
+     */
     private $clientId = null;
 
     public function __construct(PsSettingsRepository $psSettingsRepository, PsSettingKeysRepository $psSettingKeysRepository, PsSettings $instanceEntity)

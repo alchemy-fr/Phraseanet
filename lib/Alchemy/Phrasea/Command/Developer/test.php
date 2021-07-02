@@ -28,54 +28,74 @@ class test extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-
-        $d0 = new \DateTime("2021/05/12 08:00:00");
+        // get a small unique int to generate new unique instance (unique name)
+        $d0 = new \DateTime("2021/07/01 08:00:00");
         $d1 = new \DateTime("now");
         $u = $d1->getTimestamp() - $d0->getTimestamp();  // small unique
 
-//        $one_parent = new PsSettings();
-//        $one_parent->setRole("P_".$u);
-//
-//        $one_child = new PsSettings();
-//        $one_child->setRole("C_".$u);
-//        $one_child->setParent($one_parent);
-//
-//        $one_parent->getChildren()->add($one_child);
-//
-//        /** @var EntityManager $em */
-//        $em = $this->container['orm.em'];
-//        $em->persist($one_parent);
-//        $em->flush();
-//        return 1;
 
 
+        // the Expose object embraces all instances of "expose" settings)
+        //
         /** @var Expose $ex */
         $ex = $this->container['ps_settings.expose'];
 
-        foreach($ex->getInstances(1) as $exposeInstance) {
+
+
+        // list all the instances that the user 666 can see
+        //
+        $output->writeln(sprintf("\n\n\n=========== listing ALL \"expose\" application(s) ========================"));
+        foreach($ex->getInstances() as $exposeInstance) {
             $output->writeln(sprintf("expose: '%s'", $exposeInstance->getName()));
             $output->writeln(sprintf("  front-uri: '%s'", $exposeInstance->getFrontUri()));
 
-            $a = $exposeInstance->asArray();
+            // $a = $exposeInstance->asArray();
         }
         $output->writeln('');
 
-        $z = $ex->create("expose-".$u);
+
+
+        // create a new "expose" app
+        //
+        $name = "expose-".$u;   // $u = small random int.
+        $output->writeln(sprintf("\n\n\n=========== creating \"%s\" application ========================", $name));
+
+        $z = $ex->create($name);
+        // test that a property can be created, and changed
         $z->setFrontUri("bad uri will be fixed");
-        $z->setFrontUri("https://expose.new_expose.phrasea.io");
+        $z->setFrontUri("https://expose".$u.".phrasea.io");
         $output->writeln(sprintf("  front-uri: '%s'", $z->getFrontUri()));
 
-        $z->canSee(666, true);  // will create a "ACE"
-
+        // user 1 can see
+        $z->canSee(1, true);  // will create a "ACE"
         // $z->canSee(666, false);     // will delete the "ACE" and keys
 
-        $a = $z->asArray();
-        $a['value_string'] .= "#2";
 
+
+        // get this expose as array (for ex. to save it as yaml or xml)
+        //
+        $output->writeln(sprintf("\n\n\n=========== dump as array ========================"));
+        $a = $z->asArray();
+        var_dump($a);
+
+        // patch by changing the name (stored into "valueString" on the first level row, role="EXPOSE")
+        $a['valueString'] .= "(copy)";
+
+        $output->writeln(sprintf("\n\n\n=========== duplicated as (copy) ========================"));
+        // and save it as a new expose
         $z2 = $ex->fromArray($a);
 
-        $output->writeln('');
-        foreach($ex->getInstances() as $exposeInstance) {
+
+        //
+
+        $output->writeln(sprintf("\n\n\n=========== list what 1 can see  ========================"));
+        foreach($ex->getInstances(1) as $exposeInstance) {
+            $output->writeln(sprintf("expose: '%s'", $exposeInstance->getName()));
+            $output->writeln(sprintf("  front-uri: '%s'", $exposeInstance->getFrontUri()));
+        }
+
+        $output->writeln(sprintf("\n\n\n=========== list what 666 can see (nothing) ========================"));
+        foreach($ex->getInstances(666) as $exposeInstance) {
             $output->writeln(sprintf("expose: '%s'", $exposeInstance->getName()));
             $output->writeln(sprintf("  front-uri: '%s'", $exposeInstance->getFrontUri()));
         }
