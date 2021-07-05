@@ -21,6 +21,9 @@ we can also set acl for "canSee" and "canAdd"
 
 class Instance extends App
 {
+    const FRONT_URI  = 'front_uri';
+    const CLIENT_ID  = 'client_id';
+    const FIELD_LIST = 'field_list';
 
     /**
      * stored into "valueString" because varchar(255) should be long enough
@@ -34,17 +37,25 @@ class Instance extends App
      */
     private $clientId = null;
 
+    /**
+     * @var string|null
+     */
+    private $fieldList = null;
+
     public function __construct(PsSettingsRepository $psSettingsRepository, PsSettingKeysRepository $psSettingKeysRepository, PsSettings $instanceEntity)
     {
         parent::__construct($psSettingsRepository, $psSettingKeysRepository, $instanceEntity);
 
         foreach($this->getSettings() as $e) {
             switch ($e->getName()) {
-                case 'front_uri':
+                case self::FRONT_URI:
                     $this->frontUri = $e->getValueString();
                     break;
-                case 'client_id':
+                case self::CLIENT_ID:
                     $this->clientId = $e->getValueString();
+                    break;
+                case self::FIELD_LIST:
+                    $this->fieldList = $e->getValueText();
                     break;
                 default:
                     // unknown setting ? ignore
@@ -64,7 +75,18 @@ class Instance extends App
     public function setFrontUri($frontUri)
     {
         $this->frontUri = $frontUri;
-        $this->getOrSetSetting('front_uri', ['valueString' => $frontUri]);
+        $this->getOrSetSetting(self::FRONT_URI, ['valueString' => $frontUri]);
+    }
+
+    public function setFieldList($fieldList)
+    {
+        $this->fieldList = $fieldList;
+        $this->getOrSetSetting(self::FIELD_LIST, ['valueText' => $fieldList]);
+    }
+
+    public function getFieldList()
+    {
+        return $this->fieldList;
     }
 
     /**
@@ -78,7 +100,7 @@ class Instance extends App
     public function setClientId($clientId)
     {
         $this->clientId = $clientId;
-        $this->getOrSetSetting('client_id', ['valueString' => $clientId]);
+        $this->getOrSetSetting(self::CLIENT_ID, ['valueString' => $clientId]);
     }
 
     public function canSee(int $userId, $value = null)

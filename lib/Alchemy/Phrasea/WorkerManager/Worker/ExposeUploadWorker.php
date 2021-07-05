@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
+use Alchemy\Phrasea\Model\Repositories\PsSettings\Expose;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
@@ -100,10 +101,20 @@ class ExposeUploadWorker implements WorkerInterface
 
             $captionsByfield = $record->getCaption($helpers->getCaptionFieldOrder($record, $canSeeBusiness));
 
+            /** @var Expose $ex */
+            $ex = $this->app['ps_settings.expose'];
+            $exposeInstance = $ex->getInstance($payload['exposeName']);
+
+            $actualFieldList = ($exposeInstance->getFieldList() == null)? [] : json_decode($exposeInstance->getFieldList(), true);
+
             $description = "<dl>";
 
             foreach ($captionsByfield as $name => $value) {
-                if ($helpers->getCaptionFieldGuiVisible($record, $name) == 1) {
+                $databoxId = $record->getDataboxId();
+                $metaId = $record->get_caption()->get_field($name)->get_meta_struct_id();
+
+                // and check if the databoxId_metaId is in the list of field to be uploaded
+                if ($helpers->getCaptionFieldGuiVisible($record, $name) == 1 && in_array($databoxId . '_' . $metaId, $actualFieldList)) {
                     $fieldType = $record->get_caption()->get_field($name)->get_databox_field()->get_type();
                     $fieldLabel = $helpers->getCaptionFieldLabel($record, $name);
 

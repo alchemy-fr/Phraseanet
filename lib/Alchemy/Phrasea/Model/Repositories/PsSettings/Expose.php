@@ -40,6 +40,29 @@ class Expose
     }
 
     /**
+     *  Get a psSetting by name
+     *
+     * @param string $exposeName
+     * @return Instance|null
+     */
+    public function getInstance(string $exposeName)
+    {
+        $exs = $this->psSettingsRepository->get('EXPOSE', 'name', null, ['valueString' => $exposeName]);
+
+        if (!empty($exs)) {
+            $ex = current($exs);
+
+            return new Instance(
+                $this->psSettingsRepository,
+                $this->psSettingKeysRepository,
+                $ex
+            );
+        }
+
+        return null;
+    }
+
+    /**
      * create a new "Expose" without settings yet
      *
      * @param string $name

@@ -10034,7 +10034,7 @@ var workzone = function workzone(services) {
                 dataType: 'json',
                 data: formData,
                 success: function success(data) {
-                    console.log(data);
+                    (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
                 }
             });
         });

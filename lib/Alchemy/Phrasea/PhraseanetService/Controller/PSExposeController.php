@@ -4,9 +4,11 @@ namespace Alchemy\Phrasea\PhraseanetService\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Model\Repositories\PsSettings\Expose;
 use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\ExposeUploadEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
+use Doctrine\ORM\NonUniqueResultException;
 use GuzzleHttp\Client;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -718,6 +720,7 @@ class PSExposeController extends Controller
      */
     public function getDataboxesFieldAction(PhraseaApplication $app, Request $request)
     {
+        $exposeName = $request->get('exposeName');
         $databoxes = $this->getApplicationBox()->get_databoxes();
 
         $fields = [];
@@ -729,9 +732,19 @@ class PSExposeController extends Controller
             }
         }
 
+        $actualFieldList = [];
+        if (!empty($exposeName)) {
+            /** @var Expose $ex */
+            $ex = $this->app['ps_settings.expose'];
+            $exposeInstance = $ex->getInstance($exposeName);
+
+            $actualFieldList = json_decode($exposeInstance->getFieldList(), true);
+        }
+
         return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
-            'fields'        => $fields,
-            'exposeName'    => $request->get('exposeName')
+            'fields'            => $fields,
+            'exposeName'        => $exposeName,
+            'actualFieldList'   => $actualFieldList
         ]);
     }
 
@@ -743,11 +756,29 @@ class PSExposeController extends Controller
     public function saveFieldMappingAction(PhraseaApplication $app, Request $request)
     {
         $exposeName = $request->get('exposeName');
-        $fields = array_keys($request->request->get('fields'));
+        $fields = ($request->request->get('fields') === null) ? null : json_encode(array_keys($request->request->get('fields')));
+
+        /** @var Expose $ex */
+        $ex = $this->app['ps_settings.expose'];
+
+        $exposeInstance = $ex->getInstance($exposeName);
+
+        if ($exposeInstance === null) {
+            try {
+                $exposeInstance = $ex->create($exposeName);
+            } catch (NonUniqueResultException $e) {
+                return $app->json([
+                    'success'        => true,
+                    'message'        => $e->getMessage()
+                ]);
+            }
+        }
+
+        $exposeInstance->setFieldList($fields);
 
         return $app->json([
-            'exposeName'        => $exposeName,
-            'listFieldMapping'  => $fields
+            'success'        => true,
+            'message'        => 'Field list saved!'
         ]);
     }
 

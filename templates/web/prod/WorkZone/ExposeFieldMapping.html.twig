@@ -6,7 +6,7 @@
                 <legend>{{ dbName }}</legend>
                 {% for metaField in field %}
                     <label class="checkbox" for="fields[{{ metaField.id }}]">
-                        <input type="checkbox" id="fields[{{ metaField.id }}]" name="fields[{{ metaField.id }}]" value="1">
+                        <input type="checkbox" id="fields[{{ metaField.id }}]" name="fields[{{ metaField.id }}]" value="1" {% if metaField.id in actualFieldList %} checked {% endif %}>
                         {{ metaField.name }}
                     </label>
                 {% endfor %}

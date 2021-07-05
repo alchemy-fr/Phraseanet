@@ -124,7 +124,7 @@ const workzone = (services) => {
                 dataType: 'json',
                 data: formData,
                 success: function (data) {
-                    console.log(data);
+                    $('#DIALOG-field-mapping').dialog('close');
                 }
             });
         });
