@@ -78,10 +78,9 @@ class WorkerRunningJobRepository extends EntityRepository
 
         $databoxId      = $payload['databoxId'];
         $recordId       = $payload['recordId'];
-        $subdefName     = $payload['subdefName'];
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf('canDoJob("%s") for %s.%s.%s ?', $jobType, $databoxId, $recordId, $subdefName)
+            sprintf('canDoJob("%s") for %s.%s ?', $jobType, $databoxId, $recordId)
         ), FILE_APPEND | LOCK_EX);
 
         // first protect sql by a critical section
@@ -116,7 +115,7 @@ class WorkerRunningJobRepository extends EntityRepository
                 }
                 else {
                     file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("!!! FAILED select on %s.%s.%s because (%s)", $databoxId, $recordId, $subdefName, $stmt->errorCode())
+                        sprintf("!!! FAILED select on %s.%s because (%s)", $databoxId, $recordId, $stmt->errorCode())
                     ), FILE_APPEND | LOCK_EX);
                 }
                 $stmt->closeCursor();
@@ -127,7 +126,7 @@ class WorkerRunningJobRepository extends EntityRepository
                 }
                 else {
                     file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("job %s (id=%s) already running on %s.%s.%s", $row['work'], $row['id'], $databoxId, $recordId, $subdefName)
+                        sprintf("job %s (id=%s) already running on %s.%s", $row['work'], $row['id'], $databoxId, $recordId)
                     ), FILE_APPEND | LOCK_EX);
                 }
 
@@ -137,13 +136,13 @@ class WorkerRunningJobRepository extends EntityRepository
                 $cnx->rollBack();
 
                 file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("!!! FAILED in transaction to select/create on %s.%s.%s because (%s)", $databoxId, $recordId, $subdefName, $e->getMessage())
+                    sprintf("!!! FAILED in transaction to select/create on %s.%s because (%s)", $databoxId, $recordId, $e->getMessage())
                 ), FILE_APPEND | LOCK_EX);
             }
         }
         else {
             file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!! FAILED to create transaction to select/create on %s.%s.%s", $databoxId, $recordId, $subdefName)
+                sprintf("!!! FAILED to create transaction to select/create on %s.%s", $databoxId, $recordId)
             ), FILE_APPEND | LOCK_EX);
         }
 

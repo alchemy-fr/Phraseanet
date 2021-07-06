@@ -12,20 +12,20 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
-use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
-use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
-use Alchemy\Phrasea\Metadata\Tag\TfBasename;
-use Alchemy\Phrasea\Metadata\Tag\TfFilename;
-use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Border\Attribute\Metadata as MetadataAttr;
 use Alchemy\Phrasea\Border\Attribute\MetaField as MetafieldAttr;
 use Alchemy\Phrasea\Border\Attribute\Status as StatusAttr;
 use Alchemy\Phrasea\Border\Attribute\Story as StoryAttr;
+use Alchemy\Phrasea\Border\Checker\CheckerInterface;
+use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
+use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
+use Alchemy\Phrasea\Metadata\Tag\TfBasename;
+use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Metadata\Tag\TfQuarantine;
+use Alchemy\Phrasea\Metadata\Tag\TfRecordid;
 use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
@@ -105,27 +105,57 @@ class Manager
      */
     public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null, $nosubdef = false)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("into process")
+        ), FILE_APPEND | LOCK_EX);
+
         $visa = $this->getVisa($file);
 
-        // Generate UUID
+        // READ the uuid (possibly generates one) but DO NOT write (because we need the stripped file for sha compare ?)
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("get uuid (generate, no write) from \"%s\"", $file->getFile()->getRealPath())
+        ), FILE_APPEND | LOCK_EX);
+
         $file->getUUID(true, false);
 
         if (($visa->isValid() || $forceBehavior === self::FORCE_RECORD) && $forceBehavior !== self::FORCE_LAZARET) {
 
             $this->addMediaAttributes($file);
 
+            // Write UUID
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("get uuid (no generate, write) from \"%s\"", $file->getFile()->getRealPath())
+            ), FILE_APPEND | LOCK_EX);
+
+            $file->getUUID(false, true);
+
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("creating record")
+            ), FILE_APPEND | LOCK_EX);
+
             $element = $this->createRecord($file, $nosubdef);
 
             $code = self::RECORD_CREATED;
         } else {
+
+            // Write UUID
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("get uuid (no generate, write) from \"%s\"", $file->getFile()->getRealPath())
+            ), FILE_APPEND | LOCK_EX);
+
+            $file->getUUID(false, true);
 
             $element = $this->createLazaret($file, $visa, $session, $forceBehavior === self::FORCE_LAZARET);
 
             $code = self::LAZARET_CREATED;
         }
 
-        // Write UUID
-        $file->getUUID(false, true);
+//        // Write UUID
+//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("get uuid (no generate, write) from \"%s\"", $file->getFile()->getRealPath())
+//        ), FILE_APPEND | LOCK_EX);
+//
+//        $file->getUUID(false, true);
 
         if (is_callable($callable)) {
             $callable($element, $visa, $code);
@@ -267,7 +297,17 @@ class Manager
      */
     protected function createRecord(File $file, $nosubdef=false)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("into createRecord")
+        ), FILE_APPEND | LOCK_EX);
+
         $element = \record_adapter::createFromFile($file, $this->app);
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("created %s", $element->getRecordId())
+        ), FILE_APPEND | LOCK_EX);
+
+
         $date = new \DateTime();
 
         $file->addAttribute(
@@ -331,6 +371,10 @@ class Manager
                     break;
             }
         }
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("calling replaceMetadata")
+        ), FILE_APPEND | LOCK_EX);
 
         $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
 

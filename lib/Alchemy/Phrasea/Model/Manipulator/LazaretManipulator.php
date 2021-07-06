@@ -224,6 +224,10 @@ class LazaretManipulator
                 $record->set_metadatas($fields);
 
                 // order to write meta in file
+                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("dispatch RECORDS_WRITE_META for %s.%s", $record->getDataboxId(), $record->getRecordId())
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
                     new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
             }
