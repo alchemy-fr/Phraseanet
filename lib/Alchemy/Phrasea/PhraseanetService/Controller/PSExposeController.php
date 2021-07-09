@@ -712,6 +712,165 @@ class PSExposeController extends Controller
     }
 
     /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return string
+     */
+    public function getDataboxesFieldAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->get('profile');
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+        $exposeMappingName = $this->getExposeMappingName();
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $fields = $this->getFields();
+
+        return $this->render('prod/WorkZone/ExposeFieldList.html.twig', [
+            'fields'            => $fields,
+            'actualFieldsList'  => !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : []
+        ]);
+    }
+
+    public function getFieldMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $fields = $this->getFields();
+
+        return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
+            'fields'        => $fields,
+            'exposeName'    => $request->get('exposeName')
+        ]);
+    }
+
+
+    /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function saveFieldMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->request->get('profile');
+        $fields = ($request->request->get('fields') === null) ? null : array_keys($request->request->get('fields'));
+
+        $fields = [
+            $this->getExposeMappingName() => $fields
+        ];
+
+        if ($exposeName == null || $profile == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Choose an expose and a profile !"
+            ]);
+        }
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        // get the actual value and merge it with the new one before save
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $fields = array_merge($clientAnnotationProfile, $fields);
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        // save field mapping in the selected profile
+        $resProfile = $exposeClient->put($profile , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+                'Content-Type'  => 'application/json'
+            ],
+            'json'  => [
+                'clientAnnotations' => json_encode($fields)
+            ]
+        ]);
+
+        if ($resProfile->getStatusCode() !== 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "Error when saving mapping with status code: " . $resProfile->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'            => true,
+            'clientAnnotations'  => $fields
+        ]);
+    }
+
+    /**
+     * Get client annotation from the expose profile
+     *
+     * @param Client $exposeClient
+     * @param $exposeName
+     * @param $profileRoute
+     * @return array|mixed
+     */
+    private function getClientAnnotationProfile(Client $exposeClient, $exposeName, $profileRoute)
+    {
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        $resProfile = $exposeClient->get($profileRoute , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+            ]
+        ]);
+
+        $actualFieldsList = [];
+        if ($resProfile->getStatusCode() == 200) {
+            $actualFieldsList = json_decode($resProfile->getBody()->getContents(),true);
+            $actualFieldsList = (!empty($actualFieldsList['clientAnnotations'])) ? json_decode($actualFieldsList['clientAnnotations'], true) : [];
+        }
+
+        return $actualFieldsList;
+    }
+
+    /**
+     * get the name of mapping
+     *
+     * @return string
+     */
+    private function getExposeMappingName()
+    {
+        $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+
+        return $phraseanetLocalId.'_field_mapping';
+    }
+
+    /**
+     * get list of field in databoxes
+     *
+     * @return array
+     */
+    private function getFields()
+    {
+        $databoxes = $this->getApplicationBox()->get_databoxes();
+
+        $fields = [];
+        foreach ($databoxes as $databox) {
+            foreach ($databox->get_meta_structure() as $meta) {
+                // get databoxID_metaID for the checkbox name
+                $fields[$databox->get_viewname()][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
+                $fields[$databox->get_viewname()][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
      * @param Client $exposeClient
      * @param $publicationId
      * @param $accessToken

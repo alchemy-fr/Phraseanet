@@ -98,6 +98,11 @@ const workzone = (services) => {
             checkActiveBloc(dragBloc);
         });
 
+        $('.expose_field_mapping').on('click', function(e){
+            e.preventDefault();
+            openFieldMapping();
+        });
+
         $('.refresh-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
             $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
@@ -107,6 +112,41 @@ const workzone = (services) => {
         $('#expose_list').on('change', function () {
             $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(this.value);
+        });
+
+        $('#DIALOG-field-mapping').on('click', '#save-field-mapping', function(e) {
+            e.preventDefault();
+            if ($('#profile-mapping').val() == '') {
+                return Alerts('', localeService.t('ExposeChooseProfile'));
+            }
+
+            let formData = $('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: `/prod/expose/field-mapping?exposeName=${$("#expose_list").val()}`,
+                dataType: 'json',
+                data: formData,
+                success: function (data) {
+                    $('#DIALOG-field-mapping').dialog('close');
+                }
+            });
+        });
+
+        $('#DIALOG-field-mapping').on('change', '#profile-mapping', function(e) {
+            $('.databox-field-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/databoxes-field?exposeName=${$("#expose_list").val()}`,
+                dataType: 'html',
+                data: {
+                    profile: $('#profile-mapping').val()
+                },
+                success: function (data) {
+                    $('#DIALOG-field-mapping .databox-field-list').empty().html(data);
+                }
+            });
         });
 
         $('.expose_logout_link').on('click', function(event) {
@@ -854,9 +894,11 @@ const workzone = (services) => {
 
                     $('.expose_connected').empty().text(loggedMessage);
                     $('.expose_logout_link').removeClass('hidden');
+                    $('.expose_field_mapping').removeClass('hidden');
                 } else {
                     $('.expose_connected').empty();
                     $('.expose_logout_link').addClass('hidden');
+                    $('.expose_field_mapping').addClass('hidden');
                 }
             }
         });
@@ -1017,6 +1059,61 @@ const workzone = (services) => {
                 window.workzoneOptions = workzoneOptions;
                 appEvents.emit('ui.answerSizer');
                 return;
+            }
+        });
+    }
+
+    function openFieldMapping() {
+        let dialogFieldMapping = $('#DIALOG-field-mapping .expose-field-content');
+        let exposeName = $("#expose_list").val();
+
+        dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        $('#DIALOG-field-mapping').attr('title', localeService.t('ExposeFieldMapping'))
+            .dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: true,
+                draggable: true,
+                width: 400,
+                height: 500,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                },
+                close: function(e, ui) {
+                }
+            }).dialog('open');
+
+        $('.ui-dialog').addClass('black-dialog-wrap');
+
+        dialogFieldMapping.on('click', '.close-expose-modal', function () {
+            $('#DIALOG-field-mapping').dialog('close');
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/field-mapping?exposeName=${exposeName}` ,
+            success: function (data) {
+                dialogFieldMapping.empty().html(data);
+
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/list-profile?exposeName=` + exposeName,
+                    success: function (data) {
+                        $('#DIALOG-field-mapping select#profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        var i = 0;
+
+                        for (; i < data.profiles.length; i++) {
+                            $('#DIALOG-field-mapping select#profile-mapping').append('<option ' +
+                                'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                                + data.profiles[i].name +
+                                '</option>'
+                            );
+                        }
+                    }
+                });
             }
         });
     }

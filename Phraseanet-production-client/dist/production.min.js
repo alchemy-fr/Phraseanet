@@ -10008,6 +10008,11 @@ var workzone = function workzone(services) {
             checkActiveBloc(dragBloc);
         });
 
+        (0, _jquery2.default)('.expose_field_mapping').on('click', function (e) {
+            e.preventDefault();
+            openFieldMapping();
+        });
+
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
             (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
@@ -10017,6 +10022,41 @@ var workzone = function workzone(services) {
         (0, _jquery2.default)('#expose_list').on('change', function () {
             (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
             updatePublicationList(this.value);
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-field-mapping', function (e) {
+            e.preventDefault();
+            if ((0, _jquery2.default)('#profile-mapping').val() == '') {
+                return (0, _alert2.default)('', localeService.t('ExposeChooseProfile'));
+            }
+
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/field-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#profile-mapping', function (e) {
+            (0, _jquery2.default)('.databox-field-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+
+            _jquery2.default.ajax({
+                type: "GET",
+                url: '/prod/expose/databoxes-field?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'html',
+                data: {
+                    profile: (0, _jquery2.default)('#profile-mapping').val()
+                },
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping .databox-field-list').empty().html(data);
+                }
+            });
         });
 
         (0, _jquery2.default)('.expose_logout_link').on('click', function (event) {
@@ -10760,9 +10800,11 @@ var workzone = function workzone(services) {
 
                     (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
                     (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
+                    (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
                 } else {
                     (0, _jquery2.default)('.expose_connected').empty();
                     (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
+                    (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
                 }
             }
         });
@@ -10915,6 +10957,55 @@ var workzone = function workzone(services) {
                 window.workzoneOptions = workzoneOptions;
                 appEvents.emit('ui.answerSizer');
                 return;
+            }
+        });
+    }
+
+    function openFieldMapping() {
+        var dialogFieldMapping = (0, _jquery2.default)('#DIALOG-field-mapping .expose-field-content');
+        var exposeName = (0, _jquery2.default)("#expose_list").val();
+
+        dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').attr('title', localeService.t('ExposeFieldMapping')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 400,
+            height: 500,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {}
+        }).dialog('open');
+
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap');
+
+        dialogFieldMapping.on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/field-mapping?exposeName=' + exposeName,
+            success: function success(data) {
+                dialogFieldMapping.empty().html(data);
+
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/list-profile?exposeName=' + exposeName,
+                    success: function success(data) {
+                        (0, _jquery2.default)('#DIALOG-field-mapping select#profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        var i = 0;
+
+                        for (; i < data.profiles.length; i++) {
+                            (0, _jquery2.default)('#DIALOG-field-mapping select#profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+                        }
+                    }
+                });
             }
         });
     }

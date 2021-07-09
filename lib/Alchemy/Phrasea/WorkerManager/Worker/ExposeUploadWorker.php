@@ -100,10 +100,17 @@ class ExposeUploadWorker implements WorkerInterface
 
             $captionsByfield = $record->getCaption($helpers->getCaptionFieldOrder($record, $canSeeBusiness));
 
+            // this is the unique reference for record in phraseanet and assets in expose
+            $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+            $fieldListToUpload = $this->getFieldListToUpload($exposeClient, $payload['accessToken'], $payload['publicationId'], $phraseanetLocalId);
+
             $description = "<dl>";
 
             foreach ($captionsByfield as $name => $value) {
-                if ($helpers->getCaptionFieldGuiVisible($record, $name) == 1) {
+                $databoxId = $record->getDataboxId();
+                $metaId = $record->get_caption()->get_field($name)->get_meta_struct_id();
+
+                if ($helpers->getCaptionFieldGuiVisible($record, $name) == 1 && in_array($databoxId . '_' . $metaId, $fieldListToUpload)) {
                     $fieldType = $record->get_caption()->get_field($name)->get_databox_field()->get_type();
                     $fieldLabel = $helpers->getCaptionFieldLabel($record, $name);
 
@@ -134,11 +141,8 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
-            $phraseanetLocalKey = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_key']);
-
-            // this is the unique reference for record in phraseanet and assets in expose
             // phraseanetLocalKey_basedID_record_id
-            $assetId = $phraseanetLocalKey.'_'.$record->getId();
+            $assetId = $phraseanetLocalId.'_'.$record->getId();
 
             $requestBody = [
                 'publication_id' => $payload['publicationId'],
@@ -248,6 +252,28 @@ class ExposeUploadWorker implements WorkerInterface
 
         // tell that the upload is finished
         $this->finishedJob($workerRunningJob, $em);
+    }
+
+    private function getFieldListToUpload(Client $exposeClient, $accessToken, $publicationId, $phraseanetLocalId)
+    {
+        $resPublication = $exposeClient->get('/publications/'.$publicationId , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+            ]
+        ]);
+
+        $fieldListToUpload = [];
+        if ($resPublication->getStatusCode() == 200) {
+            $fieldListToUpload = json_decode($resPublication->getBody()->getContents(),true);
+            if (!empty($fieldListToUpload['profile']) && !empty($fieldListToUpload['profile']['clientAnnotations'])) {
+                $fieldListToUpload = json_decode($fieldListToUpload['profile']['clientAnnotations'], true);
+
+                $exposeMappingName = $phraseanetLocalId.'_field_mapping';
+                $fieldListToUpload = !empty($fieldListToUpload[$exposeMappingName]) ? $fieldListToUpload[$exposeMappingName] : [];
+            }
+        }
+
+        return $fieldListToUpload;
     }
 
     private function postSubDefinition(Client $exposeClient, $token, $assetId, \media_subdef $subdef, $subdefName, $isPreview = false, $isThumbnail = false)

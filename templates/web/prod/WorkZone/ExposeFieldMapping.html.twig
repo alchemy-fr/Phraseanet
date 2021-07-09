@@ -1,0 +1,32 @@
+{% if exposeName %}
+    <p>{{ 'expose::setting Choose profile and check all field to be uploaded in %exposeName% expose' |trans({'%exposeName%': exposeName}) }}</p>
+    <form id="field-mapping-form" style="margin-left:20px;">
+        <div class="ui-widget">
+            <label>{{ 'prod:expose:publication:Profile' | trans }} </label>
+            <select id="profile-mapping" name="profile" tabindex="-1" aria-hidden="true"
+                    class="publication-field">
+                <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
+            </select>
+        </div>
+        <hr>
+        <div class="databox-field-list">
+            {% include 'prod/WorkZone/ExposeFieldList.html.twig' with {'fields':fields} %}
+        </div>
+
+        <div class="publication-btn-container submit-blockr">
+            <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                <div class="ui-dialog-buttonset">
+                    <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="save-field-mapping">
+                        <span class="ui-button-text">{{ 'expose::setting Save field'| trans }}</span>
+                    </button>
+                    <button type="button"
+                            class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                            role="button" aria-disabled="false"><span class="ui-button-text">{{ 'expose::setting Cancel'| trans }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+{% else %}
+    <h3>{{ 'expose::setting You have to select an expose to continue' | trans }}</h3>
+{% endif %}
