@@ -64,16 +64,25 @@ behat.yml
 # Exclude crossdomain.xml file it's generated
 /www/crossdomain.xml
 
-# Exclude jison files
+# Exclude json files
 grammar/query.js
 grammar/jison-*
+
 
 pimple.json
 playbook.retry
 npm-debug.log
 
+# Exclude stack datas
 /Phrasea_datas
+/volumes
 
+# Exclude alternate env files
 .env.*
 env.local
-/volumes
+
+# Exclude gitlog files
+www/gitlog.txt
+
+
+

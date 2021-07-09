@@ -195,7 +195,7 @@ services:
       - internal
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.6.16-management
     restart: on-failure
     environment:
     - RABBITMQ_DEFAULT_USER
