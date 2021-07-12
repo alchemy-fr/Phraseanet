@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Border\Checker\CheckerInterface;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
 use Alchemy\Phrasea\Metadata\Tag\TfArchivedate;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
@@ -144,6 +145,10 @@ class Manager
             ), FILE_APPEND | LOCK_EX);
 
             $file->getUUID(false, true);
+
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("creating lazaret")
+            ), FILE_APPEND | LOCK_EX);
 
             $element = $this->createLazaret($file, $visa, $session, $forceBehavior === self::FORCE_LAZARET);
 
@@ -304,7 +309,7 @@ class Manager
         $element = \record_adapter::createFromFile($file, $this->app);
 
         file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("created %s", $element->getRecordId())
+            sprintf("created %s.%s", $element->getDataboxId(), $element->getRecordId())
         ), FILE_APPEND | LOCK_EX);
 
 
@@ -376,7 +381,9 @@ class Manager
             sprintf("calling replaceMetadata")
         ), FILE_APPEND | LOCK_EX);
 
-        $this->app['phraseanet.metadata-setter']->replaceMetadata($newMetadata, $element);
+        /** @var PhraseanetMetadataSetter $phraseanetMetadataSetter */
+        $phraseanetMetadataSetter = $this->app['phraseanet.metadata-setter'];
+        $phraseanetMetadataSetter->replaceMetadata($newMetadata, $element);
 
         if(!$nosubdef) {
             $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
@@ -397,6 +404,10 @@ class Manager
      */
     protected function createLazaret(File $file, Visa $visa, LazaretSession $session, $forced)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("into createLazaret")
+        ), FILE_APPEND | LOCK_EX);
+
         $date = new \DateTime();
         $file->addAttribute(
             new MetadataAttr(
@@ -448,6 +459,10 @@ class Manager
         }
 
         $this->app['orm.em']->flush();
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from createLazaret")
+        ), FILE_APPEND | LOCK_EX);
 
         return $lazaretFile;
     }

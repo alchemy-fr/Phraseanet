@@ -1140,6 +1140,10 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function set_metadatas(array $metadatas, $force_readonly = false)
     {
+        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("into set_metadatas for record %s.%s", $this->getDataboxId(), $this->getRecordId())
+        ), FILE_APPEND | LOCK_EX);
+
         $databox_descriptionStructure = $this->getDatabox()->get_meta_structure();
 
         foreach ($metadatas as $param) {
@@ -1163,7 +1167,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         unset($xml);
 
         $this->write_metas();
+
+        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("dispatch event RecordEvents::METADATA_CHANGED for record %s.%s", $this->getDataboxId(), $this->getRecordId())
+        ), FILE_APPEND | LOCK_EX);
+
         $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
+
+        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from set_metadata for record %s.%s", $this->getDataboxId(), $this->getRecordId())
+        ), FILE_APPEND | LOCK_EX);
 
         return $this;
     }

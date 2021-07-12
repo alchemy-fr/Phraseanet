@@ -60,7 +60,7 @@ class UUID extends AbstractChecker
             $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findByUuidWithExcludedCollIds($uuid, $excludedCollIds));
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("return from checker uuid")
         ), FILE_APPEND | LOCK_EX);
 

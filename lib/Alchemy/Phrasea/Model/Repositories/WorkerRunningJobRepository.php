@@ -45,6 +45,7 @@ class WorkerRunningJobRepository extends EntityRepository
      *
      * rule :
      * - if someone is already working on the file, we can't write
+     * - if someone is building subdefs, we can't write on tne document
      *
      * @param array $payload
      * @return int | null       workerRunningJobId
@@ -54,7 +55,13 @@ class WorkerRunningJobRepository extends EntityRepository
         $this->reconnect();
         $cnx = $this->getEntityManager()->getConnection()->getWrappedConnection();
 
+        // if someone is already working on the file, we can't write
         $sqlclause = "(`work_on` = " . $cnx->quote($payload['subdefName']) . ")";
+
+        if($payload['subdefName'] === "document") {
+            // if someone is building subdefs, we can't write on tne document
+            $sqlclause = "(" . $sqlclause . " OR (`work` = " . $cnx->quote(MessagePublisher::SUBDEF_CREATION_TYPE) . "))";
+        }
 
         return $this->canDoJob($payload, MessagePublisher::WRITE_METADATAS_TYPE, $sqlclause);
     }
@@ -269,14 +276,14 @@ class WorkerRunningJobRepository extends EntityRepository
             if ($cnx->exec($sql) > 0) {
                 // affected rows is 1 since by definition this key is unique
                 file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("!!! old mutex for %s.%s deleted (!!! SHOULD NOT HAPPEN !!!)", $databoxId, $recordId)
+                    sprintf("!!! old mutex for %s.%s deleted !!! SHOULD NOT HAPPEN !!!", $databoxId, $recordId)
                 ), FILE_APPEND | LOCK_EX);
             }
         }
         catch(Exception $e) {
             // here something went very wrong, like sql death
             file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!! FAILED while trying to delete old mutex for %s.%s (!!! SHOULD NOT HAPPEN !!!)", $databoxId, $recordId)
+                sprintf("!!! FAILED while trying to delete old mutex for %s.%s because (%s) !!! SHOULD NOT HAPPEN !!!", $e->getMessage(), $databoxId, $recordId)
             ), FILE_APPEND | LOCK_EX);
 
             return false; // we could choose to continue, but if we end up here... better to stop
@@ -302,11 +309,12 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 if(($a = $cnx->exec($sql)) === 1) {
 
+                    $mutexId = $cnx->lastInsertId();
                     file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("getMutex tryout %s for %s.%s OK", $tryout, $databoxId, $recordId)
+                        sprintf("getMutex tryout %s for %s.%s OK, returning mutex (id=%s)", $tryout, $databoxId, $recordId, $mutexId)
                     ), FILE_APPEND | LOCK_EX);
 
-                    return $cnx->lastInsertId();
+                    return $mutexId;
                 }
 
                 throw new Exception(sprintf("inserting mutex should return 1 row affected, got %s", $a));
@@ -516,19 +524,22 @@ class WorkerRunningJobRepository extends EntityRepository
 
     public function reconnect()
     {
-//        if(!$this->getEntityManager()->isOpen()) {
-//            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-//                sprintf("recreate _em")
-//            ), FILE_APPEND | LOCK_EX);
-//            $this->_em = $this->_em->create(
-//                $this->_em->getConnection(),
-//                $this->_em->getConfiguration(),
-//                $this->_em->getEventManager()
-//            );
-//        }
         if($this->_em->getConnection()->ping() === false) {
+            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("!!!! reconnect-ping returned false, calling \"connect()\".")
+            ), FILE_APPEND | LOCK_EX);
             $this->_em->getConnection()->close();
             $this->_em->getConnection()->connect();
+        }
+        if(!$this->getEntityManager()->isOpen()) {
+            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("!!!! entity manager closed, recreating.")
+            ), FILE_APPEND | LOCK_EX);
+            $this->_em = $this->_em->create(
+                $this->_em->getConnection(),
+                $this->_em->getConfiguration(),
+                $this->_em->getEventManager()
+            );
         }
     }
 }
