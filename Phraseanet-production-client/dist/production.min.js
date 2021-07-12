@@ -10055,6 +10055,8 @@ var workzone = function workzone(services) {
                 },
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping .databox-field-list').empty().html(data);
+
+                    (0, _jquery2.default)('.field-list').sortable().disableSelection();
                 }
             });
         });

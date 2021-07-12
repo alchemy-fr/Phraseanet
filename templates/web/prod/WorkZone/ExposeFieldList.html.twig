@@ -1,11 +1,13 @@
 {% for dbName, field in fields %}
     <fieldset>
         <legend>{{ dbName }}</legend>
-        {% for metaField in field %}
-            <label class="checkbox" for="fields[{{ metaField.id }}]">
-                <input type="checkbox" id="fields[{{ metaField.id }}]" name="fields[{{ metaField.id }}]" {% if metaField.id in actualFieldsList %} checked {% endif %} value="1">
-                {{ metaField.name }}
-            </label>
-        {% endfor %}
+        <div class="field-list">
+            {% for metaField in field %}
+                <label class="checkbox" for="fields[{{ metaField.id }}]">
+                    <input type="checkbox" id="fields[{{ metaField.id }}]" name="fields[{{ metaField.id }}]" {% if metaField.checked %} checked {% endif %} value="1">
+                    {{ metaField.name }}
+                </label>
+            {% endfor %}
+        </div>
     </fieldset>
 {% endfor %}

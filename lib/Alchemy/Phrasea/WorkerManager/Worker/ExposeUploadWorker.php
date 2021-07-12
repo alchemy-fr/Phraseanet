@@ -96,26 +96,32 @@ class ExposeUploadWorker implements WorkerInterface
             $record = $this->findDataboxById($payload['databoxId'])->get_record($payload['recordId']);
 
             $helpers = new PhraseanetExtension($this->app);
-            $canSeeBusiness = $helpers->isGrantedOnCollection($record->getBaseId(), [\ACL::CANMODIFRECORD]);
 
-            $captionsByfield = $record->getCaption($helpers->getCaptionFieldOrder($record, $canSeeBusiness));
-
-            // this is the unique reference for record in phraseanet and assets in expose
+            // the identification of phraseanet instance in expose
             $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+
             $fieldListToUpload = $this->getFieldListToUpload($exposeClient, $payload['accessToken'], $payload['publicationId'], $phraseanetLocalId);
 
             $description = "<dl>";
 
-            foreach ($captionsByfield as $name => $value) {
-                $databoxId = $record->getDataboxId();
-                $metaId = $record->get_caption()->get_field($name)->get_meta_struct_id();
+            foreach ($fieldListToUpload as $value) {
+                // value as databoxId_metaId
+                $t = explode('_', $value);
 
-                if ($helpers->getCaptionFieldGuiVisible($record, $name) == 1 && in_array($databoxId . '_' . $metaId, $fieldListToUpload)) {
-                    $fieldType = $record->get_caption()->get_field($name)->get_databox_field()->get_type();
-                    $fieldLabel = $helpers->getCaptionFieldLabel($record, $name);
+                // check if it is on the same databox
+                if ($payload['databoxId'] == $t[0]) {
+                    $fieldName = $record->getDatabox()->get_meta_structure()->get_element($t[1])->get_name();
+                    if ($record->get_caption()->has_field($fieldName) && $helpers->getCaptionFieldGuiVisible($record, $fieldName) == 1) {
+                        // retrieve value for the corresponding field
+                        $captionField =  $record->get_caption()->get_field($fieldName);
+                        $fieldValues = $captionField->get_values();
 
-                    $description .= "<dt class='field-title field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $fieldLabel. "</dt>";
-                    $description .= "<dd class='field-value field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $helpers->getCaptionField($record, $name, $value). "</dd>";
+                        $fieldType = $captionField->get_databox_field()->get_type();
+                        $fieldLabel = $helpers->getCaptionFieldLabel($record, $fieldName);
+
+                        $description .= "<dt class='field-title field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $fieldLabel. "</dt>";
+                        $description .= "<dd class='field-value field-type-". $fieldType ." field-name-". $fieldLabel ."' >" . $helpers->getCaptionField($record, $fieldName, $fieldValues). "</dd>";
+                    }
                 }
             }
 
@@ -141,6 +147,7 @@ class ExposeUploadWorker implements WorkerInterface
                 }
             }
 
+            // this is the unique reference for record in phraseanet and assets in expose
             // phraseanetLocalKey_basedID_record_id
             $assetId = $phraseanetLocalId.'_'.$record->getId();
 

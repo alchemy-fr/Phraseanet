@@ -145,6 +145,8 @@ const workzone = (services) => {
                 },
                 success: function (data) {
                     $('#DIALOG-field-mapping .databox-field-list').empty().html(data);
+
+                    $('.field-list').sortable().disableSelection();
                 }
             });
         });

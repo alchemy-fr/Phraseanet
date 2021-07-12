@@ -728,23 +728,21 @@ class PSExposeController extends Controller
                 'message' => "Expose configuration not set!"
             ]);
         }
+
         $exposeMappingName = $this->getExposeMappingName();
         $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
-        $fields = $this->getFields();
+        $actualFieldsList = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+        $fields = $this->getFields($actualFieldsList);
 
         return $this->render('prod/WorkZone/ExposeFieldList.html.twig', [
             'fields'            => $fields,
-            'actualFieldsList'  => !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : []
         ]);
     }
 
     public function getFieldMappingAction(PhraseaApplication $app, Request $request)
     {
-        $fields = $this->getFields();
-
         return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
-            'fields'        => $fields,
             'exposeName'    => $request->get('exposeName')
         ]);
     }
@@ -854,16 +852,32 @@ class PSExposeController extends Controller
      *
      * @return array
      */
-    private function getFields()
+    private function getFields($actualFieldsList)
     {
         $databoxes = $this->getApplicationBox()->get_databoxes();
 
-        $fields = [];
+        $fieldFromProfile = [];
+        foreach ($actualFieldsList as $value) {
+            $t = explode('_', $value);
+            $databox = $this->getApplicationBox()->get_databox($t[0]);
+            $viewName = $databox->get_viewname();
+
+            $fieldFromProfile[$viewName][$t[1]]['id']      = $value;
+            $fieldFromProfile[$viewName][$t[1]]['name']    = $databox->get_meta_structure()->get_element($t[1])->get_label($this->app['locale']);
+            $fieldFromProfile[$viewName][$t[1]]['checked'] = true;
+        }
+
+        $fields = $fieldFromProfile;
         foreach ($databoxes as $databox) {
             foreach ($databox->get_meta_structure() as $meta) {
                 // get databoxID_metaID for the checkbox name
+                if (!empty($fields[$databox->get_viewname()][$meta->get_id()]) && in_array($databox->get_sbas_id().'_'.$meta->get_id(), $fields[$databox->get_viewname()][$meta->get_id()])) {
+                   continue;
+                }
+
                 $fields[$databox->get_viewname()][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
                 $fields[$databox->get_viewname()][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
+
             }
         }
 
