@@ -63,9 +63,9 @@ class File
      */
     public function __construct(Application $app, MediaInterface $media, \collection $collection, $originalName = null)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into construct")
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("into construct")
+//        ), FILE_APPEND | LOCK_EX);
 
         $this->app = $app;
         $this->media = $media;
@@ -93,14 +93,14 @@ class File
      */
     public function getUUID($generate = false, $write = false)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into getuuid for \"%s\" with generate=%s, write=%s ; this->uuid=%s", $this->getFile()->getRealPath(), $generate?'true':'false', $write?'true':'false', $this->uuid ?:'null')
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("into getuuid for \"%s\" with generate=%s, write=%s ; this->uuid=%s", $this->getFile()->getRealPath(), $generate?'true':'false', $write?'true':'false', $this->uuid ?:'null')
+//        ), FILE_APPEND | LOCK_EX);
 
         if ($this->uuid && !$write) {
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("return known uuid %s", $this->uuid)
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("return known uuid %s", $this->uuid)
+//            ), FILE_APPEND | LOCK_EX);
 
             return $this->uuid;
         }
@@ -115,9 +115,9 @@ class File
         ];
 
         if (!$this->uuid) {
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("getMetadatas to get uuid")
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("getMetadatas to get uuid")
+//            ), FILE_APPEND | LOCK_EX);
 
             $metadatas = $this->media->getMetadatas();
 
@@ -132,9 +132,9 @@ class File
                     if (Uuid::isValid($candidate)) {
                         $uuid = $candidate;
 
-                        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                            sprintf("found uuid from %s ; %s", $meta, $uuid)
-                        ), FILE_APPEND | LOCK_EX);
+//                        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                            sprintf("found uuid from %s ; %s", $meta, $uuid)
+//                        ), FILE_APPEND | LOCK_EX);
 
                         break;
                     }
@@ -143,18 +143,18 @@ class File
 
             if (!$uuid && $generate) {
                 $uuid = Uuid::uuid4();
-                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("generated uuid %s", $uuid)
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("generated uuid %s", $uuid)
+//                ), FILE_APPEND | LOCK_EX);
             }
 
             $this->uuid = $uuid;
         }
 
         if ($write) {
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("writing uuid %s", $this->uuid)
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("writing uuid %s", $this->uuid)
+//            ), FILE_APPEND | LOCK_EX);
 
             $value = new MonoValue($this->uuid);
             $metadatas = new ExiftoolMetadataBag();
@@ -167,29 +167,29 @@ class File
                 $writer = $this->app['exiftool.writer'];
                 $writer->reset();
 
-                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("exiftool will write to %s", $this->getFile()->getRealPath())
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("exiftool will write to %s", $this->getFile()->getRealPath())
+//                ), FILE_APPEND | LOCK_EX);
 
                 $writer->write($this->getFile()->getRealPath(), $metadatas);
 
-                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("exiftool has writen ok to %s", $this->getFile()->getRealPath())
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("exiftool has writen ok to %s", $this->getFile()->getRealPath())
+//                ), FILE_APPEND | LOCK_EX);
 
             } catch (PHPExiftoolException $e) {
 
-                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("exiftool failed to write to %s because (%s)", $this->getFile()->getRealPath(), $e->getMessage())
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("exiftool failed to write to %s because (%s)", $this->getFile()->getRealPath(), $e->getMessage())
+//                ), FILE_APPEND | LOCK_EX);
 
                 // PHPExiftool throws exception on some files not supported
             }
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return uuid %s", $this->uuid ?: 'null')
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("return uuid %s", $this->uuid ?: 'null')
+//        ), FILE_APPEND | LOCK_EX);
 
         return $this->uuid;
     }
@@ -229,30 +229,30 @@ class File
      */
     public function getSha256()
     {
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into getSha256() for \"%s\" ; this->sha256=%s", $this->getFile()->getRealPath(), $this->sha256 ?: 'null')
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("into getSha256() for \"%s\" ; this->sha256=%s", $this->getFile()->getRealPath(), $this->sha256 ?: 'null')
+//        ), FILE_APPEND | LOCK_EX);
 
         if (!$this->sha256) {
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("sha256 unknown, calling mediavorus::getHash('sha256')")
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("sha256 unknown, calling mediavorus::getHash('sha256')")
+//            ), FILE_APPEND | LOCK_EX);
 
             $this->sha256 = $this->media->getHash('sha256');
 
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("mediavorus::getHash('sha256') returned \"%s\"", $this->sha256)
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("mediavorus::getHash('sha256') returned \"%s\"", $this->sha256)
+//            ), FILE_APPEND | LOCK_EX);
         }
         else {
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("sha256 known (\"%s\")", $this->sha256)
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("sha256 known (\"%s\")", $this->sha256)
+//            ), FILE_APPEND | LOCK_EX);
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return sha256 %s", $this->sha256 ?: 'null')
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("return sha256 %s", $this->sha256 ?: 'null')
+//        ), FILE_APPEND | LOCK_EX);
 
         return $this->sha256;
     }

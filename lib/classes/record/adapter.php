@@ -1140,9 +1140,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function set_metadatas(array $metadatas, $force_readonly = false)
     {
-        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into set_metadatas for record %s.%s", $this->getDataboxId(), $this->getRecordId())
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("into set_metadatas for record %s.%s", $this->getDataboxId(), $this->getRecordId())
+//        ), FILE_APPEND | LOCK_EX);
 
         $databox_descriptionStructure = $this->getDatabox()->get_meta_structure();
 
@@ -1168,15 +1168,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->write_metas();
 
-        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("dispatch event RecordEvents::METADATA_CHANGED for record %s.%s", $this->getDataboxId(), $this->getRecordId())
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("dispatch event RecordEvents::METADATA_CHANGED for record %s.%s", $this->getDataboxId(), $this->getRecordId())
+//        ), FILE_APPEND | LOCK_EX);
 
         $this->dispatch(RecordEvents::METADATA_CHANGED, new MetadataChangedEvent($this));
 
-        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return from set_metadata for record %s.%s", $this->getDataboxId(), $this->getRecordId())
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("return from set_metadata for record %s.%s", $this->getDataboxId(), $this->getRecordId())
+//        ), FILE_APPEND | LOCK_EX);
 
         return $this;
     }
@@ -1682,9 +1682,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public static function createFromFile(File $file, Application $app)
     {
-        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into createFromFile")
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("into createFromFile")
+//        ), FILE_APPEND | LOCK_EX);
 
         $collection = $file->getCollection();
 
@@ -1701,9 +1701,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $pathhd = $filesystem->generateDataboxDocumentBasePath($databox);
             $newname = $filesystem->generateDocumentFilename($record, $file->getFile());
 
-            file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("copy \"%s\" to \"%s\"", $file->getFile()->getRealPath(), $pathhd . $newname)
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("copy \"%s\" to \"%s\"", $file->getFile()->getRealPath(), $pathhd . $newname)
+//            ), FILE_APPEND | LOCK_EX);
 
             $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
 
@@ -1748,9 +1748,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     private static function _create(collection $collection, Application $app, File $file=null)
     {
-        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into _create")
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("into _create")
+//        ), FILE_APPEND | LOCK_EX);
 
         $databox = $collection->get_databox();
 
@@ -1774,9 +1774,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $record_id = $connection->lastInsertId();
 
-        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("sql record::inserted %s", $record_id)
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("sql record::inserted %s", $record_id)
+//        ), FILE_APPEND | LOCK_EX);
 
         $record = new self($app, $databox->get_sbas_id(), $record_id);
 
@@ -1795,9 +1795,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             ]);
             $stmt->closeCursor();
 
-            file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("sql log_docs::inserted add %s", $record_id)
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("sql log_docs::inserted add %s", $record_id)
+//            ), FILE_APPEND | LOCK_EX);
 
 
         }

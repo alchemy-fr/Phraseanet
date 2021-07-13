@@ -129,9 +129,9 @@ class LazaretManipulator
     {
         $ret = ['success' => false, 'message' => '', 'result'  => []];
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into lazaret/add")
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("into lazaret/add")
+//        ), FILE_APPEND | LOCK_EX);
 
         /* @var LazaretFile $lazaretFile */
         $lazaretFile = $this->repository->find($file_id);
@@ -147,9 +147,9 @@ class LazaretManipulator
         $lazaretThumbFileName = $path .'/'.$lazaretFile->getThumbFilename();
 
         try {
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("ok to add from lazaret")
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("ok to add from lazaret")
+//            ), FILE_APPEND | LOCK_EX);
 
             $borderFile = Border\File::buildFromPathfile(
                 $lazaretFileName,
@@ -158,9 +158,9 @@ class LazaretManipulator
                 $lazaretFile->getOriginalName()
             );
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("got borderFile \"%s\"", $borderFile->getFile()->getRealPath())
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("got borderFile \"%s\"", $borderFile->getFile()->getRealPath())
+//            ), FILE_APPEND | LOCK_EX);
 
         }
         catch(\Exception $e) {
@@ -172,16 +172,16 @@ class LazaretManipulator
             return $ret;
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("added from lazaret")
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("added from lazaret")
+//        ), FILE_APPEND | LOCK_EX);
 
         try {
             //Post record creation
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("force record creation")
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("force record creation")
+//            ), FILE_APPEND | LOCK_EX);
 
             /** @var \record_adapter $record */
             $record = null;
@@ -197,16 +197,16 @@ class LazaretManipulator
                 Border\Manager::FORCE_RECORD
             );
 
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("got record %s.%s", $record->getDataboxId(), $record->getRecordId())
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("got record %s.%s", $record->getDataboxId(), $record->getRecordId())
+//            ), FILE_APPEND | LOCK_EX);
 
             if ($keepAttributes) {
                 //add attribute
 
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("adding attributes")
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("adding attributes")
+//                ), FILE_APPEND | LOCK_EX);
 
                 $metaFields = new Border\MetaFieldsBag();
                 $metadataBag = new Border\MetadataBag();
@@ -250,25 +250,25 @@ class LazaretManipulator
                 /* todo: better to to do only one set_metadatas ? */
                 $data = $metadataBag->toMetadataArray($record->getDatabox()->get_meta_structure());
 
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("adding attributes \"databag\" %s.%s", $record->getDataboxId(), $record->getRecordId())
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("adding attributes \"databag\" %s.%s", $record->getDataboxId(), $record->getRecordId())
+//                ), FILE_APPEND | LOCK_EX);
 
                 $record->set_metadatas($data);
 
                 $fields = $metaFields->toMetadataArray($record->getDatabox()->get_meta_structure());
 
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("adding attributes \"fields\" %s.%s", $record->getDataboxId(), $record->getRecordId())
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("adding attributes \"fields\" %s.%s", $record->getDataboxId(), $record->getRecordId())
+//                ), FILE_APPEND | LOCK_EX);
 
                 $record->set_metadatas($fields);
 
 
                 // order to write meta in file
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("dispatch WorkerEvents::RECORDS_WRITE_META for %s.%s", $record->getDataboxId(), $record->getRecordId())
-                ), FILE_APPEND | LOCK_EX);
+//                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("dispatch WorkerEvents::RECORDS_WRITE_META for %s.%s", $record->getDataboxId(), $record->getRecordId())
+//                ), FILE_APPEND | LOCK_EX);
 
                 $this->app['dispatcher']->dispatch(WorkerEvents::RECORDS_WRITE_META,
                     new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
@@ -291,9 +291,9 @@ class LazaretManipulator
             // no-op
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return from laaret/add")
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("return from laaret/add")
+//        ), FILE_APPEND | LOCK_EX);
 
         return $ret;
     }

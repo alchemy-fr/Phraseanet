@@ -42,9 +42,9 @@ class PhraseanetMetadataSetter
      */
     public function replaceMetadata($metadataCollection, \record_adapter $record)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("replaceMetadata for %s.%s", $record->getDataboxId(), $record->getRecordId())
-        ), FILE_APPEND | LOCK_EX);
+//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//            sprintf("replaceMetadata for %s.%s", $record->getDataboxId(), $record->getRecordId())
+//        ), FILE_APPEND | LOCK_EX);
 
         $metaStructure = $this->repository->find($record->getDataboxId())->get_meta_structure()->get_elements();
 
@@ -92,25 +92,25 @@ class PhraseanetMetadataSetter
         }
 
         if (! empty($metadataInRecordFormat)) {
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("calling set_metadatas for %s.%s", $record->getDataboxId(), $record->getRecordId())
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("calling set_metadatas for %s.%s", $record->getDataboxId(), $record->getRecordId())
+//            ), FILE_APPEND | LOCK_EX);
 
             $record->set_metadatas($metadataInRecordFormat, true);
 
             // order to write meta in file
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("dispatch WorkerEvents::RECORDS_WRITE_META for %s.%s", $record->getDataboxId(), $record->getRecordId())
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("dispatch WorkerEvents::RECORDS_WRITE_META for %s.%s", $record->getDataboxId(), $record->getRecordId())
+//            ), FILE_APPEND | LOCK_EX);
 
             $this->dispatcher->dispatch(WorkerEvents::RECORDS_WRITE_META,
                 new RecordsWriteMetaEvent([$record->getRecordId()], $record->getDataboxId()));
         }
         else {
 
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("no metadatas to set for %s.%s", $record->getDataboxId(), $record->getRecordId())
-            ), FILE_APPEND | LOCK_EX);
+//            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                sprintf("no metadatas to set for %s.%s", $record->getDataboxId(), $record->getRecordId())
+//            ), FILE_APPEND | LOCK_EX);
 
         }
     }
