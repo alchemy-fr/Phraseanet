@@ -152,6 +152,10 @@ class RecordSubscriber implements EventSubscriberInterface
         $databoxId = $event->getDataboxId();
         $recordIds = $event->getRecordIds();
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("handle RECORDS_WRITE_META for %s.[%s]", $databoxId, join(',', $recordIds))
+        ), FILE_APPEND | LOCK_EX);
+
         foreach ($recordIds as $recordId) {
             $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
             $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$recordId]);
@@ -173,6 +177,10 @@ class RecordSubscriber implements EventSubscriberInterface
                     ];
 
                     if ($subdef->is_physically_present()) {
+                        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                            sprintf("q-publish  WRITE_METADATAS_TYPE for %s.%s.%s", $databoxId, $recordId, $subdef->get_name())
+                        ), FILE_APPEND | LOCK_EX);
+
                         $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
                     }
                     else {
