@@ -10015,18 +10015,18 @@ var workzone = function workzone(services) {
 
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
-            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(exposeName);
         });
 
         (0, _jquery2.default)('#expose_list').on('change', function () {
-            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(this.value);
         });
 
         (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-field-mapping', function (e) {
             e.preventDefault();
-            if ((0, _jquery2.default)('#profile-mapping').val() == '') {
+            if ((0, _jquery2.default)('#field-profile-mapping').val() == '') {
                 return (0, _alert2.default)('', localeService.t('ExposeChooseProfile'));
             }
 
@@ -10043,20 +10043,70 @@ var workzone = function workzone(services) {
             });
         });
 
-        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#profile-mapping', function (e) {
-            (0, _jquery2.default)('.databox-field-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#field-profile-mapping', function (e) {
+            (0, _jquery2.default)('.databox-field-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
 
             _jquery2.default.ajax({
                 type: "GET",
                 url: '/prod/expose/databoxes-field?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
                 dataType: 'html',
                 data: {
-                    profile: (0, _jquery2.default)('#profile-mapping').val()
+                    profile: (0, _jquery2.default)('#field-profile-mapping').val()
                 },
                 success: function success(data) {
                     (0, _jquery2.default)('#DIALOG-field-mapping .databox-field-list').empty().html(data);
 
                     (0, _jquery2.default)('.field-list').sortable().disableSelection();
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#subdef-profile-mapping', function (e) {
+            (0, _jquery2.default)('.databox-subdef-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+
+            _jquery2.default.ajax({
+                type: "GET",
+                url: '/prod/expose/subdefs-list?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'html',
+                data: {
+                    profile: (0, _jquery2.default)('#subdef-profile-mapping').val()
+                },
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping .databox-subdef-list').empty().html(data);
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '.subdef-phraseanet-side', function () {
+            if ((0, _jquery2.default)(this).is(":checked")) {
+                var idName = (0, _jquery2.default)(this).attr('id');
+                var selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
+                selectBox.attr('name', idName);
+                selectBox.show();
+            } else {
+                var _selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
+                _selectBox.removeAttr('name');
+                _selectBox.hide();
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function (event) {
+            event.preventDefault();
+            if ((0, _jquery2.default)('#subdef-profile-mapping').val() == '') {
+                return (0, _alert2.default)('', localeService.t('ExposeChooseProfile'));
+            }
+
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#subdef-mapping-form').serializeArray();
+
+            console.log(formData);
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/subdef-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
                 }
             });
         });
@@ -10803,10 +10853,12 @@ var workzone = function workzone(services) {
                     (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
                     (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
+                    (0, _jquery2.default)('.add_expose_block').removeClass('hidden');
                 } else {
                     (0, _jquery2.default)('.expose_connected').empty();
                     (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
                     (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
+                    (0, _jquery2.default)('.add_expose_block').addClass('hidden');
                 }
             }
         });
@@ -10969,12 +11021,12 @@ var workzone = function workzone(services) {
 
         dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
-        (0, _jquery2.default)('#DIALOG-field-mapping').attr('title', localeService.t('ExposeFieldMapping')).dialog({
+        (0, _jquery2.default)('#DIALOG-field-mapping').attr('title', localeService.t('ExposeMapping')).dialog({
             autoOpen: false,
             closeOnEscape: true,
             resizable: true,
             draggable: true,
-            width: 400,
+            width: 900,
             height: 500,
             modal: true,
             overlay: {
@@ -10995,16 +11047,20 @@ var workzone = function workzone(services) {
             url: '/prod/expose/field-mapping?exposeName=' + exposeName,
             success: function success(data) {
                 dialogFieldMapping.empty().html(data);
+                (0, _jquery2.default)("#expose-mapping-tabs").tabs();
 
                 _jquery2.default.ajax({
                     type: "GET",
                     url: '/prod/expose/list-profile?exposeName=' + exposeName,
                     success: function success(data) {
-                        (0, _jquery2.default)('#DIALOG-field-mapping select#profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        (0, _jquery2.default)('#DIALOG-field-mapping select#field-profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        (0, _jquery2.default)('#DIALOG-field-mapping select#subdef-profile-mapping').empty().html('<option value="">Select Profile</option>');
                         var i = 0;
 
                         for (; i < data.profiles.length; i++) {
-                            (0, _jquery2.default)('#DIALOG-field-mapping select#profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+                            (0, _jquery2.default)('#DIALOG-field-mapping select#field-profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+
+                            (0, _jquery2.default)('#DIALOG-field-mapping select#subdef-profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
                         }
                     }
                 });

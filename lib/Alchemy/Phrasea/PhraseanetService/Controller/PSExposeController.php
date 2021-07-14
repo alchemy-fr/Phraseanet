@@ -729,14 +729,40 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $exposeMappingName = $this->getExposeMappingName();
+        $exposeMappingName = $this->getExposeMappingName('field');
         $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
         $actualFieldsList = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
-        $fields = $this->getFields($actualFieldsList);
+        $fields = ($profile != null) ? $this->getFields($actualFieldsList) : [];
 
         return $this->render('prod/WorkZone/ExposeFieldList.html.twig', [
             'fields'            => $fields,
+        ]);
+    }
+
+    public function getSubdefsListAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->get('profile');
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $exposeMappingName = $this->getExposeMappingName('subdef');
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $actualSubdefMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+
+        $databoxes = empty($profile)? [] : $this->getApplicationBox()->get_databoxes();
+
+        return $this->render('prod/WorkZone/ExposeSubdefList.html.twig', [
+            'databoxes'            => $databoxes,
+            'actualSubdefMapping'  => $actualSubdefMapping
         ]);
     }
 
@@ -760,7 +786,7 @@ class PSExposeController extends Controller
         $fields = ($request->request->get('fields') === null) ? null : array_keys($request->request->get('fields'));
 
         $fields = [
-            $this->getExposeMappingName() => $fields
+            $this->getExposeMappingName('field') => $fields
         ];
 
         if ($exposeName == null || $profile == null) {
@@ -781,7 +807,7 @@ class PSExposeController extends Controller
         // get the actual value and merge it with the new one before save
         $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
-        $fields = array_merge($clientAnnotationProfile, $fields);
+        $annotationValues = array_merge($clientAnnotationProfile, $fields);
         $accessToken = $this->getAndSaveToken($exposeName);
 
         // save field mapping in the selected profile
@@ -791,7 +817,7 @@ class PSExposeController extends Controller
                 'Content-Type'  => 'application/json'
             ],
             'json'  => [
-                'clientAnnotations' => json_encode($fields)
+                'clientAnnotations' => json_encode($annotationValues)
             ]
         ]);
 
@@ -805,6 +831,55 @@ class PSExposeController extends Controller
         return $app->json([
             'success'            => true,
             'clientAnnotations'  => $fields
+        ]);
+    }
+
+    public function saveSubdefMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->request->get('profile');
+        $exposeClient = $this->getExposeClient($exposeName);
+        $subdefs = $request->request->get('subdefs');
+
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $subdefs = [
+            $this->getExposeMappingName('subdef') => $subdefs
+        ];
+
+        // get the actual value and merge it with the new one before save
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $annotationValues = array_merge($clientAnnotationProfile, $subdefs);
+
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        // save subdef mapping in the selected profile
+        $resProfile = $exposeClient->put($profile , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+                'Content-Type'  => 'application/json'
+            ],
+            'json'  => [
+                'clientAnnotations' => json_encode($annotationValues)
+            ]
+        ]);
+
+        if ($resProfile->getStatusCode() !== 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "Error when saving mapping with status code: " . $resProfile->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'            => true,
+            'clientAnnotations'  => $subdefs
         ]);
     }
 
@@ -836,15 +911,16 @@ class PSExposeController extends Controller
     }
 
     /**
-     * get the name of mapping
+     * field | subdef  context
+     * @param $mappingContext
      *
      * @return string
      */
-    private function getExposeMappingName()
+    private function getExposeMappingName($mappingContext)
     {
         $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
 
-        return $phraseanetLocalId.'_field_mapping';
+        return $phraseanetLocalId.'_'. $mappingContext . '_mapping';
     }
 
     /**
