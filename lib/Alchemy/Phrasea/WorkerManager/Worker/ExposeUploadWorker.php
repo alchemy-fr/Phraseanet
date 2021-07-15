@@ -104,8 +104,14 @@ class ExposeUploadWorker implements WorkerInterface
             $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $payload['accessToken'], $payload['publicationId']);
 
             $exposeFieldMappingName = $phraseanetLocalId . '_field_mapping';
-            $fieldListToUpload = !empty($clientAnnotationProfile[$exposeFieldMappingName]) ? $clientAnnotationProfile[$exposeFieldMappingName] : [];
+            $fieldMapping = !empty($clientAnnotationProfile[$exposeFieldMappingName]) ? $clientAnnotationProfile[$exposeFieldMappingName] : [];
+            $fieldListToUpload = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
 
+            // if not have setting sendGeoloc, by default always send the geoloc
+            $sendGeolocField = isset($fieldMapping['sendGeolocField']) ? $fieldMapping['sendGeolocField'] : [$payload['databoxId']];
+
+            // if not have setting sendVttField, by default always send the vtt
+            $sendVttField = isset($fieldMapping['sendVttField']) ? $fieldMapping['sendVttField'] : [$payload['databoxId']];
 
             $description = "<dl>";
 
@@ -135,20 +141,51 @@ class ExposeUploadWorker implements WorkerInterface
             $databox = $record->getDatabox();
             $caption = $record->get_caption();
             $lat = $lng = null;
+            $webVTT = '';
 
-            foreach ($databox->get_meta_structure() as $meta) {
-                if (strpos(strtolower($meta->get_name()), 'longitude') !== FALSE  && $caption->has_field($meta->get_name())) {
-                    // retrieve value for the corresponding field
-                    $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
-                    $fieldValue = array_pop($fieldValues);
-                    $lng = $fieldValue->getValue();
+            if (in_array($payload['databoxId'], $sendGeolocField)) {
+                $latFieldName = $lonFieldName = '';
+                foreach($this->app['conf']->get(['geocoding-providers'], []) as $provider) {
+                    if($provider['enabled'] && array_key_exists('position-fields', $provider)) {
+                        foreach ($provider['position-fields'] as $position_field) {
+                            switch ($position_field['type']) {
+                                case 'lat':
+                                    $latFieldName = $position_field['name'];
+                                    break;
+                                case 'lon':
+                                    $lonFieldName = $position_field['name'];
+                                    break;
+                            }
+                        }
+                    }
+                }
 
-                } elseif (strpos(strtolower($meta->get_name()), 'latitude') !== FALSE  && $caption->has_field($meta->get_name())) {
-                    // retrieve value for the corresponding field
-                    $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
-                    $fieldValue = array_pop($fieldValues);
-                    $lat = $fieldValue->getValue();
+                foreach ($databox->get_meta_structure() as $meta) {
+                    if (strpos(strtolower($meta->get_name()), strtolower($lonFieldName)) !== FALSE  && $caption->has_field($meta->get_name())) {
+                        // retrieve value for the corresponding field
+                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
+                        $fieldValue = array_pop($fieldValues);
+                        $lng = $fieldValue->getValue();
 
+                    } elseif (strpos(strtolower($meta->get_name()), strtolower($latFieldName)) !== FALSE  && $caption->has_field($meta->get_name())) {
+                        // retrieve value for the corresponding field
+                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
+                        $fieldValue = array_pop($fieldValues);
+                        $lat = $fieldValue->getValue();
+
+                    }
+                }
+            }
+
+            if (in_array($payload['databoxId'], $sendVttField)) {
+                foreach ($databox->get_meta_structure() as $meta) {
+                    if (strpos(strtolower($meta->get_name()), strtolower('VideoTextTrack')) !== FALSE  && $caption->has_field($meta->get_name())) {
+                        // retrieve value for the corresponding field
+                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
+                        $fieldValue = array_pop($fieldValues);
+
+                        $webVTT .= "\n\n" .$fieldValue->getValue();
+                    }
                 }
             }
 
@@ -191,6 +228,10 @@ class ExposeUploadWorker implements WorkerInterface
 
             if ($lng !== null) {
                 $requestBody['lng'] = $lng;
+            }
+
+            if ($webVTT !== '') {
+                $requestBody['webVTT'] = $webVTT;
             }
 
             $response = $exposeClient->post('/assets', [

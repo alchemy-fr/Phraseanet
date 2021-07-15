@@ -732,11 +732,16 @@ class PSExposeController extends Controller
         $exposeMappingName = $this->getExposeMappingName('field');
         $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
-        $actualFieldsList = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+        $fieldMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+
+        $actualFieldsList = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
         $fields = ($profile != null) ? $this->getFields($actualFieldsList) : [];
 
+        // send geoloc and send vtt checked by default if not setting
         return $this->render('prod/WorkZone/ExposeFieldList.html.twig', [
             'fields'            => $fields,
+            'sendGeolocField'   => isset($fieldMapping['sendGeolocField']) ? $fieldMapping['sendGeolocField'] : null,
+            'sendVttField'      => isset($fieldMapping['sendVttField']) ? $fieldMapping['sendVttField'] : null,
         ]);
     }
 
@@ -783,10 +788,19 @@ class PSExposeController extends Controller
     {
         $exposeName = $request->get('exposeName');
         $profile = $request->request->get('profile');
+        $sendGeolocField = !empty($request->request->get('sendGeolocField')) ? array_keys($request->request->get('sendGeolocField')): [];
+        $sendVttField = !empty($request->request->get('sendVttField')) ? array_keys($request->request->get('sendVttField')) : [];
+
         $fields = ($request->request->get('fields') === null) ? null : array_keys($request->request->get('fields'));
 
-        $fields = [
-            $this->getExposeMappingName('field') => $fields
+        $fieldMapping = [
+            'sendGeolocField'   => $sendGeolocField,
+            'sendVttField'      => $sendVttField,
+            'fields'            => $fields
+        ];
+
+        $fieldMapping = [
+            $this->getExposeMappingName('field') => $fieldMapping
         ];
 
         if ($exposeName == null || $profile == null) {
@@ -807,7 +821,7 @@ class PSExposeController extends Controller
         // get the actual value and merge it with the new one before save
         $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
 
-        $annotationValues = array_merge($clientAnnotationProfile, $fields);
+        $annotationValues = array_merge($clientAnnotationProfile, $fieldMapping);
         $accessToken = $this->getAndSaveToken($exposeName);
 
         // save field mapping in the selected profile
@@ -830,7 +844,7 @@ class PSExposeController extends Controller
 
         return $app->json([
             'success'            => true,
-            'clientAnnotations'  => $fields
+            'clientAnnotations'  => $annotationValues
         ]);
     }
 
@@ -936,7 +950,7 @@ class PSExposeController extends Controller
         foreach ($actualFieldsList as $value) {
             $t = explode('_', $value);
             $databox = $this->getApplicationBox()->get_databox($t[0]);
-            $viewName = $databox->get_viewname();
+            $viewName = $t[0]. ':::' .$databox->get_viewname();
 
             $fieldFromProfile[$viewName][$t[1]]['id']      = $value;
             $fieldFromProfile[$viewName][$t[1]]['name']    = $databox->get_meta_structure()->get_element($t[1])->get_label($this->app['locale']);
@@ -946,14 +960,13 @@ class PSExposeController extends Controller
         $fields = $fieldFromProfile;
         foreach ($databoxes as $databox) {
             foreach ($databox->get_meta_structure() as $meta) {
-                // get databoxID_metaID for the checkbox name
-                if (!empty($fields[$databox->get_viewname()][$meta->get_id()]) && in_array($databox->get_sbas_id().'_'.$meta->get_id(), $fields[$databox->get_viewname()][$meta->get_id()])) {
+                $viewName = $databox->get_sbas_id().':::'.$databox->get_viewname();
+                if (!empty($fields[$viewName][$meta->get_id()]) && in_array($databox->get_sbas_id().'_'.$meta->get_id(), $fields[$viewName][$meta->get_id()])) {
                    continue;
                 }
-
-                $fields[$databox->get_viewname()][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
-                $fields[$databox->get_viewname()][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
-
+                // get databoxID_metaID for the checkbox name
+                $fields[$viewName][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
+                $fields[$viewName][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
             }
         }
 
