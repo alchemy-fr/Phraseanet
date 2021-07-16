@@ -10061,6 +10061,26 @@ var workzone = function workzone(services) {
             });
         });
 
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '.subdef-expose-side', function (e) {
+            var that = this;
+            var className = (0, _jquery2.default)(that).data('subdef-group');
+            var selectedValue = (0, _jquery2.default)(that).val();
+            var count = 0;
+            (0, _jquery2.default)(className).each(function () {
+                if (!(0, _jquery2.default)(this).hasClass('hidden') && (0, _jquery2.default)(this).val() == selectedValue && (0, _jquery2.default)(this).val() != 'none') {
+                    count++;
+                }
+            });
+            if (count > 1) {
+                (0, _alert2.default)('', localeService.t('ExposeDuplicateValue'));
+                (0, _jquery2.default)(that).val(_jquery2.default.data(that, 'current'));
+
+                return false;
+            }
+
+            _jquery2.default.data(that, 'current', (0, _jquery2.default)(that).val());
+        });
+
         (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#subdef-profile-mapping', function (e) {
             (0, _jquery2.default)('.databox-subdef-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
 
@@ -10082,11 +10102,11 @@ var workzone = function workzone(services) {
                 var idName = (0, _jquery2.default)(this).attr('id');
                 var selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
                 selectBox.attr('name', idName);
-                selectBox.show();
+                selectBox.removeClass('hidden');
             } else {
                 var _selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
                 _selectBox.removeAttr('name');
-                _selectBox.hide();
+                _selectBox.addClass('hidden');
             }
         });
 
@@ -10097,8 +10117,6 @@ var workzone = function workzone(services) {
             }
 
             var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#subdef-mapping-form').serializeArray();
-
-            console.log(formData);
 
             _jquery2.default.ajax({
                 type: "POST",

@@ -151,6 +151,26 @@ const workzone = (services) => {
             });
         });
 
+        $('#DIALOG-field-mapping').on('change', '.subdef-expose-side', function(e) {
+            let that = this;
+            let className = $(that).data('subdef-group');
+            let selectedValue = $(that).val();
+            let count = 0;
+            $(className).each(function() {
+                if (!$(this).hasClass('hidden') && $(this).val() == selectedValue && $(this).val() != 'none') {
+                    count++;
+                }
+            });
+            if (count > 1) {
+                Alerts('', localeService.t('ExposeDuplicateValue'));
+                $(that).val($.data(that, 'current'));
+
+                return false;
+            }
+
+            $.data(that, 'current', $(that).val());
+        });
+
         $('#DIALOG-field-mapping').on('change', '#subdef-profile-mapping', function(e) {
             $('.databox-subdef-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
 
@@ -172,11 +192,11 @@ const workzone = (services) => {
                 let idName = $(this).attr('id');
                 let selectBox = $(this).closest('div').find('.subdef-expose-side');
                 selectBox.attr('name', idName);
-                selectBox.show();
+                selectBox.removeClass('hidden');
             } else {
                 let selectBox = $(this).closest('div').find('.subdef-expose-side');
                 selectBox.removeAttr('name');
-                selectBox.hide();
+                selectBox.addClass('hidden');
             }
         });
 
@@ -187,8 +207,6 @@ const workzone = (services) => {
             }
 
             let formData = $('#DIALOG-field-mapping').find('#subdef-mapping-form').serializeArray();
-
-            console.log(formData);
 
             $.ajax({
                 type: "POST",
