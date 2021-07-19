@@ -258,6 +258,13 @@ class ExposeUploadWorker implements WorkerInterface
                 'body' => fopen($record->get_subdef($phraseanetSubdefAsDocument)->getRealPath(), 'r')
             ]);
 
+            if (count($mapping) == 0) {
+                $mapping = [
+                    'thumbnail'  => 'thumbnail',
+                    'preview'    => 'preview'
+                ];
+            }
+
             // add sub-definition from mapping
             foreach ($mapping as $phraseanetSubdef => $exposeSubdef) {
                 $isThumbnail = $isPreview= false;
