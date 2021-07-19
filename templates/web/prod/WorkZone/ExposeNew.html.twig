@@ -32,6 +32,13 @@
                             <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
                         </select>
                     </div>
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Enabled' | trans }}</label>
+                        <label class="switch">
+                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
                     <div class="ui-widget available-wrapper">
                         <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
@@ -42,13 +49,6 @@
                             <label>{{ 'prod:expose:publication:To' | trans }} </label>
                             <input type="text" value="" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
-                    </div>
-                    <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Enabled' | trans }}</label>
-                        <label class="switch">
-                            <input id="enabled_combobox" type="checkbox" class="publication-field" name="enabled">
-                            <span class="slider round"></span>
-                        </label>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
@@ -76,25 +76,30 @@
                             <p class="error form-error alert alert-error">Not implemented</p>
                         </div>
                     </div>
-                    <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Layout' | trans }}</label>
-                        <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="" selected="selected">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
-                            <option value="gallery">{{ 'prod:expose:publication:Gallery' | trans }}</option>
-                            <option value="grid">{{ 'prod:expose:publication:Grid' | trans }}</option>
-                            <option value="mapbox">{{ 'prod:expose:publication:Mapbox' | trans }}</option>
-                            <option value="download">{{ 'prod:expose:publication:Download' | trans }}</option>
-                        </select>
-                    </div>
-                    <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Theme' | trans }}</label>
-                        <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
-                            <option value="light">{{ 'prod:expose:publication:Light' | trans }}</option>
-                            <option value="dark">{{ 'prod:expose:publication:Dark' | trans }}</option>
-                        </select>
+
+                    <h4 class="expose-more-setting" style="text-align: center;margin-bottom: 20px;">{{ 'expose:: More setting' | trans }}</h4>
+
+                    <div id="moreSettingInner" class="hidden">
+                        <div class="ui-widget">
+                            <label>{{ 'prod:expose:publication:Layout' | trans }}</label>
+                            <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="" selected="selected">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
+                                <option value="gallery">{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                                <option value="grid">{{ 'prod:expose:publication:Grid' | trans }}</option>
+                                <option value="mapbox">{{ 'prod:expose:publication:Mapbox' | trans }}</option>
+                                <option value="download">{{ 'prod:expose:publication:Download' | trans }}</option>
+                            </select>
+                        </div>
+                        <div class="ui-widget">
+                            <label>{{ 'prod:expose:publication:Theme' | trans }}</label>
+                            <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
+                                <option value="light">{{ 'prod:expose:publication:Light' | trans }}</option>
+                                <option value="dark">{{ 'prod:expose:publication:Dark' | trans }}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -151,9 +156,9 @@
         }
 
         $(document).ready(function () {
-            $("#DIALOG-expose-add .toggleSetting").click(function (e) {
+            $("#DIALOG-expose-add .expose-more-setting").click(function (e) {
                 $(this).toggleClass('open');
-                $('#DIALOG-expose-add').find('#advancedSettingInner').toggleClass('hidden');
+                $('#DIALOG-expose-add').find('#moreSettingInner').toggleClass('hidden');
             });
         });
 
