@@ -144,7 +144,7 @@
                     } else if (lvalue === 'false') {
                         obj[key] = false;
                     }
-                } else if (typeof value === 'object') {
+                } else if (value !== null && typeof value === 'object') {
                     booleanizeObject(obj[key]);
                 }
             });
@@ -168,9 +168,6 @@
                 /**Build Config elt**/
                 var config = {};
 
-                if (dataValue.layout != '') {
-                    config = {...config, layout: dataValue.layout};
-                }
                 if (dataValue.enabled == 'on') {
                     config = {...config, enabled: true};
                 }else{
@@ -192,14 +189,11 @@
                     config = {...config, expiresAt: dataValue.expiresAt};
                 }
 
-                if (dataValue.theme) {
-                    config = {...config, theme: dataValue.theme};
-                }
-
+                config = {...config, layout: dataValue.layout};
+                config = {...config, theme: dataValue.theme};
                 config = {...config, securityMethod: dataValue.securityMethod};
 
                 dataValue = {...dataValue, config};
-
 
                 booleanizeObject(dataValue);
 
@@ -223,9 +217,9 @@
             }
 
             if ($("#DIALOG-expose-add #profile-field").val() == "") {
-                delete datavalueMinus['profile'];
+                datavalueMinus['profile'] = null;
             }
-            ;
+
 
             delete datavalueMinus['layout'];
             delete datavalueMinus['enabled'];

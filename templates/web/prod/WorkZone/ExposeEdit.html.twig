@@ -324,7 +324,7 @@
                         exposeName: "{{ exposeName }}",
                         publicationData: advancedSetting.val()
                     },
-                    success: function (data) {console.log(data.success);
+                    success: function (data) {
                         if (data.success) {
                             publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
                             document.getElementById("publication-data-form").reset();
@@ -583,7 +583,7 @@
                     } else if (lvalue === 'false') {
                         obj[key] = false;
                     }
-                } else if (typeof value === 'object') {
+                } else if (value !== null && typeof value === 'object') {
                     booleanizeObject(obj[key]);
                 }
             });
@@ -600,9 +600,6 @@
                 /**Build Config elt**/
                 var config = {};
 
-                if (dataValue.layout != '') {
-                    config = {...config, layout: dataValue.layout};
-                }
                 if (dataValue.enabled == 'on') {
                     config = {...config, enabled: true};
                 }else{
@@ -624,21 +621,17 @@
                     config = {...config, expiresAt: dataValue.expiresAt};
                 }
 
-                if (dataValue.theme) {
-                    config = {...config, theme: dataValue.theme};
-                }
-
+                config = {...config, layout: dataValue.layout};
                 config = {...config, securityMethod: dataValue.securityMethod};
-
+                config = {...config, theme: dataValue.theme};
                 dataValue = {...dataValue, config};
 
-
                 booleanizeObject(dataValue);
-
 
                 return dataValue;
 
             } catch (err) {
+                console.log(err);
                 return;
             }
         }
@@ -655,7 +648,7 @@
             }
 
             if (profileField.val() == "") {
-                delete datavalueMinus['profile'];
+                datavalueMinus['profile'] = null;
             }
 
             delete datavalueMinus['layout'];
