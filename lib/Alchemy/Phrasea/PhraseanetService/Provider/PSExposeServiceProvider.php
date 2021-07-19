@@ -86,6 +86,10 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('GET')
             ->bind('ps_expose_publication_permission_list');
 
+        $controllers->match('/publication/slug-availability/{slug}/', 'controller.ps.expose:checkPublicationSlugAction')
+            ->method('GET')
+            ->bind('ps_expose_publication_slug_availability');
+
         $controllers->match('/databoxes-field', 'controller.ps.expose:getDataboxesFieldAction')
             ->method('GET')
             ->bind('ps_expose_get_databoxes_field');

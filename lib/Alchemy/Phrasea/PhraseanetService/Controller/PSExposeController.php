@@ -295,6 +295,47 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Require params "exposeName" and "slug"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function checkPublicationSlugAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeClient = $this->getExposeClient($request->get('exposeName'));
+
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
+
+        $resAvailability = $exposeClient->get('/publications/slug-availability/' . $request->get('slug') , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+            ]
+        ]);
+
+        if ($resAvailability->getStatusCode() != 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when checking slug availability : " . $resAvailability->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'   => true,
+            'isAvailable' => json_decode($resAvailability->getBody()->getContents()),
+            'message'   => ''
+        ]);
+
+    }
+
+    /**
      * @param PhraseaApplication $app
      * @param Request $request
      * @return string

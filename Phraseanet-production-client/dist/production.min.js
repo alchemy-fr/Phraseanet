@@ -10024,6 +10024,44 @@ var workzone = function workzone(services) {
             updatePublicationList(this.value);
         });
 
+        (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.slug-availability', function (e) {
+            e.preventDefault();
+
+            var slug = (0, _jquery2.default)('#slug-field').val();
+            if (slug !== '') {
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/publication/slug-availability/' + slug + '/?exposeName=' + (0, _jquery2.default)('#expose_list').val(),
+                    success: function success(data) {
+                        if (data.isAvailable == true) {
+                            (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+                        } else if (data.isAvailable == false) {
+                            (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.new-slug-availability', function (e) {
+            e.preventDefault();
+
+            var slug = (0, _jquery2.default)('#new-slug-field').val();
+            if (slug !== '') {
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/publication/slug-availability/' + slug + '/?exposeName=' + (0, _jquery2.default)('#expose_list').val(),
+                    success: function success(data) {
+                        if (data.isAvailable == true) {
+                            (0, _jquery2.default)('#DIALOG-expose-add').find('.new-expose-slug-ok').show();
+                        } else if (data.isAvailable == false) {
+                            (0, _jquery2.default)('#DIALOG-expose-add').find('.new-expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
         (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-field-mapping', function (e) {
             e.preventDefault();
             if ((0, _jquery2.default)('#field-profile-mapping').val() == '') {

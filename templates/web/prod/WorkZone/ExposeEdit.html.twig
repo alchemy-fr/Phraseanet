@@ -33,8 +33,10 @@
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
-                        <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/>
-                        <input type="button" class="blue_button" value="check slug availability" style="height: 31px;">
+                        <input type="text" value="{{ publication.slug }}" name="slug" class="publication-field" id="slug-field"/>
+                        <input type="button" class="slug-availability" style="height: 31px;" value="{{ 'prod:expose:publication:check slug' }}">
+                        <img class="expose-slug-ok" src="/assets/common/images/icons/ok.png" style="height: 32px;display:none;" >
+                        <img class="expose-slug-nok" src="/assets/common/images/icons/red-cross.png" style="height: 32px;display:none;">
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Description' | trans }}</label>
@@ -205,6 +207,7 @@
 
         var publicationFieldClass = publicationEdit.find(".publication-field");
         var permissionList = publicationEdit.find("#permission-list");
+        var slugField = publicationEdit.find('#slug-field');
 
         $.datepicker.regional['default'] = {
             closeText: "Close",
@@ -288,6 +291,11 @@
         });
 
         bindPermissionEvent();
+
+        slugField.on('keyup', function() {
+            publicationEdit.find('.expose-slug-ok').hide();
+            publicationEdit.find('.expose-slug-nok').hide();
+        });
 
         publicationFieldClass.on('keyup change', function (e) {
             if ($(this).attr('id') === 'publication_securityMethod') {

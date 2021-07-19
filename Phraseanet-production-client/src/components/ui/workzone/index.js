@@ -114,6 +114,45 @@ const workzone = (services) => {
             updatePublicationList(this.value);
         });
 
+        $('#DIALOG-expose-edit').on('click', '.slug-availability', function (e) {
+            e.preventDefault();
+
+            let slug = $('#slug-field').val();
+            if (slug !== '') {
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/publication/slug-availability/${slug}/?exposeName=${$('#expose_list').val()}`,
+                    success: function (data) {
+                        if (data.isAvailable == true) {
+                            $('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+                        } else if(data.isAvailable == false) {
+                            $('#DIALOG-expose-edit').find('.expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+
+        });
+
+        $('#DIALOG-expose-add').on('click', '.new-slug-availability', function (e) {
+            e.preventDefault();
+
+            let slug = $('#new-slug-field').val();
+            if (slug !== '') {
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/publication/slug-availability/${slug}/?exposeName=${$('#expose_list').val()}`,
+                    success: function (data) {
+                        if (data.isAvailable == true) {
+                            $('#DIALOG-expose-add').find('.new-expose-slug-ok').show();
+                        } else if(data.isAvailable == false) {
+                            $('#DIALOG-expose-add').find('.new-expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
         $('#DIALOG-field-mapping').on('click', '#save-field-mapping', function(e) {
             e.preventDefault();
             if ($('#field-profile-mapping').val() == '') {
