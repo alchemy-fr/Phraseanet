@@ -31,6 +31,10 @@ class UserNotificationController extends Controller
      */
     public function getNotifications(Request $request)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter getNotifications() controller")
+        ), FILE_APPEND | LOCK_EX);
+
         $stopwatch = new Stopwatch('notif');
 
         if (!$request->isXmlHttpRequest()) {
@@ -44,13 +48,26 @@ class UserNotificationController extends Controller
             'unread_basket_ids' => []
         ];
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("")
+        ), FILE_APPEND | LOCK_EX);
+
         $authenticator = $this->getAuthenticator();
 
         if (!$authenticator->isAuthenticated()) {
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("not authenticated, return")
+            ), FILE_APPEND | LOCK_EX);
+
             $ret['status'] = 'disconnected';
 
             return $this->app->json($ret);
         }
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("authenticated as %s, continue with appbox get_connection()", $authenticator->getUser()->getId())
+        ), FILE_APPEND | LOCK_EX);
 
         try {
             $this->getApplicationBox()->get_connection();
@@ -58,6 +75,10 @@ class UserNotificationController extends Controller
         catch (Exception $e) {
             return $this->app->json($ret);
         }
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("connection ok")
+        ), FILE_APPEND | LOCK_EX);
 
         $ret['status'] = 'ok';
 
@@ -70,17 +91,31 @@ class UserNotificationController extends Controller
         $limit  = (int)$request->get('limit', 10);
         $what   = (int)$request->get('what', eventsmanager_broker::UNREAD | eventsmanager_broker::READ);
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("calling broker->get_notifications(offset=%s, limit=%s, what=%s)", $offset, $limit, $what)
+        ), FILE_APPEND | LOCK_EX);
+
         $notifications = $this->getEventsManager()->get_notifications($offset, $limit, $what, $stopwatch);
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("broker->et_notifications(...) done, adding html")
+        ), FILE_APPEND | LOCK_EX);
 
         $stopwatch->lap("get_notifications done");
 
         // add html to each notif
+        $n = 0;
         foreach ($notifications['notifications'] as $k => $v) {
             $notifications['notifications'][$k]['html'] = $this->render('prod/notification.html.twig', [
                 'notification' => $v
                 ]
             );
+            $n++;
         }
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("added html to %s notifications, finding unread baskets", $n)
+        ), FILE_APPEND | LOCK_EX);
 
         $ret['notifications'] = $notifications;
 
@@ -92,12 +127,21 @@ class UserNotificationController extends Controller
 
         $baskets = $this->getBasketRepository()->findUnreadActiveByUser($authenticator->getUser());
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("finding unread baskets done")
+        ), FILE_APPEND | LOCK_EX);
+
         $stopwatch->lap("baskets::findUnreadActiveByUser done");
 
+        $n = 0;
         foreach ($baskets as $basket) {
             $ret['unread_basket_ids'][] = $basket->getId();
+            $n++;
         }
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("found %s unread baskets, adding maintenance messages", $n)
+        ), FILE_APPEND | LOCK_EX);
 
         // add message about maintenance
         //
@@ -112,10 +156,20 @@ class UserNotificationController extends Controller
             }
         }
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("maintenance message=\"%s\"", $ret['message'])
+        ), FILE_APPEND | LOCK_EX);
+
+
         $stopwatch->lap("end");
         $stopwatch->stop();
 
         $response = new JsonResponse($ret);
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("adding timing messages to response")
+        ), FILE_APPEND | LOCK_EX);
+
 
         // add specific timing debug
         $response->headers->set('Server-Timing', $stopwatch->getLapsesAsServerTimingHeader(), false);
@@ -125,6 +179,10 @@ class UserNotificationController extends Controller
         $duration = (microtime(true) - $request->server->get('REQUEST_TIME_FLOAT')) * 1000.0;
         $h = '_global;' . 'dur=' . $duration;
         $response->headers->set('Server-Timing', $h, false);    // false : add header (don't replace)
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from controller")
+        ), FILE_APPEND | LOCK_EX);
 
         return $response;
     }

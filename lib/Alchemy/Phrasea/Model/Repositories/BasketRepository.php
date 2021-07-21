@@ -89,6 +89,11 @@ class BasketRepository extends EntityRepository
      */
     public function findUnreadActiveByUser(User $user)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter findUnreadActiveByUser(usr_id=%s)", $user->getId())
+        ), FILE_APPEND | LOCK_EX);
+
+
         // too bad dql does not support "UNION" so we first get ids in sql...
         // grouping the 2 parts as 1 requires "LEFT JOIN"'s , it was really slow.
         $sql = "SELECT b.id\n"
@@ -113,9 +118,17 @@ class BasketRepository extends EntityRepository
             'usr_id_participant' => $user->getId()
         ];
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("fetching basket id's in sql")
+        ), FILE_APPEND | LOCK_EX);
+
         $stmt = $this->_em->getConnection()->executeQuery($sql, $params);
         $basket_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $stmt->closeCursor();
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("fetched %s basket id's, fetching baskets id dql", count($basket_ids))
+        ), FILE_APPEND | LOCK_EX);
 
         // ... then we fetch the basket objects in dql
         $dql = "SELECT b FROM Phraseanet:Basket b\n"
@@ -124,7 +137,13 @@ class BasketRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameter('basket_ids', $basket_ids);
 
-        return $query->getResult();
+        $result = $query->getResult();
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("fetched baskets, return from findUnreadActiveByUser(...)")
+        ), FILE_APPEND | LOCK_EX);
+
+        return $result;
     }
 
     /**
@@ -137,6 +156,10 @@ class BasketRepository extends EntityRepository
      */
     public function findActiveValidationByUser(User $user, $sort = null)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter findActiveValidationByUser(usr_id=%s)", $user->getId())
+        ), FILE_APPEND | LOCK_EX);
+
         // checked : 2 usages, "b.elements" seems useless.
         $dql = "SELECT b\n"
             . "FROM Phraseanet:Basket b\n"
@@ -165,7 +188,13 @@ class BasketRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters([1 => $user->getId(), 2 => $user->getId()]);
 
-        return $query->getResult();
+        $result = $query->getResult();
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from findActiveValidationByUser(...)")
+        ), FILE_APPEND | LOCK_EX);
+
+        return $result;
     }
 
     /**
@@ -179,6 +208,10 @@ class BasketRepository extends EntityRepository
      */
     public function findUserBasket($basket_id, User $user, $requireOwner)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter findUserBasket(basket_id=%s, usr_id=%s)", $basket_id, $user->getId())
+        ), FILE_APPEND | LOCK_EX);
+
         // checked : 3 usages, "b.elements e" seems useless
         $dql = "SELECT b\n"
             . " FROM Phraseanet:Basket b\n"
@@ -211,11 +244,19 @@ class BasketRepository extends EntityRepository
             }
         }
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from findUserBasket(...)")
+        ), FILE_APPEND | LOCK_EX);
+
         return $basket;
     }
 
     public function findContainingRecordForUser(\record_adapter $record, User $user)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter findContainingRecordForUser(record_id=%s, usr_id=%s)", $record->getId(), $user->getId())
+        ), FILE_APPEND | LOCK_EX);
+
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
             JOIN b.elements e
@@ -231,11 +272,21 @@ class BasketRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params);
 
-        return $query->getResult();
+        $result = $query->getResult();
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from findContainingRecordForUser(...)")
+        ), FILE_APPEND | LOCK_EX);
+
+        return $result;
     }
 
     public function findWorkzoneBasket(User $user, $query, $year, $type, $offset, $perPage)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter findWorkzoneBasket(usr_id=%s)", $user->getId())
+        ), FILE_APPEND | LOCK_EX);
+
         switch ($type) {
             case self::RECEIVED:
                 // todo : check when called, and if "LEFT JOIN b.elements e" is usefull
@@ -314,7 +365,13 @@ class BasketRepository extends EntityRepository
             ->setFirstResult($offset)
             ->setMaxResults($perPage);
 
-        return new Paginator($query, true);
+        $ret = new Paginator($query, true);
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from findWorkzoneBasket(...)")
+        ), FILE_APPEND | LOCK_EX);
+
+        return $ret;
     }
 
     /**
@@ -326,6 +383,10 @@ class BasketRepository extends EntityRepository
      */
     public function findActiveValidationAndBasketByUser(User $user, $sort = null)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter findActiveValidationAndBasketByUser(usr_id=%s)", $user->getId())
+        ), FILE_APPEND | LOCK_EX);
+
         // todo : check caller and if "LEFT JOIN b.elements e" is usefull
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
@@ -346,6 +407,12 @@ class BasketRepository extends EntityRepository
         $query = $this->_em->createQuery($dql);
         $query->setParameters(['usr_id' => $user->getId()]);
 
-        return $query->getResult();
+        $result = $query->getResult();
+
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from findActiveValidationAndBasketByUser(...)")
+        ), FILE_APPEND | LOCK_EX);
+
+        return $result;
     }
 }

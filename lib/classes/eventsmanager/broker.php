@@ -211,7 +211,15 @@ class eventsmanager_broker
 
     public function get_notifications(int $offset=0, int $limit=10, $readFilter = self::READ | self::UNREAD, \Alchemy\Phrasea\Utilities\Stopwatch $stopwatch = null)
     {
+        file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("enter broker->get_notifications(%s, %s, %s)", $offset, $limit, $readFilter)
+        ), FILE_APPEND | LOCK_EX);
+
         if(!$this->app->getAuthenticatedUser()) {
+            file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("not authenticated, return !!! should not happen !!!")
+            ), FILE_APPEND | LOCK_EX);
+
             return;
         }
 
@@ -246,6 +254,11 @@ class eventsmanager_broker
 
         // get count of unread notifications (to be displayed on navbar)
         //
+
+        file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("counting notifs for user %s", $usr_id)
+        ), FILE_APPEND | LOCK_EX);
+
         $total = 0;
         $unread = 0;
         $sql = 'SELECT COUNT(`id`) AS `total`, SUM(`unread`) AS `unread` FROM `notifications` WHERE `usr_id` = :usr_id';
@@ -256,6 +269,10 @@ class eventsmanager_broker
             $unread = (int)$row['unread'];
         }
         $stmt->closeCursor();
+
+        file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("counted %s total, %s unread", $total, $unread)
+        ), FILE_APPEND | LOCK_EX);
 
         if($stopwatch) $stopwatch->lap("sql count unread");
 
@@ -279,6 +296,10 @@ class eventsmanager_broker
         }
         $sql .= " ORDER BY created_on DESC LIMIT " . $offset . ", " . $limit;
 
+        file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("fetching notifs from %s, limit %s", $offset, $limit)
+        ), FILE_APPEND | LOCK_EX);
+
         $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute([':usr_id' => $usr_id]); // , ':offset' => $offset, ':limit' => $limit]);
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -286,10 +307,18 @@ class eventsmanager_broker
 
         if($stopwatch) $stopwatch->lap("sql 2");
 
+        file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("fetched %s notifs, looping", count($rs))
+        ), FILE_APPEND | LOCK_EX);
+
         $bad_ids = [];
         // nb : we asked for a "page" of notifs (limit), but since some notifications may be ignored (bad type, bad json, ...)
         //      the result array may contain less than expected (but this should not happen).
-        foreach ($rs as $row) {
+        foreach ($rs as $i=>$row) {
+            file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("%s", $i)
+            ), FILE_APPEND | LOCK_EX);
+
             $type = 'eventsmanager_' . $row['type'];
             if ( ! isset($this->pool_classes[$type])) {
                 $bad_ids[] = $row['id'];
@@ -325,6 +354,11 @@ class eventsmanager_broker
                     'unread'            => $row['unread'],
                 ]
             );
+
+            file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("%s ok", $i)
+            ), FILE_APPEND | LOCK_EX);
+
         }
         $stmt->closeCursor();
 
@@ -332,11 +366,19 @@ class eventsmanager_broker
 
         if(!empty($bad_ids)) {
             // delete broken notifs
+            file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("deleting %s invalid notifs", count($bad_ids))
+            ), FILE_APPEND | LOCK_EX);
+
             $sql = 'DELETE FROM `notifications` WHERE `id` IN (' . join(',', $bad_ids) . ')';
             $stmt = $this->app->getApplicationBox()->get_connection()->exec($sql);
         }
 
         $next_offset = $offset+$limit;
+
+        file_put_contents(dirname(__FILE__).'/../../../logs/notifications.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from broker->get_notifications(...)")
+        ), FILE_APPEND | LOCK_EX);
 
         return [
             'unread_count' => $unread,
