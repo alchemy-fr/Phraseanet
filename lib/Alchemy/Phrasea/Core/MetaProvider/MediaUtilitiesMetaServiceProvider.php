@@ -3,14 +3,14 @@
 namespace Alchemy\Phrasea\Core\MetaProvider;
 
 use Alchemy\Phrasea\Core\Provider\MediaAlchemystServiceProvider as PhraseanetMediaAlchemystServiceProvider;
+use Alchemy\Phrasea\MediaAlchemyst\MediaAlchemystServiceProvider;
+use Alchemy\Phrasea\MediaVorus\MediaVorusServiceProvider;
+use Alchemy\Phrasea\PHPExiftool\PHPExiftoolServiceProvider;
+use Alchemy\Phrasea\PHPExiftool\Reader;
+use Alchemy\Phrasea\PHPExiftool\Writer;
 use FFMpeg\FFMpegServiceProvider;
-use MediaAlchemyst\MediaAlchemystServiceProvider;
-use MediaVorus\MediaVorusServiceProvider;
 use MP4Box\MP4BoxServiceProvider;
 use Neutron\Silex\Provider\ImagineServiceProvider;
-use PHPExiftool\PHPExiftoolServiceProvider;
-use PHPExiftool\Reader;
-use PHPExiftool\Writer;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 

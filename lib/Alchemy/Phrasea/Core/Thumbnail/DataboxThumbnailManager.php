@@ -2,8 +2,7 @@
 
 namespace Alchemy\Phrasea\Core\Thumbnail;
 
-use Alchemy\Phrasea\Application;
-use MediaAlchemyst\Specification\Image as ImageSpecification;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\HttpFoundation\File\File;
 
 class DataboxThumbnailManager extends AbstractThumbnailManager implements ThumbnailManager

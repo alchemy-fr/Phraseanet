@@ -13,8 +13,8 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\Media\MediaInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class MediaType extends AbstractChecker

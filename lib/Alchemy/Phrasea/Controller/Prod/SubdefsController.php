@@ -10,11 +10,11 @@
 namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Controller\Controller;
-use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Driver\Metadata\MetadataBag;
-use PHPExiftool\Driver\TagFactory;
-use PHPExiftool\Driver\Value\Mono;
-use PHPExiftool\Reader;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\MetadataBag;
+use Alchemy\Phrasea\PHPExiftool\Driver\TagFactory;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono;
+use Alchemy\Phrasea\PHPExiftool\Reader;
 
 class SubdefsController extends Controller
 {

@@ -12,10 +12,10 @@
 namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use MediaVorus\Utils\AudioMimeTypeGuesser;
-use MediaVorus\Utils\PostScriptMimeTypeGuesser;
-use MediaVorus\Utils\RawImageMimeTypeGuesser;
-use MediaVorus\Utils\VideoMimeTypeGuesser;
+use Alchemy\Phrasea\MediaVorus\Utils\AudioMimeTypeGuesser;
+use Alchemy\Phrasea\MediaVorus\Utils\PostScriptMimeTypeGuesser;
+use Alchemy\Phrasea\MediaVorus\Utils\RawImageMimeTypeGuesser;
+use Alchemy\Phrasea\MediaVorus\Utils\VideoMimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
 class MimeGuesserConfiguration

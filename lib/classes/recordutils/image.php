@@ -10,14 +10,14 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\MediaVorus\Media\Image;
+use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Imagine\Exception\Exception as ImagineException;
+use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Palette\RGB;
-use Imagine\Image\Box;
 use Imagine\Image\Point;
-use Imagine\Exception\Exception as ImagineException;
-use MediaVorus\Media\MediaInterface;
-use MediaVorus\Media\Image;
 
 class recordutils_image
 {

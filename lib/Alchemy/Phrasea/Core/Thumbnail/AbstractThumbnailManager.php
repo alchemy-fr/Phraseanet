@@ -3,11 +3,11 @@
 namespace Alchemy\Phrasea\Core\Thumbnail;
 
 use Alchemy\Phrasea\Application;
-use MediaAlchemyst\Alchemyst;
-use MediaAlchemyst\Specification\Image as ImageSpecification;
-use MediaVorus\Media\Image;
-use MediaVorus\Media\MediaInterface;
-use MediaVorus\Media\Video;
+use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
+use Alchemy\Phrasea\MediaVorus\Media\Image;
+use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
+use Alchemy\Phrasea\MediaVorus\Media\Video;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 

@@ -9,8 +9,8 @@
  */
 namespace Alchemy\Phrasea\Metadata;
 
-use PHPExiftool\Driver\TagFactory as BaseTagFactory;
-use PHPExiftool\Exception\TagUnknown;
+use Alchemy\Phrasea\PHPExiftool\Driver\TagFactory as BaseTagFactory;
+use Alchemy\Phrasea\PHPExiftool\Exception\TagUnknown;
 
 class TagFactory extends BaseTagFactory
 {

@@ -10,7 +10,7 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-use PHPExiftool\Driver\AbstractTag;
+use Alchemy\Phrasea\PHPExiftool\Driver\AbstractTag;
 
 class NoSource extends AbstractTag
 {

@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Border\Attribute;
 
 use Alchemy\Phrasea\Application;
-use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
 
 /**
  * Phraseanet Border Metadata Attribute

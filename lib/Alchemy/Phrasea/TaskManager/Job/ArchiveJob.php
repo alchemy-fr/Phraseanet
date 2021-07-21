@@ -12,22 +12,22 @@
 namespace Alchemy\Phrasea\TaskManager\Job;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
+use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Border\Manager as borderManager;
+use Alchemy\Phrasea\Border\MetadataBag;
+use Alchemy\Phrasea\Border\MetaFieldsBag;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\Border\Manager as borderManager;
-use Alchemy\Phrasea\TaskManager\Editor\ArchiveEditor;
 use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
-use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
-use Alchemy\Phrasea\Border\MetadataBag;
-use Alchemy\Phrasea\Border\MetaFieldsBag;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono as MonoValue;
+use Alchemy\Phrasea\TaskManager\Editor\ArchiveEditor;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
-use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
-use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 

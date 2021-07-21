@@ -7,17 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Alchemy\Phrasea\Media\Subdef\Image;
+
 use Alchemy\Phrasea\Media\Subdef\Audio;
-use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Gif;
-use Alchemy\Phrasea\Media\Subdef\Unknown;
+use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Pdf;
 use Alchemy\Phrasea\Media\Subdef\Subdef as SubdefSpecs;
+use Alchemy\Phrasea\Media\Subdef\Unknown;
+use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Type\Type as SubdefType;
-use MediaAlchemyst\Specification\SpecificationInterface;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\SpecificationInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+
 class databox_subdef
 {
     /**

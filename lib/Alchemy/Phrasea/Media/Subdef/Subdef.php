@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use MediaAlchemyst\Specification\SpecificationInterface;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\SpecificationInterface;
 
 interface Subdef
 {

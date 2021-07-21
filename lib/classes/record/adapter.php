@@ -25,6 +25,7 @@ use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
+use Alchemy\Phrasea\MediaVorus\MediaVorus;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
@@ -37,7 +38,6 @@ use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
@@ -1702,11 +1702,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $newname = $filesystem->generateDocumentFilename($record, $file->getFile());
 
             file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("copy \"%s\" to \"%s\"", $file->getFile()->getRealPath(), $pathhd . $newname)
+                sprintf("copying \"%s\" to \"%s\"", $file->getFile()->getRealPath(), $pathhd . $newname)
             ), FILE_APPEND | LOCK_EX);
 
             $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
 
+            file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("copied \"%s\" to \"%s\"", $file->getFile()->getRealPath(), $pathhd . $newname)
+            ), FILE_APPEND | LOCK_EX);
+// die;
             $media = $app->getMediaFromUri($pathhd . $newname);
             media_subdef::create($app, $record, 'document', $media);
 

@@ -31,9 +31,9 @@ use Alchemy\Phrasea\Model\Entities\LazaretAttribute;
 use Alchemy\Phrasea\Model\Entities\LazaretCheck;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
-use PHPExiftool\Driver\Metadata\Metadata;
-use PHPExiftool\Driver\Value\Mono as MonoValue;
-use PHPExiftool\Driver\Value\Multi;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono as MonoValue;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Multi;
 
 /**
  * Phraseanet Border Manager

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Event\Record;
 
-use MediaVorus\Media\MediaInterface;
+use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 
 class SubDefinitionCreatedEvent extends RecordEvent
 {

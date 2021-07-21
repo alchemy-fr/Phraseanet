@@ -12,27 +12,27 @@ namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
-use MediaAlchemyst\Alchemyst;
-use MediaAlchemyst\Specification\Image;
-use MediaAlchemyst\Specification\Video;
-use MediaVorus\MediaVorus;
-use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
+use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
+use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
+use Alchemy\Phrasea\MediaAlchemyst\Exception\FileNotFoundException;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Image;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Video;
+use Alchemy\Phrasea\MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
+use Alchemy\Phrasea\MediaVorus\MediaVorus;
 use Neutron\TemporaryFilesystem\Manager;
 use Psr\Log\LoggerInterface;
 use Unoconv\Exception\ExceptionInterface as UnoconvException;
 use Unoconv\Exception\RuntimeException;
 use Unoconv\Unoconv;
-use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
-use MediaAlchemyst\Exception\FileNotFoundException;
 
 class SubdefGenerator
 {

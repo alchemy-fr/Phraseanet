@@ -13,12 +13,12 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\FieldDeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\FieldEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\FieldUpdatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
-use Alchemy\Phrasea\Metadata\TagFactory;
-use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
-use Alchemy\Phrasea\Metadata\Tag\NoSource;
-use Doctrine\DBAL\Connection;
-use PHPExiftool\Exception\TagUnknown;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
+use Alchemy\Phrasea\Metadata\Tag\NoSource;
+use Alchemy\Phrasea\Metadata\TagFactory;
+use Alchemy\Phrasea\PHPExiftool\Exception\TagUnknown;
+use Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class databox_field implements cache_cacheableInterface

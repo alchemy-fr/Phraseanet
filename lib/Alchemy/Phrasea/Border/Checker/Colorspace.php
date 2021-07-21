@@ -14,7 +14,6 @@ namespace Alchemy\Phrasea\Border\Checker;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
 use Doctrine\ORM\EntityManager;
-use MediaVorus\Media\Document;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Colorspace extends AbstractChecker
