@@ -146,7 +146,7 @@ class ExposeUploadWorker implements WorkerInterface
             if (in_array($payload['databoxId'], $sendGeolocField)) {
                 $latFieldName = $lonFieldName = '';
                 foreach($this->app['conf']->get(['geocoding-providers'], []) as $provider) {
-                    if($provider['enabled'] && array_key_exists('position-fields', $provider)) {
+                    if ($provider['enabled'] && array_key_exists('position-fields', $provider)) {
                         foreach ($provider['position-fields'] as $position_field) {
                             switch ($position_field['type']) {
                                 case 'lat':
@@ -160,19 +160,21 @@ class ExposeUploadWorker implements WorkerInterface
                     }
                 }
 
-                foreach ($databox->get_meta_structure() as $meta) {
-                    if (strpos(strtolower($meta->get_name()), strtolower($lonFieldName)) !== FALSE  && $caption->has_field($meta->get_name())) {
-                        // retrieve value for the corresponding field
-                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
-                        $fieldValue = array_pop($fieldValues);
-                        $lng = $fieldValue->getValue();
+                if (!empty($lonFieldName) && !empty($latFieldName)) {
+                    foreach ($databox->get_meta_structure() as $meta) {
+                        if (strpos(strtolower($meta->get_name()), strtolower($lonFieldName)) !== FALSE  && $caption->has_field($meta->get_name())) {
+                            // retrieve value for the corresponding field
+                            $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
+                            $fieldValue = array_pop($fieldValues);
+                            $lng = $fieldValue->getValue();
 
-                    } elseif (strpos(strtolower($meta->get_name()), strtolower($latFieldName)) !== FALSE  && $caption->has_field($meta->get_name())) {
-                        // retrieve value for the corresponding field
-                        $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
-                        $fieldValue = array_pop($fieldValues);
-                        $lat = $fieldValue->getValue();
+                        } elseif (strpos(strtolower($meta->get_name()), strtolower($latFieldName)) !== FALSE  && $caption->has_field($meta->get_name())) {
+                            // retrieve value for the corresponding field
+                            $fieldValues = $record->get_caption()->get_field($meta->get_name())->get_values();
+                            $fieldValue = array_pop($fieldValues);
+                            $lat = $fieldValue->getValue();
 
+                        }
                     }
                 }
             }
