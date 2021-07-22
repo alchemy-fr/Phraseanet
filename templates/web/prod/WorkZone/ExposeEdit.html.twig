@@ -82,11 +82,11 @@
                         <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
                             <label>{{ 'prod:expose:publication:From' | trans }}</label>
-                            <input type="text" value="{% if publication.config.beginsAt %} {{ publication.config.beginsAt | date('d M Y') }} {% endif %}" name="beginsAt" class="use-datepicker publication-field"/>
+                            <input type="text" value="{% if publication.config.beginsAt %} {{ publication.config.beginsAt | date('Y/m/d') }} {% endif %}" name="beginsAt" class="use-datepicker publication-field"/>
                         </div>
                         <div class="available-widget">
                             <label>{{ 'prod:expose:publication:To' | trans }} </label>
-                            <input type="text" value="{% if publication.config.expiresAt %} {{ publication.config.expiresAt | date('d M Y') }} {% endif %}" name="expiresAt" class="use-datepicker publication-field"/>
+                            <input type="text" value="{% if publication.config.expiresAt %} {{ publication.config.expiresAt | date('Y/m/d') }} {% endif %}" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
                     </div>
                     <div class="ui-widget">
@@ -218,7 +218,7 @@
                 "{{ 'workzone:datepicker:july' | trans }}", "{{ 'workzone:datepicker:august' | trans }}", "{{ 'workzone:datepicker:september' | trans }}", "{{ 'workzone:datepicker:october' | trans }}", "{{ 'workzone:datepicker:november' | trans }}", "{{ 'workzone:datepicker:december' | trans }}"],
             dayNames: ["{{ 'workzone:datepicker:sunday' | trans }}", "{{ 'workzone:datepicker:monday' | trans }}", "{{ 'workzone:datepicker:tuesday' | trans }}", "{{ 'workzone:datepicker:wednesday' | trans }}", "{{ 'workzone:datepicker:thursday' | trans }}", "{{ 'workzone:datepicker:friday' | trans }}", "{{ 'workzone:datepicker:saturday' | trans }}"],
             dayNamesMin: ["D", "L", "M", "M", "J", "V", "S"],
-            dateFormat: "dd M yy",
+            dateFormat: "yy/mm/dd",
             altField: ".alternate",
             altFormat: "yy-mm-dd",
             minDate: 0
@@ -631,13 +631,13 @@
                 if (dataValue.beginsAt == '') {
                     config = {...config, beginsAt: null};
                 } else {
-                    config = {...config, beginsAt: dataValue.beginsAt};
+                    config = {...config, beginsAt: dataValue.beginsAt + ' 00:00:00'};
                 }
 
                 if (dataValue.expiresAt == '') {
                     config = {...config, expiresAt: null};
                 } else {
-                    config = {...config, expiresAt: dataValue.expiresAt};
+                    config = {...config, expiresAt: dataValue.expiresAt + ' 23:59:59'};
                 }
 
                 config = {...config, layout: dataValue.layout};
