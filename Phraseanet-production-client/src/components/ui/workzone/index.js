@@ -118,7 +118,11 @@ const workzone = (services) => {
             e.preventDefault();
 
             let slug = $('#slug-field').val();
-            if (slug !== '') {
+            let actualSlug = $('#slug-field').attr('data-actual-slug');
+
+            if (slug !== '' && actualSlug == slug) {
+                $('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+            } else if (slug !== '') {
                 $.ajax({
                     type: "GET",
                     url: `/prod/expose/publication/slug-availability/${slug}/?exposeName=${$('#expose_list').val()}`,
@@ -131,7 +135,6 @@ const workzone = (services) => {
                     }
                 });
             }
-
         });
 
         $('#DIALOG-expose-add').on('click', '.new-slug-availability', function (e) {
