@@ -1265,9 +1265,10 @@ const workzone = (services) => {
             $('#DIALOG-expose-edit').dialog('close');
         });
 
+        let timezone =  Intl.DateTimeFormat().resolvedOptions().timeZone;
         $.ajax({
             type: "GET",
-            url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}` ,
+            url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}&timezone=${timezone}` ,
             success: function (data) {
                 $('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }

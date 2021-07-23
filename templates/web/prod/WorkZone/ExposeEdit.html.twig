@@ -33,7 +33,7 @@
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
-                        <input type="text" value="{{ publication.slug }}" name="slug" class="publication-field" id="slug-field"/>
+                        <input type="text" data-actual-slug="{{ publication.slug }}" value="{{ publication.slug }}" name="slug" class="publication-field" id="slug-field"/>
                         <input type="button" class="slug-availability" style="height: 31px;" value="{{ 'prod:expose:publication:check slug' }}">
                         <img class="expose-slug-ok" src="/assets/common/images/icons/ok.png" style="height: 32px;display:none;" >
                         <img class="expose-slug-nok" src="/assets/common/images/icons/red-cross.png" style="height: 32px;display:none;">
@@ -82,11 +82,11 @@
                         <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
                             <label>{{ 'prod:expose:publication:From' | trans }}</label>
-                            <input type="text" value="{% if publication.config.beginsAt %} {{ publication.config.beginsAt | date('Y/m/d') }} {% endif %}" name="beginsAt" class="use-datepicker publication-field"/>
+                            <input type="text" autocomplete="off" value="{% if publication.config.beginsAt %} {{ publication.config.beginsAt | date('Y/m/d H:i', timezone)}} {% endif %}" name="beginsAt" class="use-datepicker publication-field"/>
                         </div>
                         <div class="available-widget">
                             <label>{{ 'prod:expose:publication:To' | trans }} </label>
-                            <input type="text" value="{% if publication.config.expiresAt %} {{ publication.config.expiresAt | date('Y/m/d') }} {% endif %}" name="expiresAt" class="use-datepicker publication-field"/>
+                            <input type="text" autocomplete="off" value="{% if publication.config.expiresAt %} {{ publication.config.expiresAt | date('Y/m/d H:i') }} {% endif %}" name="expiresAt" class="use-datepicker publication-field"/>
                         </div>
                     </div>
                     <div class="ui-widget">
@@ -209,23 +209,6 @@
         var permissionList = publicationEdit.find("#permission-list");
         var slugField = publicationEdit.find('#slug-field');
 
-        $.datepicker.regional['default'] = {
-            closeText: "Close",
-            prevText: "{{ 'workzone:datepicker:prevText' | trans }}",
-            nextText: "{{ 'workzone:datepicker:nextText' | trans }}",
-            currentText: "Today",
-            monthNames: ["{{ 'workzone:datepicker:january' | trans }}", "{{ 'workzone:datepicker:february' | trans }}", "{{ 'workzone:datepicker:march' | trans }}", "{{ 'workzone:datepicker:april' | trans }}", "{{ 'workzone:datepicker:may' | trans }}", "{{ 'workzone:datepicker:june' | trans }}",
-                "{{ 'workzone:datepicker:july' | trans }}", "{{ 'workzone:datepicker:august' | trans }}", "{{ 'workzone:datepicker:september' | trans }}", "{{ 'workzone:datepicker:october' | trans }}", "{{ 'workzone:datepicker:november' | trans }}", "{{ 'workzone:datepicker:december' | trans }}"],
-            dayNames: ["{{ 'workzone:datepicker:sunday' | trans }}", "{{ 'workzone:datepicker:monday' | trans }}", "{{ 'workzone:datepicker:tuesday' | trans }}", "{{ 'workzone:datepicker:wednesday' | trans }}", "{{ 'workzone:datepicker:thursday' | trans }}", "{{ 'workzone:datepicker:friday' | trans }}", "{{ 'workzone:datepicker:saturday' | trans }}"],
-            dayNamesMin: ["D", "L", "M", "M", "J", "V", "S"],
-            dateFormat: "yy/mm/dd",
-            altField: ".alternate",
-            altFormat: "yy-mm-dd",
-            minDate: 0
-        };
-
-        $(".use-datepicker").datepicker($.datepicker.regional['default']);
-
         //generate publication list
         $(document).ready(function () {
             $( "#publication-tabs" ).tabs();
@@ -287,6 +270,63 @@
                 menubar: 'edit view insert format table help',
                 plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
                 toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+            });
+
+            $.datetimepicker.setLocale('{{ app['locale'] }}');
+
+            $(".use-datepicker").datetimepicker({
+                i18n:{
+                    de:{
+                        months:[
+                            'Januar','Februar','März','April',
+                            'Mai','Juni','Juli','August',
+                            'September','Oktober','November','Dezember',
+                        ],
+                        dayOfWeek:[
+                            'So','Mo','Di','Mi','Do','Fr','Sa'
+                        ]
+                    },
+                    fr:{
+                        months:[
+                            'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                            'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+                        ],
+                        dayOfWeek:[
+                            'dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'
+                        ]
+                    },
+                    du:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    nl:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    en:{
+                        months:[
+                            'January','February','March','April','May','June',
+                            'July','August','September','October','November','December'
+                        ],
+                        dayOfWeek:[
+                            'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+                        ]
+                    }
+                },
+                format:'Y/m/d H:i',
+                theme: 'dark',
+                minDate:0,
+                closeOnWithoutClick :true
             });
         });
 
@@ -631,13 +671,19 @@
                 if (dataValue.beginsAt == '') {
                     config = {...config, beginsAt: null};
                 } else {
-                    config = {...config, beginsAt: dataValue.beginsAt + ' 00:00:00'};
+                    try {
+                        config = {...config, beginsAt: new Date(dataValue.beginsAt).toISOString()};
+                    } catch (err) {
+                    }
                 }
 
                 if (dataValue.expiresAt == '') {
                     config = {...config, expiresAt: null};
                 } else {
-                    config = {...config, expiresAt: dataValue.expiresAt + ' 23:59:59'};
+                    try {
+                        config = {...config, expiresAt: new Date(dataValue.expiresAt).toISOString()};
+                    } catch (err) {
+                    }
                 }
 
                 config = {...config, layout: dataValue.layout};

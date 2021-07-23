@@ -45,11 +45,11 @@
                         <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
                         <div class="available-widget">
                             <label>{{ 'prod:expose:publication:From' | trans }}</label>
-                            <input type="text" value="" name="beginsAt" class="use-datepicker publication-field"/>
+                            <input type="text" autocomplete="off" value="" name="beginsAt" class="new-use-datepicker publication-field"/>
                         </div>
                         <div class="available-widget">
                             <label>{{ 'prod:expose:publication:To' | trans }} </label>
-                            <input type="text" value="" name="expiresAt" class="use-datepicker publication-field"/>
+                            <input type="text" autocomplete="off" value="" name="expiresAt" class="new-use-datepicker publication-field"/>
                         </div>
                     </div>
                     <div class="ui-widget">
@@ -158,6 +158,63 @@
         }
 
         $(document).ready(function () {
+            $.datetimepicker.setLocale('{{ app['locale'] }}');
+
+            $(".new-use-datepicker").datetimepicker({
+                i18n:{
+                    de:{
+                        months:[
+                            'Januar','Februar','März','April',
+                            'Mai','Juni','Juli','August',
+                            'September','Oktober','November','Dezember',
+                        ],
+                        dayOfWeek:[
+                            'So','Mo','Di','Mi','Do','Fr','Sa'
+                        ]
+                    },
+                    fr:{
+                        months:[
+                            'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                            'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+                        ],
+                        dayOfWeek:[
+                            'dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'
+                        ]
+                    },
+                    du:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    nl:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    en:{
+                        months:[
+                            'January','February','March','April','May','June',
+                            'July','August','September','October','November','December'
+                        ],
+                        dayOfWeek:[
+                            'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+                        ]
+                    }
+                },
+                format:'Y/m/d H:i',
+                theme: 'dark',
+                minDate:0,
+                closeOnWithoutClick :true
+            });
+
             $("#DIALOG-expose-add .expose-more-setting").click(function (e) {
                 $(this).toggleClass('open');
                 $('#DIALOG-expose-add').find('#moreSettingInner').toggleClass('hidden');
@@ -189,11 +246,22 @@
                     config = {...config, password: dataValue.password};
                 }
 
-                if (dataValue.beginsAt) {
-                    config = {...config, beginsAt: dataValue.beginsAt};
+                if (dataValue.beginsAt == '') {
+                    config = {...config, beginsAt: null};
+                } else {
+                    try {
+                        config = {...config, beginsAt: new Date(dataValue.beginsAt).toISOString()};
+                    } catch (err) {
+                    }
                 }
-                if (dataValue.expiresAt) {
-                    config = {...config, expiresAt: dataValue.expiresAt};
+
+                if (dataValue.expiresAt == '') {
+                    config = {...config, expiresAt: null};
+                } else {
+                    try {
+                        config = {...config, expiresAt: new Date(dataValue.expiresAt).toISOString()};
+                    } catch (err) {
+                    }
                 }
 
                 config = {...config, layout: dataValue.layout};

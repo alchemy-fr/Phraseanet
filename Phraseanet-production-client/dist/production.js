@@ -11150,9 +11150,10 @@ var workzone = function workzone(services) {
             (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
         });
 
+        var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         _jquery2.default.ajax({
             type: "GET",
-            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val() + '&timezone=' + timezone,
             success: function success(data) {
                 (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }

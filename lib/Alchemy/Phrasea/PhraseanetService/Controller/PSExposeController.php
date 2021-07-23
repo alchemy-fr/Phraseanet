@@ -286,6 +286,7 @@ class PSExposeController extends Controller
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
 
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
+            'timezone'    => $request->get('timezone'),
             'publication' => $publication,
             'exposeName'  => $request->get('exposeName'),
             'permissions' => $permissions,
