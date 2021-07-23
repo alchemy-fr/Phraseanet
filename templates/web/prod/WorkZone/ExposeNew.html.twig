@@ -264,9 +264,23 @@
                     }
                 }
 
-                config = {...config, layout: dataValue.layout};
-                config = {...config, theme: dataValue.theme};
-                config = {...config, securityMethod: dataValue.securityMethod};
+                if (dataValue.layout == '') {
+                    config = {...config, layout: null};
+                } else {
+                    config = {...config, layout: dataValue.layout};
+                }
+
+                if (dataValue.theme == '') {
+                    config = {...config, theme: null};
+                } else {
+                    config = {...config, theme: dataValue.theme};
+                }
+
+                if (dataValue.securityMethod == '') {
+                    config = {...config, securityMethod: null};
+                } else {
+                    config = {...config, securityMethod: dataValue.securityMethod};
+                }
 
                 dataValue = {...dataValue, config};
 
