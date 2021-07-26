@@ -126,10 +126,10 @@
                             <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
                                 <option value="">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
-                                <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Gallery' | trans }}</option>
-                                <option value="grid" {% if publication.layout == 'grid'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Grid' | trans }}</option>
-                                <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Mapbox' | trans }}</option>
-                                <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Download' | trans }}</option>
+                                <option value="gallery" {% if publication.config.layout == 'gallery'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                                <option value="grid" {% if publication.config.layout == 'grid'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Grid' | trans }}</option>
+                                <option value="mapbox" {% if publication.config.layout == 'mapbox'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Mapbox' | trans }}</option>
+                                <option value="download" {% if publication.config.layout == 'download'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Download' | trans }}</option>
                             </select>
                         </div>
                         <div class="ui-widget">
@@ -137,8 +137,8 @@
                             <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
                                 <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
-                                <option value="light" {% if publication.theme == 'light'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Light' | trans }}</option>
-                                <option value="dark" {% if publication.theme == 'dark'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Dark' | trans }}</option>
+                                <option value="light" {% if publication.config.theme == 'light'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Light' | trans }}</option>
+                                <option value="dark" {% if publication.config.theme == 'dark'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Dark' | trans }}</option>
                             </select>
                         </div>
                     </div>
