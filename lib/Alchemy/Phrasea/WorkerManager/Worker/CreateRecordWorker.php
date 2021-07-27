@@ -2,12 +2,12 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
+use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
-use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\BorderManagerAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
-use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Border\Attribute\Status;
 use Alchemy\Phrasea\Border\File;
@@ -27,7 +27,6 @@ use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationRecordFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use GuzzleHttp\Client;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CreateRecordWorker implements WorkerInterface
@@ -241,9 +240,19 @@ class CreateRecordWorker implements WorkerInterface
         $this->getBorderManager()->process($lazaretSession, $packageFile, $callback);
 
         if ($elementCreated instanceof \record_adapter) {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("dispatch event PhraseaEvents::RECORD_UPLOAD")
+            ), FILE_APPEND | LOCK_EX);
+
             $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
-        } else {
+        }
+        else {
             $this->messagePublisher->pushLog(sprintf('The file was moved to the quarantine: %s', json_encode($reasons)));
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("dispatch event PhraseaEvents::LAZARET_CREATE")
+            ), FILE_APPEND | LOCK_EX);
+
             /** @var LazaretFile $elementCreated */
             $this->dispatch(PhraseaEvents::LAZARET_CREATE, new LazaretEvent($elementCreated));
         }

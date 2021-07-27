@@ -54,6 +54,12 @@ class RecordSubscriber implements EventSubscriberInterface
         $record = $this->getApplicationBox()->get_databox($event->getRecord()->getDataboxId())->get_record($event->getRecord()->getRecordId());
 
         if (!$record->isStory()) {
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("handle RecordEvents::SUBDEFINITION_CREATE for %s.%s", $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+
+
             $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
             if ($subdefs !== null) {
@@ -67,6 +73,10 @@ class RecordSubscriber implements EventSubscriberInterface
                             'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
                         ]
                     ];
+
+                    file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                        sprintf("q-publish  SUBDEF_CREATION_TYPE for %s.%s.%s", $event->getRecord()->getDataboxId(), $event->getRecord()->getRecordId(), $subdef->get_name())
+                    ), FILE_APPEND | LOCK_EX);
 
                     $this->messagePublisher->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
                 }
@@ -153,7 +163,7 @@ class RecordSubscriber implements EventSubscriberInterface
         $recordIds = $event->getRecordIds();
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("handle RECORDS_WRITE_META for %s.[%s]", $databoxId, join(',', $recordIds))
+            sprintf("handle RecordEvents::RECORDS_WRITE_META for %s.[%s]", $databoxId, join(',', $recordIds))
         ), FILE_APPEND | LOCK_EX);
 
         foreach ($recordIds as $recordId) {

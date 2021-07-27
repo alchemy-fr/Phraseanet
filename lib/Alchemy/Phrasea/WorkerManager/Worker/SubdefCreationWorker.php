@@ -153,14 +153,27 @@ class SubdefCreationWorker implements WorkerInterface
 
         if ($record->has_subdef($subdefName) ) {
             $filePathToCheck = $record->get_subdef($subdefName)->getRealPath();
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("record->has_subdef(%s)=true for %s.%s : check \"%s\"", $subdefName, $databoxId, $recordId, $filePathToCheck)
+            ), FILE_APPEND | LOCK_EX);
+        }
+        else {
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("record->has_subdef(%s)=false for %s.%s", $subdefName, $databoxId, $recordId)
+            ), FILE_APPEND | LOCK_EX);
         }
 
         $filePathToCheck = $this->filesystem->generateSubdefPathname($record, $subdef, $filePathToCheck);
 
+        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("checking \"%s\" for %s.%s.%s", $filePathToCheck, $databoxId, $recordId, $subdefName)
+        ), FILE_APPEND | LOCK_EX);
+
         if (!$this->filesystem->exists($filePathToCheck)) {
 
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!! subdef file missing, retry delayed for %s.%s.%s", $databoxId, $recordId, $subdefName)
+                sprintf("!!! subdef file \"%s\" missing, retry delayed for %s.%s.%s", $filePathToCheck, $databoxId, $recordId, $subdefName)
             ), FILE_APPEND | LOCK_EX);
 
             $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
@@ -197,7 +210,7 @@ class SubdefCreationWorker implements WorkerInterface
         );
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("Event WorkerEvents::SUBDEFINITION_WRITE_META posted  for %s.%s.%s", $record->getDataboxId(), $record->getRecordId(), $subdefName)
+            sprintf("Event WorkerEvents::SUBDEFINITION_WRITE_META dispatched  for %s.%s.%s", $record->getDataboxId(), $record->getRecordId(), $subdefName)
         ), FILE_APPEND | LOCK_EX);
 
         $this->subdefGenerator->setLogger($oldLogger);

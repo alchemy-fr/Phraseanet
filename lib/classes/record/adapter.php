@@ -1701,14 +1701,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $pathhd = $filesystem->generateDataboxDocumentBasePath($databox);
             $newname = $filesystem->generateDocumentFilename($record, $file->getFile());
 
+            clearstatcache(true, $file->getFile()->getRealPath());
             file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("copying \"%s\" to \"%s\"", $file->getFile()->getRealPath(), $pathhd . $newname)
+                sprintf("copying \"%s\" (size=%s) to \"%s\"", $file->getFile()->getRealPath(), filesize($file->getFile()->getRealPath()), $pathhd . $newname)
             ), FILE_APPEND | LOCK_EX);
 
             $filesystem->copy($file->getFile()->getRealPath(), $pathhd . $newname);
 
+            clearstatcache(true, $pathhd . $newname);
             file_put_contents(dirname(__FILE__).'/../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("copied \"%s\" to \"%s\"", $file->getFile()->getRealPath(), $pathhd . $newname)
+                sprintf("copied \"%s\" to \"%s\" (size=%s)", $file->getFile()->getRealPath(), $pathhd . $newname, filesize($pathhd . $newname))
             ), FILE_APPEND | LOCK_EX);
 // die;
             $media = $app->getMediaFromUri($pathhd . $newname);

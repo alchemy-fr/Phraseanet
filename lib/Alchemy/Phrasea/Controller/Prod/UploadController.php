@@ -292,7 +292,7 @@ class UploadController extends Controller
                 $message = $this->app->trans('The record was successfully created');
 
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("dispatch event RECORD_UPLOAD")
+                    sprintf("dispatch event PhraseaEvents::RECORD_UPLOAD")
                 ), FILE_APPEND | LOCK_EX);
 
                 $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));

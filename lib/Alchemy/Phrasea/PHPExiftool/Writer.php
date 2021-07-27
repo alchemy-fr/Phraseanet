@@ -224,7 +224,7 @@ class Writer
      * @param array       $resolutionXY  The dpi resolution array(xresolution, yresolution)
      *
      * @return int the number "write" operations, or null if exiftool returned nothing we understand
-     *         event for no-op (file unchanged), 1 is returned so the caller does not think the command failed.
+     *         even for no-op (file unchanged), 1 is returned so the caller does not think the command failed.
      *
      * @throws InvalidArgumentException
      */
@@ -233,6 +233,13 @@ class Writer
         if ( ! file_exists($file)) {
             throw new InvalidArgumentException(sprintf('%s does not exists', $file));
         }
+
+        clearstatcache(true, $file);
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("write src=\"%s\" (size=%s), dst=\"%s\" ; with timeout=%s", $file, filesize($file), $destination?:'null', $this->timeout)
+        ), FILE_APPEND | LOCK_EX);
+
+
 
         // if the -o file exists, exiftool prints an error
         if($destination) {
@@ -307,6 +314,21 @@ class Writer
         $command = join(" -execute ", $commands) . ' ' . $common_args;
 
         $ret = $this->exiftool->executeCommand($command, $this->timeout);
+
+        if($destination) {
+            clearstatcache(true, $destination);
+            file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("destination=\"%s\" writen (size=%s)", $destination, filesize($destination))
+            ), FILE_APPEND | LOCK_EX);
+        }
+        else {
+            clearstatcache(true, $file);
+            file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("src=\"%s\" changed (size=%s)", $file, filesize($file))
+            ), FILE_APPEND | LOCK_EX);
+        }
+
+
 
         // exiftool may print (return) a bunch of lines, even for a single command
         // eg. deleting tags of a file with NO tags may return 2 lines...

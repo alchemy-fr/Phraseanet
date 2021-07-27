@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\MediaVorus;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -53,17 +54,17 @@ class Colorspace extends AbstractChecker
             $colorspace = null;
             switch ($file->getMedia()->getColorSpace())
             {
-                case \MediaVorus\Media\Image::COLORSPACE_CMYK:
+                case  MediaVorus\Media\Image::COLORSPACE_CMYK:
                     $colorspace = self::COLORSPACE_CMYK;
                     break;
-                case \MediaVorus\Media\Image::COLORSPACE_RGB:
-                case \MediaVorus\Media\Image::COLORSPACE_SRGB:
+                case MediaVorus\Media\Image::COLORSPACE_RGB:
+                case MediaVorus\Media\Image::COLORSPACE_SRGB:
                     $colorspace = self::COLORSPACE_RGB;
                     break;
-                case \MediaVorus\Media\Image::COLORSPACE_GRAYSCALE:
+                case MediaVorus\Media\Image::COLORSPACE_GRAYSCALE:
                     $colorspace = self::COLORSPACE_GRAYSCALE;
                     break;
-                case \MediaVorus\Media\Image::COLORSPACE_RGBA:
+                case MediaVorus\Media\Image::COLORSPACE_RGBA:
                     $colorspace = self::COLORSPACE_RGBA;
                     break;
             }

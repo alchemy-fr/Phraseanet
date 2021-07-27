@@ -62,7 +62,28 @@ class SubdefGenerator
 
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
-        if ($record->get_hd_file() !== null && $record->get_hd_file()->getMimeType() == "application/x-indesign") {
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("into generateSubdefs(%s.%s, %s)", $record->getDataboxId(), $record->getRecordId(), $wanted_subdefs ? ('[' . join(', ', $wanted_subdefs) . ']') : 'null')
+        ), FILE_APPEND | LOCK_EX);
+
+        $hd = $record->get_hd_file();
+        if(!$hd) {
+            file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("!!! record->get_hd_file() returned null for %s.%s", $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+        }
+        else {
+            file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("hd=\"%s\" (size=%s) for %s.%s", $hd->getRealPath(), filesize($hd->getRealPath()), $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+        }
+
+
+        if ($hd !== null && $hd->getMimeType() == "application/x-indesign") {
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("application/x-indesign for %s.%s", $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+
             $mediaSource = $this->mediavorus->guess($record->get_hd_file()->getPathname());
             $metadatas = $mediaSource->getMetadatas();
 
@@ -118,6 +139,10 @@ class SubdefGenerator
             $pathdest = null;
 
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("deleting previous subdef \"%s\" to \"%s\" for %s.%s", $record->get_subdef($subdefname)->getRealPath(), $record->getDataboxId(), $record->getRecordId())
+                ), FILE_APPEND | LOCK_EX);
+
                 $pathdest = $record->get_subdef($subdefname)->getRealPath();
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));
@@ -134,10 +159,22 @@ class SubdefGenerator
                 )
             );
 
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("generating subdef \"%s\" to \"%s\" for %s.%s", $subdefname, $pathdest, $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+
             $this->logger->info(sprintf('Generating subdef %s to %s', $subdefname, $pathdest));
             $this->generateSubdef($record, $subdef, $pathdest);
 
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("generated subdef \"%s\" to \"%s\" for %s.%s", $subdefname, $pathdest, $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+
             if ($this->filesystem->exists($pathdest)) {
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("file \"%s\" for %s.%s.%s exists, ok", $pathdest, $record->getDataboxId(), $record->getRecordId(), $subdefname)
+                ), FILE_APPEND | LOCK_EX);
+
                 $media = $this->mediavorus->guess($pathdest);
 
                 \media_subdef::create($this->app, $record, $subdef->get_name(), $media);
@@ -152,6 +189,10 @@ class SubdefGenerator
                 );
             }
             else {
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("file \"%s\" for %s.%s.%s does not exists, bad", $pathdest, $record->getDataboxId(), $record->getRecordId(), $subdefname)
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->dispatch(
                     RecordEvents::SUB_DEFINITION_CREATION_FAILED,
                     new SubDefinitionCreationFailedEvent(
@@ -191,7 +232,8 @@ class SubdefGenerator
                     $medias
                 )
             );
-        } else {
+        }
+        else {
             $this->dispatch(
                 RecordEvents::SUB_DEFINITIONS_CREATED,
                 new SubDefinitionsCreatedEvent(
@@ -200,6 +242,11 @@ class SubdefGenerator
                 )
             );
         }
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from generateSubdefs(...)")
+        ), FILE_APPEND | LOCK_EX);
+
     }
 
     /**
@@ -222,11 +269,19 @@ class SubdefGenerator
 
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("into generateSubdef(%s.%s, %s, \"%s\")", $record->getDataboxId(), $record->getRecordId(), $subdef_class->get_name(), $pathdest)
+        ), FILE_APPEND | LOCK_EX);
+
         $start = microtime(true);
         $destFile = null;
 
         try {
             if (null === $record->get_hd_file()) {
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("ho hd, aborting")
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->logger->info('No HD file found, aborting');
 
                 return;
@@ -239,24 +294,66 @@ class SubdefGenerator
 
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
 
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("calling alchemyst->turnInto from \"%s\" (size=%s) to \"%s\"", $this->tmpFilePath, filesize($this->tmpFilePath), $pathdest)
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
 
             } elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("calling generatePdfSubdef from \"%s\" (size=%s) to \"%s\"", $record->get_hd_file()->getPathname(), filesize($record->get_hd_file()->getPathname()), $pathdest)
+                ), FILE_APPEND | LOCK_EX);
 
                 $this->generatePdfSubdef($record->get_hd_file()->getPathname(), $pathdest);
 
             } else {
 
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("calling alchemyst->turnInto from \"%s\" (size=%s) to \"%s\"", $record->get_hd_file()->getPathname(), filesize($record->get_hd_file()->getPathname()), $pathdest)
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
 
             }
+            if(file_exists($pathdest)) {
+                file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("returned from alchemyst->turnInto() or generatePdfSubdef() with \"%s\" (size=%s)", $pathdest, filesize($pathdest))
+                ), FILE_APPEND | LOCK_EX);
+            }
+            else {
+                file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("!!! returned from alchemyst->turnInto() or generatePdfSubdef(), \"%s\" does not exists", $pathdest)
+                ), FILE_APPEND | LOCK_EX);
+            }
+
 
             if($destFile){
+                file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("copying from \"%s\" (size=%s) to \"%s\"", $pathdest, filesize($pathdest), $destFile)
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->filesystem->copy($pathdest, $destFile);
+
+                file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("copied from \"%s\" to \"%s\" (size=%s)", $pathdest, $destFile, filesize($destFile))
+                ), FILE_APPEND | LOCK_EX);
+
+                file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("removing \"%s\"", $pathdest)
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->app['filesystem']->remove($pathdest);
             }
 
         } catch (MediaAlchemystException $e) {
+
+            file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("!!! MediaAlchemystException \"%s\"", $e->getMessage())
+            ), FILE_APPEND | LOCK_EX);
+
+
             $start = 0;
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
@@ -285,6 +382,10 @@ class SubdefGenerator
                 )
             );
         }
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from generateSubdef(...)")
+        ), FILE_APPEND | LOCK_EX);
 
     }
 

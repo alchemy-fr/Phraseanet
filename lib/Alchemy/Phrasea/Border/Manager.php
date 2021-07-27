@@ -386,6 +386,10 @@ class Manager
         $phraseanetMetadataSetter->replaceMetadata($newMetadata, $element);
 
         if(!$nosubdef) {
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("dispatch WorkerEvents::SUBDEFINITION_CREATE for %s.%s", $element->getDataboxId(), $element->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+
             $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
         }
 

@@ -167,14 +167,16 @@ class File
                 $writer = $this->app['exiftool.writer'];
                 $writer->reset();
 
+                clearstatcache(true, $this->getFile()->getRealPath());
                 file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("exiftool will write to %s", $this->getFile()->getRealPath())
+                    sprintf("exiftool will write to %s (size=%s)", $this->getFile()->getRealPath(), filesize($this->getFile()->getRealPath()))
                 ), FILE_APPEND | LOCK_EX);
 
                 $writer->write($this->getFile()->getRealPath(), $metadatas);
 
+                clearstatcache(true, $this->getFile()->getRealPath());
                 file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("exiftool has writen ok to %s", $this->getFile()->getRealPath())
+                    sprintf("exiftool has writen ok to %s (size=%s)", $this->getFile()->getRealPath(), filesize($this->getFile()->getRealPath()))
                 ), FILE_APPEND | LOCK_EX);
 
             } catch (PHPExiftoolException $e) {

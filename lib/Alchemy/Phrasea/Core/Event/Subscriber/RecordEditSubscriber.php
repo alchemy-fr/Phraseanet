@@ -11,7 +11,6 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
@@ -19,8 +18,8 @@ use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Metadata\Tag\TfEditdate;
 use Alchemy\Phrasea\Model\RecordInterface;
-use caption_Field_Value;
 use Assert\Assertion;
+use caption_Field_Value;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordEditSubscriber implements EventSubscriberInterface
@@ -63,6 +62,10 @@ class RecordEditSubscriber implements EventSubscriberInterface
         static $into = false;
         static $editDateFields = [];    // array of fields "tfEditDate", by databox_id
 
+        file_put_contents(dirname(__FILE__).'/../../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("handle PhraseaEvents::RECORD_UPLOAD or PhraseaEvents::RECORD_EDIT for %s.%s with recursion=%s", $event->getRecord()->getDataboxId(), $event->getRecord()->getRecordId(), $into?"true":"false")
+        ), FILE_APPEND | LOCK_EX);
+
         // prevent recursion
         if ($into) {
             return;
@@ -85,6 +88,10 @@ class RecordEditSubscriber implements EventSubscriberInterface
         }
 
         if (!empty($editDateFields[$sbas_id])) {
+            file_put_contents(dirname(__FILE__).'/../../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("updateRecord TfEditdate for %s.%s", $recordAdapter->getDataboxId(), $recordAdapter->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+
             $this->updateRecord($recordAdapter, $editDateFields[$sbas_id], new \DateTime());
         }
 
@@ -156,6 +163,10 @@ class RecordEditSubscriber implements EventSubscriberInterface
             } catch (\Exception $e) {
                 // field not found, $metaId==null -> value will be created
             }
+
+            file_put_contents(dirname(__FILE__).'/../../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("set_metadatas %s=\"%s\" for %s.%s", $editField->get_name(), $date->format('Y-m-d H:i:s'), $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
 
             $record->set_metadatas(array(
                 array(

@@ -49,9 +49,15 @@ class Exiftool implements LoggerAwareInterface
     {
         $command = ($this->binaryPath == null? self::getBinary(): $this->binaryPath) . ' ' . $command;
         $process = new Process($command);
-        $process->setTimeout($timeout);
+       // $process->setTimeout($timeout);
+        // $process->setTimeout(0.2);
+        // ??? $process->setIdleTimeout()
 
         $this->logger->addInfo(sprintf('Exiftool executes command %s', $process->getCommandLine()));
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("Exiftool executes command \"%s\" with timeout of %s", $process->getCommandLine(), $process->getTimeout())
+        ), FILE_APPEND | LOCK_EX);
 
         $process->run();
 
