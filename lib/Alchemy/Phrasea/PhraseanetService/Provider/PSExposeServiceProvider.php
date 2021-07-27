@@ -86,6 +86,29 @@ class PSExposeServiceProvider implements ControllerProviderInterface, ServicePro
             ->method('GET')
             ->bind('ps_expose_publication_permission_list');
 
+        $controllers->match('/publication/slug-availability/{slug}/', 'controller.ps.expose:checkPublicationSlugAction')
+            ->method('GET')
+            ->bind('ps_expose_publication_slug_availability');
+
+        $controllers->match('/databoxes-field', 'controller.ps.expose:getDataboxesFieldAction')
+            ->method('GET')
+            ->bind('ps_expose_get_databoxes_field');
+
+        $controllers->match('/subdefs-list', 'controller.ps.expose:getSubdefsListAction')
+            ->method('GET')
+            ->bind('ps_expose_get_subdefs_list');
+
+        $controllers->match('/field-mapping', 'controller.ps.expose:saveFieldMappingAction')
+            ->method('POST')
+            ->bind('ps_expose_save_field_mapping');
+
+        $controllers->get('/field-mapping', 'controller.ps.expose:getFieldMappingAction')
+            ->bind('ps_expose_get_field_mapping');
+
+        $controllers->match('/subdef-mapping', 'controller.ps.expose:saveSubdefMappingAction')
+            ->method('POST')
+            ->bind('ps_expose_save_subdef_mapping');
+
         return $controllers;
     }
 
