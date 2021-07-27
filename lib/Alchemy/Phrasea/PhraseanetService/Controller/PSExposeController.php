@@ -286,12 +286,54 @@ class PSExposeController extends Controller
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
 
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
+            'timezone'    => $request->get('timezone'),
             'publication' => $publication,
             'exposeName'  => $request->get('exposeName'),
             'permissions' => $permissions,
             'listUsers'   => $listUsers,
             'listGroups'  => $listGroups
         ]);
+    }
+
+    /**
+     * Require params "exposeName" and "slug"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function checkPublicationSlugAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeClient = $this->getExposeClient($request->get('exposeName'));
+
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
+
+        $resAvailability = $exposeClient->get('/publications/slug-availability/' . $request->get('slug') , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+            ]
+        ]);
+
+        if ($resAvailability->getStatusCode() != 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when checking slug availability : " . $resAvailability->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'   => true,
+            'isAvailable' => json_decode($resAvailability->getBody()->getContents()),
+            'message'   => ''
+        ]);
+
     }
 
     /**
@@ -709,6 +751,268 @@ class PSExposeController extends Controller
             'success' => true,
             'message' => " Record (s) to be added to the publication!"
         ]);
+    }
+
+    /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return string
+     */
+    public function getDataboxesFieldAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->get('profile');
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $exposeMappingName = $this->getExposeMappingName('field');
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $fieldMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+
+        $actualFieldsList = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
+        $fields = ($profile != null) ? $this->getFields($actualFieldsList) : [];
+
+        // send geoloc and send vtt checked by default if not setting
+        return $this->render('prod/WorkZone/ExposeFieldList.html.twig', [
+            'fields'            => $fields,
+            'sendGeolocField'   => isset($fieldMapping['sendGeolocField']) ? $fieldMapping['sendGeolocField'] : null,
+            'sendVttField'      => isset($fieldMapping['sendVttField']) ? $fieldMapping['sendVttField'] : null,
+        ]);
+    }
+
+    public function getSubdefsListAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->get('profile');
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $exposeMappingName = $this->getExposeMappingName('subdef');
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $actualSubdefMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+
+        $databoxes = empty($profile)? [] : $this->getApplicationBox()->get_databoxes();
+
+        return $this->render('prod/WorkZone/ExposeSubdefList.html.twig', [
+            'databoxes'            => $databoxes,
+            'actualSubdefMapping'  => $actualSubdefMapping
+        ]);
+    }
+
+    public function getFieldMappingAction(PhraseaApplication $app, Request $request)
+    {
+        return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
+            'exposeName'    => $request->get('exposeName')
+        ]);
+    }
+
+
+    /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function saveFieldMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->request->get('profile');
+        $sendGeolocField = !empty($request->request->get('sendGeolocField')) ? array_keys($request->request->get('sendGeolocField')): [];
+        $sendVttField = !empty($request->request->get('sendVttField')) ? array_keys($request->request->get('sendVttField')) : [];
+
+        $fields = ($request->request->get('fields') === null) ? null : array_keys($request->request->get('fields'));
+
+        $fieldMapping = [
+            'sendGeolocField'   => $sendGeolocField,
+            'sendVttField'      => $sendVttField,
+            'fields'            => $fields
+        ];
+
+        $fieldMapping = [
+            $this->getExposeMappingName('field') => $fieldMapping
+        ];
+
+        if ($exposeName == null || $profile == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Choose an expose and a profile !"
+            ]);
+        }
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        // get the actual value and merge it with the new one before save
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $annotationValues = array_merge($clientAnnotationProfile, $fieldMapping);
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        // save field mapping in the selected profile
+        $resProfile = $exposeClient->put($profile , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+                'Content-Type'  => 'application/json'
+            ],
+            'json'  => [
+                'clientAnnotations' => json_encode($annotationValues)
+            ]
+        ]);
+
+        if ($resProfile->getStatusCode() !== 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "Error when saving mapping with status code: " . $resProfile->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'            => true,
+            'clientAnnotations'  => $annotationValues
+        ]);
+    }
+
+    public function saveSubdefMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->request->get('profile');
+        $exposeClient = $this->getExposeClient($exposeName);
+        $subdefs = $request->request->get('subdefs');
+
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $subdefs = [
+            $this->getExposeMappingName('subdef') => $subdefs
+        ];
+
+        // get the actual value and merge it with the new one before save
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $annotationValues = array_merge($clientAnnotationProfile, $subdefs);
+
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        // save subdef mapping in the selected profile
+        $resProfile = $exposeClient->put($profile , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+                'Content-Type'  => 'application/json'
+            ],
+            'json'  => [
+                'clientAnnotations' => json_encode($annotationValues)
+            ]
+        ]);
+
+        if ($resProfile->getStatusCode() !== 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "Error when saving mapping with status code: " . $resProfile->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'            => true,
+            'clientAnnotations'  => $subdefs
+        ]);
+    }
+
+    /**
+     * Get client annotation from the expose profile
+     *
+     * @param Client $exposeClient
+     * @param $exposeName
+     * @param $profileRoute
+     * @return array|mixed
+     */
+    private function getClientAnnotationProfile(Client $exposeClient, $exposeName, $profileRoute)
+    {
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        $resProfile = $exposeClient->get($profileRoute , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+            ]
+        ]);
+
+        $actualFieldsList = [];
+        if ($resProfile->getStatusCode() == 200) {
+            $actualFieldsList = json_decode($resProfile->getBody()->getContents(),true);
+            $actualFieldsList = (!empty($actualFieldsList['clientAnnotations'])) ? json_decode($actualFieldsList['clientAnnotations'], true) : [];
+        }
+
+        return $actualFieldsList;
+    }
+
+    /**
+     * field | subdef  context
+     * @param $mappingContext
+     *
+     * @return string
+     */
+    private function getExposeMappingName($mappingContext)
+    {
+        $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+
+        return $phraseanetLocalId.'_'. $mappingContext . '_mapping';
+    }
+
+    /**
+     * get list of field in databoxes
+     *
+     * @return array
+     */
+    private function getFields($actualFieldsList)
+    {
+        $databoxes = $this->getApplicationBox()->get_databoxes();
+
+        $fieldFromProfile = [];
+        foreach ($actualFieldsList as $value) {
+            $t = explode('_', $value);
+            $databox = $this->getApplicationBox()->get_databox($t[0]);
+            $viewName = $t[0]. ':::' .$databox->get_viewname();
+
+            $fieldFromProfile[$viewName][$t[1]]['id']      = $value;
+            $fieldFromProfile[$viewName][$t[1]]['name']    = $databox->get_meta_structure()->get_element($t[1])->get_label($this->app['locale']);
+            $fieldFromProfile[$viewName][$t[1]]['checked'] = true;
+        }
+
+        $fields = $fieldFromProfile;
+        foreach ($databoxes as $databox) {
+            foreach ($databox->get_meta_structure() as $meta) {
+                $viewName = $databox->get_sbas_id().':::'.$databox->get_viewname();
+                if (!empty($fields[$viewName][$meta->get_id()]) && in_array($databox->get_sbas_id().'_'.$meta->get_id(), $fields[$viewName][$meta->get_id()])) {
+                   continue;
+                }
+                // get databoxID_metaID for the checkbox name
+                $fields[$viewName][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
+                $fields[$viewName][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
+            }
+        }
+
+        return $fields;
     }
 
     /**

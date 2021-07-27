@@ -1,0 +1,35 @@
+{% for viewName, field in fields %}
+    {% set t =  viewName| split(':::') %}
+    {% set dbName = t[1] %}
+    {% set dbId = t[0] %}
+    <fieldset style="margin: 30px 0;">
+        <h2>{{ dbName }}</h2>
+
+        <label class="checkbox" for="sendGeolocField[{{ dbId }}]" style="margin:5px 0;">
+            <input type="checkbox" id="sendGeolocField[{{ dbId }}]" name="sendGeolocField[{{ dbId }}]"
+                    {# if initializing checked by default or if it is checked in setting #}
+                    {% if sendGeolocField is null or dbId in sendGeolocField %}
+                        checked
+                    {% endif %} value="1">
+            {{ 'expose::setting send geolocalisation' | trans }}
+        </label>
+
+        <label class="checkbox" for="sendVttField[{{ dbId }}]" style="margin:5px 0;">
+            <input type="checkbox" id="sendVttField[{{ dbId }}]" name="sendVttField[{{ dbId }}]"
+                    {# if initializing checked by default or if it is checked in setting #}
+                    {% if sendVttField is null or dbId in sendVttField %}
+                        checked
+                    {% endif %} value="1">
+            {{ 'expose::setting send vtt field' | trans }}
+        </label>
+
+        <div class="field-list" style="margin-top:30px;">
+            {% for metaField in field %}
+                <label class="checkbox" for="fields[{{ metaField.id }}]" style="margin:5px 0">
+                    <input type="checkbox" id="fields[{{ metaField.id }}]" name="fields[{{ metaField.id }}]" {% if metaField.checked %} checked {% endif %} value="1">
+                    {{ metaField.name }}
+                </label>
+            {% endfor %}
+        </div>
+    </fieldset>
+{% endfor %}

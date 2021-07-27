@@ -33,8 +33,10 @@
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Slug' | trans }}</label>
-                        <input type="text" value="{{ publication.slug }}" name="slug" class=" slug publication-field"/>
-                        <input type="button" class="blue_button" value="check slug availability" style="height: 31px;">
+                        <input type="text" data-actual-slug="{{ publication.slug }}" value="{{ publication.slug }}" name="slug" class="publication-field" id="slug-field"/>
+                        <input type="button" class="slug-availability" style="height: 31px;" value="{{ 'prod:expose:publication:check slug' }}">
+                        <img class="expose-slug-ok" src="/assets/common/images/icons/ok.png" style="height: 32px;display:none;" >
+                        <img class="expose-slug-nok" src="/assets/common/images/icons/red-cross.png" style="height: 32px;display:none;">
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Description' | trans }}</label>
@@ -67,17 +69,6 @@
                             {% endif %}
                         </select>
                     </div>
-                    <div class="ui-widget available-wrapper">
-                        <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
-                        <div class="available-widget">
-                            <label>{{ 'prod:expose:publication:From' | trans }}</label>
-                            <input type="text" value="{{ publication.config.beginsAt }}" name="beginsAt" class="use-datepicker publication-field"/>
-                        </div>
-                        <div class="available-widget">
-                            <label>{{ 'prod:expose:publication:To' | trans }} </label>
-                            <input type="text" value="{{ publication.config.expiresAt }}" name="expiresAt" class="use-datepicker publication-field"/>
-                        </div>
-                    </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Enabled' | trans }} </label>
                         <label class="switch">
@@ -86,6 +77,17 @@
                             >
                             <span class="slider round"></span>
                         </label>
+                    </div>
+                    <div class="ui-widget available-wrapper">
+                        <label>{{ 'prod:expose:publication:Available (leave blank for permanet publication)' | trans }}</label>
+                        <div class="available-widget">
+                            <label>{{ 'prod:expose:publication:From' | trans }}</label>
+                            <input type="text" autocomplete="off" value="{% if publication.config.beginsAt %} {{ publication.config.beginsAt | date('Y/m/d H:i', timezone)}} {% endif %}" name="beginsAt" class="use-datepicker publication-field"/>
+                        </div>
+                        <div class="available-widget">
+                            <label>{{ 'prod:expose:publication:To' | trans }} </label>
+                            <input type="text" autocomplete="off" value="{% if publication.config.expiresAt %} {{ publication.config.expiresAt | date('Y/m/d H:i') }} {% endif %}" name="expiresAt" class="use-datepicker publication-field"/>
+                        </div>
                     </div>
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Publicly listing' | trans }}</label>
@@ -115,26 +117,32 @@
                             <p class="error form-error alert alert-error">Not implemented</p>
                         </div>
                     </div>
-                    <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Layout' | trans }} </label>
-                        <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
-                            <option value="gallery" {% if publication.layout == 'gallery'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Gallery' | trans }}</option>
-                            <option value="grid" {% if publication.layout == 'grid'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Grid' | trans }}</option>
-                            <option value="mapbox" {% if publication.layout == 'mapbox'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Mapbox' | trans }}</option>
-                            <option value="download" {% if publication.layout == 'download'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Download' | trans }}</option>
-                        </select>
+
+                    <h4 class="expose-more-setting" style="text-align: center;margin-bottom: 20px;">{{ 'expose:: More setting' | trans }}</h4>
+
+                    <div id="moreSettingInner" class="hidden">
+                        <div class="ui-widget">
+                            <label>{{ 'prod:expose:publication:Layout' | trans }} </label>
+                            <select id="publication_layout" name="layout" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select Layout' | trans }}</option>
+                                <option value="gallery" {% if publication.config.layout == 'gallery'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Gallery' | trans }}</option>
+                                <option value="grid" {% if publication.config.layout == 'grid'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Grid' | trans }}</option>
+                                <option value="mapbox" {% if publication.config.layout == 'mapbox'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Mapbox' | trans }}</option>
+                                <option value="download" {% if publication.config.layout == 'download'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Download' | trans }}</option>
+                            </select>
+                        </div>
+                        <div class="ui-widget">
+                            <label>{{ 'prod:expose:publication:Theme' | trans }} </label>
+                            <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
+                                    class="publication-field">
+                                <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
+                                <option value="light" {% if publication.config.theme == 'light'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Light' | trans }}</option>
+                                <option value="dark" {% if publication.config.theme == 'dark'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Dark' | trans }}</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="ui-widget">
-                        <label>{{ 'prod:expose:publication:Theme' | trans }} </label>
-                        <select id="theme-field" name="theme" tabindex="-1" aria-hidden="true"
-                                class="publication-field">
-                            <option value="">{{ 'prod:expose:publication:Select Theme' | trans }}</option>
-                            <option value="light" {% if publication.theme == 'light'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Light' | trans }}</option>
-                            <option value="dark" {% if publication.theme == 'dark'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Dark' | trans }}</option>
-                        </select>
-                    </div>
+
                 </div>
             </form>
 
@@ -199,31 +207,15 @@
 
         var publicationFieldClass = publicationEdit.find(".publication-field");
         var permissionList = publicationEdit.find("#permission-list");
-
-        $.datepicker.regional['default'] = {
-            closeText: "Close",
-            prevText: "{{ 'workzone:datepicker:prevText' | trans }}",
-            nextText: "{{ 'workzone:datepicker:nextText' | trans }}",
-            currentText: "Today",
-            monthNames: ["{{ 'workzone:datepicker:january' | trans }}", "{{ 'workzone:datepicker:february' | trans }}", "{{ 'workzone:datepicker:march' | trans }}", "{{ 'workzone:datepicker:april' | trans }}", "{{ 'workzone:datepicker:may' | trans }}", "{{ 'workzone:datepicker:june' | trans }}",
-                "{{ 'workzone:datepicker:july' | trans }}", "{{ 'workzone:datepicker:august' | trans }}", "{{ 'workzone:datepicker:september' | trans }}", "{{ 'workzone:datepicker:october' | trans }}", "{{ 'workzone:datepicker:november' | trans }}", "{{ 'workzone:datepicker:december' | trans }}"],
-            dayNames: ["{{ 'workzone:datepicker:sunday' | trans }}", "{{ 'workzone:datepicker:monday' | trans }}", "{{ 'workzone:datepicker:tuesday' | trans }}", "{{ 'workzone:datepicker:wednesday' | trans }}", "{{ 'workzone:datepicker:thursday' | trans }}", "{{ 'workzone:datepicker:friday' | trans }}", "{{ 'workzone:datepicker:saturday' | trans }}"],
-            dayNamesMin: ["D", "L", "M", "M", "J", "V", "S"],
-            dateFormat: "d MM yy",
-            altField: ".alternate",
-            altFormat: "yy-mm-dd",
-            minDate: 0
-        };
-
-        $(".use-datepicker").datepicker($.datepicker.regional['default']);
+        var slugField = publicationEdit.find('#slug-field');
 
         //generate publication list
         $(document).ready(function () {
             $( "#publication-tabs" ).tabs();
 
-            publicationEdit.find('.toggleSetting').on('click', function (e) {
+            publicationEdit.find('.expose-more-setting').on('click', function (e) {
                 $(this).toggleClass('open');
-                $(this).next("div").toggleClass('hidden');
+                $(this).next("div#moreSettingInner").toggleClass('hidden');
             });
 
             $.ajax({
@@ -279,9 +271,71 @@
                 plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
                 toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
             });
+
+            $.datetimepicker.setLocale('{{ app['locale'] }}');
+
+            $(".use-datepicker").datetimepicker({
+                i18n:{
+                    de:{
+                        months:[
+                            'Januar','Februar','März','April',
+                            'Mai','Juni','Juli','August',
+                            'September','Oktober','November','Dezember',
+                        ],
+                        dayOfWeek:[
+                            'So','Mo','Di','Mi','Do','Fr','Sa'
+                        ]
+                    },
+                    fr:{
+                        months:[
+                            'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                            'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+                        ],
+                        dayOfWeek:[
+                            'dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'
+                        ]
+                    },
+                    du:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    nl:{
+                        months:[
+                            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+                            'juli', 'augustus', 'september', 'oktober', 'november', 'december'
+                        ],
+                        dayOfWeek:[
+                            'zon', 'maa', 'din', 'woe', 'don', 'vri', 'zat'
+                        ]
+                    },
+                    en:{
+                        months:[
+                            'January','February','March','April','May','June',
+                            'July','August','September','October','November','December'
+                        ],
+                        dayOfWeek:[
+                            'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
+                        ]
+                    }
+                },
+                format:'Y/m/d H:i',
+                theme: 'dark',
+                minDate:0,
+                closeOnWithoutClick :true
+            });
         });
 
         bindPermissionEvent();
+
+        slugField.on('keyup', function() {
+            publicationEdit.find('.expose-slug-ok').hide();
+            publicationEdit.find('.expose-slug-nok').hide();
+        });
 
         publicationFieldClass.on('keyup change', function (e) {
             if ($(this).attr('id') === 'publication_securityMethod') {
@@ -324,7 +378,7 @@
                         exposeName: "{{ exposeName }}",
                         publicationData: advancedSetting.val()
                     },
-                    success: function (data) {console.log(data.success);
+                    success: function (data) {
                         if (data.success) {
                             publicationEdit.find("#pub-success").removeClass("hidden").html(data.message);
                             document.getElementById("publication-data-form").reset();
@@ -583,7 +637,7 @@
                     } else if (lvalue === 'false') {
                         obj[key] = false;
                     }
-                } else if (typeof value === 'object') {
+                } else if (value !== null && typeof value === 'object') {
                     booleanizeObject(obj[key]);
                 }
             });
@@ -600,9 +654,6 @@
                 /**Build Config elt**/
                 var config = {};
 
-                if (dataValue.layout != '') {
-                    config = {...config, layout: dataValue.layout};
-                }
                 if (dataValue.enabled == 'on') {
                     config = {...config, enabled: true};
                 }else{
@@ -617,28 +668,50 @@
                     config = {...config, password: dataValue.password};
                 }
 
-                if (dataValue.beginsAt) {
-                    config = {...config, beginsAt: dataValue.beginsAt};
-                }
-                if (dataValue.expiresAt) {
-                    config = {...config, expiresAt: dataValue.expiresAt};
+                if (dataValue.beginsAt == '') {
+                    config = {...config, beginsAt: null};
+                } else {
+                    try {
+                        config = {...config, beginsAt: new Date(dataValue.beginsAt).toISOString()};
+                    } catch (err) {
+                    }
                 }
 
-                if (dataValue.theme) {
+                if (dataValue.expiresAt == '') {
+                    config = {...config, expiresAt: null};
+                } else {
+                    try {
+                        config = {...config, expiresAt: new Date(dataValue.expiresAt).toISOString()};
+                    } catch (err) {
+                    }
+                }
+
+                if (dataValue.layout == '') {
+                    config = {...config, layout: null};
+                } else {
+                    config = {...config, layout: dataValue.layout};
+                }
+
+                if (dataValue.theme == '') {
+                    config = {...config, theme: null};
+                } else {
                     config = {...config, theme: dataValue.theme};
                 }
 
-                config = {...config, securityMethod: dataValue.securityMethod};
+                if (dataValue.securityMethod == '') {
+                    config = {...config, securityMethod: null};
+                } else {
+                    config = {...config, securityMethod: dataValue.securityMethod};
+                }
 
                 dataValue = {...dataValue, config};
 
-
                 booleanizeObject(dataValue);
-
 
                 return dataValue;
 
             } catch (err) {
+                console.log(err);
                 return;
             }
         }
@@ -655,7 +728,7 @@
             }
 
             if (profileField.val() == "") {
-                delete datavalueMinus['profile'];
+                datavalueMinus['profile'] = null;
             }
 
             delete datavalueMinus['layout'];
