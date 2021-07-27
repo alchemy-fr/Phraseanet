@@ -155,14 +155,14 @@ class Manage extends Helper
         if (null === $createdUser = $this->app['repo.users']->findByEmail($email)) {
             $createdUser = $this->app['manipulator.user']->createUser($email, $this->app['random.medium']->generateString(128), $email);
 
-            if ((bool) $this->request->get('send_credentials', false)) {
-                $this->sendPasswordSetupMail($createdUser);
-            }
-
             if ((bool) $this->request->get('validate_mail', false)) {
                 $createdUser->setMailLocked(true);
 
                 $this->sendAccountUnlockEmail($createdUser);
+            }
+
+            if ((bool) $this->request->get('send_credentials', false)) {
+                $this->sendPasswordSetupMail($createdUser);
             }
         }
 
