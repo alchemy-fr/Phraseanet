@@ -242,18 +242,22 @@ class UploadController extends Controller
 
             $callback = function ($element, Visa $visa) use (&$reasons, &$elementCreated) {
                 file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("into callback")
+                    sprintf("into \"visas\" callback")
                 ), FILE_APPEND | LOCK_EX);
 
                 foreach ($visa->getResponses() as $response) {
                     file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("visa returned %s", $response->isOk() ? 'ok' : 'not ok')
+                        sprintf("visa \"%s\" returned %s", get_class($response->getChecker()), $response->isOk() ? 'ok' : 'not ok')
                     ), FILE_APPEND | LOCK_EX);
 
                     if (!$response->isOk()) {
                         $reasons[] = $response->getMessage($this->app['translator']);
                     }
                 }
+
+                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("return from \"visas\" callback")
+                ), FILE_APPEND | LOCK_EX);
 
                 $elementCreated = $element;
             };

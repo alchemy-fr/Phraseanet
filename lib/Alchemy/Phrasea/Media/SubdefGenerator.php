@@ -60,13 +60,45 @@ class SubdefGenerator
         $this->tmpDirectory = $this->app['conf']->get(['main', 'storage', 'worker_tmp_files']);;
     }
 
+    //************************ dirty hack to trace "wip" document  file
     public function generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
     {
         file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("into generateSubdefs(%s.%s, %s)", $record->getDataboxId(), $record->getRecordId(), $wanted_subdefs ? ('[' . join(', ', $wanted_subdefs) . ']') : 'null')
         ), FILE_APPEND | LOCK_EX);
 
-        $hd = $record->get_hd_file();
+        for ($ntry = 1; $ntry <= 4; $ntry++) {
+
+            $hd = $record->get_hd_file();
+            if($hd) {
+                clearstatcache($hd->getRealPath());
+                file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("hd=\"%s\" (size=%s) for %s.%s", $hd->getRealPath(), filesize($hd->getRealPath()), $record->getDataboxId(), $record->getRecordId())
+                ), FILE_APPEND | LOCK_EX);
+
+                $this->_generateSubdefs($record, $wanted_subdefs);  // void
+
+                break;
+            }
+            file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("!!! try %s/4 : record->get_hd_file() returned null for %s.%s, retry in 2 sec.", $ntry, $record->getDataboxId(), $record->getRecordId())
+            ), FILE_APPEND | LOCK_EX);
+            sleep(2);
+
+        }
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from generateSubdefs(...)")
+        ), FILE_APPEND | LOCK_EX);
+
+    }
+
+
+
+    private function _generateSubdefs(\record_adapter $record, array $wanted_subdefs = null)
+    {
+        $hd = $record->get_hd_file();   // should be ok since checked before, but who knows
+
         if(!$hd) {
             file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("!!! record->get_hd_file() returned null for %s.%s", $record->getDataboxId(), $record->getRecordId())
@@ -243,10 +275,6 @@ class SubdefGenerator
             );
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return from generateSubdefs(...)")
-        ), FILE_APPEND | LOCK_EX);
-
     }
 
     /**
@@ -267,12 +295,33 @@ class SubdefGenerator
         return $this->logger;
     }
 
+    /** ****** dirty hack to retry to create subdef if failed ************ */
     private function generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
     {
         file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("into generateSubdef(%s.%s, %s, \"%s\")", $record->getDataboxId(), $record->getRecordId(), $subdef_class->get_name(), $pathdest)
         ), FILE_APPEND | LOCK_EX);
 
+        for ($ntry = 1; $ntry <= 4; $ntry++) {
+            $this->_generateSubdef($record, $subdef_class, $pathdest);
+            if(file_exists($pathdest)) {
+                break;
+            }
+            else {
+                file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("!!! try %s/4 : subdef file \"%s\" does not exists, retry in 2 sec.", $ntry, $pathdest)
+                ), FILE_APPEND | LOCK_EX);
+                sleep(2);
+            }
+        }
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from generateSubdef(...)")
+        ), FILE_APPEND | LOCK_EX);
+    }
+
+    private function _generateSubdef(\record_adapter $record, \databox_subdef $subdef_class, $pathdest)
+    {
         $start = microtime(true);
         $destFile = null;
 
@@ -347,7 +396,8 @@ class SubdefGenerator
                 $this->app['filesystem']->remove($pathdest);
             }
 
-        } catch (MediaAlchemystException $e) {
+        }
+        catch (MediaAlchemystException $e) {
 
             file_put_contents(dirname(__FILE__) . '/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("!!! MediaAlchemystException \"%s\"", $e->getMessage())
@@ -366,7 +416,8 @@ class SubdefGenerator
 
             if($destFile){
                 $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
-            }else{
+            }
+            else {
                 $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
             }
 
@@ -382,10 +433,6 @@ class SubdefGenerator
                 )
             );
         }
-
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return from generateSubdef(...)")
-        ), FILE_APPEND | LOCK_EX);
 
     }
 
