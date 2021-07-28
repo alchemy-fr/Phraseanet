@@ -89,9 +89,9 @@ class MediaVorus
             sprintf("into guess(\"%s\")", $file)
         ), FILE_APPEND | LOCK_EX);
 
-        // keep the last 4 file in cache
+        // keep the last 4 files in cache (but 2 should be enough)
         $found = null;
-        foreach(self::$guess_cache as $k => $entry) {
+        foreach(self::$guess_cache as $entry) {
             if($entry['file'] === $file) {
                 $found = $entry['media'];
                 break;
@@ -106,8 +106,7 @@ class MediaVorus
             $fileObj = new File($file);
             $classname = "Alchemy\\Phrasea\\" . $this->guessFromMimeType($fileObj->getMimeType());
 
-            /** @var  \Alchemy\Phrasea\MediaVorus\Media\MediaInterface $ret */
-            /** @var  \Alchemy\Phrasea\MediaVorus\Media\DefaultMedia $ret */
+            // save in cache
             self::$guess_cache[] = [
                 'file'  => $file,
                 'media' => ($found = new $classname($fileObj, $this->reader->reset()->files($file)->first(), $this->writer, $this->ffprobe))
@@ -118,6 +117,8 @@ class MediaVorus
             sprintf("return from guess(...)")
         ), FILE_APPEND | LOCK_EX);
 
+        /** @var  \Alchemy\Phrasea\MediaVorus\Media\MediaInterface $found */
+        /** @var  \Alchemy\Phrasea\MediaVorus\Media\DefaultMedia $found */
         return $found;
     }
 
