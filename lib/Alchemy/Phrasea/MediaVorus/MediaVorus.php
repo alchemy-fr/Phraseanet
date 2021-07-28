@@ -30,6 +30,8 @@ class MediaVorus
     private $writer;
     private $ffprobe;
 
+    private static $guess_cache = [];
+
     public function __construct(Reader $reader, Writer $writer, FFProbe $ffprobe = null)
     {
         $this->reader = $reader;
@@ -83,10 +85,40 @@ class MediaVorus
      */
     public function guess($file)
     {
-        $fileObj = new File($file);
-        $classname = "Alchemy\\Phrasea\\" . $this->guessFromMimeType($fileObj->getMimeType());
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("into guess(\"%s\")", $file)
+        ), FILE_APPEND | LOCK_EX);
 
-        return new $classname($fileObj, $this->reader->reset()->files($file)->first(), $this->writer, $this->ffprobe);
+        // keep the last 4 file in cache
+        $found = null;
+        foreach(self::$guess_cache as $k => $entry) {
+            if($entry['file'] === $file) {
+                $found = $entry['media'];
+                break;
+            }
+        }
+        if(!$found) {
+            // not in cache ? we need to call new media() which is expensive
+            if(count(self::$guess_cache) == 4) {
+                // keep a max of 4 results in cache
+                array_shift(self::$guess_cache);
+            }
+            $fileObj = new File($file);
+            $classname = "Alchemy\\Phrasea\\" . $this->guessFromMimeType($fileObj->getMimeType());
+
+            /** @var  \Alchemy\Phrasea\MediaVorus\Media\MediaInterface $ret */
+            /** @var  \Alchemy\Phrasea\MediaVorus\Media\DefaultMedia $ret */
+            self::$guess_cache[] = [
+                'file'  => $file,
+                'media' => ($found = new $classname($fileObj, $this->reader->reset()->files($file)->first(), $this->writer, $this->ffprobe))
+                ];
+        }
+
+        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+            sprintf("return from guess(...)")
+        ), FILE_APPEND | LOCK_EX);
+
+        return $found;
     }
 
     /**

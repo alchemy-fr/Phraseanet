@@ -58,7 +58,8 @@ class Alchemyst
     {
         try {
             $mediafile = $this->drivers['mediavorus']->guess($source);
-        } catch (MediaVorusFileNotFoundException $e) {
+        }
+        catch (MediaVorusFileNotFoundException $e) {
             throw new FileNotFoundException(sprintf('File %s not found', $source));
         }
 
