@@ -732,9 +732,9 @@ class CollectionController extends Controller
         if ($sxe = simplexml_load_string($collection->get_prefs())) {
             $z = $sxe->xpath('/baseprefs/sugestedValues');
             if ($z && is_array($z)) {
-                $f = 0;
                 foreach ($z[0] as $ki => $vi) {
                     if ($vi && isset($structFields[$ki])) {
+                        $f = 0;
                         foreach ($vi->value as $oneValue) {
                             $suggestedValues[] = [
                                 'key'   => $ki,

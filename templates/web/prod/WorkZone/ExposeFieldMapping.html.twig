@@ -1,0 +1,82 @@
+<div id="expose-mapping-tabs">
+    <ul>
+        <li>
+            <a href="#expose-field-mapping">
+                {{ 'expose::setting Field mapping' | trans }}
+            </a>
+        </li>
+        <li>
+            <a href="#expose-subdef-mapping">
+                {{ 'expose::setting Subdef mapping' | trans }}
+            </a>
+        </li>
+    </ul>
+
+    <div id="expose-field-mapping">
+        <div style="margin:20px 10px;">
+            {% if exposeName %}
+                <p>{{ 'expose::setting Choose profile and check all field to be uploaded in %exposeName% expose' |trans({'%exposeName%': exposeName}) }}</p>
+                <form id="field-mapping-form">
+                    <div class="ui-widget">
+                        <label>{{ 'prod:expose:publication:Profile' | trans }} </label>
+                        <select id="field-profile-mapping" name="profile" tabindex="-1" aria-hidden="true"
+                                class="publication-field">
+                            <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
+                        </select>
+                    </div>
+                    <hr>
+                    <div class="databox-field-list">
+                    </div>
+
+                    <div class="publication-btn-container submit-blockr">
+                        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                            <div class="ui-dialog-buttonset">
+                                <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="save-field-mapping">
+                                    <span class="ui-button-text">{{ 'expose::setting Save field'| trans }}</span>
+                                </button>
+                                <button type="button"
+                                        class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                        role="button" aria-disabled="false"><span class="ui-button-text">{{ 'expose::setting Cancel'| trans }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            {% else %}
+                <h3>{{ 'expose::setting You have to select an expose to continue' | trans }}</h3>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="expose-subdef-mapping">
+        <div style="margin:20px 10px;">
+            <p>{{ "expose::setting Choose a profile and do mapping for subdef to be uploaded" | trans }}</p>
+            <form id="subdef-mapping-form">
+                <div class="ui-widget">
+                    <label>{{ 'prod:expose:publication:Profile' | trans }} </label>
+                    <select id="subdef-profile-mapping" name="profile" tabindex="-1" aria-hidden="true">
+                        <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
+                    </select>
+                </div>
+                <hr>
+
+                <div class="databox-subdef-list">
+                </div>
+
+                <div class="publication-btn-container submit-blockr">
+                    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                        <div class="ui-dialog-buttonset">
+                            <button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="save-subdef-mapping">
+                                <span class="ui-button-text">{{ 'expose::setting Save subdef mapping'| trans }}</span>
+                            </button>
+                            <button type="button"
+                                    class="close-expose-modal ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                    role="button" aria-disabled="false"><span class="ui-button-text">{{ 'expose::setting Cancel'| trans }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

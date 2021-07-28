@@ -10008,15 +10008,167 @@ var workzone = function workzone(services) {
             checkActiveBloc(dragBloc);
         });
 
+        (0, _jquery2.default)('.expose_field_mapping').on('click', function (e) {
+            e.preventDefault();
+            openFieldMapping();
+        });
+
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
-            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(exposeName);
         });
 
         (0, _jquery2.default)('#expose_list').on('change', function () {
-            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(this.value);
+        });
+
+        (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.slug-availability', function (e) {
+            e.preventDefault();
+
+            var slug = (0, _jquery2.default)('#slug-field').val();
+            var actualSlug = (0, _jquery2.default)('#slug-field').attr('data-actual-slug');
+
+            if (slug !== '' && actualSlug == slug) {
+                (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+            } else if (slug !== '') {
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/publication/slug-availability/' + slug + '/?exposeName=' + (0, _jquery2.default)('#expose_list').val(),
+                    success: function success(data) {
+                        if (data.isAvailable == true) {
+                            (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+                        } else if (data.isAvailable == false) {
+                            (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.new-slug-availability', function (e) {
+            e.preventDefault();
+
+            var slug = (0, _jquery2.default)('#new-slug-field').val();
+            if (slug !== '') {
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/publication/slug-availability/' + slug + '/?exposeName=' + (0, _jquery2.default)('#expose_list').val(),
+                    success: function success(data) {
+                        if (data.isAvailable == true) {
+                            (0, _jquery2.default)('#DIALOG-expose-add').find('.new-expose-slug-ok').show();
+                        } else if (data.isAvailable == false) {
+                            (0, _jquery2.default)('#DIALOG-expose-add').find('.new-expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-field-mapping', function (e) {
+            e.preventDefault();
+            if ((0, _jquery2.default)('#field-profile-mapping').val() == '') {
+                return (0, _alert2.default)('', localeService.t('ExposeChooseProfile'));
+            }
+
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/field-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#field-profile-mapping', function (e) {
+            (0, _jquery2.default)('.databox-field-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+
+            _jquery2.default.ajax({
+                type: "GET",
+                url: '/prod/expose/databoxes-field?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'html',
+                data: {
+                    profile: (0, _jquery2.default)('#field-profile-mapping').val()
+                },
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping .databox-field-list').empty().html(data);
+
+                    (0, _jquery2.default)('.field-list').sortable().disableSelection();
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '.subdef-expose-side', function (e) {
+            var that = this;
+            var className = (0, _jquery2.default)(that).data('subdef-group');
+            var selectedValue = (0, _jquery2.default)(that).val();
+            var count = 0;
+            (0, _jquery2.default)(className).each(function () {
+                if (!(0, _jquery2.default)(this).hasClass('hidden') && (0, _jquery2.default)(this).val() == selectedValue && (0, _jquery2.default)(this).val() != 'none') {
+                    count++;
+                }
+            });
+            if (count > 1) {
+                (0, _alert2.default)('', localeService.t('ExposeDuplicateValue'));
+                (0, _jquery2.default)(that).val(_jquery2.default.data(that, 'current'));
+
+                return false;
+            }
+
+            _jquery2.default.data(that, 'current', (0, _jquery2.default)(that).val());
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#subdef-profile-mapping', function (e) {
+            (0, _jquery2.default)('.databox-subdef-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+
+            _jquery2.default.ajax({
+                type: "GET",
+                url: '/prod/expose/subdefs-list?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'html',
+                data: {
+                    profile: (0, _jquery2.default)('#subdef-profile-mapping').val()
+                },
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping .databox-subdef-list').empty().html(data);
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '.subdef-phraseanet-side', function () {
+            if ((0, _jquery2.default)(this).is(":checked")) {
+                var idName = (0, _jquery2.default)(this).attr('id');
+                var selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
+                selectBox.attr('name', idName);
+                selectBox.removeClass('hidden');
+            } else {
+                var _selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
+                _selectBox.removeAttr('name');
+                _selectBox.addClass('hidden');
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function (event) {
+            event.preventDefault();
+            if ((0, _jquery2.default)('#subdef-profile-mapping').val() == '') {
+                return (0, _alert2.default)('', localeService.t('ExposeChooseProfile'));
+            }
+
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#subdef-mapping-form').serializeArray();
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/subdef-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                }
+            });
         });
 
         (0, _jquery2.default)('.expose_logout_link').on('click', function (event) {
@@ -10760,9 +10912,13 @@ var workzone = function workzone(services) {
 
                     (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
                     (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
+                    (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
+                    (0, _jquery2.default)('.add_expose_block').removeClass('hidden');
                 } else {
                     (0, _jquery2.default)('.expose_connected').empty();
                     (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
+                    (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
+                    (0, _jquery2.default)('.add_expose_block').addClass('hidden');
                 }
             }
         });
@@ -10919,6 +11075,59 @@ var workzone = function workzone(services) {
         });
     }
 
+    function openFieldMapping() {
+        var dialogFieldMapping = (0, _jquery2.default)('#DIALOG-field-mapping .expose-field-content');
+        var exposeName = (0, _jquery2.default)("#expose_list").val();
+
+        dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').attr('title', localeService.t('ExposeMapping')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 500,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {}
+        }).dialog('open');
+
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap');
+
+        dialogFieldMapping.on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/field-mapping?exposeName=' + exposeName,
+            success: function success(data) {
+                dialogFieldMapping.empty().html(data);
+                (0, _jquery2.default)("#expose-mapping-tabs").tabs();
+
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/list-profile?exposeName=' + exposeName,
+                    success: function success(data) {
+                        (0, _jquery2.default)('#DIALOG-field-mapping select#field-profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        (0, _jquery2.default)('#DIALOG-field-mapping select#subdef-profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        var i = 0;
+
+                        for (; i < data.profiles.length; i++) {
+                            (0, _jquery2.default)('#DIALOG-field-mapping select#field-profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+
+                            (0, _jquery2.default)('#DIALOG-field-mapping select#subdef-profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     function openExposePublicationEdit(edit) {
         (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
@@ -10941,9 +11150,10 @@ var workzone = function workzone(services) {
             (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
         });
 
+        var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         _jquery2.default.ajax({
             type: "GET",
-            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val() + '&timezone=' + timezone,
             success: function success(data) {
                 (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }
