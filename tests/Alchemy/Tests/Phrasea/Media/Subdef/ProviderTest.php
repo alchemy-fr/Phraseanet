@@ -2,8 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
-use Alchemy\Phrasea\Media\Subdef\Provider;
 use Alchemy\Phrasea\Media\Subdef\Image;
+use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
+use Alchemy\Phrasea\Media\Subdef\Provider;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 /**
@@ -33,7 +34,7 @@ class ProviderTest extends \PhraseanetTestCase
         $this->assertTrue(is_array($this->object->getOptions()));
 
         foreach ($this->object->getOptions() as $option) {
-            $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
+            $this->assertInstanceOf(OptionType::class, $option);
         }
     }
 
@@ -44,7 +45,7 @@ class ProviderTest extends \PhraseanetTestCase
     {
         $option = $this->object->getOption(Image::OPTION_SIZE);
 
-        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
+        $this->assertInstanceOf(OptionType::class, $option);
         $this->assertEquals(Image::OPTION_SIZE, $option->getName());
     }
 

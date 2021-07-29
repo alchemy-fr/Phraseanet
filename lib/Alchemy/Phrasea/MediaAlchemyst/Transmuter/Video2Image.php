@@ -33,7 +33,7 @@ class Video2Image extends AbstractTransmuter
             throw new SpecNotSupportedException('FFMpeg Adapter only supports Video specs');
         }
 
-        /* @var $spec \MediaAlchemyst\Specification\Image */
+        /* @var Image $spec */
         $tmpDest = $this->tmpFileManager->createTemporaryFile(self::TMP_FILE_SCOPE, 'ffmpeg', 'jpg');
 
         $time = (int) ($source->getDuration() * $this->parseTimeAsRatio(static::$time));

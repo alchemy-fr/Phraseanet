@@ -2,8 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
-use Alchemy\Phrasea\Media\Subdef\Video;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Phrasea\Media\Subdef\Video;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Video as VideoSpecification;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 /**
@@ -46,6 +47,6 @@ class VideoTest extends \PhraseanetTestCase
      */
     public function testGetMediaAlchemystSpec()
     {
-        $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Video', $this->object->getMediaAlchemystSpec());
+        $this->assertInstanceOf(VideoSpecification::class, $this->object->getMediaAlchemystSpec());
     }
 }

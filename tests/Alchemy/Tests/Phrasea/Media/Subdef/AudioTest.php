@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Audio as MediaAlchemystAudio;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 /**
@@ -46,6 +47,6 @@ class AudioTest extends \PhraseanetTestCase
      */
     public function testGetMediaAlchemystSpec()
     {
-        $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Audio', $this->object->getMediaAlchemystSpec());
+        $this->assertInstanceOf(MediaAlchemystAudio::class, $this->object->getMediaAlchemystSpec());
     }
 }

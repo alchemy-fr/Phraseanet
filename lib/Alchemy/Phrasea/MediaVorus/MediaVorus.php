@@ -77,6 +77,22 @@ class MediaVorus
     }
 
     /**
+     * invalidate the "guess" cache for a file (or for all files if "file" arg is null)
+     *
+     * @param string|null $file
+     */
+    public function clearGuessCache($file = null)
+    {
+        $old = self::$guess_cache;
+        self::$guess_cache = [];
+        foreach($old as $entry) {
+            if($file && $entry['file'] != $file) {
+                self::$guess_cache[] = $entry;
+            }
+        }
+    }
+
+    /**
      * Build a Media Object given a file
      *
      * @param string $file

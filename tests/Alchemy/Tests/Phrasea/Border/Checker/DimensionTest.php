@@ -2,8 +2,10 @@
 
 namespace Alchemy\Tests\Phrasea\Border\Checker;
 
-use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Dimension;
+use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\MediaVorus\Media\Image;
+
 
 /**
  * @group functional
@@ -24,7 +26,7 @@ class DimensionTest extends \PhraseanetTestCase
     public function testCheckSameDims()
     {
         $media = $this
-            ->getMockBuilder('\\MediaVorus\\Media\\Image')
+            ->getMockBuilder(Image::class)
             ->disableOriginalConstructor()
             ->getMock();
 

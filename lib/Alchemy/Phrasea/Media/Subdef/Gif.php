@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Animation as AnimationSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Gif extends Image
@@ -37,7 +38,7 @@ class Gif extends Image
     public function getMediaAlchemystSpec()
     {
         if (! $this->spec) {
-            $this->spec = new \MediaAlchemyst\Specification\Animation();
+            $this->spec = new AnimationSpecification();
         }
 
         $size = $this->getOption(self::OPTION_SIZE)->getValue();

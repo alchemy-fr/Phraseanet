@@ -1,6 +1,7 @@
 <?php
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\PHPExiftool\Driver\TagInterface;
 
 /**
  * @group functional
@@ -156,8 +157,8 @@ class databox_fieldTest extends \PhraseanetTestCase
 
     public function testGet_tag()
     {
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_mono->get_tag());
-        $this->assertInstanceOf('\\PHPExiftool\\Driver\\TagInterface', $this->object_multi->get_tag());
+        $this->assertInstanceOf(TagInterface::class, $this->object_mono->get_tag());
+        $this->assertInstanceOf(TagInterface::class, $this->object_multi->get_tag());
     }
 
     public function testGet_dces_element()

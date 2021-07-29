@@ -13,6 +13,8 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
+use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystExceptionInterface;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
 use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Alchemy\Phrasea\MediaVorus\MediaVorus;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
@@ -559,12 +561,13 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             throw new \Alchemy\Phrasea\Exception\RuntimeException('You can not rotate a substitution');
         }
 
-        $specs = new \MediaAlchemyst\Specification\Image();
+        $specs = new ImageSpecification();
         $specs->setRotationAngle($angle);
 
         try {
             $alchemyst->turnInto($this->getRealPath(), $this->getRealPath(), $specs);
-        } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
+        }
+        catch (MediaAlchemystExceptionInterface $e) {
             return $this;
         }
 

@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\Core\Thumbnail;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
+use Alchemy\Phrasea\MediaAlchemyst\Exception\FileNotFoundException as AlchemystFileNotFoundException;
 use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
 use Alchemy\Phrasea\MediaVorus\Media\Image;
 use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
@@ -95,7 +96,7 @@ abstract class AbstractThumbnailManager
      * @param File $file
      * @param $imageSpec
      * @return string
-     * @throws \MediaAlchemyst\Exception\FileNotFoundException
+     * @throws AlchemystFileNotFoundException
      */
     protected function resizeMediaFile(File $file, $imageSpec)
     {

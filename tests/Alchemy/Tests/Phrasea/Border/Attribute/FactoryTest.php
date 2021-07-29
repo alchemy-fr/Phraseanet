@@ -2,12 +2,13 @@
 
 namespace Alchemy\Tests\Phrasea\Border\Attribute;
 
-use Alchemy\Phrasea\Border\Attribute\Factory;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
+use Alchemy\Phrasea\Border\Attribute\Factory;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
-use PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID;
-use PHPExiftool\Driver\Value\Mono;
-use PHPExiftool\Driver\Metadata\Metadata;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
+use Alchemy\Phrasea\PHPExiftool\Driver\Tag\IPTC\UniqueDocumentID;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono;
+
 
 /**
  * @group functional

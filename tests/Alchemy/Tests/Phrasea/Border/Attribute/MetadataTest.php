@@ -2,11 +2,11 @@
 
 namespace Alchemy\Tests\Phrasea\Border\Attribute;
 
-use Alchemy\Phrasea\Border\Attribute\Metadata;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
-use PHPExiftool\Driver\Tag\IPTC\ObjectName;
-use PHPExiftool\Driver\Value\Mono;
-use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
+use Alchemy\Phrasea\Border\Attribute\Metadata;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
+use Alchemy\Phrasea\PHPExiftool\Driver\Tag\IPTC\ObjectName;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono;
 
 /**
  * @group functional

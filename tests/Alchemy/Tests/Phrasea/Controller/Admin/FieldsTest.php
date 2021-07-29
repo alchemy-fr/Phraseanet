@@ -2,7 +2,7 @@
 
 namespace Alchemy\Tests\Phrasea\Controller\Admin;
 
-use PHPExiftool\Driver\Tag\IPTC\ObjectName;
+use Alchemy\Phrasea\PHPExiftool\Driver\Tag\IPTC\ObjectName;
 
 /**
  * @group functional

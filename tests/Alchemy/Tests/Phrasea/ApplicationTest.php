@@ -6,6 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -325,7 +326,7 @@ class ApplicationTest extends \PhraseanetTestCase
         $app = new Application(Application::ENV_TEST);
 
         $this->assertSame($app['monolog'], $app['media-alchemyst.logger']);
-        $this->assertInstanceOf('MediaAlchemyst\Alchemyst', $app['media-alchemyst']);
+        $this->assertInstanceOf(Alchemyst::class, $app['media-alchemyst']);
     }
 
     /**

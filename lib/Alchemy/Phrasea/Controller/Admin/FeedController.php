@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
+use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface as AlchemystExceptionInterface;
 use Alchemy\Phrasea\MediaAlchemyst\Specification\Image;
 use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Alchemy\Phrasea\Model\Entities\Feed;
@@ -170,7 +171,7 @@ class FeedController extends Controller
                 /** @var Alchemyst $alchemyst */
                 $alchemyst = $this->app['media-alchemyst'];
                 $alchemyst->turnInto($media->getFile()->getPathname(), $tmpname, $spec);
-            } catch (\MediaAlchemyst\Exception\ExceptionInterface $e) {
+            } catch (AlchemystExceptionInterface $e) {
                 throw new \Exception_InternalServerError('Error while resizing');
             }
 

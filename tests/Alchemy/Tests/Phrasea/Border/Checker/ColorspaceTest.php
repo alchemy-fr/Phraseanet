@@ -2,8 +2,11 @@
 
 namespace Alchemy\Tests\Phrasea\Border\Checker;
 
-use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Colorspace;
+use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\MediaVorus\Media\Document;
+use Alchemy\Phrasea\MediaVorus\Media\Image;
+use Alchemy\Phrasea\MediaVorus\Media\Video;
 
 /**
  * @group functional
@@ -32,7 +35,7 @@ class ColorspaceTest extends \PhraseanetTestCase
     public function testCheckImage()
     {
         $media = $this
-            ->getMockBuilder('\\MediaVorus\\Media\\Image')
+            ->getMockBuilder(Image::class)
             ->disableOriginalConstructor()
             ->getMock();
         $media->expects($this->any())
@@ -59,7 +62,7 @@ class ColorspaceTest extends \PhraseanetTestCase
     public function testCheckVideo()
     {
         $media = $this
-          ->getMockBuilder('\\MediaVorus\\Media\\Video')
+          ->getMockBuilder(Video::class)
           ->disableOriginalConstructor()
           ->getMock();
         $media->expects($this->any())
@@ -83,7 +86,7 @@ class ColorspaceTest extends \PhraseanetTestCase
     public function testCheckFailDocument()
     {
         $media = $this
-          ->getMockBuilder('\\MediaVorus\\Media\\Document')
+          ->getMockBuilder(Document::class)
           ->disableOriginalConstructor()
           ->getMock();
         $media->expects($this->once())

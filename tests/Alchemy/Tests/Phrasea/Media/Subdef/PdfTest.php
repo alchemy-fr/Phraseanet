@@ -3,6 +3,7 @@
 namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Pdf;
+use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
@@ -46,6 +47,6 @@ class PdfTest extends \PhraseanetTestCase
      */
     public function testGetMediaAlchemystSpec()
     {
-        $this->assertInstanceOf('Alchemy\\Phrasea\\Media\\Subdef\\Specification\\PdfSpecification', $this->object->getMediaAlchemystSpec());
+        $this->assertInstanceOf(PdfSpecification::class, $this->object->getMediaAlchemystSpec());
     }
 }

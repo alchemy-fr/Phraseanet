@@ -2,8 +2,9 @@
 
 namespace Alchemy\Tests\Phrasea\Border\Checker;
 
-use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Border\Checker\Extension;
+use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\MediaVorus\Media\Image;
 
 /**
  * @group functional
@@ -47,7 +48,7 @@ class ExtensionTest extends \PhraseanetTestCase
                 ->will($this->returnValue($extension));
 
             $media = $this
-                ->getMockBuilder('\\MediaVorus\\Media\\Image')
+                ->getMockBuilder(Image::class)
                 ->disableOriginalConstructor()
                 ->getMock();
             $media->expects($this->any())

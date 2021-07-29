@@ -15,6 +15,7 @@ use Alchemy\Phrasea\MediaAlchemyst\Exception\FormatNotSupportedException;
 use Alchemy\Phrasea\MediaAlchemyst\Exception\RuntimeException;
 use Alchemy\Phrasea\MediaAlchemyst\Exception\SpecNotSupportedException;
 use Alchemy\Phrasea\MediaAlchemyst\Specification\Audio;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Audio as AudioSpecification;
 use Alchemy\Phrasea\MediaAlchemyst\Specification\SpecificationInterface;
 use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use FFMpeg\Exception\ExceptionInterface as FFMpegException;
@@ -38,7 +39,7 @@ class Video2Audio extends AbstractTransmuter
             throw new RuntimeException('Unable to transmute video to audio due to FFMpeg', null, $e);
         }
 
-        /* @var $spec \MediaAlchemyst\Specification\Audio */
+        /* @var AudioSpecification $spec  */
         $format = $this->getFormatFromFileType($dest);
 
         if ($spec->getAudioCodec()) {

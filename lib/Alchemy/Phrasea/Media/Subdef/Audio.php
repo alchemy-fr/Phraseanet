@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Audio as AudioSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Audio extends Provider
@@ -51,7 +52,7 @@ class Audio extends Provider
     public function getMediaAlchemystSpec()
     {
         if (! $this->spec) {
-            $this->spec = new \MediaAlchemyst\Specification\Audio();
+            $this->spec = new AudioSpecification();
         }
 
         $this->spec->setAudioCodec($this->getOption(self::OPTION_ACODEC)->getValue());

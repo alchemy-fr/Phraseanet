@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Gif;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Animation as AnimationSpecification;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 /**
@@ -46,6 +47,6 @@ class GifTest extends \PhraseanetTestCase
      */
     public function testGetMediaAlchemystSpec()
     {
-        $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Animation', $this->object->getMediaAlchemystSpec());
+        $this->assertInstanceOf(AnimationSpecification::class, $this->object->getMediaAlchemystSpec());
     }
 }

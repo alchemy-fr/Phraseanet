@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Video as VideoSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Video extends Audio
@@ -49,7 +50,7 @@ class Video extends Audio
     public function getMediaAlchemystSpec()
     {
         if (! $this->spec) {
-            $this->spec = new \MediaAlchemyst\Specification\Video();
+            $this->spec = new VideoSpecification();
         }
 
         $size = $this->getOption(self::OPTION_SIZE)->getValue();

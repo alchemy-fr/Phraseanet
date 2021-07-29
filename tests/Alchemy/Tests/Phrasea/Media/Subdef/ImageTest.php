@@ -4,6 +4,7 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Image;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
 
 /**
@@ -46,6 +47,6 @@ class ImageTest extends \PhraseanetTestCase
      */
     public function testGetMediaAlchemystSpec()
     {
-        $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Image', $this->object->getMediaAlchemystSpec());
+        $this->assertInstanceOf(ImageSpecification::class, $this->object->getMediaAlchemystSpec());
     }
 }

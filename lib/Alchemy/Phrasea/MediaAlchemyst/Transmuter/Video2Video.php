@@ -16,6 +16,7 @@ use Alchemy\Phrasea\MediaAlchemyst\Exception\RuntimeException;
 use Alchemy\Phrasea\MediaAlchemyst\Exception\SpecNotSupportedException;
 use Alchemy\Phrasea\MediaAlchemyst\Specification\SpecificationInterface;
 use Alchemy\Phrasea\MediaAlchemyst\Specification\Video;
+use Alchemy\Phrasea\MediaAlchemyst\Specification\Video as VideoSpecification;
 use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Alchemy\Phrasea\MediaVorus\Media\Video as MediaVorusVideo;
 use FFMpeg\Coordinate\Dimension;
@@ -48,7 +49,7 @@ class Video2Video extends AbstractTransmuter
             throw new RuntimeException('Unable to transmute video to video due to FFMpeg', null, $e);
         }
 
-        /* @var $spec \MediaAlchemyst\Specification\Video */
+        /* @var VideoSpecification $spec  */
         $format = $this->getFormatFromFileType($dest);
 
         $resizeMode = ResizeFilter::RESIZEMODE_FIT;

@@ -9,12 +9,16 @@ use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Video;
-use MediaVorus\Media\MediaInterface;
-use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
-use PHPExiftool\Driver\Tag\IPTC\Keywords;
-use PHPExiftool\Driver\Tag\MXF\ObjectName;
-use PHPExiftool\Driver\Value\Mono;
-use PHPExiftool\Driver\Value\Multi;
+use Alchemy\Phrasea\MediaVorus\File as MediavorusFile;
+use Alchemy\Phrasea\MediaVorus\Media\DefaultMedia as MediavorusDefaultMedia;
+use Alchemy\Phrasea\MediaVorus\Media\Image as MediavorusImage;
+use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
+use Alchemy\Phrasea\MediaVorus\MediaVorus;
+use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
+use Alchemy\Phrasea\PHPExiftool\Driver\Tag\IPTC\Keywords;
+use Alchemy\Phrasea\PHPExiftool\Driver\Tag\MXF\ObjectName;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono;
+use Alchemy\Phrasea\PHPExiftool\Driver\Value\Multi;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -75,22 +79,36 @@ class FileTest extends \PhraseanetTestCase
             unlink($file);
         }
 
+        /** @var MediaVorus $mediavorus */
+        $mediavorus = self::$DI['app']['mediavorus'];
+
+        // the file 4logo.jpg has no uuid included
         copy(__DIR__ . '/../../../../files/p4logo.jpg', $file);
 
-        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
+        $mediavorus->clearGuessCache($file);
+        $borderFile = new File(self::$DI['app'], $mediavorus->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID(true, false);
-
         $this->assertTrue(Uuid::isValid($uuid));
+
+        // check that calling with no arguments will return the current uuid (even if not written)
         $this->assertEquals($uuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
+        //
+        // force a new "File" so his uuid is not known
+        //
+        $mediavorus->clearGuessCache($file);
+        $borderFile = new File(self::$DI['app'], $mediavorus->guess($file), self::$DI['collection']);
         $newuuid = $borderFile->getUUID(true, true);
 
         $this->assertTrue(Uuid::isValid($newuuid));
         $this->assertNotEquals($uuid, $newuuid);
         $this->assertEquals($newuuid, $borderFile->getUUID());
 
-        $borderFile = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess($file), self::$DI['collection']);
+        //
+        // force a new "File" so his uuid is not known
+        //
+        $mediavorus->clearGuessCache($file);
+        $borderFile = new File(self::$DI['app'], $mediavorus->guess($file), self::$DI['collection']);
         $uuid = $borderFile->getUUID();
 
         $this->assertTrue(Uuid::isValid($uuid));
@@ -123,7 +141,7 @@ class FileTest extends \PhraseanetTestCase
      */
     public function testGetFile()
     {
-        $this->assertInstanceOf('\\MediaVorus\\File', $this->object->getFile());
+        $this->assertInstanceOf(MediavorusFile::class, $this->object->getFile());
         $this->assertEquals(realpath(__DIR__ . '/../../../../../tmp/iphone_pic.jpg'), $this->object->getFile()->getRealPath());
     }
 
@@ -132,7 +150,7 @@ class FileTest extends \PhraseanetTestCase
      */
     public function testGetMedia()
     {
-        $this->assertInstanceof('\\MediaVorus\\Media\\Image', $this->object->getMedia());
+        $this->assertInstanceof(MediavorusImage::class, $this->object->getMedia());
     }
 
     /**
@@ -229,7 +247,7 @@ class FileTest extends \PhraseanetTestCase
 
     private function getMediaMock($type)
     {
-        $mock = $this->getMockBuilder('\\MediaVorus\\Media\\Image')
+        $mock = $this->getMockBuilder(MediavorusDefaultMedia::class)
             ->disableOriginalConstructor()
             ->getMock();
 
