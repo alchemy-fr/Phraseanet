@@ -14,11 +14,11 @@ use Alchemy\Phrasea\Border;
 use Alchemy\Phrasea\Border\Attribute\AttributeInterface;
 use Alchemy\Phrasea\Border\Attribute\MetaField;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 

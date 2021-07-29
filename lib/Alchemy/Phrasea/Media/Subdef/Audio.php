@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Audio as AudioSpecification;
+use MediaAlchemyst\Specification\Audio as AudioSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Audio extends Provider

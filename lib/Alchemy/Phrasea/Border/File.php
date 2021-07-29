@@ -18,13 +18,13 @@ use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Video;
-use Alchemy\Phrasea\MediaVorus\Exception\FileNotFoundException;
-use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Alchemy\Phrasea\Metadata\TagFactory;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
-use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono as MonoValue;
-use Alchemy\Phrasea\PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
+use MediaVorus\Exception\FileNotFoundException;
+use MediaVorus\Media\MediaInterface;
+use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\Metadata\MetadataBag as ExiftoolMetadataBag;
+use PHPExiftool\Driver\Value\Mono as MonoValue;
+use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
 use Ramsey\Uuid\Uuid;
 
 /**

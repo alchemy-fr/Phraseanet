@@ -15,10 +15,10 @@ use Alchemy\Phrasea\Core\Event\Record\MediaSubstitutedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
-use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
-use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
-use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
-use Alchemy\Phrasea\MediaVorus\MediaVorus;
+use MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
+use MediaVorus\Media\MediaInterface;
+use MediaVorus\MediaVorus;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SubdefSubstituer

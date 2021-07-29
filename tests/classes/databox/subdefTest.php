@@ -3,7 +3,7 @@
 use Alchemy\Phrasea\Media\Subdef;
 use Alchemy\Phrasea\Media\Subdef\OptionType\OptionType;
 use Alchemy\Phrasea\Media\Type;
-use Alchemy\Phrasea\MediaAlchemyst\Specification;
+use MediaAlchemyst\Specification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class databox_subdefTest extends \PHPUnit_Framework_TestCase

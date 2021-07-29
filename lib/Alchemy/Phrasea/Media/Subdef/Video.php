@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Video as VideoSpecification;
+use MediaAlchemyst\Specification\Video as VideoSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Video extends Audio

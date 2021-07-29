@@ -11,16 +11,16 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
-use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface as AlchemystExceptionInterface;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Image;
-use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\Exception\ExceptionInterface as AlchemystExceptionInterface;
+use MediaAlchemyst\Specification\Image;
+use MediaVorus\Media\MediaInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

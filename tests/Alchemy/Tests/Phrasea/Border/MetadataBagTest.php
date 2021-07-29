@@ -3,9 +3,9 @@
 namespace Alchemy\Tests\Phrasea\Border;
 
 use Alchemy\Phrasea\Border\MetadataBag;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
-use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono;
-use Alchemy\Phrasea\PHPExiftool\Driver\Value\Multi;
+use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\Value\Mono;
+use PHPExiftool\Driver\Value\Multi;
 
 /**
  * @group functional

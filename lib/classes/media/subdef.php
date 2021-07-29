@@ -12,15 +12,15 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
-use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
-use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystExceptionInterface;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
-use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
-use Alchemy\Phrasea\MediaVorus\MediaVorus;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
 use Assert\Assertion;
 use Guzzle\Http\Url;
+use MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystExceptionInterface;
+use MediaAlchemyst\Specification\Image as ImageSpecification;
+use MediaVorus\Media\MediaInterface;
+use MediaVorus\MediaVorus;
 
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {

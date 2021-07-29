@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
-use Alchemy\Phrasea\PHPExiftool\Driver\TagProvider as ExiftoolTagProvider;
+use PHPExiftool\Driver\TagProvider as ExiftoolTagProvider;
 
 class TagProvider extends ExiftoolTagProvider
 {

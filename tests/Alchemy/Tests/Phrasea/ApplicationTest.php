@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\Configuration\Configuration;
 use Alchemy\Phrasea\Core\Configuration\HostConfiguration;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
-use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\Alchemyst;
 use Symfony\Component\BrowserKit\Cookie as BrowserCookie;
 use Symfony\Component\BrowserKit\CookieJar;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

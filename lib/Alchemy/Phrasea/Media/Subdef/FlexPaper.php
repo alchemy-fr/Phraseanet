@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Flash as FlashSpecification;
+use MediaAlchemyst\Specification\Flash as FlashSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class FlexPaper extends Provider

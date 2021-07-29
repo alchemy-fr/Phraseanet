@@ -11,8 +11,8 @@
 namespace Alchemy\Phrasea\Filesystem;
 
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\SpecificationInterface;
 use Alchemy\Phrasea\Model\RecordInterface;
+use MediaAlchemyst\Specification\SpecificationInterface;
 
 class FilesystemService
 {

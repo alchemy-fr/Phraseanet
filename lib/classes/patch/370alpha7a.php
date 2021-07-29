@@ -10,11 +10,11 @@
  */
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpec;
 use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Doctrine\DBAL\DBALException;
+use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
+use MediaAlchemyst\Specification\Image as ImageSpec;
 
 class patch_370alpha7a extends patchAbstract
 {

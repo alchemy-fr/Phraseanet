@@ -20,14 +20,14 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\MediaAlchemyst\Alchemyst;
-use Alchemy\Phrasea\MediaVorus\MediaVorus;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataReader;
 use Alchemy\Phrasea\Metadata\PhraseanetMetadataSetter;
 use Alchemy\Phrasea\Record\RecordWasRotated;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DataURI\Parser;
+use MediaAlchemyst\Alchemyst;
+use MediaVorus\MediaVorus;
 use Symfony\Component\HttpFoundation\Request;
 
 class ToolsController extends Controller

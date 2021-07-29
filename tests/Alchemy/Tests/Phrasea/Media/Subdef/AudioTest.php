@@ -4,8 +4,8 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Audio;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Audio as MediaAlchemystAudio;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
+use MediaAlchemyst\Specification\Audio as MediaAlchemystAudio;
 
 /**
  * @group functional

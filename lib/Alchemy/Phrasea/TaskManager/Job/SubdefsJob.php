@@ -13,9 +13,9 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Media\SubdefGenerator;
-use Alchemy\Phrasea\MediaAlchemyst\Transmuter\Image2Image;
 use Alchemy\Phrasea\TaskManager\Editor\SubdefsEditor;
 use Doctrine\DBAL\Connection;
+use MediaAlchemyst\Transmuter\Image2Image;
 
 class SubdefsJob extends AbstractJob
 {

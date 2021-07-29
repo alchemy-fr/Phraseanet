@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-use Alchemy\Phrasea\PHPExiftool\Driver\AbstractTag;
+use PHPExiftool\Driver\AbstractTag;
 
 class TfEditdate extends AbstractTag
 {

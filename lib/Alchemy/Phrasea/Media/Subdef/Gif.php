@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Animation as AnimationSpecification;
+use MediaAlchemyst\Specification\Animation as AnimationSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Gif extends Image

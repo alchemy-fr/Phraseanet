@@ -11,15 +11,15 @@
 
 namespace Alchemy\Phrasea\Metadata;
 
-use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
 use Alchemy\Phrasea\Metadata\Tag\PdfText;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfExtension;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
 use Alchemy\Phrasea\Metadata\Tag\TfMimetype;
 use Alchemy\Phrasea\Metadata\Tag\TfSize;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
-use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono as MonoValue;
+use MediaVorus\Media\MediaInterface;
+use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\Value\Mono as MonoValue;
 use XPDF\Exception\Exception as XPDFException;
 use XPDF\PdfToText;
 

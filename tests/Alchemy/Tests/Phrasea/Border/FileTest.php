@@ -9,16 +9,16 @@ use Alchemy\Phrasea\Media\Type\Document;
 use Alchemy\Phrasea\Media\Type\Flash;
 use Alchemy\Phrasea\Media\Type\Image;
 use Alchemy\Phrasea\Media\Type\Video;
-use Alchemy\Phrasea\MediaVorus\File as MediavorusFile;
-use Alchemy\Phrasea\MediaVorus\Media\DefaultMedia as MediavorusDefaultMedia;
-use Alchemy\Phrasea\MediaVorus\Media\Image as MediavorusImage;
-use Alchemy\Phrasea\MediaVorus\Media\MediaInterface;
-use Alchemy\Phrasea\MediaVorus\MediaVorus;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
-use Alchemy\Phrasea\PHPExiftool\Driver\Tag\IPTC\Keywords;
-use Alchemy\Phrasea\PHPExiftool\Driver\Tag\MXF\ObjectName;
-use Alchemy\Phrasea\PHPExiftool\Driver\Value\Mono;
-use Alchemy\Phrasea\PHPExiftool\Driver\Value\Multi;
+use MediaVorus\File as MediavorusFile;
+use MediaVorus\Media\DefaultMedia as MediavorusDefaultMedia;
+use MediaVorus\Media\Image as MediavorusImage;
+use MediaVorus\Media\MediaInterface;
+use MediaVorus\MediaVorus;
+use PHPExiftool\Driver\Metadata\Metadata as PHPExiftoolMetadata;
+use PHPExiftool\Driver\Tag\IPTC\Keywords;
+use PHPExiftool\Driver\Tag\MXF\ObjectName;
+use PHPExiftool\Driver\Value\Mono;
+use PHPExiftool\Driver\Value\Multi;
 use Ramsey\Uuid\Uuid;
 
 /**

@@ -4,8 +4,8 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Alchemy\Phrasea\Media\Subdef\Video;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Video as VideoSpecification;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
+use MediaAlchemyst\Specification\Video as VideoSpecification;
 
 /**
  * @group functional

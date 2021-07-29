@@ -11,8 +11,8 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
-use Alchemy\Phrasea\MediaAlchemyst\Exception\ExceptionInterface;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
+use MediaAlchemyst\Exception\ExceptionInterface;
+use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef\Specification;
 
-use Alchemy\Phrasea\MediaAlchemyst\Specification\AbstractSpecification;
+use MediaAlchemyst\Specification\AbstractSpecification;
 
 class PdfSpecification extends AbstractSpecification
 {

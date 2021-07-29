@@ -4,8 +4,8 @@ namespace Alchemy\Tests\Phrasea\Media\Subdef;
 
 use Alchemy\Phrasea\Media\Subdef\FlexPaper;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Flash as FlashSpecification;
 use Alchemy\Tests\Tools\TranslatorMockTrait;
+use MediaAlchemyst\Specification\Flash as FlashSpecification;
 
 /**
  * @group functional

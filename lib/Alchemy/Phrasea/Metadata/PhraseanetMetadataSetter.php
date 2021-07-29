@@ -14,10 +14,10 @@ namespace Alchemy\Phrasea\Metadata;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Databox\DataboxRepository;
 use Alchemy\Phrasea\Metadata\Tag\NoSource;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata\Metadata;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use DateTime;
+use PHPExiftool\Driver\Metadata\Metadata;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PhraseanetMetadataSetter

@@ -4,9 +4,9 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Border\Checker\Colorspace;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\MediaVorus\Media\Document;
-use Alchemy\Phrasea\MediaVorus\Media\Image;
-use Alchemy\Phrasea\MediaVorus\Media\Video;
+use MediaVorus\Media\Document;
+use MediaVorus\Media\Image;
+use MediaVorus\Media\Video;
 
 /**
  * @group functional

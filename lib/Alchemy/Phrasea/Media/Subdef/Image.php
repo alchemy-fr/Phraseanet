@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
-use Alchemy\Phrasea\MediaAlchemyst\Specification\Image as ImageSpecification;
+use MediaAlchemyst\Specification\Image as ImageSpecification;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class Image extends Provider

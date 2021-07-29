@@ -11,7 +11,7 @@
 namespace Alchemy\Phrasea\Collection;
 
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
-use Alchemy\Phrasea\PHPExiftool\Exception\LogicException;
+use PHPExiftool\Exception\LogicException;
 
 class Collection
 {

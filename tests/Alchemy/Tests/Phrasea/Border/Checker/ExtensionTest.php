@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Border\Checker;
 
 use Alchemy\Phrasea\Border\Checker\Extension;
 use Alchemy\Phrasea\Border\File;
-use Alchemy\Phrasea\MediaVorus\Media\Image;
+use MediaVorus\Media\Image;
 
 /**
  * @group functional

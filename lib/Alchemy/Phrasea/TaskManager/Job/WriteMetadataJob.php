@@ -14,14 +14,14 @@ namespace Alchemy\Phrasea\TaskManager\Job;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Metadata\TagFactory;
-use Alchemy\Phrasea\PHPExiftool\Driver\Metadata;
-use Alchemy\Phrasea\PHPExiftool\Driver\Tag;
-use Alchemy\Phrasea\PHPExiftool\Driver\Value;
-use Alchemy\Phrasea\PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
-use Alchemy\Phrasea\PHPExiftool\Exception\TagUnknown;
-use Alchemy\Phrasea\PHPExiftool\Writer;
-use Alchemy\Phrasea\PHPExiftool\Writer as ExifWriter;
 use Alchemy\Phrasea\TaskManager\Editor\WriteMetadataEditor;
+use PHPExiftool\Driver\Metadata;
+use PHPExiftool\Driver\Tag;
+use PHPExiftool\Driver\Value;
+use PHPExiftool\Exception\ExceptionInterface as PHPExiftoolException;
+use PHPExiftool\Exception\TagUnknown;
+use PHPExiftool\Writer;
+use PHPExiftool\Writer as ExifWriter;
 
 class WriteMetadataJob extends AbstractJob
 {

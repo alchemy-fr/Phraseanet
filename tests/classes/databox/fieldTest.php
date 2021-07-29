@@ -1,7 +1,7 @@
 <?php
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\PHPExiftool\Driver\TagInterface;
+use PHPExiftool\Driver\TagInterface;
 
 /**
  * @group functional
