@@ -274,6 +274,10 @@ class media_subdefTest extends \PhraseanetTestCase
      */
     public function testRotate()
     {
+        $app = $this->getApplication();
+        /** @var MediaVorus\MediaVorus $mediavorus */
+        $mediavorus = $app['mediavorus'];
+
         $width_before = self::$objectPresent->get_width();
         $height_before = self::$objectPresent->get_height();
 

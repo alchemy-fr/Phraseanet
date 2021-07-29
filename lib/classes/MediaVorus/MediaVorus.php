@@ -105,13 +105,14 @@ class MediaVorus
         ), FILE_APPEND | LOCK_EX);
 
         // keep the last 4 files in cache (but 2 should be enough)
+        // todo : cache is disabled while unit test tests/classes/media/subdefTest.php::testRotate is failing
         $found = null;
-        foreach(self::$guess_cache as $entry) {
-            if($entry['file'] === $file) {
-                $found = $entry['media'];
-                break;
-            }
-        }
+//        foreach(self::$guess_cache as $entry) {
+//            if($entry['file'] === $file) {
+//                $found = $entry['media'];
+//                break;
+//            }
+//        }
         if(!$found) {
             // not in cache ? we need to call new media() which is expensive
             if(count(self::$guess_cache) == 4) {
