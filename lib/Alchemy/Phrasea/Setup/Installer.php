@@ -102,17 +102,6 @@ class Installer
                     \ACL::NOWATERMARK        => true
                 ]
             );
-
-        foreach (['Subdefs', 'WriteMetadata'] as $jobName) {
-            /** @var JobInterface $job */
-            $job = $this->app['task-manager.job-factory']->create($jobName);
-            $this->app['manipulator.task']->create(
-                $job->getName(),
-                $job->getJobId(),
-                $job->getEditor()->getDefaultSettings($this->app['conf']),
-                $job->getEditor()->getDefaultPeriod()
-            );
-        }
     }
 
     private function createUser($email, $password)
