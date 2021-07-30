@@ -61,13 +61,12 @@ fi
 
 rm -rf bin/run-worker.sh
 
-if [ ! -z "$PHRASEANET_SCHEDULER" ] && [ ${PHRASEANET_SCHEDULER} == "1" ]; then
+if [ ! -z "$PHRASEANET_SCHEDULER" ] ; then
 
   command="bin/console task-manager:scheduler:run"
  echo $command >> bin/run-worker.sh 
  echo "Phraseanet workers container will be launched in Scheduler mode with bin/console task-manager:scheduler:run"
 
-  
 else
  if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
     if [ ! -z "$PHRASEANET_WORKERS_LAUNCH_METHOD" ] && [ ${PHRASEANET_WORKERS_LAUNCH_METHOD} == "supervisor" ]; then
