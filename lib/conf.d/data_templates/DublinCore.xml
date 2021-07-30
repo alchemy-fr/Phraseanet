@@ -206,7 +206,7 @@
         <Creator src="XMP-dc:Creator" type="string" report="1" />
         <Subject src="XMP-dc:Subject" type="string" multi="1"/>
         <Description src="XMP-dc:Description" type="string" report="0" />
-        <Publisher src="XMP-dc:Publisher" type="date" report="0" />
+        <Publisher src="XMP-dc:Publisher" type="string" report="0" />
         <Contributor src="XMP-dc:Contributor" type="string" report="0"/>
         <Date src="XMP-dc:Date" type="date" report="0" />
         <Type src="XMP-dc:Type" type="string" report="1" />

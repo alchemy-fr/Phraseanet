@@ -1,0 +1,85 @@
+version: "3.4"
+
+networks:
+  internal:
+    ipam:
+      config:
+        - subnet: $PHRASEANET_SUBNET_IPS
+
+services:
+  scheduler:
+    build:
+      context: .
+      target: phraseanet-worker
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-worker:$PHRASEANET_DOCKER_TAG
+    restart: on-failure
+    depends_on:
+    - redis
+    - rabbitmq
+    - elasticsearch
+    - phraseanet
+    environment:
+    - OPCACHE_ENABLED
+    - SESSION_CACHE_LIMITER
+    - PHP_LOG_LEVEL
+    - LC_MESSAGES=C.UTF-8
+    - LC_COLLATE=C.UTF-8
+    - LC_IDENTIFICATION=C.UTF-8
+    - LANG=C.UTF-8
+    - LC_MEASUREMENT=C.UTF-8   
+    - LC_CTYPE=C.UTF-8
+    - LC_TIME=C.UTF-8
+    - LC_NAME=C.UTF-8
+    - PHRASEANET_SCHEDULER=1
+    - IMAGEMAGICK_POLICY_VERSION
+    - IMAGEMAGICK_POLICY_WIDTH
+    - IMAGEMAGICK_POLICY_HEIGHT
+    - IMAGEMAGICK_POLICY_MAP
+    - IMAGEMAGICK_POLICY_MEMORY
+    - IMAGEMAGICK_POLICY_AREA
+    - IMAGEMAGICK_POLICY_DISK
+    - IMAGEMAGICK_POLICY_TEMPORARY_PATH
+    - NEWRELIC_ENABLED
+    - NEWRELIC_LICENSE_KEY
+    - NEWRELIC_APP_NAME
+    - BLACKFIRE_ENABLED
+    - BLACKFIRE_SERVER_ID
+    - BLACKFIRE_SERVER_TOKEN
+    volumes:
+    - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
+    - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
+    networks:
+      - internal
+
+volumes:
+  config_vol:
+    driver: local
+  data_vol:
+    driver: local
+  tmp_vol:
+    driver: local
+  db_vol:
+    driver: local
+  elasticsearch_vol:
+    driver: local
+  thumbnails_vol:
+    driver: local
+  custom_vol:
+    driver: local
+  plugins_dir:
+    driver: local
+  cache_vol:
+    driver: local
+  # to be replacer by stdout/stderr
+  logs_vol:
+    driver: local
+  dev_vol:
+    driver: local
