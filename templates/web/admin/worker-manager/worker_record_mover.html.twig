@@ -1,0 +1,50 @@
+<h1>{{ 'admin::workermanager:tab:record mover: description' |trans }}</h1>
+
+{{ form_start(form, {'action': path('worker_admin_recordMover')}) }}
+
+<div class="control-group">
+    {{ form_row(form.ttl_retry) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.xmlSetting, {'attr': {'style': 'width:99%;height:250px;'}}) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.apply) }}
+</div>
+
+<div class="control-group">
+    {% if(running) %}
+        <button type="submit" value="stop" class="btn btn-danger stop-validation-reminder">{{ 'Stop' | trans }}</button>
+    {% else %}
+        <button type="submit" value="start" class="btn btn-primary start-validation-reminder">{{ "Start"|trans }}</button>
+    {% endif %}
+</div>
+
+{{ form_end(form) }}
+
+<script type="text/javascript">
+    $("#worker-record-mover").on('click', 'BUTTON[type=submit]', function(e, z) {
+        e.preventDefault();
+        var button = $(e.target);
+        var form = button.closest("FORM");
+        $("INPUT.act", form).val(button.val());     // "save", "start" or "stop"
+
+        var ok = true;
+        {% if(running) %}
+        if(button.val() === 'save') {
+            // saving will empty the queue, "stopping"
+            ok = confirm("Warning! Changing the settings will stop pulling assets!")
+        }
+        {% endif %}
+        if(button.val() === 'stop') {
+            // saving will empty the queue, "stopping"
+            ok = confirm("Warning! You are about to stop pulling assets!")
+        }
+
+        if(ok) {
+            form.submit();
+        }
+    });
+</script>

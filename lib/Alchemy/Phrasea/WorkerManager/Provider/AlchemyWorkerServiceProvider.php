@@ -18,6 +18,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\PopulateIndexWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\PullAssetsWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\EditRecordWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordMoverWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
 use Alchemy\Phrasea\WorkerManager\Worker\SubdefCreationWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubtitleWorker;
@@ -156,6 +157,10 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::VALIDATION_REMINDER_TYPE, new CallableWorkerFactory(function () use ($app) {
             return new ValidationReminderWorker($app);
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::RECORD_MOVER_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new RecordMoverWorker($app);
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::EDIT_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {
