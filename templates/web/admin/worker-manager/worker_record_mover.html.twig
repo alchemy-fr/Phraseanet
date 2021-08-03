@@ -16,9 +16,9 @@
 
 <div class="control-group">
     {% if(running) %}
-        <button type="submit" value="stop" class="btn btn-danger stop-validation-reminder">{{ 'Stop' | trans }}</button>
+        <button type="submit" value="stop" class="btn btn-danger">{{ 'Stop' | trans }}</button>
     {% else %}
-        <button type="submit" value="start" class="btn btn-primary start-validation-reminder">{{ "Start"|trans }}</button>
+        <button type="submit" value="start" class="btn btn-primary">{{ "Start"|trans }}</button>
     {% endif %}
 </div>
 
@@ -35,12 +35,12 @@
         {% if(running) %}
         if(button.val() === 'save') {
             // saving will empty the queue, "stopping"
-            ok = confirm("Warning! Changing the settings will stop pulling assets!")
+            ok = confirm("Warning! Changing the settings will stop record mover!")
         }
         {% endif %}
         if(button.val() === 'stop') {
             // saving will empty the queue, "stopping"
-            ok = confirm("Warning! You are about to stop pulling assets!")
+            ok = confirm("Warning! You are about to stop record mover!")
         }
 
         if(ok) {
