@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailUpdate;
 use Alchemy\Phrasea\Notification\Receiver;
 use Doctrine\DBAL\Connection;
@@ -71,14 +72,17 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     protected function delete_user(User $user)
     {
-        $list = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
+        // only revoke access to bases on which I am admin
+        $I_Admin = array_keys($this->app->getAclForUser($this->app->getAuthenticatedUser())->get_granted_base([\ACL::CANADMIN]));
 
         $oldGrantedBaseIds = array_keys($this->app->getAclForUser($user)->get_granted_base());
 
-        $this->app->getAclForUser($user)->revoke_access_from_bases($list);
+        $this->app->getAclForUser($user)->revoke_access_from_bases($I_Admin);
 
         if ($this->app->getAclForUser($user)->is_phantom()) {
-            $this->app['manipulator.user']->delete($user, [$user->getId() => $oldGrantedBaseIds]);
+            /** @var UserManipulator $userManipulator */
+            $userManipulator = $this->app['manipulator.user'];
+            $userManipulator->delete($user, [$user->getId() => $oldGrantedBaseIds]);
         }
 
         return $this;

@@ -47,7 +47,7 @@ class patch_414 implements patchInterface
     public function apply(base $base, Application $app)
     {
         $cnx = $base->get_connection();
-        $sql = "CREATE TEMPORARY TABLE `_logs` ( `usr_id` INT(11) NOT NULL , `connection` DATE NOT NULL , INDEX `usr_id` (`usr_id`)) ENGINE = InnoDB";
+        $sql = "CREATE TEMPORARY TABLE `_logs` ( `usr_id` INT(11) NOT NULL , `connection` DATETIME NOT NULL , INDEX `usr_id` (`usr_id`)) ENGINE = InnoDB";
         $cnx->exec($sql);
 
         $sql = "INSERT INTO `_logs` (`usr_id`, `connection`) VALUES (:usr_id, :connection)";
