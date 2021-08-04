@@ -17,12 +17,14 @@ use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordMoverWorker;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
@@ -398,6 +400,35 @@ class AdminConfigurationController extends Controller
             'form'      => $form->createView(),
             'running'   => $running
         ]);
+    }
+
+    public function recordMoverFacilityAction(PhraseaApplication $app, Request $request)
+    {
+        $ret = ['tasks' => []];
+        $job = new RecordMoverWorker($app);
+        switch ($request->get('ACT')) {
+            case 'PLAYTEST':
+                $sxml = simplexml_load_string($request->get('xml'));
+                if (isset($sxml->tasks->task)) {
+                    foreach ($sxml->tasks->task as $sxtask) {
+                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, true);
+                    }
+                }
+                break;
+            case 'CALCTEST':
+            case 'CALCSQL':
+                $sxml = simplexml_load_string($request->get('xml'));
+                if (isset($sxml->tasks->task)) {
+                    foreach ($sxml->tasks->task as $sxtask) {
+                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, false);
+                    }
+                }
+                break;
+            default:
+                throw new NotFoundHttpException('Route not found.');
+        }
+
+        return $app->json($ret);
     }
 
     public function populateStatusAction(PhraseaApplication $app, Request $request)

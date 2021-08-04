@@ -216,7 +216,7 @@ class RecordMoverWorker implements WorkerInterface
         return $this;
     }
 
-    private function calcSQL(Application $app, $sxtask, $playTest = false)
+    public function calcSQL(Application $app, $sxtask, $playTest = false)
     {
         $sbas_id = (int) $sxtask['sbas_id'];
 
