@@ -156,28 +156,36 @@
                     t = "";
                     for (i in data.tasks) {
                         t += "<div class=\"title\">&nbsp;";
-                        if(data.tasks[i].active)
+                        if (data.tasks[i].active) {
                             t += "<span class=\"active\">&nbsp;X&nbsp;</span>&nbsp;";
-                        else
+                        } else {
                             t += "<span class=\"notactive\">&nbsp;X&nbsp;</span>&nbsp;";
-                        if(data.tasks[i].name_htmlencoded)
-                            t += "<b>" + data.tasks[i].name_htmlencoded + "</b>";
-                        else
-                            t += "<b><i>sans nom</i></b>";
+                        }
 
-                        if(data.tasks[i].basename_htmlencoded)
+                        if (data.tasks[i].name_htmlencoded) {
+                            t += "<b>" + data.tasks[i].name_htmlencoded + "</b>";
+                        } else {
+                            t += "<b><i>sans nom</i></b>";
+                        }
+
+                        if (data.tasks[i].basename_htmlencoded) {
                             t += " (action=" + data.tasks[i].action + ' on ' +  data.tasks[i].basename_htmlencoded + ')';
-                        else
+                        } else {
                             t += " (action=" + data.tasks[i].action + ' on <i>Unknown</i>)';
+                        }
+
                         t += "</div>";
 
-                        if(data.tasks[i].err_htmlencoded) ;
-                        t += "<div class=\"err\">" + data.tasks[i].err_htmlencoded + "</div>";
+                        if (data.tasks[i].err_htmlencoded) {
+                            t += "<div class=\"err\">" + data.tasks[i].err_htmlencoded + "</div>";
+                        }
 
                         t += "<div class=\"sql\">";
 
-                        if(data.tasks[i].sql && data.tasks[i].sql.test.sql_htmlencoded)
+                        if (data.tasks[i].sql && data.tasks[i].sql.test.sql_htmlencoded) {
                             t += "<div class=\"sqltest\">" + data.tasks[i].sql.test.sql_htmlencoded + "</div>";
+                        }
+
                         t += "--&gt; <span id=\"SQLRET"+i+"\"><i>wait...</i></span><br/>";
 
                         t += "</div>";
@@ -200,10 +208,12 @@
                                         $("#SQLRET"+i).html("err: " + data.tasks[i].sql.test.err);
                                     } else {
                                         t = '';
-                                        for(j in data.tasks[i].sql.test.result.rids)
-                                            t += (t?', ':'') + data.tasks[i].sql.test.result.rids[j];
-                                        if(data.tasks[i].sql.test.result.rids.length < data.tasks[i].sql.test.result.n)
+                                        for (j in data.tasks[i].sql.test.result.rids) {
+                                            t += (t ? ', ' : '') + data.tasks[i].sql.test.result.rids[j];
+                                        }
+                                        if (data.tasks[i].sql.test.result.rids.length < data.tasks[i].sql.test.result.n) {
                                             t += ', ...';
+                                        }
                                         $("#SQLRET"+i).html("n=" + data.tasks[i].sql.test.result.n + ", rids:(" + t + ")");
                                     }
                                 } else {
