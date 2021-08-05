@@ -428,7 +428,7 @@ class RecordMoverWorker implements WorkerInterface
         // criteria <text field="XXX" compare="OP" value="ZZZ" />
         foreach ($sxtask->from->text as $x) {
             $field = $struct->get_element_by_name($x['field']);
-            if($field != null) {
+            if ($field != null) {
                 $ijoin++;
                 $comp = trim($x['compare']);
                 if (in_array($comp, array('<', '>', '<=', '>=', '=', '!='))) {
@@ -449,34 +449,62 @@ class RecordMoverWorker implements WorkerInterface
 
         // criteria <date direction ="XXX" field="YYY" delta="Z" />
         foreach ($sxtask->from->date as $x) {
-            $field = $struct->get_element_by_name($x['field']);
-            if($field != null) {
-                $ijoin++;
-                $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ' AND NOW()';
-                $dir = strtoupper($x['direction']);
-                if (in_array($dir, array('BEFORE', 'AFTER'))) {
-                    // prevent malformed dates to act
-                    $tw[] = '!ISNULL(CAST(p' . $ijoin . '.value AS DATETIME))';
-                    $s .= $dir == 'BEFORE' ? '<' : '>=';
-                    $delta = (int)($x['delta']);
-                    if ($delta > 0) {
-                        $s .= '(p' . $ijoin . '.value+INTERVAL ' . $delta . ' DAY)';
-                    } elseif ($delta < 0) {
-                        $s .= '(p' . $ijoin . '.value-INTERVAL ' . -$delta . ' DAY)';
+            $dir = strtoupper($x['direction']);
+            $delta = (int)($x['delta']);
+            switch ($x['field']) {
+                case '#moddate':
+                case '#credate':
+                    $s = 'NOW()';
+                    $dbField = substr($x['field'], 1);
+                    if (in_array($dir, array('BEFORE', 'AFTER'))) {
+                        // prevent malformed dates to act
+                        $tw[] = '!ISNULL(CAST('. $dbField . ' AS DATETIME))';
+                        $s .= ($dir == 'BEFORE') ? '<' : '>=';
+
+                        if ($delta > 0) {
+                            $s .= '(' . $dbField . '+INTERVAL ' . $delta . ' DAY)';
+                        } elseif ($delta < 0) {
+                            $s .= '(' . $dbField . '-INTERVAL ' . -$delta . ' DAY)';
+                        } else {
+                            $s .= 'CAST(' . $dbField . ' AS DATETIME)';
+                        }
                     } else {
-                        $s .= 'CAST(p' . $ijoin . '.value AS DATETIME)';
+                        // bad direction
+                        $err .= sprintf("bad direction (%s)\n", $x['direction']);
+                    }
+                    $tw[] = $s;
+
+                    break;
+                default:
+                    $field = $struct->get_element_by_name($x['field']);
+                    if($field != null) {
+                        $ijoin++;
+                        $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ' AND NOW()';
+                        if (in_array($dir, array('BEFORE', 'AFTER'))) {
+                            // prevent malformed dates to act
+                            $tw[] = '!ISNULL(CAST(p' . $ijoin . '.value AS DATETIME))';
+                            $s .= ($dir == 'BEFORE') ? '<' : '>=';
+                            if ($delta > 0) {
+                                $s .= '(p' . $ijoin . '.value+INTERVAL ' . $delta . ' DAY)';
+                            } elseif ($delta < 0) {
+                                $s .= '(p' . $ijoin . '.value-INTERVAL ' . -$delta . ' DAY)';
+                            } else {
+                                $s .= 'CAST(p' . $ijoin . '.value AS DATETIME)';
+                            }
+
+                            $tw[] = $s;
+                            $join .= ' INNER JOIN metadatas AS p' . $ijoin . ' USING(record_id)';
+                        } else {
+                            // bad direction
+                            $err .= sprintf("bad direction (%s)\n", $x['direction']);
+                        }
+                    }
+                    else {
+                        // unknown field ?
+                        $err .= sprintf("unknown field (%s)\n", $x['field']);
                     }
 
-                    $tw[] = $s;
-                    $join .= ' INNER JOIN metadatas AS p' . $ijoin . ' USING(record_id)';
-                } else {
-                    // bad direction
-                    $err .= sprintf("bad direction (%s)\n", $x['direction']);
-                }
-            }
-            else {
-                // unknown field ?
-                $err .= sprintf("unknown field (%s)\n", $x['field']);
+                    break;
             }
         }
 
