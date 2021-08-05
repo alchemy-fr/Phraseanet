@@ -56,7 +56,9 @@ class AuthenticatorTest extends \PhraseanetTestCase
         $capturedSession = null;
 
         $app['browser'] = $browser = $this->getBrowserMock();
-        $app['session'] = $session = $this->getSessionMock();
+        $app['session'] = $session = $this->getSessionMock()
+            ->method('getCreated')
+            ->will($this->returnvalue(new DateTime()));
         $app['orm.em'] = $em = $this->createEntityManagerMock();
 
         $user = $this->createUserMock();
