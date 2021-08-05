@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
@@ -353,6 +354,10 @@ class AdminConfigurationController extends Controller
         }
         $config['ttl_retry'] = $ttl_retry;
 
+        if (empty($config['xmlSetting'])) {
+            $config['xmlSetting'] = $this->getDefaulRecordMovertSettings();
+        }
+
         $form = $app->form(new WorkerRecordMoverType(), $config);
 
         $form->handleRequest($request);
@@ -501,6 +506,92 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
+    private function getDefaulRecordMovertSettings()
+    {
+        return <<<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<tasksettings>
+    <logsql>0</logsql>
+    <!--
+        THIS IS AN EXAMPLE OF A SIMPLE WORKFLOW
+        Fix with your settings (fields names, base/collections id's, status-bits) before try
+    -->
+
+    <!-- ********* un-comment to see the tasks **********
+
+    <tasks>
+
+        <comment> keep offline (sb4 = 1) all docs before their "go online" date and after credate (record column) </comment>
+
+        <task active="1" name="stay offline" action="update" sbas_id="1">
+            <from>
+                <date direction="before" field="GO_ONLINE"/>
+                <date direction="after" field="#credate" />
+            </from>
+            <to>
+                <status mask="x1xxxx"/>
+            </to>
+        </task>
+
+
+        <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
+
+        <task active="1" name="go online" action="update" sbas_id="1">
+            <from>
+                <comment> 5, 6, 7 are "public" collections </comment>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="GO_ONLINE"/>
+                <date direction="before" field="TO_ARCHIVE"/>
+            </from>
+            <to>
+                <status mask="x0xxxx"/>
+            </to>
+        </task>
+
+
+        <comment> Warn 10 days before archiving (raise sb5) </comment>
+
+        <task active="1" name="almost the end" action="update" sbas_id="1">
+            <from>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="TO_ARCHIVE" delta="-10"/>
+            </from>
+            <to>
+                <status mask="1xxxxx"/>
+            </to>
+        </task>
+
+
+        <comment> Move to 'archive' collection </comment>
+
+        <task active="1" name="archivage" action="update" sbas_id="1">
+            <from>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="TO_ARCHIVE" />
+            </from>
+            <to>
+                <comment> reset status of archived documents </comment>
+                <status mask="00xxxx"/>
+                <comment> 666 is the "archive" collection </comment>
+                <coll id="666" />
+            </to>
+        </task>
+
+
+        <comment> Delete the archived documents that are in the 'archive' collection from one year </comment>
+
+        <task active="1" name="trash" action="delete" sbas_id="1">
+            <from>
+                <coll compare="=" id="666"/>
+                <date direction="after" field="TO_ARCHIVE" delta="+365" />
+            </from>
+        </task>
+    </tasks>
+
+    ****************************************** -->
+</tasksettings>
+EOF;
+    }
 
 
     /**

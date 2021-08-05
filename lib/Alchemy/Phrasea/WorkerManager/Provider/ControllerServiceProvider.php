@@ -109,6 +109,7 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET|POST')
             ->bind('worker_admin_recordMover');
 
+        /** @uses AdminConfigurationController::recordMoverFacilityAction */
         $controllers->match('/record-mover/facility',  'controller.worker.admin.configuration:recordMoverFacilityAction')
             ->method('POST')
             ->bind('worker_admin_recordMover_facility');
