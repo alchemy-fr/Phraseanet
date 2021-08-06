@@ -156,6 +156,9 @@ class RecordMoverWorker implements WorkerInterface
                         }
                         $ret[] = $tmp;
                         break;
+                    case 'TRASH':
+                        $ret[] = $tmp;
+                        break;
                 }
             }
             $stmt->closeCursor();
@@ -211,6 +214,21 @@ class RecordMoverWorker implements WorkerInterface
                     $this->logger->debug(sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->getRecordId()));
                 }
                 break;
+            case 'TRASH':
+                // move to trash collection if exist
+                $trashCollection = $databox->getTrashCollection();
+                if ($trashCollection != null) {
+                    $this->logger->info("move to trashh!!!!");
+                    $rec->move_to_collection($trashCollection);
+                    // disable permalinks
+                    foreach ($rec->get_subdefs() as $subdef) {
+                        if ( ($pl = $subdef->get_permalink()) ) {
+                            $pl->set_is_activated(false);
+                        }
+                    }
+                }
+
+                break;
         }
 
         return $this;
@@ -247,6 +265,17 @@ class RecordMoverWorker implements WorkerInterface
                     case 'DELETE':
                         $ret['sql'] = $this->calcDELETE($app, $sbas_id, $sxtask, $playTest);
                         $ret['deletechildren'] = (int)($sxtask['deletechildren']);
+                        break;
+                    case 'TRASH':
+                        if ($dbox->getTrashCollection() === null) {
+                            $ret['err'] = "trash collection not found on sbas_id = ". $sbas_id;
+                            $ret['err_htmlencoded'] = htmlentities($ret['err']);
+                        } else {
+                            // there is no to tag, just from tag
+                            // so it's the same as calcDELETE
+                            $ret['sql'] = $this->calcDELETE($app, $sbas_id, $sxtask, $playTest);
+                        }
+
                         break;
                     default:
                         $ret['err'] = "bad action '" . $ret['action'] . "'";
@@ -293,7 +322,7 @@ class RecordMoverWorker implements WorkerInterface
         // compute the 'where' clause
         list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
 
-        if(!empty($err)) {
+        if (!empty($err)) {
             throw(new \Exception($err));
         }
 
@@ -341,7 +370,7 @@ class RecordMoverWorker implements WorkerInterface
         // compute the 'where' clause
         list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
 
-        if(!empty($err)) {
+        if (!empty($err)) {
             throw(new \Exception($err));
         }
 
@@ -477,7 +506,7 @@ class RecordMoverWorker implements WorkerInterface
                     break;
                 default:
                     $field = $struct->get_element_by_name($x['field']);
-                    if($field != null) {
+                    if ($field != null) {
                         $ijoin++;
                         $s = 'p' . $ijoin . '.meta_struct_id=' . $connbas->quote($field->get_id()) . ' AND NOW()';
                         if (in_array($dir, array('BEFORE', 'AFTER'))) {

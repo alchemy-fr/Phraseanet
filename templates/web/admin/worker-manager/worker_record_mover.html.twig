@@ -91,21 +91,38 @@
         var form = button.closest("FORM");
         $("INPUT.act", form).val(button.val());     // "save", "start" or "stop"
 
-        var ok = true;
-        {% if(running) %}
-        if(button.val() === 'save') {
-            // saving will empty the queue, "stopping"
-            ok = confirm("Warning! Changing the settings will stop record mover!")
-        }
-        {% endif %}
-        if(button.val() === 'stop') {
-            // saving will empty the queue, "stopping"
-            ok = confirm("Warning! You are about to stop record mover!")
-        }
+        $.ajax({
+            "url": "{{ path('admin_tasks_validate_xml') }}",
+            "data": $("#worker_recordMover_xmlSetting").val(),
+            "processData": false,
+            "dataType": "json",
+            "type": "POST",
+            "async": false,
+            success: function (data) {
+                if (data.success == true) {
+                    var ok = true;
+                    {% if (running) %}
+                    if (button.val() === 'save') {
+                        // saving will empty the queue, "stopping"
+                        ok = confirm("Warning! Changing the settings will stop record mover!")
+                    }
+                    {% endif %}
+                    if (button.val() === 'stop') {
+                        // saving will empty the queue, "stopping"
+                        ok = confirm("Warning! You are about to stop record mover!")
+                    }
 
-        if(ok) {
-            form.submit();
-        }
+                    if (ok) {
+                        form.submit();
+                    }
+                } else {
+                    $("#worker_recordMover_xmlSetting").css('border', '1px solid #dc1717');
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // todo add notification
+            }
+        });
     });
 
     $("#worker-record-mover").on('click', '.show-graphic-view', function (e) {
@@ -137,8 +154,6 @@
 
     function taskFillGraphic(xml)
     {
-        // $("#sqlu").text("");
-        // $("#sqls").text("");
         if (xml) {
             xml2 = $.parseXML(xml);
             xml2 = $(xml2);
