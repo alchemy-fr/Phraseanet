@@ -375,15 +375,17 @@ class RecordMoverWorker implements WorkerInterface
         }
 
         // build the TEST sql (select)
-        $sql_test = 'SELECT SQL_CALC_FOUND_ROWS record_id FROM record' . $join;
-        if (count($tw) > 0)
+        $sql_test = 'SELECT record_id FROM record' . $join;
+        if (count($tw) > 0) {
             $sql_test .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+        }
         $sql_test .= ' LIMIT 10';
 
         // build the real sql (select)
         $sql_real = 'SELECT record_id FROM record' . $join;
-        if (count($tw) > 0)
+        if (count($tw) > 0) {
             $sql_real .= ' WHERE ' . ((count($tw) == 1) ? $tw[0] : '(' . implode(') AND (', $tw) . ')');
+        }
 
         $ret = [
             'real' => [
