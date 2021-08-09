@@ -9,7 +9,6 @@
  */
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\FilesystemAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
@@ -17,11 +16,7 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\ExportFailureEvent;
 use Alchemy\Phrasea\Core\Event\ExportMailEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
-use Alchemy\Phrasea\Notification\Emitter;
-use Alchemy\Phrasea\Notification\Mail\MailRecordsExport;
-use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\WorkerManager\Event\ExportFtpEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -118,8 +113,9 @@ class ExportController extends Controller
                 $this->getFilesystem(),
                 $request->request->get('obj'),
                 false,
-                $request->request->get('businessfields')
-            );
+                $request->request->get('businessfields'),
+                $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_ASYNC
+        );
 
             $exportFtpId = $download->export_ftp(
                 $request->request->get('user_dest'),
@@ -171,7 +167,8 @@ class ExportController extends Controller
             $this->getFilesystem(),
             (array) $request->request->get('obj'),
             $request->request->get("type") == "title" ? : false,
-            $request->request->get('businessfields')
+            $request->request->get('businessfields'),
+            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_ASYNC
         );
 
         $list['export_name'] = sprintf("%s.zip", $download->getExportName());

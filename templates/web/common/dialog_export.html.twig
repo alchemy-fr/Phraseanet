@@ -156,6 +156,14 @@
                                 </label>
                             </div>
                         {% endif %}
+                        {% if app['conf'].get(['registry', 'actions', 'export-stamp-choice']) == true and download.has_stamp_option() == true %}
+                            <div id="download_stamp_choice" class="well-small hide" style="margin-left: 20px;" >
+                                <label for="option_stamp" class="checkbox">
+                                    <input class="stamp_choice" type="checkbox" id="stamp_choice" name="stamp_choice" value="NO_STAMP" />
+                                    {{ 'prod::download: delete-marking-stamp' | trans }}
+                                </label>
+                            </div>
+                        {% endif  %}
                         <div class="buttons_line">
                             <button type="button" class="download_button btn btn-inverse">{{ 'boutton::telecharger' | trans }}</button>
                             <button type="button" class="close_button btn btn-inverse">{{ 'boutton::annuler' | trans }}</button>
@@ -518,6 +526,14 @@
         $(document).find(".emailslist").on('change', function(e) {
             $(document).find(".tagsinput").tagsinput('add', $(this).val());
             $(this).val('');
+        });
+
+        $('#download_document').click(function(){
+            if($(this).is(':checked')){
+                $('#download_stamp_choice').show();
+            } else{
+                $('#download_stamp_choice').hide();
+            }
         });
     </script>
 {% endif %}
