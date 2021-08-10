@@ -59,17 +59,16 @@ class RecordMoverWorker implements WorkerInterface
             }
 
             $settings = simplexml_load_string($xmlSettings);
-            $logsql = (Boolean) $settings->logsql;
             $tasks = array();
             foreach($settings->tasks->task as $task) {
                 $tasks[] = $task;
             }
 
             try {
-                $data = $this->getData($this->app, $tasks, $logsql);
+                $data = $this->getData($this->app, $tasks);
 
                 foreach ($data as $record) {
-                    $this->processData($this->app, $record, $logsql);
+                    $this->processData($this->app, $record);
                 }
             } catch(\Exception $e) {
                 $this->logger->error('Exception when processing data: ' . $e->getMessage());
@@ -105,7 +104,7 @@ class RecordMoverWorker implements WorkerInterface
 
     }
 
-    private function getData(Application $app, array $tasks, $logsql)
+    private function getData(Application $app, array $tasks)
     {
         $ret = [];
         foreach ($tasks as $sxtask) {
@@ -115,9 +114,7 @@ class RecordMoverWorker implements WorkerInterface
                 continue;
             }
 
-            if ($logsql) {
-                $this->logger->debug(sprintf("playing task '%s' on base '%s'", $task['name'], $task['basename'] ? $task['basename'] : '<unknown>'));
-            }
+            $this->logger->info(sprintf("playing task '%s' on base '%s'", $task['name'], $task['basename'] ? $task['basename'] : '<unknown>'));
 
             try {
                 /** @var databox $databox */
@@ -167,7 +164,7 @@ class RecordMoverWorker implements WorkerInterface
         return $ret;
     }
 
-    private function processData(Application $app, $row, $logsql)
+    private function processData(Application $app, $row)
     {
         $databox = $app->findDataboxById($row['sbas_id']);
         $rec = $databox->get_record($row['record_id']);
@@ -178,9 +175,7 @@ class RecordMoverWorker implements WorkerInterface
                 if (array_key_exists('coll', $row)) {
                     $coll = \collection::getByCollectionId($app, $databox, $row['coll']);
                     $rec->move_to_collection($coll);
-                    if ($logsql) {
-                        $this->logger->debug(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
-                    }
+                    $this->logger->info(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
                 }
 
                 // change sb ?
@@ -193,9 +188,7 @@ class RecordMoverWorker implements WorkerInterface
                     }
                     $status = implode('', $status);
                     $rec->setStatus($status);
-                    if ($logsql) {
-                        $this->logger->debug(sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
-                    }
+                    $this->logger->info(sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
                 }
                 break;
 
@@ -204,22 +197,18 @@ class RecordMoverWorker implements WorkerInterface
                     /** @var record_adapter $child */
                     foreach ($rec->getChildren() as $child) {
                         $child->delete();
-                        if ($logsql) {
-                            $this->logger->debug(sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->getRecordId()));
-                        }
+                        $this->logger->info(sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->getRecordId()));
                     }
                 }
                 $rec->delete();
-                if ($logsql) {
-                    $this->logger->debug(sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->getRecordId()));
-                }
+                $this->logger->info(sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->getRecordId()));
                 break;
             case 'TRASH':
                 // move to trash collection if exist
                 $trashCollection = $databox->getTrashCollection();
                 if ($trashCollection != null) {
-                    $this->logger->info("move to trashh!!!!");
                     $rec->move_to_collection($trashCollection);
+                    $this->logger->info(sprintf("on sbas %s move rid %s to trash.", $row['sbas_id'], $row['record_id']));
                     // disable permalinks
                     foreach ($rec->get_subdefs() as $subdef) {
                         if ( ($pl = $subdef->get_permalink()) ) {
