@@ -285,7 +285,7 @@ class WriteMetadatasWorker implements WorkerInterface
         try {
             $this->writer->write($subdef->getRealPath(), $metadata);
 
-            $this->messagePublisher->pushLog(sprintf('meta written for sbasid=%1$d - recordid=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
+            $this->messagePublisher->pushLog(sprintf('meta written for databoxId=%1$d - recordId=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
 
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("meta written in %s.%s.%s", $databoxId, $recordId, $subdefName)
@@ -307,7 +307,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 sprintf("meta NOT written in %s.%s.%s because (%s)\n  Will %sretry", $databoxId, $recordId, $subdefName, $msg, ($stopInfo ? "not ":""))
             ), FILE_APPEND | LOCK_EX);
 
-            $workerMessage = sprintf('meta NOT written for sbasid=%1$d - recordid=%2$d (%3$s) because "%4$s"',
+            $workerMessage = sprintf('meta NOT written for databoxId=%1$d - recordId=%2$d (%3$s) because "%4$s"',
                 $databox->get_sbas_id(),
                 $recordId,
                 $subdef->get_name(),

@@ -12,7 +12,7 @@ use \databox;
 use Doctrine\DBAL\Connection;
 use \record_adapter;
 
-class RecordMoverWorker implements WorkerInterface
+class RecordsActionsWorker implements WorkerInterface
 {
     private $app;
     /** @var PropertyAccess  */
@@ -31,7 +31,7 @@ class RecordMoverWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        $xmlSettings = $this->conf->get(['workers', 'record_mover', 'xmlSetting'], null);
+        $xmlSettings = $this->conf->get(['workers', 'records_actions', 'xmlSetting'], null);
 
         if (empty($xmlSettings)) {
             $this->logger->error("Can't find the xml setting!");
@@ -44,7 +44,7 @@ class RecordMoverWorker implements WorkerInterface
             try {
                 $workerRunningJob = new WorkerRunningJob();
                 $workerRunningJob
-                    ->setWork(MessagePublisher::RECORD_MOVER_TYPE)
+                    ->setWork(MessagePublisher::RECORDS_ACTIONS_TYPE)
                     ->setPublished(new \DateTime('now'))
                     ->setStatus(WorkerRunningJob::RUNNING)
                 ;
@@ -66,7 +66,6 @@ class RecordMoverWorker implements WorkerInterface
 
             try {
                 $data = $this->getData($this->app, $tasks);
-
                 foreach ($data as $record) {
                     $this->processData($this->app, $record);
                 }
@@ -118,9 +117,9 @@ class RecordMoverWorker implements WorkerInterface
 
             try {
                 /** @var databox $databox */
-                $databox = $app->findDataboxById($task['sbas_id']);
+                $databox = $app->findDataboxById($task['databoxId']);
             } catch (\Exception $e) {
-                $this->logger->error(sprintf("can't connect sbas %s", $task['sbas_id']));
+                $this->logger->error(sprintf("can't connect databoxId %s", $task['databoxId']));
                 continue;
             }
 
@@ -128,7 +127,7 @@ class RecordMoverWorker implements WorkerInterface
             $stmt->execute();
             while (false !== $row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
                 $tmp = [
-                    'sbas_id'   => $task['sbas_id'],
+                    'databoxId'   => $task['databoxId'],
                     'record_id' => $row['record_id'],
                     'action'    => $task['action']
                 ];
@@ -166,7 +165,7 @@ class RecordMoverWorker implements WorkerInterface
 
     private function processData(Application $app, $row)
     {
-        $databox = $app->findDataboxById($row['sbas_id']);
+        $databox = $app->findDataboxById($row['databoxId']);
         $rec = $databox->get_record($row['record_id']);
 
         switch ($row['action']) {
@@ -175,7 +174,7 @@ class RecordMoverWorker implements WorkerInterface
                 if (array_key_exists('coll', $row)) {
                     $coll = \collection::getByCollectionId($app, $databox, $row['coll']);
                     $rec->move_to_collection($coll);
-                    $this->logger->info(sprintf("on sbas %s move rid %s to coll %s \n", $row['sbas_id'], $row['record_id'], $coll->get_coll_id()));
+                    $this->logger->info(sprintf("on databoxId %s move recordId %s to coll %s \n", $row['databoxId'], $row['record_id'], $coll->get_coll_id()));
                 }
 
                 // change sb ?
@@ -188,7 +187,7 @@ class RecordMoverWorker implements WorkerInterface
                     }
                     $status = implode('', $status);
                     $rec->setStatus($status);
-                    $this->logger->info(sprintf("on sbas %s set rid %s status to %s \n", $row['sbas_id'], $row['record_id'], $status));
+                    $this->logger->info(sprintf("on databoxId %s set recordId %s status to %s \n", $row['databoxId'], $row['record_id'], $status));
                 }
                 break;
 
@@ -197,18 +196,18 @@ class RecordMoverWorker implements WorkerInterface
                     /** @var record_adapter $child */
                     foreach ($rec->getChildren() as $child) {
                         $child->delete();
-                        $this->logger->info(sprintf("on sbas %s delete (grp child) rid %s \n", $row['sbas_id'], $child->getRecordId()));
+                        $this->logger->info(sprintf("on databoxId %s delete (grp child) recordId %s \n", $row['databoxId'], $child->getRecordId()));
                     }
                 }
                 $rec->delete();
-                $this->logger->info(sprintf("on sbas %s delete rid %s \n", $row['sbas_id'], $rec->getRecordId()));
+                $this->logger->info(sprintf("on databoxId %s delete recordId %s \n", $row['databoxId'], $rec->getRecordId()));
                 break;
             case 'TRASH':
                 // move to trash collection if exist
                 $trashCollection = $databox->getTrashCollection();
                 if ($trashCollection != null) {
                     $rec->move_to_collection($trashCollection);
-                    $this->logger->info(sprintf("on sbas %s move rid %s to trash.", $row['sbas_id'], $row['record_id']));
+                    $this->logger->info(sprintf("on databoxId %s move recordId %s to trash.", $row['databoxId'], $row['record_id']));
                     // disable permalinks
                     foreach ($rec->get_subdefs() as $subdef) {
                         if ( ($pl = $subdef->get_permalink()) ) {
@@ -225,13 +224,13 @@ class RecordMoverWorker implements WorkerInterface
 
     public function calcSQL(Application $app, $sxtask, $playTest = false)
     {
-        $sbas_id = (int) $sxtask['sbas_id'];
+        $databoxId = (int) $sxtask['databoxId'];
 
         $ret = [
             'name'                 => $sxtask['name'] ? (string) $sxtask['name'] : 'sans nom',
             'name_htmlencoded'     => \p4string::MakeString(($sxtask['name'] ? $sxtask['name'] : 'sans nom'), 'html'),
             'active'               => trim($sxtask['active']) === '1',
-            'sbas_id'              => $sbas_id,
+            'databoxId'            => $databoxId,
             'basename'             => '',
             'basename_htmlencoded' => '',
             'action'               => strtoupper($sxtask['action']),
@@ -242,27 +241,27 @@ class RecordMoverWorker implements WorkerInterface
 
         try {
             /** @var databox $dbox */
-            $dbox = $app->findDataboxById($sbas_id);
+            $dbox = $app->findDataboxById($databoxId);
 
             $ret['basename'] = $dbox->get_label($app['locale']);
             $ret['basename_htmlencoded'] = htmlentities($ret['basename']);
             try {
                 switch ($ret['action']) {
                     case 'UPDATE':
-                        $ret['sql'] = $this->calcUPDATE($app, $sbas_id, $sxtask, $playTest);
+                        $ret['sql'] = $this->calcUPDATE($app, $databoxId, $sxtask, $playTest);
                         break;
                     case 'DELETE':
-                        $ret['sql'] = $this->calcDELETE($app, $sbas_id, $sxtask, $playTest);
+                        $ret['sql'] = $this->calcDELETE($app, $databoxId, $sxtask, $playTest);
                         $ret['deletechildren'] = (int)($sxtask['deletechildren']);
                         break;
                     case 'TRASH':
                         if ($dbox->getTrashCollection() === null) {
-                            $ret['err'] = "trash collection not found on sbas_id = ". $sbas_id;
+                            $ret['err'] = "trash collection not found on databoxId = ". $databoxId;
                             $ret['err_htmlencoded'] = htmlentities($ret['err']);
                         } else {
                             // there is no to tag, just from tag
                             // so it's the same as calcDELETE
-                            $ret['sql'] = $this->calcDELETE($app, $sbas_id, $sxtask, $playTest);
+                            $ret['sql'] = $this->calcDELETE($app, $databoxId, $sxtask, $playTest);
                         }
 
                         break;
@@ -276,14 +275,14 @@ class RecordMoverWorker implements WorkerInterface
                 $ret['err_htmlencoded'] = htmlentities($e->getMessage());
             }
         } catch (\Exception $e) {
-            $ret['err'] = "bad sbas '" . $sbas_id . "'";
+            $ret['err'] = "bad databoxId '" . $databoxId . "'";
             $ret['err_htmlencoded'] = htmlentities($ret['err']);
         }
 
         return $ret;
     }
 
-    private function calcUPDATE(Application $app, $sbas_id, &$sxtask, $playTest)
+    private function calcUPDATE(Application $app, $databoxId, &$sxtask, $playTest)
     {
         $tws = array(); // NEGATION of updates, used to build the 'test' sql
 
@@ -309,7 +308,7 @@ class RecordMoverWorker implements WorkerInterface
         }
 
         // compute the 'where' clause
-        list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
+        list($tw, $join, $err) = $this->calcWhere($app, $databoxId, $sxtask);
 
         if (!empty($err)) {
             throw(new \Exception($err));
@@ -348,16 +347,16 @@ class RecordMoverWorker implements WorkerInterface
         );
 
         if ($playTest) {
-            $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
+            $ret['test']['result'] = $this->playTest($app, $databoxId, $sql_test);
         }
 
         return $ret;
     }
 
-    private function calcDELETE(Application $app, $sbas_id, &$sxtask, $playTest)
+    private function calcDELETE(Application $app, $databoxId, &$sxtask, $playTest)
     {
         // compute the 'where' clause
-        list($tw, $join, $err) = $this->calcWhere($app, $sbas_id, $sxtask);
+        list($tw, $join, $err) = $this->calcWhere($app, $databoxId, $sxtask);
 
         if (!empty($err)) {
             throw(new \Exception($err));
@@ -389,16 +388,16 @@ class RecordMoverWorker implements WorkerInterface
         ];
 
         if ($playTest) {
-            $ret['test']['result'] = $this->playTest($app, $sbas_id, $sql_test);
+            $ret['test']['result'] = $this->playTest($app, $databoxId, $sql_test);
         }
 
         return $ret;
     }
 
-    private function playTest(Application $app, $sbas_id, $sql)
+    private function playTest(Application $app, $databoxId, $sql)
     {
         /** @var databox $databox */
-        $databox = $app->findDataboxById($sbas_id);
+        $databox = $app->findDataboxById($databoxId);
         $connbas = $databox->get_connection();
         $result = ['rids' => [], 'err' => '', 'n'   => null];
 
@@ -417,11 +416,11 @@ class RecordMoverWorker implements WorkerInterface
         return $result;
     }
 
-    private function calcWhere(Application $app, $sbas_id, &$sxtask)
+    private function calcWhere(Application $app, $databoxId, &$sxtask)
     {
         $err = "";
         /** @var databox $databox */
-        $databox = $app->findDataboxById($sbas_id);
+        $databox = $app->findDataboxById($databoxId);
         /** @var Connection $connbas */
         $connbas = $databox->get_connection();
 

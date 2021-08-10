@@ -104,15 +104,15 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET|POST')
             ->bind('worker_admin_validationReminder');
 
-        /** @uses AdminConfigurationController::recordMoverAction */
-        $controllers->match('/record-mover',  'controller.worker.admin.configuration:recordMoverAction')
+        /** @uses AdminConfigurationController::recordsActionsAction */
+        $controllers->match('/records-actions',  'controller.worker.admin.configuration:recordsActionsAction')
             ->method('GET|POST')
-            ->bind('worker_admin_recordMover');
+            ->bind('worker_admin_recordsActions');
 
-        /** @uses AdminConfigurationController::recordMoverFacilityAction */
-        $controllers->match('/record-mover/facility',  'controller.worker.admin.configuration:recordMoverFacilityAction')
+        /** @uses AdminConfigurationController::recordsActionsFacilityAction */
+        $controllers->match('/records-actions/facility',  'controller.worker.admin.configuration:recordsActionsFacilityAction')
             ->method('POST')
-            ->bind('worker_admin_recordMover_facility');
+            ->bind('worker_admin_recordsActions_facility');
 
         /** @uses AdminConfigurationController::queueMonitorAction */
         $controllers->match('/queue-monitor',  'controller.worker.admin.configuration:queueMonitorAction')

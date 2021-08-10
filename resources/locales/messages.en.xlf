@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-08-10T06:56:25Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2021-08-10T13:55:49Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -3555,7 +3555,7 @@
       <trans-unit id="3557dddb635d5a299d56eb77ab302f7362548d65" resname="Graphic view">
         <source>Graphic view</source>
         <target state="new">Graphic view</target>
-        <jms:reference-file line="70">admin/worker-manager/worker_record_mover.html.twig</jms:reference-file>
+        <jms:reference-file line="70">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd6d6f27b3e16afd7cdd573b85b3cc5bfd22e8db" resname="GraphicsMagick" approved="yes">
         <source>GraphicsMagick</source>
@@ -5632,7 +5632,7 @@
       <trans-unit id="7ade26313918bb06d63dc52c35414ab8cab25945" resname="Refresh graphic view">
         <source>Refresh graphic view</source>
         <target state="new">Refresh graphic view</target>
-        <jms:reference-file line="66">admin/worker-manager/worker_record_mover.html.twig</jms:reference-file>
+        <jms:reference-file line="66">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
         <source>Refus d'elements de commande</source>
@@ -6338,7 +6338,7 @@
         <source>Start</source>
         <target state="translated">Start</target>
         <jms:reference-file line="12">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
-        <jms:reference-file line="81">admin/worker-manager/worker_record_mover.html.twig</jms:reference-file>
+        <jms:reference-file line="81">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
         <jms:reference-file line="12">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
         <jms:reference-file line="15">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="54">admin/task-manager/templates.html.twig</jms:reference-file>
@@ -6391,7 +6391,7 @@
         <jms:reference-file line="8">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="10">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="10">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
-        <jms:reference-file line="79">admin/worker-manager/worker_record_mover.html.twig</jms:reference-file>
+        <jms:reference-file line="79">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
         <jms:reference-file line="10">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
         <jms:reference-file line="20">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="59">admin/task-manager/templates.html.twig</jms:reference-file>
@@ -9174,6 +9174,16 @@
         <target state="translated">Message Queue configuration error</target>
         <jms:reference-file line="115">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="8d4650a4ed70863f59f4f6d2aae9d0fdc67ac792" resname="admin::workermanager:tab:RecordsActions: period in second">
+        <source>admin::workermanager:tab:RecordsActions: period in second</source>
+        <target state="new">admin::workermanager:tab:RecordsActions: period in second</target>
+        <jms:reference-file line="23">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f259faf8d97eb0b6b07b51102a45bf34fe44caed" resname="admin::workermanager:tab:RecordsActions: xml view">
+        <source>admin::workermanager:tab:RecordsActions: xml view</source>
+        <target state="new">admin::workermanager:tab:RecordsActions: xml view</target>
+        <jms:reference-file line="26">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second" approved="yes">
         <source>admin::workermanager:tab:Reminder: Interval in second</source>
         <target state="translated">Feedback reminder interval in seconds</target>
@@ -9294,25 +9304,15 @@
         <target state="translated">Queues</target>
         <jms:reference-file line="55">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="62785f107d33c67ce67334fd6c8d0fca0362bc60" resname="admin::workermanager:tab:record mover: description">
-        <source>admin::workermanager:tab:record mover: description</source>
-        <target state="new">admin::workermanager:tab:record mover: description</target>
-        <jms:reference-file line="53">admin/worker-manager/worker_record_mover.html.twig</jms:reference-file>
+      <trans-unit id="422861193dcc4649ea76a8c2dfa4c5760ee1d755" resname="admin::workermanager:tab:recordsActions: description">
+        <source>admin::workermanager:tab:recordsActions: description</source>
+        <target state="new">admin::workermanager:tab:recordsActions: description</target>
+        <jms:reference-file line="53">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="44ddee2a91f97494f22ab473f1f946d257436095" resname="admin::workermanager:tab:record mover: period in second">
-        <source>admin::workermanager:tab:record mover: period in second</source>
-        <target state="new">admin::workermanager:tab:record mover: period in second</target>
-        <jms:reference-file line="23">WorkerManager/Form/WorkerRecordMoverType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="68614cd5044c8e097dda9454196dcb224b8839f9" resname="admin::workermanager:tab:record mover: title">
-        <source>admin::workermanager:tab:record mover: title</source>
-        <target state="new">admin::workermanager:tab:record mover: title</target>
+      <trans-unit id="437cb2151c10d29613cfc9e637b5b4ee0ab8eec5" resname="admin::workermanager:tab:recordsActions: title">
+        <source>admin::workermanager:tab:recordsActions: title</source>
+        <target state="new">admin::workermanager:tab:recordsActions: title</target>
         <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="633313368c2eb8b9ecde07b0da8595d458cc051b" resname="admin::workermanager:tab:record mover: xml view">
-        <source>admin::workermanager:tab:record mover: xml view</source>
-        <target state="new">admin::workermanager:tab:record mover: xml view</target>
-        <jms:reference-file line="26">WorkerManager/Form/WorkerRecordMoverType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="15a2a28d354353ef62c87266c96a8586ea6d7f00" resname="admin::workermanager:tab:reminder: title" approved="yes">
         <source>admin::workermanager:tab:reminder: title</source>
@@ -9826,8 +9826,8 @@
         <target state="translated">Apply</target>
         <jms:reference-file line="47">WorkerManager/Form/WorkerValidationReminderType.php</jms:reference-file>
         <jms:reference-file line="40">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
+        <jms:reference-file line="29">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
         <jms:reference-file line="43">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
-        <jms:reference-file line="29">WorkerManager/Form/WorkerRecordMoverType.php</jms:reference-file>
         <jms:reference-file line="77">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb7084f3be2ac7d8cf870a9bb83df976dc65ad5b" resname="boutton::chercher" approved="yes">

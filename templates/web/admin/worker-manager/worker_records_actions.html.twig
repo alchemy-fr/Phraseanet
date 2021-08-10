@@ -50,9 +50,9 @@
     </style>
 {% endblock %}
 
-<h1>{{ 'admin::workermanager:tab:record mover: description' |trans }}</h1>
+<h1>{{ 'admin::workermanager:tab:recordsActions: description' |trans }}</h1>
 
-{{ form_start(form, {'action': path('worker_admin_recordMover')}) }}
+{{ form_start(form, {'action': path('worker_admin_recordsActions')}) }}
 
 <div class="control-group">
     {{ form_row(form.ttl_retry) }}
@@ -85,7 +85,7 @@
 {{ form_end(form) }}
 
 <script type="text/javascript">
-    $("#worker-record-mover").on('click', 'BUTTON[type=submit]', function(e, z) {
+    $("#worker-records-actions").on('click', 'BUTTON[type=submit]', function(e, z) {
         e.preventDefault();
         var button = $(e.target);
         var form = button.closest("FORM");
@@ -93,7 +93,7 @@
 
         $.ajax({
             "url": "{{ path('admin_tasks_validate_xml') }}",
-            "data": $("#worker_recordMover_xmlSetting").val(),
+            "data": $("#worker_recordsActions_xmlSetting").val(),
             "processData": false,
             "dataType": "json",
             "type": "POST",
@@ -104,19 +104,19 @@
                     {% if (running) %}
                     if (button.val() === 'save') {
                         // saving will empty the queue, "stopping"
-                        ok = confirm("Warning! Changing the settings will stop record mover!")
+                        ok = confirm("Warning! Changing the settings will stop recordsActions!")
                     }
                     {% endif %}
                     if (button.val() === 'stop') {
                         // saving will empty the queue, "stopping"
-                        ok = confirm("Warning! You are about to stop record mover!")
+                        ok = confirm("Warning! You are about to stop recordsActions!")
                     }
 
                     if (ok) {
                         form.submit();
                     }
                 } else {
-                    $("#worker_recordMover_xmlSetting").css('border', '1px solid #dc1717');
+                    $("#worker_recordsActions_xmlSetting").css('border', '1px solid #dc1717');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -125,20 +125,20 @@
         });
     });
 
-    $("#worker-record-mover").on('click', '.show-graphic-view', function (e) {
+    $("#worker-records-actions").on('click', '.show-graphic-view', function (e) {
         e.preventDefault();
         $(".graphic-view ").show();
 
         $.ajax({
             "url": "{{ path('admin_tasks_validate_xml') }}",
-            "data": $("#worker_recordMover_xmlSetting").val(),
+            "data": $("#worker_recordsActions_xmlSetting").val(),
             "processData": false,
             "dataType": "json",
             "type": "POST",
             "async": false,
             success: function (data) {
                 if (data.success == true) {
-                    var x = $("#worker_recordMover_xmlSetting").val();
+                    var x = $("#worker_recordsActions_xmlSetting").val();
                     try {
                         taskFillGraphic(x);
                     } catch (e) {
@@ -160,9 +160,8 @@
 
             var data = {};
             data["ACT"] = "CALCTEST";
-            data["cls"]="RecordMover";
             data["xml"] = xml;
-            $.ajax({ url: "{{ path('worker_admin_recordMover_facility') }}"
+            $.ajax({ url: "{{ path('worker_admin_recordsActions_facility') }}"
                 , data: data
                 , dataType:'json'
                 , type:"POST"
@@ -209,9 +208,8 @@
 
                     var data = {};
                     data["ACT"] = "PLAYTEST";
-                    data["cls"]="RecordMover";
                     data["xml"] = xml;
-                    $.ajax({ url: "{{ path('worker_admin_recordMover_facility') }}"
+                    $.ajax({ url: "{{ path('worker_admin_recordsActions_facility') }}"
                         , data: data
                         , dataType:'json'
                         , type:"POST"

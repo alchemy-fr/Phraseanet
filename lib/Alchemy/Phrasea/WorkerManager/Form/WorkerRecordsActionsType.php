@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class WorkerRecordMoverType extends AbstractType
+class WorkerRecordsActionsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -20,10 +20,10 @@ class WorkerRecordMoverType extends AbstractType
                 ]
             ])
             ->add('ttl_retry', TextType::class, [
-                'label' => 'admin::workermanager:tab:record mover: period in second'
+                'label' => 'admin::workermanager:tab:RecordsActions: period in second'
             ])
             ->add('xmlSetting', TextareaType::class, [
-                'label' => 'admin::workermanager:tab:record mover: xml view'
+                'label' => 'admin::workermanager:tab:RecordsActions: xml view'
             ])
             ->add("apply", SubmitType::class, [
                 'label' => "boutton::appliquer",
@@ -34,6 +34,6 @@ class WorkerRecordMoverType extends AbstractType
 
     public function getName()
     {
-        return 'worker_recordMover';
+        return 'worker_recordsActions';
     }
 }

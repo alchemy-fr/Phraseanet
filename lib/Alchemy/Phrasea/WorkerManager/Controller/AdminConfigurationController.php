@@ -13,12 +13,12 @@ use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
-use Alchemy\Phrasea\WorkerManager\Form\WorkerRecordMoverType;
+use Alchemy\Phrasea\WorkerManager\Form\WorkerRecordsActionsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use Alchemy\Phrasea\WorkerManager\Worker\RecordMoverWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
@@ -345,20 +345,20 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
-    public function recordMoverAction(PhraseaApplication $app, Request $request)
+    public function recordsActionsAction(PhraseaApplication $app, Request $request)
     {
-        $config = $this->getConf()->get(['workers', 'record_mover'], []);
-        $ttl_retry = $this->getConf()->get(['workers','queues', MessagePublisher::RECORD_MOVER_TYPE, 'ttl_retry'], null);
+        $config = $this->getConf()->get(['workers', 'records_actions'], []);
+        $ttl_retry = $this->getConf()->get(['workers','queues', MessagePublisher::RECORDS_ACTIONS_TYPE, 'ttl_retry'], null);
         if(!is_null($ttl_retry)) {
             $ttl_retry /= 1000;     // form is in sec
         }
         $config['ttl_retry'] = $ttl_retry;
 
         if (empty($config['xmlSetting'])) {
-            $config['xmlSetting'] = $this->getDefaulRecordMovertSettings();
+            $config['xmlSetting'] = $this->getDefaultRecordsActionsSettings();
         }
 
-        $form = $app->form(new WorkerRecordMoverType(), $config);
+        $form = $app->form(new WorkerRecordsActionsType(), $config);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -367,50 +367,50 @@ class AdminConfigurationController extends Controller
                 case 'save' :   // save the form content (settings) in 2 places
                     $ttl_retry = $data['ttl_retry'];
                     unset($data['act'], $data['ttl_retry'], $config['ttl_retry']);
-                    // save most data under workers/record_mover
-                    $app['conf']->set(['workers', 'record_mover'], array_merge($config, $data));
+                    // save most data under workers/records_actions
+                    $app['conf']->set(['workers', 'records_actions'], array_merge($config, $data));
                     // save ttl in the q settings
                     if(!is_null($ttl_retry)) {
-                        $this->getConf()->set(['workers','queues', MessagePublisher::RECORD_MOVER_TYPE, 'ttl_retry'], 1000 * (int)$ttl_retry);
+                        $this->getConf()->set(['workers','queues', MessagePublisher::RECORDS_ACTIONS_TYPE, 'ttl_retry'], 1000 * (int)$ttl_retry);
                     }
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORD_MOVER_TYPE]);
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORDS_ACTIONS_TYPE]);
                     break;
                 case 'start':
                     // reinitialize the validation reminder queues
-                    $this->getAMQPConnection()->setQueue(MessagePublisher::RECORD_MOVER_TYPE);
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORD_MOVER_TYPE]);
-                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::RECORD_MOVER_TYPE);
+                    $this->getAMQPConnection()->setQueue(MessagePublisher::RECORDS_ACTIONS_TYPE);
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORDS_ACTIONS_TYPE]);
+                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::RECORDS_ACTIONS_TYPE);
                     break;
                 case 'stop':
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORD_MOVER_TYPE]);
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORDS_ACTIONS_TYPE]);
                     break;
             }
 
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-record-mover']);
+            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-records-actions']);
         }
 
         // guess if the q is "running" = check if there are pending message on Q or loop-Q
         $running = false;
         $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
         foreach([
-                    MessagePublisher::RECORD_MOVER_TYPE,
-                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::RECORD_MOVER_TYPE)
+                    MessagePublisher::RECORDS_ACTIONS_TYPE,
+                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::RECORDS_ACTIONS_TYPE)
                 ] as $qName) {
             if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
                 $running = true;
             }
         }
 
-        return $this->render('admin/worker-manager/worker_record_mover.html.twig', [
+        return $this->render('admin/worker-manager/worker_records_actions.html.twig', [
             'form'      => $form->createView(),
             'running'   => $running
         ]);
     }
 
-    public function recordMoverFacilityAction(PhraseaApplication $app, Request $request)
+    public function recordsActionsFacilityAction(PhraseaApplication $app, Request $request)
     {
         $ret = ['tasks' => []];
-        $job = new RecordMoverWorker($app);
+        $job = new RecordsActionsWorker($app);
         switch ($request->get('ACT')) {
             case 'PLAYTEST':
                 $sxml = simplexml_load_string($request->get('xml'));
@@ -506,24 +506,20 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
-    private function getDefaulRecordMovertSettings()
+    private function getDefaultRecordsActionsSettings()
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <tasksettings>
-    <logsql>0</logsql>
     <!--
         THIS IS AN EXAMPLE OF A SIMPLE WORKFLOW
-        Fix with your settings (fields names, base/collections id's, status-bits) before try
+        Fix with your settings (fields names, databox/collections id's, status-bits) before try
     -->
-
-    <!-- ********* un-comment to see the tasks **********
-
     <tasks>
 
         <comment> keep offline (sb4 = 1) all docs before their "go online" date and after credate (record column) </comment>
 
-        <task active="1" name="stay offline" action="update" sbas_id="1">
+        <task active="0" name="stay offline" action="update" databoxId="1">
             <from>
                 <date direction="before" field="GO_ONLINE"/>
                 <date direction="after" field="#credate" />
@@ -536,7 +532,7 @@ class AdminConfigurationController extends Controller
 
         <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
 
-        <task active="1" name="go online" action="update" sbas_id="1">
+        <task active="0" name="go online" action="update" databoxId="1">
             <from>
                 <comment> 5, 6, 7 are "public" collections </comment>
                 <coll compare="=" id="5,6,7"/>
@@ -551,7 +547,7 @@ class AdminConfigurationController extends Controller
 
         <comment> Warn 10 days before archiving (raise sb5) </comment>
 
-        <task active="1" name="almost the end" action="update" sbas_id="1">
+        <task active="0" name="almost the end" action="update" databoxId="1">
             <from>
                 <coll compare="=" id="5,6,7"/>
                 <date direction="after" field="TO_ARCHIVE" delta="-10"/>
@@ -564,7 +560,7 @@ class AdminConfigurationController extends Controller
 
         <comment> Move to 'archive' collection </comment>
 
-        <task active="1" name="archivage" action="update" sbas_id="1">
+        <task active="0" name="archivage" action="update" databoxId="1">
             <from>
                 <coll compare="=" id="5,6,7"/>
                 <date direction="after" field="TO_ARCHIVE" />
@@ -578,17 +574,16 @@ class AdminConfigurationController extends Controller
         </task>
 
 
-        <comment> Delete the archived documents that are in the 'archive' collection from one year </comment>
+        <comment> Delete the documents that are in the trash collection unmodified from 3 months </comment>
 
-        <task active="1" name="trash" action="delete" sbas_id="1">
+        <task active="0" name="trash" action="delete" databoxId="1">
             <from>
                 <coll compare="=" id="666"/>
-                <date direction="after" field="TO_ARCHIVE" delta="+365" />
+                <date direction="after" field="#moddate" delta="+90" />
             </from>
         </task>
     </tasks>
 
-    ****************************************** -->
 </tasksettings>
 EOF;
     }

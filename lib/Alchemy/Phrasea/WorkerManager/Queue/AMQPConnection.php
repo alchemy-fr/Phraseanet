@@ -98,7 +98,7 @@ class AMQPConnection
             self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
         ],
-        MessagePublisher::RECORD_MOVER_TYPE     => [
+        MessagePublisher::RECORDS_ACTIONS_TYPE     => [
             'with'           => self::WITH_LOOP,
             self::MAX_RETRY  => self::DEFAULT_MAX_RETRY_VALUE,
             self::TTL_RETRY  => self::DEFAULT_RETRY_DELAY_VALUE
