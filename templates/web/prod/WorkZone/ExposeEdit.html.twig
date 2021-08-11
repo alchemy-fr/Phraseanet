@@ -222,7 +222,7 @@
                 type: "GET",
                 url: `/prod/expose/list-publication/?format=pub-list&exposeName={{ exposeName }}`,
                 success: function (data) {
-                    publicationParent.empty().html('<option value="">Select a parent publication</option>');
+                    publicationParent.empty().html('<option value="">{{ "prod:expose:publication:Select a parent publication" | trans }}</option>');
                     for (i = 0; i < data.publications.length; i++) {
                         let selected = '';
                         if (data.publications[i].id == '{{ parentId }}') {
@@ -240,7 +240,7 @@
                 type: "GET",
                 url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
                 success: function (data) {
-                    profileField.empty().html('<option value="">Select Profile</option>');
+                    profileField.empty().html('<option value="">{{ "prod:expose:publication:Select Profile" | trans }}</option>');
                     for (let i = 0; i < data.profiles.length; i++) {
                         let selected = '';
                         if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
@@ -724,6 +724,7 @@
             }
 
             if (publicationParent.val() == "") {
+                datavalueMinus['parent'] = null;
                 delete datavalueMinus['parentId'];
             }
 
