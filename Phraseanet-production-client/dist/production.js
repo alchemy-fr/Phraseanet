@@ -10196,6 +10196,9 @@ var workzone = function workzone(services) {
                 success: function success(datas) {
                     if (datas.success) {
                         (0, _jquery2.default)('.refresh-list').trigger('click');
+                    } else {
+                        (0, _jquery2.default)('#oauth-login-error').removeClass('hidden');
+                        (0, _jquery2.default)('#oauth-login-error').empty().append(datas.error_description);
                     }
                 }
             });

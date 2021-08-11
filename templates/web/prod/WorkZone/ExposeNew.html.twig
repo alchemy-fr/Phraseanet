@@ -21,7 +21,7 @@
                     <div class="ui-widget">
                         <label>{{ 'prod:expose:publication:Parent Publication' | trans }}</label>
                         <div id="publication-list-data" class="ui-widget publication_parent_wrapper ">
-                            <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
+                            <select id="publication_parent" name="parent" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
                                 <option value="">{{ 'prod:expose:publication:Select a parent publication' | trans }}</option>
                             </select>
@@ -303,7 +303,6 @@
 
             if ($("#DIALOG-expose-add #publication_parent").val() == "") {
                 datavalueMinus['parent'] = null;
-                delete datavalueMinus['parentId'];
             }
 
             if ($("#DIALOG-expose-add #profile-field").val() == "") {
@@ -443,7 +442,7 @@
                      $('#DIALOG-expose-add #publication_parent').empty().html('<option value="">Select a parent publication</option>');
                      var i = 0;
                      for ( ;i < data.publications.length; i++) {
-                         $('#DIALOG-expose-add select#publication_parent').append('<option value='+data.publications[i].id+' >'+data.publications[i].title+'</option>');
+                         $('#DIALOG-expose-add select#publication_parent').append('<option value=' + data.basePath + '/' + data.publications[i].id+' >'+data.publications[i].title+'</option>');
                      }
                  }
              });
