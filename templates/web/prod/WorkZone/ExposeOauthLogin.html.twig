@@ -11,6 +11,9 @@
                 <label for="auth-password">{{ 'prod:expose:connection:Password' |trans }}</label>
                 <input type="password" name="auth-password" id="auth-password" placeholder="Enter your password" required="">
             </div>
+            <div class="control-group">
+                <p id="oauth-login-error" class="hidden alert alert-error text-center"></p>
+            </div>
             <div>
                 <button class="btn btn-primary auth-sign-in">{{ 'prod:expose:connection:Sign in' |trans }}</button>
             </div>
