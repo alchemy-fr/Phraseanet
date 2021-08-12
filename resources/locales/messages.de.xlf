@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-08-09T08:11:56Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2021-08-10T13:55:35Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1825,7 +1825,7 @@
         <target state="translated">Kollektion</target>
         <jms:reference-file line="3">prod/Story/Create.html.twig</jms:reference-file>
         <jms:reference-file line="446">prod/upload/lazaret.html.twig</jms:reference-file>
-        <jms:reference-file line="19">admin/databox/details.html.twig</jms:reference-file>
+        <jms:reference-file line="17">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="814cd4d896d0d93eac2f4d71dc24c91a46cd5e28" resname="Collection %collection%" approved="yes">
         <source>Collection %collection%</source>
@@ -2127,7 +2127,7 @@
       <trans-unit id="416664d8d18fa9ff561c5c0e5c8b6c7b1e644449" resname="Cumulative total" approved="yes">
         <source>Cumulative total</source>
         <target state="translated">Gesamtzahl</target>
-        <jms:reference-file line="63">admin/databox/details.html.twig</jms:reference-file>
+        <jms:reference-file line="61">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3075cecf6a2dbbe7e4a2b3a4d67228a4ba0ed145" resname="Current configuration contains some&#10;            errors" approved="yes">
         <source>Current configuration contains some errors</source>
@@ -3549,6 +3549,11 @@
         <target state="translated">gewährte Drittanwendungen</target>
         <jms:reference-file line="4">web/account/authorized_apps.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="3557dddb635d5a299d56eb77ab302f7362548d65" resname="Graphic view">
+        <source>Graphic view</source>
+        <target state="new">Graphic view</target>
+        <jms:reference-file line="70">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="cd6d6f27b3e16afd7cdd573b85b3cc5bfd22e8db" resname="GraphicsMagick" approved="yes">
         <source>GraphicsMagick</source>
         <target state="translated">GraphicsMagick</target>
@@ -4781,7 +4786,7 @@
       <trans-unit id="b7baa1d40c4ea29afc9098732bffee2a861a6c44" resname="Number" approved="yes">
         <source>Number</source>
         <target state="translated">Anzahl</target>
-        <jms:reference-file line="29">admin/databox/details.html.twig</jms:reference-file>
+        <jms:reference-file line="27">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="39e336676dcacd1411fbc236d035878a38989667" resname="Number of records to process per batch" approved="yes">
         <source>Number of records to process per batch</source>
@@ -5621,6 +5626,11 @@
         <target state="translated">Datensätze Typ</target>
         <jms:reference-file line="20">actions/Property/index.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="7ade26313918bb06d63dc52c35414ab8cab25945" resname="Refresh graphic view">
+        <source>Refresh graphic view</source>
+        <target state="new">Refresh graphic view</target>
+        <jms:reference-file line="66">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
         <source>Refus d'elements de commande</source>
         <target state="translated">Ablehnung für Bestandteile Ihrer Bestellung</target>
@@ -6325,6 +6335,7 @@
         <source>Start</source>
         <target state="translated">Start</target>
         <jms:reference-file line="12">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
+        <jms:reference-file line="81">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
         <jms:reference-file line="12">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
         <jms:reference-file line="15">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="54">admin/task-manager/templates.html.twig</jms:reference-file>
@@ -6377,6 +6388,7 @@
         <jms:reference-file line="8">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="10">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="10">admin/worker-manager/worker_pull_assets.html.twig</jms:reference-file>
+        <jms:reference-file line="79">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
         <jms:reference-file line="10">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
         <jms:reference-file line="20">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="59">admin/task-manager/templates.html.twig</jms:reference-file>
@@ -6440,7 +6452,7 @@
       <trans-unit id="418603f1ef08c6062e5fadec0f4db1d48f1af1ae" resname="Subdef" approved="yes">
         <source>Subdef</source>
         <target state="translated">Unterauflösung</target>
-        <jms:reference-file line="26">admin/databox/details.html.twig</jms:reference-file>
+        <jms:reference-file line="24">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2dacf65959849884a011f36f76a04eebea94c5ea" resname="Submit" approved="yes">
         <source>Submit</source>
@@ -6942,7 +6954,7 @@
         <source>Total</source>
         <target state="translated">Gesamt</target>
         <jms:reference-file line="27">admin/collection/details.html.twig</jms:reference-file>
-        <jms:reference-file line="54">admin/databox/details.html.twig</jms:reference-file>
+        <jms:reference-file line="52">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b97ae3b4f9093f64a85df9e7d4338f6c62772516" resname="Tous" approved="yes">
         <source>Tous</source>
@@ -7666,7 +7678,7 @@
       <trans-unit id="69c0b81540bd6771fbae52b1e5922cfd40155633" resname="Weight" approved="yes">
         <source>Weight</source>
         <target state="translated">Gewicht</target>
-        <jms:reference-file line="30">admin/databox/details.html.twig</jms:reference-file>
+        <jms:reference-file line="28">admin/databox/details.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="58877d4031b60c13f284719a0aecfb1e7962c59a" resname="Welcome to the ListManager !" approved="yes">
         <source>Welcome to the ListManager !</source>
@@ -9157,7 +9169,17 @@
       <trans-unit id="c9e74b67af82544af64171a88050f4a9a802e572" resname="admin::workermanager: Rabbit config error" approved="yes">
         <source>admin::workermanager: Rabbit config error</source>
         <target state="translated">Konfigurationsfehler des Nachrichten Managers</target>
-        <jms:reference-file line="109">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="115">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8d4650a4ed70863f59f4f6d2aae9d0fdc67ac792" resname="admin::workermanager:tab:RecordsActions: period in second">
+        <source>admin::workermanager:tab:RecordsActions: period in second</source>
+        <target state="new">admin::workermanager:tab:RecordsActions: period in second</target>
+        <jms:reference-file line="23">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f259faf8d97eb0b6b07b51102a45bf34fe44caed" resname="admin::workermanager:tab:RecordsActions: xml view">
+        <source>admin::workermanager:tab:RecordsActions: xml view</source>
+        <target state="new">admin::workermanager:tab:RecordsActions: xml view</target>
+        <jms:reference-file line="26">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second" approved="yes">
         <source>admin::workermanager:tab:Reminder: Interval in second</source>
@@ -9277,6 +9299,16 @@
       <trans-unit id="36c6753b7d3078f881ee0f3436c50d1c1086aeff" resname="admin::workermanager:tab:queueMonitor: title" approved="yes">
         <source>admin::workermanager:tab:queueMonitor: title</source>
         <target state="translated">Warteschlange</target>
+        <jms:reference-file line="55">admin/worker-manager/index.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="422861193dcc4649ea76a8c2dfa4c5760ee1d755" resname="admin::workermanager:tab:recordsActions: description">
+        <source>admin::workermanager:tab:recordsActions: description</source>
+        <target state="new">admin::workermanager:tab:recordsActions: description</target>
+        <jms:reference-file line="53">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="437cb2151c10d29613cfc9e637b5b4ee0ab8eec5" resname="admin::workermanager:tab:recordsActions: title">
+        <source>admin::workermanager:tab:recordsActions: title</source>
+        <target state="new">admin::workermanager:tab:recordsActions: title</target>
         <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="15a2a28d354353ef62c87266c96a8586ea6d7f00" resname="admin::workermanager:tab:reminder: title" approved="yes">
@@ -9631,7 +9663,7 @@
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error" approved="yes">
         <source>admin:worker Retrieve configuration error</source>
         <target state="translated">Worker Abruf Konfigurationsfehler</target>
-        <jms:reference-file line="98">admin/worker-manager/index.html.twig</jms:reference-file>
+        <jms:reference-file line="104">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f1dba76b561684930a25a984046b3b4149785ca" resname="alert" approved="yes">
         <source>alert</source>
@@ -9791,6 +9823,7 @@
         <target state="translated">Anwenden</target>
         <jms:reference-file line="47">WorkerManager/Form/WorkerValidationReminderType.php</jms:reference-file>
         <jms:reference-file line="40">WorkerManager/Form/WorkerConfigurationType.php</jms:reference-file>
+        <jms:reference-file line="29">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
         <jms:reference-file line="43">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
         <jms:reference-file line="77">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
@@ -9958,7 +9991,7 @@
         <jms:reference-file line="223">admin/publications/fiche.html.twig</jms:reference-file>
         <jms:reference-file line="531">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="50">user/import/file.html.twig</jms:reference-file>
-        <jms:reference-file line="71">admin/databox/details.html.twig</jms:reference-file>
+        <jms:reference-file line="69">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="162">admin/statusbit/edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7a9651d909792bcf98f2d1e96c43cb1d3a618e4" resname="boutton::retry" approved="yes">
