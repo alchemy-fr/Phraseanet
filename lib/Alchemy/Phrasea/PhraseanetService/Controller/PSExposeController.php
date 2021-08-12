@@ -56,9 +56,14 @@ class PSExposeController extends Controller
         }
 
         if ($response->getStatusCode() !== 200) {
+            $body = $response->getBody()->getContents();
+
+            $body = json_decode($body,true);
             return $this->app->json([
                 'success' => false,
-                'message' => 'Status code: '. $response->getStatusCode()
+                'message' => 'Status code: '. $response->getStatusCode(),
+                'error'   => $body['error'],
+                'error_description'   => $body['error_description']
             ]);
         }
 
@@ -207,15 +212,18 @@ class PSExposeController extends Controller
 
         $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
         $publications = [];
+        $basePath = [];
 
         if ($response->getStatusCode() == 200) {
             $body = json_decode($response->getBody()->getContents(),true);
             $publications = $body['hydra:member'];
+            $basePath = $body['@id'];
         }
 
         if ($request->get('format') == 'pub-list') {
             return $app->json([
-                'publications' => $publications
+                'publications' => $publications,
+                'basePath'     => $basePath
             ]);
         }
 
@@ -232,7 +240,8 @@ class PSExposeController extends Controller
         return $app->json([
             'twig'          => $exposeListTwig,
             'exposeName'    => $request->get('exposeName'),
-            'exposeLogin'   => $session->get($this->getLoginSessionName($request->get('exposeName')))
+            'exposeLogin'   => $session->get($this->getLoginSessionName($request->get('exposeName'))),
+            'basePath'      => $basePath
         ]);
     }
 

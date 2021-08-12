@@ -287,6 +287,9 @@ const workzone = (services) => {
                 success: function(datas) {
                     if (datas.success) {
                         $('.refresh-list').trigger('click');
+                    } else {
+                        $('#oauth-login-error').removeClass('hidden');
+                        $('#oauth-login-error').empty().append(datas.error_description);
                     }
                 }
             });
