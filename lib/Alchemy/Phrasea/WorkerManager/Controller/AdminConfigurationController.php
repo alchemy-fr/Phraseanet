@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
@@ -12,16 +13,19 @@ use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
+use Alchemy\Phrasea\WorkerManager\Form\WorkerRecordsActionsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
 use Alchemy\Phrasea\WorkerManager\Queue\AMQPConnection;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker;
 use Doctrine\ORM\OptimisticLockException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
@@ -334,10 +338,102 @@ class AdminConfigurationController extends Controller
                 $running = true;
             }
         }
+
         return $this->render('admin/worker-manager/worker_validation_reminder.html.twig', [
             'form' => $form->createView(),
             'running' => $running
         ]);
+    }
+
+    public function recordsActionsAction(PhraseaApplication $app, Request $request)
+    {
+        $config = $this->getConf()->get(['workers', 'records_actions'], []);
+        $ttl_retry = $this->getConf()->get(['workers','queues', MessagePublisher::RECORDS_ACTIONS_TYPE, 'ttl_retry'], null);
+        if(!is_null($ttl_retry)) {
+            $ttl_retry /= 1000;     // form is in sec
+        }
+        $config['ttl_retry'] = $ttl_retry;
+
+        if (empty($config['xmlSetting'])) {
+            $config['xmlSetting'] = $this->getDefaultRecordsActionsSettings();
+        }
+
+        $form = $app->form(new WorkerRecordsActionsType(), $config);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            switch($data['act']) {
+                case 'save' :   // save the form content (settings) in 2 places
+                    $ttl_retry = $data['ttl_retry'];
+                    unset($data['act'], $data['ttl_retry'], $config['ttl_retry']);
+                    // save most data under workers/records_actions
+                    $app['conf']->set(['workers', 'records_actions'], array_merge($config, $data));
+                    // save ttl in the q settings
+                    if(!is_null($ttl_retry)) {
+                        $this->getConf()->set(['workers','queues', MessagePublisher::RECORDS_ACTIONS_TYPE, 'ttl_retry'], 1000 * (int)$ttl_retry);
+                    }
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORDS_ACTIONS_TYPE]);
+                    break;
+                case 'start':
+                    // reinitialize the validation reminder queues
+                    $this->getAMQPConnection()->setQueue(MessagePublisher::RECORDS_ACTIONS_TYPE);
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORDS_ACTIONS_TYPE]);
+                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::RECORDS_ACTIONS_TYPE);
+                    break;
+                case 'stop':
+                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::RECORDS_ACTIONS_TYPE]);
+                    break;
+            }
+
+            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-records-actions']);
+        }
+
+        // guess if the q is "running" = check if there are pending message on Q or loop-Q
+        $running = false;
+        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
+        foreach([
+                    MessagePublisher::RECORDS_ACTIONS_TYPE,
+                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::RECORDS_ACTIONS_TYPE)
+                ] as $qName) {
+            if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
+                $running = true;
+            }
+        }
+
+        return $this->render('admin/worker-manager/worker_records_actions.html.twig', [
+            'form'      => $form->createView(),
+            'running'   => $running
+        ]);
+    }
+
+    public function recordsActionsFacilityAction(PhraseaApplication $app, Request $request)
+    {
+        $ret = ['tasks' => []];
+        $job = new RecordsActionsWorker($app);
+        switch ($request->get('ACT')) {
+            case 'PLAYTEST':
+                $sxml = simplexml_load_string($request->get('xml'));
+                if (isset($sxml->tasks->task)) {
+                    foreach ($sxml->tasks->task as $sxtask) {
+                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, true);
+                    }
+                }
+                break;
+            case 'CALCTEST':
+            case 'CALCSQL':
+                $sxml = simplexml_load_string($request->get('xml'));
+                if (isset($sxml->tasks->task)) {
+                    foreach ($sxml->tasks->task as $sxtask) {
+                        $ret['tasks'][] = $job->calcSQL($app, $sxtask, false);
+                    }
+                }
+                break;
+            default:
+                throw new NotFoundHttpException('Route not found.');
+        }
+
+        return $app->json($ret);
     }
 
     public function populateStatusAction(PhraseaApplication $app, Request $request)
@@ -410,6 +506,87 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
+    private function getDefaultRecordsActionsSettings()
+    {
+        return <<<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<tasksettings>
+    <!--
+        THIS IS AN EXAMPLE OF A SIMPLE WORKFLOW
+        Fix with your settings (fields names, databox/collections id's, status-bits) before try
+    -->
+    <tasks>
+
+        <comment> keep offline (sb4 = 1) all docs before their "go online" date and after credate (record column) </comment>
+
+        <task active="0" name="stay offline" action="update" databoxId="1">
+            <from>
+                <date direction="before" field="GO_ONLINE"/>
+                <date direction="after" field="#credate" />
+            </from>
+            <to>
+                <status mask="x1xxxx"/>
+            </to>
+        </task>
+
+
+        <comment> Put online (sb4 = 0) all docs from 'public' collection and between the online date and the date of archiving </comment>
+
+        <task active="0" name="go online" action="update" databoxId="1">
+            <from>
+                <comment> 5, 6, 7 are "public" collections </comment>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="GO_ONLINE"/>
+                <date direction="before" field="TO_ARCHIVE"/>
+            </from>
+            <to>
+                <status mask="x0xxxx"/>
+            </to>
+        </task>
+
+
+        <comment> Warn 10 days before archiving (raise sb5) </comment>
+
+        <task active="0" name="almost the end" action="update" databoxId="1">
+            <from>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="TO_ARCHIVE" delta="-10"/>
+            </from>
+            <to>
+                <status mask="1xxxxx"/>
+            </to>
+        </task>
+
+
+        <comment> Move to 'archive' collection </comment>
+
+        <task active="0" name="archivage" action="update" databoxId="1">
+            <from>
+                <coll compare="=" id="5,6,7"/>
+                <date direction="after" field="TO_ARCHIVE" />
+            </from>
+            <to>
+                <comment> reset status of archived documents </comment>
+                <status mask="00xxxx"/>
+                <comment> 666 is the "archive" collection </comment>
+                <coll id="666" />
+            </to>
+        </task>
+
+
+        <comment> Delete the documents that are in the trash collection unmodified from 3 months </comment>
+
+        <task active="0" name="trash" action="delete" databoxId="1">
+            <from>
+                <coll compare="=" id="666"/>
+                <date direction="after" field="#moddate" delta="+90" />
+            </from>
+        </task>
+    </tasks>
+
+</tasksettings>
+EOF;
+    }
 
 
     /**
