@@ -48,11 +48,11 @@
                             {% if publication.parent.id %}
                                 {% set parentId =  publication.parent.id %}
                             {% endif %}
-                            <select id="publication_parent" name="parentId" tabindex="-1" aria-hidden="true"
+                            <select id="publication_parent" name="parent" tabindex="-1" aria-hidden="true"
                                     class="publication-field">
                                 <option value="">{{ 'prod:expose:publication:Select a parent publication' | trans }}</option>
                                 {% if publication.parent %}
-                                    <option value="{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
+                                    <option value="/publications/{{ publication.parent.id }}" selected="selected">{{ publication.parent.title }}</option>
                                 {% endif %}
                             </select>
                         </div>
@@ -65,7 +65,7 @@
                                 class="publication-field">
                             <option value="">{{ 'prod:expose:publication:Select Profile' | trans }}</option>
                             {% if nbProfile %}
-                                <option value="{{ publication.profile.id }}">{{ publication.profile.name }}</option>
+                                <option value="/publication-profiles/{{ publication.profile.id }}">{{ publication.profile.name }}</option>
                             {% endif %}
                         </select>
                     </div>
@@ -108,8 +108,8 @@
                                 <option value="authentication" {% if publication.securityMethod == 'authentication'%} selected="selected" {% endif %}>{{ 'prod:expose:publication:Users' | trans }}</option>
                             </select>
                         </div>
-                        <div class="available-widget ui-widget securityOptions_wrapper visibility-hidden">
-                            <input class="publication-field" type="text" name="password" placeholder="Password"
+                        <div class="available-widget ui-widget securityOptions_wrapper {% if publication.securityMethod != 'password'%} visibility-hidden {% endif %}">
+                            <input class="publication-field" type="text" name="password" placeholder="Password" value="{{ publication.securityOptions.password }}"
                                    id="publication_password"/>
                         </div>
                         <div class="available-widget ui-widget publication_securityMethod_error hidden"
@@ -222,7 +222,7 @@
                 type: "GET",
                 url: `/prod/expose/list-publication/?format=pub-list&exposeName={{ exposeName }}`,
                 success: function (data) {
-                    publicationParent.empty().html('<option value="">Select a parent publication</option>');
+                    publicationParent.empty().html('<option value="">{{ "prod:expose:publication:Select a parent publication" | trans }}</option>');
                     for (i = 0; i < data.publications.length; i++) {
                         let selected = '';
                         if (data.publications[i].id == '{{ parentId }}') {
@@ -230,7 +230,7 @@
                         }
 
                         if (data.publications[i].id !== '{{ publication.id }}') {
-                            publicationParent.append('<option value='+data.publications[i].id+' ' + selected +'>'+data.publications[i].title+'</option>');
+                            publicationParent.append('<option value='+ data.basePath + '/' + data.publications[i].id+' ' + selected +'>'+data.publications[i].title+'</option>');
                         }
                     }
                 }
@@ -240,7 +240,7 @@
                 type: "GET",
                 url: `/prod/expose/list-profile?exposeName={{ exposeName }}`,
                 success: function (data) {
-                    profileField.empty().html('<option value="">Select Profile</option>');
+                    profileField.empty().html('<option value="">{{ "prod:expose:publication:Select Profile" | trans }}</option>');
                     for (let i = 0; i < data.profiles.length; i++) {
                         let selected = '';
                         if ({{ nbProfile }} && data.profiles[i].id === '{{ publication.profile.id }}') {
@@ -656,15 +656,19 @@
 
                 if (dataValue.enabled == 'on') {
                     config = {...config, enabled: true};
-                }else{
+                } else {
                     config = {...config, enabled: false};
                 }
+
                 if (dataValue.publiclyListed == 'on') {
                     config = {...config, publiclyListed: true};
-                }else{
+                } else {
                     config = {...config, publiclyListed: false};
                 }
-                if (dataValue.password) {
+
+                if (dataValue.password == '') {
+                    config = {...config, password: null};
+                } else {
                     config = {...config, password: dataValue.password};
                 }
 
@@ -724,7 +728,7 @@
             }
 
             if (publicationParent.val() == "") {
-                delete datavalueMinus['parentId'];
+                datavalueMinus['parent'] = null;
             }
 
             if (profileField.val() == "") {

@@ -45,6 +45,11 @@
                     {{ 'admin::workermanager:tab:reminder: title' |trans }}
                 </a>
             </li>
+            <li class="worker-records-actions" role="presentation">
+                <a href="#worker-records-actions" aria-controls="worker-records-actions" role="tab" data-toggle="tab" data-url="/admin/worker-manager/records-actions">
+                    {{ 'admin::workermanager:tab:recordsActions: title' |trans }}
+                </a>
+            </li>
             <li class="worker-queue-monitor" role="presentation">
                 <a href="#worker-queue-monitor" aria-controls="worker-queue-monitor" role="tab" data-toggle="tab" data-url="/admin/worker-manager/queue-monitor">
                     {{ 'admin::workermanager:tab:queueMonitor: title' |trans }}
@@ -63,6 +68,7 @@
             <div role="tabpanel" class="tab-pane fade" id="worker-subview"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-metadata"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-reminder"></div>
+            <div role="tabpanel" class="tab-pane fade" id="worker-records-actions"></div>
             <div role="tabpanel" class="tab-pane fade" id="worker-queue-monitor"></div>
         </div>
     </div>
