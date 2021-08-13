@@ -5631,7 +5631,7 @@
       </trans-unit>
       <trans-unit id="7ade26313918bb06d63dc52c35414ab8cab25945" resname="Refresh graphic view">
         <source>Refresh graphic view</source>
-        <target state="new">Refresh graphic view</target>
+        <target state="needs-translation">Refresh SQL view</target>
         <jms:reference-file line="66">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
@@ -9176,12 +9176,12 @@
       </trans-unit>
       <trans-unit id="8d4650a4ed70863f59f4f6d2aae9d0fdc67ac792" resname="admin::workermanager:tab:RecordsActions: period in second">
         <source>admin::workermanager:tab:RecordsActions: period in second</source>
-        <target state="new">admin::workermanager:tab:RecordsActions: period in second</target>
+        <target state="needs-translation">Execution interval</target>
         <jms:reference-file line="23">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f259faf8d97eb0b6b07b51102a45bf34fe44caed" resname="admin::workermanager:tab:RecordsActions: xml view">
         <source>admin::workermanager:tab:RecordsActions: xml view</source>
-        <target state="new">admin::workermanager:tab:RecordsActions: xml view</target>
+        <target state="needs-translation">XML view</target>
         <jms:reference-file line="26">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second" approved="yes">
@@ -9306,12 +9306,12 @@
       </trans-unit>
       <trans-unit id="422861193dcc4649ea76a8c2dfa4c5760ee1d755" resname="admin::workermanager:tab:recordsActions: description">
         <source>admin::workermanager:tab:recordsActions: description</source>
-        <target state="new">admin::workermanager:tab:recordsActions: description</target>
+        <target state="needs-translation">Operate changes on records with SQL</target>
         <jms:reference-file line="53">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="437cb2151c10d29613cfc9e637b5b4ee0ab8eec5" resname="admin::workermanager:tab:recordsActions: title">
         <source>admin::workermanager:tab:recordsActions: title</source>
-        <target state="new">admin::workermanager:tab:recordsActions: title</target>
+        <target state="needs-translation">Records actions</target>
         <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="15a2a28d354353ef62c87266c96a8586ea6d7f00" resname="admin::workermanager:tab:reminder: title" approved="yes">
@@ -9506,13 +9506,13 @@
       </trans-unit>
       <trans-unit id="f153abd48aaee38d404f7d6007433850b63c631b" resname="admin:databases:database:file-size-detail-warning-message">
         <source>admin:databases:database:file-size-detail-warning-message</source>
-        <target state="new">admin:databases:database:file-size-detail-warning-message</target>
+        <target state="needs-translation">The size displayed is the sum of the binary size of all files but doesn't reflect the real occupated size on the storage system.</target>
         <jms:reference-file line="6">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="50">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="87e2b9b3d64117a271e1b6bda1a6b442df3f3f88" resname="admin:databases:database:file-size-detail-warning-title">
         <source>admin:databases:database:file-size-detail-warning-title</source>
-        <target state="new">admin:databases:database:file-size-detail-warning-title</target>
+        <target state="needs-translation">Info about the file size of databox details</target>
         <jms:reference-file line="4">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="48">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
