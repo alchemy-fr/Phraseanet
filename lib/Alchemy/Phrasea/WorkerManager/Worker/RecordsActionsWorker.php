@@ -139,10 +139,26 @@ class RecordsActionsWorker implements WorkerInterface
                         if (($x = (int) ($sxtask->to->coll['id'])) > 0) {
                             $tmp['coll'] = $x;
                         }
+
                         // change sb ?
                         if (($x = $sxtask->to->status['mask'])) {
                             $tmp['sb'] = $x;
                         }
+
+                        // update or set metadatas
+                        if ($sxtask->to->metadatas) {
+                            $metadatas = [];
+                            foreach ($sxtask->to->metadatas as $metadata) {
+                                // get all attribute for the metadatas tag
+                                $t = json_decode(json_encode($metadata), true);
+                                $metadatas[] = (object)$t['@attributes']; // as an stdclass
+                            }
+
+                            $metadatasActions = new \stdClass();
+                            $metadatasActions->metadatas = $metadatas;
+                            $tmp['metadatasActions'] = $metadatasActions;
+                        }
+
                         $ret[] = $tmp;
                         break;
                     case 'DELETE':
@@ -189,8 +205,16 @@ class RecordsActionsWorker implements WorkerInterface
                     $rec->setStatus($status);
                     $this->logger->info(sprintf("on databoxId %s set recordId %s status to %s \n", $row['databoxId'], $row['record_id'], $status));
                 }
-                break;
 
+                // change metadatas
+                if (array_key_exists('metadatasActions', $row)) {
+                    $this->logger->info(json_encode($row['metadatasActions']));
+                    $rec->setMetadatasByActions($row['metadatasActions']);
+
+                    $this->logger->info(sprintf("on databoxId %s recordId %s metadata changed \n", $row['databoxId'], $row['record_id']));
+                }
+
+                break;
             case 'DELETE':
                 if ($row['deletechildren'] && $rec->isStory()) {
                     /** @var record_adapter $child */
