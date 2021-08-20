@@ -11,8 +11,9 @@ class SubdefinitionCreationFailureEvent extends RecordEvent
     private $workerMessage;
     private $count;
     private $workerJobId;
+    private $documentFileSize;
 
-    public function __construct(RecordInterface $record, $subdefName, $workerMessage, $count, $workerJobId)
+    public function __construct(RecordInterface $record, $subdefName, $documentFileSize, $workerMessage, $count, $workerJobId)
     {
         parent::__construct($record);
 
@@ -20,6 +21,7 @@ class SubdefinitionCreationFailureEvent extends RecordEvent
         $this->workerMessage    = $workerMessage;
         $this->count            = $count;
         $this->workerJobId      = $workerJobId;
+        $this->documentFileSize = $documentFileSize;
     }
 
     public function getSubdefName()
@@ -40,5 +42,10 @@ class SubdefinitionCreationFailureEvent extends RecordEvent
     public function getWorkerJobId()
     {
         return $this->workerJobId;
+    }
+
+    public function getDocumentFileSize()
+    {
+        return $this->documentFileSize;
     }
 }

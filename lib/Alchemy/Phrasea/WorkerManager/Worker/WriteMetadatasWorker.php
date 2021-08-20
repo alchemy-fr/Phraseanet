@@ -94,13 +94,40 @@ class WriteMetadatasWorker implements WorkerInterface
             return ;
         }
 
+        $record  = $databox->get_record($recordId);
+
+        if (filesize($record->get_subdef($subdefName)->getRealPath()) < $payload['fileSize']) {
+            // the file size is less than expected so retried
+
+            $workerMessage = sprintf("Can't write meta because fileSize %s less than %s expected, so retried!", filesize($record->get_subdef($subdefName)->getRealPath()), $payload['fileSize']);
+            $this->logger->info($workerMessage);
+
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+
+            // mark as failed and to be publish in the retry Q by the subscriber to avoid infinite loop
+            /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
+            $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
+                $record,
+                $subdefName,
+                $payload['fileSize'],
+                SubdefinitionWritemetaEvent::FAILED,
+                $workerMessage,
+                $count,
+                $workerRunningJobId
+            ));
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("cannot WriteMeta for %s.%s.%s, because fileSize %s less than %s so retried", $databoxId, $recordId, $subdefName, filesize($record->get_subdef($subdefName)->getRealPath()), $payload['fileSize'])
+            ), FILE_APPEND | LOCK_EX);
+
+            return ;
+        }
+
         // here we can work
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf("ready to WriteMeta for %s.%s.%s", $databoxId, $recordId, $subdefName)
         ), FILE_APPEND | LOCK_EX);
-
-        $record  = $databox->get_record($recordId);
 
         file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf(" - recordid = %s", $record->getRecordId())
@@ -139,6 +166,7 @@ class WriteMetadatasWorker implements WorkerInterface
             $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName,
+                $payload['fileSize'],
                 SubdefinitionWritemetaEvent::FAILED,
                 $workerMessage,
                 $count,
@@ -160,6 +188,7 @@ class WriteMetadatasWorker implements WorkerInterface
             $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
                 $record,
                 $subdefName,
+                $payload['fileSize'],
                 SubdefinitionWritemetaEvent::FAILED,
                 'Subdef is not physically present!',
                 $count,
@@ -323,6 +352,7 @@ class WriteMetadatasWorker implements WorkerInterface
                 $this->dispatch(WorkerEvents::SUBDEFINITION_WRITE_META, new SubdefinitionWritemetaEvent(
                     $record,
                     $subdefName,
+                    $payload['fileSize'],
                     SubdefinitionWritemetaEvent::FAILED,
                     $workerMessage,
                     $count,

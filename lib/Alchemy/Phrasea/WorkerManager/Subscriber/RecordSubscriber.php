@@ -63,14 +63,16 @@ class RecordSubscriber implements EventSubscriberInterface
             $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
             if ($subdefs !== null) {
+                /** @var \databox_subdef $subdef */
                 foreach ($subdefs as $subdef) {
                     $payload = [
                         'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
                         'payload' => [
-                            'recordId'      => $event->getRecord()->getRecordId(),
-                            'databoxId'     => $event->getRecord()->getDataboxId(),
-                            'subdefName'    => $subdef->get_name(),
-                            'status'        => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
+                            'recordId'          => $event->getRecord()->getRecordId(),
+                            'databoxId'         => $event->getRecord()->getDataboxId(),
+                            'subdefName'        => $subdef->get_name(),
+                            'documentFileSize'  => filesize($record->get_subdef('document')->getRealPath()), // document is the source
+                            'status'            => $event->isNewRecord() ? MessagePublisher::NEW_RECORD_MESSAGE : ''
                         ]
                     ];
 
@@ -106,11 +108,12 @@ class RecordSubscriber implements EventSubscriberInterface
         $payload = [
             'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
             'payload' => [
-                'recordId'      => $event->getRecord()->getRecordId(),
-                'databoxId'     => $event->getRecord()->getDataboxId(),
-                'subdefName'    => $event->getSubdefName(),
-                'status'        => '',
-                'workerJobId'   => $event->getWorkerJobId()
+                'recordId'              => $event->getRecord()->getRecordId(),
+                'databoxId'             => $event->getRecord()->getDataboxId(),
+                'subdefName'            => $event->getSubdefName(),
+                'documentFileSize'      => $event->getDocumentFileSize(),
+                'status'                => '',
+                'workerJobId'           => $event->getWorkerJobId()
             ]
         ];
 
@@ -182,7 +185,8 @@ class RecordSubscriber implements EventSubscriberInterface
                         'payload' => [
                             'recordId'    => $recordId,
                             'databoxId'   => $databoxId,
-                            'subdefName'  => $subdef->get_name()
+                            'subdefName'  => $subdef->get_name(),
+                            'fileSize'    => filesize($subdef->getRealPath())
                         ]
                     ];
 
@@ -239,6 +243,7 @@ class RecordSubscriber implements EventSubscriberInterface
                     'recordId'      => $event->getRecord()->getRecordId(),
                     'databoxId'     => $event->getRecord()->getDataboxId(),
                     'subdefName'    => $event->getSubdefName(),
+                    'fileSize'      => $event->getFileSize(),
                     'workerJobId'   => $event->getWorkerJobId()
                 ]
             ];
@@ -302,7 +307,8 @@ class RecordSubscriber implements EventSubscriberInterface
                     'payload' => [
                         'recordId'      => $recordId,
                         'databoxId'     => $databoxId,
-                        'subdefName'    => $event->getSubdefName()
+                        'subdefName'    => $event->getSubdefName(),
+                        'fileSize'      => $event->getFileSize(),
                     ]
                 ];
 
