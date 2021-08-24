@@ -468,6 +468,50 @@ class RecordsActionsWorker implements WorkerInterface
             }
         }
 
+        /**
+         *   criteria
+         *   <record_document_phraseanet_types filter="except | like">
+         *      <record_document_phraseanet_type>TYPE1</record_document_phraseanet_type>
+         *      <record_document_phraseanet_type>TYPE2</record_document_phraseanet_type>
+         *   </record_document_phraseanet_types>
+         */
+        if (($filter = $sxtask->from->record_document_phraseanet_types['filter']) !== null) {
+            foreach ($sxtask->from->record_document_phraseanet_types->record_document_phraseanet_type as $x) {
+                $tType[] = '"'.$x.'"';
+            }
+            switch ($filter) {
+                case 'like':
+                    $tw[] = 'type IN(' . implode(',', $tType) . ')';
+                    break;
+                case 'except':
+                    $tw[] = 'type NOT IN(' . implode(',', $tType) . ')';
+                    break;
+            }
+        }
+
+        /**
+         *  criteria
+         *
+         *  <record_document_mime_types filter="except | like">
+         *      <record_document_mime_type>mimetype1</record_document_mime_type>
+         *      <record_document_mime_type>mimetype2</record_document_mime_type>
+         *  </record_document_mime_types>
+         */
+        if (($filter = $sxtask->from->record_document_mime_types['filter']) !== null) {
+            foreach ($sxtask->from->record_document_mime_types->record_document_mime_type as $x) {
+                $tMimeType[] = '"'.$x.'"';
+            }
+
+            switch ($filter) {
+                case 'like':
+                    $tw[] = 'mime IN(' . implode(',', $tMimeType) . ')';
+                    break;
+                case 'except':
+                    $tw[] = 'mime NOT IN(' . implode(',', $tMimeType) . ')';
+                    break;
+            }
+        }
+
         // criteria <text field="XXX" compare="OP" value="ZZZ" />
         foreach ($sxtask->from->text as $x) {
             $field = $struct->get_element_by_name($x['field']);
