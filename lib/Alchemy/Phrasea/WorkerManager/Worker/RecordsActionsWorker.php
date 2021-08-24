@@ -150,8 +150,10 @@ class RecordsActionsWorker implements WorkerInterface
                             $metadatas = [];
                             foreach ($sxtask->to->metadatas as $metadata) {
                                 // get all attribute for the metadatas tag
+                                // the same as defined in this documentation
+                                // https://app.swaggerhub.com/apis-docs/alchemy-fr/phraseanet.api.v3/1.0.0-oas3#/record/patchRecord
                                 $t = json_decode(json_encode($metadata), true);
-                                $metadatas[] = (object)$t['@attributes']; // as an stdclass
+                                $metadatas[] = (object)$t['@attributes'];
                             }
 
                             $metadatasActions = new \stdClass();
@@ -208,7 +210,6 @@ class RecordsActionsWorker implements WorkerInterface
 
                 // change metadatas
                 if (array_key_exists('metadatasActions', $row)) {
-                    $this->logger->info(json_encode($row['metadatasActions']));
                     $rec->setMetadatasByActions($row['metadatasActions']);
 
                     $this->logger->info(sprintf("on databoxId %s recordId %s metadata changed \n", $row['databoxId'], $row['record_id']));
