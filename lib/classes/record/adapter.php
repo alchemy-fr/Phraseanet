@@ -1395,7 +1395,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // if one field was multi-valued and no meta_id was set, we must delete all values
         foreach ($caption_fields as $cf) {
             foreach ($cf->get_values() as $field_value) {
-                if (is_null($meta_id) || $field_value->getId() === (int)$meta_id) {
+                if (is_null($meta_id) || ($field_value->getId() === (int)$meta_id && empty($values))) {
                     $ops[] = [
                         'explain' => sprintf('set:: removing value "%s" from "%s"', $field_value->getValue(), $cf->get_name()),
                         'meta_struct_id' => $cf->get_meta_struct_id(),
