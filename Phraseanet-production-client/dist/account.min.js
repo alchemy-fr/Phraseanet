@@ -4043,7 +4043,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _geonames = __webpack_require__(54);
+var _geonames = __webpack_require__(55);
 
 var _geonames2 = _interopRequireDefault(_geonames);
 
@@ -22692,7 +22692,7 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 54:
+/***/ 55:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
