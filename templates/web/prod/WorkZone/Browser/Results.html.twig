@@ -50,7 +50,7 @@
 
               {% if Basket.getPusher() %}
               <p>
-                {% set user_name = '<a href="/user/' ~ Basket.getPusher().getId() ~ '/"  class="UserTips">' ~ Basket.getPusher(app).getDisplayName() ~ '</a>' %}
+                {% set user_name = '<a href="/user/' ~ Basket.getPusher().getId() ~ '/"  class="UserTips">' ~ Basket.getPusher(app).getDisplayName() | e ~ '</a>' %}
                 {% trans with {'%user_name%' : user_name} %}Received from %user_name%{% endtrans %}
               </p>
               {% endif %}
@@ -66,7 +66,7 @@
                   {% endif %}
 
                   {% set list_participants = list_participants ~ '<a class="UserTips"  href="/user/' ~ Participant.getUser().getId() ~ '/">' %}
-                  {% set list_participants = list_participants ~ Participant.getUser().getDisplayName() %}
+                  {% set list_participants = list_participants ~ Participant.getUser().getDisplayName() | e %}
                   {% set list_participants = list_participants ~ '</a>' %}
                 {% endfor %}
                 {% trans with {'%list_participants%' : list_participants} %}Sent for validation to %list_participants%{% endtrans %}
