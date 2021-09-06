@@ -34,6 +34,8 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use PHPExiftool\Driver\Metadata\Metadata;
 use PHPExiftool\Driver\Value\Mono as MonoValue;
 use PHPExiftool\Driver\Value\Multi;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Phraseanet Border Manager
@@ -381,6 +383,21 @@ class Manager
             sprintf("calling replaceMetadata")
         ), FILE_APPEND | LOCK_EX);
 
+        /** @var EventDispatcherInterface $dispatcher */
+        $dispatcher = $this->app['dispatcher'];
+        $dispatcher->addListener(
+            RecordEvents::METADATA_CHANGED,
+            function (Event $event)  {
+                // we do not want replaceMetadata() to send a writemeta
+//                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+//                    sprintf("---------- event METADATA_CHANGED catched !!! Propagation stopped !!!")
+//                ), FILE_APPEND | LOCK_EX);
+//                $event->stopPropagation();
+            },
+            10
+        );
+
+
         /** @var PhraseanetMetadataSetter $phraseanetMetadataSetter */
         $phraseanetMetadataSetter = $this->app['phraseanet.metadata-setter'];
         $phraseanetMetadataSetter->replaceMetadata($newMetadata, $element);
@@ -390,7 +407,7 @@ class Manager
                 sprintf("dispatch WorkerEvents::SUBDEFINITION_CREATE for %s.%s", $element->getDataboxId(), $element->getRecordId())
             ), FILE_APPEND | LOCK_EX);
 
-            $this->app['dispatcher']->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
+            $dispatcher->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($element, true));
         }
 
         return $element;

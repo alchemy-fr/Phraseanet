@@ -153,6 +153,17 @@ class FilesystemService
         $this->filesystem->copy($source, $target, true);
     }
 
+    /**
+     * rename file from source to target
+     *
+     * @param string $source
+     * @param string $target
+     */
+    public function rename($source, $target)
+    {
+        $this->filesystem->rename($source, $target, true);
+    }
+
     public function chmod($files, $mode, $umask = 0000, $recursive = false)
     {
         $this->filesystem->chmod($files, $mode, $umask, $recursive);
