@@ -76,7 +76,7 @@
                     </div>
                 {% else %}
                     {% if user is not none %}
-                        {% set username = '<b>' ~ app.getAuthenticatedUser().getDisplayName() ~ '</b>' %}
+                        {% set username = '<b>' ~ app.getAuthenticatedUser().getDisplayName() | e ~ '</b>' %}
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
                                 {% trans with {'%username%' : username} %}Hello %username%{% endtrans %}
