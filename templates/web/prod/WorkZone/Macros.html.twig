@@ -148,7 +148,7 @@
                         {% endif %}
                         {% if basket.getPusher() %}
                             <td>
-                                {% set pusher = basket.getPusher().getDisplayName() %}
+                                {% set pusher = basket.getPusher().getDisplayName() | e %}
                                 <img
                                     class="basketTips"
                                     title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
