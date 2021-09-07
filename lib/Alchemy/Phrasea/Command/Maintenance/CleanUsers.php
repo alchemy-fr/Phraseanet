@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class CleanUsers extends Command
 {
@@ -26,6 +27,12 @@ class CleanUsers extends Command
     const REVOKE = 4;
     const DELETE_DATA = 2;
     const DELETE_ALL = 1;
+
+    static private $mapListToColumn = [
+        'email' => 'email',
+        'login' => 'login',
+        'id'    => 'usr_id',
+    ];
 
     public function __construct()
     {
@@ -36,7 +43,9 @@ class CleanUsers extends Command
 //            ->addOption('action',     null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, '"clear_email" ; "revoke" ; "delete_data" ; "delete_all"')
             ->addOption('older_than', null, InputOption::VALUE_REQUIRED,                             'delete older than \<OLDER_THAN>')
             ->addOption('dry',        null, InputOption::VALUE_NONE,                                 'dry run, count but don\'t delete')
+            ->addOption('list',       null, InputOption::VALUE_REQUIRED,                             'list only, don\'t delete')
             ->addOption('show_sql',   null, InputOption::VALUE_NONE,                                 'show sql pre-selecting users')
+            ->addOption('yes',        'y',  InputOption::VALUE_NONE,                                 'don\'t ask for confirmation')
 
             ->setHelp(
                 ""
@@ -51,7 +60,11 @@ class CleanUsers extends Command
                 . "- <info>10 days</info>\n"
                 . "- <info>2 weeks</info>\n"
                 . "- <info>6 months</info>\n"
-                . "- <info>1 year</info>"
+                . "- <info>1 year</info>\n"
+                . "\<LIST> sepcifies the user column to be listed, set one of:\n"
+                . "- <info>id</info>\n"
+                . "- <info>login</info>\n"
+                . "- <info>email</info>"
             );
     }
 
@@ -60,6 +73,7 @@ class CleanUsers extends Command
         $clauses = [];  // sql clauses
         $dry = false;
         $show_sql = false;
+        $yes = false;
 
         // sanity check options
         //
@@ -112,11 +126,15 @@ class CleanUsers extends Command
             $clauses[] = sprintf("`last_connection` < DATE_SUB(NOW(), INTERVAL %d %s)", $expr, $unit);
         }
         else {
-            $output->writeln("<error>invalid value form '--older_than' option.</error>");
+            $output->writeln("<error>invalid value form '--older_than' option.</error> (see possible values with --help)");
             return 1;
         }
-        $clauses[] = "`admin`=0";   // dont delete super admins
-        $clauses[] = "`deleted`=0";   // dont delete twice
+        $clauses[] = "`admin`=0";                   // dont delete super admins
+        $clauses[] = "`deleted`=0";                 // dont delete twice
+        $clauses[] = "ISNULL(`model_of`)";          // dont delete models
+        $clauses[] = "`login`!='autoregister'";     // dont delete "autoregister"
+        $clauses[] = "`login`!='guest'";            // dont delete "guest"
+        $clauses[] = "ISNULL(`ApiAccounts`.`id`)";      // dont delete api service accounts
 
         // --dry
 
@@ -128,13 +146,24 @@ class CleanUsers extends Command
             $show_sql = true;
         }
 
+        if($input->getOption('yes')) {
+            $yes = true;
+        }
+
+        if(!is_null($list = $input->getOption('list'))) {
+            if(!array_key_exists($list, self::$mapListToColumn)) {
+                $output->writeln(sprintf("<error>bad \"list\" value '%s'</error> (see possible values with --help)", $list));
+                return 1;
+            }
+        }
+
         // do the job
         //
         $sql_where = join(") AND (", $clauses);
 
         $cnx = $this->container->getApplicationBox()->get_connection();
 
-        $sql_count = "SELECT COUNT(`id`) AS n FROM `Users` WHERE (" . $sql_where . ")";
+        $sql_count = "SELECT COUNT(`Users`.`id`) AS n FROM (`Users` LEFT JOIN `ApiAccounts` ON `ApiAccounts`.`user_id`=`Users`.`id`) WHERE (" . $sql_where . ")";
         if($show_sql) {
             $output->writeln(sprintf("sql: \"<info>%s</info>\"", $sql_count));
         }
@@ -142,7 +171,9 @@ class CleanUsers extends Command
         $stmt->execute();
         $n = $stmt->fetchColumn(0);
         $stmt->closeCursor();
-        $output->writeln(sprintf("Acting on %s users.", $n));
+        if(!$list) {
+            $output->writeln(sprintf("Acting on %s users.", $n));
+        }
 
 
         /** @var UserManipulator $userManipulator */
@@ -152,45 +183,63 @@ class CleanUsers extends Command
         /** @var BasketRepository $basketRepository */
         $basketRepository = $this->container['repo.baskets'];
 
-        $sql_list = "SELECT u.*, GROUP_CONCAT(basusr.base_id SEPARATOR ',') AS `bids`\n"
+        $sql_list = "SELECT u.*, GROUP_CONCAT(`basusr`.`base_id` SEPARATOR ',') AS `bids`\n"
                 . "FROM\n"
-                . "( SELECT Users.id AS `usr_id`, Users.login, Users.email, Users.last_connection, GROUP_CONCAT(sbasusr.sbas_id SEPARATOR ',') AS `sbids`\n"
-                . "  FROM `Users` LEFT JOIN `sbasusr` ON sbasusr.usr_id = Users.id\n"
+                . "( SELECT `Users`.`id` AS `usr_id`, `Users`.`login`, `Users`.`email`, `Users`.`last_connection`, GROUP_CONCAT(`sbasusr`.`sbas_id` SEPARATOR ',') AS `sbids`\n"
+                . "  FROM (`Users` LEFT JOIN `ApiAccounts` ON `ApiAccounts`.`user_id` = `Users`.`id`) \n"
+                . "  LEFT JOIN `sbasusr` ON `sbasusr`.`usr_id` = `Users`.`id`\n"
                 . "  WHERE (" . $sql_where . ")"
-                . "  GROUP BY sbasusr.usr_id\n"
+                . "  GROUP BY `sbasusr`.`usr_id`\n"
                 . ") AS u\n"
-                . "LEFT JOIN `basusr` ON basusr.usr_id = u.usr_id GROUP BY basusr.usr_id";
+                . "LEFT JOIN `basusr` ON `basusr`.`usr_id` = `u`.`usr_id` GROUP BY `basusr`.`usr_id`";
+
         if($show_sql) {
             $output->writeln(sprintf("sql: \"<info>%s</info>\"", $sql_list));
         }
+
+        if(!$yes && !$list) {
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion(sprintf("Confirm deletion of %s user(s) [y/n] : ", $n), false);
+
+            if (!$helper->ask($input, $output, $question)) {
+                return 0;
+            }
+        }
+
         $stmt = $cnx->prepare($sql_list);
         $stmt->execute();
         while( $row = ($stmt->fetch(\PDO::FETCH_ASSOC)) ) {
             if( !is_null($user = $userRepository->find($row['usr_id'])) ) {
 
-                $output->write(sprintf("%s : %s / %s (%s)", $row['usr_id'], $row['login'], $row['email'], $row['last_connection']));
-
-                if(!$dry) {
-                    $acl = $this->container->getAclForUser($user);
-
-                    // revoke bas rights
-                    if (!is_null($row['bids'])) {
-                        $bids = array_map(function ($bid) {
-                            return (int)$bid;
-                        }, explode(',', $row['bids']));
-                        $acl->revoke_access_from_bases($bids);
-                    }
-
-                    // revoke sbas rights
-                    $acl->revoke_unused_sbas_rights();
-
-                    // delete user
-                    $userManipulator->delete($user);
-
-                    $output->writeln(" deleted.");
+                if ($list) {
+                    $s = $row[self::$mapListToColumn[$list]];
+                    $output->write(sprintf("%s%s", $s, "\n"));
                 }
                 else {
-                    $output->writeln(" not deleted (dry mode).");
+                    $output->write(sprintf("%s : %s / %s (%s)", $row['usr_id'], $row['login'], $row['email'], $row['last_connection']));
+
+                    if (!$dry) {
+                        $acl = $this->container->getAclForUser($user);
+
+                        // revoke bas rights
+                        if (!is_null($row['bids'])) {
+                            $bids = array_map(function ($bid) {
+                                return (int)$bid;
+                            }, explode(',', $row['bids']));
+                            $acl->revoke_access_from_bases($bids);
+                        }
+
+                        // revoke sbas rights
+                        $acl->revoke_unused_sbas_rights();
+
+                        // delete user
+                        $userManipulator->delete($user);
+
+                        $output->writeln(" deleted.");
+                    }
+                    else {
+                        $output->writeln(" not deleted (dry mode).");
+                    }
                 }
             }
         }
