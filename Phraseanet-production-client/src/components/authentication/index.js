@@ -15,6 +15,7 @@ import registerService from './register';
 import registerProviderService from './registerProvider';
 import renewEmailService from './renewEmail';
 import changePasswordService from './changePassword';
+import { sprintf } from 'sprintf-js';
 require('bootstrap-multiselect'); // multiselect
 
 const authentication = (services) => {
@@ -37,13 +38,10 @@ const authentication = (services) => {
                 selectAllText: localeService.t('all_collections'),
                 buttonText: function (options, select) {
                     if (options.length === 0) {
-                        return localeService.t('no_collection_selected') + '<b class="caret"></b>';
+                        return localeService.t('no_collection_selected');
                     } else {
-                        return localeService.t(
-                                options.length === 1 ? 'one_collection_selected' : 'collections_selected', {
-                                    postProcess: 'sprintf',
-                                    sprintf: [options.length]
-                                }) + ' <b class="caret"></b>';
+
+                        return sprintf(localeService.t(options.length === 1 ? 'one_collection_selected' : 'collections_selected'), options.length);
                     }
                 }
             });
