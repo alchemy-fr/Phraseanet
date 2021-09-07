@@ -172,7 +172,7 @@ class SubdefGenerator
 
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
                 file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("deleting previous subdef \"%s\" to \"%s\" for %s.%s", $record->get_subdef($subdefname)->getRealPath(), $record->getDataboxId(), $record->getRecordId())
+                    sprintf("deleting previous subdef \"%s\" (file=\"%s\") for %s.%s", $subdefname, $record->get_subdef($subdefname)->getRealPath(), $record->getDataboxId(), $record->getRecordId())
                 ), FILE_APPEND | LOCK_EX);
 
                 $pathdest = $record->get_subdef($subdefname)->getRealPath();
