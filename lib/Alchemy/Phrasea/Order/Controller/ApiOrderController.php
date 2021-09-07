@@ -189,7 +189,7 @@ class ApiOrderController extends BaseOrderController
         $subdefs = $this->findDataboxSubdefNames();
 
         try {
-            $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true);
+            $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true, false);
         }
         catch (\Exception $e) {
             throw new NotFoundHttpException(sprintf('No archive could be downloaded for Order "%d"', $order->getId()));
