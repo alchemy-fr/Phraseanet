@@ -87,9 +87,7 @@ class ExportMailWorker implements WorkerInterface
                     // we must stamp this document
                     try {
                         $record = $this->app->getApplicationBox()->get_databox($v_file['databox_id'])->get_record($v_file['record_id']);
-                        assert(!is_object($record));
                         $sd = $record->get_subdef($k_subdef);
-                        assert(!is_object($sd));
                         if(!is_null($path = \recordutils_image::stamp($this->app, $sd))) {
                             // stamped !
                             $pi = pathinfo($path);
