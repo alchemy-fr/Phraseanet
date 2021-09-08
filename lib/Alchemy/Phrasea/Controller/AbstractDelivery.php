@@ -91,9 +91,7 @@ abstract class AbstractDelivery
         if ($watermark === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
             $pathOut = \recordutils_image::watermark($this->app, $mediaSubdefinition);
         } elseif ($stamp === true && $mediaSubdefinition->get_type() === \media_subdef::TYPE_IMAGE) {
-            if( !is_null($newPath = \recordutils_image::stamp($this->app, $mediaSubdefinition)) ) {
-                $pathOut = $newPath;
-            }
+            $pathOut = \recordutils_image::stamp($this->app, $mediaSubdefinition);
         }
 
         return $pathOut;

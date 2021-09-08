@@ -81,30 +81,6 @@ class ExportMailWorker implements WorkerInterface
 
         $list = unserialize($token->getData());
 
-        foreach($list['files'] as $k_file => $v_file) {
-            foreach($v_file['subdefs'] as $k_subdef => $v_subdef) {
-                if($k_subdef === "document" && $v_subdef['to_stamp']) {
-                    // we must stamp this document
-                    try {
-                        $record = $this->app->getApplicationBox()->get_databox($v_file['databox_id'])->get_record($v_file['record_id']);
-                        assert(!is_object($record));
-                        $sd = $record->get_subdef($k_subdef);
-                        assert(!is_object($sd));
-                        if(!is_null($path = \recordutils_image::stamp($this->app, $sd))) {
-                            // stamped !
-                            $pi = pathinfo($path);
-                            $list['files'][$k_file]['subdefs'][$k_subdef]['path'] = $pi['dirname'];
-                            $list['files'][$k_file]['subdefs'][$k_subdef]['file'] = $pi['basename'];
-                            $list['files'][$k_file]['subdefs'][$k_subdef]['size'] = filesize($path);
-                        }
-                    }
-                    catch (\Exception $e) {
-                        // failed to stamp ? ignore and send the original file
-                    }
-                }
-            }
-        }
-
         $this->repoWorkerJob->reconnect();
         //zip documents
         \set_export::build_zip(
