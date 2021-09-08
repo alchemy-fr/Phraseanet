@@ -12,27 +12,27 @@ namespace Alchemy\Phrasea\Media;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
-use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionCreationFailedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
+use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use MediaAlchemyst\Alchemyst;
+use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
+use MediaAlchemyst\Exception\FileNotFoundException;
 use MediaAlchemyst\Specification\Image;
 use MediaAlchemyst\Specification\Video;
+use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
 use MediaVorus\MediaVorus;
-use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use Neutron\TemporaryFilesystem\Manager;
 use Psr\Log\LoggerInterface;
 use Unoconv\Exception\ExceptionInterface as UnoconvException;
 use Unoconv\Exception\RuntimeException;
 use Unoconv\Unoconv;
-use MediaVorus\Exception\FileNotFoundException as MediaVorusFileNotFoundException;
-use MediaAlchemyst\Exception\FileNotFoundException;
 
 class SubdefGenerator
 {
@@ -107,6 +107,15 @@ class SubdefGenerator
             )
         );
 
+        if(!is_null($hd = $record->get_hd_file())) {
+            $hd = $hd->getRealPath();
+
+            clearstatcache(true, $hd);
+            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                sprintf("creating subdefs for %s.%s from document \"%s\" (size=%s)", $record->getDataboxId(), $record->getRecordId(), $hd, filesize($hd))
+            ), FILE_APPEND | LOCK_EX);
+        }
+
         $mediaCreated = [];
         foreach ($subdefs as $subdef) {
             $subdefname = $subdef->get_name();
@@ -118,7 +127,13 @@ class SubdefGenerator
             $pathdest = null;
 
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
+
                 $pathdest = $record->get_subdef($subdefname)->getRealPath();
+
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("deleting previous subdef \"%s\" (file=\"%s\") for %s.%s", $subdefname, $pathdest, $record->getDataboxId(), $record->getRecordId())
+                ), FILE_APPEND | LOCK_EX);
+
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));
                 $record->clearSubdefCache($subdefname);

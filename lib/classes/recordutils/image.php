@@ -11,13 +11,13 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
+use Imagine\Exception\Exception as ImagineException;
+use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Palette\RGB;
-use Imagine\Image\Box;
 use Imagine\Image\Point;
-use Imagine\Exception\Exception as ImagineException;
-use MediaVorus\Media\MediaInterface;
 use MediaVorus\Media\Image;
+use MediaVorus\Media\MediaInterface;
 
 class recordutils_image
 {
@@ -25,11 +25,22 @@ class recordutils_image
      * @param Application   $app
      * @param \media_subdef $subdef
      *
-     * @return string The path to the stamped file
+     * @return string|null The path to the stamped file, or null if stamp is not required
      */
     public static function stamp(Application $app, \media_subdef $subdef)
     {
         static $palette;
+
+        $domprefs = new DOMDocument();
+
+        if (false === $domprefs->loadXML($subdef->get_record()->getCollection()->get_prefs())) {
+            return null;
+        }
+        $xpprefs = new DOMXPath($domprefs);
+        $stampNodes = $xpprefs->query('/baseprefs/stamp');
+        if ($stampNodes->length == 0) {
+            return null;
+        }
 
         if (null === $palette) {
             $palette = new RGB();
@@ -52,11 +63,11 @@ class recordutils_image
         $base_id = $subdef->get_record()->getBaseId();
 
         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-            return $subdef->getRealPath();
+            return null;
         }
 
         if (!$subdef->is_physically_present()) {
-            return $subdef->getRealPath();
+            return null;
         }
 
         $rotation = null;
@@ -69,20 +80,9 @@ class recordutils_image
             // getting orientation failed but we don't care the reason
         }
 
-        $domprefs = new DOMDocument();
-
-        if (false === $domprefs->loadXML($subdef->get_record()->getCollection()->get_prefs())) {
-            return $subdef->getRealPath();
-        }
 
         if (false === $sxxml = simplexml_load_string($app['serializer.caption']->serialize($subdef->get_record()->get_caption(), CaptionSerializer::SERIALIZE_XML))) {
-            return $subdef->getRealPath();
-        }
-
-        $xpprefs = new DOMXPath($domprefs);
-        $stampNodes = $xpprefs->query('/baseprefs/stamp');
-        if ($stampNodes->length == 0) {
-            return $subdef->getRealPath();
+            return null;
         }
 
         $pathIn = $subdef->getRealPath();

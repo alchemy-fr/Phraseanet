@@ -143,6 +143,17 @@ class FilesystemService
     }
 
     /**
+     * rename file from source to target
+     *
+     * @param string $source
+     * @param string $target
+     */
+    public function rename($source, $target)
+    {
+        $this->filesystem->rename($source, $target, true);
+    }
+
+    /**
      * Copy file from source to target
      *
      * @param string $source
