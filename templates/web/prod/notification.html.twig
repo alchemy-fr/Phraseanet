@@ -8,6 +8,7 @@
             <td class="{{notification['class']}}">
                 {{notification['text'] | raw}}
                 <span class="time">{{notification['created_on']}}</span>
+                <span class="time-in-dialog" style="color: #666666;display: none;" >{{notification['time']}}</span>
             </td>
             <td style="width:25px; vertical-align: bottom;">
                 <span class="icon_read" title="{{ 'notification::read:tooltip' | trans }}"></span>
