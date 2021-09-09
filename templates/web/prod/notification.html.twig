@@ -6,7 +6,7 @@
                 <img src="{{notification['icon']}}" style="vertical-align:middle;width:16px;margin:2px;" />
             </td>
             <td class="{{notification['class']}}">
-                {{notification['text'] | e | raw}}
+                {{notification['text'] | raw}}
                 <span class="time">{{notification['created_on']}}</span>
             </td>
             <td style="width:25px; vertical-align: bottom;">
