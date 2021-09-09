@@ -180,6 +180,9 @@ const notifyLayout = (services) => {
                             markNotificationRead(event.data['id'], $z);
                         });
                     date_cont.append($z);
+                    // do not display date in the dialog content beacause it's already grouped by date
+                    $(".time", $z).hide();
+                    $(".time-in-dialog", $z).show();
                 }
 
                 // handle "show more" button

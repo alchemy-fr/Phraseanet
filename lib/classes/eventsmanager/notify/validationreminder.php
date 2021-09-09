@@ -63,7 +63,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
             . $basket_name . '</a>';
 
         $ret = [
-            'text'  => $this->app->trans('Rappel : Il vous reste %timeLeft% pour valider %title% de %user%', ['%timeLeft%' => $timeLeft, '%title%' => $bask_link, '%user%' => $sender])
+            'text'  => $this->app->trans('Rappel : Il vous reste %timeLeft% pour valider %title% de %user%', ['%timeLeft%' => $timeLeft, '%title%' => $bask_link, '%user%' => htmlentities($sender)])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 
