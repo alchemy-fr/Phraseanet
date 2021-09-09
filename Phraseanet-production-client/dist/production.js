@@ -19323,6 +19323,7 @@ var notifyLayout = function notifyLayout(services) {
                         markNotificationRead(event.data['id'], $z);
                     });
                     date_cont.append($z);
+                    (0, _jquery2.default)(".time", $z).hide();
                 };
 
                 for (i in notifications) {
