@@ -128,6 +128,7 @@ class RegistryFormManipulator
                 'force-push-authentication' => false,
                 'enable-feed-notification' => true,
                 'download-link-validity' => 24,
+                'export-stamp-choice' => false,
             ],
             'ftp'          => [
                 'ftp-enabled' => false,
