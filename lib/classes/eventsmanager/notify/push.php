@@ -43,7 +43,7 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
               data-kind="BASK"
               data-position="1"
               data-id="'. $data['ssel_id'] . '"
-              class="open-preview-action">', '%after_link%' => '</a>'])
+              class="to-open-preview-action">', '%after_link%' => '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 
