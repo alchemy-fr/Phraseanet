@@ -62,9 +62,9 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         }
 
         $ret = [
-            'text'  => $this->app->trans('%user% a envoye son rapport de validation de %title%', ['%user%' => $sender, '%title%' => '<a href="/lightbox/validate/'
+            'text'  => $this->app->trans('%user% a envoye son rapport de validation de %title%', ['%user%' => htmlentities($sender), '%title%' => '<a href="/lightbox/validate/'
                 . $ssel_id . '/" target="_blank">'
-                . $basket->getName() . '</a>']),
+                . htmlentities($basket->getName()) . '</a>']),
             'class' => ''
         ];
 

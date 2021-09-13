@@ -91,7 +91,7 @@
 /******/ 		if (__webpack_require__.nc) {
 /******/ 			script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 		}
-/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=26";
+/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=27";
 /******/ 		var timeout = setTimeout(onScriptComplete, 120000);
 /******/ 		script.onerror = script.onload = onScriptComplete;
 /******/ 		function onScriptComplete() {
