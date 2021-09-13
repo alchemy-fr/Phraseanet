@@ -8846,7 +8846,7 @@ TABLE.explain3 TR TD {
 
 #PREVIEWBOX,
 #EDITWINDOW {
-  z-index: 1200;
+  z-index: 2000;
   background-color: #1a1a1a;
   display: none;
   border: 1px solid #7f7f7f;
