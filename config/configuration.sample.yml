@@ -235,6 +235,8 @@ registry:
     api-clients:
         api-require-ssl: false
         api-auth-token-header-only: false
+    actions:
+        export-stamp-choice: false
 crossdomain:
     site-control: 'master-only'
     allow-access-from:
