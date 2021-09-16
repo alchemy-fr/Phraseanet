@@ -3561,7 +3561,7 @@
       </trans-unit>
       <trans-unit id="3557dddb635d5a299d56eb77ab302f7362548d65" resname="Graphic view">
         <source>Graphic view</source>
-        <target state="needs-translation">SQL généré</target>
+        <target state="needs-translation">Voir les records éligibles</target>
         <jms:reference-file line="70">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd6d6f27b3e16afd7cdd573b85b3cc5bfd22e8db" resname="GraphicsMagick" approved="yes">
