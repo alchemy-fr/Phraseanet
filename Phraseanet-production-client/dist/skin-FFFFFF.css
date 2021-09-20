@@ -7720,7 +7720,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   font-weight: bold;
   font-size: 13px;
   display: none;
-  z-index: 5000;
+  z-index: 500;
 }
 
 #idFrameC #baskets .insidebloc {
@@ -8863,7 +8863,7 @@ TABLE.explain3 TR TD {
 
 #PREVIEWBOX,
 #EDITWINDOW {
-  z-index: 1200;
+  z-index: 2000;
   background-color: #ffffff;
   display: none;
   border: 1px solid #bfbfbf;

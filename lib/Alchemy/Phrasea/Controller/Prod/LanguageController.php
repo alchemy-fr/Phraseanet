@@ -67,6 +67,7 @@ class LanguageController
             'reminderParticipantToCheck' => $translator->trans('prod::workzone:manual feedback reminder select a participant!'),
             'removeExposePublication' => $translator->trans('expose::Your are about to delete a publication from expose, please confirm your action !'),
             'removeAssetPublication'  => $translator->trans('expose::Your are about to delete an asset from a publication, please confirm your action !'),
+            'loggedIn'                => $translator->trans('expose:: Logged in'),
             'confirmRemoveReg'        => $translator->trans('panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action.'),
             'confirmRemoveFeedBack'   => $translator->trans('basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action'),
             'movedRecord'             => $translator->trans('basket:: Items are being to moved !'),
@@ -176,6 +177,9 @@ class LanguageController
             'prod:videoeditor:subtitletab:message:: error'     => $translator->trans('prod:videoeditor:subtitletab:message:: error'),
             'prod:videoeditor:subtitletab:message:: success'     => $translator->trans('prod:videoeditor:subtitletab:message:: success'),
             'Edit expose title'     => $translator->trans('prod:workzone:expose:modal:: title'),
+            'ExposeMapping'    => $translator->trans('expose:: Expose mapping'),
+            'ExposeChooseProfile'   => $translator->trans('expose:: Choose a profile where to store mapping'),
+            'ExposeDuplicateValue'  => $translator->trans('expose::setting duplicate mapping!'),
         ]);
     }
 }

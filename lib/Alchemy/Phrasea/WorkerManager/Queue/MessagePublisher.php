@@ -20,6 +20,7 @@ class MessagePublisher
     const POPULATE_INDEX_TYPE  = 'populateIndex';
     const PULL_ASSETS_TYPE     = 'pullAssets';
     const EDIT_RECORD_TYPE     = 'editRecord';
+    const RECORDS_ACTIONS_TYPE = 'recordsActions';
     const SUBDEF_CREATION_TYPE = 'subdefCreation';
     const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const WRITE_METADATAS_TYPE = 'writeMetadatas';

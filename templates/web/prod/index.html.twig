@@ -468,15 +468,42 @@
                                                         {% set isSelected = (sortByPreference == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
                                                         {% set isDefault = (sortByDefault == constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE')) %}
                                                         <option value="{{ constant('\\Alchemy\\Phrasea\\SearchEngine\\SearchEngineOptions::SORT_RELEVANCE') }}" {% if isSelected %}selected="selected"{% endif %}{% if isDefault %} class="default-selection"{% endif %}>{{ "Relevance"|trans }}</option>
-                                                        <optgroup label="{{ 'By field'|trans }}">
-                                                        {% for fieldname, sort in search_datas['sort'] %}
-                                                            {% set b = (sortOrderPreference == fieldname) %}
-                                                            <option value="{{ fieldname }}"
-                                                                    {% if b %}selected="selected"{% endif %}
-                                                                    class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                        <optgroup label="{{ 'Advanced Search:: By string field'|trans }}">
+                                                            {% if(search_datas['sort'][constant('\\databox_field::TYPE_STRING')]|length) > 0 %}
+                                                                {% for fieldname, sort in search_datas['sort'][constant('\\databox_field::TYPE_STRING')] %}
+                                                                    {% set b = (sortOrderPreference == fieldname) %}
+                                                                    <option value="{{ fieldname }}"
+                                                                            {% if b %}selected="selected"{% endif %}
+                                                                            class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
                                                                     >{{ fieldname }}</option>
-                                                        {% endfor %}
+                                                                {% endfor %}
+                                                            {% endif %}
                                                         </optgroup>
+
+                                                        <optgroup label="{{ 'Advanced Search:: By date field'|trans }}">
+                                                            {% if(search_datas['sort'][constant('\\databox_field::TYPE_DATE')]|length) > 0 %}
+                                                                {% for fieldname, sort in search_datas['sort'][constant('\\databox_field::TYPE_DATE')] %}
+                                                                    {% set b = (sortOrderPreference == fieldname) %}
+                                                                    <option value="{{ fieldname }}"
+                                                                            {% if b %}selected="selected"{% endif %}
+                                                                            class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                                    >{{ fieldname }}</option>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </optgroup>
+
+                                                        <optgroup label="{{ 'Advanced Search:: By numeric field'|trans }}">
+                                                            {% if(search_datas['sort'][constant('\\databox_field::TYPE_NUMBER')]|length) > 0 %}
+                                                                {% for fieldname, sort in search_datas['sort'][constant('\\databox_field::TYPE_NUMBER')] %}
+                                                                    {% set b = (sortOrderPreference == fieldname) %}
+                                                                    <option value="{{ fieldname }}"
+                                                                            {% if b %}selected="selected"{% endif %}
+                                                                            class="{% if b %}default-selection {% endif %}dbx db_{{sort['sbas']|join(' db_')}}"
+                                                                    >{{ fieldname }}</option>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </optgroup>
+
                                                     </select>
                                                     <select name="ord" class="input-medium check-filters" data-save="true">
                                                         {% for ord, ord_name in app['phraseanet.SE'].getAvailableOrder() %}

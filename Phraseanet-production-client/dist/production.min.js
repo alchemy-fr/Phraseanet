@@ -44,11 +44,11 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _user = __webpack_require__(47);
+var _user = __webpack_require__(48);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _utils = __webpack_require__(56);
+var _utils = __webpack_require__(57);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -1272,6 +1272,231 @@ module.exports = win;
 /* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var __WEBPACK_AMD_DEFINE_RESULT__;/* global window, exports, define */
+
+!function() {
+    'use strict'
+
+    var re = {
+        not_string: /[^s]/,
+        not_bool: /[^t]/,
+        not_type: /[^T]/,
+        not_primitive: /[^v]/,
+        number: /[diefg]/,
+        numeric_arg: /[bcdiefguxX]/,
+        json: /[j]/,
+        not_json: /[^j]/,
+        text: /^[^\x25]+/,
+        modulo: /^\x25{2}/,
+        placeholder: /^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-gijostTuvxX])/,
+        key: /^([a-z_][a-z_\d]*)/i,
+        key_access: /^\.([a-z_][a-z_\d]*)/i,
+        index_access: /^\[(\d+)\]/,
+        sign: /^[\+\-]/
+    }
+
+    function sprintf(key) {
+        // `arguments` is not an array, but should be fine for this call
+        return sprintf_format(sprintf_parse(key), arguments)
+    }
+
+    function vsprintf(fmt, argv) {
+        return sprintf.apply(null, [fmt].concat(argv || []))
+    }
+
+    function sprintf_format(parse_tree, argv) {
+        var cursor = 1, tree_length = parse_tree.length, arg, output = '', i, k, match, pad, pad_character, pad_length, is_positive, sign
+        for (i = 0; i < tree_length; i++) {
+            if (typeof parse_tree[i] === 'string') {
+                output += parse_tree[i]
+            }
+            else if (Array.isArray(parse_tree[i])) {
+                match = parse_tree[i] // convenience purposes only
+                if (match[2]) { // keyword argument
+                    arg = argv[cursor]
+                    for (k = 0; k < match[2].length; k++) {
+                        if (!arg.hasOwnProperty(match[2][k])) {
+                            throw new Error(sprintf('[sprintf] property "%s" does not exist', match[2][k]))
+                        }
+                        arg = arg[match[2][k]]
+                    }
+                }
+                else if (match[1]) { // positional argument (explicit)
+                    arg = argv[match[1]]
+                }
+                else { // positional argument (implicit)
+                    arg = argv[cursor++]
+                }
+
+                if (re.not_type.test(match[8]) && re.not_primitive.test(match[8]) && arg instanceof Function) {
+                    arg = arg()
+                }
+
+                if (re.numeric_arg.test(match[8]) && (typeof arg !== 'number' && isNaN(arg))) {
+                    throw new TypeError(sprintf('[sprintf] expecting number but found %T', arg))
+                }
+
+                if (re.number.test(match[8])) {
+                    is_positive = arg >= 0
+                }
+
+                switch (match[8]) {
+                    case 'b':
+                        arg = parseInt(arg, 10).toString(2)
+                        break
+                    case 'c':
+                        arg = String.fromCharCode(parseInt(arg, 10))
+                        break
+                    case 'd':
+                    case 'i':
+                        arg = parseInt(arg, 10)
+                        break
+                    case 'j':
+                        arg = JSON.stringify(arg, null, match[6] ? parseInt(match[6]) : 0)
+                        break
+                    case 'e':
+                        arg = match[7] ? parseFloat(arg).toExponential(match[7]) : parseFloat(arg).toExponential()
+                        break
+                    case 'f':
+                        arg = match[7] ? parseFloat(arg).toFixed(match[7]) : parseFloat(arg)
+                        break
+                    case 'g':
+                        arg = match[7] ? String(Number(arg.toPrecision(match[7]))) : parseFloat(arg)
+                        break
+                    case 'o':
+                        arg = (parseInt(arg, 10) >>> 0).toString(8)
+                        break
+                    case 's':
+                        arg = String(arg)
+                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
+                        break
+                    case 't':
+                        arg = String(!!arg)
+                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
+                        break
+                    case 'T':
+                        arg = Object.prototype.toString.call(arg).slice(8, -1).toLowerCase()
+                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
+                        break
+                    case 'u':
+                        arg = parseInt(arg, 10) >>> 0
+                        break
+                    case 'v':
+                        arg = arg.valueOf()
+                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
+                        break
+                    case 'x':
+                        arg = (parseInt(arg, 10) >>> 0).toString(16)
+                        break
+                    case 'X':
+                        arg = (parseInt(arg, 10) >>> 0).toString(16).toUpperCase()
+                        break
+                }
+                if (re.json.test(match[8])) {
+                    output += arg
+                }
+                else {
+                    if (re.number.test(match[8]) && (!is_positive || match[3])) {
+                        sign = is_positive ? '+' : '-'
+                        arg = arg.toString().replace(re.sign, '')
+                    }
+                    else {
+                        sign = ''
+                    }
+                    pad_character = match[4] ? match[4] === '0' ? '0' : match[4].charAt(1) : ' '
+                    pad_length = match[6] - (sign + arg).length
+                    pad = match[6] ? (pad_length > 0 ? pad_character.repeat(pad_length) : '') : ''
+                    output += match[5] ? sign + arg + pad : (pad_character === '0' ? sign + pad + arg : pad + sign + arg)
+                }
+            }
+        }
+        return output
+    }
+
+    var sprintf_cache = Object.create(null)
+
+    function sprintf_parse(fmt) {
+        if (sprintf_cache[fmt]) {
+            return sprintf_cache[fmt]
+        }
+
+        var _fmt = fmt, match, parse_tree = [], arg_names = 0
+        while (_fmt) {
+            if ((match = re.text.exec(_fmt)) !== null) {
+                parse_tree.push(match[0])
+            }
+            else if ((match = re.modulo.exec(_fmt)) !== null) {
+                parse_tree.push('%')
+            }
+            else if ((match = re.placeholder.exec(_fmt)) !== null) {
+                if (match[2]) {
+                    arg_names |= 1
+                    var field_list = [], replacement_field = match[2], field_match = []
+                    if ((field_match = re.key.exec(replacement_field)) !== null) {
+                        field_list.push(field_match[1])
+                        while ((replacement_field = replacement_field.substring(field_match[0].length)) !== '') {
+                            if ((field_match = re.key_access.exec(replacement_field)) !== null) {
+                                field_list.push(field_match[1])
+                            }
+                            else if ((field_match = re.index_access.exec(replacement_field)) !== null) {
+                                field_list.push(field_match[1])
+                            }
+                            else {
+                                throw new SyntaxError('[sprintf] failed to parse named argument key')
+                            }
+                        }
+                    }
+                    else {
+                        throw new SyntaxError('[sprintf] failed to parse named argument key')
+                    }
+                    match[2] = field_list
+                }
+                else {
+                    arg_names |= 2
+                }
+                if (arg_names === 3) {
+                    throw new Error('[sprintf] mixing positional and named placeholders is not (yet) supported')
+                }
+                parse_tree.push(match)
+            }
+            else {
+                throw new SyntaxError('[sprintf] unexpected placeholder')
+            }
+            _fmt = _fmt.substring(match[0].length)
+        }
+        return sprintf_cache[fmt] = parse_tree
+    }
+
+    /**
+     * export to either browser or node.js
+     */
+    /* eslint-disable quote-props */
+    if (true) {
+        exports['sprintf'] = sprintf
+        exports['vsprintf'] = vsprintf
+    }
+    if (typeof window !== 'undefined') {
+        window['sprintf'] = sprintf
+        window['vsprintf'] = vsprintf
+
+        if (true) {
+            !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+                return {
+                    'sprintf': sprintf,
+                    'vsprintf': vsprintf
+                }
+            }).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+        }
+    }
+    /* eslint-enable quote-props */
+}()
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -1287,7 +1512,7 @@ module.exports = {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1353,7 +1578,7 @@ var Alerts = alert;
 exports.default = Alerts;
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1409,7 +1634,7 @@ function setPref(name, value) {
 exports.default = { setPref: setPref };
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1421,7 +1646,7 @@ module.exports = Function.prototype.bind || implementation;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1465,7 +1690,7 @@ module.exports = function isCallable(value) {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2675,7 +2900,7 @@ var leafletMap = function leafletMap(services) {
 exports.default = leafletMap;
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2791,12 +3016,12 @@ var FieldCollection = function () {
 exports.default = FieldCollection;
 
 /***/ }),
-/* 52 */,
 /* 53 */,
 /* 54 */,
 /* 55 */,
 /* 56 */,
-/* 57 */
+/* 57 */,
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2816,7 +3041,7 @@ var _dialog2 = _interopRequireDefault(_dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var lazyload = __webpack_require__(58);
+var lazyload = __webpack_require__(59);
 
 
 var publication = function publication(services) {
@@ -3259,7 +3484,7 @@ var publication = function publication(services) {
 exports.default = publication;
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*** IMPORTS FROM imports-loader ***/
@@ -3510,231 +3735,6 @@ exports.default = publication;
 
 }.call(window));
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/* global window, exports, define */
-
-!function() {
-    'use strict'
-
-    var re = {
-        not_string: /[^s]/,
-        not_bool: /[^t]/,
-        not_type: /[^T]/,
-        not_primitive: /[^v]/,
-        number: /[diefg]/,
-        numeric_arg: /[bcdiefguxX]/,
-        json: /[j]/,
-        not_json: /[^j]/,
-        text: /^[^\x25]+/,
-        modulo: /^\x25{2}/,
-        placeholder: /^\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-gijostTuvxX])/,
-        key: /^([a-z_][a-z_\d]*)/i,
-        key_access: /^\.([a-z_][a-z_\d]*)/i,
-        index_access: /^\[(\d+)\]/,
-        sign: /^[\+\-]/
-    }
-
-    function sprintf(key) {
-        // `arguments` is not an array, but should be fine for this call
-        return sprintf_format(sprintf_parse(key), arguments)
-    }
-
-    function vsprintf(fmt, argv) {
-        return sprintf.apply(null, [fmt].concat(argv || []))
-    }
-
-    function sprintf_format(parse_tree, argv) {
-        var cursor = 1, tree_length = parse_tree.length, arg, output = '', i, k, match, pad, pad_character, pad_length, is_positive, sign
-        for (i = 0; i < tree_length; i++) {
-            if (typeof parse_tree[i] === 'string') {
-                output += parse_tree[i]
-            }
-            else if (Array.isArray(parse_tree[i])) {
-                match = parse_tree[i] // convenience purposes only
-                if (match[2]) { // keyword argument
-                    arg = argv[cursor]
-                    for (k = 0; k < match[2].length; k++) {
-                        if (!arg.hasOwnProperty(match[2][k])) {
-                            throw new Error(sprintf('[sprintf] property "%s" does not exist', match[2][k]))
-                        }
-                        arg = arg[match[2][k]]
-                    }
-                }
-                else if (match[1]) { // positional argument (explicit)
-                    arg = argv[match[1]]
-                }
-                else { // positional argument (implicit)
-                    arg = argv[cursor++]
-                }
-
-                if (re.not_type.test(match[8]) && re.not_primitive.test(match[8]) && arg instanceof Function) {
-                    arg = arg()
-                }
-
-                if (re.numeric_arg.test(match[8]) && (typeof arg !== 'number' && isNaN(arg))) {
-                    throw new TypeError(sprintf('[sprintf] expecting number but found %T', arg))
-                }
-
-                if (re.number.test(match[8])) {
-                    is_positive = arg >= 0
-                }
-
-                switch (match[8]) {
-                    case 'b':
-                        arg = parseInt(arg, 10).toString(2)
-                        break
-                    case 'c':
-                        arg = String.fromCharCode(parseInt(arg, 10))
-                        break
-                    case 'd':
-                    case 'i':
-                        arg = parseInt(arg, 10)
-                        break
-                    case 'j':
-                        arg = JSON.stringify(arg, null, match[6] ? parseInt(match[6]) : 0)
-                        break
-                    case 'e':
-                        arg = match[7] ? parseFloat(arg).toExponential(match[7]) : parseFloat(arg).toExponential()
-                        break
-                    case 'f':
-                        arg = match[7] ? parseFloat(arg).toFixed(match[7]) : parseFloat(arg)
-                        break
-                    case 'g':
-                        arg = match[7] ? String(Number(arg.toPrecision(match[7]))) : parseFloat(arg)
-                        break
-                    case 'o':
-                        arg = (parseInt(arg, 10) >>> 0).toString(8)
-                        break
-                    case 's':
-                        arg = String(arg)
-                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
-                        break
-                    case 't':
-                        arg = String(!!arg)
-                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
-                        break
-                    case 'T':
-                        arg = Object.prototype.toString.call(arg).slice(8, -1).toLowerCase()
-                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
-                        break
-                    case 'u':
-                        arg = parseInt(arg, 10) >>> 0
-                        break
-                    case 'v':
-                        arg = arg.valueOf()
-                        arg = (match[7] ? arg.substring(0, match[7]) : arg)
-                        break
-                    case 'x':
-                        arg = (parseInt(arg, 10) >>> 0).toString(16)
-                        break
-                    case 'X':
-                        arg = (parseInt(arg, 10) >>> 0).toString(16).toUpperCase()
-                        break
-                }
-                if (re.json.test(match[8])) {
-                    output += arg
-                }
-                else {
-                    if (re.number.test(match[8]) && (!is_positive || match[3])) {
-                        sign = is_positive ? '+' : '-'
-                        arg = arg.toString().replace(re.sign, '')
-                    }
-                    else {
-                        sign = ''
-                    }
-                    pad_character = match[4] ? match[4] === '0' ? '0' : match[4].charAt(1) : ' '
-                    pad_length = match[6] - (sign + arg).length
-                    pad = match[6] ? (pad_length > 0 ? pad_character.repeat(pad_length) : '') : ''
-                    output += match[5] ? sign + arg + pad : (pad_character === '0' ? sign + pad + arg : pad + sign + arg)
-                }
-            }
-        }
-        return output
-    }
-
-    var sprintf_cache = Object.create(null)
-
-    function sprintf_parse(fmt) {
-        if (sprintf_cache[fmt]) {
-            return sprintf_cache[fmt]
-        }
-
-        var _fmt = fmt, match, parse_tree = [], arg_names = 0
-        while (_fmt) {
-            if ((match = re.text.exec(_fmt)) !== null) {
-                parse_tree.push(match[0])
-            }
-            else if ((match = re.modulo.exec(_fmt)) !== null) {
-                parse_tree.push('%')
-            }
-            else if ((match = re.placeholder.exec(_fmt)) !== null) {
-                if (match[2]) {
-                    arg_names |= 1
-                    var field_list = [], replacement_field = match[2], field_match = []
-                    if ((field_match = re.key.exec(replacement_field)) !== null) {
-                        field_list.push(field_match[1])
-                        while ((replacement_field = replacement_field.substring(field_match[0].length)) !== '') {
-                            if ((field_match = re.key_access.exec(replacement_field)) !== null) {
-                                field_list.push(field_match[1])
-                            }
-                            else if ((field_match = re.index_access.exec(replacement_field)) !== null) {
-                                field_list.push(field_match[1])
-                            }
-                            else {
-                                throw new SyntaxError('[sprintf] failed to parse named argument key')
-                            }
-                        }
-                    }
-                    else {
-                        throw new SyntaxError('[sprintf] failed to parse named argument key')
-                    }
-                    match[2] = field_list
-                }
-                else {
-                    arg_names |= 2
-                }
-                if (arg_names === 3) {
-                    throw new Error('[sprintf] mixing positional and named placeholders is not (yet) supported')
-                }
-                parse_tree.push(match)
-            }
-            else {
-                throw new SyntaxError('[sprintf] unexpected placeholder')
-            }
-            _fmt = _fmt.substring(match[0].length)
-        }
-        return sprintf_cache[fmt] = parse_tree
-    }
-
-    /**
-     * export to either browser or node.js
-     */
-    /* eslint-disable quote-props */
-    if (true) {
-        exports['sprintf'] = sprintf
-        exports['vsprintf'] = vsprintf
-    }
-    if (typeof window !== 'undefined') {
-        window['sprintf'] = sprintf
-        window['vsprintf'] = vsprintf
-
-        if (true) {
-            !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
-                return {
-                    'sprintf': sprintf,
-                    'vsprintf': vsprintf
-                }
-            }).call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-        }
-    }
-    /* eslint-enable quote-props */
-}()
-
 
 /***/ }),
 /* 60 */
@@ -4368,7 +4368,7 @@ var _recordPreview = __webpack_require__(231);
 
 var _recordPreview2 = _interopRequireDefault(_recordPreview);
 
-var _alert = __webpack_require__(46);
+var _alert = __webpack_require__(47);
 
 var _alert2 = _interopRequireDefault(_alert);
 
@@ -6508,7 +6508,7 @@ module.exports = defineProperties;
 "use strict";
 
 
-var bind = __webpack_require__(48);
+var bind = __webpack_require__(49);
 var ES = __webpack_require__(131);
 var replace = bind.call(Function.call, String.prototype.replace);
 
@@ -6631,7 +6631,7 @@ module.exports = createBrowserClient;
 
 var parseToken = __webpack_require__(70);
 var MapiRequest = __webpack_require__(167);
-var constants = __webpack_require__(45);
+var constants = __webpack_require__(46);
 
 /**
  * A low-level Mapbox API client. Use it to create service clients
@@ -8503,7 +8503,7 @@ module.exports = {
 /* 86 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 87 */
@@ -9527,7 +9527,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var AppCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _publication = __webpack_require__(57);
+var _publication = __webpack_require__(58);
 
 var _publication2 = _interopRequireDefault(_publication);
 
@@ -9904,7 +9904,7 @@ var _selectable = __webpack_require__(22);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _alert = __webpack_require__(46);
+var _alert = __webpack_require__(47);
 
 var _alert2 = _interopRequireDefault(_alert);
 
@@ -10008,15 +10008,200 @@ var workzone = function workzone(services) {
             checkActiveBloc(dragBloc);
         });
 
+        (0, _jquery2.default)('.expose_field_mapping').on('click', function (e) {
+            e.preventDefault();
+            openFieldMapping();
+        });
+
         (0, _jquery2.default)('.refresh-list').on('click', function (event) {
             var exposeName = (0, _jquery2.default)('#expose_list').val();
-            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(exposeName);
         });
 
         (0, _jquery2.default)('#expose_list').on('change', function () {
-            (0, _jquery2.default)('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            (0, _jquery2.default)('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(this.value);
+        });
+
+        (0, _jquery2.default)('#DIALOG-expose-edit').on('click', '.slug-availability', function (e) {
+            e.preventDefault();
+
+            var slug = (0, _jquery2.default)('#slug-field').val();
+            var actualSlug = (0, _jquery2.default)('#slug-field').attr('data-actual-slug');
+
+            if (slug !== '' && actualSlug == slug) {
+                (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+            } else if (slug !== '') {
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/publication/slug-availability/' + slug + '/?exposeName=' + (0, _jquery2.default)('#expose_list').val(),
+                    success: function success(data) {
+                        if (data.isAvailable == true) {
+                            (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+                        } else if (data.isAvailable == false) {
+                            (0, _jquery2.default)('#DIALOG-expose-edit').find('.expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-expose-add').on('click', '.new-slug-availability', function (e) {
+            e.preventDefault();
+
+            var slug = (0, _jquery2.default)('#new-slug-field').val();
+            if (slug !== '') {
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/publication/slug-availability/' + slug + '/?exposeName=' + (0, _jquery2.default)('#expose_list').val(),
+                    success: function success(data) {
+                        if (data.isAvailable == true) {
+                            (0, _jquery2.default)('#DIALOG-expose-add').find('.new-expose-slug-ok').show();
+                        } else if (data.isAvailable == false) {
+                            (0, _jquery2.default)('#DIALOG-expose-add').find('.new-expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-field-mapping', function (e) {
+            e.preventDefault();
+            if ((0, _jquery2.default)('#field-profile-mapping').val() == '') {
+                return (0, _alert2.default)('', localeService.t('ExposeChooseProfile'));
+            }
+
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/field-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#field-profile-mapping', function (e) {
+            (0, _jquery2.default)('.databox-field-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+
+            _jquery2.default.ajax({
+                type: "GET",
+                url: '/prod/expose/databoxes-field?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'html',
+                data: {
+                    profile: (0, _jquery2.default)('#field-profile-mapping').val()
+                },
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping .databox-field-list').empty().html(data);
+
+                    (0, _jquery2.default)('.field-list').sortable().disableSelection();
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '.subdef-expose-side', function (e) {
+            var that = this;
+            var className = (0, _jquery2.default)(that).data('subdef-group');
+            var selectedValue = (0, _jquery2.default)(that).val();
+            var count = 0;
+            (0, _jquery2.default)(className).each(function () {
+                if (!(0, _jquery2.default)(this).hasClass('hidden') && (0, _jquery2.default)(this).val() == selectedValue && (0, _jquery2.default)(this).val() != 'none') {
+                    count++;
+                }
+            });
+            if (count > 1) {
+                (0, _alert2.default)('', localeService.t('ExposeDuplicateValue'));
+                (0, _jquery2.default)(that).val(_jquery2.default.data(that, 'current'));
+
+                return false;
+            }
+
+            _jquery2.default.data(that, 'current', (0, _jquery2.default)(that).val());
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('change', '#subdef-profile-mapping', function (e) {
+            (0, _jquery2.default)('.databox-subdef-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+
+            _jquery2.default.ajax({
+                type: "GET",
+                url: '/prod/expose/subdefs-list?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'html',
+                data: {
+                    profile: (0, _jquery2.default)('#subdef-profile-mapping').val()
+                },
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping .databox-subdef-list').empty().html(data);
+                }
+            });
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '.subdef-phraseanet-side', function () {
+            if ((0, _jquery2.default)(this).is(":checked")) {
+                var idName = (0, _jquery2.default)(this).attr('id');
+                var selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
+                selectBox.attr('name', idName);
+                selectBox.removeClass('hidden');
+            } else {
+                var _selectBox = (0, _jquery2.default)(this).closest('div').find('.subdef-expose-side');
+                _selectBox.removeAttr('name');
+                _selectBox.addClass('hidden');
+            }
+        });
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function (event) {
+            event.preventDefault();
+            if ((0, _jquery2.default)('#subdef-profile-mapping').val() == '') {
+                return (0, _alert2.default)('', localeService.t('ExposeChooseProfile'));
+            }
+
+            var formData = (0, _jquery2.default)('#DIALOG-field-mapping').find('#subdef-mapping-form').serializeArray();
+
+            _jquery2.default.ajax({
+                type: "POST",
+                url: '/prod/expose/subdef-mapping?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+                dataType: 'json',
+                data: formData,
+                success: function success(data) {
+                    (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+                }
+            });
+        });
+
+        (0, _jquery2.default)('.expose_logout_link').on('click', function (event) {
+            event.preventDefault();
+            var exposeName = (0, _jquery2.default)('#expose_list').val();
+            _jquery2.default.ajax({
+                type: 'GET',
+                url: '/prod/expose/logout/?exposeName=' + exposeName,
+                success: function success(data) {
+                    updatePublicationList(exposeName);
+                }
+            });
+        });
+
+        // sign in expose
+        (0, _jquery2.default)('#idFrameC').find('.publication-list').on('click', '.auth-sign-in', function (e) {
+            e.preventDefault();
+            var form = (0, _jquery2.default)(this).closest('form');
+
+            _jquery2.default.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                success: function success(datas) {
+                    if (datas.success) {
+                        (0, _jquery2.default)('.refresh-list').trigger('click');
+                    } else {
+                        (0, _jquery2.default)('#oauth-login-error').removeClass('hidden');
+                        (0, _jquery2.default)('#oauth-login-error').empty().append(datas.error_description);
+                    }
+                }
+            });
         });
 
         (0, _jquery2.default)('.publication-list').on('click', '.top-block', function (event) {
@@ -10705,23 +10890,39 @@ var workzone = function workzone(services) {
             type: 'GET',
             url: '/prod/expose/list-publication/?exposeName=' + exposeName,
             success: function success(data) {
-                (0, _jquery2.default)('.publication-list').empty().html(data);
+                if ('twig' in data) {
+                    (0, _jquery2.default)('.publication-list').empty().html(data.twig);
 
-                (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
-                    (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
-                    (0, _jquery2.default)(this).toggleClass('open');
+                    (0, _jquery2.default)('.expose_basket_item .top_block').on('click', function (event) {
+                        (0, _jquery2.default)(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        (0, _jquery2.default)(this).toggleClass('open');
 
-                    if ((0, _jquery2.default)(this).hasClass('open')) {
-                        var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
-                        var _exposeName = (0, _jquery2.default)('#expose_list').val();
-                        var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
+                        if ((0, _jquery2.default)(this).hasClass('open')) {
+                            var publicationId = (0, _jquery2.default)(this).attr('data-publication-id');
+                            var _exposeName = (0, _jquery2.default)('#expose_list').val();
+                            var assetsContainer = (0, _jquery2.default)(this).parents('.expose_basket_item').find('.expose_item_deployed');
 
-                        assetsContainer.addClass('loading');
-                        getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
-                    }
-                });
+                            assetsContainer.addClass('loading');
+                            getPublicationAssetsList(publicationId, _exposeName, assetsContainer, 1);
+                        }
+                    });
 
-                activeExpose();
+                    activeExpose();
+                }
+
+                if ('exposeLogin' in data) {
+                    var loggedMessage = data.exposeLogin + " " + localeService.t('loggedIn') + " " + data.exposeName;
+
+                    (0, _jquery2.default)('.expose_connected').empty().text(loggedMessage);
+                    (0, _jquery2.default)('.expose_logout_link').removeClass('hidden');
+                    (0, _jquery2.default)('.expose_field_mapping').removeClass('hidden');
+                    (0, _jquery2.default)('.add_expose_block').removeClass('hidden');
+                } else {
+                    (0, _jquery2.default)('.expose_connected').empty();
+                    (0, _jquery2.default)('.expose_logout_link').addClass('hidden');
+                    (0, _jquery2.default)('.expose_field_mapping').addClass('hidden');
+                    (0, _jquery2.default)('.add_expose_block').addClass('hidden');
+                }
             }
         });
     }
@@ -10877,6 +11078,59 @@ var workzone = function workzone(services) {
         });
     }
 
+    function openFieldMapping() {
+        var dialogFieldMapping = (0, _jquery2.default)('#DIALOG-field-mapping .expose-field-content');
+        var exposeName = (0, _jquery2.default)("#expose_list").val();
+
+        dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        (0, _jquery2.default)('#DIALOG-field-mapping').attr('title', localeService.t('ExposeMapping')).dialog({
+            autoOpen: false,
+            closeOnEscape: true,
+            resizable: true,
+            draggable: true,
+            width: 900,
+            height: 500,
+            modal: true,
+            overlay: {
+                backgroundColor: '#000',
+                opacity: 0.7
+            },
+            close: function close(e, ui) {}
+        }).dialog('open');
+
+        (0, _jquery2.default)('.ui-dialog').addClass('black-dialog-wrap');
+
+        dialogFieldMapping.on('click', '.close-expose-modal', function () {
+            (0, _jquery2.default)('#DIALOG-field-mapping').dialog('close');
+        });
+
+        _jquery2.default.ajax({
+            type: "GET",
+            url: '/prod/expose/field-mapping?exposeName=' + exposeName,
+            success: function success(data) {
+                dialogFieldMapping.empty().html(data);
+                (0, _jquery2.default)("#expose-mapping-tabs").tabs();
+
+                _jquery2.default.ajax({
+                    type: "GET",
+                    url: '/prod/expose/list-profile?exposeName=' + exposeName,
+                    success: function success(data) {
+                        (0, _jquery2.default)('#DIALOG-field-mapping select#field-profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        (0, _jquery2.default)('#DIALOG-field-mapping select#subdef-profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        var i = 0;
+
+                        for (; i < data.profiles.length; i++) {
+                            (0, _jquery2.default)('#DIALOG-field-mapping select#field-profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+
+                            (0, _jquery2.default)('#DIALOG-field-mapping select#subdef-profile-mapping').append('<option ' + 'value=' + data.basePath + '/' + data.profiles[i].id + ' >' + data.profiles[i].name + '</option>');
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     function openExposePublicationEdit(edit) {
         (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
@@ -10899,9 +11153,10 @@ var workzone = function workzone(services) {
             (0, _jquery2.default)('#DIALOG-expose-edit').dialog('close');
         });
 
+        var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         _jquery2.default.ajax({
             type: "GET",
-            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val(),
+            url: '/prod/expose/get-publication/' + edit.data("id") + '?exposeName=' + (0, _jquery2.default)("#expose_list").val() + '&timezone=' + timezone,
             success: function success(data) {
                 (0, _jquery2.default)('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }
@@ -11225,7 +11480,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _sprintfJs = __webpack_require__(59);
+var _sprintfJs = __webpack_require__(45);
 
 var _phraseanetCommon = __webpack_require__(11);
 
@@ -18909,6 +19164,11 @@ var notifyLayout = function notifyLayout(services) {
     var $navigation = (0, _jquery2.default)('.navigation', $notificationDialog);
 
     var initialize = function initialize() {
+
+        //   the dialog MUST be created during print_notifications(), else the first clik on a "read" button
+        //   is badly interpreted (no action, but scrolls the content ???
+        // $notificationDialog.dialog({});
+
         /**
          * click on menubar/notifications : drop a box with last 10 notification, and a button "see all"
          * the box content is already set by poll notifications
@@ -18922,7 +19182,6 @@ var notifyLayout = function notifyLayout(services) {
             } else {
                 $notificationTrigger.addClass('open'); // highlight background in menubar
                 $notificationBoxContainer.show();
-                commonModule.fixNotificationsHeight();
             }
         });
 
@@ -18982,6 +19241,11 @@ var notifyLayout = function notifyLayout(services) {
     var print_notifications = function print_notifications(offset) {
 
         offset = parseInt(offset, 10);
+
+        if (offset == 0) {
+            $notifications.empty();
+        }
+
         var buttons = {};
 
         buttons[localeService.t('fermer')] = function () {
@@ -19004,6 +19268,7 @@ var notifyLayout = function notifyLayout(services) {
                 opacity: 0.7
             },
             close: function close(event, ui) {
+                // destroy so it will be "fresh" on next open (scrollbar on top)
                 $notificationDialog.dialog('destroy').remove();
             }
         }).dialog('option', 'buttons', buttons).dialog('open');
@@ -19035,7 +19300,8 @@ var notifyLayout = function notifyLayout(services) {
 
                 var notifications = data.notifications.notifications;
                 var i = 0;
-                for (i in notifications) {
+
+                var _loop = function _loop() {
                     var notification = notifications[i];
 
                     // group notifs by day
@@ -19051,22 +19317,30 @@ var notifyLayout = function notifyLayout(services) {
                     }
 
                     // add pre-formatted notif
-                    var $z = date_cont.append(notification.html);
-                    (0, _jquery2.default)('.notification_' + notification.id + '_unread', $z).tooltip().click(notification.id, function (event) {
-                        mark_read(event.data);
+                    var $z = (0, _jquery2.default)(notification.html);
+                    // the "unread" icon is clickable to mark as read
+                    (0, _jquery2.default)('.icon_unread', $z).tooltip().click({ 'z': $z, 'id': notification.id }, function (event) {
+                        markNotificationRead(event.data['id'], $z);
                     });
+                    date_cont.append($z);
+                    // do not display date in the dialog content beacause it's already grouped by date
+                    (0, _jquery2.default)(".time", $z).hide();
+                    (0, _jquery2.default)(".time-in-dialog", $z).show();
+                };
+
+                for (i in notifications) {
+                    _loop();
                 }
 
                 // handle "show more" button
                 //
                 if (data.notifications.next_offset) {
                     // update the "more" button
-                    $navigation.off('click', '.notification__print-action');
-                    $navigation.on('click', '.notification__print-action', function (event) {
+                    $navigation.off('click', '.notification__print-action') // remove previous, else we load 10, 20, 40...
+                    .on('click', '.notification__print-action', function (event) {
                         event.preventDefault();
                         print_notifications(data.notifications.next_offset);
-                    });
-                    $navigation.show();
+                    }).show();
                 } else {
                     // no more ? no button
                     $navigation.hide();
@@ -19075,11 +19349,10 @@ var notifyLayout = function notifyLayout(services) {
         });
     };
 
-    var mark_read = function mark_read(notification_id) {
+    var markNotificationRead = function markNotificationRead(notification_id, $notification) {
         commonModule.markNotificationRead(notification_id).success(function (data) {
-            // xhttp ok : update button
-            (0, _jquery2.default)('.notification_' + notification_id + '_unread', $notifications).hide();
-            (0, _jquery2.default)('.notification_' + notification_id + '_read', $notifications).show();
+            // xhttp ok : update notif
+            $notification.removeClass('unread');
         });
     };
 
@@ -19676,7 +19949,7 @@ var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
 var _utils = __webpack_require__(42);
 
-var _sprintfJs = __webpack_require__(59);
+var _sprintfJs = __webpack_require__(45);
 
 var _layout = __webpack_require__(118);
 
@@ -19702,7 +19975,7 @@ var _geonameDatasource = __webpack_require__(148);
 
 var _geonameDatasource2 = _interopRequireDefault(_geonameDatasource);
 
-var _mapbox = __webpack_require__(50);
+var _mapbox = __webpack_require__(51);
 
 var _mapbox2 = _interopRequireDefault(_mapbox);
 
@@ -19714,7 +19987,7 @@ var _recordCollection = __webpack_require__(200);
 
 var _recordCollection2 = _interopRequireDefault(_recordCollection);
 
-var _fieldCollection = __webpack_require__(51);
+var _fieldCollection = __webpack_require__(52);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
@@ -47688,7 +47961,7 @@ module.exports = function (headers) {
 "use strict";
 
 
-var bind = __webpack_require__(48);
+var bind = __webpack_require__(49);
 var define = __webpack_require__(64);
 
 var implementation = __webpack_require__(65);
@@ -47956,7 +48229,7 @@ var $isFinite = __webpack_require__(134);
 var sign = __webpack_require__(135);
 var mod = __webpack_require__(136);
 
-var IsCallable = __webpack_require__(49);
+var IsCallable = __webpack_require__(50);
 var toPrimitive = __webpack_require__(137);
 
 var has = __webpack_require__(139);
@@ -48418,7 +48691,7 @@ var toStr = Object.prototype.toString;
 
 var isPrimitive = __webpack_require__(138);
 
-var isCallable = __webpack_require__(49);
+var isCallable = __webpack_require__(50);
 
 // https://es5.github.io/#x8.12
 var ES5internalSlots = {
@@ -48467,7 +48740,7 @@ module.exports = function isPrimitive(value) {
 "use strict";
 
 
-var bind = __webpack_require__(48);
+var bind = __webpack_require__(49);
 
 module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
@@ -48496,7 +48769,7 @@ module.exports = function shimStringTrim() {
 "use strict";
 
 
-var isCallable = __webpack_require__(49);
+var isCallable = __webpack_require__(50);
 
 var toStr = Object.prototype.toString;
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -50404,7 +50677,7 @@ module.exports = VTTRegion;
 /* 146 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 147 */
@@ -53607,7 +53880,7 @@ module.exports = client;
 
 var MapiResponse = __webpack_require__(162);
 var MapiError = __webpack_require__(164);
-var constants = __webpack_require__(45);
+var constants = __webpack_require__(46);
 var parseHeaders = __webpack_require__(165);
 
 // Keys are request IDs, values are XHRs.
@@ -53886,7 +54159,7 @@ module.exports = parseLinkHeader;
 "use strict";
 
 
-var constants = __webpack_require__(45);
+var constants = __webpack_require__(46);
 
 /**
  * A Mapbox API error.
@@ -54182,7 +54455,7 @@ var parseToken = __webpack_require__(70);
 var xtend = __webpack_require__(37);
 var EventEmitter = __webpack_require__(168);
 var urlUtils = __webpack_require__(169);
-var constants = __webpack_require__(45);
+var constants = __webpack_require__(46);
 
 var requestId = 1;
 
@@ -59014,7 +59287,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _fieldCollection = __webpack_require__(51);
+var _fieldCollection = __webpack_require__(52);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
@@ -61740,7 +62013,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _publication = __webpack_require__(57);
+var _publication = __webpack_require__(58);
 
 var _publication2 = _interopRequireDefault(_publication);
 
@@ -63132,7 +63405,7 @@ var _videojsFlash = __webpack_require__(63);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
-var _fieldCollection = __webpack_require__(51);
+var _fieldCollection = __webpack_require__(52);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
@@ -65670,7 +65943,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _mapbox = __webpack_require__(50);
+var _mapbox = __webpack_require__(51);
 
 var _mapbox2 = _interopRequireDefault(_mapbox);
 
@@ -66692,7 +66965,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _alert = __webpack_require__(46);
+var _alert = __webpack_require__(47);
 
 var _alert2 = _interopRequireDefault(_alert);
 
@@ -67429,7 +67702,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var lazyload = __webpack_require__(58);
+var lazyload = __webpack_require__(59);
 __webpack_require__(14);
 __webpack_require__(19);
 
@@ -68121,7 +68394,7 @@ var _resultInfos = __webpack_require__(80);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
-var _user = __webpack_require__(47);
+var _user = __webpack_require__(48);
 
 var _user2 = _interopRequireDefault(_user);
 
@@ -68324,7 +68597,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _user = __webpack_require__(47);
+var _user = __webpack_require__(48);
 
 var _user2 = _interopRequireDefault(_user);
 
@@ -68977,7 +69250,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _mapbox = __webpack_require__(50);
+var _mapbox = __webpack_require__(51);
 
 var _mapbox2 = _interopRequireDefault(_mapbox);
 

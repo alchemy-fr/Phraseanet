@@ -72,13 +72,22 @@ class ApiOrderController extends BaseOrderController
 
         $order = new Order();
         $order->setUser($this->getAuthenticatedUser());
+
+        $now = new \DateTime();
         try {
-            $order->setDeadline(new \DateTime());   // safe value in case of data->deadline is invalid
-            $order->setDeadline(new \DateTime($data->data->deadline, new \DateTimeZone('UTC')));
+            $dead = new \DateTime($data->data->deadline);
         }
         catch (\Exception $e) {
-            // no-op, will end-up with safe value
+            $dead = clone($now);
         }
+
+        $now->setTimezone(new \DateTimeZone('UTC'));
+        $order->setCreatedOn($now);   // safe value in case of data->deadline is invalid
+
+        $dead->setTimezone(new \DateTimeZone('UTC'));
+        $order->setDeadline($dead);
+
+
         $order->setOrderUsage($data->data->usage);
         $order->setNotificationMethod(Order::NOTIFY_WEBHOOK);
 
@@ -180,7 +189,7 @@ class ApiOrderController extends BaseOrderController
         $subdefs = $this->findDataboxSubdefNames();
 
         try {
-            $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true);
+            $exportData = $export->prepare_export($user, $this->getFilesystem(), $subdefs, true, true, false);
         }
         catch (\Exception $e) {
             throw new NotFoundHttpException(sprintf('No archive could be downloaded for Order "%d"', $order->getId()));

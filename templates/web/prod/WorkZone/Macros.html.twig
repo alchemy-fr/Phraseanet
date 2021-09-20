@@ -148,7 +148,7 @@
                         {% endif %}
                         {% if basket.getPusher() %}
                             <td>
-                                {% set pusher = basket.getPusher().getDisplayName() %}
+                                {% set pusher = basket.getPusher().getDisplayName() | e %}
                                 <img
                                     class="basketTips"
                                     title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"
@@ -444,7 +444,7 @@
 
 {% macro make_expose_bloc(app, WorkZone) %}
     <div id="expose_workzone" class="expose_workzone">
-        <div id="expose_sel" class="custom_select_dark" style="display: inline-block;padding:10px;">
+        <div id="expose_sel" class="custom_select_dark" style="padding:10px;">
             {% set expose_list= app['conf'].get(['phraseanet-service', 'expose-service', 'exposes']) %}
 
             <select id="expose_list" name="expose_list" class="expose_list">
@@ -456,7 +456,18 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="add_expose_block" style="padding:10px;">
+
+        <div style="padding:10px;">
+            <span class="expose_connected">
+            </span>
+            <a href="#" class="pull-right expose_logout_link hidden" style="padding-top: 5px;">
+                <span>{{ 'expose:: logout' | trans }}</span>
+            </a>
+        </div>
+
+        <button class="btn btn-secondary btn-sm expose_field_mapping hidden" href="#" style="margin-left:10px">{{ 'prod:expose field mapping' |trans }}</button>
+
+        <div class="add_expose_block hidden" style="padding:10px;">
             <a id="add_publication" class="add_publication" href="#" >
                 <span>{{ 'prod:expose:Add publication' | trans }}</span>
                 <img src="/assets/common/images/icons/Basket-New.png" title="{{ 'prod:expose:Add publication' | trans }}">
@@ -471,6 +482,9 @@
     </div>
     <div id='DIALOG-expose-edit'>
         <div class="expose-edit-content" style="min-height: 522px;"></div>
+    </div>
+    <div id="DIALOG-field-mapping" >
+        <div class="expose-field-content" style="min-height: 300px!important;max-height: 500px!important"></div>
     </div>
 
     {% import 'prod/WorkZone/ExposeNew.html.twig' as ExposeNew %}

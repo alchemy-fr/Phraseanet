@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Utilities;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
+use GuzzleHttp\Client;
 
 class NetworkProxiesConfiguration
 {
@@ -45,4 +46,14 @@ class NetworkProxiesConfiguration
     }
 
     //TODO: get ftp proxy and socket proxy
+
+    public function getClientWithOptions(array $options = [])
+    {
+        if ($this->getHttpProxyConfiguration() != null) {
+            $options = array_merge($options, ['proxy' => $this->getHttpProxyConfiguration()]);
+        }
+
+        return new Client($options);
+    }
+
 }

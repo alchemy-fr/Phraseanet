@@ -98,16 +98,203 @@ const workzone = (services) => {
             checkActiveBloc(dragBloc);
         });
 
+        $('.expose_field_mapping').on('click', function(e){
+            e.preventDefault();
+            openFieldMapping();
+        });
+
         $('.refresh-list').on('click',function (event) {
             let exposeName = $('#expose_list').val();
-            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(exposeName);
         });
 
         $('#expose_list').on('change', function () {
-            $('.publication-list').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            $('.publication-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
             updatePublicationList(this.value);
         });
+
+        $('#DIALOG-expose-edit').on('click', '.slug-availability', function (e) {
+            e.preventDefault();
+
+            let slug = $('#slug-field').val();
+            let actualSlug = $('#slug-field').attr('data-actual-slug');
+
+            if (slug !== '' && actualSlug == slug) {
+                $('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+            } else if (slug !== '') {
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/publication/slug-availability/${slug}/?exposeName=${$('#expose_list').val()}`,
+                    success: function (data) {
+                        if (data.isAvailable == true) {
+                            $('#DIALOG-expose-edit').find('.expose-slug-ok').show();
+                        } else if(data.isAvailable == false) {
+                            $('#DIALOG-expose-edit').find('.expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#DIALOG-expose-add').on('click', '.new-slug-availability', function (e) {
+            e.preventDefault();
+
+            let slug = $('#new-slug-field').val();
+            if (slug !== '') {
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/publication/slug-availability/${slug}/?exposeName=${$('#expose_list').val()}`,
+                    success: function (data) {
+                        if (data.isAvailable == true) {
+                            $('#DIALOG-expose-add').find('.new-expose-slug-ok').show();
+                        } else if(data.isAvailable == false) {
+                            $('#DIALOG-expose-add').find('.new-expose-slug-nok').show();
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#DIALOG-field-mapping').on('click', '#save-field-mapping', function(e) {
+            e.preventDefault();
+            if ($('#field-profile-mapping').val() == '') {
+                return Alerts('', localeService.t('ExposeChooseProfile'));
+            }
+
+            let formData = $('#DIALOG-field-mapping').find('#field-mapping-form').serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: `/prod/expose/field-mapping?exposeName=${$("#expose_list").val()}`,
+                dataType: 'json',
+                data: formData,
+                success: function (data) {
+                    $('#DIALOG-field-mapping').dialog('close');
+                }
+            });
+        });
+
+        $('#DIALOG-field-mapping').on('change', '#field-profile-mapping', function(e) {
+            $('.databox-field-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/databoxes-field?exposeName=${$("#expose_list").val()}`,
+                dataType: 'html',
+                data: {
+                    profile: $('#field-profile-mapping').val()
+                },
+                success: function (data) {
+                    $('#DIALOG-field-mapping .databox-field-list').empty().html(data);
+
+                    $('.field-list').sortable().disableSelection();
+                }
+            });
+        });
+
+        $('#DIALOG-field-mapping').on('change', '.subdef-expose-side', function(e) {
+            let that = this;
+            let className = $(that).data('subdef-group');
+            let selectedValue = $(that).val();
+            let count = 0;
+            $(className).each(function() {
+                if (!$(this).hasClass('hidden') && $(this).val() == selectedValue && $(this).val() != 'none') {
+                    count++;
+                }
+            });
+            if (count > 1) {
+                Alerts('', localeService.t('ExposeDuplicateValue'));
+                $(that).val($.data(that, 'current'));
+
+                return false;
+            }
+
+            $.data(that, 'current', $(that).val());
+        });
+
+        $('#DIALOG-field-mapping').on('change', '#subdef-profile-mapping', function(e) {
+            $('.databox-subdef-list').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/></div>');
+
+            $.ajax({
+                type: "GET",
+                url: `/prod/expose/subdefs-list?exposeName=${$("#expose_list").val()}`,
+                dataType: 'html',
+                data: {
+                    profile: $('#subdef-profile-mapping').val()
+                },
+                success: function (data) {
+                    $('#DIALOG-field-mapping .databox-subdef-list').empty().html(data);
+                }
+            });
+        });
+
+        $('#DIALOG-field-mapping').on('click', '.subdef-phraseanet-side', function() {
+            if ($(this).is(":checked")) {
+                let idName = $(this).attr('id');
+                let selectBox = $(this).closest('div').find('.subdef-expose-side');
+                selectBox.attr('name', idName);
+                selectBox.removeClass('hidden');
+            } else {
+                let selectBox = $(this).closest('div').find('.subdef-expose-side');
+                selectBox.removeAttr('name');
+                selectBox.addClass('hidden');
+            }
+        });
+
+        $('#DIALOG-field-mapping').on('click', '#save-subdef-mapping', function(event) {
+            event.preventDefault();
+            if ($('#subdef-profile-mapping').val() == '') {
+                return Alerts('', localeService.t('ExposeChooseProfile'));
+            }
+
+            let formData = $('#DIALOG-field-mapping').find('#subdef-mapping-form').serializeArray();
+
+            $.ajax({
+                type: "POST",
+                url: `/prod/expose/subdef-mapping?exposeName=${$("#expose_list").val()}`,
+                dataType: 'json',
+                data: formData,
+                success: function (data) {
+                    $('#DIALOG-field-mapping').dialog('close');
+                }
+            });
+
+        });
+
+        $('.expose_logout_link').on('click', function(event) {
+            event.preventDefault();
+            let exposeName = $('#expose_list').val();
+            $.ajax({
+                type: 'GET',
+                url: '/prod/expose/logout/?exposeName=' + exposeName,
+                success: function (data) {
+                    updatePublicationList(exposeName);
+                }
+            });
+        });
+
+        // sign in expose
+        $('#idFrameC').find('.publication-list').on('click', '.auth-sign-in', function(e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+
+            $.ajax({
+                dataType: 'json',
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serializeArray(),
+                success: function(datas) {
+                    if (datas.success) {
+                        $('.refresh-list').trigger('click');
+                    } else {
+                        $('#oauth-login-error').removeClass('hidden');
+                        $('#oauth-login-error').empty().append(datas.error_description);
+                    }
+                }
+            });
+        });
+
 
         $('.publication-list').on('click', '.top-block' , function (event) {
             $(this).parent().find('.expose_item_deployed').toggleClass('open');
@@ -788,6 +975,8 @@ const workzone = (services) => {
             $(this).find('.loading_more').removeClass('hidden');
             getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
         });
+
+
     }
 
     function updatePublicationList(exposeName)
@@ -796,23 +985,39 @@ const workzone = (services) => {
             type: 'GET',
             url: '/prod/expose/list-publication/?exposeName=' + exposeName,
             success: function (data) {
-                $('.publication-list').empty().html(data);
+                if ('twig' in data) {
+                    $('.publication-list').empty().html(data.twig);
 
-                $('.expose_basket_item .top_block').on('click', function (event) {
-                    $(this).parent().find('.expose_item_deployed').toggleClass('open');
-                    $(this).toggleClass('open');
+                    $('.expose_basket_item .top_block').on('click', function (event) {
+                        $(this).parent().find('.expose_item_deployed').toggleClass('open');
+                        $(this).toggleClass('open');
 
-                    if ($(this).hasClass('open')) {
-                        let publicationId = $(this).attr('data-publication-id');
-                        let exposeName = $('#expose_list').val();
-                        let assetsContainer = $(this).parents('.expose_basket_item').find('.expose_item_deployed');
+                        if ($(this).hasClass('open')) {
+                            let publicationId = $(this).attr('data-publication-id');
+                            let exposeName = $('#expose_list').val();
+                            let assetsContainer = $(this).parents('.expose_basket_item').find('.expose_item_deployed');
 
-                        assetsContainer.addClass('loading');
-                        getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                    }
-                });
+                            assetsContainer.addClass('loading');
+                            getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
+                        }
+                    });
 
-                activeExpose();
+                    activeExpose();
+                }
+
+                if ('exposeLogin' in data) {
+                    let loggedMessage = data.exposeLogin + " " + localeService.t('loggedIn') + " " + data.exposeName;
+
+                    $('.expose_connected').empty().text(loggedMessage);
+                    $('.expose_logout_link').removeClass('hidden');
+                    $('.expose_field_mapping').removeClass('hidden');
+                    $('.add_expose_block').removeClass('hidden');
+                } else {
+                    $('.expose_connected').empty();
+                    $('.expose_logout_link').addClass('hidden');
+                    $('.expose_field_mapping').addClass('hidden');
+                    $('.add_expose_block').addClass('hidden');
+                }
             }
         });
     }
@@ -976,6 +1181,69 @@ const workzone = (services) => {
         });
     }
 
+    function openFieldMapping() {
+        let dialogFieldMapping = $('#DIALOG-field-mapping .expose-field-content');
+        let exposeName = $("#expose_list").val();
+
+        dialogFieldMapping.empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
+
+        $('#DIALOG-field-mapping').attr('title', localeService.t('ExposeMapping'))
+            .dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                resizable: true,
+                draggable: true,
+                width: 900,
+                height: 500,
+                modal: true,
+                overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                },
+                close: function(e, ui) {
+                }
+            }).dialog('open');
+
+        $('.ui-dialog').addClass('black-dialog-wrap');
+
+        dialogFieldMapping.on('click', '.close-expose-modal', function () {
+            $('#DIALOG-field-mapping').dialog('close');
+        });
+
+        $.ajax({
+            type: "GET",
+            url: `/prod/expose/field-mapping?exposeName=${exposeName}` ,
+            success: function (data) {
+                dialogFieldMapping.empty().html(data);
+                $("#expose-mapping-tabs").tabs();
+
+                $.ajax({
+                    type: "GET",
+                    url: `/prod/expose/list-profile?exposeName=` + exposeName,
+                    success: function (data) {
+                        $('#DIALOG-field-mapping select#field-profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        $('#DIALOG-field-mapping select#subdef-profile-mapping').empty().html('<option value="">Select Profile</option>');
+                        var i = 0;
+
+                        for (; i < data.profiles.length; i++) {
+                            $('#DIALOG-field-mapping select#field-profile-mapping').append('<option ' +
+                                'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                                + data.profiles[i].name +
+                                '</option>'
+                            );
+
+                            $('#DIALOG-field-mapping select#subdef-profile-mapping').append('<option ' +
+                                'value=' + data.basePath + '/' + data.profiles[i].id + ' >'
+                                + data.profiles[i].name +
+                                '</option>'
+                            );
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     function openExposePublicationEdit(edit) {
         $('#DIALOG-expose-edit .expose-edit-content').empty().html('<div style="text-align: center;"><img src="/assets/common/images/icons/main-loader.gif" alt="loading"/> </div>');
 
@@ -1000,9 +1268,10 @@ const workzone = (services) => {
             $('#DIALOG-expose-edit').dialog('close');
         });
 
+        let timezone =  Intl.DateTimeFormat().resolvedOptions().timeZone;
         $.ajax({
             type: "GET",
-            url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}` ,
+            url: `/prod/expose/get-publication/${edit.data("id")}?exposeName=${$("#expose_list").val()}&timezone=${timezone}` ,
             success: function (data) {
                 $('#DIALOG-expose-edit .expose-edit-content').empty().html(data);
             }

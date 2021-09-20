@@ -155,14 +155,17 @@ class Manage extends Helper
         if (null === $createdUser = $this->app['repo.users']->findByEmail($email)) {
             $createdUser = $this->app['manipulator.user']->createUser($email, $this->app['random.medium']->generateString(128), $email);
 
-            if ((bool) $this->request->get('send_credentials', false)) {
-                $this->sendPasswordSetupMail($createdUser);
-            }
+            $sendCredential = (bool) $this->request->get('send_credentials', false);
 
             if ((bool) $this->request->get('validate_mail', false)) {
                 $createdUser->setMailLocked(true);
 
-                $this->sendAccountUnlockEmail($createdUser);
+                // if $sendCredential is also true,password setup is sent after mail confirmation
+                $this->sendAccountUnlockEmail($createdUser, $sendCredential);
+            }
+
+            if ($sendCredential == true && (bool) $this->request->get('validate_mail', false) == false) {
+                $this->sendPasswordSetupMail($createdUser);
             }
         }
 
@@ -185,14 +188,14 @@ class Manage extends Helper
         return $created_user;
     }
 
-    public function sendAccountUnlockEmail(User $user)
+    public function sendAccountUnlockEmail(User $user, $sendCredentials = false)
     {
         $receiver = Receiver::fromUser($user);
 
         $token = $this->app['manipulator.token']->createAccountUnlockToken($user);
 
         $mail = MailRequestEmailConfirmation::create($this->app, $receiver);
-        $mail->setButtonUrl($this->app->url('login_register_confirm', ['code' => $token->getValue()]));
+        $mail->setButtonUrl($this->app->url('login_register_confirm', ['code' => $token->getValue(), 'send_credentials' => $sendCredentials]));
         $mail->setExpiration($token->getExpiration());
 
         if (($locale = $user->getLocale()) != null) {

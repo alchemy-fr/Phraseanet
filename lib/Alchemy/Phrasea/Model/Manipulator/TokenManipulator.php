@@ -70,7 +70,8 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function create($user, $type, $expiration = null, $data = null)
     {
-        $this->removeExpiredTokens();
+        // remove all expired token after 30 days
+        $this->removeExpiredTokens(30);
 
         $n = 0;
         do {
@@ -260,9 +261,9 @@ class TokenManipulator implements ManipulatorInterface
     /**
      * Removes expired tokens
      */
-    public function removeExpiredTokens()
+    public function removeExpiredTokens($nbDaysAfterExpiration = 0)
     {
-        foreach ($this->repository->findExpiredTokens() as $token) {
+        foreach ($this->repository->findExpiredTokens($nbDaysAfterExpiration) as $token) {
             switch ($token->getType()) {
                 case 'download':
                 case 'email':

@@ -39,11 +39,11 @@ class eventsmanager_notify_push extends eventsmanager_notifyAbstract
         $sender = $user->getDisplayName();
 
         $ret = [
-            'text'  => $this->app->trans('%user% vous a envoye un %before_link% panier %after_link%', ['%user%' => $sender, '%before_link%' => '<a href="#"
+            'text'  => $this->app->trans('%user% vous a envoye un %before_link% panier %after_link%', ['%user%' => htmlentities($sender), '%before_link%' => '<a href="#"
               data-kind="BASK"
               data-position="1"
               data-id="'. $data['ssel_id'] . '"
-              class="open-preview-action">', '%after_link%' => '</a>'])
+              class="to-open-preview-action">', '%after_link%' => '</a>'])
             , 'class' => ($unread == 1 ? 'reload_baskets' : '')
         ];
 

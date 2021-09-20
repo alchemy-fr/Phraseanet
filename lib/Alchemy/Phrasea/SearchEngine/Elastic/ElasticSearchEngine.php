@@ -455,7 +455,7 @@ class ElasticSearchEngine implements SearchEngineInterface
             $sort['record_id'] = $options->getSortOrder();
         }
         else {
-            $sort[sprintf('caption.%s', $options->getSortBy())] = $options->getSortOrder();
+            $sort[sprintf('caption.%s.raw', $options->getSortBy())] = $options->getSortOrder();
         }
 
         if (!array_key_exists('record_id', $sort)) {

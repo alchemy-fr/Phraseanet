@@ -1,0 +1,53 @@
+{% for databox in databoxes %}
+    {% set databoxId =  databox.get_sbas_id() %}
+    <h2>{{ databox.get_label(app['locale'])  }}</h2>
+    {% for subdefgroup, subdeflist in databox.get_subdef_structure() %}
+        <h3 style="margin-left: 20px;">{{ subdefgroup }}</h3>
+        {% for subdefname , subdef in subdeflist %}
+            {% set mappingValue = null %}
+            {% if actualSubdefMapping[databoxId][subdefgroup][subdefname] is defined %}
+                {% set mappingValue =  actualSubdefMapping[databoxId][subdefgroup][subdefname]%}
+            {% endif %}
+            <div style="margin:10px 40px;">
+                <label class="checkbox" for="subdefs[{{ databoxId }}][{{ subdefgroup }}][{{ subdefname }}]" style="display:inline-block;min-width:250px;">
+                    <input class="subdef-phraseanet-side" type="checkbox" name="" value="1" id="subdefs[{{ databoxId }}][{{ subdefgroup }}][{{ subdefname }}]"
+                    {% if mappingValue is not null  %} checked {% endif %} >
+                    {{ subdef.get_label(app['locale']) }}
+                </label>
+                <select class="subdef-expose-side subdefs_{{ databoxId }}_{{ subdefgroup }} {% if mappingValue is null  %} hidden {% endif %}"  tabindex="-1" aria-hidden="true"
+                        data-subdef-group=".subdefs_{{ databoxId }}_{{ subdefgroup }}"
+                        {% if mappingValue is not null  %}
+                            name="subdefs[{{ databoxId }}][{{ subdefgroup }}][{{ subdefname }}]"
+                        {% endif %}
+                >
+                    <option value="none" {% if mappingValue == 'none' %} selected="selected" {% endif %}>{{ 'expose:: None' | trans }}</option>
+                    <option value="thumbnail" {% if mappingValue == 'thumbnail' %} selected="selected" {% endif %} >{{ 'expose:: thumbnail' | trans }}</option>
+                    <option value="preview" {% if mappingValue == 'preview' %} selected="selected" {% endif %} >{{ 'expose:: preview' | trans }}</option>
+                    <option value="document" {% if mappingValue == 'document' %} selected="selected" {% endif %} >{{ 'expose:: document' | trans }}</option>
+                </select>
+            </div>
+        {% endfor %}
+        {% set mappingValue = null %}
+        {% if actualSubdefMapping[databoxId][subdefgroup]['document'] is defined %}
+            {% set mappingValue =  actualSubdefMapping[databoxId][subdefgroup]['document']%}
+        {% endif %}
+        <div style="margin:10px 40px;">
+            <label class="checkbox" for="subdefs[{{ databoxId }}][{{ subdefgroup }}][document]" style="display:inline-block;min-width:250px;">
+                <input class="subdef-phraseanet-side" type="checkbox" name="" id="subdefs[{{ databoxId }}][{{ subdefgroup }}][document]" value="1"
+                {% if mappingValue is not null  %} checked {% endif %} >
+                {{ 'document original' | trans }}
+            </label>
+            <select class="subdef-expose-side subdefs_{{ databoxId }}_{{ subdefgroup }} {% if mappingValue is null  %} hidden {% endif %}" tabindex="-1" aria-hidden="true"
+                    data-subdef-group=".subdefs_{{ databoxId }}_{{ subdefgroup }}"
+                    {% if mappingValue is not null  %}
+                        name="subdefs[{{ databoxId }}][{{ subdefgroup }}]['document']"
+                    {% endif %}
+            >
+                <option value="none" {% if mappingValue == 'none' %} selected="selected" {% endif %} >{{ 'expose:: None' | trans }}</option>
+                <option value="thumbnail" {% if mappingValue == 'thumbnail' %} selected="selected" {% endif %}>{{ 'expose:: thumbnail' | trans }}</option>
+                <option value="preview" {% if mappingValue == 'preview' %} selected="selected" {% endif %}>{{ 'expose:: preview' | trans }}</option>
+                <option value="document" {% if mappingValue == 'document' %} selected="selected" {% endif %}>{{ 'expose:: document' | trans }}</option>
+            </select>
+        </div>
+    {% endfor %}
+{% endfor %}
