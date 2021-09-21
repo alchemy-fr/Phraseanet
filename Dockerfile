@@ -144,7 +144,7 @@ ENV XDEBUG_ENABLED=0
 
 FROM phraseanet-system as builder
 
-COPY --from=composer:1.9.1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 
 # Node Installation (node + yarn)
 # Reference :
@@ -173,13 +173,16 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
     && mkdir -p /var/alchemy/Phraseanet \
     && chown -R app:app /var/alchemy
 
+# Set the php memory_limit
+RUN echo 'memory_limit = 2048M' >> /usr/local/etc/php/conf.d/docker-php-ram-limit.ini
+
 WORKDIR /var/alchemy/Phraseanet
 
 USER app
 
 # Warm up composer cache for faster builds
 COPY docker/caching/composer.* ./
-RUN composer install --prefer-dist --no-dev --no-progress --no-suggest --classmap-authoritative --no-interaction --no-scripts \
+RUN composer install --prefer-dist --no-dev --no-progress --classmap-authoritative --no-interaction --no-scripts \
     && rm -rf vendor composer.*
 # End warm up
 
