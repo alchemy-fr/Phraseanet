@@ -3561,7 +3561,7 @@
       </trans-unit>
       <trans-unit id="3557dddb635d5a299d56eb77ab302f7362548d65" resname="Graphic view">
         <source>Graphic view</source>
-        <target state="needs-translation">SQL généré</target>
+        <target state="needs-translation">Voir les records éligibles</target>
         <jms:reference-file line="70">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd6d6f27b3e16afd7cdd573b85b3cc5bfd22e8db" resname="GraphicsMagick" approved="yes">
@@ -5640,7 +5640,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="7ade26313918bb06d63dc52c35414ab8cab25945" resname="Refresh graphic view">
         <source>Refresh graphic view</source>
-        <target state="needs-translation">Rafraîchir la vue SQL</target>
+        <target state="needs-translation">Voir les records éligibles</target>
         <jms:reference-file line="66">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
