@@ -128,6 +128,11 @@
                         <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
                         <input type="hidden" name="srt" value="created" />
                     </th>
+                    <th class="sortable {{ parm.srt == 'last_connection' ? 'sorted' :  '' }} {{ parm.ord == 'ASC' ? 'sort_asc' :  'sort_desc' }}">
+                        <span>{{ 'admin::compte-utilisateur derniere connexion' | trans }}</span>
+                        <span class="ord_notifier">{{ parm.ord == 'ASC' ? '&#x25bc;' :  '&#x25B2;' }}</span>
+                        <input type="hidden" name="srt" value="last_connection" />
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -165,6 +170,11 @@
                         </td>
                         <td>
                             {{ app['date-formatter'].getDate(usr.getCreated()) }}
+                        </td>
+                        <td>
+                            {% if usr.getLastConnection() is not null %}
+                                {{ app['date-formatter'].getDate(usr.getLastConnection()) }}
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
