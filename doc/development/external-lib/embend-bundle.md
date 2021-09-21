@@ -1,6 +1,9 @@
 Alchemy Embed Bundle / Development workflow
 ===========================================
 
+Context: 
+Phraseanet deployed with docker-compose with `docker-compose.override.yml`
+
 #####  Get and install the lib embend-bundle for development
 
 Change the directory to the phraseanet workspace
@@ -68,7 +71,7 @@ Run `make install_assets` to copy assets from embend-bundle dist to phraseanet
 ##### When development finished
  Commit only the modification from embed-bundle directory with the dist folder
  
- Release a new version of embed-bundle (by Nicolas Maillat)
+ Release a new version of embed-bundle
  
  Reinitialize all modification on `composer.json` during development and
  
