@@ -4,11 +4,11 @@ Alchemy Embed Bundle / Development workflow
 Context: 
 Phraseanet deployed with docker-compose with `docker-compose.override.yml`
 
-#####  Get and install the lib embend-bundle for development
+#####  Get and install the lib embed-bundle for development
 
 Change the directory to the phraseanet workspace
 
-Clone the library embend-bundle
+Clone the library embed-bundle
 
 `git clone https://github.com/alchemy-fr/embed-bundle.git`
 
@@ -16,9 +16,9 @@ Run the developer shell on the Phraseanet (builder container)
 
 `docker-compose run --rm builder /bin/bash`
 
-Change directory to embend-bundle folder
+Change directory to embed-bundle folder
 
-`cd embend-bundle`
+`cd embed-bundle`
 
 Install the lib
 
@@ -32,11 +32,11 @@ or use `npm run dev` to watch during development
 
 The dist directory is to be commited after development.
 
-##### Synchronise the embend-bundle folder with phraseanet for local testing (do not commit)
+##### Synchronise the embed-bundle folder with phraseanet for local testing (do not commit)
 
 Change directory to phraseanet `cd ..`
 
-Remove the actual alchemy/embend-bundle in phraseanet
+Remove the actual alchemy/embed-bundle in phraseanet
 
 `composer remove alchemy/embed-bundle`
 
@@ -62,11 +62,11 @@ by
     }
 ```
 
-and add embend-bundle from the local embend-bundle folder
+and add embed-bundle from the local embed-bundle folder
 
 `composer require "alchemy/embed-bundle 4.2-dev"`
 
-Run `make install_assets` to copy assets from embend-bundle dist to phraseanet
+Run `make install_assets` to copy assets from embed-bundle dist to phraseanet
 
 ##### When development finished
  Commit only the modification from embed-bundle directory with the dist folder
