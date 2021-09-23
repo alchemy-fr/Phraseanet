@@ -148,25 +148,6 @@
 {% if basket.getValidation() %}
 
 <script type="text/javascript">
-    $( ".update-feed-validation" ).on( "submit", function( event ) {
-        event.preventDefault();
-        var formData = $(this).serializeArray();
-
-        $.ajax({
-            type: 'POST',
-            url: '/prod/push/update-expiration/',
-            data: {
-                basket_id: formData[0].value,
-                date: formData[1].value
-            },
-            success: function (data) {
-                $('.message').css('opacity',1);
-                $('.submit-validation').addClass ('btn-not-shown');
-                $('.cancel-date').addClass ('btn-not-shown');
-                setTimeout(function(){ $('.message').css('opacity',0); }, 2000);
-            },
-        });
-    });
     $( function() {
         $.datepicker.regional['default'] = {
             closeText: "Close",
