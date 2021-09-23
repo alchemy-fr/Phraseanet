@@ -693,7 +693,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: record.yaml#/ApiResponse_record
+                $ref: record.yaml#/ApiResponse_record_reference
         default:
           $ref: 'common.yaml#/error_response'
       # security:
