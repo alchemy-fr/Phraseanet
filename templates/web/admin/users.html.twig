@@ -173,7 +173,7 @@
                         </td>
                         <td>
                             {% if usr.getLastConnection() is not null %}
-                                {{ app['date-formatter'].getDate(usr.getLastConnection()) }}
+                                {{ usr.getLastConnection() | date('Y-m-d H:i:s') }}
                             {% endif %}
                         </td>
                     </tr>
