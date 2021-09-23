@@ -389,20 +389,27 @@ class set_export extends set_abstract
         return $this->total_ftp;
     }
 
+    const NO_STAMP = 'NO_STAMP';
+    const STAMP_SYNC = 'STAMP_SYNC';
+    const STAMP_ASYNC = 'STAMP_ASYNC';
     /**
      * @param User $user
      * @param Filesystem $filesystem
      * @param array $wantedSubdefs
      * @param bool $rename_title
      * @param bool $includeBusinessFields
-     * @param $stampChoice
+     * @param $no_stamp
      * @return array
      * @throws Exception
      */
-    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampChoice = null)
+    public function prepare_export(User $user, Filesystem $filesystem, Array $wantedSubdefs, $rename_title, $includeBusinessFields, $stampMethod)
     {
         if (!is_array($wantedSubdefs)) {
             throw new Exception('No subdefs given');
+        }
+
+        if(!$stampMethod) {
+            $stampMethod = self::STAMP_SYNC;
         }
 
         $includeBusinessFields = (bool) $includeBusinessFields;
@@ -509,7 +516,9 @@ class set_export extends set_abstract
                         $subdef_ok = true;
                         $tmp_pathfile = [
                             'path' => $sd[$subdefName]->get_path(),
-                            'file' => $sd[$subdefName]->get_file()
+                            'file' => $sd[$subdefName]->get_file(),
+                            'to_stamp' => false,
+                            'to_watermark' => false
                         ];
 
                         break;
@@ -517,16 +526,28 @@ class set_export extends set_abstract
                         $subdef_ok = true;
                         $tmp_pathfile = [
                             'path' => $sd[$subdefName]->get_path(),
-                            'file' => $sd[$subdefName]->get_file()
+                            'file' => $sd[$subdefName]->get_file(),
+                            'to_stamp' => false,
+                            'to_watermark' => false
                         ];
 
-                        if($this->app['conf']->get(['registry', 'actions', 'export-stamp-choice']) !== true || is_null($stampChoice) ){
-                            $path = \recordutils_image::stamp($this->app , $sd[$subdefName]);
-                            if (file_exists($path)) {
-                                $tmp_pathfile = [
-                                    'path' => dirname($path),
-                                    'file' => basename($path)
-                                ];
+                        if($this->app['conf']->get(['registry', 'actions', 'export-stamp-choice']) !== true || $stampMethod !== self::NO_STAMP ){
+                            // stamp is mandatory, or user did not check "no stamp" : we must apply stamp
+                            if($stampMethod === self::STAMP_SYNC) {
+                                // we prepare a direct download, we must stamp now
+                                $path = \recordutils_image::stamp($this->app, $sd[$subdefName]);
+                                if ($path && file_exists($path)) {
+                                    $tmp_pathfile = [
+                                        'path'         => dirname($path),
+                                        'file'         => basename($path),
+                                        'to_stamp'     => false,
+                                        'to_watermark' => false
+                                    ];
+                                }
+                            }
+                            else {
+                                // we prepare an email or ftp download : the worker will apply stamp
+                                $tmp_pathfile ['to_stamp'] = true;
                             }
                         }
 
@@ -534,7 +555,9 @@ class set_export extends set_abstract
                     case 'preview':
                         $tmp_pathfile = [
                             'path' => $sd[$subdefName]->get_path(),
-                            'file' => $sd[$subdefName]->get_file()
+                            'file' => $sd[$subdefName]->get_file(),
+                            'to_stamp' => false,
+                            'to_watermark' => false
                         ];
 
                         if (!$this->app->getAclForUser($user)->has_right_on_base($download_element->getBaseId(), \ACL::NOWATERMARK)
@@ -545,7 +568,9 @@ class set_export extends set_abstract
                             if (file_exists($path)) {
                                 $tmp_pathfile = [
                                     'path' => dirname($path),
-                                    'file' => basename($path)
+                                    'file' => basename($path),
+                                    'to_stamp' => false,
+                                    'to_watermark' => false
                                 ];
                                 $subdef_ok = true;
                             }
@@ -569,14 +594,17 @@ class set_export extends set_abstract
                                 $mime = 'text/xml';
                             }
 
-                            $files[$id]["subdefs"][$subdefName]["ajout"] = $ajout;
-                            $files[$id]["subdefs"][$subdefName]["exportExt"] = $ext;
-                            $files[$id]["subdefs"][$subdefName]["label"] = $properties['label'];
-                            $files[$id]["subdefs"][$subdefName]["path"] = null;
-                            $files[$id]["subdefs"][$subdefName]["file"] = null;
-                            $files[$id]["subdefs"][$subdefName]["size"] = 0;
-                            $files[$id]["subdefs"][$subdefName]["mime"] = $mime;
-                            $files[$id]["subdefs"][$subdefName]["folder"] = $download_element->get_directory();
+                            $files[$id]["subdefs"][$subdefName] = [
+                                "ajout"     => $ajout,
+                                "exportExt" => $ext,
+                                "label"     => $properties['label'],
+                                "path"      => null,
+                                "file"      => null,
+                                "to_stamp"  => false,
+                                "size"      => 0,
+                                "mime"      => $mime,
+                                "folder"    => $download_element->get_directory()
+                            ];
 
                             break;
                         case 'document':
@@ -586,19 +614,22 @@ class set_export extends set_abstract
                             $infos = pathinfo(p4string::addEndSlash($tmp_pathfile["path"]) . $tmp_pathfile["file"]);
                             $ext = isset($infos['extension']) ? $infos['extension'] : '';
 
-                            $files[$id]["subdefs"][$subdefName]["ajout"] = $ajout;
-                            $files[$id]["subdefs"][$subdefName]["exportExt"] = $ext;
-                            $files[$id]["subdefs"][$subdefName]["label"] = $properties['label'];
-                            $files[$id]["subdefs"][$subdefName]["path"] = $tmp_pathfile["path"];
-                            $files[$id]["subdefs"][$subdefName]["file"] = $tmp_pathfile["file"];
-                            $files[$id]["subdefs"][$subdefName]["size"] = $sd[$subdefName]->get_size();
-                            $files[$id]["subdefs"][$subdefName]["mime"] = $sd[$subdefName]->get_mime();
-                            $files[$id]["subdefs"][$subdefName]["folder"] = $download_element->get_directory();
+                            $files[$id]["subdefs"][$subdefName] = [
+                                "ajout"     => $ajout,
+                                "exportExt" => $ext,
+                                "label"     => $properties['label'],
+                                "path"      => $tmp_pathfile["path"],
+                                "file"      => $tmp_pathfile["file"],
+                                "to_stamp"  => $tmp_pathfile["to_stamp"],
+                                "size"      => $sd[$subdefName]->get_size(),
+                                "mime"      => $sd[$subdefName]->get_mime(),
+                                "folder"    => $download_element->get_directory()
+                            ];
 
                             $size += $sd[$subdefName]->get_size();
 
                             break;
-                        default:    // should no happen
+                        default:    // should not happen
                             $ajout = $ext = '';
 
                             break;
@@ -823,5 +854,28 @@ class set_export extends set_abstract
 
             $stmt->closeCursor();
         }
+    }
+
+    public function has_stamp_option()
+    {
+        if ($this->total_download == 0) {
+            return false;
+        }
+
+        $domprefs = new DOMDocument();
+        foreach ($this->elements as $download_element) {
+            if ( ($domprefs->loadXML($download_element->getCollection()->get_prefs())) === false) {
+                continue;
+            }
+            $xpprefs = new DOMXPath($domprefs);
+            $stampNodes = $xpprefs->query('/baseprefs/stamp');
+            if ($stampNodes->length != 0) {
+
+                return true;
+            }
+
+        }
+
+        return false;
     }
 }
