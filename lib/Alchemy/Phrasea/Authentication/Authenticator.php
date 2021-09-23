@@ -13,10 +13,10 @@ namespace Alchemy\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Model\Entities\Session;
 use Alchemy\Phrasea\Model\Entities\User;
 use Browser;
 use Doctrine\ORM\EntityManager;
-use Alchemy\Phrasea\Model\Entities\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Authenticator
@@ -94,6 +94,9 @@ class Authenticator
     private function populateSession(Session $session)
     {
         $user = $session->getUser();
+        $user->setLastConnection($session->getCreated());
+        $this->em->persist($user);
+        $this->em->flush();
 
         $this->session->set('usr_id', $user->getId());
         $this->session->set('session_id', $session->getId());
