@@ -409,9 +409,9 @@ function write_valsug()
 
 function desactivall4VS()
 {
-    activer_bout('bout_supp',true);
-    activer_bout('bout_mont',true);
-    activer_bout('bout_desc',true);
+    activer_bout('bout_supp', false);
+    activer_bout('bout_mont', false);
+    activer_bout('bout_desc', false);
 
     o2 = $("#valsug2");
 
@@ -430,7 +430,7 @@ function desactiv4VS()
         var optionLength = o2.find("option").length;
         var index = o2.prop("selectedIndex");
 
-        if ( optionLength > 1) {
+        if ( optionLength > 1 && index != -1) {
             if ((index+1) == optionLength) {
                 activer_bout('bout_desc',false);
             } else {
@@ -483,7 +483,7 @@ function supprimer()
       {
           if(aa != o2.prop("selectedIndex")) {
               pref[o.val()].valsug[bb]=pref[o.val()].valsug[aa];
-              if(aa+1 == pref[o.val()].valsug.length) {
+              if(parseInt(aa)+1 == pref[o.val()].valsug.length) {
                   pref[o.val()].valsug[bb]=null;
               }
               bb++;

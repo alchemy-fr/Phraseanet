@@ -318,13 +318,6 @@ class LoginController extends Controller
         return $this->app->redirectPath('homepage');
     }
 
-    private function sendAccountUnlockEmail(User $user, Request $request)
-    {
-        $helper = new Manage($this->app, $request);
-
-        $helper->sendAccountUnlockEmail($user);
-    }
-
     /**
      * Validation of email address
      *
@@ -387,6 +380,10 @@ class LoginController extends Controller
             $this->deliver($mail);
 
             $this->app->addFlash('info', $this->app->trans('Account has been unlocked, you still have to wait for admin approval.'));
+        }
+
+        if ($request->query->get('send_credentials')) {
+            $this->sendPasswordSetupMail($user, $request);
         }
 
         return $this->app->redirectPath('homepage');
@@ -747,6 +744,20 @@ class LoginController extends Controller
         $this->app->addFlash('error', $this->app->trans('Your identity is not recognized.'));
 
         return $this->app->redirectPath('homepage');
+    }
+
+    private function sendAccountUnlockEmail(User $user, Request $request)
+    {
+        $helper = new Manage($this->app, $request);
+
+        $helper->sendAccountUnlockEmail($user);
+    }
+
+    private function sendPasswordSetupMail(User $user, Request $request)
+    {
+        $helper = new Manage($this->app, $request);
+
+        $helper->sendPasswordSetupMail($user);
     }
 
     /**

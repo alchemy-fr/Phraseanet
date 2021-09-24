@@ -1,0 +1,14 @@
+version: "3.4"
+
+services:
+  ftpd-server:
+    image: stilliard/pure-ftpd:hardened
+    environment:
+      FTP_USER_NAME: "dev"
+      FTP_USER_PASS: "dev"
+      FTP_USER_HOME: "/home/dev"
+    volumes:
+      - ${PHRASEANET_FTP_DIR}:/home/dev
+    restart: on-failure
+    networks:
+      - internal

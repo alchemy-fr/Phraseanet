@@ -8,10 +8,10 @@ use Alchemy\Phrasea\Model\Entities\StoryWZ;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\AssetsCreationFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use GuzzleHttp\Client;
 
 class AssetsIngestWorker implements WorkerInterface
 {
@@ -38,7 +38,10 @@ class AssetsIngestWorker implements WorkerInterface
 
         $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
-        $uploaderClient = new Client(['base_uri' => $payload['base_url']]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $payload['base_url']];
+
+        $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get first asset informations to check if it's a story
         try {

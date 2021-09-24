@@ -153,7 +153,8 @@
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    status: '{{ constant("\\Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob::INTERRUPT") }}'
+                    status: '{{ constant("\\Alchemy\\Phrasea\\Model\\Entities\\WorkerRunningJob::INTERRUPT") }}',
+                    finished: '1'     // manual interrupt also means "finished", it must update the date and unlock the row
                 },
                 url: "/admin/worker-manager/"+ workerId +"/change-status",
                 success: function (data) {

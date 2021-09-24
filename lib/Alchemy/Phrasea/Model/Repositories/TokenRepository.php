@@ -64,13 +64,19 @@ class TokenRepository extends EntityRepository
     /**
      * @return Token[]
      */
-    public function findExpiredTokens()
+    public function findExpiredTokens($nbDaysAfterExpiration = 0)
     {
         $dql = 'SELECT t FROM Phraseanet:Token t
                 WHERE t.expiration < :date';
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters([':date' => new DateTime()]);
+        $date = new DateTime();
+
+        if ($nbDaysAfterExpiration != 0) {
+            $date->modify("-" . $nbDaysAfterExpiration . " day");
+        }
+
+        $query->setParameters([':date' => $date]);
 
         return $query->getResult();
     }

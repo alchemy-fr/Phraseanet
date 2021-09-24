@@ -11,29 +11,12 @@
                 <label for="auth-password">{{ 'prod:expose:connection:Password' |trans }}</label>
                 <input type="password" name="auth-password" id="auth-password" placeholder="Enter your password" required="">
             </div>
+            <div class="control-group">
+                <p id="oauth-login-error" class="hidden alert alert-error text-center"></p>
+            </div>
             <div>
-                <button class="btn btn-block btn-primary auth-sign-in">{{ 'prod:expose:connection:Sign in' |trans }}</button>
+                <button class="btn btn-primary auth-sign-in">{{ 'prod:expose:connection:Sign in' |trans }}</button>
             </div>
         </form>
     </div>
 </div>
-
-<script type="text/javascript">
-    $('.publication-list').on('click', '.auth-sign-in' , function (e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
-
-        $.ajax({
-            dataType: 'json',
-            type: form.attr('method'),
-            url: form.attr('action'),
-            data: form.serializeArray(),
-            success: function(datas) {
-                console.log(datas);
-                if (datas.success) {
-                    $('.refresh-list').trigger('click');
-                }
-            }
-        });
-    });
-</script>

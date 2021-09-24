@@ -49,6 +49,7 @@ gulp.task('build-vendors', [
     'build-jquery-treeview',
     'build-jquery-lazyload',
     'build-jquery-test-paths',
-    'build-simple-colorpicker'
+    'build-simple-colorpicker',
+    'build-jquery-datetimepicker'
 ], function () {
 });

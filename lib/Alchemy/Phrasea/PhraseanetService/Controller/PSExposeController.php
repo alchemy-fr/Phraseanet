@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\PhraseanetService\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\WorkerManager\Event\ExposeUploadEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use GuzzleHttp\Client;
@@ -15,6 +16,7 @@ class PSExposeController extends Controller
 {
     /**
      * Set access token on session 'password_access_token_' + expose_name
+     * Save also login on session 'expose_connected_login_' + expose_name
      *
      * @param PhraseaApplication $app
      * @param Request $request
@@ -32,7 +34,10 @@ class PSExposeController extends Controller
             ]);
         }
 
-        $oauthClient = new Client(['base_uri' => $exposeConfiguration['auth_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['auth_base_uri'], 'http_errors' => false];
+
+        $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
             $response = $oauthClient->post('/oauth/v2/token', [
@@ -51,9 +56,14 @@ class PSExposeController extends Controller
         }
 
         if ($response->getStatusCode() !== 200) {
+            $body = $response->getBody()->getContents();
+
+            $body = json_decode($body,true);
             return $this->app->json([
                 'success' => false,
-                'message' => 'Status code: '. $response->getStatusCode()
+                'message' => 'Status code: '. $response->getStatusCode(),
+                'error'   => $body['error'],
+                'error_description'   => $body['error_description']
             ]);
         }
 
@@ -65,7 +75,26 @@ class PSExposeController extends Controller
 
         $session->set($passSessionName, $tokenBody['access_token']);
 
+        $loginSessionName = $this->getLoginSessionName($request->request->get('exposeName'));
+        $session->set($loginSessionName, $request->request->get('auth-username'));
+
         return $this->app->json([
+            'success'       => true,
+            'exposeName'    => $request->request->get('exposeName'),
+            'exposeLogin'   => $request->request->get('auth-username')
+        ]);
+    }
+
+    public function logoutAction(PhraseaApplication $app, Request $request)
+    {
+        $session = $this->getSession();
+        $loginSessionName = $this->getLoginSessionName($request->get('exposeName'));
+        $passSessionName = $this->getPassSessionName($request->get('exposeName'));
+
+        $session->remove($loginSessionName);
+        $session->remove($passSessionName);
+
+        return $app->json([
             'success' => true
         ]);
     }
@@ -138,8 +167,10 @@ class PSExposeController extends Controller
     public function listPublicationAction(PhraseaApplication $app, Request $request)
     {
         if ($request->get('exposeName') == null) {
-            return $this->render("prod/WorkZone/ExposeList.html.twig", [
-                'publications' => [],
+            return $app->json([
+                'twig' => $this->render("prod/WorkZone/ExposeList.html.twig", [
+                    'publications' => [],
+                ])
             ]);
         }
 
@@ -150,20 +181,27 @@ class PSExposeController extends Controller
         $passSessionName = $this->getPassSessionName($request->get('exposeName'));
 
         if (!$session->has($passSessionName) && $exposeConfiguration['connection_kind'] == 'password' && $request->get('format') != 'json') {
-            return $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
-                'exposeName' => $request->get('exposeName')
+             return $app->json([
+                'twig'  => $this->render("prod/WorkZone/ExposeOauthLogin.html.twig", [
+                    'exposeName' => $request->get('exposeName')
+                ])
             ]);
         }
 
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         if ($exposeConfiguration == null ) {
-            return $this->render("prod/WorkZone/ExposeList.html.twig", [
-                'publications' => [],
+            return $app->json([
+                'twig'  =>  $this->render("prod/WorkZone/ExposeList.html.twig", [
+                    'publications' => [],
+                ])
             ]);
         }
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         $response = $exposeClient->get('/publications?flatten=true&order[createdAt]=desc', [
             'headers' => [
@@ -174,21 +212,36 @@ class PSExposeController extends Controller
 
         $exposeFrontBasePath = \p4string::addEndSlash($exposeConfiguration['expose_front_uri']);
         $publications = [];
+        $basePath = [];
 
         if ($response->getStatusCode() == 200) {
             $body = json_decode($response->getBody()->getContents(),true);
             $publications = $body['hydra:member'];
+            $basePath = $body['@id'];
         }
 
-        if ($request->get('format') == 'json') {
+        if ($request->get('format') == 'pub-list') {
             return $app->json([
-                'publications' => $publications
+                'publications' => $publications,
+                'basePath'     => $basePath
             ]);
         }
 
-        return $this->render("prod/WorkZone/ExposeList.html.twig", [
+        $exposeListTwig = $this->render("prod/WorkZone/ExposeList.html.twig", [
             'publications'          => $publications,
             'exposeFrontBasePath'   => $exposeFrontBasePath
+        ]);
+
+        // not called on june 2021
+        if ($request->get('format') == 'twig') {
+            return $exposeListTwig;
+        }
+
+        return $app->json([
+            'twig'          => $exposeListTwig,
+            'exposeName'    => $request->get('exposeName'),
+            'exposeLogin'   => $session->get($this->getLoginSessionName($request->get('exposeName'))),
+            'basePath'      => $basePath
         ]);
     }
 
@@ -205,7 +258,10 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
@@ -239,12 +295,54 @@ class PSExposeController extends Controller
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
 
         return $this->render("prod/WorkZone/ExposeEdit.html.twig", [
+            'timezone'    => $request->get('timezone'),
             'publication' => $publication,
             'exposeName'  => $request->get('exposeName'),
             'permissions' => $permissions,
             'listUsers'   => $listUsers,
             'listGroups'  => $listGroups
         ]);
+    }
+
+    /**
+     * Require params "exposeName" and "slug"
+     *
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function checkPublicationSlugAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeClient = $this->getExposeClient($request->get('exposeName'));
+
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
+
+        $resAvailability = $exposeClient->get('/publications/slug-availability/' . $request->get('slug') , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+            ]
+        ]);
+
+        if ($resAvailability->getStatusCode() != 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "An error occurred when checking slug availability : " . $resAvailability->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'   => true,
+            'isAvailable' => json_decode($resAvailability->getBody()->getContents()),
+            'message'   => ''
+        ]);
+
     }
 
     /**
@@ -257,9 +355,11 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
-        $accessToken = $this->getAndSaveToken($exposeConfiguration, $request->get('exposeName'));
+        $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         list($permissions, $listUsers, $listGroups) = $this->getPermissions($exposeClient, $request->get('publicationId'), $accessToken);
 
@@ -290,6 +390,7 @@ class PSExposeController extends Controller
                 'message' => "Expose configuration not set!"
             ]);
         }
+
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
 
         $resPublication = $exposeClient->get('/publications/' . $request->get('publicationId') . '/assets?page=' . $page , [
@@ -398,7 +499,10 @@ class PSExposeController extends Controller
         $exposeConfiguration = $app['conf']->get(['phraseanet-service', 'expose-service', 'exposes'], []);
         $exposeConfiguration = $exposeConfiguration[$exposeName];
 
-        $exposeClient = new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         try {
             $accessToken = $this->getAndSaveToken($exposeName);
@@ -659,6 +763,268 @@ class PSExposeController extends Controller
     }
 
     /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return string
+     */
+    public function getDataboxesFieldAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->get('profile');
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $exposeMappingName = $this->getExposeMappingName('field');
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $fieldMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+
+        $actualFieldsList = !empty($fieldMapping['fields']) ? $fieldMapping['fields'] : [];
+        $fields = ($profile != null) ? $this->getFields($actualFieldsList) : [];
+
+        // send geoloc and send vtt checked by default if not setting
+        return $this->render('prod/WorkZone/ExposeFieldList.html.twig', [
+            'fields'            => $fields,
+            'sendGeolocField'   => isset($fieldMapping['sendGeolocField']) ? $fieldMapping['sendGeolocField'] : null,
+            'sendVttField'      => isset($fieldMapping['sendVttField']) ? $fieldMapping['sendVttField'] : null,
+        ]);
+    }
+
+    public function getSubdefsListAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->get('profile');
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $exposeMappingName = $this->getExposeMappingName('subdef');
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $actualSubdefMapping = !empty($clientAnnotationProfile[$exposeMappingName]) ? $clientAnnotationProfile[$exposeMappingName] : [];
+
+        $databoxes = empty($profile)? [] : $this->getApplicationBox()->get_databoxes();
+
+        return $this->render('prod/WorkZone/ExposeSubdefList.html.twig', [
+            'databoxes'            => $databoxes,
+            'actualSubdefMapping'  => $actualSubdefMapping
+        ]);
+    }
+
+    public function getFieldMappingAction(PhraseaApplication $app, Request $request)
+    {
+        return $this->render('prod/WorkZone/ExposeFieldMapping.html.twig', [
+            'exposeName'    => $request->get('exposeName')
+        ]);
+    }
+
+
+    /**
+     * @param PhraseaApplication $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function saveFieldMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->request->get('profile');
+        $sendGeolocField = !empty($request->request->get('sendGeolocField')) ? array_keys($request->request->get('sendGeolocField')): [];
+        $sendVttField = !empty($request->request->get('sendVttField')) ? array_keys($request->request->get('sendVttField')) : [];
+
+        $fields = ($request->request->get('fields') === null) ? null : array_keys($request->request->get('fields'));
+
+        $fieldMapping = [
+            'sendGeolocField'   => $sendGeolocField,
+            'sendVttField'      => $sendVttField,
+            'fields'            => $fields
+        ];
+
+        $fieldMapping = [
+            $this->getExposeMappingName('field') => $fieldMapping
+        ];
+
+        if ($exposeName == null || $profile == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Choose an expose and a profile !"
+            ]);
+        }
+
+        $exposeClient = $this->getExposeClient($exposeName);
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        // get the actual value and merge it with the new one before save
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $annotationValues = array_merge($clientAnnotationProfile, $fieldMapping);
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        // save field mapping in the selected profile
+        $resProfile = $exposeClient->put($profile , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+                'Content-Type'  => 'application/json'
+            ],
+            'json'  => [
+                'clientAnnotations' => json_encode($annotationValues)
+            ]
+        ]);
+
+        if ($resProfile->getStatusCode() !== 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "Error when saving mapping with status code: " . $resProfile->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'            => true,
+            'clientAnnotations'  => $annotationValues
+        ]);
+    }
+
+    public function saveSubdefMappingAction(PhraseaApplication $app, Request $request)
+    {
+        $exposeName = $request->get('exposeName');
+        $profile = $request->request->get('profile');
+        $exposeClient = $this->getExposeClient($exposeName);
+        $subdefs = $request->request->get('subdefs');
+
+        if ($exposeClient == null) {
+            return $app->json([
+                'success' => false,
+                'message' => "Expose configuration not set!"
+            ]);
+        }
+
+        $subdefs = [
+            $this->getExposeMappingName('subdef') => $subdefs
+        ];
+
+        // get the actual value and merge it with the new one before save
+        $clientAnnotationProfile = $this->getClientAnnotationProfile($exposeClient, $exposeName, $profile);
+
+        $annotationValues = array_merge($clientAnnotationProfile, $subdefs);
+
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        // save subdef mapping in the selected profile
+        $resProfile = $exposeClient->put($profile , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+                'Content-Type'  => 'application/json'
+            ],
+            'json'  => [
+                'clientAnnotations' => json_encode($annotationValues)
+            ]
+        ]);
+
+        if ($resProfile->getStatusCode() !== 200) {
+            return $app->json([
+                'success' => false,
+                'message' => "Error when saving mapping with status code: " . $resProfile->getStatusCode()
+            ]);
+        }
+
+        return $app->json([
+            'success'            => true,
+            'clientAnnotations'  => $subdefs
+        ]);
+    }
+
+    /**
+     * Get client annotation from the expose profile
+     *
+     * @param Client $exposeClient
+     * @param $exposeName
+     * @param $profileRoute
+     * @return array|mixed
+     */
+    private function getClientAnnotationProfile(Client $exposeClient, $exposeName, $profileRoute)
+    {
+        $accessToken = $this->getAndSaveToken($exposeName);
+
+        $resProfile = $exposeClient->get($profileRoute , [
+            'headers' => [
+                'Authorization' => 'Bearer '. $accessToken,
+            ]
+        ]);
+
+        $actualFieldsList = [];
+        if ($resProfile->getStatusCode() == 200) {
+            $actualFieldsList = json_decode($resProfile->getBody()->getContents(),true);
+            $actualFieldsList = (!empty($actualFieldsList['clientAnnotations'])) ? json_decode($actualFieldsList['clientAnnotations'], true) : [];
+        }
+
+        return $actualFieldsList;
+    }
+
+    /**
+     * field | subdef  context
+     * @param $mappingContext
+     *
+     * @return string
+     */
+    private function getExposeMappingName($mappingContext)
+    {
+        $phraseanetLocalId = $this->app['conf']->get(['phraseanet-service', 'phraseanet_local_id']);
+
+        return $phraseanetLocalId.'_'. $mappingContext . '_mapping';
+    }
+
+    /**
+     * get list of field in databoxes
+     *
+     * @return array
+     */
+    private function getFields($actualFieldsList)
+    {
+        $databoxes = $this->getApplicationBox()->get_databoxes();
+
+        $fieldFromProfile = [];
+        foreach ($actualFieldsList as $value) {
+            $t = explode('_', $value);
+            $databox = $this->getApplicationBox()->get_databox($t[0]);
+            $viewName = $t[0]. ':::' .$databox->get_viewname();
+
+            $fieldFromProfile[$viewName][$t[1]]['id']      = $value;
+            $fieldFromProfile[$viewName][$t[1]]['name']    = $databox->get_meta_structure()->get_element($t[1])->get_label($this->app['locale']);
+            $fieldFromProfile[$viewName][$t[1]]['checked'] = true;
+        }
+
+        $fields = $fieldFromProfile;
+        foreach ($databoxes as $databox) {
+            foreach ($databox->get_meta_structure() as $meta) {
+                $viewName = $databox->get_sbas_id().':::'.$databox->get_viewname();
+                if (!empty($fields[$viewName][$meta->get_id()]) && in_array($databox->get_sbas_id().'_'.$meta->get_id(), $fields[$viewName][$meta->get_id()])) {
+                   continue;
+                }
+                // get databoxID_metaID for the checkbox name
+                $fields[$viewName][$meta->get_id()]['id'] = $databox->get_sbas_id().'_'.$meta->get_id();
+                $fields[$viewName][$meta->get_id()]['name'] = $meta->get_label($this->app['locale']);
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
      * @param Client $exposeClient
      * @param $publicationId
      * @param $accessToken
@@ -733,6 +1099,19 @@ class PSExposeController extends Controller
     }
 
     /**
+     * Get login session name
+     *
+     * @param $exposeName
+     * @return string
+     */
+    private function getLoginSessionName($exposeName)
+    {
+        $expose_name = str_replace(' ', '_', $exposeName);
+
+        return 'expose_connected_login_'.$expose_name;
+    }
+
+    /**
      * Get Token and save in session
      * @param $exposeName
      *
@@ -754,7 +1133,9 @@ class PSExposeController extends Controller
             if ($session->has($credentialSessionName)) {
                 $accessToken = $session->get($credentialSessionName);
             } else {
-                $oauthClient = new Client();
+                $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+
+                $oauthClient = $proxyConfig->getClientWithOptions([]);
 
                 try {
                     $response = $oauthClient->post($config['expose_base_uri'] . '/oauth/v2/token', [
@@ -848,7 +1229,10 @@ class PSExposeController extends Controller
             return null;
         }
 
-        return new Client(['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false]);
+        $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+
+        return $proxyConfig->getClientWithOptions($clientOptions);
     }
 
     /**

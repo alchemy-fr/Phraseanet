@@ -136,7 +136,7 @@
                             <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
                                 <td width="10%" align="center">
                                     {% if element.getOrderMaster() %}
-                                        {% set name = element.getOrderMaster().getDisplayName() %}
+                                        {% set name = element.getOrderMaster().getDisplayName() | e %}
                                         {% if element.getDeny() == true %}
                                             {% set title %}
                                                 {% trans with {'%name%' : name} %}Document refuse par %name%{% endtrans %}
@@ -239,7 +239,7 @@
         + {{ order.getId() }} + ' {{ 'order-manager::order-item: of' |trans }} '
         + '{{ order.getCreatedOn()|date('d/m/Y') }}'
         + ' {{ 'order-manager::order-item: by' |trans }} '
-        + '{{ order.getUser().getDisplayName() }}';
+        + '{{ order.getUser().getDisplayName() | e('js') }}';
 
     var orderItemData =  {
         path: '{{ path('prod_orders') }}',

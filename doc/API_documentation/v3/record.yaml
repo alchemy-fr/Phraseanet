@@ -114,10 +114,20 @@
             type: boolean
             default: false
 
+  Record_reference:
+    type: object
+    properties:
+      url:
+        type: string
+        description: Api request to get the created record
+        example:
+          '/records/29/215/'
+
   Record_extended:
     allOf:
       - $ref: '#/Record'
       - $ref: '#/_record_extension_'
+
 
   Story:
     allOf:     # Combines the basic _Record_ and the stories-only properties
@@ -252,6 +262,14 @@
         $ref: 'common.yaml#/ApiResponse_meta'
       response:
         $ref: '#/Record_extended'
+
+  ApiResponse_record_reference:
+    type: object
+    properties:
+      meta:
+        $ref: 'common.yaml#/ApiResponse_meta'
+      response:
+        $ref: '#/Record_reference'
 
   ApiResponse_story:
     type: object

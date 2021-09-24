@@ -50,6 +50,7 @@ class EditController extends Controller
         $status = $ids = $elements = $suggValues = $fields = $JSFields = [];
         $databox = null;
         $databoxes = $records->databoxes();
+        $multipleStories = count($records->stories()) > 1;
 
         $multipleDataboxes = count($databoxes) > 1;
 
@@ -229,6 +230,7 @@ class EditController extends Controller
         $conf = $this->getConf();
         $params = [
             'multipleDataboxes' => $multipleDataboxes,
+            'multipleStories'   => $multipleStories,
             'recordsRequest'    => $records,
             'videoEditorConfig' => $conf->get(['video-editor']),
             'databox'           => $databox,
@@ -336,9 +338,10 @@ class EditController extends Controller
             return $this->app->json(['message' => '', 'error'   => false]);
         }
 
+        $sessionLogId = $this->getDataboxLogger($databox)->get_id();
         // order the worker to save values in fields
         $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
-            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), array_keys($records->toArray()))
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::MDS_TYPE, $request->request->get('mds'), $databox->get_sbas_id(), $sessionLogId)
         );
 
         return $this->app->json(['success' => true]);
@@ -362,10 +365,12 @@ class EditController extends Controller
         }
 
         $databoxId =  reset($sbasIds);
+        $databox = $this->findDataboxById($databoxId);
+        $sessionLogId = $this->getDataboxLogger($databox)->get_id();
 
         // order the worker to save values in fields
         $this->dispatch(WorkerEvents::RECORD_EDIT_IN_WORKER,
-            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId)
+            new RecordEditInWorkerEvent(RecordEditInWorkerEvent::JSON_TYPE, $request->getContent(), $databoxId, $sessionLogId)
         );
 
         return $this->app->json(['success' => true]);

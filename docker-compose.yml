@@ -152,19 +152,21 @@ services:
     - LC_CTYPE=C.UTF-8
     - LC_TIME=C.UTF-8
     - LC_NAME=C.UTF-8
-    - PHRASEANET_EXPLODE_WORKER  
+    - PHRASEANET_EXPLODE_WORKER 
+    - PHRASEANET_WORKERS_LAUNCH_METHOD
     - PHRASEANET_WORKER_assetsIngest
     - PHRASEANET_WORKER_createRecord
     - PHRASEANET_WORKER_deleteRecord
+    - PHRASEANET_WORKER_editRecord
     - PHRASEANET_WORKER_exportMail
     - PHRASEANET_WORKER_exposeUpload
     - PHRASEANET_WORKER_ftp
     - PHRASEANET_WORKER_mainQueue
     - PHRASEANET_WORKER_populateIndex
     - PHRASEANET_WORKER_pullAssets
-    - PHRASEANET_WORKER_recordEdit
     - PHRASEANET_WORKER_subdefCreation
     - PHRASEANET_WORKER_subtitle
+    - PHRASEANET_WORKER_recordsActions
     - PHRASEANET_WORKER_validationReminder
     - PHRASEANET_WORKER_webhook
     - PHRASEANET_WORKER_writeMetadatas
@@ -194,7 +196,7 @@ services:
       - internal
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.6.16-management
     restart: on-failure
     environment:
     - RABBITMQ_DEFAULT_USER

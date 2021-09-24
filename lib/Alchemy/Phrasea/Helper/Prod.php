@@ -25,6 +25,12 @@ class Prod extends Helper
 
         $bases = $fields = $dates = $sort = $elasticSort = array();
 
+        $sort = [
+            \databox_field::TYPE_STRING => [],
+            \databox_field::TYPE_NUMBER => [],
+            \databox_field::TYPE_DATE => []
+        ];
+
         if (!$this->app->getAuthenticatedUser()) {
             return $searchData;
         }
@@ -100,11 +106,13 @@ class Prod extends Helper
                     $dates[$name]['sbas'][] = $sbasId;
                 }
 
-                if ($fieldMeta->get_type() == \databox_field::TYPE_NUMBER || $fieldMeta->get_type() === \databox_field::TYPE_DATE) {
-                    if (!array_key_exists($name, $sort)) {
-                        $sort[$name] = array('sbas' => array());
+                if (array_key_exists($type, $sort)) {  // TYPE_STRING, TYPE_NUMBER or TYPE_DATE
+                    if (!array_key_exists($name, $sort[$type])) {
+                        $sort[$type][$name] = [
+                            'sbas' => []
+                        ];
                     }
-                    $sort[$name]['sbas'][] = $sbasId;
+                    $sort[$type][$name]['sbas'][] = $sbasId;
                 }
 
                 if (isset($fields[$name])) {
@@ -133,7 +141,7 @@ class Prod extends Helper
         $searchData['fields'] = $fields;
         $searchData['dates'] = $dates;
         $searchData['bases'] = $bases;
-        $searchData['sort'] = $sort;
+        $searchData['sort'] = array_map(function($v){ksort($v, SORT_NATURAL);return $v;}, $sort); // sort by name of field
         $searchData['elasticSort'] = $elasticSort;
 
         return $searchData;

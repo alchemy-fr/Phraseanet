@@ -15,7 +15,7 @@ class patch_413 implements patchInterface
         'ftp'                => MessagePublisher::FTP_TYPE,
         'populateIndex'      => MessagePublisher::POPULATE_INDEX_TYPE,
         'pullAssets'         => MessagePublisher::PULL_ASSETS_TYPE,
-        'recordEdit'         => MessagePublisher::RECORD_EDIT_TYPE,
+        'editRecord'         => MessagePublisher::EDIT_RECORD_TYPE,
         'subdefCreation'     => MessagePublisher::SUBDEF_CREATION_TYPE,
         'validationReminder' => MessagePublisher::VALIDATION_REMINDER_TYPE,
         'writeMetadatas'     => MessagePublisher::WRITE_METADATAS_TYPE,

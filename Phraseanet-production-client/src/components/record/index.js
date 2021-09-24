@@ -2,6 +2,7 @@ import {Observable} from 'rx';
 // import {ajax} from 'jquery';
 import $ from 'jquery';
 
+// module unused now 06-2021
 let recordService = (services) => {
     const {configService} = services;
     const url = configService.get('baseUrl');

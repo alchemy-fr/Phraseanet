@@ -6,7 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Table(name="WorkerRunningJob")
+ * @ORM\Table(
+ *     name="WorkerRunningJob",
+ *     uniqueConstraints={
+ *          @ORM\uniqueConstraint(name="flock", columns={"databox_id", "record_id", "flock"})
+ *      }
+ * )
  * @ORM\Entity(repositoryClass="Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository")
  */
 class WorkerRunningJob
@@ -14,7 +19,7 @@ class WorkerRunningJob
     const FINISHED = 'finished';
     const RUNNING  = 'running';
     const ERROR    = 'error';
-    const INTERRUPT = 'interrupted manually';
+    const INTERRUPT = 'canceled';
 
     const ATTEMPT  = 'attempt ';
 
@@ -41,12 +46,17 @@ class WorkerRunningJob
     private $recordId;
 
     /**
-     * @ORM\Column(type="string", name="work", nullable=true)
+     * @ORM\Column(type="string", length=64, name="flock", nullable=true)
+     */
+    private $flock;
+
+    /**
+     * @ORM\Column(type="string", length=64, name="work", nullable=true)
      */
     private $work;
 
     /**
-     * @ORM\Column(type="string", name="work_on", nullable=true)
+     * @ORM\Column(type="string", length=64, name="work_on", nullable=true)
      */
     private $workOn;
 
@@ -136,6 +146,25 @@ class WorkerRunningJob
     {
         return $this->recordId;
 
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFlock()
+    {
+        return $this->flock;
+    }
+
+    /**
+     * @param mixed $flock
+     * @return WorkerRunningJob
+     */
+    public function setFlock($flock)
+    {
+        $this->flock = $flock;
+
+        return $this;
     }
 
     /**

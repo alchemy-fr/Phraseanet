@@ -39,7 +39,7 @@
 {% macro checkboxInput(field, label = '') %}
     <label for="{{ field.vars.id }}" class="checkbox">
         {{ form_widget(field) }}
-        {{ label | default(field.vars.label) | trans }}
+        {{ label | raw | default(field.vars.label | trans)}}
     </label>
     <div class="error-view"></div>
     {{  form_errors(field) }}

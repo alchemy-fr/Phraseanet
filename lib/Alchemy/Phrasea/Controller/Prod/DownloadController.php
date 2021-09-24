@@ -44,7 +44,8 @@ class DownloadController extends Controller
             $this->app['filesystem'],
             $subdefs,
             $request->request->get('type') === 'title' ? true : false,
-            $request->request->get('businessfields')
+            $request->request->get('businessfields'),
+            $request->request->get('stamp_choice') === "NO_STAMP" ? \set_export::NO_STAMP : \set_export::STAMP_SYNC
         );
 
         $list['export_name'] = sprintf('%s.zip', $download->getExportName());
