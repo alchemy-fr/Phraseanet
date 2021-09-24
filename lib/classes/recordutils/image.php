@@ -22,12 +22,12 @@ use MediaVorus\Media\MediaInterface;
 class recordutils_image
 {
     /**
-     * @param Application   $app
-     * @param \media_subdef $subdef
+     * @param Application $app
+     * @param media_subdef $subdef
      *
      * @return string|null The path to the stamped file, or null if stamp is not required
      */
-    public static function stamp(Application $app, \media_subdef $subdef)
+    public static function stamp(Application $app, media_subdef $subdef)
     {
         static $palette;
 
@@ -50,19 +50,21 @@ class recordutils_image
             try {
                 $alpha = 100;
                 $attr = explode(',', $attr);
-                if(count($attr) == 4) {
+                if (count($attr) == 4) {
                     // 0..127 -> 100..0
                     $alpha = (int)((127 - (int)array_pop($attr)) / 1.27);
                 }
+
                 return $palette->color($attr, $alpha);
-            } catch (ImagineException $e) {
+            }
+            catch (ImagineException $e) {
                 return $palette->color($ret);
             }
         };
 
         $base_id = $subdef->get_record()->getBaseId();
 
-        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+        if ($subdef->get_type() !== media_subdef::TYPE_IMAGE) {
             return null;
         }
 
@@ -70,13 +72,14 @@ class recordutils_image
             return null;
         }
 
-        $rotation = null;
+        $rotation = "?";
         try {
             $image = $app->getMediaFromUri($subdef->getRealPath());
             if (MediaInterface::TYPE_IMAGE === $image->getType()) {
                 $rotation = $image->getOrientation();
             }
-        } catch (\Exception $e) {
+        }
+        catch (Exception $e) {
             // getting orientation failed but we don't care the reason
         }
 
@@ -103,25 +106,38 @@ class recordutils_image
             return $pathOut;
         }
 
+        /** @var Imagine\Imagick\Imagine $imageine */
+        $imagine = $app['imagine'];
+
         // open the document
-        $image_in = $app['imagine']->open($pathIn);
+        try {
+            $image_in = $imagine->open($pathIn);
+        }
+        catch (Exception $e) {
+            return $pathIn;
+        }
+
         $image_size = $image_in->getSize();
+
+        $back_rotation = 0;
         switch ($rotation) {
             case Image::ORIENTATION_90:
                 $image_width = $image_size->getHeight();
                 $image_height = $image_size->getWidth();
                 $image_in->rotate(90);
-                $rotation = '90';
+                $back_rotation = 270;
                 break;
             case Image::ORIENTATION_270:
                 $image_width = $image_size->getHeight();
                 $image_height = $image_size->getWidth();
                 $image_in->rotate(270);
+                $back_rotation = 90;
                 break;
             case Image::ORIENTATION_180:
                 $image_width = $image_size->getWidth();
                 $image_height = $image_size->getHeight();
                 $image_in->rotate(180);
+                $back_rotation = 180;
                 break;
             default:
                 $image_width = $image_size->getWidth();
@@ -132,20 +148,22 @@ class recordutils_image
         // open the logo
         $logo_phywidth = $logo_phyheight = 0; // physical size
         $logo_file = $app['root.path'] . '/config/stamp/' . $base_id;
+        $logo_obj = null;
         try {
-            $logo_obj = $app['imagine']->open($logo_file);
+            $logo_obj = $imagine->open($logo_file);
             $logo_size = $logo_obj->getSize();
             $logo_phywidth = $logo_size->getWidth();
             $logo_phyheight = $logo_size->getHeight();
-        } catch (ImagineException $e) {
-
+        }
+        catch (ImagineException $e) {
+            // missing logo : ignore
         }
 
         $tables = [
-            'TOP' => ['h'    => 0, 'rows' => []],
-            'TOP-OVER' => ['h'    => 0, 'rows' => []],
-            'BOTTOM' => ['h'    => 0, 'rows' => []],
-            'BOTTOM-OVER' => ['h'    => 0, 'rows' => []]
+            'TOP'         => ['h' => 0, 'rows' => []],
+            'TOP-OVER'    => ['h' => 0, 'rows' => []],
+            'BOTTOM'      => ['h' => 0, 'rows' => []],
+            'BOTTOM-OVER' => ['h' => 0, 'rows' => []]
         ];
 
         for ($istamp = 0; $istamp < $stampNodes->length; $istamp++) {
@@ -188,10 +206,11 @@ class recordutils_image
                 $x = $sxxml->description->{$fieldname};
                 if (is_array($x)) {
                     foreach ($x as $v) {
-                        $fldval .= ( $fldval ? '; ' : '') . (string) $v;
+                        $fldval .= ($fldval ? '; ' : '') . (string)$v;
                     }
-                } else {
-                    $fldval .= ( $fldval ? '; ' : '') . (string) $x;
+                }
+                else {
+                    $fldval .= ($fldval ? '; ' : '') . (string)$x;
                 }
                 $n->parentNode->replaceChild($domprefs->createTextNode($fldval), $n);
             }
@@ -205,6 +224,7 @@ class recordutils_image
             // compute logo position / size
             $logo_reswidth = 0;
             $logo_resheight = 0;
+            $logo_xpos = null;
             if ($logo_phywidth > 0 && $logo_phyheight > 0) {
 
                 $v = $xpprefs->query('logo', $stamp);
@@ -214,23 +234,25 @@ class recordutils_image
                     $logopos = @strtoupper($v->item(0)->getAttribute('position'));
                     if (($logowidth = trim($v->item(0)->getAttribute('width'))) != '') {
                         if (substr($logowidth, -1) == '%') {
-                            $logo_reswidth = (int) ($logowidth * $image_width / 100);
-                        } else {
-                            $logo_reswidth = (int) $logowidth;
+                            $logo_reswidth = (int)($logowidth * $image_width / 100);
                         }
-                        $logo_resheight = (int) ($logo_phyheight * ($logo_reswidth / $logo_phywidth));
+                        else {
+                            $logo_reswidth = (int)$logowidth;
+                        }
+                        $logo_resheight = (int)($logo_phyheight * ($logo_reswidth / $logo_phywidth));
                     }
 
                     if ($logopos == 'LEFT' || $logopos == 'RIGHT') {
                         if ($logo_reswidth > $image_width / 2) {
                             // logo too large, resize please
-                            $logo_reswidth = (int) ($image_width / 2);
-                            $logo_resheight = (int) ($logo_phyheight * ($logo_reswidth / $logo_phywidth));
+                            $logo_reswidth = (int)($image_width / 2);
+                            $logo_resheight = (int)($logo_phyheight * ($logo_reswidth / $logo_phywidth));
                         }
                         $text_width -= $logo_reswidth;
                         if ($logopos == 'LEFT') {
                             $logo_xpos = 0;
-                        } else {
+                        }
+                        else {
                             $logo_xpos = ($image_width - $logo_reswidth);
                         }
                     }
@@ -245,28 +267,30 @@ class recordutils_image
             for ($i = 0; $i < $texts->length; $i++) {
                 if (($tmpfontsize = trim($texts->item($i)->getAttribute('size'))) != '') {
                     if (substr($tmpfontsize, -1) == '%') {
-                        $tmpfontsize = (int) ($tmpfontsize * $image_width / 4000);
-                    } else {
-                        $tmpfontsize = (int) $tmpfontsize;
+                        $tmpfontsize = (int)($tmpfontsize * $image_width / 4000);
+                    }
+                    else {
+                        $tmpfontsize = (int)$tmpfontsize;
                     }
                     $fontsize = $tmpfontsize;
                 }
 
                 if ($fontsize < 2) {
                     $fontsize = 2;
-                } elseif ($fontsize > 300) {
+                }
+                elseif ($fontsize > 300) {
                     $fontsize = 300;
                 }
 
                 $txtline = $texts->item($i)->nodeValue;
 
                 if ($txtline != '') {
-                    $wrap = static::wrap($app['imagine'], $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width);
+                    $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width);
                     $txtblock[] = [
                         'fontsize'  => $fontsize,
                         'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), [0, 0, 0]),
-                        'h'     => $wrap['toth'],
-                        'lines' => $wrap['l']
+                        'h'         => $wrap['toth'],
+                        'lines'     => $wrap['l']
                     ];
                     $txth += $wrap['toth'];
                 }
@@ -284,7 +308,7 @@ class recordutils_image
             }
 
             // create the block
-            $imfg = $app['imagine']->create(new Box($image_width, $stampheight), $stamp_background);
+            $imfg = $imagine->create(new Box($image_width, $stampheight), $stamp_background);
 
             // copy the logo
             if ($logo_reswidth > 0 && $logo_resheight > 0) {
@@ -293,7 +317,8 @@ class recordutils_image
                         $logo_obj->copy()->resize(new Box($logo_reswidth, $logo_resheight)),
                         new Point($logo_xpos, 0)
                     );
-                } else {
+                }
+                else {
                     $imfg->paste($logo_obj, new Point($logo_xpos, 0));
                 }
             }
@@ -302,7 +327,7 @@ class recordutils_image
             $draw = $imfg->draw();
             $txt_ypos = 0;
             foreach ($txtblock as $block) {
-                $font = $app['imagine']->font(__DIR__ . '/arial.ttf', $block['fontsize'], $block['fontcolor']);
+                $font = $imagine->font(__DIR__ . '/arial.ttf', $block['fontsize'], $block['fontcolor']);
                 foreach ($block['lines'] as $line) {
                     if ($line['t'] != '') {
                         $draw->text($line['t'], $font, new Point($logo_reswidth, $txt_ypos), 0);
@@ -323,13 +348,18 @@ class recordutils_image
             $tables[$stamp_position]['h'] += $stampheight;
         }
 
+        unset($logo_obj);
+        unset($domprefs);
+
         $newh = $tables['TOP']['h'] + $image_height + $tables['BOTTOM']['h'];
 
         // create the output image
-        $image_out = $app['imagine']->create(new Box($image_width, $newh), $palette->color("FFFFFF", 64));
+        $image_out = $imagine->create(new Box($image_width, $newh), $palette->color("FFFFFF", 64));
 
         // paste the input image into
         $image_out->paste($image_in, new Point(0, $tables['TOP']['h']));
+
+        unset($image_in);
 
         // fix the coordinates
         foreach ($tables['TOP-OVER']['rows'] as $k => $row) {
@@ -347,19 +377,30 @@ class recordutils_image
             foreach ($tables[$ta]['rows'] as $row) {
                 if ($row['h'] > 0) {
                     $image_out->paste($row['img'], new Point($row['x0'], $row['y0']));
+                    unset($row['img']);
                 }
             }
         }
 
         // save the output
+
+        if($back_rotation != 0) {
+            $image_out->rotate($back_rotation);
+        }
+
         $image_out->save($pathOut);
+        unset($image_out);
+
+        gc_collect_cycles();
 
         if (is_file($pathOut)) {
             $writer = $app['exiftool.writer'];
+
             // copy metadata to the stamped file if we can
-            if(method_exists($writer, "copy")) {
+            if (method_exists($writer, "copy")) {
                 $writer->copy($subdef->getRealPath(), $pathOut);
             }
+
             return $pathOut;
         }
 
@@ -368,12 +409,12 @@ class recordutils_image
 
     /**
      *
-     * @param Application   $app
-     * @param \media_subdef $subdef
+     * @param Application $app
+     * @param media_subdef $subdef
      *
      * @return boolean|string
      */
-    public static function watermark(Application $app, \media_subdef $subdef)
+    public static function watermark(Application $app, media_subdef $subdef)
     {
         static $palette;
 
@@ -387,7 +428,7 @@ class recordutils_image
             return $subdef->getRealPath();
         }
 
-        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+        if ($subdef->get_type() !== media_subdef::TYPE_IMAGE) {
             return $subdef->getRealPath();
         }
 
@@ -408,27 +449,32 @@ class recordutils_image
             return $pathOut;
         }
 
-        $in_image = $app['imagine']->open($pathIn);
+        /** @var Imagine\Imagick\Imagine $imagine */
+        $imagine = $app['imagine'];
+
+        $in_image = $imagine->open($pathIn);
         $in_size = $in_image->getSize();
         $in_w = $in_size->getWidth();
         $in_h = $in_size->getHeight();
 
         $wm_file = $app['root.path'] . '/config/wm/' . $base_id;
         if (file_exists($wm_file)) {
-            $wm_image = $app['imagine']->open($wm_file);
+            $wm_image = $imagine->open($wm_file);
             $wm_size = $wm_image->getSize();
             $wm_w = $wm_size->getWidth();
             $wm_h = $wm_size->getHeight();
 
             if (($wm_w / $wm_h) > ($in_w / $in_h)) {
                 $wm_size = $wm_size->widen($in_w);
-            } else {
+            }
+            else {
                 $wm_size = $wm_size->heighten($in_h);
             }
             $wm_image->resize($wm_size);
 
             $in_image->paste($wm_image, new Point(($in_w - $wm_size->getWidth()) >> 1, ($in_h - $wm_size->getHeight()) >> 1))->save($pathOut);
-        } else {
+        }
+        else {
             $collname = $subdef->get_record()->getCollection()->get_name();
             $draw = $in_image->draw();
             $black = $palette->color("000000");
@@ -438,10 +484,10 @@ class recordutils_image
             $draw->line(new Point(0, $in_h - 2), new Point($in_w - 2, 0), $black);
             $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
 
-            $fsize = max(8, (int) (max($in_w, $in_h) / 30));
+            $fsize = max(8, (int)(max($in_w, $in_h) / 30));
             $fonts = [
-                $app['imagine']->font(__DIR__ . '/arial.ttf', $fsize, $black),
-                $app['imagine']->font(__DIR__ . '/arial.ttf', $fsize, $white)
+                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
+                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
             ];
             $testbox = $fonts[0]->box($collname, 0);
             $tx_w = min($in_w, $testbox->getWidth());
@@ -451,14 +497,14 @@ class recordutils_image
             $y0 = max(1, ($in_h - $tx_h) >> 1);
             for ($i = 0; $i <= 1; $i++) {
                 $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
-                $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i), 0);
+                $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i));
                 $x = max(1, $in_w - $x - $tx_w);
-                $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i), 0);
+                $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i));
 
                 $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
-                $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i), 0);
+                $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i));
                 $y = max(1, $in_h - $y - $tx_h);
-                $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i), 0);
+                $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i));
             }
         }
 
@@ -470,13 +516,14 @@ class recordutils_image
 
         return false;
     }
+
     /**
      *
-     * @param  int    $fontSize
-     * @param  int    $angle
-     * @param  string $fontFace
-     * @param  string $string
-     * @param  int    $width
+     * @param int $fontSize
+     * @param int $angle
+     * @param string $fontFace
+     * @param string $string
+     * @param int $width
      * @return array
      */
     protected static function wrap(ImagineInterface $imagine, $fontSize, $angle, $fontFace, $string, $width)
@@ -500,15 +547,17 @@ class recordutils_image
             if ($lig == '') {
                 $ret[] = ['w' => 0, 'h' => $dy, 't' => ''];
                 $toth += $dy;
-            } else {
+            }
+            else {
                 $twords = [];
                 $iword = -1;
                 $lastc = '';
                 $length = strlen($lig);
+                $part = 0;
                 for ($i = 0; $i < $length; $i++) {
                     $c = $lig[$i];
                     if ($iword == -1 || (ctype_space($c) && !ctype_space($lastc))) {
-                        $twords[++$iword] = [($part = 0) => '', 1           => ''];
+                        $twords[++$iword] = [($part = 0) => '', 1 => ''];
                     }
                     if (!ctype_space($c) && $part == 0) {
                         $part++;
@@ -524,10 +573,11 @@ class recordutils_image
                         $w = $testbox->getWidth();
                         $h = $testbox->getHeight();
                         if ($i > 0 && $testbox->getWidth() > $width) {
-                            $ret[] = ['w'   => $lastw, 'h'   => $lasth, 't'   => $buff];
+                            $ret[] = ['w' => $lastw, 'h' => $lasth, 't' => $buff];
                             $toth += $lasth;
                             $buff = $wrd[1];
-                        } else {
+                        }
+                        else {
                             $buff = $test;
                         }
                         $lastw = $w;
@@ -541,6 +591,6 @@ class recordutils_image
             }
         }
 
-        return ['toth' => $toth, 'l'    => $ret, 'h'    => $height, 'dy'   => $dy];
+        return ['toth' => $toth, 'l' => $ret, 'h' => $height, 'dy' => $dy];
     }
 }

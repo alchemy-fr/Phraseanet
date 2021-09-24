@@ -27,6 +27,7 @@ class User_Query
     const SORT_CREATIONDATE = 'created';
     const SORT_COUNTRY = 'country';
     const SORT_LASTMODEL = 'last_model';
+    const SORT_LAST_CONNECTION = 'last_connection';
     const LIKE_FIRSTNAME = 'first_name';
     const LIKE_LASTNAME = 'last_name';
     const LIKE_NAME = 'name';
@@ -1091,6 +1092,7 @@ class User_Query
                 case self::SORT_CREATIONDATE:
                 case self::SORT_COUNTRY:
                 case self::SORT_LASTMODEL:
+                case self::SORT_LAST_CONNECTION:
                     $sorter[$k] = ' Users.`' . $sort . '` ';
                     break;
                 default:

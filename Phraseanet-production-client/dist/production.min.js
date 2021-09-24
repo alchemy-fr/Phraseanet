@@ -19323,6 +19323,9 @@ var notifyLayout = function notifyLayout(services) {
                         markNotificationRead(event.data['id'], $z);
                     });
                     date_cont.append($z);
+                    // do not display date in the dialog content beacause it's already grouped by date
+                    (0, _jquery2.default)(".time", $z).hide();
+                    (0, _jquery2.default)(".time-in-dialog", $z).show();
                 };
 
                 for (i in notifications) {
