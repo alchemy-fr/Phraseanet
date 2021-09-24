@@ -12599,7 +12599,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="3bfba160718dd58907bb18b25df9446b8e1a9efb" resname="prod::workzone:manual feedback reminder send new token">
         <source>prod::workzone:manual feedback reminder send new token</source>
-        <target state="translated">Inclure un nouveau lien de connexion</target>
+        <target state="needs-translation">Inclure un nouveau lien de connexion</target>
         <jms:reference-file line="16">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="yes">
