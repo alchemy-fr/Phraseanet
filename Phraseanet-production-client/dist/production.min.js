@@ -11003,6 +11003,31 @@ var workzone = function workzone(services) {
                     getContent(active, order);
                 });
 
+                (0, _jquery2.default)("#baskets .ui-accordion-content-active .update-feed-validation").on('submit', function (event) {
+                    event.preventDefault();
+                    var formData = (0, _jquery2.default)(this).serializeArray();
+
+                    _jquery2.default.ajax({
+                        type: 'POST',
+                        url: '/prod/push/update-expiration/',
+                        data: {
+                            basket_id: formData[0].value,
+                            date: formData[1].value
+                        },
+                        success: function success(data) {
+                            (0, _jquery2.default)('#baskets .ui-accordion-content-active .message').css('opacity', 1);
+                            (0, _jquery2.default)('#baskets .ui-accordion-content-active .submit-validation').addClass('btn-not-shown');
+                            (0, _jquery2.default)('#baskets .ui-accordion-content-active .cancel-date').addClass('btn-not-shown');
+                            setTimeout(function () {
+                                (0, _jquery2.default)('#baskets .ui-accordion-content-active .message').css('opacity', 0);
+                            }, 4000);
+                            var active = (0, _jquery2.default)('#baskets .SSTT.ui-state-active');
+
+                            getContent(active);
+                        }
+                    });
+                });
+
                 dest.droppable({
                     accept: function accept(elem) {
                         // return false;
