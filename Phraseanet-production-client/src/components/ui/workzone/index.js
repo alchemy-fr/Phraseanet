@@ -1099,6 +1099,29 @@ const workzone = (services) => {
                     getContent(active, order);
                 });
 
+                $("#baskets .ui-accordion-content-active .update-feed-validation").on('submit', function (event) {
+                    event.preventDefault();
+                    var formData = $(this).serializeArray();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/prod/push/update-expiration/',
+                        data: {
+                            basket_id: formData[0].value,
+                            date: formData[1].value
+                        },
+                        success: function (data) {
+                            $('#baskets .ui-accordion-content-active .message').css('opacity',1);
+                            $('#baskets .ui-accordion-content-active .submit-validation').addClass ('btn-not-shown');
+                            $('#baskets .ui-accordion-content-active .cancel-date').addClass ('btn-not-shown');
+                            setTimeout(function(){ $('#baskets .ui-accordion-content-active .message').css('opacity',0); }, 4000);
+                            var active = $('#baskets .SSTT.ui-state-active');
+
+                            getContent(active);
+                        },
+                    });
+                });
+
                 dest.droppable({
                     accept: function (elem) {
 // return false;
