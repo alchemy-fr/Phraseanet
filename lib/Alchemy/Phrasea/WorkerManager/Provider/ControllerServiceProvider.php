@@ -109,6 +109,11 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->method('GET|POST')
             ->bind('worker_admin_recordsActions');
 
+        /** @uses AdminConfigurationController::recordsActionsDefaultSettingAction */
+        $controllers->match('/records-actions/example-setting',  'controller.worker.admin.configuration:recordsActionsExampleSettingAction')
+            ->method('GET')
+            ->bind('worker_admin_recordsActions_example_setting');
+
         /** @uses AdminConfigurationController::recordsActionsFacilityAction */
         $controllers->match('/records-actions/facility',  'controller.worker.admin.configuration:recordsActionsFacilityAction')
             ->method('POST')

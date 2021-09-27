@@ -25,6 +25,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -406,6 +407,15 @@ class AdminConfigurationController extends Controller
             'running'   => $running
         ]);
     }
+
+    public function recordsActionsExampleSettingAction(PhraseaApplication $app, Request $request)
+    {
+        $response = new Response($this->getDefaultRecordsActionsSettings());
+        $response->headers->set('Content-Type', 'text/plain');
+
+        return $response;
+    }
+
 
     public function recordsActionsFacilityAction(PhraseaApplication $app, Request $request)
     {
