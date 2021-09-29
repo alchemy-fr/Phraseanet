@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Border;
 
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use MediaVorus\Utils\AudioMimeTypeGuesser;
+use MediaVorus\Utils\ImageMimeTypeGuesser;
 use MediaVorus\Utils\PostScriptMimeTypeGuesser;
 use MediaVorus\Utils\RawImageMimeTypeGuesser;
 use MediaVorus\Utils\VideoMimeTypeGuesser;
@@ -39,6 +40,7 @@ class MimeGuesserConfiguration
         $guesser->register(new PostScriptMimeTypeGuesser());
         $guesser->register(new AudioMimeTypeGuesser());
         $guesser->register(new VideoMimeTypeGuesser());
+        $guesser->register(new ImageMimeTypeGuesser());
 
         $guesser->register(new CustomExtensionGuesser($this->conf->get(['border-manager', 'extension-mapping'], [])));
     }

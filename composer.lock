@@ -275,16 +275,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.10",
+            "version": "0.4.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985"
+                "reference": "0108a4b93d258dff00d154d1c05ddb296a34d621"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/3e235eb1efb528aea2973c946f4bf47630b98985",
-                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/0108a4b93d258dff00d154d1c05ddb296a34d621",
+                "reference": "0108a4b93d258dff00d154d1c05ddb296a34d621",
                 "shasum": ""
             },
             "require": {
@@ -334,7 +334,10 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2020-02-18T13:37:45+00:00"
+            "support": {
+                "source": "https://github.com/alchemy-fr/MediaVorus/tree/0.4.11"
+            },
+            "time": "2021-09-29T12:09:06+00:00"
         },
         {
             "name": "alchemy/oauth2php",
