@@ -323,7 +323,10 @@ class AMQPConnection
                         $this->hostConfig['user'],
                         $this->hostConfig['password'],
                         $this->hostConfig['vhost'],
-                        $sslOptions
+                        $sslOptions,
+                        [
+                            'heartbeat' => 60,
+                        ]
                     );
                 } else {
                     $this->connection =  new AMQPStreamConnection(
@@ -331,7 +334,16 @@ class AMQPConnection
                         $this->hostConfig['port'],
                         $this->hostConfig['user'],
                         $this->hostConfig['password'],
-                        $this->hostConfig['vhost']
+                        $this->hostConfig['vhost'],
+                        false,
+                        'AMQPLAIN',
+                        null,
+                        'en_US',
+                        3.0,
+                        3.0,
+                        null,
+                        false,
+                        60
                     );
                 }
             }
