@@ -13,6 +13,8 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         apt-transport-https \
         ca-certificates \
         gnupg2 \
+    && sed -i 's/mozilla\/DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/g' /etc/ca-certificates.conf \
+    && update-ca-certificates --fresh \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
         zlib1g-dev \
