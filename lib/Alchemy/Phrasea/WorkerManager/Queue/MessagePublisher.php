@@ -98,8 +98,6 @@ class MessagePublisher
             return ;
         }
 
-        $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $FailedQ);
-
         $this->_publishMessage($payload, $FailedQ, $headers);
     }
 

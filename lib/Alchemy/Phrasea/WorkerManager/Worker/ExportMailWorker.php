@@ -17,6 +17,7 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\WorkerManager\Event\ExportMailFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class ExportMailWorker implements WorkerInterface
 {
@@ -104,13 +105,45 @@ class ExportMailWorker implements WorkerInterface
         }
 
         $this->repoWorkerJob->reconnect();
-        //zip documents
-        \set_export::build_zip(
-            $this->app,
-            $token,
-            $list,
-            $this->app['tmp.download.path'].'/'. $token->getValue() . '.zip'
-        );
+        try {
+            //zip documents
+            \set_export::build_zip(
+                $this->app,
+                $token,
+                $list,
+                $this->app['tmp.download.path'].'/'. $token->getValue() . '.zip'
+            );
+        } catch (\Exception $e) {
+            // finished the job and mark as failed
+
+            /** @var MessagePublisher $messagePublisher */
+            $messagePublisher = $this->app['alchemy_worker.message.publisher'];
+
+            $errorMessage = 'Can not create zip file : ' . $e->getMessage();
+
+            $headers = new AMQPTable([
+                'worker-message' => $errorMessage
+            ]);
+
+            $messagePublisher->publishFailedMessage($message, $headers, MessagePublisher::EXPORT_MAIL_TYPE);
+
+            $messagePublisher->pushLog($errorMessage, 'error');
+
+            if ($workerRunningJob != null) {
+                $this->repoWorkerJob->reconnect();
+                $workerRunningJob
+                    ->setInfo($errorMessage)
+                    ->setStatus(WorkerRunningJob::ERROR)
+                    ->setFinished(new \DateTime('now'))
+                ;
+
+                $em->persist($workerRunningJob);
+
+                $em->flush();
+            }
+
+            return ;
+        }
 
         $remaingEmails = $destMails;
         $deliverEmails = [];

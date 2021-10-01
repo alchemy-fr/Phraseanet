@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-09-24T11:11:14Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2021-10-01T08:34:20Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -10445,6 +10445,11 @@
         <target state="translated">FTP</target>
         <jms:reference-file line="104">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="420">web/common/dialog_export.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9c5ae9291bc4dacac0424f16c37363fc52269231" resname="export:: There is no elligible downloadable file!">
+        <source>export:: There is no elligible downloadable file!</source>
+        <target state="new">export:: There is no elligible downloadable file!</target>
+        <jms:reference-file line="177">Controller/Prod/ExportController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="06d528a625d247cc215fc56f858c21b813799856" resname="export:: commande" approved="yes">
         <source>export:: commande</source>

@@ -7038,9 +7038,23 @@ var exportRecord = function exportRecord(services) {
                 (0, _jquery2.default)('body').append('<iframe style="display:none;" name="sendmail_target"></iframe>');
             }
 
-            (0, _jquery2.default)('#sendmail form').submit();
-            humane.infoLarge((0, _jquery2.default)('#export-send-mail-notif').val());
-            $dialog.close();
+            var form = (0, _jquery2.default)('#sendmail form');
+            _jquery2.default.post(form.attr('action'), form.serializeArray(), function (data) {
+                if (data.success === true) {
+                    humane.infoLarge((0, _jquery2.default)('#export-send-mail-notif').val());
+                    $dialog.close();
+                } else {
+                    var alert = _dialog2.default.create(services, {
+                        size: 'Alert',
+                        closeOnEscape: true,
+                        closeButton: true,
+                        title: dataConfig.msg.warning
+                    }, 2);
+
+                    alert.setContent(data.message);
+                }
+                return true;
+            }, 'json');
         });
 
         (0, _jquery2.default)('.datepicker', $dialog.getDomElement()).datepicker({
