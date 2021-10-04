@@ -22,7 +22,7 @@ jobs:
         - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
         - run:
             working_directory: ~/alchemy-fr/Phraseanet
-            command: 'sudo apt-get install mysql-server && sudo service mysql status || sudo service mysql start;'
+            command: 'sudo apt install mariadb-server-10.3 && sudo service mysql status || sudo service mysql start;'
         # Dependencies
         #   This would typically go in either a build or a build-and-test job when using workflows
         # Restore the dependency cache
