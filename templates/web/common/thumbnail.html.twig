@@ -40,6 +40,10 @@
                     frameborder="0" allowfullscreen></iframe>
         </div>
     {% else %}
+        {% if thumbnail.get_name() == 'preview' %}
+            {% set url = app.getAuthenticator().isAuthenticated() ? record_subdef_url(thumbnail.get_record(), "preview") : thumbnail.get_permalink().get_url() %}
+        {% endif %}
+
         {% set fit_size = fitIn(
         {"width":original_w, "height":original_h},
         {"width":box_w, "height":box_h}

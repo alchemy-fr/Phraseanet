@@ -343,7 +343,7 @@ class PhraseanetExtension extends \Twig_Extension
         } elseif ($record instanceof \record_adapter) {
             if (null !== $thumbnail = $record->get_subdef($subdefName)) {
                 if ('' !== $path = $thumbnail->getRealPath()) {
-                    $etag = $thumbnail->getEtag();
+                    $etag = dechex(crc32(dechex($record->get_subdef($subdefName)->get_modification_date()->getTimestamp() ^ 0x5A5A5A5A)));
                     return $staticMode->getUrl($path, $etag);
                 }
             }
