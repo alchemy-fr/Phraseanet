@@ -334,6 +334,7 @@ workers:
             user: ''
             password: ''
             vhost: /
+            heartbeat: 60
 
 externalservice:
     ginger:
