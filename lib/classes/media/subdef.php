@@ -362,10 +362,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function getEtag()
     {
-        $file = new SplFileInfo($this->getRealPath());
-        // etag is generated from md5 of path and file last modified time
-        // so check if etag is to be changed
-        if ((!$this->etag && $this->is_physically_present()) || $this->etag != md5($file->getRealPath() . $file->getMTime())) {
+        if ((!$this->etag && $this->is_physically_present())) {
+            $file = new SplFileInfo($this->getRealPath());
             if ($file->isFile()) {
                 $this->generateEtag($file);
             }
@@ -576,9 +574,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         // generate a new etag after rotation
         $file = new SplFileInfo($this->getRealPath());
-        $this->generateEtag($file);
+        $this->generateEtag($file);  // with repository save
 
-        return $this->save();
+        return $this;
     }
 
     /**
