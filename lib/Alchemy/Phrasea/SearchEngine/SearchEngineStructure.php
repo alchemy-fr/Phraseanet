@@ -9,8 +9,9 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Flag;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\GlobalStructure;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\MetadataHelper;
-// use Alchemy\Phrasea\Utilities\Stopwatch;
 use databox;
+
+// use Alchemy\Phrasea\Utilities\Stopwatch;
 
 class SearchEngineStructure
 {
@@ -25,6 +26,19 @@ class SearchEngineStructure
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
+    }
+
+    /**
+     * @param databox[] $databoxes
+     */
+    public function getGlobalStructureConflictsFromDataboxes(array $databoxes)
+    {
+        $fieldsByName = [];
+        foreach ($databoxes as $databox) {
+            foreach ($databox->get_meta_structure() as $fieldStructure) {
+                $name = $fieldStructure->get_name();
+            }
+        }
     }
 
     /**

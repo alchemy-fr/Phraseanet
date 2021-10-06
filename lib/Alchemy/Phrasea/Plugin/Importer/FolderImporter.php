@@ -11,9 +11,11 @@
 
 namespace Alchemy\Phrasea\Plugin\Importer;
 
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Plugin\Exception\ImportFailureException;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\ExceptionInterface as FsException;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 class FolderImporter implements ImporterInterface
 {
