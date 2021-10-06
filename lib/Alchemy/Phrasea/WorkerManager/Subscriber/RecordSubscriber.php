@@ -23,7 +23,6 @@ use Alchemy\Phrasea\WorkerManager\Worker\Factory\WorkerFactoryInterface;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
 use databox;
 use Exception;
-use media_subdef;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RecordSubscriber implements EventSubscriberInterface
@@ -58,11 +57,7 @@ class RecordSubscriber implements EventSubscriberInterface
             $subdefs = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
 
             if ($subdefs !== null) {
-                /** @var media_subdef $subdef */
                 foreach ($subdefs as $subdef) {
-
-                    // @unlink($subdef->getWatermarkRealPath());
-                    @unlink($subdef->getStampRealPath());
 
                     $payload = [
                         'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
