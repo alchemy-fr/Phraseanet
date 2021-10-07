@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\WorkerManager\Event\ExportMailFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
-use PhpAmqpLib\Wire\AMQPTable;
 
 class ExportMailWorker implements WorkerInterface
 {
@@ -28,40 +27,64 @@ class ExportMailWorker implements WorkerInterface
     /** @var  WorkerRunningJobRepository $repoWorkerJob */
     private $repoWorkerJob;
 
+    /** @var MessagePublisher $messagePublisher */
+    private $messagePublisher;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->messagePublisher = $this->app['alchemy_worker.message.publisher'];
     }
 
     public function process(array $payload)
     {
         $this->repoWorkerJob = $this->getWorkerRunningJobRepository();
         $em = $this->repoWorkerJob->getEntityManager();
-        $em->beginTransaction();
-        $this->repoWorkerJob->reconnect();
-        $date = new \DateTime();
 
-        $message = [
-            'message_type'  => MessagePublisher::EXPORT_MAIL_TYPE,
-            'payload'       => $payload
-        ];
+        if (isset($payload['workerJobId'])) {
+            /** @var WorkerRunningJob $workerRunningJob */
+            $workerRunningJob = $this->repoWorkerJob->find($payload['workerJobId']);
 
-        try {
-            $workerRunningJob = new WorkerRunningJob();
+            if ($workerRunningJob == null) {
+                $this->messagePublisher->pushLog("Given workerJobId not found !", 'error');
+
+                return ;
+            }
+
             $workerRunningJob
-                ->setWork(MessagePublisher::EXPORT_MAIL_TYPE)
-                ->setPayload($message)
-                ->setPublished($date->setTimestamp($payload['published']))
-                ->setStatus(WorkerRunningJob::RUNNING)
-            ;
+                ->setInfo(WorkerRunningJob::ATTEMPT . $payload['count'])
+                ->setStatus(WorkerRunningJob::RUNNING);
 
             $em->persist($workerRunningJob);
 
             $em->flush();
 
-            $em->commit();
-        } catch (\Exception $e) {
-            $em->rollback();
+        } else {
+            $em->beginTransaction();
+            $this->repoWorkerJob->reconnect();
+            $date = new \DateTime();
+            $message = [
+                'message_type'  => MessagePublisher::EXPORT_MAIL_TYPE,
+                'payload'       => $payload
+            ];
+
+            try {
+                $workerRunningJob = new WorkerRunningJob();
+                $workerRunningJob
+                    ->setWork(MessagePublisher::EXPORT_MAIL_TYPE)
+                    ->setPayload($message)
+                    ->setPublished($date->setTimestamp($payload['published']))
+                    ->setStatus(WorkerRunningJob::RUNNING)
+                ;
+
+                $em->persist($workerRunningJob);
+
+                $em->flush();
+
+                $em->commit();
+            } catch (\Exception $e) {
+                $em->rollback();
+            }
         }
 
         $destMails = unserialize($payload['destinationMails']);
@@ -114,25 +137,30 @@ class ExportMailWorker implements WorkerInterface
                 $this->app['tmp.download.path'].'/'. $token->getValue() . '.zip'
             );
         } catch (\Exception $e) {
-            // finished the job and mark as failed
-
-            /** @var MessagePublisher $messagePublisher */
-            $messagePublisher = $this->app['alchemy_worker.message.publisher'];
+            // push the job in the retry Q
 
             $errorMessage = 'Can not create zip file : ' . $e->getMessage();
 
-            $headers = new AMQPTable([
-                'worker-message' => $errorMessage
-            ]);
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+            $attempt = $count - 1;
 
-            $messagePublisher->publishFailedMessage($message, $headers, MessagePublisher::EXPORT_MAIL_TYPE);
+            //  notify to send to the retry queue
+            $this->app['dispatcher']->dispatch(WorkerEvents::EXPORT_MAIL_FAILURE, new ExportMailFailureEvent(
+                $payload['emitterUserId'],
+                $payload['tokenValue'],
+                $payload['destinationMails'],
+                $payload['params'],
+                $errorMessage,
+                $count,
+                $workerRunningJob->getId()
+            ));
 
-            $messagePublisher->pushLog($errorMessage, 'error');
+            $this->messagePublisher->pushLog($errorMessage, 'error');
 
             if ($workerRunningJob != null) {
                 $this->repoWorkerJob->reconnect();
                 $workerRunningJob
-                    ->setInfo($errorMessage)
+                    ->setInfo(WorkerRunningJob::ATTEMPT . $attempt)
                     ->setStatus(WorkerRunningJob::ERROR)
                     ->setFinished(new \DateTime('now'))
                 ;
@@ -217,7 +245,6 @@ class ExportMailWorker implements WorkerInterface
 
             $em->flush();
         }
-
     }
 
     /**
