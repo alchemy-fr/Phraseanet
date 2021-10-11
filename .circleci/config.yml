@@ -43,7 +43,6 @@ jobs:
         #- run: pecl channel-update pear.php.net
         - run: sudo apt -y install php7.0-amqp
         - run: sudo apt -y install php7.0-imagick
-        - run: sudo apt -y install libzmq-dev
         - run: sudo apt -y install php7.0-zmq 
         - run: echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
         - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
