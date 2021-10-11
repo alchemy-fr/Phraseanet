@@ -48,6 +48,8 @@ jobs:
         - run: npm rebuild node-sass
         # This is based on your 1.0 configuration file or project settings
         - run: composer install --no-progress --no-interaction --optimize-autoloader
+        - run: curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+        - run: source ~/.profile && nvm install v10.12.0 && nvm alias default v10.12.0 
         # This is based on your 1.0 configuration file or project settings
         - run: node -v
         - run: npm -v
