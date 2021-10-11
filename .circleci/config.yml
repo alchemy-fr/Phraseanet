@@ -44,7 +44,7 @@ jobs:
         - run: sudo apt -y install php7.0-amqp
         - run: sudo apt -y install php7.0-imagick
         - run: sudo apt -y install php7.0-zmq 
-        - run: sudo echo "date.timezone = UTC" > /etc/php/7.0/mods-available/timezone.ini
+        - run: sudo -- bash -c  "echo 'date.timezone = UTC' > /etc/php/7.0/mods-available/timezone.ini"
         - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /etc/php/7.0/cli/php.ini
         - run: npm rebuild node-sass
         # This is based on your 1.0 configuration file or project settings
