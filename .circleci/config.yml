@@ -41,7 +41,7 @@ jobs:
         - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
         # disabled because pear.php.net is down cause of security failure
         #- run: pecl channel-update pear.php.net
-        - run: sudo apt -y install  python-dev-is-python2 php7.0-amqp php7.0-imagick php7.0-zmq php7.0-intl
+        - run: sudo apt -y install  openjdk-11-jre-headless python-dev-is-python2 php7.0-amqp php7.0-imagick php7.0-zmq php7.0-intl
         - run: printf "\n" |  sudo pecl install amqp-1.11.0beta
         - run: sudo -- bash -c  "echo 'date.timezone = UTC' > /etc/php/7.0/mods-available/timezone.ini"
         - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /etc/php/7.0/cli/php.ini
