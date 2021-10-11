@@ -31,7 +31,7 @@ jobs:
             # This branch if available
             - v1-dep-{{ .Branch }}-
             # Default branch if not
-            - v1-dep-master-
+            - v2-dep-master-
             # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
             - v1-dep-
         # This is based on your 1.0 configuration file or project settings
@@ -65,7 +65,7 @@ jobs:
             background: true
         # Save dependency cache
         - save_cache:
-            key: v1-dep-{{ .Branch }}-{{ epoch }}
+            key: v2-dep-{{ .Branch }}-{{ epoch }}
             paths:
             # This is a broad list of cache paths to include many possible development environments
             # You can probably delete some of these entries
