@@ -29,11 +29,11 @@ jobs:
         - restore_cache:
             keys:
             # This branch if available
-            - v1-dep-{{ .Branch }}-
+            - v2-dep-{{ .Branch }}-
             # Default branch if not
             - v2-dep-master-
             # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-            - v1-dep-
+            - v2-dep-
         # This is based on your 1.0 configuration file or project settings
         - run: echo 127.0.0.1 redis elasticsearch db rabbitmq | sudo tee -a /etc/hosts
         - run: git clone https://github.com/alanxz/rabbitmq-c
