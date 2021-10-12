@@ -64,7 +64,7 @@ class SetupTestsDbs extends Command
         $db_name = StringHelper::SqlQuote($settings['database']['db_name'], StringHelper::SQL_IDENTIFIER);
 
         $this->container['orm.em']->getConnection()->executeUpdate(
-            'CREATE USER '.$user.'@'.$host.' IDENTIFIED WITH mysql_native_password BY '.$pass.' WITH GRANT OPTION'
+            'CREATE USER '.$user.'@'.$host.' IDENTIFIED WITH mysql_native_password BY '.$pass
         );
 
         $this->container['orm.em']->getConnection()->executeUpdate(
