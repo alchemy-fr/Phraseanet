@@ -68,11 +68,11 @@ class SetupTestsDbs extends Command
         );
 
         $this->container['orm.em']->getConnection()->executeUpdate(
-            'GRANT ALL PRIVILEGES ON '.$ab_name.'.* TO '.$user.'@'.$host.' WITH GRANT OPTION'
+            'GRANT ALL PRIVILEGES ON '.$ab_name.'.* TO '.$user.'@'.$host
         );
 
         $this->container['orm.em']->getConnection()->executeUpdate(
-            'GRANT ALL PRIVILEGES ON '.$db_name.'.* TO '.$user.'@'.$host.' WITH GRANT OPTION'
+            'GRANT ALL PRIVILEGES ON '.$db_name.'.* TO '.$user.'@'.$host
         );
 
         $this->container['orm.em']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
