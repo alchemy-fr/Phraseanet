@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Filesystem;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Traversable;
 
 class PhraseanetFilesystem extends Filesystem
 {
@@ -87,6 +88,58 @@ class PhraseanetFilesystem extends Filesystem
             throw new IOException(sprintf('Failed to copy the whole content of "%s" to "%s" (%g of %g bytes copied).', $originFile, $targetFile, $bytesCopied, $bytesOrigin), 0, null, $originFile);
         }
     }
+
+    /**
+     * Checks the existence of files or directories.
+     *
+     * @param string|array|Traversable $files A filename, an array of files, or a \Traversable instance to check
+     * @param int  $timeToWait                Allow retrying n times every sec before declaring a file as not existing.
+     *                                        Usefull for shared fs with sync delay
+     *
+     * @return bool true if the file exists, false otherwise
+     */
+    public function exists($files, int $timeToWait = 0)
+    {
+        foreach ($this->toIterator($files) as $file) {
+            if ('\\' === DIRECTORY_SEPARATOR && strlen($file) > 258) {
+                throw new IOException('Could not check if file exist because path length exceeds 258 characters.', 0, null, $file);
+            }
+
+            for($ttw = $timeToWait; $ttw >= 0; $ttw--) {
+                if (!file_exists($file)) {
+                    if($ttw === 0) {
+                        return false;
+                    }
+
+                    file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                        sprintf("file \"%s\" does not exists (tryout %d/%d), retry in 1 sec.", $file, $ttw, $timeToWait)
+                    ), FILE_APPEND | LOCK_EX);
+
+                    sleep(1);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     *  copied from \Symfony\Component\Filesystem\Filesystem::toIterator
+     *
+     * @param mixed $files
+     *
+     * @return Traversable
+     */
+    private function toIterator($files)
+    {
+        if (!$files instanceof Traversable) {
+            $files = new \ArrayObject(is_array($files) ? $files : array($files));
+        }
+
+        return $files;
+    }
+
+
 
 //    public function rename($origin, $target, $overwrite = false)
 //    {
