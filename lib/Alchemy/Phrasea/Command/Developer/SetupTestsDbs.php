@@ -64,11 +64,15 @@ class SetupTestsDbs extends Command
         $db_name = StringHelper::SqlQuote($settings['database']['db_name'], StringHelper::SQL_IDENTIFIER);
 
         $this->container['orm.em']->getConnection()->executeUpdate(
-            'GRANT ALL PRIVILEGES ON '.$ab_name.'.* TO '.$user.'@'.$host.' IDENTIFIED BY '.$pass.' WITH GRANT OPTION'
+            'CREATE USER '.$user.'@'.$host.' IDENTIFIED WITH mysql_native_password BY '.$pass.' WITH GRANT OPTION'
         );
 
         $this->container['orm.em']->getConnection()->executeUpdate(
-            'GRANT ALL PRIVILEGES ON '.$db_name.'.* TO '.$user.'@'.$host.' IDENTIFIED BY '.$pass.' WITH GRANT OPTION'
+            'GRANT ALL PRIVILEGES ON '.$ab_name.'.* TO '.$user.'@'.$host.' WITH GRANT OPTION'
+        );
+
+        $this->container['orm.em']->getConnection()->executeUpdate(
+            'GRANT ALL PRIVILEGES ON '.$db_name.'.* TO '.$user.'@'.$host.' WITH GRANT OPTION'
         );
 
         $this->container['orm.em']->getConnection()->executeUpdate('SET @@global.sql_mode= ""');
