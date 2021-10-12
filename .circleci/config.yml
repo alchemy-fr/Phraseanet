@@ -41,7 +41,7 @@ jobs:
         - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
         # disabled because pear.php.net is down cause of security failure
         #- run: pecl channel-update pear.php.net
-        - run: sudo apt -y install  openjdk-11-jre-headless python-dev-is-python2 php7.0-amqp php7.0-imagick php7.0-zmq php7.0-intl
+        - run: sudo apt -y install  openjdk-8-jre-headless python-dev-is-python2 php7.0-amqp php7.0-imagick php7.0-zmq php7.0-intl php7.0-sqlite3
         - run: printf "\n" |  sudo pecl install amqp-1.11.0beta
         - run: sudo -- bash -c  "echo 'date.timezone = UTC' > /etc/php/7.0/mods-available/timezone.ini"
         - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /etc/php/7.0/cli/php.ini
@@ -77,10 +77,10 @@ jobs:
             - node_modules
             - ~/.composer
         # This is based on your 1.0 configuration file or project settings
-        - run: mysql -u root -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
+        - run: sudo mysql -u root -e "CREATE USER 'phraseanet'@'127.0.0.1' IDENTIFIED BY 'phraseanet';GRANT ALL PRIVILEGES ON * . * TO 'phraseanet'@'localhost';CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;"
         # This is based on your 1.0 configuration file or project settings
         - run: ./bin/developer system:uninstall -v
-        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=root --db-template=fr-simple --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=phraseanet --db-template=fr-simple --db-password=phraseanet --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
         - run: ./bin/developer ini:setup-tests-dbs -v
         - run: ./bin/console searchengine:index:create -v
         - run: ./bin/developer phraseanet:regenerate-sqlite -v
