@@ -43,6 +43,7 @@ jobs:
         #- run: pecl channel-update pear.php.net
         - run: sudo apt -y install  openjdk-8-jre-headless python-dev-is-python2 php7.0-amqp php7.0-imagick php7.0-zmq php7.0-intl php7.0-sqlite3
         - run: printf "\n" |  sudo pecl install amqp-1.11.0beta
+        - run: yes '' | pecl install imagick
         - run: sudo -- bash -c  "echo 'date.timezone = UTC' > /etc/php/7.0/mods-available/timezone.ini"
         - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /etc/php/7.0/cli/php.ini
         - run: sudo -- bash -c  'echo -e "[mysqld]\ndefault-authentication-plugin=mysql_native_password" > /etc/mysql/conf.d/mysql_native_password.cnf' && sudo service mysql restart
