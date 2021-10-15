@@ -364,11 +364,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function getEtag()
     {
-        if (!$this->etag && $this->is_physically_present()) {
+        if ((!$this->etag && $this->is_physically_present())) {
             $file = new SplFileInfo($this->getRealPath());
-
             if ($file->isFile()) {
-                $this->setEtag(md5($file->getRealPath() . $file->getMTime()));
+                $this->generateEtag($file);
             }
         }
 
@@ -578,7 +577,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->width = $media->getWidth();
         $this->height = $media->getHeight();
 
-        return $this->save();
+        // generate a new etag after rotation
+        $file = new SplFileInfo($this->getRealPath());
+        $this->generateEtag($file);  // with repository save
+
+        return $this;
     }
 
     /**
@@ -802,6 +805,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         return $this->app['phraseanet.h264']->getUrl($this->getRealPath());
+    }
+
+    /**
+     * @param SplFileInfo $file
+     */
+    private function generateEtag(SplFileInfo $file)
+    {
+        $this->setEtag(md5($file->getRealPath() . $file->getMTime()));
     }
 
     /**
