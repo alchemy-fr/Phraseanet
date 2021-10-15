@@ -76,7 +76,7 @@ services:
     - PHRASEANET_DEFAULT_LANGUAGE
     - PHRASEANET_RABBITMQ_HOST
     - PHRASEANET_RABBITMQ_PORT
-    - PHRASEANET_RABBIT_SSL
+    - PHRASEANET_RABBITMQ_SSL
     - PHRASEANET_RABBITMQ_VHOST
     - PHRASEANET_RABBITMQ_HEARTBEAT
     - PHRASEANET_RABBITMQ_USER=$RABBITMQ_DEFAULT_USER
@@ -197,15 +197,6 @@ services:
     - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
     - ${PHRASEANET_CACHE_DIR}:/var/alchemy/Phraseanet/cache:rw
     - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
-    networks:
-      - internal
-
-  rabbitmq:
-    image: rabbitmq:3.6.16-management
-    restart: on-failure
-    environment:
-    - RABBITMQ_DEFAULT_USER
-    - RABBITMQ_DEFAULT_PASS
     networks:
       - internal
 
