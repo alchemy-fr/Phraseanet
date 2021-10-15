@@ -1666,7 +1666,7 @@ class ACL implements cache_cacheableInterface
 
         $lim_max = $this->_limited[$base_id]['dmax'] && $this->_limited[$base_id]['dmax'] < $datetime;
 
-        return $lim_max || $lim_min;
+        return ($lim_max || $lim_min);
     }
 
     /**
@@ -1697,8 +1697,8 @@ class ACL implements cache_cacheableInterface
             ':time_limited' => $limit ? 1 : 0,
             ':usr_id' => $this->user->getId(),
             ':base_id' => $base_id,
-            ':limited_from' => NullableDateTime::format($limit_from, DATE_ISO8601),
-            ':limited_to' => NullableDateTime::format($limit_to, DATE_ISO8601),
+            ':limited_from' => NullableDateTime::format($limit_from),
+            ':limited_to' => NullableDateTime::format($limit_to),
         ]);
         $stmt->closeCursor();
 

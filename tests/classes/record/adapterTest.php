@@ -407,7 +407,7 @@ class record_adapterTest extends \PhraseanetAuthenticatedTestCase
                 $separator = '';
             }
 
-            $multi_imploded = implode(' ' . $separator . ' ', ['un', 'jeu', 'de', 'test']);
+            $multi_imploded = implode(' ' . $separator . ' ', ['test', 'de', 'je', 'un']);
 
             if ($meta_el->is_multi()) {
                 $initial_values = [];
