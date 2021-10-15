@@ -37,7 +37,8 @@ class WorkerConfigurationServiceProvider implements ServiceProviderInterface
                     'port'      => 5672,
                     'user'      => 'guest',
                     'password'  => 'guest',
-                    'vhost'     => '/'
+                    'vhost'     => '/',
+                    'heartbeat' => 60,
                 ]
             ];
 
