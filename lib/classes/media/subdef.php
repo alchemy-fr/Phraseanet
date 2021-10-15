@@ -251,6 +251,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function remove_file()
     {
         if ($this->is_physically_present() && is_writable($this->getRealPath())) {
+            // @unlink($this->getWatermarkRealPath());
+            @unlink($this->getStampRealPath());
             unlink($this->getRealPath());
 
             $this->delete_data_from_cache();
@@ -554,6 +556,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function rotate($angle, Alchemyst $alchemyst, MediaVorus $mediavorus)
     {
+        // @unlink($this->getWatermarkRealPath());
+        @unlink($this->getStampRealPath());
+
         if (!$this->is_physically_present()) {
             throw new \Alchemy\Phrasea\Exception\RuntimeException('You can not rotate a substitution');
         }
