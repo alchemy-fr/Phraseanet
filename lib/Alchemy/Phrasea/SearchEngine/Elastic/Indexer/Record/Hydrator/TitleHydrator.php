@@ -55,7 +55,7 @@ class TitleHydrator implements HydratorInterface
         );
 
         while ($row = $statement->fetch()) {
-            $records[$row['record_id']]['title'][$row['locale']] = $this->helper->sanitizeValue($row['title'], FieldMapping::TYPE_STRING);
+            $records[$row['record_id']]['title'][$row['locale']] = $this->helper->sanitizeValue($row['title'], FieldMapping::TYPE_TEXT);
         }
     }
 }

@@ -3,6 +3,11 @@
 namespace Alchemy\Phrasea\SearchEngine\Elastic\Search;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
+use Closure;
+use DateInterval;
+use DateTime;
+use Exception;
+use InvalidArgumentException;
 
 class QueryHelper
 {
@@ -11,10 +16,10 @@ class QueryHelper
     /**
      * @param Field[] $private_fields
      * @param Field[] $unrestricted_fields
-     * @param \Closure $query_builder
+     * @param Closure $query_builder
      * @return array
      */
-    public static function wrapPrivateFieldQueries(array $private_fields, array $unrestricted_fields, \Closure $query_builder)
+    public static function wrapPrivateFieldQueries(array $private_fields, array $unrestricted_fields, Closure $query_builder)
     {
         // We make a boolean clause for each collection set to shrink query size
         // (instead of a clause for each field, with his collection set)
@@ -64,9 +69,19 @@ class QueryHelper
 
     private static function restrictQueryToCollections(array $query, array $collections)
     {
-        $wrapper = [];
-        $wrapper['filtered']['filter']['terms']['base_id'] = $collections;
-        $wrapper['filtered']['query'] = $query;
+        //$wrapper = [];
+        //$wrapper['filtered']['filter']['terms']['base_id'] = $collections;
+        //$wrapper['filtered']['query'] = $query;
+        $wrapper = [
+            'bool' => [
+                'must' => $query,
+                'filter' => [
+                    'terms' => [
+                        'base_id' => $collections
+                    ]
+                ]
+            ]
+        ];
         return $wrapper;
     }
 
@@ -87,7 +102,7 @@ class QueryHelper
     public static function applyBooleanClause($query, $type, array $clause)
     {
         if (!in_array($type, ['must', 'should'])) {
-            throw new \InvalidArgumentException(sprintf('Type must be either "must" or "should", "%s" given', $type));
+            throw new InvalidArgumentException(sprintf('Type must be either "must" or "should", "%s" given', $type));
         }
 
         if ($query === null) {
@@ -95,7 +110,7 @@ class QueryHelper
         }
 
         if (!is_array($query)) {
-            throw new \InvalidArgumentException(sprintf('Query must be either an array or null, "%s" given', gettype($query)));
+            throw new InvalidArgumentException(sprintf('Query must be either an array or null, "%s" given', gettype($query)));
         }
 
         if (!isset($query['bool'])) {
@@ -131,37 +146,37 @@ class QueryHelper
             $a = explode(';', preg_replace('/\D+/', ';', trim($value)));
             switch (count($a)) {
                 case 1:     // yyyy
-                    $date_to = clone($date_from = new \DateTime($a[0] . '-01-01 00:00:00'));    // will throw if date is not valid
-                    $date_to->add(new \DateInterval('P1Y'));
+                    $date_to = clone($date_from = new DateTime($a[0] . '-01-01 00:00:00'));    // will throw if date is not valid
+                    $date_to->add(new DateInterval('P1Y'));
                     break;
                 case 2:     // yyyy;mm
-                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-01 00:00:00'));    // will throw if date is not valid
-                    $date_to->add(new \DateInterval('P1M'));
+                    $date_to = clone($date_from = new DateTime($a[0] . '-' . $a[1] . '-01 00:00:00'));    // will throw if date is not valid
+                    $date_to->add(new DateInterval('P1M'));
                     break;
                 case 3:     // yyyy;mm;dd
-                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' 00:00:00'));    // will throw if date is not valid
-                    $date_to->add(new \DateInterval('P1D'));
+                    $date_to = clone($date_from = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' 00:00:00'));    // will throw if date is not valid
+                    $date_to->add(new DateInterval('P1D'));
                     break;
                 case 4:
-                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00'));
-                    $date_to->add(new \DateInterval('PT1H'));
+                    $date_to = clone($date_from = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':00:00'));
+                    $date_to->add(new DateInterval('PT1H'));
                     break;
                 case 5:
-                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00'));
-                    $date_to->add(new \DateInterval('PT1M'));
+                    $date_to = clone($date_from = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':00'));
+                    $date_to->add(new DateInterval('PT1M'));
                     break;
                 case 6:
-                    $date_to = clone($date_from = new \DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]));
+                    $date_to = clone($date_from = new DateTime($a[0] . '-' . $a[1] . '-' . $a[2] . ' ' . $a[3] . ':' . $a[4] . ':' . $a[5]));
                     // $date_to->add(new \DateInterval('PT1S'));    // no need since precision is 1 sec, a "equal" will be generated when from==to
                     break;
             }
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             // no-op
         }
 
         if ($date_from === null || $date_to === null) {
-            throw new \InvalidArgumentException(sprintf('Invalid date "%s".', $value));
+            throw new InvalidArgumentException(sprintf('Invalid date "%s".', $value));
         }
 
         return [

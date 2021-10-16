@@ -122,11 +122,10 @@ class QueryContext
      */
     public function localizeField(Field $field)
     {
-        $ret = null;
         $index_field = $field->getIndexField();
 
         switch($field->getType()) {
-            case FieldMapping::TYPE_STRING:
+            case FieldMapping::TYPE_TEXT:
                 $ret = $this->localizeFieldName($index_field);
                 break;
 

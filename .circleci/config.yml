@@ -56,9 +56,9 @@ jobs:
         - run: node -v
         - run: npm -v
         - run: yarn install
-        - run: if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
+        - run: if [[ ! -e elasticsearch-6.8.9 ]]; then wget --no-check-certificate https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.8.9.tar.gz && tar -xvf elasticsearch-6.8.9.tar.gz && elasticsearch-6.8.9/bin/elasticsearch-plugin install analysis-icu; fi
         - run:
-            command: elasticsearch-2.3.3/bin/elasticsearch
+            command: elasticsearch-6.8.9/bin/elasticsearch
             background: true
         # Save dependency cache
         - save_cache:
@@ -75,7 +75,7 @@ jobs:
             - ~/.gradle
             - ~/.cache/bower
             # These cache paths were specified in the 1.0 config
-            - elasticsearch-2.3.3
+            - elasticsearch-6.8.9
             - node_modules
             - ~/.composer
         # This is based on your 1.0 configuration file or project settings

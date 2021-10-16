@@ -19,6 +19,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\TermInterface;
 use Elasticsearch\Client;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
+use function igorw\get_in;
 
 class Thesaurus
 {
@@ -100,6 +101,7 @@ class Thesaurus
         ));
 
         $must = [];
+        $mustnot = [];
         $filters = [];
 
         $must[] = [
@@ -119,9 +121,10 @@ class Thesaurus
                     ],
                 ],
             ];
-        } else {
-            $filters[] = [
-                'missing' => [
+        }
+        else {
+            $mustnot[] = [
+                'exists' => [
                     'field' => 'context'
                 ]
             ];
@@ -155,6 +158,15 @@ class Thesaurus
         if ($filter) {
             $filters = array_merge($filters, $filter->getQueryFilters());
         }
+
+        $query = [
+            'bool' => [
+                'must'     => $must,
+                'must_not' => $mustnot,
+                'filter'   => $filters,
+            ]
+        ];
+        /*
         if(!empty($filters)) {
             if (count($filters) > 1) {
                 $must[] = [
@@ -184,10 +196,11 @@ class Thesaurus
         else {
             $query = $must[0];
         }
+        */
 
         // Search request
         $params = [
-            'index' => $this->options->getIndexName(),
+            'index' => $this->options->getIndexName() . '.t',
             'type'  => TermIndexer::TYPE_NAME,
             'body'  => [
                 'query' => $query,
@@ -219,12 +232,12 @@ class Thesaurus
 
         // Extract concept paths from response
         $concepts = array();
-        $db_buckets = \igorw\get_in($response, ['aggregations', 'db', 'buckets'], []);
+        $db_buckets = get_in($response, ['aggregations', 'db', 'buckets'], []);
         $keys = array();
         foreach ($db_buckets as $db_bucket) {
             if (isset($db_bucket['key'])) {
                 $db = $db_bucket['key'];
-                $cp_buckets = \igorw\get_in($db_bucket, ['cp', 'buckets'], []);
+                $cp_buckets = get_in($db_bucket, ['cp', 'buckets'], []);
                 foreach ($cp_buckets as $cp_bucket) {
                     if (isset($cp_bucket['key'])) {
                         $keys[] = $cp_bucket['key'];
@@ -259,22 +272,34 @@ class Thesaurus
         }
 
         $field = sprintf('value%s', $field_suffix);
-        $query = array();
-        $query['match'][$field]['query'] = $term->getValue();
-        $query['match'][$field]['operator'] = 'and';
+        $query = [
+            'match' => [
+                $field => [
+                    'query' => $term->getValue(),
+                    'operator' => 'and'
+                ]
+            ]
+        ];
         // Allow 25% of non-matching tokens
         // (not exactly the same that 75% of matching tokens)
         // $query['match'][$field]['minimum_should_match'] = '-25%';
 
         if ($term->hasContext()) {
-            $value_query = $query;
-            $field = sprintf('context%s', $field_suffix);
-            $context_query = array();
-            $context_query['match'][$field]['query'] = $term->getContext();
-            $context_query['match'][$field]['operator'] = 'and';
-            $query = array();
-            $query['bool']['must'][0] = $value_query;
-            $query['bool']['must'][1] = $context_query;
+            $query = [
+                'bool' => [
+                    'must' => [
+                        $query,
+                        [
+                            'match' => [
+                                $field => [
+                                    'query' => $term->getContext(),
+                                    'operator' => 'and'
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
         }
 /*
         if(count($databoxIds) > 0) {
@@ -347,12 +372,12 @@ class Thesaurus
 
         // Extract concept paths from response
         $concepts = [];
-        $db_buckets = \igorw\get_in($response, ['aggregations', 'db', 'buckets'], []);
+        $db_buckets = get_in($response, ['aggregations', 'db', 'buckets'], []);
         $keys = array();
         foreach ($db_buckets as $db_bucket) {
             if (isset($db_bucket['key'])) {
                 $db = $db_bucket['key'];
-                $cp_buckets = \igorw\get_in($db_bucket, ['cp', 'buckets'], []);
+                $cp_buckets = get_in($db_bucket, ['cp', 'buckets'], []);
                 foreach ($cp_buckets as $cp_bucket) {
                     if (isset($cp_bucket['key'])) {
                         $keys[] = $cp_bucket['key'];
@@ -371,15 +396,15 @@ class Thesaurus
 
     private static function applyQueryFilter(array $query, array $filters)
     {
-        if (!isset($query['filtered'])) {
+        if (!isset($query['bool'])) {
             // Wrap in a filtered query
-            $query = ['filtered' => ['query' => $query, 'filter' => []]];
+            $query = ['bool' => ['must' => $query, 'filter' => []]];
         }
-        elseif (!isset($query['filtered']['filter'])) {
-            $query['filtered']['filter'] = [];
+        elseif (!isset($query['bool']['filter'])) {
+            $query['bool']['filter'] = [];
         }
 
-        self::addFilters($query['filtered']['filter'], $filters);
+        self::addFilters($query['bool']['filter'], $filters);
 
         return $query;
     }

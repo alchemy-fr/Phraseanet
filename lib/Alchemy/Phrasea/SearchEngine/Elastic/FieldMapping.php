@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
+use InvalidArgumentException;
+
 class FieldMapping
 {
 
@@ -19,7 +21,8 @@ class FieldMapping
     const DATE_FORMAT_MYSQL_OR_CAPTION = 'yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||yyyy-MM||yyyy';
 
     // Core types
-    const TYPE_STRING     = 'string';
+    const TYPE_TEXT       = 'text';
+    const TYPE_KEYWORD    = 'keyword';
     const TYPE_BOOLEAN    = 'boolean';
     const TYPE_DATE       = 'date';
     const TYPE_COMPLETION = 'completion';
@@ -38,7 +41,8 @@ class FieldMapping
     const TYPE_OBJECT  = 'object';
 
     private static $types = array(
-        self::TYPE_STRING,
+        self::TYPE_TEXT,
+        self::TYPE_KEYWORD,
         self::TYPE_BOOLEAN,
         self::TYPE_DATE,
         self::TYPE_FLOAT,
@@ -74,22 +78,17 @@ class FieldMapping
     private $enabled = true;
 
     /**
-     * @var bool
-     */
-    private $raw = false;
-
-    /**
      * @param string $name
      * @param string $type
      */
     public function __construct($name, $type)
     {
         if (trim($name) == '') {
-            throw new \InvalidArgumentException('Field name is required');
+            throw new InvalidArgumentException('Field name is required');
         }
 
         if (! in_array($type, self::$types)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid field mapping type "%s", expected "%s"',
                 $type,
                 implode('", "', self::$types)
@@ -134,13 +133,6 @@ class FieldMapping
     public function disableIndexing()
     {
         $this->indexed = false;
-
-        return $this;
-    }
-
-    public function enableRawIndexing()
-    {
-        $this->raw = true;
 
         return $this;
     }
@@ -196,9 +188,7 @@ class FieldMapping
         }
 
         if (! $this->indexed) {
-            $baseProperties['index'] = 'no';
-        } elseif ($this->raw) {
-            $baseProperties['index'] = 'not_analyzed';
+            $baseProperties['index'] = false;
         }
 
         if (! $this->enabled) {

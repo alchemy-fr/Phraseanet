@@ -4,7 +4,6 @@ namespace Alchemy\Tests\Phrasea\SearchEngine\AST;
 
 use Alchemy\Phrasea\SearchEngine\Elastic\AST\QuotedTextNode;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
-use Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryContext;
 use Alchemy\Phrasea\SearchEngine\Elastic\Structure\Field;
 
@@ -24,7 +23,7 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuild()
     {
-        $field = new Field('foo', FieldMapping::TYPE_STRING, ['private' => false]);
+        $field = new Field('foo', FieldMapping::TYPE_TEXT, ['private' => false]);
         $query_context = $this->prophesize(QueryContext::class);
         $query_context->getUnrestrictedFields()->willReturn([$field]);
         $query_context->getPrivateFields()->willReturn([]);
@@ -47,10 +46,10 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
 
     public function testQueryBuildWithPrivateFields()
     {
-        $public_field = new Field('foo', FieldMapping::TYPE_STRING, [
+        $public_field = new Field('foo', FieldMapping::TYPE_TEXT, [
             'private' => false
         ]);
-        $private_field = new Field('bar', FieldMapping::TYPE_STRING, [
+        $private_field = new Field('bar', FieldMapping::TYPE_TEXT, [
             'private' => true,
             'used_by_collections' => [1, 2, 3],
             'used_by_databoxes' => [1]
@@ -86,13 +85,13 @@ class QuotedTextNodeTest extends \PHPUnit_Framework_TestCase
                         "lenient": true
                     }
                 }, {
-                    "filtered": {
+                    "bool": {
                         "filter": {
                             "terms": {
                                 "base_id": [1, 2, 3]
                             }
                         },
-                        "query": {
+                        "must": {
                             "multi_match": {
                                 "type": "phrase",
                                 "fields": [

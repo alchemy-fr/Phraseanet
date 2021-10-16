@@ -177,6 +177,7 @@ class IndexManipulateCommand extends Command
                 $r = $indexer->createIndex($oldAliasName);
                 $newIndexName = $r['index'];
                 $newAliasName = $r['alias'];
+                $newDate = $r['date'];
 
                 $this->verbose(sprintf('<info>Temporary index "%s@%s:%s" -> "%s" was created</info>'
                     , $r['alias']
@@ -203,7 +204,7 @@ class IndexManipulateCommand extends Command
 
                 $indexer->getIndex()->getOptions()->setIndexName($oldAliasName);
 
-                $r = $indexer->replaceIndex($newIndexName, $newAliasName);
+                $r = $indexer->replaceIndex($newIndexName, $newAliasName, $newDate);;
                 foreach($r as $action) {
                     $this->verbose(sprintf('  <info>%s</info>', $action['msg']));
                 }

@@ -209,7 +209,7 @@ abstract class PhraseanetAuthenticatedWebTestCase extends \PhraseanetAuthenticat
         $queryText = '';
         $queryAST = '<NULL>';    // fake, real is really more complex
         $queryCompiled = '{match_all:[]}';    // fake, real is really more complex
-        $queryESLib = '{index:"test", match:{""}}';    // fake, real is really more complex
+        $queryESLib = json_decode('{index:"test", match:{""}}', true);    // fake, real is really more complex
 
         $result = new SearchEngineResult(
             new SearchEngineOptions(self::$DI['app']['repo.collection-references']),

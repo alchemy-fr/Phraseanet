@@ -30,6 +30,8 @@ class ElasticsearchOptions
     /** @var int */
     private $replicas;
     /** @var int */
+    private $totalFieldsLimit;
+    /** @var int */
     private $minScore;
     /** @var  bool */
     private $highlight;
@@ -58,6 +60,7 @@ class ElasticsearchOptions
             'index' => '',
             'shards' => 3,
             'replicas' => 0,
+            'totalFieldsLimit' => 1000,
             'minScore' => 4,
             'highlight' => true,
             'maxResultWindow'    => 500000,
@@ -74,6 +77,7 @@ class ElasticsearchOptions
         $self->setIndexName($options['index']);
         $self->setShards($options['shards']);
         $self->setReplicas($options['replicas']);
+        $self->setTotalFieldsLimit($options['totalFieldsLimit']);
         $self->setMinScore($options['minScore']);
         $self->setHighlight($options['highlight']);
         $self->setMaxResultWindow($options['maxResultWindow']);
@@ -98,6 +102,7 @@ class ElasticsearchOptions
             'index' => $this->indexName,
             'shards' => $this->shards,
             'replicas' => $this->replicas,
+            'totalFieldsLimit' => $this->totalFieldsLimit,
             'minScore' => $this->minScore,
             'highlight' => $this->highlight,
             'maxResultWindow'    => $this->maxResultWindow,
@@ -207,6 +212,22 @@ class ElasticsearchOptions
     public function getReplicas()
     {
         return $this->replicas;
+    }
+
+    /**
+     * @param int $totalFieldsLimit
+     */
+    public function setTotalFieldsLimit($totalFieldsLimit)
+    {
+        $this->totalFieldsLimit = (int)$totalFieldsLimit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalFieldsLimit()
+    {
+        return $this->totalFieldsLimit;
     }
 
     /**

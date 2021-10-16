@@ -14,11 +14,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic\Mapping;
 class DoubleFieldMapping extends ComplexFieldMapping
 {
     /**
-     * @var bool
-     */
-    private $enableAnalysis = true;
-
-    /**
      * @var string|null
      */
     private $analyzer = null;
@@ -36,21 +31,6 @@ class DoubleFieldMapping extends ComplexFieldMapping
         parent::__construct($name, self::TYPE_DOUBLE);
     }
 
-
-    public function disableAnalysis()
-    {
-        $this->enableAnalysis = false;
-
-        return $this;
-    }
-
-    public function enableAnalysis()
-    {
-        $this->enableAnalysis = true;
-
-        return $this;
-    }
-
     /**
      * @return array
      */
@@ -60,10 +40,6 @@ class DoubleFieldMapping extends ComplexFieldMapping
 
         if ($this->analyzer) {
             $properties['analyzer'] = $this->analyzer;
-        }
-
-        if (! $this->enableAnalysis) {
-            $properties['index'] = 'not_analyzed';
         }
 
         if ($this->termVector) {

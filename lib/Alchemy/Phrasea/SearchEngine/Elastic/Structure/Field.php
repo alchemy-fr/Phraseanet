@@ -6,6 +6,8 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Exception\MergeException;
 use Alchemy\Phrasea\SearchEngine\Elastic\FieldMapping;
 use Alchemy\Phrasea\SearchEngine\Elastic\Thesaurus\Helper as ThesaurusHelper;
 use databox_field;
+use InvalidArgumentException;
+use function igorw\get_in;
 
 /**
  * @todo Field labels
@@ -14,7 +16,7 @@ class Field implements Typed
 {
 
     const FACET_DISABLED = null;
-    const FACET_NO_LIMIT = 0;
+    const FACET_NO_LIMIT = 10000;
 
     /**
      * @var string
@@ -58,7 +60,7 @@ class Field implements Typed
 
         // Thesaurus concept inference
         $roots = null;
-        if($type === FieldMapping::TYPE_STRING && !empty($xpath = $field->get_tbranch())) {
+        if($type === FieldMapping::TYPE_TEXT && !empty($xpath = $field->get_tbranch())) {
             $roots = ThesaurusHelper::findConceptsByXPath($databox, $xpath);
         }
 
@@ -92,27 +94,26 @@ class Field implements Typed
             case databox_field::TYPE_NUMBER:
                 return FieldMapping::TYPE_DOUBLE;
             case databox_field::TYPE_STRING:
-                return FieldMapping::TYPE_STRING;
+                return FieldMapping::TYPE_TEXT;
         }
 
-        throw new \InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
+        throw new InvalidArgumentException(sprintf('Invalid field type "%s", expected "date", "number" or "string".', $type));
     }
 
     public function __construct($name, $type, array $options = [])
     {
         $this->name = (string) $name;
         $this->type = $type;
-        if(1) {
-            $this->databox_id = \igorw\get_in($options, ['databox_id'], 0);
-            $this->is_searchable = \igorw\get_in($options, ['searchable'], true);
-            $this->is_private = \igorw\get_in($options, ['private'], false);
-            $this->facet = \igorw\get_in($options, ['facet']);
-            $this->thesaurus_roots = \igorw\get_in($options, ['thesaurus_roots'], null);
-            $this->generate_cterms = \igorw\get_in($options, ['generate_cterms'], false);
-            $this->used_by_collections = \igorw\get_in($options, ['used_by_collections'], []);
-            $this->used_by_databoxes = \igorw\get_in($options, ['used_by_databoxes'], []);
-        }
-        else {
+
+        $this->databox_id = get_in($options, ['databox_id'], 0);
+        $this->is_searchable = get_in($options, ['searchable'], true);
+        $this->is_private = get_in($options, ['private'], false);
+        $this->facet = get_in($options, ['facet']);
+        $this->thesaurus_roots = get_in($options, ['thesaurus_roots'], null);
+        $this->generate_cterms = get_in($options, ['generate_cterms'], false);
+        $this->used_by_collections = get_in($options, ['used_by_collections'], []);
+        $this->used_by_databoxes = get_in($options, ['used_by_databoxes'], []);
+        /*
             // todo: this is faster code, but need to fix unit-tests to pass all options
             $this->databox_id = $options['databox_id'];
             $this->is_searchable = $options['searchable'];
@@ -122,7 +123,7 @@ class Field implements Typed
             $this->generate_cterms = $options['generate_cterms'];
             $this->used_by_collections = $options['used_by_collections'];
             $this->used_by_databoxes = $options['used_by_databoxes'];
-        }
+        */
     }
 
     public function withOptions(array $options)
@@ -150,7 +151,7 @@ class Field implements Typed
             '%scaption.%s%s',
             $this->is_private ? 'private_' : '',
             $this->name,
-            $raw && $this->type === FieldMapping::TYPE_STRING ? '.raw' : ''
+            $raw ? '.raw' : ''
         );
     }
 
