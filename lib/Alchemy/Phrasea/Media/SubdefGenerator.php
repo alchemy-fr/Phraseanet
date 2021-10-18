@@ -303,6 +303,67 @@ class SubdefGenerator
 
     }
 
+    public function generateSubdefFromFile($pathSrc, \databox_subdef $subdef_class, $pathdest)
+    {
+        $start = microtime(true);
+        $destFile = null;
+
+        try {
+            if($subdef_class->getSpecs() instanceof Video && !empty($this->tmpDirectory)){
+                $destFile = $pathdest;
+                $pathdest = $this->filesystem->generateTemporaryFfmpegPathname($record, $subdef_class, $this->tmpDirectory);
+            }
+
+            if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
+
+                $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
+
+            }
+            elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+
+                $this->generatePdfSubdef($pathSrc, $pathdest);
+
+            }
+            else {
+
+                $this->alchemyst->turnInto($pathSrc, $pathdest, $subdef_class->getSpecs());
+
+            }
+
+            if($destFile){
+                $this->filesystem->copy($pathdest, $destFile);
+                $this->app['filesystem']->remove($pathdest);
+            }
+
+        } catch (MediaAlchemystException $e) {
+            $start = 0;
+            $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
+        }
+
+        $stop = microtime(true);
+        if($start){
+            $duration = $stop - $start;
+
+            $originFileSize = $this->sizeHumanReadable(filesize($pathSrc));
+
+            if($destFile){
+                $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
+            }else{
+                $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
+            }
+
+            $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s',
+                    $subdef_class->get_name(),
+                    date('H:i:s', mktime(0,0, $duration)),
+                    $originFileSize,
+                    $subdef_class->get_name(),
+                    $generatedFileSize
+                )
+            );
+        }
+
+    }
+
     private function generatePdfSubdef($source, $pathdest)
     {
         try {
