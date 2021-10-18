@@ -141,7 +141,8 @@ class AMQPConnection
             'ssl'       => false,
             'user'      => 'guest',
             'password'  => 'guest',
-            'vhost'     => '/'
+            'vhost'     => '/',
+            'heartbeat' => 60,
         ];
 
         $this->hostConfig = $conf->get(['workers', 'queue', 'worker-queue'], $defaultConfiguration);
@@ -311,10 +312,12 @@ class AMQPConnection
     {
         if (!isset($this->connection)) {
             try {
+                $heartbeat = $this->hostConfig['heartbeat'] ?? 60;
+
                 // if we are in ssl connection type
                 if (isset($this->hostConfig['ssl']) && $this->hostConfig['ssl'] === true) {
                     $sslOptions = [
-                        'verify_peer' => true
+                        'verify_peer' => true,
                     ];
 
                     $this->connection =  new AMQPSSLConnection(
@@ -323,7 +326,10 @@ class AMQPConnection
                         $this->hostConfig['user'],
                         $this->hostConfig['password'],
                         $this->hostConfig['vhost'],
-                        $sslOptions
+                        $sslOptions,
+                        [
+                            'heartbeat' => $heartbeat,
+                        ]
                     );
                 } else {
                     $this->connection =  new AMQPStreamConnection(
@@ -331,7 +337,16 @@ class AMQPConnection
                         $this->hostConfig['port'],
                         $this->hostConfig['user'],
                         $this->hostConfig['password'],
-                        $this->hostConfig['vhost']
+                        $this->hostConfig['vhost'],
+                        false,
+                        'AMQPLAIN',
+                        null,
+                        'en_US',
+                        3.0,
+                        3.0,
+                        null,
+                        false,
+                        $heartbeat
                     );
                 }
             }
@@ -425,7 +440,6 @@ class AMQPConnection
                 break;
             default:
                 throw new Exception(sprintf('undefined q type "%s', $queueName));
-                break;
         }
 
         return $this->channel;

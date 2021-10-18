@@ -16,6 +16,7 @@ use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
+use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
@@ -75,11 +76,12 @@ class BasketController extends Controller
     {
         $userFrom = $basket->getValidation()->getInitiator();
 
+        $expireDate = $basket->getValidation()->getExpires();
         $emitter = Emitter::fromUser($userFrom);
         $localeFrom = $userFrom->getLocale();
 
         $params = $request->request->all();
-        $message = $params['reminder-message'];
+        $message = $params['reminder_message'];
 
         $usersId = array_map(function ($value) {
             $t = explode("_", $value);
@@ -101,6 +103,15 @@ class BasketController extends Controller
             }
             catch (\Exception $e) {
                 // not unique token ? should not happen
+            }
+
+            if ($request->get('send_new_token')) {
+                // first, if token exist delete it
+                if(!is_null($token)) {
+                    $this->getTokenManipulator()->delete($token);
+                    unset($token);
+                }
+                $token = $this->getTokenManipulator()->createBasketValidationToken($basket, $userTo, $expireDate);
             }
 
             if(!is_null($token)) {
@@ -373,5 +384,13 @@ class BasketController extends Controller
     private function getTokenRepository()
     {
         return $this->app['repo.tokens'];
+    }
+
+    /**
+     * @return TokenManipulator
+     */
+    private function getTokenManipulator()
+    {
+        return $this->app['manipulator.token'];
     }
 }

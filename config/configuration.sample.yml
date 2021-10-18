@@ -333,6 +333,7 @@ workers:
           user: guest
           password: guest
           vhost: /
+          heartbeat: 60
     queues:
         writeMetadatas:           # this Q is "delayable" in case of record is locked
             ttl_retry: 1500         # overwrite 1000 ms default delay

@@ -131,16 +131,16 @@
         },
         {
             "name": "alchemy/embed-bundle",
-            "version": "2.0.9",
+            "version": "2.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/embed-bundle.git",
-                "reference": "8cdb9612a9e3edd998b68f0803eacca8e0f50775"
+                "reference": "e7c53ac4f0bfedba2cbd4431040cd615703a4c23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/8cdb9612a9e3edd998b68f0803eacca8e0f50775",
-                "reference": "8cdb9612a9e3edd998b68f0803eacca8e0f50775",
+                "url": "https://api.github.com/repos/alchemy-fr/embed-bundle/zipball/e7c53ac4f0bfedba2cbd4431040cd615703a4c23",
+                "reference": "e7c53ac4f0bfedba2cbd4431040cd615703a4c23",
                 "shasum": ""
             },
             "require-dev": {
@@ -178,10 +178,10 @@
             ],
             "description": "Embed resources bundle",
             "support": {
-                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.9",
+                "source": "https://github.com/alchemy-fr/embed-bundle/tree/2.0.13",
                 "issues": "https://github.com/alchemy-fr/embed-bundle/issues"
             },
-            "time": "2020-02-04T14:53:00+00:00"
+            "time": "2021-10-01T13:22:39+00:00"
         },
         {
             "name": "alchemy/geonames-api-consumer",
@@ -275,16 +275,16 @@
         },
         {
             "name": "alchemy/mediavorus",
-            "version": "0.4.10",
+            "version": "0.4.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alchemy-fr/MediaVorus.git",
-                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985"
+                "reference": "0108a4b93d258dff00d154d1c05ddb296a34d621"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/3e235eb1efb528aea2973c946f4bf47630b98985",
-                "reference": "3e235eb1efb528aea2973c946f4bf47630b98985",
+                "url": "https://api.github.com/repos/alchemy-fr/MediaVorus/zipball/0108a4b93d258dff00d154d1c05ddb296a34d621",
+                "reference": "0108a4b93d258dff00d154d1c05ddb296a34d621",
                 "shasum": ""
             },
             "require": {
@@ -334,7 +334,10 @@
             "keywords": [
                 "metadata"
             ],
-            "time": "2020-02-18T13:37:45+00:00"
+            "support": {
+                "source": "https://github.com/alchemy-fr/MediaVorus/tree/0.4.11"
+            },
+            "time": "2021-09-29T12:09:06+00:00"
         },
         {
             "name": "alchemy/oauth2php",
@@ -8868,16 +8871,16 @@
     ],
     "aliases": [
         {
-            "alias": "1.6.1",
-            "alias_normalized": "1.6.1.0",
+            "package": "justinrainbow/json-schema",
             "version": "2.0.3.0",
-            "package": "justinrainbow/json-schema"
+            "alias": "1.6.1",
+            "alias_normalized": "1.6.1.0"
         },
         {
-            "alias": "0.13.0",
-            "alias_normalized": "0.13.0.0",
+            "package": "league/fractal",
             "version": "dev-webgalleries",
-            "package": "league/fractal"
+            "alias": "0.13.0",
+            "alias_normalized": "0.13.0.0"
         }
     ],
     "minimum-stability": "stable",
@@ -8897,5 +8900,6 @@
         "php": ">=7.0 <7.1",
         "ext-intl": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
 }

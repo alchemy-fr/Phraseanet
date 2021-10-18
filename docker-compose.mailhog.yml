@@ -4,7 +4,8 @@ services:
    mailhog:
     image: mailhog/mailhog
     ports:
-    - 1025:1025
-    - 8025:8025
+    - ${MAILHOG_GUI_PORT}:8025
+    environment:
+    - MAILHOG_GUI_PORT
     networks:
       - internal

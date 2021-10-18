@@ -94,6 +94,7 @@ class WorkerExecuteCommand extends Command
         }
 
         $serverConnection->connectionClose();
-    }
 
+        return 0;
+    }
 }

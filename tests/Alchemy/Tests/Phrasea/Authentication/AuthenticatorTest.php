@@ -4,7 +4,7 @@ namespace Alchemy\Tests\Phrasea\Authentication;
 
 use Alchemy\Phrasea\Authentication\Authenticator;
 use Alchemy\Phrasea\Exception\RuntimeException;
-use Alchemy\Phrasea\Model\Entities\Session;
+use Alchemy\Phrasea\Model\Entities\Session as SessionEntity;
 
 /**
  * @group functional
@@ -53,6 +53,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
     public function testOpenAccount()
     {
         $app = $this->loadApp();
+        /** @var SessionEntity $capturedSession */
         $capturedSession = null;
 
         $app['browser'] = $browser = $this->getBrowserMock();
@@ -82,9 +83,10 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $em->expects($this->at(0))
             ->method('persist')
-            ->with($this->isInstanceOf('Alchemy\Phrasea\Model\Entities\Session'))
-            ->will($this->returnCallback(function ($session) use (&$capturedSession) {
+            ->with($this->isInstanceOf(SessionEntity::class))
+            ->will($this->returnCallback(function (SessionEntity $session) use (&$capturedSession) {
                 $capturedSession = $session;
+                $capturedSession->setCreated(new \Datetime());
             }));
         $em->expects($this->at(1))
             ->method('flush');
@@ -125,8 +127,8 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $sessionId = 4224242;
 
-        $session = new Session();
-        $session->setUser($user);
+        $session = new SessionEntity();
+        $session->setUser($user)->setCreated(new \DateTime());
 
         $ref = new \ReflectionObject($session);
         $prop = $ref->getProperty('id');
@@ -169,7 +171,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
         $sessionId = 4224242;
 
-        $session = new Session();
+        $session = new SessionEntity();
         $session->setUser($user);
 
         $ref = new \ReflectionObject($session);
@@ -228,7 +230,7 @@ class AuthenticatorTest extends \PhraseanetTestCase
     {
         $app = $this->loadApp();
 
-        $sessionEntity = new Session();
+        $sessionEntity = new SessionEntity();
         $sessionEntity->setUser(self::$DI['user']);
         $sessionEntity->setUserAgent('');
 
@@ -281,7 +283,8 @@ class AuthenticatorTest extends \PhraseanetTestCase
 
     private function getSessionMock()
     {
-        return new \Symfony\Component\HttpFoundation\Session\Session(new \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage());
+        $session = new \Symfony\Component\HttpFoundation\Session\Session(new \Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage());
+        return $session;
 
         return $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\SessionInterface')
             ->disableOriginalConstructor()
