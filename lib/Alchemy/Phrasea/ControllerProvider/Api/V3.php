@@ -9,6 +9,7 @@ use Alchemy\Phrasea\Controller\Api\V3\V3ResultHelpers;
 use Alchemy\Phrasea\Controller\Api\V3\V3SearchController;
 use Alchemy\Phrasea\Controller\Api\V3\V3SearchRawController;
 use Alchemy\Phrasea\Controller\Api\V3\V3StoriesController;
+use Alchemy\Phrasea\Controller\Api\V3\V3SubdefsServiceController;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -29,6 +30,12 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
                 $app['authentication'],
                 $app['url_generator']
             ));
+        });
+        $app['controller.api.v3.subdefs_service'] = $app->share(function (PhraseaApplication $app) {
+            return (new V3SubdefsServiceController($app))
+                ->setJsonBodyHelper($app['json.body_helper'])
+                ->setDispatcher($app['dispatcher'])
+                ;
         });
         $app['controller.api.v3.records'] = $app->share(function (PhraseaApplication $app) {
             return (new V3RecordController($app))
@@ -122,8 +129,13 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
          * @uses V1Controller::ensureCanAccessToRecord()
          * @uses V1Controller::ensureCanModifyRecord()
          */
-
         $controllers->post('/records/{base_id}/', 'controller.api.v3.records:indexAction_POST')
+            ->assert('base_id', '\d+');
+
+        /**
+         * @uses V3SubdefsServiceController::indexAction_POST()
+         */
+        $controllers->post('/subdefs_service/{base_id}/', 'controller.api.v3.subdefs_service:indexAction_POST')
             ->assert('base_id', '\d+');
 
         /**

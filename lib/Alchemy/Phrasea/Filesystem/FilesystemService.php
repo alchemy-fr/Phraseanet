@@ -176,7 +176,7 @@ class FilesystemService
      *
      * @return string
      */
-    private function getExtensionFromSpec(SpecificationInterface $spec)
+    public function getExtensionFromSpec(SpecificationInterface $spec)
     {
         switch ($spec->getType()) {
             case SpecificationInterface::TYPE_IMAGE:
