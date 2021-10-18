@@ -64,6 +64,7 @@ use Alchemy\Phrasea\Command\User\UserListCommand;
 use Alchemy\Phrasea\Command\User\UserPasswordCommand;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerExecuteCommand;
+use Alchemy\Phrasea\WorkerManager\Command\WorkerHeartbeatCommand;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerRunServiceCommand;
 use Alchemy\Phrasea\WorkerManager\Command\WorkerShowConfigCommand;
 
@@ -171,6 +172,7 @@ $cli->command(new QuerySampleCommand());
 $cli->command(new FindConceptsCommand());
 
 $cli->command(new WorkerExecuteCommand());
+$cli->command(new WorkerHeartbeatCommand());
 $cli->command(new WorkerRunServiceCommand());
 $cli->command(new WorkerShowConfigCommand());
 

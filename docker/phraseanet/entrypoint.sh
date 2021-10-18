@@ -101,6 +101,19 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     bin/setup system:config set registry.api-clients.api-require-ssl $PHRASEANET_API_SSL
     bin/setup system:config set registry.api-clients.api-auth-token-header-only $PHRASEANET_API_AUTH_TOKEN_HEADER_ONLY
 
+
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting RABBITMQ"
+    bin/setup system:config set workers.queue.worker-queue.host $PHRASEANET_RABBITMQ_HOST
+    bin/setup system:config set workers.queue.worker-queue.port $PHRASEANET_RABBITMQ_PORT
+    bin/setup system:config set workers.queue.worker-queue.vhost $PHRASEANET_RABBITMQ_VHOST
+    bin/setup system:config set workers.queue.worker-queue.ssl $PHRASEANET_RABBITMQ_SSL
+    bin/setup system:config set workers.queue.worker-queue.heartbeat $PHRASEANET_RABBITMQ_HEARTBEAT
+    bin/setup system:config set workers.queue.worker-queue.user $PHRASEANET_RABBITMQ_USER
+    bin/setup system:config set workers.queue.worker-queue.password $PHRASEANET_RABBITMQ_PASSWORD
+    
+
+
+
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting SMTP "
     if [[ $PHRASEANET_SMTP_ENABLED && $PHRASEANET_SMTP_ENABLED = true ]]; then
         bin/setup system:config set registry.email.smtp-enabled $PHRASEANET_SMTP_ENABLED
