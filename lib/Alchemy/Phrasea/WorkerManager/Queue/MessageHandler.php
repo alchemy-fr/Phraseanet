@@ -80,7 +80,7 @@ class MessageHandler
 
                 $logMessage = sprintf("Rabbit message executed %s times, it's to be saved in %s , payload >>> %s",
                     $count,
-                    $msgType,
+                    $AMQPConnection->getFailedQueueName($msgType),
                     json_encode($data['payload'])
                 );
                 $publisher->pushLog($logMessage);
