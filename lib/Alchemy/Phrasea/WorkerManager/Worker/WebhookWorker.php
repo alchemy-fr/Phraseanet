@@ -11,6 +11,7 @@ use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Entities\WebhookEventPayload;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
+use Alchemy\Phrasea\Utilities\NetworkProxiesConfiguration;
 use Alchemy\Phrasea\Webhook\Processor\ProcessorInterface;
 use Alchemy\Phrasea\WorkerManager\Event\WebhookDeliverFailureEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
@@ -85,11 +86,18 @@ class WebhookWorker implements WorkerInterface
 
             $version = new Version();
 
-            $httpClient = new Client([
+            $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
+
+            $clientOptions = [
+                'connect_timeout' => 50, // should be less than default rabbit timeout 60 to avoid to block Q
                 'headers' => [
                     'User-Agent' => sprintf('Phraseanet/%s (%s)', $version->getNumber(), $version->getName())
                 ]
-            ]);
+            ];
+
+            // use proxy if http-proxy defined in configuration.yml
+            // otherwise no
+            $httpClient = $proxyConfig->getClientWithOptions($clientOptions);
 
             $thirdPartyApplications = $this->app['repo.api-applications']->findWithDefinedWebhookCallback();
 
@@ -227,9 +235,10 @@ class WebhookWorker implements WorkerInterface
             $app['manipulator.webhook-delivery']->deliveryFailure($delivery);
 
             $logType = 'error';
-            $logEntry = sprintf('Deliver failure event "%d:%s" for app "%s"',
+            $logEntry = sprintf('Deliver failure event "%d:%s" for app "%s": %s',
                 $delivery->getWebhookEvent()->getId(), $delivery->getWebhookEvent()->getName(),
-                $delivery->getThirdPartyApplication()->getName()
+                $delivery->getThirdPartyApplication()->getName(),
+                $reason->getMessage()
             );
 
             $app['alchemy_worker.message.publisher']->pushLog($logEntry, $logType);
