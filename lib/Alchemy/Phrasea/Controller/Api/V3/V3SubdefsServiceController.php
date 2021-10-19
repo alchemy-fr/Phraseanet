@@ -3,7 +3,6 @@
 namespace Alchemy\Phrasea\Controller\Api\V3;
 
 
-use ACL;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\JsonBodyAware;
 use Alchemy\Phrasea\Border\Manager;
@@ -11,13 +10,13 @@ use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\SubdefGenerator;
-use collection;
 use Exception;
 use Guzzle\Http\Client as Guzzle;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Translation\TranslatorInterface;
 
 
 class V3SubdefsServiceController extends Controller
@@ -39,37 +38,46 @@ class V3SubdefsServiceController extends Controller
     {
         $body = $this->decodeJsonBody($request);
 
+        $dbox_id = $body->databoxId;
+        $databox = $this->app->getApplicationBox()->get_databox($dbox_id);
+        /*
+
         $collection = collection::getByBaseId($this->app, $base_id);
 
-        if (!$this->getAclForUser()->has_right_on_base($base_id, ACL::CANADDRECORD)) {
+        if (!$this->getAclForUser()- has_right_on_base($base_id, ACL::CANADDRECORD)) {
             return Result::createError($request, 403, sprintf(
                 'You do not have access to collection %s', $collection->get_label($this->app['locale'])
             ))->createResponse();
         }
-
+        */
         $ret = [];
 
         $newPathname = null;    // will be set if a file is uploaded
 
-        if (count($request->files->get('file')) == 0) {
-            if(count($request->get('url')) == 1) {
-                // upload by url
-                $url = $request->get('url');
-                $pi = pathinfo($url);   // filename, extension
+        try {
+            $src_url = $body->source->url;
+        }
+        catch (\Exception $e) {
+            $src_url = null;
+        }
 
-                $tempfile = $this->getTmpFilesystem()->createTemporaryFile('download_', null, $pi['extension']);
+        if($src_url) {
+            // upload by url
+            $pi = pathinfo($src_url);   // filename, extension
 
-                try {
-                    $guzzle = new Guzzle($url);
-                    $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
-                }
-                catch (Exception $e) {
-                    return Result::createBadRequest($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
-                }
+            $newPathname = $this->getTmpFilesystem()->createTemporaryFile('download_', null, $pi['extension']);
 
-                if($res->getStatusCode() !== 200) {
-                    return Result::createBadRequest($request, sprintf('Error %s downloading "%s"', $res->getStatusCode(), $url));
-                }
+            try {
+                $guzzle = new Guzzle($src_url);
+                $res = $guzzle->get("", [], ['save_to' => $newPathname])->send();
+                unset($guzzle);
+            }
+            catch (Exception $e) {
+                return Result::createBadRequest($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $src_url));
+            }
+
+            if($res->getStatusCode() !== 200) {
+                return Result::createBadRequest($request, sprintf('Error %s downloading "%s"', $res->getStatusCode(), $src_url));
             }
         }
         else {
@@ -94,7 +102,11 @@ class V3SubdefsServiceController extends Controller
             $media = $this->app->getMediaFromUri($newPathname);
 
             $type = $media->getType();   // 'document', 'audio', 'video', 'image', 'flash', 'map'
-            $subdefs = $collection->get_databox()->get_subdef_structure()->getSubdefGroup($type);
+            $subdefs = $databox->get_subdef_structure()->getSubdefGroup($type);
+
+            // $subdef = new \databox_subdef($type, $sxSettings, $this->getTranslator());
+
+            // $guzzle = new Guzzle($url);
 
             foreach ($subdefs as $subdef) {
 
@@ -147,6 +159,14 @@ class V3SubdefsServiceController extends Controller
     private function getBorderManager()
     {
         return $this->app['border-manager'];
+    }
+
+    /**
+     * @return TranslatorInterface
+     */
+    private function getTranslator()
+    {
+        return $this->app['translator'];
     }
 
 }
