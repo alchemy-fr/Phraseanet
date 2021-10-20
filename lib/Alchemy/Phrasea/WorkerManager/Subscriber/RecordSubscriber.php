@@ -58,6 +58,7 @@ class RecordSubscriber implements EventSubscriberInterface
 
             if ($subdefs !== null) {
                 foreach ($subdefs as $subdef) {
+
                     $payload = [
                         'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
                         'payload' => [

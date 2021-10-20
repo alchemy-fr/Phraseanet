@@ -14,31 +14,26 @@ jobs:
           CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
           CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
         docker:
-        - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
+        - image: cimg/php:7.0.33-node
         - image: circleci/rabbitmq:3.7.7
         steps:
         - checkout
-        - run: phpenv versions
-        - run: phpenv global 7.0.7
         - run: php -v
         - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
         - run:
             working_directory: ~/alchemy-fr/Phraseanet
-            command: nvm install v10.12.0 && nvm alias default v10.12.0
-        - run:
-            working_directory: ~/alchemy-fr/Phraseanet
-            command: 'sudo service mysql status || sudo service mysql start;'
+            command: 'sudo apt update && sudo apt install mysql-server && sudo service mysql status || sudo service mysql start;'
         # Dependencies
         #   This would typically go in either a build or a build-and-test job when using workflows
         # Restore the dependency cache
         - restore_cache:
             keys:
             # This branch if available
-            - v1-dep-{{ .Branch }}-
+            - v2-dep-{{ .Branch }}-
             # Default branch if not
-            - v1-dep-master-
+            - v2-dep-master-
             # Any branch if there are none on the default branch - this should be unnecessary if you have your default branch configured correctly
-            - v1-dep-
+            - v2-dep-
         # This is based on your 1.0 configuration file or project settings
         - run: echo 127.0.0.1 redis elasticsearch db rabbitmq | sudo tee -a /etc/hosts
         - run: git clone https://github.com/alanxz/rabbitmq-c
@@ -46,23 +41,20 @@ jobs:
         - run: cd rabbitmq-c && git submodule init && git submodule update && autoreconf -i && ./configure && make && sudo make install
         # disabled because pear.php.net is down cause of security failure
         #- run: pecl channel-update pear.php.net
-        - run: yes '' | pecl install amqp-1.9.3
-        - run: yes '' | pecl install imagick
-        - run: sudo apt-get install libzmq-dev
-        - run: yes '' | pecl install zmq-beta
-        - run: echo "extension = amqp.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/amqp.ini
-        - run: echo "extension = zmq.so" > /opt/circleci/php/$(phpenv global)/etc/conf.d/zmq.ini
-        - run: echo "date.timezone = UTC" > /opt/circleci/php/$(phpenv global)/etc/conf.d/timezone.ini
-        - run: sed -i 's/^\(session.cache_limiter = \).*/\1""/' /opt/circleci/php/$(phpenv global)/etc/php.ini
+        - run: sudo apt -y install  openjdk-8-jre-headless python-dev-is-python2 php7.0-amqp php7.0-zmq php7.0-intl php7.0-sqlite3 libmagickwand-dev libmagickcore-dev
+        - run: printf "\n" | sudo pecl install amqp-1.11.0beta
+        - run: printf "\n" | sudo pecl install imagick
+        - run: sudo -- bash -c  "echo 'date.timezone = UTC' > /etc/php/7.0/mods-available/timezone.ini"
+        - run: sudo sed -i 's/^\(session.cache_limiter = \).*/\1""/' /etc/php/7.0/cli/php.ini
+        - run: sudo -- bash -c  'echo -e "[mysqld]\ndefault-authentication-plugin=mysql_native_password" > /etc/mysql/conf.d/mysql_native_password.cnf' && sudo service mysql restart
         - run: npm rebuild node-sass
         # This is based on your 1.0 configuration file or project settings
         - run: composer install --no-progress --no-interaction --optimize-autoloader
+        - run: curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+        - run: source ~/.profile && nvm install v10.12.0 && nvm alias default v10.12.0 
         # This is based on your 1.0 configuration file or project settings
         - run: node -v
         - run: npm -v
-        - run: npm install -g yarn
-        - run: rm ~/.yarn/bin/yarn
-        - run: ln -s /opt/circleci/nodejs/v10.12.0/bin/yarn ~/.yarn/bin/yarn
         - run: yarn install
         - run: if [[ ! -e elasticsearch-2.3.3 ]]; then wget --no-check-certificate https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.3.tar.gz && tar -xvf elasticsearch-2.3.3.tar.gz && elasticsearch-2.3.3/bin/plugin install analysis-icu; fi
         - run:
@@ -70,7 +62,7 @@ jobs:
             background: true
         # Save dependency cache
         - save_cache:
-            key: v1-dep-{{ .Branch }}-{{ epoch }}
+            key: v2-dep-{{ .Branch }}-{{ epoch }}
             paths:
             # This is a broad list of cache paths to include many possible development environments
             # You can probably delete some of these entries
@@ -87,10 +79,10 @@ jobs:
             - node_modules
             - ~/.composer
         # This is based on your 1.0 configuration file or project settings
-        - run: mysql -u ubuntu -e 'CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;';
+        - run: sudo mysql -u root -e "CREATE USER 'phraseanet'@'localhost' IDENTIFIED WITH mysql_native_password BY 'phraseanet';GRANT ALL PRIVILEGES ON * . * TO 'phraseanet'@'localhost';CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;"
         # This is based on your 1.0 configuration file or project settings
         - run: ./bin/developer system:uninstall -v
-        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=ubuntu --db-template=fr-simple --db-password= --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=localhost --db-user=phraseanet --db-template=fr-simple --db-password=phraseanet --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
         - run: ./bin/developer ini:setup-tests-dbs -v
         - run: ./bin/console searchengine:index:create -v
         - run: ./bin/developer phraseanet:regenerate-sqlite -v

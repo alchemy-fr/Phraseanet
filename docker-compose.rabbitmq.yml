@@ -1,0 +1,12 @@
+version: "3.4"
+
+services: 
+
+  rabbitmq:
+    image: rabbitmq:3.6.16-management
+    restart: on-failure
+    environment:
+    - RABBITMQ_DEFAULT_USER
+    - RABBITMQ_DEFAULT_PASS
+    networks:
+      - internal

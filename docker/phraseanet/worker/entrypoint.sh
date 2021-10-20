@@ -2,6 +2,8 @@
 
 set -e
 
+HEARTBEAT_INTERVAL=20
+
 DOCKER_DIR="./docker/phraseanet"
 PHR_USER=app
 
@@ -54,76 +56,88 @@ if [[ $BLACKFIRE_ENABLED = "true" ]]; then
   service blackfire-agent start
   echo "Blackfire setup done"
 else
-    echo `date +"%Y-%m-%d %H:%M:%S"` " - blackfire extension deactivation."
-    rm -f /usr/local/etc/php/conf.d/zz-blackfire.ini
+  echo `date +"%Y-%m-%d %H:%M:%S"` " - blackfire extension deactivation."
+  rm -f /usr/local/etc/php/conf.d/zz-blackfire.ini
 fi
-
 
 rm -rf bin/run-worker.sh
 
 if [ ! -z "$PHRASEANET_SCHEDULER" ] ; then
-
   command="bin/console task-manager:scheduler:run"
- echo $command >> bin/run-worker.sh 
- echo "Phraseanet workers container will be launched in Scheduler mode with bin/console task-manager:scheduler:run"
-
+  echo $command >> bin/run-worker.sh
+  echo "Phraseanet workers container will be launched in Scheduler mode with bin/console task-manager:scheduler:run"
 else
- if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
+  if [ ! -z "$PHRASEANET_EXPLODE_WORKER" ] && [ ${PHRASEANET_EXPLODE_WORKER} == "1" ]; then
     if [ ! -z "$PHRASEANET_WORKERS_LAUNCH_METHOD" ] && [ ${PHRASEANET_WORKERS_LAUNCH_METHOD} == "supervisor" ]; then
-     echo "Multiples Phraseanet workers will be launched by supervisor"
-     for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
-     do
+      echo "Multiples Phraseanet workers will be launched by supervisor"
+      for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
+      do
         worker_job_file="$(echo $i | cut -d'_' -f3).conf"
         if [ ${!i} -gt "0" ] ; then
           envsubst < "/var/alchemy/Phraseanet/docker/phraseanet/worker/supervisor_conf.d/$worker_job_file" > /etc/supervisor/conf.d/$worker_job_file
-          echo "Add Worker : " $worker_job_file " -- with parallelism: (-m) " ${!i} 
+          echo "Add worker: " $worker_job_file " -- with parallelism: (-m) " ${!i}
         else
-          echo "NO Worker define for : " $worker_job_file " -- because parallelism (-m) is set to : " ${!i} 
+          echo "No worker defined for: " $worker_job_file " -- because parallelism (-m) is set to : " ${!i}
         fi
-      done     
-     command="/usr/bin/supervisord -n -c /etc/supervisor/supervisor.conf"
-     echo $command >> bin/run-worker.sh
-     PHR_USER=root
+      done
+      command="/usr/bin/supervisord -n -c /etc/supervisor/supervisor.conf"
+      echo $command >> bin/run-worker.sh
+      PHR_USER=root
     else
-     echo "Multiples Phraseanet workers will be launched with bin/console worker:execute"
-     NBR_WORKERS=0
-     for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
-     do
+      echo "Multiples Phraseanet workers will be launched with bin/console worker:execute"
+      NBR_WORKERS=0
+
+      echo "bin/console worker:heartbeat --heartbeat ${HEARTBEAT_INTERVAL} &" >> bin/run-worker.sh
+
+      for i in `env | grep PHRASEANET_WORKER_ | cut -d'=' -f1`
+      do
         queue_name="$(echo $i | cut -d'_' -f3)"
         m=$i
         if [ ${!m} -gt "0" ] ; then
-        command="bin/console worker:execute --queue-name=$queue_name -m ${!m} &"
-        echo $command >> bin/run-worker.sh
-        echo "Worker " $queue_name " define with parallelism " ${!m}
-        NBR_WORKERS=$(expr $NBR_WORKERS + 1)
-      else
-        echo " NO Worker defined for : " $m " -- because parallelism (-m) is set to : " ${!m}
-      fi
-     done
-    
-    echo $NBR_WORKERS " workers define"
-    echo $NBR_WORKERS > bin/workers_count.txt
-    chown root:app bin/workers_count.txt
-    chmod 760 bin/workers_count.txt
-    echo '
-    NBR_WORKERS=$(< bin/workers_count.txt)
-    WORKER_LOOP_VALUE=20s
-      while true;
-      do
-        sleep $WORKER_LOOP_VALUE
-        nb_process=`ps faux | grep "worker:execute" | grep php | wc -l`
-        date_time_process=`date +"%Y-%m-%d %H:%M:%S"`
-        echo $date_time_process "-" $nb_process "running workers"
-        if [ $nb_process -lt $NBR_WORKERS ]
-          then
-            exit 1
-            break
+          command="bin/console worker:execute --queue-name=$queue_name -m ${!m} &"
+          echo $command >> bin/run-worker.sh
+          echo "Worker " $queue_name " defined with parallelism " ${!m}
+          NBR_WORKERS=$(expr $NBR_WORKERS + 1)
+        else
+          echo "No worker defined for: " $m " -- because parallelism (-m) is set to : " ${!m}
         fi
-      done  ' >> bin/run-worker.sh
-      fi  
+      done
+
+      echo $NBR_WORKERS " workers defined"
+      echo $NBR_WORKERS > bin/workers_count.txt
+      chown root:app bin/workers_count.txt
+      chmod 760 bin/workers_count.txt
+      echo "HEARTBEAT_INTERVAL=${HEARTBEAT_INTERVAL}" >> bin/run-worker.sh
+      echo '
+NBR_WORKERS=$(< bin/workers_count.txt)
+sleep 1 # let worker:heartbeat fail before process check
+
+function check() {
+  nb_process=`ps faux | grep "worker:execute" | grep php | wc -l`
+  nb_heartbeat=`ps faux | grep "worker:heartbeat" | grep php | wc -l`
+  date_time_process=`date +"%Y-%m-%d %H:%M:%S"`
+  echo $date_time_process "-" $nb_process "running workers"
+  if [ $nb_process -lt $NBR_WORKERS ]; then
+    echo "One or more worker:execute is not running, exiting..."
+    exit 1
+  elif [ $nb_heartbeat -lt 1 ]; then
+    echo "worker:heartbeat is not running, exiting..."
+    exit 1
+  fi
+}
+
+# early check
+check
+
+while true; do
+  sleep ${HEARTBEAT_INTERVAL}s
+  check
+done' >> bin/run-worker.sh
+    fi
   else
     command="bin/console worker:execute"
     echo $command >> bin/run-worker.sh
   fi
 fi
+
 runuser -u $PHR_USER -- $@
