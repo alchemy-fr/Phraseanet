@@ -51088,6 +51088,7 @@ var geonameDatasource = function geonameDatasource(services) {
             height: "auto",
             width: 400,
             modal: true,
+            dialogClass: "dialog-edit_lat_lon",
             buttons: {
                 confirmYes: function confirmYes() {
                     (0, _jquery2.default)(this).dialog("close");

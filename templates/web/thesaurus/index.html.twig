@@ -4,7 +4,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ app['conf'].get(['registry', 'general', 'title']) }} - {{ 'phraseanet:: thesaurus' | trans }}</title>
         <link rel="shortcut icon" type="image/x-icon" href="/assets/thesaurus/images/favicon.ico">
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
     </head>
     <body>
         <br/>
