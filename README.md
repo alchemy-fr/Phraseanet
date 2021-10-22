@@ -126,6 +126,14 @@ By default ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` is set for deploying a 
 At first launch of the stack, Phraseanet container plays install.
 it will restart until it can do this installation: waiting for readiness of all other containers
 
+default configuration is 
+
+````
+COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml
+COMPOSE_PROFILES=app,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog
+````
+
+
 You should review the default env variables defined in `.env` file.
 Use `export` method to override these values.
 
@@ -232,9 +240,12 @@ Etc
 ## Development mode
 
 
-The development mode uses the `docker-compose-override.yml` file, so you need to set ```COMPOSE_FILE``` env
+The development mode uses the `docker-compose-override.yml` file, so you need to set ```COMPOSE_FILE``` and ```COMPOSE_PROFILE``` env
 
-```COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml```
+````
+COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml
+COMPOSE_PROFILES=app,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog,builder
+````
 
 
 
