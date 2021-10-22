@@ -233,6 +233,10 @@ $basketBg: $darkBackgroundColor !default;
     z-index: 1999;
 }
 
+.ui-dialog.ui-widget-content.dialog-edit_lat_lon {
+    z-index: 2000 !important;
+}
+
 .ui-dialog-titlebar {
     min-height: 20px;
 }

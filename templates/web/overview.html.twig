@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/permaview/css/permaview{% if not app.debug %}.min{% endif %}.css">
+    <link type="text/css" rel="stylesheet" href="/assets/permaview/css/permaview{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}">
     <style type="text/css"></style>
 {% endblock %}
 
@@ -29,7 +29,7 @@
             {% include 'common/caption.html.twig' %}
         </div>
     </div>
-    <script type="text/javascript" src="/assets/production/permaview{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/production/permaview{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 
     <script type="text/javascript">
         window.permApp = PermaviewApplication.bootstrap({
