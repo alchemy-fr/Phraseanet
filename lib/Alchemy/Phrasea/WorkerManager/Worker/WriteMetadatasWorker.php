@@ -285,7 +285,8 @@ class WriteMetadatasWorker implements WorkerInterface
         try {
             $this->writer->write($subdef->getRealPath(), $metadata);
 
-            $this->messagePublisher->pushLog(sprintf('meta written for databoxId=%1$d - recordId=%2$d (%3$s)', $databox->get_sbas_id(), $recordId, $subdef->get_name() ));
+            $this->messagePublisher->pushLog(sprintf('metadatas written %s databoxname= %s databoxid= %d recordid= %d',
+                $subdef->get_name(), $databox->get_viewname(), $databox->get_sbas_id(), $recordId), 'info');
 
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("meta written in %s.%s.%s", $databoxId, $recordId, $subdefName)
