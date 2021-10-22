@@ -1,0 +1,88 @@
+version: "3.4"
+
+services:
+  mailhog:
+    image: mailhog/mailhog
+    profiles: ["dev", "mailhog"]
+    ports:
+    - ${MAILHOG_GUI_PORT}:8025
+    environment:
+    - MAILHOG_GUI_PORT
+    networks:
+      - internal
+
+  ftpd-server:
+    image: stilliard/pure-ftpd:hardened
+    profiles: ["ftp-server"]
+    environment:
+      FTP_USER_NAME: "dev"
+      FTP_USER_PASS: "dev"
+      FTP_USER_HOME: "/home/dev"
+    volumes:
+      - ${PHRASEANET_FTP_DIR}:/home/dev
+    restart: on-failure
+    networks:
+      - internal
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    profiles: ["dev", "pma"]
+    restart: on-failure
+    ports:
+      - ${PHRASEANET_PHPMYADMIN_PORT}:80
+    depends_on:
+      - db
+    networks:
+      - internal
+      
+  kibana:
+    image: kibana:4.6.6
+    profiles: ["elk"]
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - internal
+
+  logstash:
+    image: logstash:7.6.2
+    profiles: ["elk"]
+    links:
+      - elasticsearch
+    volumes:
+      - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
+    command: logstash -f /var/alchemy/Phraseanet/config/logstash.conf
+    depends_on:
+      - elasticsearch
+    restart: on-failure
+    networks:
+      - internal
+
+  filebeat:
+    hostname: filebeat
+    image: "docker.elastic.co/beats/filebeat:7.6.2"
+    profiles: ["elk"]
+    volumes:
+      - ${PHRASEANET_CONFIG_DIR}/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:ro
+    command: filebeat run -e --strict.perms=false
+    restart: on-failure
+    networks:
+      - internal
+
+
+  #squid:
+  #  image: sameersbn/squid:3.5.27-2
+  #  profiles: ["squid"]
+  #  ports:
+  #    - ${PHRASEANET_SQUID_PORT}:3128
+  #  volumes:
+  #    - ${PHRASEANET_SQUID_DIR}:/var/spool/squid
+  #    - ${PHRASEANET_SQUID_CONF}:/etc/squid/squid.conf
+  #    - ${PHRASEANET_LOGS_DIR}/squid:/var/log/squid
+  #  restart: always
+  #  networks:
+  #    - internal
