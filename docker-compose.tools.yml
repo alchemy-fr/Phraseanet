@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.9"
 
 services:
   mailhog:
@@ -34,7 +34,7 @@ services:
       - db
     networks:
       - internal
-      
+
   kibana:
     image: kibana:4.6.6
     profiles: ["elk"]
