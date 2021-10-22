@@ -14,7 +14,7 @@ services:
       args:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
-    profiles: ["dev", "builder"]
+    profiles: ["builder"]
     stdin_open: true
     tty: true
     volumes:
@@ -45,7 +45,7 @@ services:
     networks:
       - internal
 
-  workers:
+  worker:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
@@ -130,13 +130,6 @@ services:
       - internal
 
   w-subdefCreation:
-    volumes:
-    - ../:/var/alchemy
-    - .:/var/alchemy/Phraseanet
-    networks:
-      - internal
-
-  w-subtitle:
     volumes:
     - ../:/var/alchemy
     - .:/var/alchemy/Phraseanet
