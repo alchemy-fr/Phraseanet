@@ -132,8 +132,8 @@ services:
     - ${PHRASEANET_TMP_DIR}:/var/alchemy/Phraseanet/tmp:rw
     networks:
       - internal
-      
-  workers:
+
+  worker:
     build:
       context: .
       target: phraseanet-worker
