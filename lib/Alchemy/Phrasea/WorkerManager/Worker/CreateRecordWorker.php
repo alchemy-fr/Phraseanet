@@ -241,7 +241,7 @@ class CreateRecordWorker implements WorkerInterface
         $this->getBorderManager()->process($lazaretSession, $packageFile, $callback);
 
         if ($elementCreated instanceof \record_adapter) {
-            $this->messagePublisher->pushLog(sprintf("record created databoxname= %s databoxid= %d recordid= %d", $elementCreated->getDatabox()->get_viewname(), $elementCreated->getDataboxId(), $elementCreated->getRecordId()));
+            $this->messagePublisher->pushLog(sprintf("record created databoxname=%s databoxid=%d recordid=%d", $elementCreated->getDatabox()->get_viewname(), $elementCreated->getDataboxId(), $elementCreated->getRecordId()));
             $this->dispatch(PhraseaEvents::RECORD_UPLOAD, new RecordEdit($elementCreated));
         } else {
             $this->messagePublisher->pushLog(sprintf('The file was moved to the quarantine: %s', json_encode($reasons)));

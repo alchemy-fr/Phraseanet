@@ -58,7 +58,7 @@ class DeleteRecordWorker implements WorkerInterface
 
         $record->delete();
 
-        $this->messagePublisher->pushLog(sprintf("record deleted databoxname= %s databoxid= %d recordid= %d", $databox->get_viewname(), $payload['databoxId'], $payload['recordId']));
+        $this->messagePublisher->pushLog(sprintf("record deleted databoxname=%s databoxid=%d recordid=%d", $databox->get_viewname(), $payload['databoxId'], $payload['recordId']));
         // tell that the delete is finished
         if ($workerRunningJob != null) {
             $workerRunningJob

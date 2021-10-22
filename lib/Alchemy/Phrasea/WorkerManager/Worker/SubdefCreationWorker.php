@@ -222,7 +222,7 @@ class SubdefCreationWorker implements WorkerInterface
         // update elastic
         $this->indexer->flushQueue();
 
-        $this->messagePublisher->pushLog(sprintf("subdefinition created %s databoxname= %s databoxid= %d recordid= %d",
+        $this->messagePublisher->pushLog(sprintf("subdefinition created %s databoxname=%s databoxid=%d recordid=%d",
             $payload['subdefName'], $databox->get_viewname(), $databoxId, $recordId));
 
         // tell that we have finished to work on this file (=unlock)
