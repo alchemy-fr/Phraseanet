@@ -169,6 +169,11 @@ class FilesystemService
         $this->filesystem->chmod($files, $mode, $umask, $recursive);
     }
 
+    public function mkdir($dirs, int $mode = 0777)
+    {
+        $this->filesystem->mkdir($dirs, $mode);
+    }
+
     /**
      * Get the extension from MediaAlchemyst specs
      *

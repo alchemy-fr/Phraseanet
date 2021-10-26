@@ -133,10 +133,14 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->assert('base_id', '\d+');
 
         /**
+         * @uses V3SubdefsServiceController::callbackAction_POST()
+         */
+        $controllers->post('/subdefs_service_callback/', 'controller.api.v3.subdefs_service:callbackAction_POST');
+
+        /**
          * @uses V3SubdefsServiceController::indexAction_POST()
          */
-        $controllers->post('/subdefs_service/{base_id}/', 'controller.api.v3.subdefs_service:indexAction_POST')
-            ->assert('base_id', '\d+');
+        $controllers->post('/subdefs_service/', 'controller.api.v3.subdefs_service:indexAction_POST');
 
         /**
          * @uses V1Controller::getBadRequestAction()
