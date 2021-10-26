@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title> </title>
-    <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css" />
+    <link type="text/css" rel="stylesheet" href="/assets/common/css/common{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
     {% block stylesheet %}{% endblock %}
     {% block javascript %}{% endblock %}
   </head>

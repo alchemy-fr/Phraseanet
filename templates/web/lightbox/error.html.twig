@@ -1,7 +1,7 @@
 {% extends "lightbox/index_layout.html.twig" %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="/assets/lightbox/css/lightbox{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" media="screen"/>
 {% endblock %}
 
 {% block content %}
