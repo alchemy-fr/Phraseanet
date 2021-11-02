@@ -93,6 +93,33 @@ class SubdefCreationWorker implements WorkerInterface
             file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
                 sprintf("cannot CreateSubdef for %s.%s.%s, delayed", $databoxId, $recordId, $subdefName)
             ), FILE_APPEND | LOCK_EX);
+
+            return ;
+        }
+
+        if (filesize($record->get_subdef('document')->getRealPath()) < $payload['documentFileSize']) {
+            // the file size is less than expected so retried
+
+            $count = isset($payload['count']) ? $payload['count'] + 1 : 2 ;
+            $workerMessage = sprintf("Can't create subdef because the document source fileSize %s less than %s expected, so retried!", filesize($record->get_subdef('document')->getRealPath()), $payload['documentFileSize']);
+
+            $this->logger->error($workerMessage);
+
+            /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionCreationFailure() */
+            $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
+                $record,
+                $subdefName,
+                $payload['documentFileSize'],
+                $workerMessage,
+                $count,
+                $workerRunningJobId
+            ));
+
+            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                $workerMessage
+            ), FILE_APPEND | LOCK_EX);
+
+            // the subscriber will "unlock" the row, no need to do it here
             return ;
         }
 
@@ -134,6 +161,7 @@ class SubdefCreationWorker implements WorkerInterface
             $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
                 $record,
                 $subdefName,
+                $payload['documentFileSize'],
                 $workerMessage,
                 $count,
                 $workerRunningJobId
@@ -169,6 +197,7 @@ class SubdefCreationWorker implements WorkerInterface
             $this->dispatcher->dispatch(WorkerEvents::SUBDEFINITION_CREATION_FAILURE, new SubdefinitionCreationFailureEvent(
                 $record,
                 $subdefName,
+                $payload['documentFileSize'],
                 'Subdef generation failed !',
                 $count,
                 $workerRunningJobId
@@ -187,6 +216,7 @@ class SubdefCreationWorker implements WorkerInterface
         ), FILE_APPEND | LOCK_EX);
 
         // order to write meta for the subdef if needed
+        // and the initial filesize of the subdef is getting from disk in the event
         /** @uses \Alchemy\Phrasea\WorkerManager\Subscriber\RecordSubscriber::onSubdefinitionWritemeta() */
         $this->dispatcher->dispatch(
             WorkerEvents::SUBDEFINITION_WRITE_META,

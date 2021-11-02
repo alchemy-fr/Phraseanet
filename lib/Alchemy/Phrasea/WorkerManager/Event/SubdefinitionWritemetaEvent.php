@@ -15,8 +15,9 @@ class SubdefinitionWritemetaEvent extends RecordEvent
     private $workerMessage;
     private $count;
     private $workerJobId;
+    private $fileSize;
 
-    public function __construct(RecordInterface $record, $subdefName, $status = self::CREATE, $workerMessage = '', $count = 2, $workerJobId = 0)
+    public function __construct(RecordInterface $record, $subdefName, $fileSize = 0, $status = self::CREATE, $workerMessage = '', $count = 2, $workerJobId = 0)
     {
         parent::__construct($record);
 
@@ -25,6 +26,14 @@ class SubdefinitionWritemetaEvent extends RecordEvent
         $this->workerMessage    = $workerMessage;
         $this->count            = $count;
         $this->workerJobId      = $workerJobId;
+
+        /** @var \media_subdef $subdef */
+        $subdef = $this->getRecord()->get_subdef($this->subdefName);
+        if ($fileSize == 0 && $subdef->is_physically_present()) {
+            $this->fileSize = filesize($subdef->getRealPath());
+        } else {
+            $this->fileSize = $fileSize;
+        }
     }
 
     public function getSubdefName()
@@ -50,5 +59,10 @@ class SubdefinitionWritemetaEvent extends RecordEvent
     public function getWorkerJobId()
     {
         return $this->workerJobId;
+    }
+
+    public function getFileSize()
+    {
+        return $this->fileSize;
     }
 }
