@@ -8,7 +8,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{{ 'thesaurus:: accepter...' | trans }}</title>
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
         <style type="text/css">
             .path_separator
             {
@@ -19,7 +19,7 @@
                 font-weight:900;
             }
         </style>
-        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
         <script type="text/javascript">
             //$('.close-dialog').trigger('click');
