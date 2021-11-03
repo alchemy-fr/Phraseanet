@@ -3,8 +3,8 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>{% if typ == "TS" %}{{ 'thesaurus:: Nouveau terme specifique' | trans }}{% else %}{{ 'thesaurus:: Nouveau synonyme' | trans }}{% endif %}</title>
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
-        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
         {#<script type="text/javascript" src="{{ path('minifier', { 'f' : 'skins/thesaurus/xmlhttp.js' }) }}"></script>#}
     </head>
     <body onload="loaded();" class="dialog" style="text-align:center">

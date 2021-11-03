@@ -10,7 +10,7 @@
             }
         </style>
         <link type="text/css" rel="stylesheet" href="/assets/vendors/jquery-ui/css/ui-lightness{% if not app.debug %}.min{% endif %}.css">
-        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css" />
+        <link type="text/css" rel="stylesheet" href="/assets/thesaurus/css/thesaurus{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" />
         <script type="text/javascript">
             var p4 = {};
         </script>
@@ -18,8 +18,8 @@
         <link rel="shortcut icon" type="image/x-icon" href="/assets/thesaurus/images/favicon.ico">
         <script type="text/javascript" src="/assets/vendors/jquery/jquery{% if not app.debug %}.min{% endif %}.js"></script>
         <script type="text/javascript" src="/assets/vendors/jquery-ui/jquery-ui{% if not app.debug %}.min{% endif %}.js"></script>
-        <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
-        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+        <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+        <script type="text/javascript" src="/assets/thesaurus/js/thesaurus{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
         <script type="text/javascript">
 
             var currentBaseName = "";

@@ -1,7 +1,7 @@
 {% extends "common/index_bootstrap.html.twig" %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/assets/report/css/report{% if not app.debug %}.min{% endif %}.css" media="screen">
+    <link type="text/css" rel="stylesheet" href="/assets/report/css/report{% if not app.debug %}.min{% endif %}.css?v={{ assetFileVersion }}" media="screen">
 {% endblock stylesheet %}
 
 {% block icon %}
@@ -36,8 +36,8 @@
 
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
-    <script type="text/javascript" src="/assets/report/js/report{% if not app.debug %}.min{% endif %}.js?v={{ jsFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/common/js/common{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
+    <script type="text/javascript" src="/assets/report/js/report{% if not app.debug %}.min{% endif %}.js?v={{ assetFileVersion }}"></script>
 
 {% endblock javascript%}
 
