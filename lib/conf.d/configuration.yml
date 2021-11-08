@@ -335,7 +335,8 @@ workers:
             password: ''
             vhost: /
             heartbeat: 60
-
+    webhook:
+        timeout: 30
 externalservice:
     ginger:
         AutoSubtitling:
