@@ -34,10 +34,6 @@ class Sha256 extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into checker sha256")
-        ), FILE_APPEND | LOCK_EX);
-
         $excludedCollIds = [];
         if (!empty($this->compareIgnoreCollections)) {
             foreach ($this->compareIgnoreCollections as $collection) {
@@ -49,10 +45,6 @@ class Sha256 extends AbstractChecker
         }
 
         $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findBySha256WithExcludedCollIds($file->getSha256(), $excludedCollIds));
-
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return from checker sha256")
-        ), FILE_APPEND | LOCK_EX);
 
         return new Response($boolean, $this);
     }
