@@ -20,7 +20,11 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
+use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
+use Imagine\Image\ImagineInterface;
+use Imagine\Image\Palette\RGB;
+use Imagine\Image\Point;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Exception\FileNotFoundException;
@@ -247,39 +251,59 @@ class SubdefGenerator
 
             if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
 
+                file_put_contents(dirname(__FILE__).'/../../../../logs/subdefgenerator.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf(
+                        "into generateSubdef for image subdef %s", $subdef_class->get_name()
+                    )
+                ), FILE_APPEND | LOCK_EX);
+
                 $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
 
-            } elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+            }
+            elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
 
                 $this->generatePdfSubdef($record->get_hd_file()->getPathname(), $pathdest);
 
-            } else {
+            }
+            else {
 
                 $this->alchemyst->turnInto($record->get_hd_file()->getPathname(), $pathdest, $subdef_class->getSpecs());
 
             }
 
-            if($destFile){
+            if($destFile) {
+                // the file was built elsewhere, we copy it to original destination
                 $this->filesystem->copy($pathdest, $destFile);
                 $this->app['filesystem']->remove($pathdest);
+                $pathdest = $destFile;
             }
 
-        } catch (MediaAlchemystException $e) {
+        }
+        catch (MediaAlchemystException $e) {
             $start = 0;
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
 
-        $stop = microtime(true);
         if($start){
-            $duration = $stop - $start;
+
+            // the subdef was done
+
+            // watermark ?
+            if($subdef_class->getSpecs() instanceof Image) {
+                /** @var Subdef\Image $image */
+                $image = $subdef_class->getSubdefType();
+                /** @var Boolean $o */
+                $o = $image->getOption(Subdef\Image::OPTION_WATERMARK);
+                if($o->getValue()) {
+                    // we must watermark the file
+                    $this->wartermarkImageFile($pathdest);
+                }
+            }
+
+            $duration = microtime(true) - $start;
 
             $originFileSize = $this->sizeHumanReadable($record->get_hd_file()->getSize());
-
-            if($destFile){
-                $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
-            }else{
-                $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
-            }
+            $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
 
             $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s / sbasid=%s / databox=%s / recordid=%s',
                     $subdef_class->get_name(),
@@ -293,7 +317,55 @@ class SubdefGenerator
                 )
             );
         }
+    }
 
+    private function wartermarkImageFile($filepath)
+    {
+        static $palette;
+
+        if (null === $palette) {
+            $palette = new RGB();
+        }
+        $imagine = $this->getImagine();
+
+        $in_image = $imagine->open($filepath);
+        $in_size = $in_image->getSize();
+        $in_w = $in_size->getWidth();
+        $in_h = $in_size->getHeight();
+
+        $draw = $in_image->draw();
+        $black = $palette->color("000000");
+        $white = $palette->color("FFFFFF");
+        $draw->line(new Point(0, 1), new Point($in_w - 2, $in_h - 1), $black);
+        $draw->line(new Point(1, 0), new Point($in_w - 1, $in_h - 2), $white);
+        $draw->line(new Point(0, $in_h - 2), new Point($in_w - 2, 0), $black);
+        $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
+
+        /*
+        $fsize = max(8, (int)(max($in_w, $in_h) / 30));
+        $fonts = [
+            $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
+            $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
+        ];
+        $testbox = $fonts[0]->box($collname, 0);
+        $tx_w = min($in_w, $testbox->getWidth());
+        $tx_h = min($in_h, $testbox->getHeight());
+
+        $x0 = max(1, ($in_w - $tx_w) >> 1);
+        $y0 = max(1, ($in_h - $tx_h) >> 1);
+        for ($i = 0; $i <= 1; $i++) {
+            $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
+            $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i));
+            $x = max(1, $in_w - $x - $tx_w);
+            $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i));
+
+            $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
+            $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i));
+            $y = max(1, $in_h - $y - $tx_h);
+            $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i));
+        }
+        */
+        $in_image->save($filepath);
     }
 
     private function generatePdfSubdef($source, $pathdest)
@@ -335,4 +407,13 @@ class SubdefGenerator
     {
         return $this->app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
     }
+
+    /**
+     * @return ImagineInterface $imagine
+     */
+    private function getImagine()
+    {
+        return $this->app['imagine'];
+    }
+
 }
