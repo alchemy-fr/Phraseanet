@@ -67916,9 +67916,12 @@ var search = function search(services) {
                 }
                 beforeSearch();
             },
-            error: function error() {
+            error: function error(data) {
                 answAjaxrunning = false;
                 $searchResult.removeClass('loading');
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             },
             timeout: function timeout() {
                 answAjaxrunning = false;
