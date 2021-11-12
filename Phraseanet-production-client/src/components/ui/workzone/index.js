@@ -307,7 +307,7 @@ const workzone = (services) => {
                 $container.width(360);
                 $('#rightFrame').css('left', 360);
                 $('#rightFrame').width($(window).width() - 360);
-                $('#baskets, #expose_tab, #proposals, #thesaurus_tab').hide();
+                $('#baskets_wrapper, #proposals, #thesaurus_tab').hide();
                 $('.ui-resizable-handle, #basket_menu_trigger').show();
                 var IDname = $(this).attr('aria-controls');
                 $('#' + IDname).show();
@@ -328,7 +328,7 @@ const workzone = (services) => {
                 $('#rightFrame').css('left', 80);
                 $('#rightFrame').width($(window).width() - 80);
                 $container.attr('data-status', 'closed');
-                $('#baskets, #expose_tab, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
+                $('#baskets_wrapper, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
                 $('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
                 $('.WZbasketTab').css('background-position', '15px 16px');
                 $container.addClass('closed');
