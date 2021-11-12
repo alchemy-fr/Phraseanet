@@ -108,16 +108,9 @@ class Manager
      */
     public function process(LazaretSession $session, File $file, $callable = null, $forceBehavior = null, $nosubdef = false)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into process")
-        ), FILE_APPEND | LOCK_EX);
-
         $visa = $this->getVisa($file);
 
         // READ the uuid (possibly generates one) but DO NOT write (because we need the stripped file for sha compare ?)
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("get uuid (generate, no write) from \"%s\"", $file->getFile()->getRealPath())
-        ), FILE_APPEND | LOCK_EX);
 
         $file->getUUID(true, false);
 
@@ -126,15 +119,8 @@ class Manager
             $this->addMediaAttributes($file);
 
             // Write UUID
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("get uuid (no generate, write) from \"%s\"", $file->getFile()->getRealPath())
-            ), FILE_APPEND | LOCK_EX);
 
             $file->getUUID(false, true);
-
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("creating record")
-            ), FILE_APPEND | LOCK_EX);
 
             $element = $this->createRecord($file, $nosubdef);
 
@@ -142,15 +128,8 @@ class Manager
         } else {
 
             // Write UUID
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("get uuid (no generate, write) from \"%s\"", $file->getFile()->getRealPath())
-            ), FILE_APPEND | LOCK_EX);
 
             $file->getUUID(false, true);
-
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("creating lazaret")
-            ), FILE_APPEND | LOCK_EX);
 
             $element = $this->createLazaret($file, $visa, $session, $forceBehavior === self::FORCE_LAZARET);
 
@@ -158,10 +137,6 @@ class Manager
         }
 
 //        // Write UUID
-//        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-//            sprintf("get uuid (no generate, write) from \"%s\"", $file->getFile()->getRealPath())
-//        ), FILE_APPEND | LOCK_EX);
-//
 //        $file->getUUID(false, true);
 
         if (is_callable($callable)) {
@@ -304,16 +279,7 @@ class Manager
      */
     protected function createRecord(File $file, $nosubdef=false)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into createRecord")
-        ), FILE_APPEND | LOCK_EX);
-
         $element = \record_adapter::createFromFile($file, $this->app);
-
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("created %s.%s", $element->getDataboxId(), $element->getRecordId())
-        ), FILE_APPEND | LOCK_EX);
-
 
         $date = new \DateTime();
 
@@ -379,19 +345,12 @@ class Manager
             }
         }
 
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("calling replaceMetadata")
-        ), FILE_APPEND | LOCK_EX);
-
         /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->app['dispatcher'];
         $dispatcher->addListener(
             RecordEvents::METADATA_CHANGED,
             function (Event $event)  {
                 // we do not want replaceMetadata() to send a writemeta
-//                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-//                    sprintf("---------- event METADATA_CHANGED catched !!! Propagation stopped !!!")
-//                ), FILE_APPEND | LOCK_EX);
 //                $event->stopPropagation();
             },
             10
@@ -421,10 +380,6 @@ class Manager
      */
     protected function createLazaret(File $file, Visa $visa, LazaretSession $session, $forced)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into createLazaret")
-        ), FILE_APPEND | LOCK_EX);
-
         $date = new \DateTime();
         $file->addAttribute(
             new MetadataAttr(
@@ -476,10 +431,6 @@ class Manager
         }
 
         $this->app['orm.em']->flush();
-
-        file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return from createLazaret")
-        ), FILE_APPEND | LOCK_EX);
 
         return $lazaretFile;
     }

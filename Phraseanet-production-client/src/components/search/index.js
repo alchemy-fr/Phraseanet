@@ -190,9 +190,12 @@ const search = services => {
                 }
                 beforeSearch();
             },
-            error: function () {
+            error: function (data) {
                 answAjaxrunning = false;
                 $searchResult.removeClass('loading');
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href);  // refresh will redirect to login
+                }
             },
             timeout: function () {
                 answAjaxrunning = false;
