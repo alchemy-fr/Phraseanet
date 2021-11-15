@@ -28,6 +28,9 @@ class FieldToFieldMappingConverter
                 }
                 else {
                     $ret->addChild(
+                        (new StringFieldMapping('raw'))
+                            ->enableRawIndexing());
+                    $ret->addChild(
                         (new StringFieldMapping('light'))
                             ->setAnalyzer('general_light')
                             ->enableTermVectors()
@@ -55,6 +58,9 @@ class FieldToFieldMappingConverter
                     $ret->disableIndexing();
                 }
                 else {
+                    $ret->addChild(
+                        (new StringFieldMapping('raw'))
+                            ->enableRawIndexing());
                     $ret->addChild(
                         (new StringFieldMapping('light'))
                             ->setAnalyzer('general_light')
