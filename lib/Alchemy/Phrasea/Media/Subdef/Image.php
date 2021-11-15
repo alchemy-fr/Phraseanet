@@ -23,6 +23,7 @@ class Image extends Provider
     const OPTION_FLATTEN = 'flatten';
     const OPTION_ICODEC = 'icodec';
     const OPTION_WATERMARK = 'watermark';
+    const OPTION_WATERMARKTEXT = 'watermarktext';
 
     protected $options = [];
 
@@ -37,6 +38,7 @@ class Image extends Provider
         $this->registerOption(new OptionType\Range($this->translator->trans('Quality'), self::OPTION_QUALITY, 0, 100, 75));
         $this->registerOption(new OptionType\Enum('Image Codec', self::OPTION_ICODEC, array('jpeg', 'png', 'tiff'), 'jpeg'));
         $this->registerOption(new OptionType\Boolean($this->translator->trans('Watermark'), self::OPTION_WATERMARK, false));
+        $this->registerOption(new OptionType\Text($this->translator->trans('Watermark text'), self::OPTION_WATERMARKTEXT, ''));
     }
 
     public function getType()

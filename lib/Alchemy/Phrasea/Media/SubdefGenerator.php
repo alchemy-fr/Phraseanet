@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\OptionType\Boolean;
+use Alchemy\Phrasea\Media\Subdef\OptionType\Text;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Palette\RGB;
@@ -292,11 +293,14 @@ class SubdefGenerator
             if($subdef_class->getSpecs() instanceof Image) {
                 /** @var Subdef\Image $image */
                 $image = $subdef_class->getSubdefType();
-                /** @var Boolean $o */
-                $o = $image->getOption(Subdef\Image::OPTION_WATERMARK);
-                if($o->getValue()) {
+                /** @var Boolean $wm */
+                $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
+                if($wm->getValue()) {
+
                     // we must watermark the file
-                    $this->wartermarkImageFile($pathdest);
+                    /** @var Text $wmt */
+                    $wmt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
+                    $this->wartermarkImageFile($pathdest, $wmt->getValue());
                 }
             }
 
@@ -319,7 +323,7 @@ class SubdefGenerator
         }
     }
 
-    private function wartermarkImageFile($filepath)
+    private function wartermarkImageFile(string $filepath, string $watermarkText)
     {
         static $palette;
 
@@ -341,30 +345,31 @@ class SubdefGenerator
         $draw->line(new Point(0, $in_h - 2), new Point($in_w - 2, 0), $black);
         $draw->line(new Point(1, $in_h - 1), new Point($in_w - 1, 1), $white);
 
-        /*
-        $fsize = max(8, (int)(max($in_w, $in_h) / 30));
-        $fonts = [
-            $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
-            $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
-        ];
-        $testbox = $fonts[0]->box($collname, 0);
-        $tx_w = min($in_w, $testbox->getWidth());
-        $tx_h = min($in_h, $testbox->getHeight());
+        if($watermarkText) {
+            $fsize = max(8, (int)(max($in_w, $in_h) / 30));
+            $fonts = [
+                $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $black),
+                $imagine->font(__DIR__ . '/../../../../resources/Fonts/arial.ttf', $fsize, $white)
+            ];
+            $testbox = $fonts[0]->box($watermarkText, 0);
+            $tx_w = min($in_w, $testbox->getWidth());
+            $tx_h = min($in_h, $testbox->getHeight());
 
-        $x0 = max(1, ($in_w - $tx_w) >> 1);
-        $y0 = max(1, ($in_h - $tx_h) >> 1);
-        for ($i = 0; $i <= 1; $i++) {
-            $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
-            $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i));
-            $x = max(1, $in_w - $x - $tx_w);
-            $draw->text($collname, $fonts[$i], new Point($x - $i, $y0 - $i));
+            $x0 = max(1, ($in_w - $tx_w) >> 1);
+            $y0 = max(1, ($in_h - $tx_h) >> 1);
+            for ($i = 0; $i <= 1; $i++) {
+                $x = max(1, ($in_w >> 2) - ($tx_w >> 1));
+                $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
+                $x = max(1, $in_w - $x - $tx_w);
+                $draw->text($watermarkText, $fonts[$i], new Point($x - $i, $y0 - $i));
 
-            $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
-            $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i));
-            $y = max(1, $in_h - $y - $tx_h);
-            $draw->text($collname, $fonts[$i], new Point($x0 - $i, $y - $i));
+                $y = max(1, ($in_h >> 2) - ($tx_h >> 1));
+                $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
+                $y = max(1, $in_h - $y - $tx_h);
+                $draw->text($watermarkText, $fonts[$i], new Point($x0 - $i, $y - $i));
+            }
         }
-        */
+
         $in_image->save($filepath);
     }
 
