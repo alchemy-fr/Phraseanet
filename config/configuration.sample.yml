@@ -343,6 +343,8 @@ workers:
         pullAssets:
             ttl_retry: 5000
             max_retry : 5
+    webhook:
+        timeout: 30
 
 externalservice:
     ginger:
