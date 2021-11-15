@@ -285,7 +285,7 @@ class recordutils_image
                 $txtline = $texts->item($i)->nodeValue;
 
                 if ($txtline != '') {
-                    $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/arial.ttf', $txtline, $text_width);
+                    $wrap = static::wrap($imagine, $fontsize, 0, __DIR__ . '/../../../resources/Fonts/arial.ttf', $txtline, $text_width);
                     $txtblock[] = [
                         'fontsize'  => $fontsize,
                         'fontcolor' => $xmlToColor($texts->item($i)->getAttribute('color'), [0, 0, 0]),
@@ -327,7 +327,7 @@ class recordutils_image
             $draw = $imfg->draw();
             $txt_ypos = 0;
             foreach ($txtblock as $block) {
-                $font = $imagine->font(__DIR__ . '/arial.ttf', $block['fontsize'], $block['fontcolor']);
+                $font = $imagine->font(__DIR__ . '/../../../resources/Fonts/arial.ttf', $block['fontsize'], $block['fontcolor']);
                 foreach ($block['lines'] as $line) {
                     if ($line['t'] != '') {
                         $draw->text($line['t'], $font, new Point($logo_reswidth, $txt_ypos), 0);
@@ -486,8 +486,8 @@ class recordutils_image
 
             $fsize = max(8, (int)(max($in_w, $in_h) / 30));
             $fonts = [
-                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $black),
-                $imagine->font(__DIR__ . '/arial.ttf', $fsize, $white)
+                $imagine->font(__DIR__ . '/../../../resources/Fonts/arial.ttf', $fsize, $black),
+                $imagine->font(__DIR__ . '/../../../resources/Fonts/arial.ttf', $fsize, $white)
             ];
             $testbox = $fonts[0]->box($collname, 0);
             $tx_w = min($in_w, $testbox->getWidth());

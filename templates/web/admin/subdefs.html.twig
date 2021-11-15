@@ -538,6 +538,9 @@
                                                 </td>
                                                 <td style="width:250px;">
                                                     {% set extradata = '' %}
+                                                    {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_TEXT') %}
+                                                        <input name="{{ varname }}" type="text" value="{{ option.getValue() }}">
+                                                    {% endif %}
                                                     {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
                                                         <div style="width:250px;"
                                                              id="slider{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}"></div>
