@@ -161,6 +161,12 @@ class WebhookWorker implements WorkerInterface
                 continue;
             }
 
+            // check if the third-application listen this event
+            // if listenedEvents is empty, third-application can received all webhookevent
+            if (!empty($thirdPartyApplication->getListenedEvents()) && !in_array($webhookevent->getName(), $thirdPartyApplication->getListenedEvents())) {
+                continue;
+            }
+
             $creatorGrantedBaseIds = array_keys($this->app['acl']->get($creator)->get_granted_base());
 
             $concernedBaseIds = array_intersect($webhookevent->getCollectionBaseIds(), $creatorGrantedBaseIds);

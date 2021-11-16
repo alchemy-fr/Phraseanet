@@ -131,6 +131,14 @@ class ApiApplication
      */
     private $webhookUrl;
 
+    /**
+     * List of events to trigger webhook
+     * @var array
+     *
+     * @ORM\Column(name="listened_events", type="json_array", nullable=true)
+     */
+    private $listenedEvents;
+
     public function __construct()
     {
         $this->accounts = new ArrayCollection();
@@ -430,5 +438,44 @@ class ApiApplication
         $this->accounts->add($account);
 
         return $this;
+    }
+
+    /**
+     * @param array $listenedEvents
+     */
+    public function setListenedEvents(array $listenedEvents)
+    {
+        $this->listenedEvents = $listenedEvents;
+    }
+
+    /**
+     * @param $eventName
+     */
+    public function addListenedEvent($eventName)
+    {
+        $this->listenedEvents[] = $eventName;
+    }
+
+    /**
+     * @param $eventName
+     * @return $this
+     */
+    public function removeListenedEvent($eventName)
+    {
+        $keys = array_keys($this->listenedEvents, $eventName, true);
+
+        foreach ($keys as $key) {
+            unset($this->listenedEvents[$key]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getListenedEvents()
+    {
+        return $this->listenedEvents;
     }
 }

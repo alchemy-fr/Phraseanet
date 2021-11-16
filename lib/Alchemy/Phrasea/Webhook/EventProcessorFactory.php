@@ -10,6 +10,7 @@ use Alchemy\Phrasea\Webhook\Processor\FeedEntryProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\OrderNotificationProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\ProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\ProcessorInterface;
+use Alchemy\Phrasea\Webhook\Processor\RecordEventProcessor;
 use Alchemy\Phrasea\Webhook\Processor\UserDeletedProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\UserRegistrationProcessorFactory;
 use Alchemy\Phrasea\Webhook\Processor\SubdefEventProcessor;
@@ -33,6 +34,9 @@ class EventProcessorFactory
         $this->registerFactory(WebhookEvent::USER_DELETED_TYPE, new UserDeletedProcessorFactory());
         $this->registerCallableFactory(WebhookEvent::RECORD_SUBDEF_TYPE, function () {
             return new SubdefEventProcessor();
+        });
+        $this->registerCallableFactory(WebhookEvent::RECORD_TYPE, function () {
+            return new RecordEventProcessor();
         });
     }
 

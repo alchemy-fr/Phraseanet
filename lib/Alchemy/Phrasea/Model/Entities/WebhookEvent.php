@@ -31,6 +31,15 @@ class WebhookEvent
     const ORDER_DELIVERED = 'order.delivered';
     const ORDER_DENIED = 'order.denied';
 
+    // const use only as name and type of a webhook
+    const RECORD_TYPE = 'record';
+    const RECORD_CREATED = 'record.created';
+    const RECORD_EDITED = 'record.edited';
+    const RECORD_DELETED = 'record.deleted';
+    const RECORD_MEDIA_SUBSTITUTED = 'record.media_substituted';
+    const RECORD_COLLECTION_CHANGED = 'record.collection_changed';
+    const RECORD_STATUS_CHANGED = 'record.status_changed';
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
