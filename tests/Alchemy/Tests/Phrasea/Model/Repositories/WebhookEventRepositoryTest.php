@@ -12,6 +12,6 @@ class WebhookEventRepositoryTest extends \PhraseanetTestCase
     {
         $events = self::$DI['app']['orm.em']->getRepository('Phraseanet:WebhookEvent')->findUnprocessedEvents();
         // I have no clue as to why this magic number is here, probably best to discard test
-        $this->assertCount(34, $events);
+        $this->assertCount(48, $events);
     }
 }
