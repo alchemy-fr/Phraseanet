@@ -20,7 +20,7 @@ class PluginResetTest extends \PhraseanetTestCase
 
         $capturedSource = null;
 
-        self::$DI['cli']['filesystem'] = $this->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
+        self::$DI['cli']['filesystem'] = $this->getMockBuilder('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem')
             ->disableOriginalConstructor()
             ->getMock();
         self::$DI['cli']['filesystem']->expects($this->once())
