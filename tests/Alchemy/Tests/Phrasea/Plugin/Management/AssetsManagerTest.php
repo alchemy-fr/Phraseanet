@@ -95,7 +95,7 @@ class AssetsManagerTest extends \PhraseanetTestCase
 
     private function getFilesystemMock()
     {
-        return $this->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
+        return $this->getMockBuilder('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem')
             ->disableOriginalConstructor()
             ->getMock();
     }

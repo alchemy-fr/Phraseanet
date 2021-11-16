@@ -3,13 +3,15 @@
 namespace Alchemy\Phrasea\Core\Thumbnail;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
 use MediaVorus\Media\Image;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\Media\Video;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+
+//use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractThumbnailManager
 {

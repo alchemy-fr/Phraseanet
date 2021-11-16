@@ -11,8 +11,11 @@
 namespace Alchemy\Tests\Phrasea\Filesystem;
 
 use Alchemy\Phrasea\Filesystem\FilesystemService;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Model\RecordInterface;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 class FilesystemServiceTest extends \PHPUnit_Framework_TestCase
 {

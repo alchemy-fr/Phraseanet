@@ -10,8 +10,11 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 class patch_384alpha2a implements patchInterface
 {
