@@ -89,6 +89,7 @@ class WebhookWorker implements WorkerInterface
             $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
 
             $clientOptions = [
+                'timeout' => $this->app['conf']->get(['workers', 'webhook', 'timeout'], 30), // default time out 30 sec if not set
                 'connect_timeout' => 50, // should be less than default rabbit timeout 60 to avoid to block Q
                 'headers' => [
                     'User-Agent' => sprintf('Phraseanet/%s (%s)', $version->getNumber(), $version->getName())
