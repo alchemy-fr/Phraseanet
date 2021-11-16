@@ -27,9 +27,10 @@ class FieldToFieldMappingConverter
                     $ret->disableIndexing();
                 }
                 else {
-                    $ret->addChild(
-                        (new StringFieldMapping('raw'))
-                            ->enableRawIndexing());
+                    // no more need "raw" for sorting (sort arg depends on type)
+                    // $ret->addChild(
+                    //     (new StringFieldMapping('raw'))
+                    //         ->enableRawIndexing());
                     $ret->addChild(
                         (new StringFieldMapping('light'))
                             ->setAnalyzer('general_light')
@@ -58,9 +59,10 @@ class FieldToFieldMappingConverter
                     $ret->disableIndexing();
                 }
                 else {
-                    $ret->addChild(
-                        (new StringFieldMapping('raw'))
-                            ->enableRawIndexing());
+                    // no more need "raw" for sorting (sort arg depends on type)
+                    // $ret->addChild(
+                    //     (new StringFieldMapping('raw'))
+                    //         ->enableRawIndexing());
                     $ret->addChild(
                         (new StringFieldMapping('light'))
                             ->setAnalyzer('general_light')

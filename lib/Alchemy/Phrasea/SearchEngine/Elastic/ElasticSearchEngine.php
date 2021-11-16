@@ -455,7 +455,57 @@ class ElasticSearchEngine implements SearchEngineInterface
             $sort['record_id'] = $options->getSortOrder();
         }
         else {
-            $sort[sprintf('caption.%s.raw', $options->getSortBy())] = $options->getSortOrder();
+            $f = array_filter(
+                $options->getFields(),
+                function (databox_field $f) use($options) {
+                    return $f->get_name() === $options->getSortBy();
+                }
+            );
+            if(count($f) == 1) {
+                // the field is found
+                $f = array_pop($f);
+                /** databox_field $f */
+                $k = sprintf('%scaption.%s', $f->isBusiness() ? "private_":"", $options->getSortBy());
+                switch ($f->get_type()) {
+                    case databox_field::TYPE_DATE:
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "date"
+                        ];
+                        break;
+                    case databox_field::TYPE_NUMBER:
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "double"
+                        ];
+                        break;
+                    case databox_field::TYPE_STRING:
+                    default:
+                        $k .= '.sort';
+                        $sort[$k] = [
+                            'order' => $options->getSortOrder(),
+                            'missing' => "_last",
+                            'unmapped_type' => "keyword"
+                        ];
+                        break;
+                }
+            }
+
+            /* script tryout
+                $sort["_script"] = [
+                'type' => "string",
+                'script' => [
+                    // 'lang' => "painless",
+                    'inline' => sprintf(
+                        "doc['caption.%s'] ? doc['caption.%s.raw'].value : (doc['private_caption.%s'] ? doc['private_caption.%s.raw'].value : '')",
+                        $options->getSortBy(), $options->getSortBy(), $options->getSortBy(), $options->getSortBy()
+                    )
+                ],
+                'order' => "asc"
+            ];
+            */
         }
 
         if (!array_key_exists('record_id', $sort)) {
