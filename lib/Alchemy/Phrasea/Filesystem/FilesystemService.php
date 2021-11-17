@@ -17,11 +17,11 @@ use MediaAlchemyst\Specification\SpecificationInterface;
 class FilesystemService
 {
     /**
-     * @var \Symfony\Component\Filesystem\Filesystem
+     * @var PhraseanetFilesystem
      */
     private $filesystem;
 
-    public function __construct(\Symfony\Component\Filesystem\Filesystem $filesystem)
+    public function __construct(PhraseanetFilesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }

@@ -22,7 +22,7 @@ class PluginTestCase extends \PhraseanetTestCase
 
     protected function createFilesystemMock()
     {
-        return $this->getMock('Symfony\Component\Filesystem\Filesystem');
+        return $this->getMock('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem');
     }
 
     protected function getSchema()

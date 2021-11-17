@@ -11,9 +11,12 @@
 namespace Alchemy\Tests\Phrasea\Filesystem;
 
 use Alchemy\Phrasea\Filesystem\LazaretPathBooker;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 class LazaretPathBookerTest extends \PHPUnit_Framework_TestCase
 {

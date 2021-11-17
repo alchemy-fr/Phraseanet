@@ -112,9 +112,6 @@ class SubdefGenerator
             $hd = $hd->getRealPath();
 
             clearstatcache(true, $hd);
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("creating subdefs for %s.%s from document \"%s\" (size=%s)", $record->getDataboxId(), $record->getRecordId(), $hd, filesize($hd))
-            ), FILE_APPEND | LOCK_EX);
         }
 
         $mediaCreated = [];
@@ -130,10 +127,6 @@ class SubdefGenerator
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
 
                 $pathdest = $record->get_subdef($subdefname)->getRealPath();
-
-                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("deleting previous subdef \"%s\" (file=\"%s\") for %s.%s", $subdefname, $pathdest, $record->getDataboxId(), $record->getRecordId())
-                ), FILE_APPEND | LOCK_EX);
 
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));

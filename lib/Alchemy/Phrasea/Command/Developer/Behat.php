@@ -12,9 +12,11 @@
 namespace Alchemy\Phrasea\Command\Developer;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 class Behat extends Command
 {
