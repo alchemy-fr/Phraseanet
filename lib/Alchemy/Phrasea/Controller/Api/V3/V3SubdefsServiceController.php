@@ -78,7 +78,6 @@ class V3SubdefsServiceController extends Controller
         */
         $ret = [
             'sent' => [],
-            'failed' => []
         ];
 
         $sourceFile = null;    // will be set if a file is uploaded
@@ -93,11 +92,15 @@ class V3SubdefsServiceController extends Controller
             if(is_null($ext = $body->source->extension)) {
                 $pi = pathinfo($src_url);   // filename, extension
                 $ext = $pi['extension'];
+                if (strpos($ext, '?') > 0) {
+                    $ext = explode('?', $ext)[0];
+                }
             }
             $sourceFile = $this->getTmpFilesystem()->createTemporaryFile('download_', null, $ext);
 
             try {
                 $guzzle = new Client();
+                $guzzle->setSslVerification(false);
                 $res = $guzzle->get($body->source->url, [], ['save_to' => $sourceFile])->send();
                 unset($guzzle);
             }
@@ -142,78 +145,69 @@ class V3SubdefsServiceController extends Controller
             // $subdef = new \databox_subdef($type, $sxSettings, $this->getTranslator());
 
             $guzzle = new Client();
+            $guzzle->setSslVerification(false);
             $postFilenameRoot = $body->destination->filename ?: "subdef";
 
-            foreach ($subdefs as $subdef) {
+            $destPayload = $body->destination->payload ?: [];
 
-                if(is_array($body->destination->subdefs) && !in_array($subdef->get_name(), $body->destination->subdefs)) {
-                    continue;
-                }
+            try {
+                foreach ($subdefs as $subdef) {
+                    if (is_array($body->destination->subdefs) && !in_array($subdef->get_name(), $body->destination->subdefs)) {
+                        continue;
+                    }
 
-                $destFile = null;       // set if subdef generated
-                $postFilename = $postFilenameRoot . '_' . $subdef->get_name();
+                    $postFilename = $postFilenameRoot.'_'.$subdef->get_name();
 
-                try {       // to make a subef
                     $start = microtime(true);
                     $ext = $this->getFilesystemService()->getExtensionFromSpec($subdef->getSpecs());
 
                     /** @var string $destFile */
-                    $destFile = $this->getTmpFilesystem()->createTemporaryFile(null, '_' . $subdef->get_name(), $ext);
+                    $destFile = $this->getTmpFilesystem()->createTemporaryFile(null, '_'.$subdef->get_name(), $ext);
 
                     $this->getSubdefGenerator()->generateSubdefFromFile($sourceFile, $subdef, $destFile);
 
                     $duration = microtime(true) - $start;
 
-                    $postFilename .= ('.' . $ext);
+                    $postFilename .= '.'.$ext;
 
                     $data = [
-                        'filename'  => $postFilename,
+                        'filename' => $postFilename,
                         'extension' => $ext,
-                        'name'      => $subdef->get_name(),
-                        'class'     => $subdef->get_class(),
-                        'filesize'  => filesize($destFile),
-                        'build_duration'  => $duration
+                        'name' => $subdef->get_name(),
+                        'class' => $subdef->get_class(),
+                        'filesize' => filesize($destFile),
+                        'build_duration' => $duration,
                     ];
-                }
-                catch (Exception $e) {
-                    // failed to generate subdef
-                    $data = [
-                        'name'      => $subdef->get_name(),
-                        'error'     => sprintf("failed to generate subdef \"%s\": %s", $subdef->get_name(), $e->getMessage())
-                    ];
-                    $ret['failed'][$subdef->get_name()] = $data;
-                    $destFile = null;
-                }
 
-                // post the subdef
-                if($destFile) {
-                    try {       // to post result
-                        $start = microtime(true);
-                        $r = $guzzle->post($destination_url)
+                    $start = microtime(true);
+
+                    $postFields = array_merge((array)$destPayload, [
+                        'file_info' => $data,
+                    ]);
+
+                    try {
+                        $guzzle->post($destination_url)
+                            ->addPostFields($postFields)
                             ->addPostFile('file', $destFile, null, $postFilename)
-                            ->addPostFields([
-                                'body' => json_encode($data)
-                            ]);
-
-                        $r->send();
-
-                        $data['post_duration'] = microtime(true) - $start;
-
-                        $ret['sent'][$subdef->get_name()] = $data;
-                    }
-                    catch (Exception $e) {
-                        $data = [
-                            'name'      => $subdef->get_name(),
-                            'error'     => sprintf("failed to post subdef \"%s\": %s", $subdef->get_name(), $e->getMessage())
-                        ];
-                        $ret['failed'][$subdef->get_name()] = $data;
+                            ->send();
+                    } catch (Exception $e) {
+                        throw new Exception(sprintf(
+                            'Failed to post subdef "%s" file: %s',
+                            $subdef->get_name(),
+                            $e->getMessage()
+                        ), 0, $e);
+                    } finally {
+                        unlink($destFile);
                     }
 
-                    unlink($destFile);
+                    $data['post_duration'] = microtime(true) - $start;
+
+                    $ret['sent'][$subdef->get_name()] = $data;
+
                 }
+            } finally {
+                unlink($sourceFile);
             }
-
-            unlink($sourceFile);
 
             unset($guzzle);
         }
