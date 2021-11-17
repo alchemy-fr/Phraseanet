@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\User\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\User\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\User\UserEvents;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
@@ -41,17 +42,31 @@ class WebhookUserEventSubscriber implements EventSubscriberInterface
         /** @var WebhookEventManipulator $manipulator */
         $manipulator = $this->app['manipulator.webhook-event'];
 
-        $manipulator->create(WebhookEvent::USER_DELETED, WebhookEvent::USER_DELETED_TYPE, [
+        $manipulator->create(WebhookEvent::USER_DELETED, WebhookEvent::USER_TYPE, [
             'user_id' => $event->getUserId(),
             'email' => $event->getEmailAddress(),
             'login' => $event->getLogin()
         ], $event->getGrantedBaseIds());
     }
 
+    public function onUserCreated(CreatedEvent $event)
+    {
+        /** @var WebhookEventManipulator $manipulator */
+        $manipulator = $this->app['manipulator.webhook-event'];
+
+        $user = $event->getUser();
+        $manipulator->create(WebhookEvent::USER_CREATED, WebhookEvent::USER_TYPE, [
+            'user_id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'login' => $user->getLogin()
+        ], []);
+    }
+
     public static function getSubscribedEvents()
     {
         return [
-            UserEvents::DELETED => 'onUserDeleted'
+            UserEvents::DELETED => 'onUserDeleted',
+            UserEvents::CREATED => 'onUserCreated'
         ];
     }
 }

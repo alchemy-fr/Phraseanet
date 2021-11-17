@@ -356,8 +356,9 @@ class DeveloperController extends Controller
                 WebhookEvent::RECORD_SUBDEF_CREATED     => $this->app->trans('developers:: subdef created for a record'),
                 WebhookEvent::RECORD_SUBDEF_FAILED      => $this->app->trans('developers:: subdef creation failed for a record'),
             ],
-            WebhookEvent::USER_DELETED_TYPE     =>  [
-                WebhookEvent::USER_DELETED      => $this->app->trans('developers:: user deleted on phraseanet')
+            WebhookEvent::USER_TYPE     =>      [
+                WebhookEvent::USER_CREATED      =>  $this->app->trans('developers:: new user created'),
+                WebhookEvent::USER_DELETED      =>  $this->app->trans('developers:: user deleted on phraseanet')
             ],
             WebhookEvent::USER_REGISTRATION_TYPE    =>  [
                 WebhookEvent::USER_REGISTRATION_GRANTED     =>  $this->app->trans('developers:: user registration granted on phraseanet'),

@@ -18,9 +18,6 @@ class WebhookEvent
     const USER_REGISTRATION_REJECTED = 'user.registration.rejected';
     const USER_REGISTRATION_TYPE = 'user.registration';
 
-    const USER_DELETED = 'user.deleted';
-    const USER_DELETED_TYPE = 'user.deleted';
-
     const RECORD_SUBDEF_CREATED = 'record.subdef.created';
     const RECORD_SUBDEF_FAILED = 'record.subdef.creation_failed';
     const RECORD_SUBDEFS_CREATED = 'record.subdefs.created';
@@ -30,6 +27,10 @@ class WebhookEvent
     const ORDER_CREATED = 'order.created';
     const ORDER_DELIVERED = 'order.delivered';
     const ORDER_DENIED = 'order.denied';
+
+    const USER_TYPE = 'user';
+    const USER_CREATED = 'user.created';
+    const USER_DELETED = 'user.deleted';
 
     // const use only as name and type of a webhook
     const RECORD_TYPE = 'record';
