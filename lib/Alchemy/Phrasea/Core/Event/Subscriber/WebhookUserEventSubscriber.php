@@ -27,11 +27,18 @@ class WebhookUserEventSubscriber implements EventSubscriberInterface
     private $app;
 
     /**
+     * @var WebhookEventManipulator
+     */
+    private $manipulator;
+
+    /**
      * @param Application $application
      */
     public function __construct(Application $application)
     {
         $this->app = $application;
+        // manipulator.webhook-event is not set if phraseanet config is not set
+        $this->manipulator = isset($this->app['manipulator.webhook-event']) ? $this->app['manipulator.webhook-event'] : null;
     }
 
     /**
@@ -39,27 +46,25 @@ class WebhookUserEventSubscriber implements EventSubscriberInterface
      */
     public function onUserDeleted(DeletedEvent $event)
     {
-        /** @var WebhookEventManipulator $manipulator */
-        $manipulator = $this->app['manipulator.webhook-event'];
-
-        $manipulator->create(WebhookEvent::USER_DELETED, WebhookEvent::USER_TYPE, [
-            'user_id' => $event->getUserId(),
-            'email' => $event->getEmailAddress(),
-            'login' => $event->getLogin()
-        ], $event->getGrantedBaseIds());
+        if ($this->manipulator !== null ) {
+            $this->manipulator->create(WebhookEvent::USER_DELETED, WebhookEvent::USER_TYPE, [
+                'user_id' => $event->getUserId(),
+                'email' => $event->getEmailAddress(),
+                'login' => $event->getLogin()
+            ], $event->getGrantedBaseIds());
+        }
     }
 
     public function onUserCreated(CreatedEvent $event)
     {
-        /** @var WebhookEventManipulator $manipulator */
-        $manipulator = $this->app['manipulator.webhook-event'];
-
-        $user = $event->getUser();
-        $manipulator->create(WebhookEvent::USER_CREATED, WebhookEvent::USER_TYPE, [
-            'user_id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'login' => $user->getLogin()
-        ], []);
+        if ($this->manipulator !== null ) {
+            $user = $event->getUser();
+            $this->manipulator->create(WebhookEvent::USER_CREATED, WebhookEvent::USER_TYPE, [
+                'user_id' => $user->getId(),
+                'email' => $user->getEmail(),
+                'login' => $user->getLogin()
+            ], []);
+        }
     }
 
     public static function getSubscribedEvents()
