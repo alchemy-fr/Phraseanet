@@ -39,29 +39,25 @@ class WebhookUserEventSubscriber implements EventSubscriberInterface
      */
     public function onUserDeleted(DeletedEvent $event)
     {
-        if ($this->app['configuration.store']->isSetup()) {
-            /** @var WebhookEventManipulator $manipulator */
-            $manipulator = $this->app['manipulator.webhook-event'];
-            $manipulator->create(WebhookEvent::USER_DELETED, WebhookEvent::USER_TYPE, [
-                'user_id' => $event->getUserId(),
-                'email' => $event->getEmailAddress(),
-                'login' => $event->getLogin()
-            ], $event->getGrantedBaseIds());
-        }
+        /** @var WebhookEventManipulator $manipulator */
+        $manipulator = $this->app['manipulator.webhook-event'];
+        $manipulator->create(WebhookEvent::USER_DELETED, WebhookEvent::USER_TYPE, [
+            'user_id' => $event->getUserId(),
+            'email' => $event->getEmailAddress(),
+            'login' => $event->getLogin()
+        ], $event->getGrantedBaseIds());
     }
 
     public function onUserCreated(CreatedEvent $event)
     {
-        if ($this->app['configuration.store']->isSetup()) {
-            /** @var WebhookEventManipulator $manipulator */
-            $manipulator = $this->app['manipulator.webhook-event'];
-            $user = $event->getUser();
-            $manipulator->create(WebhookEvent::USER_CREATED, WebhookEvent::USER_TYPE, [
-                'user_id' => $user->getId(),
-                'email' => $user->getEmail(),
-                'login' => $user->getLogin()
-            ], []);
-        }
+        /** @var WebhookEventManipulator $manipulator */
+        $manipulator = $this->app['manipulator.webhook-event'];
+        $user = $event->getUser();
+        $manipulator->create(WebhookEvent::USER_CREATED, WebhookEvent::USER_TYPE, [
+            'user_id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'login' => $user->getLogin()
+        ], []);
     }
 
     public static function getSubscribedEvents()
