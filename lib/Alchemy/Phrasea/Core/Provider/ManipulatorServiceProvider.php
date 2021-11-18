@@ -108,15 +108,13 @@ class ManipulatorServiceProvider implements ServiceProviderInterface
             return new ApiLogManipulator($app['orm.em'], $app['repo.api-logs']);
         });
 
-        if ($app['configuration.store']->isSetup()) {
-            $app['manipulator.webhook-event'] = $app->share(function (Application $app) {
-                return new WebhookEventManipulator(
-                    $app['orm.em'],
-                    $app['repo.webhook-event'],
-                    $app['webhook.publisher']
-                );
-            });
-        }
+        $app['manipulator.webhook-event'] = $app->share(function (Application $app) {
+            return new WebhookEventManipulator(
+                $app['orm.em'],
+                $app['repo.webhook-event'],
+                $app['webhook.publisher']
+            );
+        });
 
         $app['manipulator.webhook-delivery'] = $app->share(function (Application $app) {
             return new WebhookEventDeliveryManipulator($app['orm.em'], $app['repo.webhook-delivery']);
