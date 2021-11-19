@@ -10,6 +10,7 @@ use Alchemy\Phrasea\Controller\Api\V3\V3SearchController;
 use Alchemy\Phrasea\Controller\Api\V3\V3SearchRawController;
 use Alchemy\Phrasea\Controller\Api\V3\V3StoriesController;
 use Alchemy\Phrasea\Controller\Api\V3\V3SubdefsServiceController;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\Listener\OAuthListener;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -133,20 +134,30 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
             ->assert('base_id', '\d+');
 
         /**
-         * @uses V3SubdefsServiceController::callbackAction_POST()
-         */
-        $controllers->post('/subdefs_service_callback/', 'controller.api.v3.subdefs_service:callbackAction_POST');
-
-        /**
-         * @uses V3SubdefsServiceController::indexAction_POST()
-         */
-        $controllers->post('/subdefs_service/', 'controller.api.v3.subdefs_service:indexAction_POST');
-
-        /**
          * @uses V1Controller::getBadRequestAction()
          */
         $controllers->match('/records/{any_id}/{anyother_id}/setmetadatas/', 'controller.api.v1:getBadRequestAction');
 
+        if ($this->isApiSubdefServiceEnabled($app)) {
+            /**
+             * @uses V3SubdefsServiceController::callbackAction_POST()
+             */
+            $controllers->post('/subdefs_service_callback/', 'controller.api.v3.subdefs_service:callbackAction_POST');
+
+            /**
+             * @uses V3SubdefsServiceController::indexAction_POST()
+             */
+            $controllers->post('/subdefs_service/', 'controller.api.v3.subdefs_service:indexAction_POST');
+        }
+
         return $controllers;
+    }
+
+    private function isApiSubdefServiceEnabled(Application $application)
+    {
+        /** @var PropertyAccess $config */
+        $config = $application['conf'];
+
+        return $config->get([ 'registry', 'api-clients', 'api-subdef_service' ], false);
     }
 }
