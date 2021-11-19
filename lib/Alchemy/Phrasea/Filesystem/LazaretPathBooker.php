@@ -10,8 +10,11 @@
 
 namespace Alchemy\Phrasea\Filesystem;
 
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 class LazaretPathBooker
 {

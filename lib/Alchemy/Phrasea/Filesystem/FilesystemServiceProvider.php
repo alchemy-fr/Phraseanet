@@ -10,11 +10,13 @@
 
 namespace Alchemy\Phrasea\Filesystem;
 
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Neutron\TemporaryFilesystem\Manager;
 use Neutron\TemporaryFilesystem\TemporaryFilesystem;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\Filesystem\Filesystem;
+
+//use Symfony\Component\Filesystem\Filesystem;
 
 class FilesystemServiceProvider implements ServiceProviderInterface
 {
