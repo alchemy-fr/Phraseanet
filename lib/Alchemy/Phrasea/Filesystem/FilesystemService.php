@@ -169,6 +169,11 @@ class FilesystemService
         $this->filesystem->chmod($files, $mode, $umask, $recursive);
     }
 
+    public function mkdir($dirs, int $mode = 0777)
+    {
+        $this->filesystem->mkdir($dirs, $mode);
+    }
+
     /**
      * Get the extension from MediaAlchemyst specs
      *
@@ -176,7 +181,7 @@ class FilesystemService
      *
      * @return string
      */
-    private function getExtensionFromSpec(SpecificationInterface $spec)
+    public function getExtensionFromSpec(SpecificationInterface $spec)
     {
         switch ($spec->getType()) {
             case SpecificationInterface::TYPE_IMAGE:
