@@ -11,6 +11,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Http\StaticFile\Symlink\SymLinker;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
 use Alchemy\Phrasea\Utilities\NullableDateTime;
@@ -19,6 +20,7 @@ use Guzzle\Http\Url;
 use MediaAlchemyst\Alchemyst;
 use MediaVorus\Media\MediaInterface;
 use MediaVorus\MediaVorus;
+
 
 class media_subdef extends media_abstract implements cache_cacheableInterface
 {
@@ -30,6 +32,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     private static function getMediaSubdefRepository(Application $app, $databoxId)
     {
         return $app['provider.repo.media_subdef']->getRepositoryForDatabox($databoxId);
+    }
+
+    /**
+     * @return Filesystem
+     */
+    private function getFilesystem()
+    {
+        return $this->app['filesystem'];
     }
 
     /** @var Application */
@@ -251,6 +261,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function remove_file()
     {
         if ($this->is_physically_present() && is_writable($this->getRealPath())) {
+            // @unlink($this->getWatermarkRealPath());
+            @unlink($this->getStampRealPath());
             unlink($this->getRealPath());
 
             $this->delete_data_from_cache();
@@ -362,11 +374,10 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     public function getEtag()
     {
-        if (!$this->etag && $this->is_physically_present()) {
+        if ((!$this->etag && $this->is_physically_present())) {
             $file = new SplFileInfo($this->getRealPath());
-
             if ($file->isFile()) {
-                $this->setEtag(md5($file->getRealPath() . $file->getMTime()));
+                $this->generateEtag($file);
             }
         }
 
@@ -555,6 +566,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function rotate($angle, Alchemyst $alchemyst, MediaVorus $mediavorus)
     {
+        // @unlink($this->getWatermarkRealPath());
+        @unlink($this->getStampRealPath());
+
         if (!$this->is_physically_present()) {
             throw new \Alchemy\Phrasea\Exception\RuntimeException('You can not rotate a substitution');
         }
@@ -573,7 +587,11 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->width = $media->getWidth();
         $this->height = $media->getHeight();
 
-        return $this->save();
+        // generate a new etag after rotation
+        $file = new SplFileInfo($this->getRealPath());
+        $this->generateEtag($file);  // with repository save
+
+        return $this;
     }
 
     /**
@@ -764,7 +782,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     private function isStillAccessible()
     {
-        return $this->is_physically_present && file_exists($this->getRealPath());
+        return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath(), 10);    // allow 10 secs for the file to be visible on shared fs
     }
 
     /**
@@ -797,6 +815,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         return $this->app['phraseanet.h264']->getUrl($this->getRealPath());
+    }
+
+    /**
+     * @param SplFileInfo $file
+     */
+    private function generateEtag(SplFileInfo $file)
+    {
+        $this->setEtag(md5($file->getRealPath() . $file->getMTime()));
     }
 
     /**

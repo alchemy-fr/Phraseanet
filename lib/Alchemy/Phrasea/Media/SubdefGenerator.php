@@ -21,6 +21,7 @@ use Alchemy\Phrasea\Core\Event\Record\SubDefinitionsCreationEvent;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
 use Alchemy\Phrasea\Media\Subdef\Specification\PdfSpecification;
+use Exception;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface as MediaAlchemystException;
 use MediaAlchemyst\Exception\FileNotFoundException;
@@ -111,9 +112,6 @@ class SubdefGenerator
             $hd = $hd->getRealPath();
 
             clearstatcache(true, $hd);
-            file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("creating subdefs for %s.%s from document \"%s\" (size=%s)", $record->getDataboxId(), $record->getRecordId(), $hd, filesize($hd))
-            ), FILE_APPEND | LOCK_EX);
         }
 
         $mediaCreated = [];
@@ -129,10 +127,6 @@ class SubdefGenerator
             if ($record->has_subdef($subdefname) && $record->get_subdef($subdefname)->is_physically_present()) {
 
                 $pathdest = $record->get_subdef($subdefname)->getRealPath();
-
-                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("deleting previous subdef \"%s\" (file=\"%s\") for %s.%s", $subdefname, $pathdest, $record->getDataboxId(), $record->getRecordId())
-                ), FILE_APPEND | LOCK_EX);
 
                 $record->get_subdef($subdefname)->remove_file();
                 $this->logger->info(sprintf('Removed old file for %s', $subdefname));
@@ -303,6 +297,74 @@ class SubdefGenerator
 
     }
 
+    public function generateSubdefFromFile($pathSrc, \databox_subdef $subdef_class, $pathdest)
+    {
+        $start = microtime(true);
+        $destFile = null;
+
+        try {
+            if($subdef_class->getSpecs() instanceof Video && !empty($this->tmpDirectory)){
+                // a video must be generated on worker tmp (from conf) : change pathdest
+                $destFile = $pathdest;
+
+                $ffmpegDir = \p4string::addEndSlash($this->tmpDirectory) . "ffmpeg/";
+                if(!is_dir($ffmpegDir)){
+                    $this->filesystem->mkdir($ffmpegDir);
+                }
+                $tmpname = str_replace('.', '_', (string)$start) .
+                    '_' . $subdef_class->get_name() .
+                    '.' . $this->filesystem->getExtensionFromSpec($subdef_class->getSpecs());
+
+                $pathdest = $ffmpegDir . $tmpname;
+            }
+
+            if (isset($this->tmpFilePath) && $subdef_class->getSpecs() instanceof Image) {
+
+                $this->alchemyst->turnInto($this->tmpFilePath, $pathdest, $subdef_class->getSpecs());
+
+            }
+            elseif ($subdef_class->getSpecs() instanceof PdfSpecification){
+
+                $this->generatePdfSubdef($pathSrc, $pathdest);
+
+            }
+            else {
+
+                $this->alchemyst->turnInto($pathSrc, $pathdest, $subdef_class->getSpecs());
+
+            }
+
+            if($destFile){
+                // the video subdef was generated on tmp, copy it to original dest
+                $this->filesystem->copy($pathdest, $destFile);
+                $this->app['filesystem']->remove($pathdest);
+            }
+
+        }
+        catch (Exception $e) {
+            $this->logger->error(sprintf('Subdef generation failed with message %s', $e->getMessage()));
+        }
+
+        $duration = microtime(true) - $start;
+
+        $originFileSize = $this->sizeHumanReadable(filesize($pathSrc));
+
+        if($destFile){
+            $generatedFileSize = $this->sizeHumanReadable(filesize($destFile));
+        }else{
+            $generatedFileSize = $this->sizeHumanReadable(filesize($pathdest));
+        }
+
+        $this->logger->info(sprintf('*** Generated *** %s , duration=%s / source size=%s / %s size=%s',
+                $subdef_class->get_name(),
+                date('H:i:s', mktime(0,0, $duration)),
+                $originFileSize,
+                $subdef_class->get_name(),
+                $generatedFileSize
+            )
+        );
+    }
+
     private function generatePdfSubdef($source, $pathdest)
     {
         try {
@@ -322,7 +384,7 @@ class SubdefGenerator
             }
         } catch (UnoconvException $e) {
             throw new RuntimeException('Unable to transmute document to pdf due to Unoconv', null, $e);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
 

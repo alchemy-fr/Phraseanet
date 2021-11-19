@@ -86,15 +86,8 @@ class WorkerRunningJobRepository extends EntityRepository
         $databoxId      = $payload['databoxId'];
         $recordId       = $payload['recordId'];
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf('canDoJob("%s") for %s.%s ?', $jobType, $databoxId, $recordId)
-        ), FILE_APPEND | LOCK_EX);
-
         // first protect sql by a critical section
         if( !( $recordMutexId = $this->getRecordMutex($databoxId, $recordId)) ) {
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                'getRecordMutex() failed'
-            ), FILE_APPEND | LOCK_EX);
 
             return null;
         }
@@ -120,37 +113,18 @@ class WorkerRunningJobRepository extends EntityRepository
                 if ($stmt->execute() === true) {
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 }
-                else {
-                    file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("!!! FAILED select on %s.%s because (%s)", $databoxId, $recordId, $stmt->errorCode())
-                    ), FILE_APPEND | LOCK_EX);
-                }
                 $stmt->closeCursor();
 
                 if(!$row) {
                     // no job running : create or update (may return false) if error
                     $workerRunningJobId = $this->creteOrUpdateJob($cnx, $payload, $jobType);
                 }
-                else {
-                    file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("job %s (id=%s) already running on %s.%s", $row['work'], $row['id'], $databoxId, $recordId)
-                    ), FILE_APPEND | LOCK_EX);
-                }
 
                 $cnx->commit();
             }
             catch (Exception $e) {
                 $cnx->rollBack();
-
-                file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("!!! FAILED in transaction to select/create on %s.%s because (%s)", $databoxId, $recordId, $e->getMessage())
-                ), FILE_APPEND | LOCK_EX);
             }
-        }
-        else {
-            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!! FAILED to create transaction to select/create on %s.%s", $databoxId, $recordId)
-            ), FILE_APPEND | LOCK_EX);
         }
 
         // end of critical section
@@ -199,9 +173,6 @@ class WorkerRunningJobRepository extends EntityRepository
                 if ($cnx->exec($sql) === 1) {
                     // went well, the row is inserted
                     $workerJobId = $cnx->lastInsertId();
-                    file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("created job %s (id=%s) for %s.%s.%s", $type, $workerJobId, $payload['databoxId'], $payload['recordId'], $payload['subdefName'])
-                    ), FILE_APPEND | LOCK_EX);
                 }
                 else {
                     // row not inserted ?
@@ -218,10 +189,6 @@ class WorkerRunningJobRepository extends EntityRepository
                 if ($cnx->exec($sql) === 1) {
                     // went well, the row is updated
                     $workerJobId = $payload['workerJobId'];
-
-                    file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("updated job %s (id=%s) for %s.%s.%s", $type, $workerJobId, $payload['databoxId'], $payload['recordId'], $payload['subdefName'])
-                    ), FILE_APPEND | LOCK_EX);
                 }
                 else {
                     // row not inserted ?
@@ -231,10 +198,6 @@ class WorkerRunningJobRepository extends EntityRepository
         }
         catch (Exception $e) {
             // bad case : we return null anyway
-
-            file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!! FAILED creating/updating job %s for %s.%s.%s because (%s)", $type, $payload['databoxId'], $payload['recordId'], $payload['subdefName'], $e->getMessage())
-            ), FILE_APPEND | LOCK_EX);
         }
 
         return $workerJobId;
@@ -273,18 +236,10 @@ class WorkerRunningJobRepository extends EntityRepository
                 . " `flock` = " . $cnx->quote('_mutex_') . " AND\n"
                 . " TIMESTAMPDIFF(SECOND, `published`, NOW()) > 60";
 
-            if ($cnx->exec($sql) > 0) {
-                // affected rows is 1 since by definition this key is unique
-                file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("!!! old mutex for %s.%s deleted !!! SHOULD NOT HAPPEN !!!", $databoxId, $recordId)
-                ), FILE_APPEND | LOCK_EX);
-            }
+            $cnx->exec($sql);
         }
         catch(Exception $e) {
             // here something went very wrong, like sql death
-            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!! FAILED while trying to delete old mutex for %s.%s because (%s) !!! SHOULD NOT HAPPEN !!!", $e->getMessage(), $databoxId, $recordId)
-            ), FILE_APPEND | LOCK_EX);
 
             return false; // we could choose to continue, but if we end up here... better to stop
         }
@@ -309,12 +264,7 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 if(($a = $cnx->exec($sql)) === 1) {
 
-                    $mutexId = $cnx->lastInsertId();
-                    file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("getMutex tryout %s for %s.%s OK, returning mutex (id=%s)", $tryout, $databoxId, $recordId, $mutexId)
-                    ), FILE_APPEND | LOCK_EX);
-
-                    return $mutexId;
+                    return $cnx->lastInsertId();
                 }
 
                 throw new Exception(sprintf("inserting mutex should return 1 row affected, got %s", $a));
@@ -328,18 +278,10 @@ class WorkerRunningJobRepository extends EntityRepository
                 if($tryout < 3) {
                     $rnd = rand(10, 50) * 10;   // 100 ms ... 500 ms with 10 ms steps
 
-                    file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("getMutex retry in %d msec", $rnd)
-                    ), FILE_APPEND | LOCK_EX);
-
                     usleep($rnd * 1000);
                 }
             }
         }
-
-        file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("!!! FAILED getMutex for %s.%s because (%s)", $databoxId, $recordId, $e->getMessage())
-        ), FILE_APPEND | LOCK_EX);
 
         return false;
     }
@@ -366,19 +308,11 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 $cnx->exec($sql);
 
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("releaseMutex (id=%s) DONE", $recordMutexId)
-                ), FILE_APPEND | LOCK_EX);
-
                 return;
             }
             catch (Exception $e) {
                 if($tryout < 3) {
                     $rnd = rand(10, 50) * 10;   // 100 ms ... 500 ms with 10 ms steps
-
-                    file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("releaseMutex (id=%s) retry in %d msec", $recordMutexId, $rnd)
-                    ), FILE_APPEND | LOCK_EX);
 
                     usleep($rnd * 1000);
                 }
@@ -387,9 +321,6 @@ class WorkerRunningJobRepository extends EntityRepository
 
         // Here we were not able to release a mutex (bad)
         // The last chance will be later, when old mutex (60s) is deleted
-        file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("!!! FAILED release mutex (id=%s) because (%s)", $recordMutexId, $e->getMessage())
-        ), FILE_APPEND | LOCK_EX);
     }
 
     /**
@@ -417,9 +348,6 @@ class WorkerRunningJobRepository extends EntityRepository
 
                 if(($a = $cnx->exec($sql) )=== 1) {
                     // ok
-                    file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("job (id=%d) marked as finished", $workerRunningJobId)
-                    ), FILE_APPEND | LOCK_EX);
 
                     return;
                 }
@@ -427,17 +355,11 @@ class WorkerRunningJobRepository extends EntityRepository
                 throw new Exception(sprintf("updating WorkerRunningJob should return 1 row affected, got %s", $a));
             }
             catch (Exception $e) {
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("failed to mark job (id=%d) as finished (tryout %s, retry in 1 sec) because (%s)", $workerRunningJobId, $tryout, $e->getMessage())
-                ), FILE_APPEND | LOCK_EX);
                 if($tryout < 2) {
                     sleep(1);   // retry in 1 sec
                 }
             }
         }
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("!!! FAILED to mark job (id=%d) as finished", $workerRunningJobId)
-        ), FILE_APPEND | LOCK_EX);
     }
 
     /**
@@ -525,16 +447,10 @@ class WorkerRunningJobRepository extends EntityRepository
     public function reconnect()
     {
         if($this->_em->getConnection()->ping() === false) {
-            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!!! reconnect-ping returned false, calling \"connect()\".")
-            ), FILE_APPEND | LOCK_EX);
             $this->_em->getConnection()->close();
             $this->_em->getConnection()->connect();
         }
         if(!$this->getEntityManager()->isOpen()) {
-            file_put_contents(dirname(__FILE__) . '/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                sprintf("!!!! entity manager closed, recreating.")
-            ), FILE_APPEND | LOCK_EX);
             $this->_em = $this->_em->create(
                 $this->_em->getConnection(),
                 $this->_em->getConfiguration(),

@@ -13,9 +13,15 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         apt-transport-https \
         ca-certificates \
         gnupg2 \
+        wget \
+    && wget -O certs.deb http://ftp.fr.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_20210119_all.deb \
+    && dpkg --fsys-tarfile certs.deb | tar -xOf - ./usr/share/ca-certificates/mozilla/ISRG_Root_X1.crt > /usr/local/share/ca-certificates/ISRG_Root_X1.crt \
+    && rm -rf /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt \
+    && update-ca-certificates --fresh \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
         zlib1g-dev \
+        automake \
         git \
         ghostscript \
         gpac \
@@ -33,6 +39,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         libssl-dev \
         libxslt-dev \
         libzmq3-dev \
+        libtool \
         locales \
         gettext \
         mcrypt \
@@ -46,6 +53,12 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         libreoffice-math \
         libreoffice-writer \                                                                 
         libreoffice-pdfimport \
+        # heic
+        libde265-dev \
+        libopenjp2-7-dev \
+        librsvg2-dev \
+        libwebp-dev \
+        # End heic
         # FFmpeg
         yasm \
         libvorbis-dev \
@@ -73,6 +86,20 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         nano \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
+    && mkdir /tmp/libheif \
+    && git clone https://github.com/strukturag/libheif.git /tmp/libheif \
+    && cd /tmp/libheif \
+    && ./autogen.sh \
+    && ./configure \
+    && make \
+    && make install \
+    && mkdir /tmp/ImageMagick \
+    && curl https://download.imagemagick.org/ImageMagick/download/ImageMagick.tar.gz| tar zx -C /tmp/ImageMagick --strip-components 1 \
+    && cd /tmp/ImageMagick \
+    && ./configure \
+    && make \
+    && make install \
+    && ldconfig \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \

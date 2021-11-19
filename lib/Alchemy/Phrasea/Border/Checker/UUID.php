@@ -33,10 +33,6 @@ class UUID extends AbstractChecker
      */
     public function check(EntityManager $em, File $file)
     {
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("into checker uuid")
-        ), FILE_APPEND | LOCK_EX);
-
         $excludedCollIds = [];
         if (!empty($this->compareIgnoreCollections)) {
             foreach ($this->compareIgnoreCollections as $collection) {
@@ -48,9 +44,6 @@ class UUID extends AbstractChecker
         }
 
         $uuid = $file->getUUID(false, false);
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("found uuid=%s", $uuid ?: 'null')
-        ), FILE_APPEND | LOCK_EX);
 
         if($uuid === null) {
             // no uuid in file so no need to search for a match
@@ -59,10 +52,6 @@ class UUID extends AbstractChecker
         else {
             $boolean = empty($file->getCollection()->get_databox()->getRecordRepository()->findByUuidWithExcludedCollIds($uuid, $excludedCollIds));
         }
-
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("return from checker uuid")
-        ), FILE_APPEND | LOCK_EX);
 
         return new Response($boolean, $this);
     }

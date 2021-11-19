@@ -12,11 +12,13 @@
 namespace Alchemy\Phrasea\ControllerProvider;
 
 use Alchemy\Phrasea\Controller\MinifierController;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
+use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
-use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 class Minifier implements ControllerProviderInterface, ServiceProviderInterface
 {

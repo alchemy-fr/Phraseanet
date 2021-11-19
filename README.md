@@ -106,11 +106,11 @@ Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 ## Stack description and customization
 
-We provide a Dockerfile docker-compose deployment 
+We provide a Dockerfile for build images and docker-compose for deployment 
 
-Use ```COMPOSE_FILE``` env variables for composing this deployment.
+Use ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` env variables for composing this deployment.
 
-By default COMPOSE_FILE is set for deploying a test stack including containers.
+By default ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` is set for deploying a test stack including containers.
 
     
     phraseanet_db_1                 
@@ -125,6 +125,14 @@ By default COMPOSE_FILE is set for deploying a test stack including containers.
 
 At first launch of the stack, Phraseanet container plays install.
 it will restart until it can do this installation: waiting for readiness of all other containers
+
+default configuration is 
+
+````
+COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml
+COMPOSE_PROFILES=app,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog
+````
+
 
 You should review the default env variables defined in `.env` file.
 Use `export` method to override these values.
@@ -232,9 +240,12 @@ Etc
 ## Development mode
 
 
-The development mode uses the `docker-compose-override.yml` file, so you need to set ```COMPOSE_FILE``` env
+The development mode uses the `docker-compose-override.yml` file, so you need to set ```COMPOSE_FILE``` and ```COMPOSE_PROFILE``` env
 
-```COMPOSE_FILE=docker-compose.yml:docker-compose.db.yml:docker-compose.mailhog.yml:docker-compose.override.yml```
+````
+COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml
+COMPOSE_PROFILES=app,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog,builder
+````
 
 
 

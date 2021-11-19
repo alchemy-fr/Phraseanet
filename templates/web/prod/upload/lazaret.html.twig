@@ -456,59 +456,61 @@
                             <input type="hidden" name="bas_id" value="{{ collection.get_base_id() }}">
                             <input type="hidden" name="keep_attributes" value="1">
                             <input class="record_id" type="hidden" name="record_id">
-                            <div class="update-status">
-                            <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
-                                <a href="#" class="reset-status btn">Reset status</a>
-                                <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
-                                <div class="status-wrapper hidden">
-                                    <table style="margin: auto">
-                                        <tbody class="status-container">
-                                        {% if file.getStatus(app) is not null  %}
-                                            {% for bit, status in file.getStatus(app) %}
-                                                <tr>
-                                                    <td class="status-tab-left">
-                                                        {% if status['img_off'] is not empty %}
-                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
+                            {% if app.getAclForUser(app.getAuthenticatedUser()).has_right_on_base(collection.get_base_id(), constant('\\ACL::CHGSTATUS')) %}
+                                <div class="update-status">
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status'>
+                                        <a href="#" class="reset-status btn">Reset status</a>
+                                        <h5 class="toggle-status">{{ 'upload:: Status :' | trans }} <img src="/assets/common/images/icons/icon-right-arrow.svg" width="10" height="10" class="btn-status"></h5>
+                                        <div class="status-wrapper hidden">
+                                            <table style="margin: auto">
+                                                <tbody class="status-container">
+                                                {% if file.getStatus(app) is not null  %}
+                                                    {% for bit, status in file.getStatus(app) %}
+                                                        <tr>
+                                                            <td class="status-tab-left">
+                                                                {% if status['img_off'] is not empty %}
+                                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                                <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" {% if status['flag'] == 0 %}checked="checked"{% endif%}/>
 
-                                                    </td>
-                                                    <td class="status-tab-right">
-                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
-                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                        {% if status['img_on'] is not empty %}
-                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% else %}
-                                            {% for bit, status in collection.get_databox().getStatusStructure() %}
-                                                <tr>
-                                                    <td class="status-tab-left">
-                                                        {% if status['img_off'] is not empty %}
-                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                        <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
-                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
+                                                            </td>
+                                                            <td class="status-tab-right">
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" {% if status['flag'] == 1 %}checked="checked"{% endif%} />
+                                                                <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                                {% if status['img_on'] is not empty %}
+                                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% for bit, status in collection.get_databox().getStatusStructure() %}
+                                                        <tr>
+                                                            <td class="status-tab-left">
+                                                                {% if status['img_off'] is not empty %}
+                                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                                <span>{{ status['labels_off_i18n'][app['locale']]|default('off') }}</span>
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="0" checked="checked"/>
 
-                                                    </td>
-                                                    <td class="status-tab-right">
-                                                        <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
-                                                        <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
-                                                        {% if status['img_on'] is not empty %}
-                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% endif %}
-                                        </tbody>
-                                    </table>
+                                                            </td>
+                                                            <td class="status-tab-right">
+                                                                <input type="radio" name="status[{{ collection.get_sbas_id() }}][{{ bit }}]" value="1" />
+                                                                <span for="labelon">{{ status['labels_on_i18n'][app['locale']]|default('on') }}</span>
+                                                                {% if status['img_on'] is not empty %}
+                                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            {% endif %}
 
                             <div class="btn-group" style="text-align:center; padding:5px;">
                                 <button class="btn add-lazaret" title="{{ "Add" | trans }}">
