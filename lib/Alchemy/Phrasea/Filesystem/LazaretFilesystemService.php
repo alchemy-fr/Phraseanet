@@ -11,11 +11,13 @@
 namespace Alchemy\Phrasea\Filesystem;
 
 use Alchemy\Phrasea\Border\File;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Exception\ExceptionInterface;
 use MediaAlchemyst\Specification\Image as ImageSpecification;
-use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
+
 
 class LazaretFilesystemService
 {

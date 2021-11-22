@@ -45,7 +45,7 @@ class PluginCommandTestCase extends \PhraseanetTestCase
 
     protected function createFilesystemMock()
     {
-        return $this->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
+        return $this->getMockBuilder('Alchemy\Phrasea\Filesystem\PhraseanetFilesystem')
             ->disableOriginalConstructor()
             ->getMock();
     }

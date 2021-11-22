@@ -11,6 +11,7 @@
 namespace Alchemy\Phrasea\Controller\Admin;
 
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedPublisher;
 use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
@@ -20,11 +21,11 @@ use Doctrine\Common\Persistence\ObjectManager;
 use MediaAlchemyst\Alchemyst;
 use MediaAlchemyst\Specification\Image;
 use MediaVorus\Media\MediaInterface;
-use MediaVorus\MediaVorus;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 class FeedController extends Controller
 {
