@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
@@ -29,6 +30,7 @@ use Psr\Http\Message\RequestInterface;
 class WebhookWorker implements WorkerInterface
 {
     use DispatcherAware;
+    use ApplicationBoxAware;
 
     private $app;
 
@@ -153,6 +155,11 @@ class WebhookWorker implements WorkerInterface
         $eventProcessor = $this->app['webhook.processor_factory']->get($webhookevent);
         $data = $eventProcessor->process($webhookevent);
 
+        $record = null;
+        if (isset($data['data']['databox_id']) && isset($data['data']['record_id'])) {
+            $record = $this->findDataboxById($data['data']['databox_id'])->get_record($data['data']['record_id']);
+        }
+
         $requests = [];
         /** @var ApiApplication $thirdPartyApplication */
         foreach ($thirdPartyApplications as $thirdPartyApplication) {
@@ -168,11 +175,19 @@ class WebhookWorker implements WorkerInterface
                 continue;
             }
 
-            $creatorGrantedBaseIds = array_keys($this->app['acl']->get($creator)->get_granted_base());
+            /** @var \ACL $creatorACL */
+            $creatorACL = $this->app['acl']->get($creator);
+            $creatorGrantedBaseIds = array_keys($creatorACL->get_granted_base());
 
             $concernedBaseIds = array_intersect($webhookevent->getCollectionBaseIds(), $creatorGrantedBaseIds);
 
             if (count($webhookevent->getCollectionBaseIds()) != 0 && count($concernedBaseIds) == 0) {
+                continue;
+            }
+
+            // continue iteration if api creator has no access to the record
+            // it 's include the bas access and the record status bit access
+            if ($record !== null && !$creatorACL->has_access_to_record($record)) {
                 continue;
             }
 
