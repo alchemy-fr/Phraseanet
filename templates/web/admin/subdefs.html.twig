@@ -525,7 +525,7 @@
                                       data-toggle="#box{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}"
                                       {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
                     {{ 'Advanced settings' | trans }}
-                </span>
+                                </span>
                                 <div id="box{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}"
                                      class="{{ subdefgroup }}{{ subdefname }}"
                                      {% if subdef.getSubdefType.getType() != subdefType.getType() %}style="display:none;"{% endif %}>
@@ -538,6 +538,9 @@
                                                 </td>
                                                 <td style="width:250px;">
                                                     {% set extradata = '' %}
+                                                    {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_TEXT') %}
+                                                        <input name="{{ varname }}" type="text" value="{{ option.getValue() }}">
+                                                    {% endif %}
                                                     {% if option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_RANGE') %}
                                                         <div style="width:250px;"
                                                              id="slider{{ subdefgroup }}{{ subdefname }}{{ subdefType.getType() }}{{ option.getName() }}"></div>
@@ -567,7 +570,7 @@
                                                             })
 
                                                         </script>
-                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
                                                         <select name="{{ varname }}">
                                                             <option value="">{{ 'Choisir' | trans }}</option>
                                                             {% for pot_value in option.getAvailableValues() %}
@@ -575,19 +578,19 @@
                                                                         {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
                                                             {% endfor %}
                                                         </select>
-                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
-                                                    <input name="{{ varname }}" type="radio" value="yes"
-                                                           {% if option.getValue() %}checked="checked"{% endif %} /> {{ 'yes' | trans }}
-                                                    <input name="{{ varname }}" type="radio" value="no"
-                                                           {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
-                                                        {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
-                                                        {% for pot_value, selected in option.Value(true) %}
-                                                        <label class="checkbox inline">
-                                                            <input type="checkbox" name="{{ varname }}[]"
-                                                                   value="{{ pot_value }}"
-                                                                   {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
-                                                        </label>
-                                                        {% endfor %}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
+                                                        <input name="{{ varname }}" type="radio" value="yes"
+                                                               {% if option.getValue() %}checked="checked"{% endif %} /> {{ 'yes' | trans }}
+                                                        <input name="{{ varname }}" type="radio" value="no"
+                                                               {% if option.getValue() is empty %}checked="checked"{% endif %}/> {{ 'no' | trans }}
+                                                    {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
+                                                            {% for pot_value, selected in option.Value(true) %}
+                                                            <label class="checkbox inline">
+                                                                <input type="checkbox" name="{{ varname }}[]"
+                                                                       value="{{ pot_value }}"
+                                                                       {% if selected %}checked="checked"{% endif %}/>{{ pot_value }}
+                                                            </label>
+                                                            {% endfor %}
                                                     {% endif %}
                                                 </td>
                                                 <td>
