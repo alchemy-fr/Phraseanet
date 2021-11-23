@@ -22,6 +22,7 @@ services:
     - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
     - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
     - ${PHRASEANET_PLUGINS_DIR}:/var/alchemy/Phraseanet/www/plugins:rw
+    - /phraseanet/www/simplesamlphp:/var/alchemy/simplesamlphp:rw
     depends_on:
     - phraseanet
     environment:
