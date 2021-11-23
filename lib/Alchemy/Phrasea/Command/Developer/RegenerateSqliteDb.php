@@ -134,6 +134,7 @@ class RegenerateSqliteDb extends Command
         $fixtures['user']['user_guest'] = $DI['user_guest']->getId();
 
         $fixtures['oauth']['user'] = $DI['api-app-user']->getId();
+        $fixtures['oauth']['user1'] = $DI['api-app-user1']->getId();
         $fixtures['oauth']['acc-user'] = $DI['api-app-acc-user']->getId();
         $fixtures['oauth']['user-not-admin'] = $DI['api-app-user-not-admin']->getId();
         $fixtures['oauth']['acc-user-not-admin'] = $DI['api-app-acc-user-not-admin']->getId();
@@ -209,6 +210,17 @@ class RegenerateSqliteDb extends Command
             );
         }
 
+        if (null === $DI['api-app-user1'] = $this->container['repo.api-applications']->findOneByName('test-web-user1')) {
+            $DI['api-app-user1'] = $this->container['manipulator.api-application']->create(
+                'test-web-user1',
+                ApiApplication::WEB_TYPE,
+                '',
+                'http://website.com/',
+                $DI['user_1'],
+                'http://callback.com/callback/'
+            );
+        }
+
     }
 
     public function insertOauthAccounts(\Pimple $DI)
@@ -221,6 +233,8 @@ class RegenerateSqliteDb extends Command
         $apiOAuthTokenManipulator->create($DI['api-app-acc-user']);
         $DI['api-app-acc-user-not-admin'] = $apiAccountManipulator->create($DI['api-app-user-not-admin'], $DI['user_notAdmin'], V2::VERSION);
         $apiOAuthTokenManipulator->create($DI['api-app-acc-user-not-admin']);
+        $DI['api-app-acc-user1'] = $apiAccountManipulator->create($DI['api-app-user1'], $DI['user_1'], V2::VERSION);
+        $apiOAuthTokenManipulator->create($DI['api-app-acc-user1']);
     }
 
     public function insertNativeApps()

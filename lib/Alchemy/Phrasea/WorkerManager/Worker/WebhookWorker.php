@@ -128,7 +128,17 @@ class WebhookWorker implements WorkerInterface
         }
     }
 
-    private function deliverEvent(Client $httpClient, array $thirdPartyApplications, WebhookEvent $webhookevent, $payload)
+    /**
+     * Deliver event to the webhook_url
+     * make as public function because used also for unit test
+     *
+     * @param Client $httpClient
+     * @param array $thirdPartyApplications
+     * @param WebhookEvent $webhookevent
+     * @param $payload
+     * @return array|void
+     */
+    public function deliverEvent(Client $httpClient, array $thirdPartyApplications, WebhookEvent $webhookevent, $payload)
     {
         if (count($thirdPartyApplications) === 0) {
             $workerMessage = 'No applications defined to listen for webhook events';
@@ -321,6 +331,8 @@ class WebhookWorker implements WorkerInterface
                 MessagePublisher::WEBHOOK_TYPE
             );
         }
+
+        return $requests;
     }
 
     private function getUrl(ApiApplication $application, WebhookEventDelivery $delivery)
