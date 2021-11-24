@@ -31,7 +31,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
 
         $em->flush();
 
-        self::$DI['app']['manipulator.api-application']->setWebhookUrl(self::$DI['oauth2-app-user-not-admin'], $webhookUrl);
+        self::$DI['app']['manipulator.api-application']->setWebhookUrl(self::$DI['oauth2-app-user1'], $webhookUrl);
 
         $payload = [
             'id'    => $event->getId(),
@@ -51,7 +51,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
         $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
 
-        $requestResult = $webhookWorker->deliverEvent($client, [self::$DI['oauth2-app-user-not-admin']], $event, $payload);
+        $requestResult = $webhookWorker->deliverEvent($client, [self::$DI['oauth2-app-user1']], $event, $payload);
 
         $this->assertCount(1, $requestResult);
 
@@ -83,7 +83,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
      */
     public function testNoDeliverWithSpecifiedListenedEvent(WebhookEvent $event)
     {
-        self::$DI['oauth2-app-user-not-admin']->setListenedEvents(['record.edited']);
+        self::$DI['oauth2-app-user1']->setListenedEvents(['record.edited']);
         $payload = [
             'id'    => $event->getId(),
             'published' => time()
@@ -95,7 +95,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
         $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
 
-        $requestResult = $webhookWorker->deliverEvent($client, [self::$DI['oauth2-app-user-not-admin']], $event, $payload);
+        $requestResult = $webhookWorker->deliverEvent($client, [self::$DI['oauth2-app-user1']], $event, $payload);
 
         // normally no request sended because record.created sended
         $this->assertCount(0, $requestResult);
