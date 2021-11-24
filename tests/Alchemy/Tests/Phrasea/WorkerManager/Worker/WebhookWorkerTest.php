@@ -27,6 +27,8 @@ class WebhookWorkerTest extends \PhraseanetTestCase
             ->setCollectionBaseIds([])
             ;
 
+        //minimum the app user access to the record collection
+        self::$DI['app']->getAclForUser(self::$DI['user_1'])->give_access_to_base([self::$DI['record_1']->getBaseId()]);
         $em->persist($event);
 
         $em->flush();
