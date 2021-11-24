@@ -144,7 +144,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         self::$DI['app']->getAclForUser(self::$DI['user_1'])->give_access_to_base([self::$DI['record_1']->getBaseId()]);
     }
 
-    public function testAllEvent()
+    public function testAllEventWithoutRestrictions()
     {
         $em = self::$DI['app']['orm.em'];
         $events = [
