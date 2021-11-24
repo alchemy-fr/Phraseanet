@@ -101,6 +101,9 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         $this->assertCount(0, $requestResult);
     }
 
+    /**
+     * @depends testDeliverDataWithoutRestriction
+     */
     public function testNoDeliverWithCreatorNoCollectionRight()
     {
         $em = self::$DI['app']['orm.em'];
@@ -144,6 +147,9 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         self::$DI['app']->getAclForUser(self::$DI['user_1'])->give_access_to_base([self::$DI['record_1']->getBaseId()]);
     }
 
+    /**
+     * @depends testDeliverDataWithoutRestriction
+     */
     public function testAllEventWithoutRestrictions()
     {
         $em = self::$DI['app']['orm.em'];
