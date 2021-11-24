@@ -24,7 +24,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                 'collection_name'   => self::$DI['record_1']->getCollection()->get_name(),
                 'record_type'       => 'record'
             ])
-            ->setCollectionBaseIds([self::$DI['record_1']->getBaseId()])
+            ->setCollectionBaseIds([])
             ;
 
         $em->persist($event);
