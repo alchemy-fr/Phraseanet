@@ -106,17 +106,18 @@ class PhraseanetFilesystem extends Filesystem
             }
 
             for($ttw = $timeToWait; $ttw >= 0; $ttw--) {
-                if (!file_exists($file)) {
-                    if($ttw === 0) {
-                        return false;
-                    }
-
-                    file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                        sprintf("file \"%s\" does not exists (tryout %d/%d), retry in 1 sec.", $file, $ttw, $timeToWait)
-                    ), FILE_APPEND | LOCK_EX);
-
-                    sleep(1);
+                if (file_exists($file)) {
+                    break;
                 }
+                if($ttw === 0) {
+                    return false;
+                }
+
+                file_put_contents(dirname(__FILE__).'/../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+                    sprintf("file \"%s\" does not exists (tryout %d/%d), retry in 1 sec.", $file, $ttw, $timeToWait)
+                ), FILE_APPEND | LOCK_EX);
+
+                sleep(1);
             }
         }
 
