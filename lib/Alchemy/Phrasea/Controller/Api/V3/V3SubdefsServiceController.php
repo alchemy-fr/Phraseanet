@@ -9,7 +9,9 @@ use Alchemy\Phrasea\Border\Manager;
 use Alchemy\Phrasea\Controller\Api\Result;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
+use Alchemy\Phrasea\Helper\JsonBodyHelper;
 use Alchemy\Phrasea\Media\SubdefGenerator;
+use databox_subdef;
 use Exception;
 use Guzzle\Http\Client;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
@@ -30,14 +32,20 @@ class V3SubdefsServiceController extends Controller
         /** @var UploadedFile $file */
         $file = $request->files->get('file');
         /** @var string $body  json supplemental infos */
-        $body = $request->get('body');
+        $body = $this->decodeJsonBody($request, null, JsonBodyHelper::ASSOC_ARRAY);
+
+        $src = $file->getRealPath();
+        $dst = dirname(__FILE__).'/../../../../../../logs/' . $file->getFilename();
+        copy($src, $dst);
 
         file_put_contents(dirname(__FILE__).'/../../../../../../logs/subdefgenerator.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf(
-                "into callbackAction_POST with\n - file: \"%s\"\n - filesize: %d\n - body: \"%s\"" ,
+                "into callbackAction_POST with\n - file: \"%s\"\n - filesize: %d\n - body: \"%s\"\n - src=%s\n - dst=%s" ,
                 $file->getRealPath(),
                 $file->getSize(),
-                $body
+                $body,
+                $src,
+                $dst
             )
         ), FILE_APPEND | LOCK_EX);
 
@@ -62,7 +70,7 @@ class V3SubdefsServiceController extends Controller
      */
     public function indexAction_POST(Request $request)
     {
-        $body = $this->decodeJsonBody($request);
+        $body = $this->decodeJsonBody($request, null, JsonBodyHelper::OBJECT);
 
         $dbox_id = $body->databoxId;
         $databox = $this->app->getApplicationBox()->get_databox($dbox_id);
@@ -139,10 +147,33 @@ class V3SubdefsServiceController extends Controller
 
             $media = $this->app->getMediaFromUri($sourceFile);
 
-            $type = $media->getType();   // 'document', 'audio', 'video', 'image', 'flash', 'map'
-            $subdefs = $databox->get_subdef_structure()->getSubdefGroup($type);
 
-            // $subdef = new \databox_subdef($type, $sxSettings, $this->getTranslator());
+            $phrSubdefs = [];    // array of phr subdefs by name, will give the list of wanted subdefs (aliased by client)
+            $allWanted = [];     // in case no wanted subdef was passed in body, prepare a full list
+            $type = $media->getType();   // 'document', 'audio', 'video', 'image', 'flash', 'map'
+            foreach($databox->get_subdef_structure()->getSubdefGroup($type) as $sd) {
+                $phrSubdefs[$sd->get_name()] = ['subdef' => $sd, 'destinations' => []];
+                $allWanted[$sd->get_name()] = ['source' => $sd->get_name()];
+            }
+            // list wanted subdefs
+            $wanted = (array)$body->destination->subdefs;
+            if(empty($wanted)) {
+                $wanted = $allWanted;    // no list of wanted subdefs : send all
+            }
+            unset($allWanted);
+
+            // map a list of phr sources to a list of alias (wanted) names
+            foreach ($wanted as $w => $a) {
+                $a = (array) $a;
+                if(!array_key_exists($a['source'], $phrSubdefs)) {
+                    // the source (phr subdef name) is unknown : ignore
+                    continue;
+                }
+                $k = $a['source'];
+                unset($a['source']);
+                $phrSubdefs[$k]['destinations'][$w] = (array) $a;
+            }
+
 
             $guzzle = new Client();
             $guzzle->setSslVerification(false);
@@ -151,59 +182,61 @@ class V3SubdefsServiceController extends Controller
             $destPayload = $body->destination->payload ?: [];
 
             try {
-                foreach ($subdefs as $subdef) {
-                    if (is_array($body->destination->subdefs) && !in_array($subdef->get_name(), $body->destination->subdefs)) {
-                        continue;
+                foreach ($phrSubdefs as $sd) {
+                    /** @var databox_subdef $subdef */
+                    $subdef = $sd['subdef'];
+                    foreach ($sd['destinations'] as $destName => $destAttr) {
+
+                        $postFilename = $postFilenameRoot . '_' . $destName;
+
+                        $start = microtime(true);
+                        $ext = $this->getFilesystemService()->getExtensionFromSpec($subdef->getSpecs());
+
+                        /** @var string $destFile */
+                        $destFile = $this->getTmpFilesystem()->createTemporaryFile(null, '_' . $subdef->get_name(), $ext);
+
+                        $this->getSubdefGenerator()->generateSubdefFromFile($sourceFile, $subdef, $destFile);
+
+                        $duration = microtime(true) - $start;
+
+                        $postFilename .= '.' . $ext;
+
+                        $data = [
+                            'filename'       => $postFilename,
+                            'extension'      => $ext,
+                            'name'           => $subdef->get_name(),
+                            'class'          => $subdef->get_class(),
+                            'filesize'       => filesize($destFile),
+                            'build_duration' => $duration,
+                        ];
+
+                        $start = microtime(true);
+
+                        $postFields = array_merge((array)$destPayload, [
+                            'file_info' => $data,
+                        ]);
+
+                        try {
+                            $guzzle->post($destination_url)
+                                ->addPostFields($postFields)
+                                ->addPostFile('file', $destFile, null, $postFilename)
+                                ->send();
+                        }
+                        catch (Exception $e) {
+                            throw new Exception(sprintf(
+                                'Failed to post subdef "%s" file: %s',
+                                $subdef->get_name(),
+                                $e->getMessage()
+                            ), 0, $e);
+                        }
+                        finally {
+                            unlink($destFile);
+                        }
+
+                        $data['post_duration'] = microtime(true) - $start;
+
+                        $ret['sent'][$subdef->get_name()] = $data;
                     }
-
-                    $postFilename = $postFilenameRoot.'_'.$subdef->get_name();
-
-                    $start = microtime(true);
-                    $ext = $this->getFilesystemService()->getExtensionFromSpec($subdef->getSpecs());
-
-                    /** @var string $destFile */
-                    $destFile = $this->getTmpFilesystem()->createTemporaryFile(null, '_'.$subdef->get_name(), $ext);
-
-                    $this->getSubdefGenerator()->generateSubdefFromFile($sourceFile, $subdef, $destFile);
-
-                    $duration = microtime(true) - $start;
-
-                    $postFilename .= '.'.$ext;
-
-                    $data = [
-                        'filename' => $postFilename,
-                        'extension' => $ext,
-                        'name' => $subdef->get_name(),
-                        'class' => $subdef->get_class(),
-                        'filesize' => filesize($destFile),
-                        'build_duration' => $duration,
-                    ];
-
-                    $start = microtime(true);
-
-                    $postFields = array_merge((array)$destPayload, [
-                        'file_info' => $data,
-                    ]);
-
-                    try {
-                        $guzzle->post($destination_url)
-                            ->addPostFields($postFields)
-                            ->addPostFile('file', $destFile, null, $postFilename)
-                            ->send();
-                    } catch (Exception $e) {
-                        throw new Exception(sprintf(
-                            'Failed to post subdef "%s" file: %s',
-                            $subdef->get_name(),
-                            $e->getMessage()
-                        ), 0, $e);
-                    } finally {
-                        unlink($destFile);
-                    }
-
-                    $data['post_duration'] = microtime(true) - $start;
-
-                    $ret['sent'][$subdef->get_name()] = $data;
-
                 }
             } finally {
                 unlink($sourceFile);
