@@ -2,7 +2,7 @@
 
 use Alchemy\Phrasea\Application;
 
-class patch415PHRAS3584 implements patchInterface
+class patch_415PHRAS3584 implements patchInterface
 {
     /** @var string */
     private $release = '4.1.5';
