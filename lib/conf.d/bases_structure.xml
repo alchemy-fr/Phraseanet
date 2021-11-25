@@ -3107,7 +3107,7 @@
             <type>int(11) unsigned</type>
             <null>YES</null>
             <extra></extra>
-            <default>NULL</default>
+            <default></default>
             <comment></comment>
           </field>
           <field>
