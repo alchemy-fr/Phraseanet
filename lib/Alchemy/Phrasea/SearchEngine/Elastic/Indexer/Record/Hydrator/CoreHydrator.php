@@ -54,6 +54,8 @@ class CoreHydrator implements HydratorInterface
             : SearchEngineInterface::GEM_TYPE_RECORD;
         unset($record['parent_record_id']);
 
+        $record['cover_record_id'] = is_null($record['cover_record_id']) ? null : (int) $record['cover_record_id'];
+
         if (!$record['mime']) {
             $record['mime'] = ($record['record_type'] == SearchEngineInterface::GEM_TYPE_STORY) ? 'regroup_doc' : 'application/octet-stream';
         }

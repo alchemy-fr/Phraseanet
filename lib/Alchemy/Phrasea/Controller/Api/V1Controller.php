@@ -2720,19 +2720,29 @@ class V1Controller extends Controller
         return Result::create($request, array($record_key))->createResponse();
     }
 
-    protected function setStoryCover(\record_adapter $story, $record_id, $can_fail=false, $coverSource = [])
+    protected function setStoryCover(\record_adapter $story, $fromChildRecordId, $can_fail=false, $coverSources = [])
     {
-        $coverSource = array_merge(['thumbnail_cover_source' => 'thumbnail', 'preview_cover_source' => 'preview'], $coverSource);
+        $coverSources = array_merge(['thumbnail_cover_source' => 'thumbnail', 'preview_cover_source' => 'preview'], $coverSources);
 
+        $ret = false;
         try {
-            $record = new \record_adapter($this->app, $story->getDataboxId(), $record_id);
-        } catch (\Exception_Record_AdapterNotFound $e) {
-            $record = null;
-            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s could not be found', $story->getDataboxId(), $record_id));
+            $ret = $story->setStoryCover($fromChildRecordId, $coverSources);
+        }
+        catch (\Exception $e) {
+            $this->app->abort(404, $e->getMessage());
         }
 
-        if (!$story->hasChild($record)) {
-            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->getDataboxId(), $record_id));
+        return $ret;
+/*
+        try {
+            $cover_record = new \record_adapter($this->app, $story->getDataboxId(), $fromChildRecordId);
+        } catch (\Exception_Record_AdapterNotFound $e) {
+            $cover_record = null;
+            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s could not be found', $story->getDataboxId(), $fromChildRecordId));
+        }
+
+        if (!$story->hasChild($cover_record)) {
+            $this->app->abort(404, sprintf('Record identified by databox_id %s and record_id %s is not in the story', $story->getDataboxId(), $fromChildRecordId));
         }
 
         // taking account all record type as a cover
@@ -2743,8 +2753,8 @@ class V1Controller extends Controller
 //            }
 //            $this->app->abort(403, sprintf('Record identified by databox_id %s and record_id %s is not an image nor a video', $story->getDataboxId(), $record_id));
 //        }
-
-        foreach ($record->get_subdefs() as $name => $value) {
+        $subdefChanged = false;
+        foreach ($cover_record->get_subdefs() as $name => $value) {
             if (!($key = array_search($name, $coverSource))) {
                 continue;
             }
@@ -2759,11 +2769,15 @@ class V1Controller extends Controller
                 $name == 'document' ? 'HD' : $name,
                 ''
             );
+            $subdefChanged = true;
+        }
+        if($subdefChanged) {
+            $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($story, $cover_record));
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
         }
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
-
-        return $record->getId();
+        return $cover_record->getId();
+*/
     }
 
     public function getCurrentUserAction(Request $request)

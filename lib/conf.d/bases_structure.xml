@@ -3103,7 +3103,14 @@
             <comment></comment>
           </field>
           <field>
-
+            <name>cover_record_id</name>
+            <type>int(11) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default>NULL</default>
+            <comment></comment>
+          </field>
+          <field>
             <name>status</name>
             <type>int(10) unsigned</type>
             <null></null>
