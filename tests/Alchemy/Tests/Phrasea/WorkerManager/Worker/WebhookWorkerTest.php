@@ -10,6 +10,39 @@ use GuzzleHttp\Psr7\Request;
 
 class WebhookWorkerTest extends \PhraseanetTestCase
 {
+    private $events = [
+        WebhookEvent::RECORD_TYPE   => [
+            WebhookEvent::RECORD_CREATED,
+            WebhookEvent::RECORD_EDITED,
+            WebhookEvent::RECORD_DELETED,
+            WebhookEvent::RECORD_MEDIA_SUBSTITUTED,
+            WebhookEvent::RECORD_COLLECTION_CHANGED,
+            WebhookEvent::RECORD_STATUS_CHANGED,
+        ],
+        WebhookEvent::RECORD_SUBDEF_TYPE    => [
+            WebhookEvent::RECORD_SUBDEF_CREATED,
+            WebhookEvent::RECORD_SUBDEF_FAILED,
+        ],
+        WebhookEvent::USER_TYPE     => [
+            WebhookEvent::USER_CREATED,
+            WebhookEvent::USER_DELETED,
+        ],
+        WebhookEvent::USER_REGISTRATION_TYPE    => [
+            WebhookEvent::USER_REGISTRATION_GRANTED,
+            WebhookEvent::USER_REGISTRATION_REJECTED,
+        ],
+        WebhookEvent::FEED_ENTRY_TYPE   => [
+            WebhookEvent::NEW_FEED_ENTRY,
+        ],
+        WebhookEvent::ORDER_TYPE    => [
+            WebhookEvent::ORDER_CREATED,
+            WebhookEvent::ORDER_DELIVERED,
+            WebhookEvent::ORDER_DENIED
+        ]
+    ];
+
+    private $eventsData;
+
     public function testDeliverDataWithoutRestriction()
     {
         $em = self::$DI['app']['orm.em'];
@@ -74,7 +107,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
             $this->assertEquals(self::$DI['record_1']->get_sbas_id(), $requestBody['data']['databox_id']);
             $this->assertEquals(self::$DI['record_1']->get_record_id(), $requestBody['data']['record_id']);
             $this->assertEquals('record', $requestBody['data']['record_type']);
-            $this->assertArrayHasKey('time', $requestBody['data']);
+            $this->assertArrayHasKey('time', $requestBody);
         }
     }
 
@@ -149,101 +182,24 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         self::$DI['app']->getAclForUser(self::$DI['user_1'])->give_access_to_base([self::$DI['record_1']->getBaseId()]);
     }
 
-    /**
-     * @depends testDeliverDataWithoutRestriction
-     */
-    public function testAllEventWithoutRestrictions()
+    public function testDeliverAllEventWithoutBaseIdRestrictions()
     {
+        $this->loadEventsData();
+
         $em = self::$DI['app']['orm.em'];
-        $events = [
-            WebhookEvent::RECORD_TYPE   => [
-                WebhookEvent::RECORD_CREATED,
-                WebhookEvent::RECORD_EDITED,
-                WebhookEvent::RECORD_DELETED,
-                WebhookEvent::RECORD_MEDIA_SUBSTITUTED,
-                WebhookEvent::RECORD_COLLECTION_CHANGED,
-                WebhookEvent::RECORD_STATUS_CHANGED,
-            ],
-            WebhookEvent::RECORD_SUBDEF_TYPE    => [
-                WebhookEvent::RECORD_SUBDEF_CREATED,
-                WebhookEvent::RECORD_SUBDEF_FAILED,
-            ],
-            WebhookEvent::USER_TYPE     => [
-                WebhookEvent::USER_CREATED,
-                WebhookEvent::USER_DELETED,
-            ],
-            // ??
-            WebhookEvent::USER_REGISTRATION_TYPE    => [
-                WebhookEvent::USER_REGISTRATION_GRANTED,
-                WebhookEvent::USER_REGISTRATION_REJECTED,
-            ],
-            WebhookEvent::FEED_ENTRY_TYPE   => [
-                WebhookEvent::NEW_FEED_ENTRY,
-            ],
-            WebhookEvent::ORDER_TYPE    => [
-                WebhookEvent::ORDER_CREATED,
-                WebhookEvent::ORDER_DELIVERED,
-                WebhookEvent::ORDER_DENIED
-            ]
-        ];
-
-        $order = new Order();
-        $order
-            ->setUser(self::$DI['user_notAdmin'])
-            ->setOrderUsage('test')
-            ->setDeadline(new \DateTime('+1 day'))
-        ;
-        $em->persist($order);
-        $em->flush();
-
-        $eventsData = [
-            WebhookEvent::RECORD_TYPE   => [
-                'databox_id'        => self::$DI['record_1']->get_sbas_id(),
-                'record_id'         => self::$DI['record_1']->get_record_id(),
-                'collection_name'   => self::$DI['record_1']->getCollection()->get_name(),
-                'record_type'       => 'record'
-            ],
-            WebhookEvent::RECORD_SUBDEF_TYPE    => [
-                'databox_id'    => self::$DI['record_1']->get_sbas_id(),
-                'record_id'     => self::$DI['record_1']->get_record_id(),
-                'subdef'        => 'thumbnail'
-            ],
-            WebhookEvent::USER_TYPE     => [
-                'user_id' => self::$DI['user_notAdmin']->getId(),
-                'email'   => 'noone_not_admin@example.com',
-                'login'   => 'noone_not_admin@example.com'
-            ],
-            WebhookEvent::USER_REGISTRATION_TYPE    => [
-                [
-                    'user_id'  => self::$DI['user_notAdmin']->getId(),
-                    'granted'  => ['granted'],
-                    'rejected' => ['rejected']
-                ],
-            ],
-            WebhookEvent::FEED_ENTRY_TYPE   => [
-                'entry_id' => self::$DI['feed_public_entry']->getId(),
-                'feed_id'  => self::$DI['feed_public']->getId()
-            ],
-            WebhookEvent::ORDER_TYPE    => [
-                'order_id' => $order->getId(),
-                'user_id' => self::$DI['user_notAdmin']->getId(),
-            ]
-        ];
-
-
         $client = new Client();
 
         $webhookWorker = new WebhookWorker(self::$DI['app']);
         $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
         $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
 
-        foreach ($events as $type => $tEvent) {
+        foreach ($this->events as $type => $tEvent) {
             foreach ($tEvent as $eventName) {
                 $event = new WebhookEvent();
                 $event
                     ->setName($eventName)
                     ->setType($type)
-                    ->setData($eventsData[$type])
+                    ->setData($this->eventsData[$type])
                     ->setCollectionBaseIds([])
                 ;
 
@@ -262,24 +218,27 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                 $request =  current($requestResult);
                 $requestBody = json_decode($request->getBody()->__tostring(), true);
 
+                $this->assertInternalType('array', $requestBody);
+                $this->assertArrayHasKey('event', $requestBody);
+                $this->assertArrayHasKey('time', $requestBody);
+
                 switch (true) {
-                    case (in_array($requestBody['event'], $events[WebhookEvent::RECORD_TYPE])):
+                    case (in_array($requestBody['event'], $this->events[WebhookEvent::RECORD_TYPE])):
                         $this->assertArrayHasKey('data', $requestBody);
                         $this->assertEquals(self::$DI['record_1']->get_sbas_id(), $requestBody['data']['databox_id']);
                         $this->assertEquals(self::$DI['record_1']->get_record_id(), $requestBody['data']['record_id']);
                         $this->assertEquals('record', $requestBody['data']['record_type']);
                         $this->assertEquals(self::$DI['record_1']->getCollection()->get_name(), $requestBody['data']['collection_name']);
-                        $this->assertArrayHasKey('time', $requestBody['data']);
 
                         break;
-                    case (in_array($requestBody['event'], $events[WebhookEvent::RECORD_SUBDEF_TYPE])):
+                    case (in_array($requestBody['event'], $this->events[WebhookEvent::RECORD_SUBDEF_TYPE])):
                         $this->assertArrayHasKey('data', $requestBody);
                         $this->assertEquals(self::$DI['record_1']->get_sbas_id(), $requestBody['data']['databox_id']);
                         $this->assertEquals(self::$DI['record_1']->get_record_id(), $requestBody['data']['record_id']);
                         $this->assertEquals('thumbnail', $requestBody['data']['subdef']);
 
                         break;
-                    case (in_array($requestBody['event'], $events[WebhookEvent::USER_TYPE])):
+                    case (in_array($requestBody['event'], $this->events[WebhookEvent::USER_TYPE])):
                         $this->assertArrayNotHasKey('data', $requestBody);
                         $this->assertArrayHasKey('user', $requestBody);
                         $this->assertEquals(self::$DI['user_notAdmin']->getId(), $requestBody['user']['id']);
@@ -287,7 +246,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertEquals('noone_not_admin@example.com', $requestBody['user']['login']);
 
                         break;
-                    case (in_array($requestBody['event'], $events[WebhookEvent::USER_REGISTRATION_TYPE])):
+                    case (in_array($requestBody['event'], $this->events[WebhookEvent::USER_REGISTRATION_TYPE])):
                         $this->assertArrayNotHasKey('data', $requestBody);
                         $this->assertArrayHasKey('user', $requestBody);
                         $this->assertArrayHasKey('granted', $requestBody);
@@ -297,14 +256,14 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertEquals(['granted'], $requestBody['granted']);
 
                         break;
-                    case (in_array($requestBody['event'], $events[WebhookEvent::FEED_ENTRY_TYPE])):
+                    case (in_array($requestBody['event'], $this->events[WebhookEvent::FEED_ENTRY_TYPE])):
                         $this->assertArrayNotHasKey('data', $requestBody);
                         $this->assertArrayHasKey('feed', $requestBody);
                         $this->assertArrayHasKey('entry', $requestBody);
                         $this->assertEquals(self::$DI['feed_public_entry']->getId(), $requestBody['entry']['id']);
 
                         break;
-                    case (in_array($requestBody['event'], $events[WebhookEvent::ORDER_TYPE])):
+                    case (in_array($requestBody['event'], $this->events[WebhookEvent::ORDER_TYPE])):
                         $this->assertArrayNotHasKey('data', $requestBody);
                         $this->assertArrayHasKey('user', $requestBody);
                         $this->assertArrayHasKey('order', $requestBody);
@@ -314,5 +273,211 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                 }
             }
         }
+    }
+
+    public function testDeliverWithValidRight()
+    {
+        $this->loadEventsData();
+
+        $em = self::$DI['app']['orm.em'];
+        foreach ($this->events as $type => $tEvent) {
+            foreach ($tEvent as $eventName) {
+                $event = new WebhookEvent();
+                $event
+                    ->setName($eventName)
+                    ->setType($type)
+                    ->setData($this->eventsData[$type])
+                    ->setCollectionBaseIds([self::$DI['record_1']->getBaseId()])
+                ;
+
+                $em->persist($event);
+                $em->flush();
+
+                list($rightSbas, $rightBase) = $this->getUserActiveRights(WebhookEvent::$eventsAccessRight, $eventName);
+
+                $rightSbasReset = [
+                    \ACL::BAS_MODIFY_STRUCT => false,
+                    \ACL::BAS_MODIF_TH      => false,
+                    \ACL::BAS_CHUPUB        => false,
+                    \ACL::BAS_MANAGE        => false,
+                ];
+
+                // re-initialize user right
+                self::$DI['app']->getAclForUser(self::$DI['user_1'])->revoke_access_from_bases([self::$DI['record_1']->getBaseId()]);
+                self::$DI['app']->getAclForUser(self::$DI['user_1'])->update_rights_to_base(self::$DI['record_1']->getBaseId(), $rightBase);
+
+                self::$DI['app']->getAclForUser(self::$DI['user_1'])->update_rights_to_sbas(self::$DI['record_1']->get_sbas_id(), $rightSbasReset);
+                self::$DI['app']->getAclForUser(self::$DI['user_1'])->update_rights_to_sbas(self::$DI['record_1']->get_sbas_id(), $rightSbas);
+
+                $client = new Client();
+
+                $webhookWorker = new WebhookWorker(self::$DI['app']);
+                $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
+                $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
+
+                $payload = [
+                    'id'    => $event->getId(),
+                    'published' => time()
+                ];
+
+                $requestResult = $webhookWorker->deliverEvent($client, [self::$DI['oauth2-app-user1']], $event, $payload);
+
+                $this->assertCount(1, $requestResult);
+
+                /** @var  Request $request */
+                $request =  current($requestResult);
+                $requestBody = json_decode($request->getBody()->__tostring(), true);
+                $this->assertInternalType('array', $requestBody);
+                $this->assertArrayHasKey('event', $requestBody);
+            }
+        }
+    }
+
+    public function testNoDeliverWithInvalidRight()
+    {
+        $this->loadEventsData();
+        $eventsTestInvalidUserRight = [
+            WebhookEvent::RECORD_CREATED    => [],
+            WebhookEvent::RECORD_EDITED     => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANADDRECORD],
+            WebhookEvent::RECORD_DELETED    => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANADDRECORD],
+            WebhookEvent::RECORD_MEDIA_SUBSTITUTED  => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANMODIFRECORD],
+            WebhookEvent::RECORD_COLLECTION_CHANGED => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANMODIFRECORD, \ACL::CHGSTATUS],
+            WebhookEvent::RECORD_STATUS_CHANGED     => [\ACL::ACCESS, \ACL::ACTIF, \ACL::IMGTOOLS],
+            WebhookEvent::RECORD_SUBDEF_CREATED     => [\ACL::ACCESS, \ACL::ACTIF, [\ACL::CANMODIFRECORD, \ACL::BAS_CHUPUB]],// only one right required from the sub-array
+            WebhookEvent::RECORD_SUBDEF_FAILED      => [\ACL::ACCESS, \ACL::ACTIF, [\ACL::ORDER_MASTER, \ACL::COLL_MANAGE]],
+            WebhookEvent::USER_CREATED              => [\ACL::ACCESS, \ACL::ACTIF, \ACL::ORDER_MASTER],
+            WebhookEvent::USER_DELETED              => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANMODIFRECORD],
+            WebhookEvent::USER_REGISTRATION_GRANTED => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANMODIFRECORD],
+            WebhookEvent::USER_REGISTRATION_REJECTED=> [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANMODIFRECORD],
+            WebhookEvent::NEW_FEED_ENTRY            => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CHGSTATUS],
+            WebhookEvent::ORDER_CREATED             => [\ACL::ACCESS, \ACL::ACTIF, \ACL::BAS_CHUPUB],
+            WebhookEvent::ORDER_DELIVERED           => [\ACL::ACCESS, \ACL::ACTIF, \ACL::BAS_CHUPUB],
+            WebhookEvent::ORDER_DENIED              => [\ACL::ACCESS, \ACL::ACTIF, \ACL::BAS_CHUPUB]
+        ];
+        $em = self::$DI['app']['orm.em'];
+
+        foreach ($this->events as $type => $tEvent) {
+            foreach ($tEvent as $eventName) {
+                $event = new WebhookEvent();
+                $event
+                    ->setName($eventName)
+                    ->setType($type)
+                    ->setData($this->eventsData[$type])
+                    ->setCollectionBaseIds([self::$DI['record_1']->getBaseId()])
+                ;
+
+                $em->persist($event);
+                $em->flush();
+
+                list($rightSbas, $rightBase) = $this->getUserActiveRights($eventsTestInvalidUserRight, $eventName);
+
+                $rightSbasReset = [
+                    \ACL::BAS_MODIFY_STRUCT => false,
+                    \ACL::BAS_MODIF_TH      => false,
+                    \ACL::BAS_CHUPUB        => false,
+                    \ACL::BAS_MANAGE        => false,
+                ];
+
+                // re-initialize user right for the test
+                self::$DI['app']->getAclForUser(self::$DI['user_1'])->revoke_access_from_bases([self::$DI['record_1']->getBaseId()]);
+                if (count($rightBase) > 0) {
+                    self::$DI['app']->getAclForUser(self::$DI['user_1'])->update_rights_to_base(self::$DI['record_1']->getBaseId(), $rightBase);
+                }
+                self::$DI['app']->getAclForUser(self::$DI['user_1'])->update_rights_to_sbas(self::$DI['record_1']->get_sbas_id(), $rightSbasReset);
+                if (count($rightSbas) > 0) {
+                    self::$DI['app']->getAclForUser(self::$DI['user_1'])->update_rights_to_sbas(self::$DI['record_1']->get_sbas_id(), $rightSbas);
+
+                }
+
+                $client = new Client();
+
+                $webhookWorker = new WebhookWorker(self::$DI['app']);
+                $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
+                $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
+
+                $payload = [
+                    'id'    => $event->getId(),
+                    'published' => time()
+                ];
+
+                $requestResult = $webhookWorker->deliverEvent($client, [self::$DI['oauth2-app-user1']], $event, $payload);
+
+                // Normaly no request send
+                $this->assertCount(0, $requestResult);
+            }
+        }
+    }
+
+    private function loadEventsData()
+    {
+        $em = self::$DI['app']['orm.em'];
+        $order = new Order();
+        $order
+            ->setUser(self::$DI['user_notAdmin'])
+            ->setOrderUsage('test')
+            ->setDeadline(new \DateTime('+1 day'))
+        ;
+        $em->persist($order);
+        $em->flush();
+
+        $this->eventsData = [
+            WebhookEvent::RECORD_TYPE   => [
+                'databox_id'        => self::$DI['record_1']->get_sbas_id(),
+                'record_id'         => self::$DI['record_1']->get_record_id(),
+                'collection_name'   => self::$DI['record_1']->getCollection()->get_name(),
+                'record_type'       => 'record'
+            ],
+            WebhookEvent::RECORD_SUBDEF_TYPE    => [
+                'databox_id'    => self::$DI['record_1']->get_sbas_id(),
+                'record_id'     => self::$DI['record_1']->get_record_id(),
+                'subdef'        => 'thumbnail'
+            ],
+            WebhookEvent::USER_TYPE     => [
+                'user_id' => self::$DI['user_notAdmin']->getId(),
+                'email'   => 'noone_not_admin@example.com',
+                'login'   => 'noone_not_admin@example.com'
+            ],
+            WebhookEvent::USER_REGISTRATION_TYPE    => [
+                'user_id'  => self::$DI['user_notAdmin']->getId(),
+                'granted'  => ['granted'],
+                'rejected' => ['rejected']
+            ],
+            WebhookEvent::FEED_ENTRY_TYPE   => [
+                'entry_id' => self::$DI['feed_public_entry']->getId(),
+                'feed_id'  => self::$DI['feed_public']->getId()
+            ],
+            WebhookEvent::ORDER_TYPE    => [
+                'order_id' => $order->getId(),
+                'user_id' => self::$DI['user_notAdmin']->getId(),
+            ]
+        ];
+    }
+
+    private function getUserActiveRights(array $eventsRights, $eventName)
+    {
+        $rightBase = [];
+        $rightSbas = [];
+        foreach ($eventsRights[$eventName] as $eventRight) {
+            if (is_array($eventRight)) {
+                foreach ($eventRight as $r) {
+                    if ($r == \ACL::ACCESS) {
+                        continue;
+                    }
+                    if (strpos($r, 'bas_') === 0) {
+                        $rightSbas[$r] = true;
+                    } else {
+                        $rightBase[$r] = true;
+                    }
+                }
+            } elseif ($eventRight != \ACL::ACCESS) {  // access is not a real sql column
+                if (strpos($eventRight, 'bas_') === 0) {
+                    $rightSbas[$eventRight] = true;
+                } else {
+                    $rightBase[$eventRight] = true;
+                }
+            }
+        }
+
+        return [$rightSbas, $rightBase];
     }
 }

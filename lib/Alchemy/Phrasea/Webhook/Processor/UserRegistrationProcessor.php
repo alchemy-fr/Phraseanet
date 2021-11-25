@@ -30,13 +30,14 @@ class UserRegistrationProcessor implements ProcessorInterface
 
         return [
             'event' => $event->getName(),
-            'user' => [
-                'id' => $user->getId(),
+            'user'  => [
+                'id'    => $user->getId(),
                 'email' => $user->getEmail(),
                 'login' => $user->getLogin()
             ],
-            'granted' => $data['granted'],
-            'rejected' => $data['rejected']
+            'granted'   => $data['granted'],
+            'rejected'  => $data['rejected'],
+            'time'      => $data['time']
         ];
     }
 }

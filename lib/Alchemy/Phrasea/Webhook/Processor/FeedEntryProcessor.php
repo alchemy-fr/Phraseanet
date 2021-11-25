@@ -90,7 +90,8 @@ class FeedEntryProcessor implements ProcessorInterface
                 'title' => $entry->getTitle(),
                 'description' => $entry->getSubtitle(),
             ],
-            'users' => $users
+            'users' => $users,
+            'time'  => $data['time']
         ];
     }
 }

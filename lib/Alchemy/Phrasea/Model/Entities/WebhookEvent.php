@@ -41,6 +41,25 @@ class WebhookEvent
     const RECORD_COLLECTION_CHANGED = 'record.collection_changed';
     const RECORD_STATUS_CHANGED = 'record.status_changed';
 
+    public static $eventsAccessRight = [
+            self::RECORD_CREATED    => [\ACL::ACCESS, \ACL::ACTIF],
+            self::RECORD_EDITED     => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANMODIFRECORD],
+            self::RECORD_DELETED    => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANDELETERECORD],
+            self::RECORD_MEDIA_SUBSTITUTED  => [\ACL::ACCESS, \ACL::ACTIF, \ACL::IMGTOOLS],
+            self::RECORD_COLLECTION_CHANGED => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANADDRECORD, \ACL::CANDELETERECORD],
+            self::RECORD_STATUS_CHANGED     => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANMODIFRECORD],
+            self::RECORD_SUBDEF_CREATED     => [\ACL::ACCESS, \ACL::ACTIF, [\ACL::IMGTOOLS, \ACL::CANADDRECORD]],// only one right required from the sub-array
+            self::RECORD_SUBDEF_FAILED      => [\ACL::ACCESS, \ACL::ACTIF, [\ACL::IMGTOOLS, \ACL::CANADDRECORD]],
+            self::USER_CREATED              => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANADMIN],
+            self::USER_DELETED              => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANADMIN],
+            self::USER_REGISTRATION_GRANTED => [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANADMIN],
+            self::USER_REGISTRATION_REJECTED=> [\ACL::ACCESS, \ACL::ACTIF, \ACL::CANADMIN],
+            self::NEW_FEED_ENTRY            => [\ACL::ACCESS, \ACL::ACTIF, \ACL::BAS_CHUPUB],
+            self::ORDER_CREATED             => [\ACL::ACCESS, \ACL::ACTIF, \ACL::ORDER_MASTER],
+            self::ORDER_DELIVERED           => [\ACL::ACCESS, \ACL::ACTIF, \ACL::ORDER_MASTER],
+            self::ORDER_DENIED              => [\ACL::ACCESS, \ACL::ACTIF, \ACL::ORDER_MASTER]
+    ];
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

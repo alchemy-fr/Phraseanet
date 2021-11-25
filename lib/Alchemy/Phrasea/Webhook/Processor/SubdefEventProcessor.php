@@ -9,9 +9,14 @@ class SubdefEventProcessor implements ProcessorInterface
 
     public function process(WebhookEvent $event)
     {
+        $data = $event->getData();
+        $time = $data['time'];
+        unset($data['time']);
+
         return [
             'event' => $event->getName(),
-            'data'  => $event->getData()
+            'data'  => $data,
+            'time'  => $time
         ];
     }
 }

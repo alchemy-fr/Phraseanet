@@ -191,7 +191,8 @@ class WebhookWorker implements WorkerInterface
 
             $concernedBaseIds = array_intersect($webhookevent->getCollectionBaseIds(), $creatorGrantedBaseIds);
 
-            if (count($webhookevent->getCollectionBaseIds()) != 0 && count($concernedBaseIds) == 0) {
+            if (count($webhookevent->getCollectionBaseIds()) != 0
+                && !$this->isCreatorHasRight($creatorACL, $concernedBaseIds, $webhookevent->getName())) {
                 continue;
             }
 
@@ -333,6 +334,53 @@ class WebhookWorker implements WorkerInterface
         }
 
         return $requests;
+    }
+
+    private function isCreatorHasRight(\ACL $creatorACL, array $baseIds, $eventName)
+    {
+        $checked = false;
+
+        foreach ($baseIds as $baseId) {
+            foreach (WebhookEvent::$eventsAccessRight[$eventName] as $right) {
+                // if it's a sub array, only one right is required from the sub array
+                if (is_array($right)) {
+                    $childChecked = false;
+                    foreach ($right as $r) {
+                        if (strpos($r, 'bas_') === 0) {
+                            // for the sbas right
+                            $sbasId = \collection::getByBaseId($this->app, $baseId)->get_databox()->get_sbas_id();
+                            if ($creatorACL->has_right_on_sbas($sbasId, $r)) {
+                                $childChecked = true;
+                            }
+                        } else {
+                            if (($right == \ACL::ACCESS && $creatorACL->has_access_to_base($baseId)) || $creatorACL->has_right_on_base($baseId, $r)) {
+                                $childChecked = true;
+                            }
+                        }
+                    }
+                    if (!$childChecked) {
+                        return false;
+                    }
+                } else {
+                    if (strpos($right, 'bas_') === 0) {
+                        // for the sbas right
+                        $sbasId = \collection::getByBaseId($this->app, $baseId)->get_databox()->get_sbas_id();
+                        if (!$creatorACL->has_right_on_sbas($sbasId, $right)) {
+                            return false;
+                        }
+                    } else {
+                        if ($right == \ACL::ACCESS && !$creatorACL->has_access_to_base($baseId)) {
+                            return false;
+                        } elseif ($right != \ACL::ACCESS && !$creatorACL->has_right_on_base($baseId, $right)) {
+                            return false;
+                        }
+                    }
+                }
+                $checked = true;
+            }
+        }
+
+        return $checked;
     }
 
     private function getUrl(ApiApplication $application, WebhookEventDelivery $delivery)
