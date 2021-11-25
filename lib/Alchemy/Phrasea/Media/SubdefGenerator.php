@@ -286,7 +286,7 @@ class SubdefGenerator
             $this->logger->error(sprintf('Subdef generation failed for record %d with message %s', $record->getRecordId(), $e->getMessage()));
         }
 
-        if($start){
+        if($start) {
 
             // the subdef was done
 
@@ -420,6 +420,21 @@ class SubdefGenerator
         }
         catch (Exception $e) {
             $this->logger->error(sprintf('Subdef generation failed with message %s', $e->getMessage()));
+        }
+
+        // watermark ?
+        if($subdef_class->getSpecs() instanceof Image) {
+            /** @var Subdef\Image $image */
+            $image = $subdef_class->getSubdefType();
+            /** @var Boolean $wm */
+            $wm = $image->getOption(Subdef\Image::OPTION_WATERMARK);
+            if($wm->getValue()) {
+
+                // we must watermark the file
+                /** @var Text $wmt */
+                $wmt = $image->getOption(Subdef\Image::OPTION_WATERMARKTEXT);
+                $this->wartermarkImageFile($pathdest, $wmt->getValue());
+            }
         }
 
         $duration = microtime(true) - $start;

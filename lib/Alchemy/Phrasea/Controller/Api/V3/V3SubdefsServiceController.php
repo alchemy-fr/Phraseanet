@@ -16,6 +16,7 @@ use Exception;
 use Guzzle\Http\Client;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -27,33 +28,43 @@ class V3SubdefsServiceController extends Controller
     use DispatcherAware;
 
 
+    /**
+     * the internal route "api/v3/subdefs_service_callback" can be used to explore the data sent to service callback
+     * it will save the received file in logs, and log infos into logs/subdefgenerator.txt
+     *
+     * @param Request $request
+     * @return JsonResponse|Response
+     */
     public function callbackAction_POST(Request $request)
     {
+        $logto = realpath(dirname(__FILE__).'/../../../../../../logs') . '/';
+
         /** @var UploadedFile $file */
         $file = $request->files->get('file');
-        /** @var string $body  json supplemental infos */
-        $body = $this->decodeJsonBody($request, null, JsonBodyHelper::ASSOC_ARRAY);
+        $info = $request->get('file_info');
 
+        // save the received file
         $src = $file->getRealPath();
-        $dst = dirname(__FILE__).'/../../../../../../logs/' . $file->getFilename();
+        $dst = $logto . $info['filename'];
         copy($src, $dst);
 
-        file_put_contents(dirname(__FILE__).'/../../../../../../logs/subdefgenerator.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
+        // log
+        file_put_contents($logto. 'subdefgenerator.txt', sprintf("\n%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
             sprintf(
-                "into callbackAction_POST with\n - file: \"%s\"\n - filesize: %d\n - body: \"%s\"\n - src=%s\n - dst=%s" ,
+                "into callbackAction_POST with\n - file: \"%s\"\n - filesize: %d\n - saved to: \"%s\"\n - payload: %s" ,
                 $file->getRealPath(),
                 $file->getSize(),
-                $body,
-                $src,
-                $dst
+                $dst,
+                var_export($request->request->all(), true)
             )
         ), FILE_APPEND | LOCK_EX);
 
+        // for now the subdef service does not expect any result from the callback
+        // so this "ret" is for debug only
         $ret = [
             'message' => "subdef service callback was called",
             'file' => $file->getRealPath(),
-            'filesize' => $file->getSize(),
-            'body' => $body
+            'filesize' => $file->getSize()
         ];
 
         return Result::create($request, $ret)->createResponse();
@@ -177,7 +188,7 @@ class V3SubdefsServiceController extends Controller
 
             $guzzle = new Client();
             $guzzle->setSslVerification(false);
-            $postFilenameRoot = $body->destination->filename ?: "subdef";
+            $postFilenameRoot = $body->destination->filename ?: "subdef_";
 
             $destPayload = $body->destination->payload ?: [];
 
@@ -187,7 +198,7 @@ class V3SubdefsServiceController extends Controller
                     $subdef = $sd['subdef'];
                     foreach ($sd['destinations'] as $destName => $destAttr) {
 
-                        $postFilename = $postFilenameRoot . '_' . $destName;
+                        $postFilename = $postFilenameRoot . $destName;
 
                         $start = microtime(true);
                         $ext = $this->getFilesystemService()->getExtensionFromSpec($subdef->getSpecs());
