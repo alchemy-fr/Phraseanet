@@ -229,6 +229,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertEquals(self::$DI['record_1']->get_record_id(), $requestBody['data']['record_id']);
                         $this->assertEquals('record', $requestBody['data']['record_type']);
                         $this->assertEquals(self::$DI['record_1']->getCollection()->get_name(), $requestBody['data']['collection_name']);
+                        $this->assertCount(6, $requestBody);
 
                         break;
                     case (in_array($requestBody['event'], $this->events[WebhookEvent::RECORD_SUBDEF_TYPE])):
@@ -236,6 +237,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertEquals(self::$DI['record_1']->get_sbas_id(), $requestBody['data']['databox_id']);
                         $this->assertEquals(self::$DI['record_1']->get_record_id(), $requestBody['data']['record_id']);
                         $this->assertEquals('thumbnail', $requestBody['data']['subdef']);
+                        $this->assertCount(6, $requestBody);
 
                         break;
                     case (in_array($requestBody['event'], $this->events[WebhookEvent::USER_TYPE])):
@@ -244,6 +246,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertEquals(self::$DI['user_notAdmin']->getId(), $requestBody['user']['id']);
                         $this->assertEquals('noone_not_admin@example.com', $requestBody['user']['email']);
                         $this->assertEquals('noone_not_admin@example.com', $requestBody['user']['login']);
+                        $this->assertCount(6, $requestBody);
 
                         break;
                     case (in_array($requestBody['event'], $this->events[WebhookEvent::USER_REGISTRATION_TYPE])):
@@ -254,6 +257,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertEquals(self::$DI['user_notAdmin']->getId(), $requestBody['user']['id']);
                         $this->assertEquals(['rejected'], $requestBody['rejected']);
                         $this->assertEquals(['granted'], $requestBody['granted']);
+                        $this->assertCount(8, $requestBody);
 
                         break;
                     case (in_array($requestBody['event'], $this->events[WebhookEvent::FEED_ENTRY_TYPE])):
@@ -261,6 +265,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertArrayHasKey('feed', $requestBody);
                         $this->assertArrayHasKey('entry', $requestBody);
                         $this->assertEquals(self::$DI['feed_public_entry']->getId(), $requestBody['entry']['id']);
+                        $this->assertCount(9, $requestBody);
 
                         break;
                     case (in_array($requestBody['event'], $this->events[WebhookEvent::ORDER_TYPE])):
@@ -268,6 +273,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                         $this->assertArrayHasKey('user', $requestBody);
                         $this->assertArrayHasKey('order', $requestBody);
                         $this->assertEquals(self::$DI['user_notAdmin']->getId(), $requestBody['user']['id']);
+                        $this->assertCount(7, $requestBody);
 
                         break;
                 }

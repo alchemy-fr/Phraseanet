@@ -11,12 +11,20 @@ class SubdefEventProcessor implements ProcessorInterface
     {
         $data = $event->getData();
         $time = $data['time'];
+        $url  = $data['url'];
+        $instanceName = $data['instance_name'];
+
         unset($data['time']);
+        unset($data['url']);
+        unset($data['instance_name']);
 
         return [
-            'event' => $event->getName(),
-            'data'  => $data,
-            'time'  => $time
+            'event'         => $event->getName(),
+            'version'       => WebhookEvent::WEBHOOK_VERSION,
+            'url'           => $url,
+            'instance_name' => $instanceName,
+            'data'          => $data,
+            'time'          => $time
         ];
     }
 }

@@ -154,10 +154,15 @@ class WebhookWorker implements WorkerInterface
             return;
         }
 
-        // format event data
+        // add common information data before generating each type of data
         if (!isset($payload['delivery_id'])) {
             $webhookData = $webhookevent->getData();
+
             $webhookData['time'] = $webhookevent->getCreated();
+            $webhookData['url'] = $this->app['conf']->get(['servername'], '');
+            $webhookData['instance_name'] = $this->app['conf']->get(['registry', 'general', 'title'], '');
+            // a webhook version is also added when processing data
+
             $webhookevent->setData($webhookData);
         }
 

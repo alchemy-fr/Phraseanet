@@ -11,6 +11,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class WebhookEvent
 {
+    const WEBHOOK_VERSION = 1;
+
     const NEW_FEED_ENTRY = 'new_feed_entry';
     const FEED_ENTRY_TYPE = 'feed_entry';
 

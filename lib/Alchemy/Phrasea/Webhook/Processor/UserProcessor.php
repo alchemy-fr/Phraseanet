@@ -15,14 +15,17 @@ class UserProcessor implements ProcessorInterface
             return null;
         }
 
-        return array(
-            'event' => $event->getName(),
+        return [
+            'event'         => $event->getName(),
+            'version'       => WebhookEvent::WEBHOOK_VERSION,
+            'url'           => $data['url'],
+            'instance_name' => $data['instance_name'],
             'user' => [
-                'id' => $data['user_id'],
+                'id'    => $data['user_id'],
                 'email' => $data['email'],
                 'login' => $data['login'],
             ],
-            'time' => $data['time']
-        );
+            'time'          => $data['time']
+        ];
     }
 }

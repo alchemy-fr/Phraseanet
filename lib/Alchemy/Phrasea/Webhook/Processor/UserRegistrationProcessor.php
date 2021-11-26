@@ -29,7 +29,10 @@ class UserRegistrationProcessor implements ProcessorInterface
         $user = $this->userRepository->find($data['user_id']);
 
         return [
-            'event' => $event->getName(),
+            'event'         => $event->getName(),
+            'version'       => WebhookEvent::WEBHOOK_VERSION,
+            'url'           => $data['url'],
+            'instance_name' => $data['instance_name'],
             'user'  => [
                 'id'    => $user->getId(),
                 'email' => $user->getEmail(),
