@@ -61,8 +61,8 @@ trait JsonBodyAware
      * @param null|string $schemaUri
      * @return stdClass
      */
-    public function decodeJsonBody(Request $request, $schemaUri = null)
+    public function decodeJsonBody(Request $request, $schemaUri = null, $format = JsonBodyHelper::OBJECT)
     {
-        return $this->getJsonBodyHelper()->decodeJsonBody($request, $schemaUri);
+        return $this->getJsonBodyHelper()->decodeJsonBody($request, $schemaUri, $format);
     }
 }
