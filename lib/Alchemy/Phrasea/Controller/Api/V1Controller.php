@@ -30,6 +30,7 @@ use Alchemy\Phrasea\Cache\Cache;
 use Alchemy\Phrasea\Collection\Reference\CollectionReference;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Databox\DataboxGroupable;
@@ -2726,6 +2727,9 @@ class V1Controller extends Controller
 
         $ret = false;
         try {
+            $story->setSubDefinitionSubstituerLocator(new LazyLocator($this->app, 'subdef.substituer'));
+            $story->setDataboxLoggerLocator($this->app['phraseanet.logger']);
+
             $ret = $story->setStoryCover($fromChildRecordId, $coverSources);
         }
         catch (\Exception $e) {
