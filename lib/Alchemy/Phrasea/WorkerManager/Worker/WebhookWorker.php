@@ -196,9 +196,8 @@ class WebhookWorker implements WorkerInterface
 
             $concernedBaseIds = array_intersect($webhookevent->getCollectionBaseIds(), $creatorGrantedBaseIds);
 
-            if (count($webhookevent->getCollectionBaseIds()) != 0
-                && !$this->isCreatorHasRight($creatorACL, $concernedBaseIds, $webhookevent->getName())) {
-                continue;
+            if (!$this->isCreatorHasRight($creatorACL, $concernedBaseIds, $webhookevent)) {
+                continue; // not send, skip
             }
 
             // continue iteration if api creator has no access to the record
@@ -341,12 +340,12 @@ class WebhookWorker implements WorkerInterface
         return $requests;
     }
 
-    private function isCreatorHasRight(\ACL $creatorACL, array $baseIds, $eventName)
+    private function isCreatorHasRight(\ACL $creatorACL, array $baseIds, WebhookEvent $webhookEvent)
     {
         $checked = false;
 
         foreach ($baseIds as $baseId) {
-            foreach (WebhookEvent::$eventsAccessRight[$eventName] as $right) {
+            foreach (WebhookEvent::$eventsAccessRight[$webhookEvent->getName()] as $right) {
                 // if it's a sub array, only one right is required from the sub array
                 if (is_array($right)) {
                     $childChecked = false;
@@ -383,6 +382,18 @@ class WebhookWorker implements WorkerInterface
                 }
                 $checked = true;
             }
+        }
+
+        // for user created and fantome user deleted
+        if (empty($baseIds) && $webhookEvent->getType() == WebhookEvent::USER_TYPE && empty($webhookEvent->getCollectionBaseIds()) ) {
+            // check if creatorUser has right canadmin in at least one collection
+            if ($creatorACL->has_right(\ACL::CANADMIN)) {
+                $checked = true;
+            }
+        } elseif(empty($baseIds) && empty($webhookEvent->getCollectionBaseIds()) && $webhookEvent->getType() != WebhookEvent::USER_TYPE) {
+            // in this case, for others type, there is not yet a specifiq rule defined
+            // so give the right true
+            $checked = true;
         }
 
         return $checked;
