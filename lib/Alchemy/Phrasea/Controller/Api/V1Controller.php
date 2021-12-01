@@ -1718,6 +1718,7 @@ class V1Controller extends Controller
             '@entity@'      => self::OBJECT_TYPE_STORY,
             'databox_id'    => $story->getDataboxId(),
             'story_id'      => $story->getRecordId(),
+            'cover_record_id' => $story->getCoverRecordId(),
             'updated_on'    => $story->getUpdated()->format(DATE_ATOM),
             'created_on'    => $story->getCreated()->format(DATE_ATOM),
             'collection_id' => $story->getCollectionId(),
