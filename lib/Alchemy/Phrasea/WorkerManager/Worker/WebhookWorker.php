@@ -7,6 +7,8 @@ use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Entities\WebhookEventPayload;
@@ -196,7 +198,7 @@ class WebhookWorker implements WorkerInterface
 
             $concernedBaseIds = array_intersect($webhookevent->getCollectionBaseIds(), $creatorGrantedBaseIds);
 
-            if (!$this->isCreatorHasRight($creatorACL, $concernedBaseIds, $webhookevent)) {
+            if (!$this->isCreatorHasRight($creator, $concernedBaseIds, $webhookevent)) {
                 continue; // not send, skip
             }
 
@@ -340,8 +342,11 @@ class WebhookWorker implements WorkerInterface
         return $requests;
     }
 
-    private function isCreatorHasRight(\ACL $creatorACL, array $baseIds, WebhookEvent $webhookEvent)
+    private function isCreatorHasRight(User $creator, array $baseIds, WebhookEvent $webhookEvent)
     {
+        /** @var \ACL $creatorACL */
+        $creatorACL = $this->app['acl']->get($creator);
+
         $checked = false;
 
         foreach ($baseIds as $baseId) {
@@ -357,7 +362,7 @@ class WebhookWorker implements WorkerInterface
                                 $childChecked = true;
                             }
                         } else {
-                            if (($right == \ACL::ACCESS && $creatorACL->has_access_to_base($baseId)) || $creatorACL->has_right_on_base($baseId, $r)) {
+                            if (($right === \ACL::ACCESS && $creatorACL->has_access_to_base($baseId)) || $creatorACL->has_right_on_base($baseId, $r)) {
                                 $childChecked = true;
                             }
                         }
@@ -373,9 +378,9 @@ class WebhookWorker implements WorkerInterface
                             return false;
                         }
                     } else {
-                        if ($right == \ACL::ACCESS && !$creatorACL->has_access_to_base($baseId)) {
+                        if ($right === \ACL::ACCESS && !$creatorACL->has_access_to_base($baseId)) {
                             return false;
-                        } elseif ($right != \ACL::ACCESS && !$creatorACL->has_right_on_base($baseId, $right)) {
+                        } elseif ($right !== \ACL::ACCESS && !$creatorACL->has_right_on_base($baseId, $right)) {
                             return false;
                         }
                     }
@@ -384,14 +389,33 @@ class WebhookWorker implements WorkerInterface
             }
         }
 
-        // for user created and fantome user deleted
-        if (empty($baseIds) && $webhookEvent->getType() == WebhookEvent::USER_TYPE && empty($webhookEvent->getCollectionBaseIds()) ) {
+        $specificRightOnType = [
+            WebhookEvent::USER_TYPE,
+            WebhookEvent::FEED_ENTRY_TYPE
+        ];
+
+        if ($webhookEvent->getType() === WebhookEvent::FEED_ENTRY_TYPE) {
+
+            if ($creatorACL->has_right(\ACL::BAS_CHUPUB)) {
+                $data = $webhookEvent->getData();
+                if (isset($data['entry_id'])) {
+                    /** @var FeedEntry $feedEntry */
+                    $feedEntry = $this->app['repo.feed-entries']->find($data['entry_id']);
+                    if ($feedEntry->getFeed()->isPublisher($creator)) {
+                        $checked = true;
+                    }
+                }
+            }
+        }
+
+        // for user created and phantom user deleted
+        if (empty($baseIds) && $webhookEvent->getType() === WebhookEvent::USER_TYPE && empty($webhookEvent->getCollectionBaseIds()) ) {
             // check if creatorUser has right canadmin in at least one collection
             if ($creatorACL->has_right(\ACL::CANADMIN)) {
                 $checked = true;
             }
-        } elseif(empty($baseIds) && empty($webhookEvent->getCollectionBaseIds()) && $webhookEvent->getType() != WebhookEvent::USER_TYPE) {
-            // in this case, for others type, there is not yet a specifiq rule defined
+        } elseif (empty($baseIds) && empty($webhookEvent->getCollectionBaseIds()) && !in_array($webhookEvent->getType(), $specificRightOnType)) {
+            // in this case, for others type, there is not yet a specific rule defined
             // so give the right true
             $checked = true;
         }

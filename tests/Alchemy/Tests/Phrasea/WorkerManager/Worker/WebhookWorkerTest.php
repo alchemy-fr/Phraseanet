@@ -186,7 +186,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
     {
         $this->loadEventsData();
         // add right canadmin for a creatorUser in at least one collection
-        // needed for test user.created and deleting fontome user.deleted
+        // needed for test user.created and deleting phantom user.deleted
         self::$DI['app']->getAclForUser(self::$DI['user_1'])->update_rights_to_base(self::$DI['record_1']->getBaseId(), [\ACL::CANADMIN => true]);
 
         $em = self::$DI['app']['orm.em'];

@@ -679,12 +679,20 @@ class RegenerateSqliteDb extends Command
         $publisher->setFeed($feed);
 
         $feed->addPublisher($publisher);
+
+        $publisher1 = new FeedPublisher();
+
+        $publisher1->setUser($DI['user_1']);
+        $publisher1->setIsOwner(false);
+        $publisher1->setFeed($feed);
+
         $feed->setTitle("Feed test, Public!");
         $feed->setIsPublic(true);
         $feed->setSubtitle("description");
 
         $em->persist($feed);
         $em->persist($publisher);
+        $em->persist($publisher1);
 
         $entry = $this->insertOneFeedEntry($em, $DI, $feed, true);
         $token = $this->insertOneFeedToken($em, $DI, $feed);
