@@ -25,6 +25,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -407,6 +408,15 @@ class AdminConfigurationController extends Controller
         ]);
     }
 
+    public function recordsActionsExampleSettingAction(PhraseaApplication $app, Request $request)
+    {
+        $response = new Response($this->getDefaultRecordsActionsSettings());
+        $response->headers->set('Content-Type', 'text/plain');
+
+        return $response;
+    }
+
+
     public function recordsActionsFacilityAction(PhraseaApplication $app, Request $request)
     {
         $ret = ['tasks' => []];
@@ -564,22 +574,32 @@ class AdminConfigurationController extends Controller
             <from>
                 <coll compare="=" id="5,6,7"/>
                 <date direction="after" field="TO_ARCHIVE" />
+                <record_document_phraseanet_types filter="like">
+                    <record_document_phraseanet_type>image</record_document_phraseanet_type>
+                    <record_document_phraseanet_type>video</record_document_phraseanet_type>
+                </record_document_phraseanet_types>
             </from>
             <to>
                 <comment> reset status of archived documents </comment>
                 <status mask="00xxxx"/>
                 <comment> 666 is the "archive" collection </comment>
                 <coll id="666" />
+                <comment> update field value </comment>
+                <metadatas field_name="Type" value="record archived"  />
             </to>
         </task>
 
 
-        <comment> Delete the documents that are in the trash collection unmodified from 3 months </comment>
+        <comment> Delete the documents with mimetype different of image/jpeg and image/png that are in the trash collection unmodified from 3 months </comment>
 
         <task active="0" name="trash" action="delete" databoxId="1">
             <from>
                 <coll compare="=" id="666"/>
                 <date direction="after" field="#moddate" delta="+90" />
+                <record_document_mime_types filter="except">
+                     <record_document_mime_type>image/jpeg</record_document_mime_type>
+                     <record_document_mime_type>image/png</record_document_mime_type>
+                </record_document_mime_types>
             </from>
         </task>
     </tasks>

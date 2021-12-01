@@ -139,10 +139,28 @@ class RecordsActionsWorker implements WorkerInterface
                         if (($x = (int) ($sxtask->to->coll['id'])) > 0) {
                             $tmp['coll'] = $x;
                         }
+
                         // change sb ?
                         if (($x = $sxtask->to->status['mask'])) {
                             $tmp['sb'] = $x;
                         }
+
+                        // update or set metadatas
+                        if ($sxtask->to->metadatas) {
+                            $metadatas = [];
+                            foreach ($sxtask->to->metadatas as $metadata) {
+                                // get all attribute for the metadatas tag
+                                // the same as defined in this documentation
+                                // https://app.swaggerhub.com/apis-docs/alchemy-fr/phraseanet.api.v3/1.0.0-oas3#/record/patchRecord
+                                $t = json_decode(json_encode($metadata), true);
+                                $metadatas[] = (object)$t['@attributes'];
+                            }
+
+                            $metadatasActions = new \stdClass();
+                            $metadatasActions->metadatas = $metadatas;
+                            $tmp['metadatasActions'] = $metadatasActions;
+                        }
+
                         $ret[] = $tmp;
                         break;
                     case 'DELETE':
@@ -189,8 +207,15 @@ class RecordsActionsWorker implements WorkerInterface
                     $rec->setStatus($status);
                     $this->logger->info(sprintf("on databoxId %s set recordId %s status to %s \n", $row['databoxId'], $row['record_id'], $status));
                 }
-                break;
 
+                // change metadatas
+                if (array_key_exists('metadatasActions', $row)) {
+                    $rec->setMetadatasByActions($row['metadatasActions']);
+
+                    $this->logger->info(sprintf("on databoxId %s recordId %s metadata changed \n", $row['databoxId'], $row['record_id']));
+                }
+
+                break;
             case 'DELETE':
                 if ($row['deletechildren'] && $rec->isStory()) {
                     /** @var record_adapter $child */
@@ -439,6 +464,50 @@ class RecordsActionsWorker implements WorkerInterface
                     break;
                 case 'STORY':
                     $tw[] = 'parent_record_id=record_id';
+                    break;
+            }
+        }
+
+        /**
+         *   criteria
+         *   <record_document_phraseanet_types filter="except | like">
+         *      <record_document_phraseanet_type>TYPE1</record_document_phraseanet_type>
+         *      <record_document_phraseanet_type>TYPE2</record_document_phraseanet_type>
+         *   </record_document_phraseanet_types>
+         */
+        if (($filter = $sxtask->from->record_document_phraseanet_types['filter']) !== null) {
+            foreach ($sxtask->from->record_document_phraseanet_types->record_document_phraseanet_type as $x) {
+                $tType[] = '"'.$x.'"';
+            }
+            switch ($filter) {
+                case 'like':
+                    $tw[] = 'type IN(' . implode(',', $tType) . ')';
+                    break;
+                case 'except':
+                    $tw[] = 'type NOT IN(' . implode(',', $tType) . ')';
+                    break;
+            }
+        }
+
+        /**
+         *  criteria
+         *
+         *  <record_document_mime_types filter="except | like">
+         *      <record_document_mime_type>mimetype1</record_document_mime_type>
+         *      <record_document_mime_type>mimetype2</record_document_mime_type>
+         *  </record_document_mime_types>
+         */
+        if (($filter = $sxtask->from->record_document_mime_types['filter']) !== null) {
+            foreach ($sxtask->from->record_document_mime_types->record_document_mime_type as $x) {
+                $tMimeType[] = '"'.$x.'"';
+            }
+
+            switch ($filter) {
+                case 'like':
+                    $tw[] = 'mime IN(' . implode(',', $tMimeType) . ')';
+                    break;
+                case 'except':
+                    $tw[] = 'mime NOT IN(' . implode(',', $tMimeType) . ')';
                     break;
             }
         }
