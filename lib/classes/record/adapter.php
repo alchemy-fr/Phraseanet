@@ -279,11 +279,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @param string $type
+     * @param bool $shouldSubdefsBeRebuilt
+     *
      * @return $this
      * @throws Exception
      * @throws DBALException
      */
-    public function setType($type)
+    public function setType($type, $shouldSubdefsBeRebuilt = true)
     {
         $type = strtolower($type);
 
@@ -296,7 +298,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $sql = 'UPDATE record SET moddate = NOW(), type = :type WHERE record_id = :record_id';
         $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
-        if ($old_type !== $type) {
+        if (($old_type !== $type) && $shouldSubdefsBeRebuilt) {
             $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
         }
 
@@ -342,8 +344,17 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->setMimeType($mime);
     }
 
-    public function setMimeType($mime)
+    /**
+     * @param $mime
+     * @param bool $shouldSubdefsBeRebuilt
+     *
+     * @return $this
+     * @throws DBALException
+     */
+    public function setMimeType($mime, $shouldSubdefsBeRebuilt = true)
     {
+        $oldMime = $this->getMimeType();
+
         // see http://lists.w3.org/Archives/Public/xml-dist-app/2003Jul/0064.html
         if (!preg_match("/^[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+\\/[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+$/", $mime)) {
             throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
@@ -354,7 +365,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
-            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+            if (($oldMime !== $mime) && $shouldSubdefsBeRebuilt) {
+                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+            }
 
             $this->delete_data_from_cache();
         }
