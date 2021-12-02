@@ -17,6 +17,7 @@ class UserProcessor implements ProcessorInterface
 
         return [
             'event'         => $event->getName(),
+            'webhookId'     => $event->getId(),
             'version'       => WebhookEvent::WEBHOOK_VERSION,
             'url'           => $data['url'],
             'instance_name' => $data['instance_name'],
@@ -25,7 +26,7 @@ class UserProcessor implements ProcessorInterface
                 'email' => $data['email'],
                 'login' => $data['login'],
             ],
-            'time'          => $data['time']
+            'event_time' => $data['event_time']
         ];
     }
 }

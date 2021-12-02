@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\LazyLocator;
@@ -54,9 +55,30 @@ class WebhookRecordEventSubscriber implements EventSubscriberInterface
         $this->createWebhookEvent($event, WebhookEvent::RECORD_MEDIA_SUBSTITUTED);
     }
 
-    public function onRecordCollectionChanged(RecordEvent $event)
+    public function onRecordCollectionChanged(CollectionChangedEvent $event)
     {
-        $this->createWebhookEvent($event, WebhookEvent::RECORD_COLLECTION_CHANGED);
+        $record = $this->convertToRecordAdapter($event->getRecord());
+
+        if ($record !== null) {
+            $eventData = [
+                'databox_id'        => $event->getRecord()->getDataboxId(),
+                'record_id'         => $event->getRecord()->getRecordId(),
+                'collection_name'   => $record->getCollection()->get_name(),
+                'record_type'       => $event->getRecord()->isStory() ? "story" : "record",
+                'before'            => $event->getBeforeCollection(),
+                'after'             => $event->getAfterCollection()
+            ];
+
+            $this->app['manipulator.webhook-event']->create(
+                WebhookEvent::RECORD_COLLECTION_CHANGED,
+                WebhookEvent::RECORD_TYPE,
+                $eventData,
+                [$event->getRecord()->getBaseId()]
+            );
+        } else {
+            $this->app['logger']->error("Record not found when wanting to create webhook data!");
+        }
+
     }
 
     public function onRecordStatusChanged(RecordEvent $event)

@@ -64,10 +64,10 @@ class ApiApplication extends \Alchemy\Phrasea\Model\Entities\ApiApplication impl
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'creator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'website', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientSecret', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'nonce', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'redirectUri', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'activated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'grantPassword', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'accounts', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'webhookUrl'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'creator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'website', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientSecret', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'nonce', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'redirectUri', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'activated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'grantPassword', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'accounts', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'webhookUrl', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'listenedEvents', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'hmacKey', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'webhookUnactivate'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'creator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'website', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientSecret', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'nonce', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'redirectUri', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'activated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'grantPassword', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'accounts', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'webhookUrl'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'creator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'type', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'name', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'description', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'website', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientId', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'clientSecret', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'nonce', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'redirectUri', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'activated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'grantPassword', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'accounts', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'webhookUrl', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'listenedEvents', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'hmacKey', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ApiApplication' . "\0" . 'webhookUnactivate'];
     }
 
     /**
@@ -505,6 +505,94 @@ class ApiApplication extends \Alchemy\Phrasea\Model\Entities\ApiApplication impl
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addAccount', [$account]);
 
         return parent::addAccount($account);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setListenedEvents(array $listenedEvents)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setListenedEvents', [$listenedEvents]);
+
+        return parent::setListenedEvents($listenedEvents);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addListenedEvent($eventName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addListenedEvent', [$eventName]);
+
+        return parent::addListenedEvent($eventName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeListenedEvent($eventName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeListenedEvent', [$eventName]);
+
+        return parent::removeListenedEvent($eventName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListenedEvents()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getListenedEvents', []);
+
+        return parent::getListenedEvents();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getHmacKey()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHmacKey', []);
+
+        return parent::getHmacKey();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setHmacKey($hmacKey)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHmacKey', [$hmacKey]);
+
+        return parent::setHmacKey($hmacKey);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isWebhookUnactivate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isWebhookUnactivate', []);
+
+        return parent::isWebhookUnactivate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWebhookUnactivate($webhookUnactivate)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWebhookUnactivate', [$webhookUnactivate]);
+
+        return parent::setWebhookUnactivate($webhookUnactivate);
     }
 
 }

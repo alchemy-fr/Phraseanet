@@ -30,6 +30,7 @@ class UserRegistrationProcessor implements ProcessorInterface
 
         return [
             'event'         => $event->getName(),
+            'webhookId'     => $event->getId(),
             'version'       => WebhookEvent::WEBHOOK_VERSION,
             'url'           => $data['url'],
             'instance_name' => $data['instance_name'],
@@ -40,7 +41,7 @@ class UserRegistrationProcessor implements ProcessorInterface
             ],
             'granted'   => $data['granted'],
             'rejected'  => $data['rejected'],
-            'time'      => $data['time']
+            'event_time'=> $data['event_time']
         ];
     }
 }

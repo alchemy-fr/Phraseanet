@@ -545,6 +545,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
+        $beforeCollection = $this->getCollection();
         $coll_id_from = $this->getCollectionId();
         $coll_id_to = $collection->get_coll_id();
 
@@ -567,7 +568,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app['phraseanet.logger']($this->getDatabox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
 
-        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this));
+        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this, $beforeCollection, $collection));
 
         return $this;
     }

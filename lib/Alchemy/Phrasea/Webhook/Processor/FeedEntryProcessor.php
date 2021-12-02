@@ -75,6 +75,7 @@ class FeedEntryProcessor implements ProcessorInterface
 
         return [
             'event'                 => $event->getName(),
+            'webhookId'             => $event->getId(),
             'version'               => WebhookEvent::WEBHOOK_VERSION,
             'url'                   => $data['url'],
             'instance_name'         => $data['instance_name'],
@@ -93,8 +94,8 @@ class FeedEntryProcessor implements ProcessorInterface
                 'title'         => $entry->getTitle(),
                 'description'   => $entry->getSubtitle(),
             ],
-            'users' => $users,
-            'time'  => $data['time']
+            'users'         => $users,
+            'event_time'    => $data['event_time']
         ];
     }
 }

@@ -70,6 +70,7 @@ class OrderNotificationProcessor implements ProcessorInterface
     {
         return [
             'event'         => $event->getName(),
+            'webhookId'     => $event->getId(),
             'version'       => WebhookEvent::WEBHOOK_VERSION,
             'url'           => $data['url'],
             'instance_name' => $data['instance_name'],
@@ -78,8 +79,8 @@ class OrderNotificationProcessor implements ProcessorInterface
                 'email' => $user->getEmail(),
                 'login' => $user->getLogin()
             ],
-            'order' => $order->getId(),
-            'time'  => $data['time']
+            'order'         => $order->getId(),
+            'event_time'    => $data['event_time']
         ];
     }
 }
