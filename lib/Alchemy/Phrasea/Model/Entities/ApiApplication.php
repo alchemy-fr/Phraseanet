@@ -139,6 +139,13 @@ class ApiApplication
      */
     private $listenedEvents;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="hmac_key", type="string", length=1024, nullable=true)
+     */
+    private $hmacKey;
+
     public function __construct()
     {
         $this->accounts = new ArrayCollection();
@@ -477,5 +484,15 @@ class ApiApplication
     public function getListenedEvents()
     {
         return $this->listenedEvents;
+    }
+
+    public function getHmacKey()
+    {
+        return $this->hmacKey;
+    }
+
+    public function setHmacKey($hmacKey)
+    {
+        $this->hmacKey = $hmacKey;
     }
 }
