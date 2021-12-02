@@ -146,6 +146,13 @@ class ApiApplication
      */
     private $hmacKey;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="webhook_unactivate", type="boolean", nullable=false)
+     */
+    private $webhookUnactivate = false;
+
     public function __construct()
     {
         $this->accounts = new ArrayCollection();
@@ -494,5 +501,21 @@ class ApiApplication
     public function setHmacKey($hmacKey)
     {
         $this->hmacKey = $hmacKey;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isWebhookUnactivate()
+    {
+        return $this->webhookUnactivate;
+    }
+
+    /**
+     * @param boolean $webhookUnactivate
+     */
+    public function setWebhookUnactivate($webhookUnactivate)
+    {
+        $this->webhookUnactivate = (Boolean) $webhookUnactivate;
     }
 }
