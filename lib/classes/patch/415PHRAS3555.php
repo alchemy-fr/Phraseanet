@@ -4,10 +4,10 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
 use Doctrine\ORM\EntityManager;
 
-class patch_414PHRAS3555 implements patchInterface
+class patch_415PHRAS3555 implements patchInterface
 {
     /** @var string */
-    private $release = '4.1.4';
+    private $release = '4.1.5';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX, base::DATA_BOX];
@@ -85,6 +85,13 @@ class patch_414PHRAS3555 implements patchInterface
         foreach ($thirdPartyApplications as $thirdPartyApplication) {
             $thirdPartyApplication->setListenedEvents($listenedEvents);
             $em->persist($thirdPartyApplication);
+
+            $creator = $thirdPartyApplication->getCreator();
+            if ($creator != null) {
+                $creator->setGrantedApi(true);
+
+                $em->persist($creator);
+            }
         }
 
         $em->flush();
