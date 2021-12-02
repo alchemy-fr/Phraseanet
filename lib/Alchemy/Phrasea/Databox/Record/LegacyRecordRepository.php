@@ -290,7 +290,7 @@ class LegacyRecordRepository implements RecordRepository
                 . "         IF(@old_rid_parent != t.rid_parent, @cpt := 1, @cpt := @cpt+1) AS CPT,\n"
                 . "         IF(@old_rid_parent != t.rid_parent, IF(@old_rid_parent:=t.rid_parent,'NEW PARENT',0), '----------') AS Y\n"
                 . "  FROM (\n"
-                . "    SELECT g.ord, g.rid_parent, r.coll_id, r.record_id, r.credate, r.status, r.uuid, r.moddate, r.parent_record_id, r.cover_record_id, ,r.type, r.originalname, r.sha256, r.mime\n"
+                . "    SELECT g.ord, g.rid_parent, r.coll_id, r.record_id, r.credate, r.status, r.uuid, r.moddate, r.parent_record_id, r.cover_record_id, r.type, r.originalname, r.sha256, r.mime\n"
                 . "    FROM regroup g\n"
                 . "         INNER JOIN record r ON r.record_id=g.rid_child\n"
                 . $userFilter
