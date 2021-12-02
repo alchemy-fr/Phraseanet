@@ -1,9 +1,11 @@
 # How to update the documentation in swaggerhub :
 
-The doc is composed of 3 files
+The doc is composed of many files
 - `api.yaml`  (main file)
-- `responses.yaml`
 - `schemas.yaml`
+- `common.yaml`
+- `record.yaml`
+- ...
 
 to update in swaggerhub (single file) :
 - install swagger-cli   
