@@ -53,7 +53,7 @@ class FeedEntryProcessorTest extends \PhraseanetTestCase
             'entry_id'  => self::$DI['feed_public_entry']->getId(),
             'url'       => 'server_name',
             'instance_name' => 'instance_name',
-            'time'      => new \DateTime()
+            'event_time'    => new \DateTime()
         ]);
         $event->setName(WebhookEvent::NEW_FEED_ENTRY);
         $event->setType(WebhookEvent::FEED_ENTRY_TYPE);

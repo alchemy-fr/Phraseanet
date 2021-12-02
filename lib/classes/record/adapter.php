@@ -2362,6 +2362,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function setStatus($status)
     {
+        $statusBefore['status'] = [];
+        foreach ($this->getStatusStructure() as $bit => $st) {
+            $statusBefore['status'][] = [
+                'bit'   => $bit,
+                'state' => \databox_status::bitIsSet($this->getStatusBitField(), $bit),
+            ];
+        }
+
         $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
             ['status' => bindec($status), 'record_id' => $this->getRecordId()]
@@ -2371,7 +2379,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // modification date is now unknown, delete from cache to reload on another record
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
+        $newStatus['status'] = [];
+        foreach ($this->getStatusStructure() as $bit => $st) {
+            $newStatus['status'][] = [
+                'bit'   => $bit,
+                'state' => \databox_status::bitIsSet($this->getStatusBitField(), $bit),
+            ];
+        }
+
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this, $statusBefore, $newStatus));
     }
 
     /**
