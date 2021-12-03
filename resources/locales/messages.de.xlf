@@ -10382,32 +10382,32 @@
       </trans-unit>
       <trans-unit id="1066a8925f76bd4aadebd7ec114b0ff771ab05ed" resname="developers:: media substituted for record">
         <source>developers:: media substituted for record</source>
-        <target state="needs-translation">Dateien wurden anstelle der Unterauflösungen des Datensatzes oder Originaldatei verwendet</target>
+        <target state="needs-translation">Datei wurde anstelle der Unterauflösungen des Datensatzes oder Originaldatei verwendet</target>
         <jms:reference-file line="352">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab1c856fecf799bb87498cb26ea74b3db85b4f0b" resname="developers:: new feed entry on phraseanet">
         <source>developers:: new feed entry on phraseanet</source>
-        <target state="needs-translation">Neue Veröffentlichungen wurden auf RSS-Feed vorgenommen</target>
+        <target state="needs-translation">Eine neue Veröffentlichung wurde auf RSS-Feed vorgenommen</target>
         <jms:reference-file line="368">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
         <source>developers:: new order created</source>
-        <target state="needs-translation">Neue Bestellungen wurden erstellt</target>
+        <target state="needs-translation">Eine neue Bestellung wurde erstellt</target>
         <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
         <source>developers:: record or story created</source>
-        <target state="needs-translation">Ein Datensatz oder Bericht wurden erstellt</target>
+        <target state="needs-translation">Ein Datensatz oder Bericht wurde erstellt</target>
         <jms:reference-file line="349">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f036a4965ecb781192393a08a5aa0510a94524c" resname="developers:: record or story deleted">
         <source>developers:: record or story deleted</source>
-        <target state="needs-translation">Ein Datensatz oder Bericht wurden gelöscht</target>
+        <target state="needs-translation">Ein Datensatz oder Bericht wurde gelöscht</target>
         <jms:reference-file line="351">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98121e43abc2802cfec12de894e041f54d7c9b2c" resname="developers:: record or story edited">
         <source>developers:: record or story edited</source>
-        <target state="needs-translation">Ein Datensatz oder Bericht wurden bearbeitet</target>
+        <target state="needs-translation">Ein Datensatz oder Bericht wurde bearbeitet</target>
         <jms:reference-file line="350">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7479330e0d56c8b37e71013043acecd329ce5f08" resname="developers:: status changed for record">
