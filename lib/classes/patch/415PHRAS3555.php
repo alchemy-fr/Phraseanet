@@ -2,6 +2,7 @@
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Doctrine\ORM\EntityManager;
 
 class patch_415PHRAS3555 implements patchInterface
@@ -68,6 +69,9 @@ class patch_415PHRAS3555 implements patchInterface
         /** @var EntityManager $em */
         $em = $app['orm.em'];
 
+        /** @var PropertyAccess $conf */
+        $conf = $app['conf'];
+
         $thirdPartyApplications = $app['repo.api-applications']->findAll();
         $listenedEvents = [
             'record.subdef.created',
@@ -95,5 +99,10 @@ class patch_415PHRAS3555 implements patchInterface
         }
 
         $em->flush();
+
+        // set worker hearbeat if not exist
+        if (!$conf->has(['workers', 'queue', 'worker-queue', 'heartbeat'])) {
+            $conf->set(['workers', 'queue', 'worker-queue', 'heartbeat'], 60);
+        }
     }
 }
