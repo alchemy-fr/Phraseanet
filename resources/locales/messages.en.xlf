@@ -10355,7 +10355,7 @@
       </trans-unit>
       <trans-unit id="f717955140c0a034f0e08cfc1416b8443e86cbb5" resname="developers:: Events trigger this webhook">
         <source>developers:: Events trigger this webhook</source>
-        <target state="needs-translation">Avalaible Events</target>
+        <target state="needs-translation">Available Events</target>
         <jms:reference-file line="125">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a425cde38ee310e52988e9e9970f1c8dd376c13" resname="developers:: Events type">
@@ -10385,7 +10385,7 @@
       </trans-unit>
       <trans-unit id="1066a8925f76bd4aadebd7ec114b0ff771ab05ed" resname="developers:: media substituted for record">
         <source>developers:: media substituted for record</source>
-        <target state="needs-translation">The file have been substituted for record's subdefinitions or original file.</target>
+        <target state="needs-translation">The file has been substituted for record's subdefinitions or original file.</target>
         <jms:reference-file line="352">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab1c856fecf799bb87498cb26ea74b3db85b4f0b" resname="developers:: new feed entry on phraseanet">
@@ -10395,7 +10395,7 @@
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
         <source>developers:: new order created</source>
-        <target state="needs-translation">New order have been created</target>
+        <target state="needs-translation">New orders have been created</target>
         <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
