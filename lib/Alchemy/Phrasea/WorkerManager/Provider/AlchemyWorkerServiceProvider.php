@@ -108,6 +108,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::WEBHOOK_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new WebhookWorker($app))
+                ->setApplicationBox($app['phraseanet.appbox'])
                 ->setDispatcher($app['dispatcher']);
         }));
 

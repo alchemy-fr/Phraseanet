@@ -262,6 +262,11 @@ class User
     private $notificationSettings;
 
     /**
+     * @ORM\Column(type="boolean", name="granted_api", options={"default" = 0})
+     */
+    private $grantedApi = false;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -1049,6 +1054,26 @@ class User
     public function addNotificationSettings(UserNotificationSetting $notificationSetting)
     {
         $this->notificationSettings->set($notificationSetting->getName(), $notificationSetting);
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasGrantedApi()
+    {
+        return $this->grantedApi;
+    }
+
+    /**
+     * @param boolean $grantedApi
+     *
+     * @return User
+     */
+    public function setGrantedApi($grantedApi)
+    {
+        $this->grantedApi = (Boolean) $grantedApi;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\Core\Provider;
 
+use Alchemy\Phrasea\Core\Event\Subscriber\WebhookRecordEventSubscriber;
 use Alchemy\Phrasea\Core\Event\Subscriber\WebhookSubdefEventSubscriber;
 use Alchemy\Phrasea\Webhook\EventProcessorFactory;
 use Alchemy\Phrasea\Webhook\EventProcessorWorker;
@@ -64,6 +65,7 @@ class WebhookServiceProvider implements ServiceProviderInterface
         $app['dispatcher'] = $app->share(
             $app->extend('dispatcher', function (EventDispatcher $dispatcher, Application $app) {
                 $dispatcher->addSubscriber(new WebhookSubdefEventSubscriber($app));
+                $dispatcher->addSubscriber(new WebhookRecordEventSubscriber($app));
 
                 return $dispatcher;
             })
