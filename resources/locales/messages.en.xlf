@@ -10395,27 +10395,27 @@
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
         <source>developers:: new order created</source>
-        <target state="needs-translation">New orders have been created</target>
+        <target state="needs-translation">A new order has been created</target>
         <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
         <source>developers:: record or story created</source>
-        <target state="needs-translation">A Record or story have been created</target>
+        <target state="needs-translation">A record or story has been created</target>
         <jms:reference-file line="349">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f036a4965ecb781192393a08a5aa0510a94524c" resname="developers:: record or story deleted">
         <source>developers:: record or story deleted</source>
-        <target state="needs-translation">A record or story have been deleted.</target>
+        <target state="needs-translation">A record or story has been deleted</target>
         <jms:reference-file line="351">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98121e43abc2802cfec12de894e041f54d7c9b2c" resname="developers:: record or story edited">
         <source>developers:: record or story edited</source>
-        <target state="needs-translation">A record or story have been edited</target>
+        <target state="needs-translation">A record or story has been edited</target>
         <jms:reference-file line="350">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7479330e0d56c8b37e71013043acecd329ce5f08" resname="developers:: status changed for record">
         <source>developers:: status changed for record</source>
-        <target state="needs-translation">Status bits value have been changed for record or story</target>
+        <target state="needs-translation">Status bits value has been changed for record or story</target>
         <jms:reference-file line="354">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db026e337fa7eeba8352e87ca00a28e19c854453" resname="developers:: subdef created for a record">
