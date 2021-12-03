@@ -395,15 +395,12 @@ class WebhookWorker implements WorkerInterface
         ];
 
         if ($webhookEvent->getType() === WebhookEvent::FEED_ENTRY_TYPE) {
-
-            if ($creatorACL->has_right(\ACL::BAS_CHUPUB)) {
-                $data = $webhookEvent->getData();
-                if (isset($data['entry_id'])) {
-                    /** @var FeedEntry $feedEntry */
-                    $feedEntry = $this->app['repo.feed-entries']->find($data['entry_id']);
-                    if ($feedEntry->getFeed()->isPublisher($creator)) {
-                        $checked = true;
-                    }
+            $data = $webhookEvent->getData();
+            if (isset($data['entry_id'])) {
+                /** @var FeedEntry $feedEntry */
+                $feedEntry = $this->app['repo.feed-entries']->find($data['entry_id']);
+                if ($feedEntry->getFeed()->isPublisher($creator)) {
+                    $checked = true;
                 }
             }
         }
