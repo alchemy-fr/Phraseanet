@@ -10350,7 +10350,7 @@
       </trans-unit>
       <trans-unit id="8e82b164f61602c25d57b485ed09c7a59a8e0919" resname="developers:: Events name">
         <source>developers:: Events name</source>
-        <target state="needs-translation">Events name</target>
+        <target state="translated">Events name</target>
         <jms:reference-file line="134">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f717955140c0a034f0e08cfc1416b8443e86cbb5" resname="developers:: Events trigger this webhook">
@@ -10390,7 +10390,7 @@
       </trans-unit>
       <trans-unit id="ab1c856fecf799bb87498cb26ea74b3db85b4f0b" resname="developers:: new feed entry on phraseanet">
         <source>developers:: new feed entry on phraseanet</source>
-        <target state="needs-translation">New publication have been made on RSS feed.</target>
+        <target state="needs-translation">New publication have been made on a RSS feed.</target>
         <jms:reference-file line="368">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
@@ -10420,12 +10420,12 @@
       </trans-unit>
       <trans-unit id="db026e337fa7eeba8352e87ca00a28e19c854453" resname="developers:: subdef created for a record">
         <source>developers:: subdef created for a record</source>
-        <target state="needs-translation">Subdefinition has been created</target>
+        <target state="needs-translation">Subview has been created</target>
         <jms:reference-file line="357">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18fc15413169b19baf33adc2572d53a76b86f1f5" resname="developers:: subdef creation failed for a record">
         <source>developers:: subdef creation failed for a record</source>
-        <target state="needs-translation">Subdefinition creation has failed</target>
+        <target state="needs-translation">Subview creation has failed</target>
         <jms:reference-file line="358">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e59d8fc44e34b786247fa5924eeb12a4a1202215" resname="developers:: user deleted on phraseanet">
