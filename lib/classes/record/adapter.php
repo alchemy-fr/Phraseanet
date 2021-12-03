@@ -562,6 +562,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
+        $beforeCollection = $this->getCollection();
         $coll_id_from = $this->getCollectionId();
         $coll_id_to = $collection->get_coll_id();
 
@@ -584,7 +585,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app['phraseanet.logger']($this->getDatabox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
 
-        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this));
+        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this, $beforeCollection, $collection));
 
         return $this;
     }
@@ -2440,6 +2441,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function setStatus($status)
     {
+        $statusBefore['status'] = [];
+        foreach ($this->getStatusStructure() as $bit => $st) {
+            $statusBefore['status'][] = [
+                'bit'   => $bit,
+                'state' => \databox_status::bitIsSet($this->getStatusBitField(), $bit),
+            ];
+        }
+
         $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
             ['status' => bindec($status), 'record_id' => $this->getRecordId()]
@@ -2449,7 +2458,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // modification date is now unknown, delete from cache to reload on another record
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
+        $newStatus['status'] = [];
+        foreach ($this->getStatusStructure() as $bit => $st) {
+            $newStatus['status'][] = [
+                'bit'   => $bit,
+                'state' => \databox_status::bitIsSet($this->getStatusBitField(), $bit),
+            ];
+        }
+
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this, $statusBefore, $newStatus));
     }
 
     /**

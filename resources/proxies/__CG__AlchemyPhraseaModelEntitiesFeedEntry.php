@@ -64,10 +64,10 @@ class FeedEntry extends \Alchemy\Phrasea\Model\Entities\FeedEntry implements \Do
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorEmail', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'items', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'publisher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'feed'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorEmail', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'items', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'publisher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'feed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'notifyEmailOn'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorEmail', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'items', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'publisher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'feed'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'title', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'subtitle', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorName', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'authorEmail', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'createdOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'updatedOn', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'items', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'publisher', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'feed', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\FeedEntry' . "\0" . 'notifyEmailOn'];
     }
 
     /**
@@ -395,6 +395,28 @@ class FeedEntry extends \Alchemy\Phrasea\Model\Entities\FeedEntry implements \Do
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFeed', []);
 
         return parent::getFeed();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNotifyEmailOn()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotifyEmailOn', []);
+
+        return parent::getNotifyEmailOn();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setNotifyEmailOn($notifyEmailOn)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNotifyEmailOn', [$notifyEmailOn]);
+
+        return parent::setNotifyEmailOn($notifyEmailOn);
     }
 
     /**

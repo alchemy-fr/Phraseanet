@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Root;
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Root\DeveloperController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -25,7 +26,8 @@ class Developers implements ControllerProviderInterface, ServiceProviderInterfac
     public function register(Application $app)
     {
         $app['controller.account.developers'] = $app->share(function (PhraseaApplication $app) {
-            return (new DeveloperController($app));
+            return (new DeveloperController($app))
+                ->setEntityManagerLocator(new LazyLocator($app, 'orm.em'));
         });
     }
 
@@ -57,6 +59,11 @@ class Developers implements ControllerProviderInterface, ServiceProviderInterfac
             ->before($app['middleware.api-application.converter'])
             ->assert('application', '\d+')
             ->bind('developers_application');
+
+        $controllers->post('/application/{application}/listened-event', 'controller.account.developers:updateListenedEvent')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
+            ->bind('developers_application_listened_event');
 
         $controllers->delete('/application/{application}/', 'controller.account.developers:deleteApp')
             ->before($app['middleware.api-application.converter'])

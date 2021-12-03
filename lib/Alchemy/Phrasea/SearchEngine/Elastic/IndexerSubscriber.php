@@ -20,6 +20,7 @@ use Alchemy\Phrasea\Core\Event\Record\Structure\RecordStructureEvents;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ReindexRequiredEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvent;
 use Alchemy\Phrasea\Core\Event\Thesaurus\ThesaurusEvents;
+use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -81,6 +82,7 @@ class IndexerSubscriber implements EventSubscriberInterface
             CollectionEvents::NAME_CHANGED => 'onCollectionChange',
             RecordEvents::CREATED => 'onRecordChange',
             RecordEvents::DELETED => 'onRecordDelete',
+            WorkerEvents::RECORD_DELETE_INDEX   => 'onRecordDelete',
             RecordEvents::COLLECTION_CHANGED => 'onRecordChange',
             RecordEvents::METADATA_CHANGED => 'onRecordChange',
             RecordEvents::ORIGINAL_NAME_CHANGED => 'onRecordChange',
