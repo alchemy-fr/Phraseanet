@@ -3561,7 +3561,7 @@
       </trans-unit>
       <trans-unit id="3557dddb635d5a299d56eb77ab302f7362548d65" resname="Graphic view">
         <source>Graphic view</source>
-        <target state="needs-translation">Voir les records éligibles</target>
+        <target state="translated">Voir les records éligibles</target>
         <jms:reference-file line="70">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd6d6f27b3e16afd7cdd573b85b3cc5bfd22e8db" resname="GraphicsMagick" approved="yes">
@@ -5640,7 +5640,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="7ade26313918bb06d63dc52c35414ab8cab25945" resname="Refresh graphic view">
         <source>Refresh graphic view</source>
-        <target state="needs-translation">Tester les règles</target>
+        <target state="translated">Tester les règles</target>
         <jms:reference-file line="66">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
@@ -8610,7 +8610,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       </trans-unit>
       <trans-unit id="cf2c27fd3397da734c39d1d24e9439442d221255" resname="admin::compte-utilisateur derniere connexion">
         <source>admin::compte-utilisateur derniere connexion</source>
-        <target state="needs-translation">Dernière connexion</target>
+        <target state="translated">Dernière connexion</target>
         <jms:reference-file line="132">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d79bdc62fa5ecc611e96fe7ab9f5cf4d4debabae" resname="admin::compte-utilisateur email" approved="yes">
@@ -9191,12 +9191,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="8d4650a4ed70863f59f4f6d2aae9d0fdc67ac792" resname="admin::workermanager:tab:RecordsActions: period in second">
         <source>admin::workermanager:tab:RecordsActions: period in second</source>
-        <target state="needs-translation">Intervalle d'exécution</target>
+        <target state="translated">Intervalle d'exécution</target>
         <jms:reference-file line="23">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f259faf8d97eb0b6b07b51102a45bf34fe44caed" resname="admin::workermanager:tab:RecordsActions: xml view">
         <source>admin::workermanager:tab:RecordsActions: xml view</source>
-        <target state="needs-translation">Vue XML</target>
+        <target state="translated">Vue XML</target>
         <jms:reference-file line="26">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second" approved="yes">
@@ -9321,12 +9321,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="422861193dcc4649ea76a8c2dfa4c5760ee1d755" resname="admin::workermanager:tab:recordsActions: description">
         <source>admin::workermanager:tab:recordsActions: description</source>
-        <target state="needs-translation">Opérer les changements sur les records en SQL</target>
+        <target state="translated">Opérer les changements sur les records en SQL</target>
         <jms:reference-file line="53">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="437cb2151c10d29613cfc9e637b5b4ee0ab8eec5" resname="admin::workermanager:tab:recordsActions: title">
         <source>admin::workermanager:tab:recordsActions: title</source>
-        <target state="needs-translation">Records Actions</target>
+        <target state="translated">Records Actions</target>
         <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="15a2a28d354353ef62c87266c96a8586ea6d7f00" resname="admin::workermanager:tab:reminder: title" approved="yes">
@@ -9521,13 +9521,13 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="f153abd48aaee38d404f7d6007433850b63c631b" resname="admin:databases:database:file-size-detail-warning-message">
         <source>admin:databases:database:file-size-detail-warning-message</source>
-        <target state="needs-translation">La taille affichée est la somme de la taille binaire des fichiers et ne reflète pas la réelle taille occupée par les fichiers sur le système.</target>
+        <target state="translated">La taille affichée est la somme de la taille binaire des fichiers et ne reflète pas la réelle taille occupée par les fichiers sur le système.</target>
         <jms:reference-file line="6">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="50">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="87e2b9b3d64117a271e1b6bda1a6b442df3f3f88" resname="admin:databases:database:file-size-detail-warning-title">
         <source>admin:databases:database:file-size-detail-warning-title</source>
-        <target state="needs-translation">Information à propos de la taille des fichiers de la Databox</target>
+        <target state="translated">Information à propos de la taille des fichiers de la Databox</target>
         <jms:reference-file line="4">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="48">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
@@ -10350,7 +10350,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="8e82b164f61602c25d57b485ed09c7a59a8e0919" resname="developers:: Events name">
         <source>developers:: Events name</source>
-        <target state="needs-translation">Nom des événements</target>
+        <target state="translated">Nom des événements</target>
         <jms:reference-file line="134">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f717955140c0a034f0e08cfc1416b8443e86cbb5" resname="developers:: Events trigger this webhook">
@@ -10370,7 +10370,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="bffa41c7a64fc38e50153ea0f6f7c2368b008028" resname="developers:: a order delivered">
         <source>developers:: a order delivered</source>
-        <target state="needs-translation">Commande livrée</target>
+        <target state="needs-translation">Commande effectué</target>
         <jms:reference-file line="372">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b74fc2656c9e78eec665260f31b446edf548932" resname="developers:: a order denied">
@@ -10390,12 +10390,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ab1c856fecf799bb87498cb26ea74b3db85b4f0b" resname="developers:: new feed entry on phraseanet">
         <source>developers:: new feed entry on phraseanet</source>
-        <target state="needs-translation">De nouvelles publications ont été effectuées sur le flux RSS</target>
+        <target state="needs-translation">Une nouvelle publication ont été effectuées sur un flux RSS</target>
         <jms:reference-file line="368">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
         <source>developers:: new order created</source>
-        <target state="needs-translation">De nouvelles commandes ont été créées</target>
+        <target state="needs-translation">Une nouvelle commande a été créée</target>
         <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
@@ -10607,17 +10607,17 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="f115e28db92ccc8057993ab7d5d852c5d2647bd1" resname="expose:: Expose mapping">
         <source>expose:: Expose mapping</source>
-        <target state="needs-translation">Mapping Expose</target>
+        <target state="translated">Mapping Expose</target>
         <jms:reference-file line="180">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c4df7967ec486605a9f7b9a0ce933ae6cf3618f7" resname="expose:: Logged in">
         <source>expose:: Logged in</source>
-        <target state="needs-translation">Connecté à:</target>
+        <target state="translated">Connecté à:</target>
         <jms:reference-file line="70">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="35dab1865c5d0cb6fd39e866b2a5d5ec9b8315a4" resname="expose:: More setting">
         <source>expose:: More setting</source>
-        <target state="needs-translation">Plus de réglages</target>
+        <target state="translated">Plus de réglages</target>
         <jms:reference-file line="82">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="121">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -10629,24 +10629,24 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="e42e86c5238149fe6892a14b52ffb8baca818d4c" resname="expose:: document">
         <source>expose:: document</source>
-        <target state="needs-translation">Document (Expose)</target>
+        <target state="translated">Document (Expose)</target>
         <jms:reference-file line="26">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="49">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="acb7a29ab39c659af585e603db684db39488edcd" resname="expose:: logout">
         <source>expose:: logout</source>
-        <target state="needs-translation">Déconnexion</target>
+        <target state="translated">Déconnexion</target>
         <jms:reference-file line="464">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="563edac01de9a7fb2301e75924668441403ab967" resname="expose:: preview">
         <source>expose:: preview</source>
-        <target state="needs-translation">Prévisualisation (Expose)</target>
+        <target state="translated">Prévisualisation (Expose)</target>
         <jms:reference-file line="25">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="48">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aeb53270002067b8d04f494cc76dff3aea7efc08" resname="expose:: thumbnail">
         <source>expose:: thumbnail</source>
-        <target state="needs-translation">Vignette (Expose)</target>
+        <target state="translated">Vignette (Expose)</target>
         <jms:reference-file line="24">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="47">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
@@ -10662,58 +10662,58 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="506b4459d0c8a2c2a7645fe1d591935e91eb3794" resname="expose::setting Cancel">
         <source>expose::setting Cancel</source>
-        <target state="needs-translation">Annuler</target>
+        <target state="translated">Annuler</target>
         <jms:reference-file line="39">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
         <jms:reference-file line="74">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16e8dfff0b73e65e6eff7b437ef29d4b6381ab77" resname="expose::setting Choose a profile and do mapping for subdef to be uploaded">
         <source>expose::setting Choose a profile and do mapping for subdef to be uploaded</source>
-        <target state="needs-translation">Sélectionner le profil</target>
+        <target state="translated">Sélectionner le profil</target>
         <jms:reference-file line="53">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de194ec1b45176c3893db71678f89d9448a07ba3" resname="expose::setting Choose profile and check all field to be uploaded in %exposeName% expose">
         <source>expose::setting Choose profile and check all field to be uploaded in %exposeName% expose</source>
-        <target state="needs-translation">Sélectionner un profil de l'Expose %exposeName% et cocher les champs constituant la légende de l'asset</target>
+        <target state="translated">Sélectionner un profil de l'Expose %exposeName% et cocher les champs constituant la légende de l'asset</target>
         <jms:reference-file line="18">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="22631003381860d578864d236a5873213fd51975" resname="expose::setting Field mapping">
         <source>expose::setting Field mapping</source>
-        <target state="needs-translation">Champ documentaire</target>
+        <target state="translated">Champ documentaire</target>
         <jms:reference-file line="5">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4457357052f76edbfcc64618e1c01ecaa52198c0" resname="expose::setting Save field">
         <source>expose::setting Save field</source>
-        <target state="needs-translation">Sauvegarder</target>
+        <target state="translated">Sauvegarder</target>
         <jms:reference-file line="35">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a806d5859ac84b5b8fac9f050f98823bdc921996" resname="expose::setting Save subdef mapping">
         <source>expose::setting Save subdef mapping</source>
-        <target state="needs-translation">Sauvegarder</target>
+        <target state="translated">Sauvegarder</target>
         <jms:reference-file line="70">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f81c75ba2f8bb17b30b2769481c28dea8136d2f" resname="expose::setting Subdef mapping">
         <source>expose::setting Subdef mapping</source>
-        <target state="needs-translation">Mapping des sous définitions</target>
+        <target state="translated">Mapping des sous définitions</target>
         <jms:reference-file line="10">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c090981621ca5fac38b5522acc1890a528e86b0" resname="expose::setting You have to select an expose to continue">
         <source>expose::setting You have to select an expose to continue</source>
-        <target state="needs-translation">Vous devez sélectionner un Expose pour continuer</target>
+        <target state="translated">Vous devez sélectionner un Expose pour continuer</target>
         <jms:reference-file line="46">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67c618b3545eed0caac4352a96df0ccc17d877dd" resname="expose::setting duplicate mapping!">
         <source>expose::setting duplicate mapping!</source>
-        <target state="needs-translation">Erreur dans le mapping des sous définitions, deux sous définitions portent un nom identique</target>
+        <target state="translated">Erreur dans le mapping des sous définitions, deux sous définitions portent un nom identique</target>
         <jms:reference-file line="182">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a0f24c4767ae8e6091b0600be99f54669a4d5bfb" resname="expose::setting send geolocalisation">
         <source>expose::setting send geolocalisation</source>
-        <target state="needs-translation">Envoyer les données de géolocalisation</target>
+        <target state="translated">Envoyer les données de géolocalisation</target>
         <jms:reference-file line="14">prod/WorkZone/ExposeFieldList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e4f443f6d1a8ecea07667359a006d55919b33ff7" resname="expose::setting send vtt field">
         <source>expose::setting send vtt field</source>
-        <target state="needs-translation">Envoyer les fichiers de sous titrage</target>
+        <target state="translated">Envoyer les fichiers de sous titrage</target>
         <jms:reference-file line="23">prod/WorkZone/ExposeFieldList.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
@@ -10938,7 +10938,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ea214aed2c346724c9b874431706654f560585b6" resname="index::advance_search: show-unset-field-facet">
         <source>index::advance_search: show-unset-field-facet</source>
-        <target state="needs-translation">Afficher la facette "Non définie"</target>
+        <target state="translated">Afficher la facette "Non définie"</target>
         <jms:reference-file line="946">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation" approved="yes">
@@ -11225,12 +11225,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
         <source>notification::read:tooltip</source>
-        <target state="needs-translation">Notification lue</target>
+        <target state="translated">Notification lue</target>
         <jms:reference-file line="14">web/prod/notification.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ddcfe6ca2a41bad872da2e2195ee54b30297556" resname="notification::unread:tooltip">
         <source>notification::unread:tooltip</source>
-        <target state="needs-translation">Marquer comme Lu</target>
+        <target state="translated">Marquer comme Lu</target>
         <jms:reference-file line="15">web/prod/notification.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cafe5f11d6a3b26e59f28454d0ad90a951c64a6a" resname="nouveau" approved="yes">
@@ -12318,7 +12318,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ffe867917118d6e90dc4430f499ebd75370c51f1" resname="prod::edit cannot edit multiple stories">
         <source>prod::edit cannot edit multiple stories</source>
-        <target state="needs-translation">L'édition de plusieurs reportages simultanément n'est pas possible.</target>
+        <target state="translated">L'édition de plusieurs reportages simultanément n'est pas possible.</target>
         <jms:reference-file line="418">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="64c5b2559a8a7877b0218fd056b3bc89d48a0937" resname="prod::edit: Confirmation Edition latitude longitude" approved="yes">
@@ -12694,7 +12694,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="3bfba160718dd58907bb18b25df9446b8e1a9efb" resname="prod::workzone:manual feedback reminder send new token">
         <source>prod::workzone:manual feedback reminder send new token</source>
-        <target state="needs-translation">Inclure un nouveau lien de connexion</target>
+        <target state="needs-translation">Inclure un nouveau lien de connexion (l'ancien sera invalidé)</target>
         <jms:reference-file line="16">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="yes">
@@ -12749,7 +12749,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
         <source>prod:expose field mapping</source>
-        <target state="needs-translation">Mapping</target>
+        <target state="translated">Mapping</target>
         <jms:reference-file line="468">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="005732e7c099d2d88bd81fd2cad73961e6889c85" resname="prod:expose:Add publication" approved="yes">
@@ -12825,7 +12825,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="ee5cd9a1dd713bd55ca3b3919466e4ac9b297c77" resname="prod:expose:publication:Download">
         <source>prod:expose:publication:Download</source>
-        <target state="needs-translation">Téléchargement</target>
+        <target state="translated">Téléchargement</target>
         <jms:reference-file line="93">prod/WorkZone/ExposeNew.html.twig</jms:reference-file>
         <jms:reference-file line="132">prod/WorkZone/ExposeEdit.html.twig</jms:reference-file>
       </trans-unit>
@@ -14817,22 +14817,22 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="50249b8800f530a969945b1ae0fa1f2ec307db52" resname="thesaurus::edit Action">
         <source>thesaurus::edit Action</source>
-        <target state="needs-translation">Action</target>
+        <target state="translated">Action</target>
         <jms:reference-file line="60">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a06db0073854dd5f0dd65e92cc2a27a6bd34e161" resname="thesaurus::edit Field">
         <source>thesaurus::edit Field</source>
-        <target state="needs-translation">Champ</target>
+        <target state="translated">Champ</target>
         <jms:reference-file line="59">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1a3e770bced63e1e0c5e9b04a12a6f102771f34d" resname="thesaurus::edit Value">
         <source>thesaurus::edit Value</source>
-        <target state="needs-translation">Valeur</target>
+        <target state="translated">Valeur</target>
         <jms:reference-file line="61">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3db76add91c95968a2304a6dbdcc0e885ecd247" resname="thesaurus::edit WIP/Experimental">
         <source>thesaurus::edit WIP/Experimental</source>
-        <target state="needs-translation">Fonctionnalité en Bêta</target>
+        <target state="translated">Fonctionnalité en Bêta</target>
         <jms:reference-file line="2">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8af9255cc750e3e0a3418e0aadcac20dc34c679b" resname="thesaurus::edit add">
@@ -14882,12 +14882,12 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="dc24c56b4d5b8d5e4d41a2f565da3f7f8bb8626d" resname="thesaurus::edit simple mode">
         <source>thesaurus::edit simple mode</source>
-        <target state="needs-translation">Mode simple</target>
+        <target state="translated">Mode simple</target>
         <jms:reference-file line="29">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2c5f2b28d83092ce72002a1b384b4a28ce66dad" resname="thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)">
         <source>thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)</source>
-        <target state="needs-translation">Vous ne possédez pas les droits d'éditer %rejected_cnt% record(s)</target>
+        <target state="translated">Vous ne possédez pas les droits d'éditer %rejected_cnt% record(s)</target>
         <jms:reference-file line="12">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="yes">
