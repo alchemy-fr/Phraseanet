@@ -65,7 +65,7 @@ class WebhookRecordEventSubscriber implements EventSubscriberInterface
                 'databox_id'        => $event->getRecord()->getDataboxId(),
                 'record_id'         => $event->getRecord()->getRecordId(),
                 'collection_name'   => $record->getCollection()->get_name(),
-                'collection_id'     => $record->getBaseId(),
+                'base_id'           => $record->getBaseId(),
                 'record_type'       => $event->getRecord()->isStory() ? "story" : "record",
                 'before'            => $event->getBeforeCollection(),
                 'after'             => $event->getAfterCollection()
@@ -91,7 +91,7 @@ class WebhookRecordEventSubscriber implements EventSubscriberInterface
                 'databox_id'        => $event->getRecord()->getDataboxId(),
                 'record_id'         => $event->getRecord()->getRecordId(),
                 'collection_name'   => $record->getCollection()->get_name(),
-                'collection_id'     => $record->getBaseId(),
+                'base_id'           => $record->getBaseId(),
                 'record_type'       => $event->getRecord()->isStory() ? "story" : "record",
                 'before'            => $event->getStatusBefore(),
                 'after'             => $event->getStatusAfter()
@@ -132,7 +132,7 @@ class WebhookRecordEventSubscriber implements EventSubscriberInterface
                 'databox_id'        => $event->getRecord()->getDataboxId(),
                 'record_id'         => $event->getRecord()->getRecordId(),
                 'collection_name'   => $record->getCollection()->get_name(),
-                'collection_id'     => $record->getBaseId(),
+                'base_id'           => $record->getBaseId(),
                 'record_type'       => $event->getRecord()->isStory() ? "story" : "record"
             ];
 
