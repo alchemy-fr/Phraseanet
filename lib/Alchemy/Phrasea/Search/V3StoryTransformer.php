@@ -47,6 +47,7 @@ class V3StoryTransformer extends StoryTransformer
         return [
             'databox_id' => $story->getDataboxId(),
             'story_id' => $story->getRecordId(),
+            'cover_record_id' => $story->getCoverRecordId(),
             'updated_on' => NullableDateTime::format($story->getUpdated()),
             'created_on' => NullableDateTime::format($story->getUpdated()),
             'collection_id' => $story->getCollectionId(),

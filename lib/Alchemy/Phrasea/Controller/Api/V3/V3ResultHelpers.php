@@ -164,6 +164,7 @@ class V3ResultHelpers
             'phrasea_type'           => $record->getType(),
             'uuid'                   => $record->getUuid(),
             'is_story'               => $record->isStory(),
+            'cover_record_id'        => $record->isStory() ? $record->getCoverRecordId() : null,
             // 'children'               => $record->isStory() ? [] : null,
         ];
 
