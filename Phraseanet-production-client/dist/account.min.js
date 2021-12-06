@@ -4210,6 +4210,19 @@ var account = function account(services) {
             });
         });
 
+        $container.on('click', '.update-listened-event', function () {
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: $this.is(':checked') ? 'add' : 'remove'
+                },
+                success: function success(data) {}
+            });
+        });
+
         // delete an application
         /*  $('a.delete-app').bind('click', function (e) {
               e.preventDefault();

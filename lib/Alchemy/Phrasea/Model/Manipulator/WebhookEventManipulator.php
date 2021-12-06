@@ -67,8 +67,11 @@ class WebhookEventManipulator implements ManipulatorInterface
 
     public function update(WebhookEvent $event)
     {
-        $this->om->persist($event);
-        $this->om->flush();
+        try {
+            $this->om->persist($event);
+            $this->om->flush();
+        } catch (\Exception $e) {
+        }
     }
 
     public function processed(WebhookEvent $event)

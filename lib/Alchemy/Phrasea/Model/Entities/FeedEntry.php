@@ -78,6 +78,11 @@ class FeedEntry
     private $feed;
 
     /**
+     * @ORM\Column(name="notifyemail_on", type="datetime", nullable=true)
+     */
+    private $notifyEmailOn;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -213,7 +218,7 @@ class FeedEntry
     /**
      * Set updated
      *
-     * @param  \DateTime $updated
+     * @param  \DateTime $updatedOn
      * @return FeedEntry
      */
     public function setUpdatedOn($updatedOn)
@@ -310,6 +315,26 @@ class FeedEntry
     public function getFeed()
     {
         return $this->feed;
+    }
+
+    /**
+     * Get notifyEmailOn
+     *
+     * @return \DateTime|null
+     */
+    public function getNotifyEmailOn()
+    {
+        return $this->notifyEmailOn;
+    }
+
+    /**
+     * Set notifyEmailOn
+     *
+     * @param \DateTime $notifyEmailOn
+     */
+    public function setNotifyEmailOn($notifyEmailOn)
+    {
+        $this->notifyEmailOn = $notifyEmailOn;
     }
 
     /**

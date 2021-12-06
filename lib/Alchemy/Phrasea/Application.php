@@ -748,7 +748,9 @@ class Application extends SilexApplication
                 $dispatcher->addSubscriber(new BasketSubscriber($app));
                 $dispatcher->addSubscriber(new LazaretSubscriber($app));
                 $dispatcher->addSubscriber(new ValidationSubscriber($app));
-                $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
+                if ($this['configuration.store']->isSetup()) {
+                    $dispatcher->addSubscriber(new WebhookUserEventSubscriber($app));
+                }
 
                 return $dispatcher;
             })

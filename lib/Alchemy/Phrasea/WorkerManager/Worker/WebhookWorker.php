@@ -3,9 +3,12 @@
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\ApplicationBoxAware;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Model\Entities\ApiApplication;
+use Alchemy\Phrasea\Model\Entities\FeedEntry;
+use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Entities\WebhookEventPayload;
@@ -29,6 +32,7 @@ use Psr\Http\Message\RequestInterface;
 class WebhookWorker implements WorkerInterface
 {
     use DispatcherAware;
+    use ApplicationBoxAware;
 
     private $app;
 
@@ -126,7 +130,17 @@ class WebhookWorker implements WorkerInterface
         }
     }
 
-    private function deliverEvent(Client $httpClient, array $thirdPartyApplications, WebhookEvent $webhookevent, $payload)
+    /**
+     * Deliver event to the webhook_url
+     * make as public function because used also for unit test
+     *
+     * @param Client $httpClient
+     * @param array $thirdPartyApplications
+     * @param WebhookEvent $webhookevent
+     * @param $payload
+     * @return array|void
+     */
+    public function deliverEvent(Client $httpClient, array $thirdPartyApplications, WebhookEvent $webhookevent, $payload)
     {
         if (count($thirdPartyApplications) === 0) {
             $workerMessage = 'No applications defined to listen for webhook events';
@@ -142,16 +156,26 @@ class WebhookWorker implements WorkerInterface
             return;
         }
 
-        // format event data
+        // add common information data before generating each type of data
         if (!isset($payload['delivery_id'])) {
             $webhookData = $webhookevent->getData();
-            $webhookData['time'] = $webhookevent->getCreated();
+
+            $webhookData['event_time'] = $webhookevent->getCreated();
+            $webhookData['url'] = $this->app['conf']->get(['servername'], '');
+            $webhookData['instance_name'] = $this->app['conf']->get(['registry', 'general', 'title'], '');
+            // a webhook version is also added when processing data
+
             $webhookevent->setData($webhookData);
         }
 
         /** @var ProcessorInterface $eventProcessor */
         $eventProcessor = $this->app['webhook.processor_factory']->get($webhookevent);
         $data = $eventProcessor->process($webhookevent);
+
+        $record = null;
+        if (isset($data['data']['databox_id']) && isset($data['data']['record_id'])) {
+            $record = $this->findDataboxById($data['data']['databox_id'])->get_record($data['data']['record_id']);
+        }
 
         $requests = [];
         /** @var ApiApplication $thirdPartyApplication */
@@ -162,11 +186,25 @@ class WebhookWorker implements WorkerInterface
                 continue;
             }
 
-            $creatorGrantedBaseIds = array_keys($this->app['acl']->get($creator)->get_granted_base());
+            // check if the third-application listen this event
+            // if listenedEvents is empty, third-application can received all webhookevent
+            if (!empty($thirdPartyApplication->getListenedEvents()) && !in_array($webhookevent->getName(), $thirdPartyApplication->getListenedEvents())) {
+                continue;
+            }
+
+            /** @var \ACL $creatorACL */
+            $creatorACL = $this->app['acl']->get($creator);
+            $creatorGrantedBaseIds = array_keys($creatorACL->get_granted_base());
 
             $concernedBaseIds = array_intersect($webhookevent->getCollectionBaseIds(), $creatorGrantedBaseIds);
 
-            if (count($webhookevent->getCollectionBaseIds()) != 0 && count($concernedBaseIds) == 0) {
+            if (!$this->isCreatorHasRight($creator, $concernedBaseIds, $webhookevent)) {
+                continue; // not send, skip
+            }
+
+            // continue iteration if api creator has no access to the record
+            // it 's include the bas access and the record status bit access
+            if ($record !== null && !$creatorACL->has_access_to_record($record)) {
                 continue;
             }
 
@@ -300,6 +338,86 @@ class WebhookWorker implements WorkerInterface
                 MessagePublisher::WEBHOOK_TYPE
             );
         }
+
+        return $requests;
+    }
+
+    private function isCreatorHasRight(User $creator, array $baseIds, WebhookEvent $webhookEvent)
+    {
+        /** @var \ACL $creatorACL */
+        $creatorACL = $this->app['acl']->get($creator);
+
+        $checked = false;
+
+        foreach ($baseIds as $baseId) {
+            foreach (WebhookEvent::$eventsAccessRight[$webhookEvent->getName()] as $right) {
+                // if it's a sub array, only one right is required from the sub array
+                if (is_array($right)) {
+                    $childChecked = false;
+                    foreach ($right as $r) {
+                        if (strpos($r, 'bas_') === 0) {
+                            // for the sbas right
+                            $sbasId = \collection::getByBaseId($this->app, $baseId)->get_databox()->get_sbas_id();
+                            if ($creatorACL->has_right_on_sbas($sbasId, $r)) {
+                                $childChecked = true;
+                            }
+                        } else {
+                            if (($right === \ACL::ACCESS && $creatorACL->has_access_to_base($baseId)) || $creatorACL->has_right_on_base($baseId, $r)) {
+                                $childChecked = true;
+                            }
+                        }
+                    }
+                    if (!$childChecked) {
+                        return false;
+                    }
+                } else {
+                    if (strpos($right, 'bas_') === 0) {
+                        // for the sbas right
+                        $sbasId = \collection::getByBaseId($this->app, $baseId)->get_databox()->get_sbas_id();
+                        if (!$creatorACL->has_right_on_sbas($sbasId, $right)) {
+                            return false;
+                        }
+                    } else {
+                        if ($right === \ACL::ACCESS && !$creatorACL->has_access_to_base($baseId)) {
+                            return false;
+                        } elseif ($right !== \ACL::ACCESS && !$creatorACL->has_right_on_base($baseId, $right)) {
+                            return false;
+                        }
+                    }
+                }
+                $checked = true;
+            }
+        }
+
+        $specificRightOnType = [
+            WebhookEvent::USER_TYPE,
+            WebhookEvent::FEED_ENTRY_TYPE
+        ];
+
+        if ($webhookEvent->getType() === WebhookEvent::FEED_ENTRY_TYPE) {
+            $data = $webhookEvent->getData();
+            if (isset($data['entry_id'])) {
+                /** @var FeedEntry $feedEntry */
+                $feedEntry = $this->app['repo.feed-entries']->find($data['entry_id']);
+                if ($feedEntry->getFeed()->isPublisher($creator)) {
+                    $checked = true;
+                }
+            }
+        }
+
+        // for user created and phantom user deleted
+        if (empty($baseIds) && $webhookEvent->getType() === WebhookEvent::USER_TYPE && empty($webhookEvent->getCollectionBaseIds()) ) {
+            // check if creatorUser has right canadmin in at least one collection
+            if ($creatorACL->has_right(\ACL::CANADMIN)) {
+                $checked = true;
+            }
+        } elseif (empty($baseIds) && empty($webhookEvent->getCollectionBaseIds()) && !in_array($webhookEvent->getType(), $specificRightOnType)) {
+            // in this case, for others type, there is not yet a specific rule defined
+            // so give the right true
+            $checked = true;
+        }
+
+        return $checked;
     }
 
     private function getUrl(ApiApplication $application, WebhookEventDelivery $delivery)

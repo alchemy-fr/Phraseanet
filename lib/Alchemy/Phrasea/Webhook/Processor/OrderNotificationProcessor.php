@@ -44,7 +44,7 @@ class OrderNotificationProcessor implements ProcessorInterface
         /** @var Order $order */
         $order = $this->orderRepository->find($data['order_id']);
 
-        return $this->getOrderData($event, $user, $order);
+        return $this->getOrderData($event, $user, $order, $data);
     }
 
     protected function processDeliveryOrder(WebhookEvent $event)
@@ -55,25 +55,32 @@ class OrderNotificationProcessor implements ProcessorInterface
         $order = $this->orderRepository->find($data['order_id']);
         $user = $order->getUser();
 
-        return $this->getOrderData($event, $user, $order);
+        return $this->getOrderData($event, $user, $order, $data);
     }
 
     /**
      * @param WebhookEvent $event
-     * @param User $user
-     * @param Order $order
+     * @param User         $user
+     * @param Order        $order
+     * @param array        $data
+     *
      * @return array
      */
-    protected function getOrderData(WebhookEvent $event, User $user, Order $order)
+    protected function getOrderData(WebhookEvent $event, User $user, Order $order, $data)
     {
         return [
-            'event' => $event->getName(),
+            'event'         => $event->getName(),
+            'webhookId'     => $event->getId(),
+            'version'       => WebhookEvent::WEBHOOK_VERSION,
+            'url'           => $data['url'],
+            'instance_name' => $data['instance_name'],
             'user' => [
-                'id' => $user->getId(),
+                'id'    => $user->getId(),
                 'email' => $user->getEmail(),
                 'login' => $user->getLogin()
             ],
-            'order' => $order->getId()
+            'order'         => $order->getId(),
+            'event_time'    => $data['event_time']
         ];
     }
 }
