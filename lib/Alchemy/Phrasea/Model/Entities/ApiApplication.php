@@ -149,9 +149,9 @@ class ApiApplication
     /**
      * @var integer
      *
-     * @ORM\Column(name="webhook_unactivate", type="boolean", nullable=false)
+     * @ORM\Column(name="webhook_active", type="boolean", nullable=false)
      */
-    private $webhookUnactivate = false;
+    private $webhookActive = true;
 
     public function __construct()
     {
@@ -506,16 +506,16 @@ class ApiApplication
     /**
      * @return boolean
      */
-    public function isWebhookUnactivate()
+    public function isWebhookActive()
     {
-        return $this->webhookUnactivate;
+        return $this->webhookActive;
     }
 
     /**
-     * @param boolean $webhookUnactivate
+     * @param boolean $webhookActive
      */
-    public function setWebhookUnactivate($webhookUnactivate)
+    public function setWebhookActive($webhookActive)
     {
-        $this->webhookUnactivate = (Boolean) $webhookUnactivate;
+        $this->webhookActive = (Boolean) $webhookActive;
     }
 }
