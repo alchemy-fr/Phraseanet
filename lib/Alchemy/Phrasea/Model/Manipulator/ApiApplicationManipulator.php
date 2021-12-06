@@ -91,6 +91,9 @@ class ApiApplicationManipulator implements ManipulatorInterface
 
     public function setWebhookUrl(ApiApplication $application, $url)
     {
+        // by default activate webhook when providing webhook_url
+        $application->setWebhookActive(true);
+
         $this->doSetWebhookUrl($application, $url);
         $this->update($application);
     }

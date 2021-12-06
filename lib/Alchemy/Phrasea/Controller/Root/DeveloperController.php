@@ -286,6 +286,28 @@ class DeveloperController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param ApiApplication $application
+     *
+     * @return JsonResponse
+     */
+    public function activeWebhook(Request $request, ApiApplication $application)
+    {
+        $manager = $this->getEntityManager();
+
+        if ($request->request->get('action') == 'activate') {
+            $application->setWebhookActive(true);
+        } elseif ($request->request->get('action') == 'deactivate') {
+            $application->setWebhookActive(false);
+        }
+
+        $manager->persist($application);
+        $manager->flush();
+
+        return $this->app->json(['success' => true]);
+    }
+
+    /**
      * @return ApiAccountRepository
      */
     private function getApiAccountRepository()
