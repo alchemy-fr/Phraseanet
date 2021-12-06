@@ -3343,6 +3343,8 @@ var publication = function publication(services) {
     var onSubmitPublication = function onSubmitPublication() {
         var $dialog = _dialog2.default.get(1);
         var error = false;
+        (0, _jquery2.default)('.publish-dialog button').prop('disabled', true);
+
         var $form = (0, _jquery2.default)('form.main_form', $dialog.getDomElement());
 
         (0, _jquery2.default)('.required_text', $form).each(function (i, el) {
@@ -3354,6 +3356,7 @@ var publication = function publication(services) {
 
         if (error) {
             alert(localeService.t('feed_require_fields'));
+            (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
         }
 
         if ((0, _jquery2.default)('input[name="feed_id"]', $form).val() === '') {
@@ -3362,6 +3365,7 @@ var publication = function publication(services) {
         }
 
         if (error) {
+            (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             return false;
         }
 
@@ -3371,19 +3375,19 @@ var publication = function publication(services) {
             data: $form.serializeArray(),
             dataType: 'json',
             beforeSend: function beforeSend() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', true);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', true);
             },
             error: function error() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             },
             timeout: function timeout() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             },
             success: function success(data) {
                 (0, _jquery2.default)('.state-navigation').trigger('click');
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
                 if (data.error === true) {
                     alert(data.message);
+                    (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
                     return;
                 }
 
@@ -3401,6 +3405,7 @@ var publication = function publication(services) {
                     });
                 }
 
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
                 $dialog.close(1);
             }
         });
