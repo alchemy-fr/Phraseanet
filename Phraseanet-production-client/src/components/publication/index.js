@@ -308,6 +308,8 @@ const publication = (services) => {
     const onSubmitPublication = () => {
         var $dialog = dialog.get(1);
         var error = false;
+        $('.publish-dialog button').prop('disabled', true);
+
         var $form = $('form.main_form', $dialog.getDomElement());
 
         $('.required_text', $form).each(function (i, el) {
@@ -319,6 +321,7 @@ const publication = (services) => {
 
         if (error) {
             alert(localeService.t('feed_require_fields'));
+            $('.publish-dialog button').prop('disabled', false);
         }
 
         if ($('input[name="feed_id"]', $form).val() === '') {
@@ -327,6 +330,7 @@ const publication = (services) => {
         }
 
         if (error) {
+            $('.publish-dialog button').prop('disabled', false);
             return false;
         }
 
@@ -336,19 +340,19 @@ const publication = (services) => {
             data: $form.serializeArray(),
             dataType: 'json',
             beforeSend: function () {
-                $('button', $dialog.getDomElement()).prop('disabled', true);
+                $('.publish-dialog button').prop('disabled', true);
             },
             error: function () {
-                $('button', $dialog.getDomElement()).prop('disabled', false);
+                $('.publish-dialog button').prop('disabled', false);
             },
             timeout: function () {
-                $('button', $dialog.getDomElement()).prop('disabled', false);
+                $('.publish-dialog button').prop('disabled', false);
             },
             success: function (data) {
                 $('.state-navigation').trigger('click');
-                $('button', $dialog.getDomElement()).prop('disabled', false);
                 if (data.error === true) {
                     alert(data.message);
+                    $('.publish-dialog button').prop('disabled', false);
                     return;
                 }
 
@@ -366,6 +370,7 @@ const publication = (services) => {
                     });
                 }
 
+                $('.publish-dialog button').prop('disabled', false);
                 $dialog.close(1);
             }
         });
