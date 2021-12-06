@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-11-16T13:31:10Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2021-12-06T07:15:22Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="263">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -969,8 +969,8 @@
       <trans-unit id="f0cf9a47c6b420dda55c973a12840600fc19b7fb" resname="An error occured" approved="yes">
         <source>An error occured</source>
         <target state="translated">Une erreur est survenue.</target>
-        <jms:reference-file line="120">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
-        <jms:reference-file line="245">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
+        <jms:reference-file line="122">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
+        <jms:reference-file line="247">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
         <jms:reference-file line="164">Controller/Prod/MoveCollectionController.php</jms:reference-file>
         <jms:reference-file line="257">Controller/Prod/LazaretController.php</jms:reference-file>
         <jms:reference-file line="262">Controller/Prod/BasketController.php</jms:reference-file>
@@ -1045,8 +1045,8 @@
         <target state="translated">Une erreur est survenue</target>
         <jms:reference-file line="77">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="234">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="2081">Controller/Api/V1Controller.php</jms:reference-file>
-        <jms:reference-file line="2527">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2083">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2529">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="136">Controller/Admin/SearchEngineController.php</jms:reference-file>
         <jms:reference-file line="531">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="126">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -1764,7 +1764,7 @@
         <jms:reference-file line="379">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="385">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="455">web/admin/subdefs.html.twig</jms:reference-file>
-        <jms:reference-file line="572">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="575">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f657f29e68346624be98bea3924a6748900a66c" resname="Choose a new password" approved="yes">
         <source>Choose a new password</source>
@@ -2516,7 +2516,7 @@
         <target state="translated">Dimensions</target>
         <jms:reference-file line="32">Media/Subdef/Video.php</jms:reference-file>
         <jms:reference-file line="32">Media/Subdef/Unknown.php</jms:reference-file>
-        <jms:reference-file line="32">Media/Subdef/Image.php</jms:reference-file>
+        <jms:reference-file line="34">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="yes">
         <source>Disable document type sharing</source>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -3282,9 +3282,9 @@
       <trans-unit id="aadf78d4b7c7c7341aa891adca70897c4f978cb6" resname="File is not present in quarantine anymore, please refresh" approved="yes">
         <source>File is not present in quarantine anymore, please refresh</source>
         <target state="translated">Ce fichier n'est plus en quarantaine, rafraîchissez la page</target>
-        <jms:reference-file line="56">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
-        <jms:reference-file line="136">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
-        <jms:reference-file line="157">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
+        <jms:reference-file line="58">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
+        <jms:reference-file line="138">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
+        <jms:reference-file line="159">Model/Manipulator/LazaretManipulator.php</jms:reference-file>
         <jms:reference-file line="78">Controller/Prod/LazaretController.php</jms:reference-file>
         <jms:reference-file line="207">Controller/Prod/LazaretController.php</jms:reference-file>
       </trans-unit>
@@ -3361,7 +3361,7 @@
         <source>Flatten layers</source>
         <target state="translated">Aplatir les calques</target>
         <jms:reference-file line="35">Media/Subdef/Unknown.php</jms:reference-file>
-        <jms:reference-file line="35">Media/Subdef/Image.php</jms:reference-file>
+        <jms:reference-file line="37">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9bd85a7d22f6cdee554e5b9e865d26dcbb4dafc9" resname="Focal length" approved="yes">
         <source>Focal length</source>
@@ -3487,7 +3487,7 @@
         <source>Generates an image</source>
         <target state="translated">Génère une image</target>
         <jms:reference-file line="47">Media/Subdef/Unknown.php</jms:reference-file>
-        <jms:reference-file line="47">Media/Subdef/Image.php</jms:reference-file>
+        <jms:reference-file line="51">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="621654fc14cd9c0d5f5009ff29c1ba0db747f162" resname="Geo Search" approved="yes">
         <source>Geo Search</source>
@@ -5367,7 +5367,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Quality</source>
         <target state="translated">Qualité</target>
         <jms:reference-file line="36">Media/Subdef/Unknown.php</jms:reference-file>
-        <jms:reference-file line="36">Media/Subdef/Image.php</jms:reference-file>
+        <jms:reference-file line="38">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f983c163b8d6973ad2a1aa6de868dad5be7f8e2" resname="Quarantine" approved="yes">
         <source>Quarantine</source>
@@ -5606,7 +5606,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="3cd74928930cda94205568949be186e4cae37119" resname="Record Not Found" approved="yes">
         <source>Record Not Found</source>
         <target state="translated">Enregistrement non trouvé</target>
-        <jms:reference-file line="2079">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2081">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0112aa634cbad5a586b72e4befe1ab1a39e73f" resname="Record removed from basket" approved="yes">
         <source>Record removed from basket</source>
@@ -5698,7 +5698,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Remove ICC Profile</source>
         <target state="translated">Retirer le profil ICC</target>
         <jms:reference-file line="34">Media/Subdef/Unknown.php</jms:reference-file>
-        <jms:reference-file line="34">Media/Subdef/Image.php</jms:reference-file>
+        <jms:reference-file line="36">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db7741b4a5e42acd8d4e758ae50075157a0c08b7" resname="Remove current Range" approved="yes">
         <source>Remove current Range</source>
@@ -5813,7 +5813,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Resolution</source>
         <target state="translated">Résolution</target>
         <jms:reference-file line="33">Media/Subdef/Unknown.php</jms:reference-file>
-        <jms:reference-file line="33">Media/Subdef/Image.php</jms:reference-file>
+        <jms:reference-file line="35">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e78cff6cd2bb8595029060cb53dba7a4ba72b8a" resname="Resource URL" approved="yes">
         <source>Resource URL</source>
@@ -6419,7 +6419,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="315bc332aafca63cad8ac042c2e2f5111544fe9d" resname="Story Not Found" approved="yes">
         <source>Story Not Found</source>
         <target state="translated">Reportage inconnu</target>
-        <jms:reference-file line="2525">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2527">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="94e347da85f4797810ed7987973c8ef79092057e" resname="Story created" approved="yes">
         <source>Story created</source>
@@ -6603,7 +6603,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="0e98caed82acc9fa2f1ba9edeab7789e75e49c36" resname="Target Device" approved="yes">
         <source>Target Device</source>
         <target state="translated">Dispositif ciblé</target>
-        <jms:reference-file line="392">classes/databox/subdef.php</jms:reference-file>
+        <jms:reference-file line="400">classes/databox/subdef.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5fb2e4a63ebe9160da52c28fba2f61029c85c8d6" resname="Task Edition" approved="yes">
         <source>Task Edition</source>
@@ -7061,7 +7061,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Unable to add file to Phraseanet</source>
         <target state="translated">Impossible d'ajouter des fichiers à Phraseanet</target>
         <jms:reference-file line="295">Controller/Prod/UploadController.php</jms:reference-file>
-        <jms:reference-file line="195">Controller/Admin/FeedController.php</jms:reference-file>
+        <jms:reference-file line="196">Controller/Admin/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b233593eb66b5be4da2f44ff527bd641b3a6fc1" resname="Unable to add usr to list" approved="yes">
         <source>Unable to add usr to list</source>
@@ -7478,7 +7478,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="f5bd306a7ccf0851eeefd7659ac5c01c382df934" resname="Vocabulary not found" approved="yes">
         <source>Vocabulary not found</source>
         <target state="translated">Vocabulaire non trouvé</target>
-        <jms:reference-file line="264">Controller/Prod/EditController.php</jms:reference-file>
+        <jms:reference-file line="261">Controller/Prod/EditController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1e3e6d2f9b416cfab10df81ce100f4fc43eb90a" resname="Vocabulary type" approved="yes">
         <source>Vocabulary type</source>
@@ -7675,7 +7675,13 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="d67f8b5513fcc1166cb7086a07bf29144de7c879" resname="Watermark" approved="yes">
         <source>Watermark</source>
         <target state="translated">Filigrane</target>
+        <jms:reference-file line="40">Media/Subdef/Image.php</jms:reference-file>
         <jms:reference-file line="169">admin/collection/collection.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ecf870ab34b23495fb940231b71ebe6e952e7cd7" resname="Watermark text">
+        <source>Watermark text</source>
+        <target state="new">Watermark text</target>
+        <jms:reference-file line="41">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8bfada821419f7b1c35da6470b04b8c1b0c72d91" resname="Weak" approved="yes">
         <source>Weak</source>
@@ -7815,7 +7821,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="6201454d8a9563acc436096018e6ec626cbf90a7" resname="You are not the owner of this feed, you can not edit it" approved="yes">
         <source>You are not the owner of this feed, you can not edit it</source>
         <target state="translated">Vous n'êtes pas le propriétaire de ce flux, vous ne pouvez pas l'éditer</target>
-        <jms:reference-file line="104">Controller/Admin/FeedController.php</jms:reference-file>
+        <jms:reference-file line="105">Controller/Admin/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f1bfdfda64425d6fcad1ad70cf83b889b0505f24" resname="You can  download an example by clicking here" approved="yes">
         <source>You can download an example by clicking here</source>
@@ -8027,18 +8033,18 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="aaf57216976f942ee7fe118918b2b8893bde955f" resname="Your install might need to build some sub-definitions" approved="yes">
         <source>Your install might need to build some sub-definitions</source>
         <target state="translated">Votre installation semble nécessiter la génération de sous-définitions.</target>
-        <jms:reference-file line="255">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="258">lib/classes/appbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b6f5c5c358288767c666137985d6bdb56080372" resname="Your install might need to re-read technical datas" approved="yes">
         <source>Your install might need to re-read technical datas</source>
         <target state="translated">Votre installation nécessite probablement une relecture de données techniques</target>
-        <jms:reference-file line="254">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="257">lib/classes/appbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4ffe44446d1f97cfe20afbf562e4a7fd48c62bdc" resname="Your install requires data migration, please execute the following command" approved="yes">
         <source>Your install requires data migration, please execute the following command</source>
         <target state="translated">Votre installation requiert une mise à jour, veuillez exécuter la commande suivante</target>
-        <jms:reference-file line="248">lib/classes/appbox.php</jms:reference-file>
-        <jms:reference-file line="250">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="251">lib/classes/appbox.php</jms:reference-file>
+        <jms:reference-file line="253">lib/classes/appbox.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b52fed35cf7cfe73dd34f6f347a21b7b6fdcf75f" resname="Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories." approved="yes">
         <source>Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.</source>
@@ -10381,12 +10387,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="c2d24cc69b826a71661c25cbd5291cdaaf95208c" resname="developers:: collection changed for record">
         <source>developers:: collection changed for record</source>
         <target state="needs-translation">Collection changée pour un record/reportage</target>
-        <jms:reference-file line="353">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="352">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1066a8925f76bd4aadebd7ec114b0ff771ab05ed" resname="developers:: media substituted for record">
         <source>developers:: media substituted for record</source>
         <target state="needs-translation">Le média a été substitué pour des sous-définitions d'un record ou le fichier original</target>
-        <jms:reference-file line="352">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="351">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab1c856fecf799bb87498cb26ea74b3db85b4f0b" resname="developers:: new feed entry on phraseanet">
         <source>developers:: new feed entry on phraseanet</source>
@@ -10398,35 +10404,40 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Une nouvelle commande a été créée</target>
         <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="30396a053ecc23d5897f4008d2d22de6dcb97a5d" resname="developers:: new user created">
+        <source>developers:: new user created</source>
+        <target state="new">developers:: new user created</target>
+        <jms:reference-file line="360">Controller/Root/DeveloperController.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
         <source>developers:: record or story created</source>
         <target state="needs-translation">Un record ou un reportage a été créé</target>
-        <jms:reference-file line="349">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="348">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f036a4965ecb781192393a08a5aa0510a94524c" resname="developers:: record or story deleted">
         <source>developers:: record or story deleted</source>
         <target state="needs-translation">Un record ou un reportage a été supprimé</target>
-        <jms:reference-file line="351">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="350">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98121e43abc2802cfec12de894e041f54d7c9b2c" resname="developers:: record or story edited">
         <source>developers:: record or story edited</source>
         <target state="needs-translation">Un record ou un reportage a été édité</target>
-        <jms:reference-file line="350">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="349">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7479330e0d56c8b37e71013043acecd329ce5f08" resname="developers:: status changed for record">
         <source>developers:: status changed for record</source>
         <target state="needs-translation">Un statut a été changé pour un record ou un reportage</target>
-        <jms:reference-file line="354">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="353">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db026e337fa7eeba8352e87ca00a28e19c854453" resname="developers:: subdef created for a record">
         <source>developers:: subdef created for a record</source>
         <target state="needs-translation">Une sous-définition a été créée</target>
-        <jms:reference-file line="357">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="356">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18fc15413169b19baf33adc2572d53a76b86f1f5" resname="developers:: subdef creation failed for a record">
         <source>developers:: subdef creation failed for a record</source>
         <target state="needs-translation">La création d'une sous-définition a échoué</target>
-        <jms:reference-file line="358">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="357">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e59d8fc44e34b786247fa5924eeb12a4a1202215" resname="developers:: user deleted on phraseanet">
         <source>developers:: user deleted on phraseanet</source>
@@ -10562,7 +10573,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="40a92233bac9303de825031d1954e6b109088b38" resname="export::ftp: reglages manuels" approved="yes">
         <source>export::ftp: reglages manuels</source>
         <target state="translated">Réglages manuels</target>
-        <jms:reference-file line="280">classes/set/export.php</jms:reference-file>
+        <jms:reference-file line="282">classes/set/export.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="076c427ffe1fe647c7c158681b1bbd17cb5e2ad3" resname="export::mail: contenu du mail" approved="yes">
         <source>export::mail: contenu du mail</source>
@@ -11199,7 +11210,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>no</source>
         <target state="translated">Non</target>
         <jms:reference-file line="91">web/common/technical_datas.html.twig</jms:reference-file>
-        <jms:reference-file line="582">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="585">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="14">user/import/view.html.twig</jms:reference-file>
         <jms:reference-file line="78">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
@@ -11818,7 +11829,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="564">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13468,7 +13479,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="e32952b1a087c6ba28e13097e0ebb5395c2f2105" resname="reponses::document sans titre" approved="yes">
         <source>reponses::document sans titre</source>
         <target state="translated">Sans titre</target>
-        <jms:reference-file line="946">classes/record/adapter.php</jms:reference-file>
+        <jms:reference-file line="977">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)" approved="yes">
         <source>report:: (connexions)</source>
@@ -14455,7 +14466,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1338">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="542">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -15238,7 +15249,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <source>yes</source>
         <target state="translated">Oui</target>
         <jms:reference-file line="89">web/common/technical_datas.html.twig</jms:reference-file>
-        <jms:reference-file line="580">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="583">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="79">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="646b0ebbe9829e44e9e99e9ab991a526f758001d" resname="you are about to change the  representation thumbnail of your video" approved="yes">
