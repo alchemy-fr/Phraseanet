@@ -4,9 +4,8 @@ namespace Alchemy\Phrasea\Webhook\Processor;
 
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 
-class SubdefEventProcessor implements ProcessorInterface
+class RecordEventProcessor implements ProcessorInterface
 {
-
     public function process(WebhookEvent $event)
     {
         $data         = $event->getData();
