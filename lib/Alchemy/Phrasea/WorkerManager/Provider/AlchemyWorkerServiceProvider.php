@@ -108,6 +108,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::WEBHOOK_TYPE, new CallableWorkerFactory(function () use ($app) {
             return (new WebhookWorker($app))
+                ->setApplicationBox($app['phraseanet.appbox'])
                 ->setDispatcher($app['dispatcher']);
         }));
 
@@ -132,7 +133,7 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
         }));
 
         $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::DELETE_RECORD_TYPE, new CallableWorkerFactory(function () use ($app) {
-            return (new DeleteRecordWorker($app['repo.worker-running-job']))
+            return (new DeleteRecordWorker($app['repo.worker-running-job'], $app['alchemy_worker.message.publisher']))
                 ->setApplicationBox($app['phraseanet.appbox']);
         }));
 

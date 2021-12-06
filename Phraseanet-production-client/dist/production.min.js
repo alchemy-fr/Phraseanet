@@ -3343,6 +3343,8 @@ var publication = function publication(services) {
     var onSubmitPublication = function onSubmitPublication() {
         var $dialog = _dialog2.default.get(1);
         var error = false;
+        (0, _jquery2.default)('.publish-dialog button').prop('disabled', true);
+
         var $form = (0, _jquery2.default)('form.main_form', $dialog.getDomElement());
 
         (0, _jquery2.default)('.required_text', $form).each(function (i, el) {
@@ -3354,6 +3356,7 @@ var publication = function publication(services) {
 
         if (error) {
             alert(localeService.t('feed_require_fields'));
+            (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
         }
 
         if ((0, _jquery2.default)('input[name="feed_id"]', $form).val() === '') {
@@ -3362,6 +3365,7 @@ var publication = function publication(services) {
         }
 
         if (error) {
+            (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             return false;
         }
 
@@ -3371,19 +3375,19 @@ var publication = function publication(services) {
             data: $form.serializeArray(),
             dataType: 'json',
             beforeSend: function beforeSend() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', true);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', true);
             },
             error: function error() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             },
             timeout: function timeout() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             },
             success: function success(data) {
                 (0, _jquery2.default)('.state-navigation').trigger('click');
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
                 if (data.error === true) {
                     alert(data.message);
+                    (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
                     return;
                 }
 
@@ -3401,6 +3405,7 @@ var publication = function publication(services) {
                     });
                 }
 
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
                 $dialog.close(1);
             }
         });
@@ -10215,7 +10220,7 @@ var workzone = function workzone(services) {
                 $container.width(360);
                 (0, _jquery2.default)('#rightFrame').css('left', 360);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 360);
-                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab').hide();
+                (0, _jquery2.default)('#baskets_wrapper, #proposals, #thesaurus_tab').hide();
                 (0, _jquery2.default)('.ui-resizable-handle, #basket_menu_trigger').show();
                 var IDname = (0, _jquery2.default)(this).attr('aria-controls');
                 (0, _jquery2.default)('#' + IDname).show();
@@ -10236,7 +10241,7 @@ var workzone = function workzone(services) {
                 (0, _jquery2.default)('#rightFrame').css('left', 80);
                 (0, _jquery2.default)('#rightFrame').width((0, _jquery2.default)(window).width() - 80);
                 $container.attr('data-status', 'closed');
-                (0, _jquery2.default)('#baskets, #expose_tab, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
+                (0, _jquery2.default)('#baskets_wrapper, #proposals, #thesaurus_tab, .ui-resizable-handle, #basket_menu_trigger').hide();
                 (0, _jquery2.default)('#idFrameC .ui-tabs-nav li').removeClass('ui-state-active');
                 (0, _jquery2.default)('.WZbasketTab').css('background-position', '15px 16px');
                 $container.addClass('closed');
@@ -51088,6 +51093,7 @@ var geonameDatasource = function geonameDatasource(services) {
             height: "auto",
             width: 400,
             modal: true,
+            dialogClass: "dialog-edit_lat_lon",
             buttons: {
                 confirmYes: function confirmYes() {
                     (0, _jquery2.default)(this).dialog("close");
@@ -67915,9 +67921,12 @@ var search = function search(services) {
                 }
                 beforeSearch();
             },
-            error: function error() {
+            error: function error(data) {
                 answAjaxrunning = false;
                 $searchResult.removeClass('loading');
+                if (data.status === 403 && data.getResponseHeader('x-phraseanet-end-session')) {
+                    self.location.replace(self.location.href); // refresh will redirect to login
+                }
             },
             timeout: function timeout() {
                 answAjaxrunning = false;

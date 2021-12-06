@@ -235,6 +235,7 @@ registry:
     api-clients:
         api-require-ssl: false
         api-auth-token-header-only: false
+        api-subdef_service: false
     actions:
         export-stamp-choice: false
 crossdomain:
@@ -343,6 +344,8 @@ workers:
         pullAssets:
             ttl_retry: 5000
             max_retry : 5
+    webhook:
+        timeout: 30
 
 externalservice:
     ginger:

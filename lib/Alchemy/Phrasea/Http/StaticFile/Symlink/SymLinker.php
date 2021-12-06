@@ -11,8 +11,9 @@
 
 namespace Alchemy\Phrasea\Http\StaticFile\Symlink;
 
-use Silex\Application;
-use Symfony\Component\Filesystem\Filesystem;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Create & retrieve symlinks

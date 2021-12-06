@@ -9,6 +9,7 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Filesystem\PhraseanetFilesystem as Filesystem;
 use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
@@ -17,7 +18,8 @@ use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Out\Module\PDFCgu;
 use Assert\Assertion;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\Filesystem\Filesystem;
+
+// use Symfony\Component\Filesystem\Filesystem;
 
 
 class set_export extends set_abstract

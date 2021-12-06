@@ -46,6 +46,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     private $type;
     private $status;
     private $isStory;
+    private $coverRecordId;
     private $caption = [];
     private $privateCaption = [];
     private $exif = [];
@@ -80,6 +81,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
             'type'           => $this->type,
             'status'         => $this->status,
             'isStory'        => $this->isStory,
+            'coverRecordId'  => $this->coverRecordId,
             'caption'        => $this->caption,
             'privateCaption' => $this->privateCaption,
             'exif'           => $this->exif,
@@ -202,6 +204,16 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setIsStory($isStory)
     {
         $this->isStory = (bool)$isStory;
+    }
+
+    public function setCoverRecordId($coverRecordId)
+    {
+        $this->coverRecordId =  $coverRecordId;
+    }
+
+    public function getCoverRecordId($coverRecordId)
+    {
+        return $this->coverRecordId;
     }
 
     /** {@inheritdoc} */

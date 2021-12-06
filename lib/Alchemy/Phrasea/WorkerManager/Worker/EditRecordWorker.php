@@ -210,6 +210,6 @@ class EditRecordWorker implements WorkerInterface
             $em->rollback();
         }
 
-        $this->messagePublisher->pushLog("Record edited for recorid=". $payload['record_id']);
+        $this->messagePublisher->pushLog(sprintf("record edited databoxname=%s databoxid=%d recordid=%d", $databox->get_viewname(), $payload['databoxId'], $payload['record_id']));
     }
 }

@@ -78,7 +78,7 @@ class RecordSubscriber implements EventSubscriberInterface
     public function onDelete(DeleteEvent $event)
     {
         //  first remove record from the grid answer, so first delete the record in the index elastic
-        $this->app['dispatcher']->dispatch(RecordEvents::DELETED, new DeletedEvent($event->getRecord()));
+        $this->app['dispatcher']->dispatch(WorkerEvents::RECORD_DELETE_INDEX, new DeletedEvent($event->getRecord()));
 
         //  publish payload to queue
         $payload = [
@@ -153,10 +153,6 @@ class RecordSubscriber implements EventSubscriberInterface
         $databoxId = $event->getDataboxId();
         $recordIds = $event->getRecordIds();
 
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("handle RECORDS_WRITE_META for %s.[%s]", $databoxId, join(',', $recordIds))
-        ), FILE_APPEND | LOCK_EX);
-
         foreach ($recordIds as $recordId) {
             $mediaSubdefRepository = $this->getMediaSubdefRepository($databoxId);
             $mediaSubdefs = $mediaSubdefRepository->findByRecordIdsAndNames([$recordId]);
@@ -178,10 +174,6 @@ class RecordSubscriber implements EventSubscriberInterface
                     ];
 
                     if ($subdef->is_physically_present()) {
-                        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                            sprintf("q-publish  WRITE_METADATAS_TYPE for %s.%s.%s", $databoxId, $recordId, $subdef->get_name())
-                        ), FILE_APPEND | LOCK_EX);
-
                         $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
                     }
                     else {
@@ -217,12 +209,6 @@ class RecordSubscriber implements EventSubscriberInterface
 
     public function onSubdefinitionWritemeta(SubdefinitionWritemetaEvent $event)
     {
-        $record = $event->getRecord();
-
-        file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-            sprintf("Event WorkerEvents::SUBDEFINITION_WRITE_META catched  for %s.%s.%s", $record->getDataboxId(), $record->getRecordId(), $event->getSubdefName())
-        ), FILE_APPEND | LOCK_EX);
-
         if ($event->getStatus() == SubdefinitionWritemetaEvent::FAILED) {
             $payload = [
                 'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
@@ -297,22 +283,7 @@ class RecordSubscriber implements EventSubscriberInterface
                     ]
                 ];
 
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("sending message MessagePublisher::WRITE_METADATAS_TYPE for %s.%s.%s ...", $databoxId, $recordId, $event->getSubdefName())
-                ), FILE_APPEND | LOCK_EX);
-
                 $this->messagePublisher->publishMessage($payload, MessagePublisher::WRITE_METADATAS_TYPE);
-
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("   ... message MessagePublisher::WRITE_METADATAS_TYPE sent for %s.%s.%s", $databoxId, $recordId, $event->getSubdefName())
-                ), FILE_APPEND | LOCK_EX);
-            }
-            else {
-
-                file_put_contents(dirname(__FILE__).'/../../../../../logs/trace.txt', sprintf("%s [%s] : %s (%s); %s\n", (date('Y-m-d\TH:i:s')), getmypid(), __FILE__, __LINE__,
-                    sprintf("no MessagePublisher::WRITE_METADATAS_TYPE for %s.%s.%s because(isSubdefMetadataUpdateRequired=%d)", $databoxId, $recordId, $event->getSubdefName(), $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name()))
-                ), FILE_APPEND | LOCK_EX);
-
             }
         }
 

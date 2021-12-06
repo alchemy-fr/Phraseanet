@@ -168,6 +168,20 @@ const account = (services) => {
             });
         });
 
+        $container.on('click', '.update-listened-event', function () {
+            let $this = $(this);
+            $.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: $this.is(':checked') ? 'add' : 'remove'
+                },
+                success: function (data) {
+                }
+            });
+        });
+
         // delete an application
       /*  $('a.delete-app').bind('click', function (e) {
             e.preventDefault();

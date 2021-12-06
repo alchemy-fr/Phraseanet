@@ -131,6 +131,28 @@ class ApiApplication
      */
     private $webhookUrl;
 
+    /**
+     * List of events to trigger webhook
+     * @var array
+     *
+     * @ORM\Column(name="listened_events", type="json_array", nullable=true)
+     */
+    private $listenedEvents;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="hmac_key", type="string", length=1024, nullable=true)
+     */
+    private $hmacKey;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="webhook_active", type="boolean", nullable=false)
+     */
+    private $webhookActive = true;
+
     public function __construct()
     {
         $this->accounts = new ArrayCollection();
@@ -430,5 +452,70 @@ class ApiApplication
         $this->accounts->add($account);
 
         return $this;
+    }
+
+    /**
+     * @param array $listenedEvents
+     */
+    public function setListenedEvents(array $listenedEvents)
+    {
+        $this->listenedEvents = $listenedEvents;
+    }
+
+    /**
+     * @param $eventName
+     */
+    public function addListenedEvent($eventName)
+    {
+        $this->listenedEvents[] = $eventName;
+    }
+
+    /**
+     * @param $eventName
+     * @return $this
+     */
+    public function removeListenedEvent($eventName)
+    {
+        $keys = array_keys($this->listenedEvents, $eventName, true);
+
+        foreach ($keys as $key) {
+            unset($this->listenedEvents[$key]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getListenedEvents()
+    {
+        return $this->listenedEvents;
+    }
+
+    public function getHmacKey()
+    {
+        return $this->hmacKey;
+    }
+
+    public function setHmacKey($hmacKey)
+    {
+        $this->hmacKey = $hmacKey;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isWebhookActive()
+    {
+        return $this->webhookActive;
+    }
+
+    /**
+     * @param boolean $webhookActive
+     */
+    public function setWebhookActive($webhookActive)
+    {
+        $this->webhookActive = (Boolean) $webhookActive;
     }
 }
