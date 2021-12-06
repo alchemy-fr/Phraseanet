@@ -87,7 +87,14 @@ class patch_415PHRAS3555 implements patchInterface
 
         /** @var ApiApplication $thirdPartyApplication */
         foreach ($thirdPartyApplications as $thirdPartyApplication) {
+            // retro compatibility with the older listen webhook
             $thirdPartyApplication->setListenedEvents($listenedEvents);
+
+            if (!empty($thirdPartyApplication->getWebhookUrl())) {
+                // make webhook active if webhook_url exist
+                $thirdPartyApplication->setWebhookActive(true);
+            }
+
             $em->persist($thirdPartyApplication);
 
             $creator = $thirdPartyApplication->getCreator();

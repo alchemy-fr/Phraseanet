@@ -1747,6 +1747,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             );
         }
 
+        $this->delete_data_from_cache();
+
         $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($this, $fromChildRecord));
         $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($this));
 
