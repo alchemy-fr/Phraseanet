@@ -14,9 +14,21 @@ use League\Fractal\TransformerAbstract;
 
 class RecordTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['thumbnail', 'technical_informations', 'subdefs', 'metadata', 'status', 'caption'];
+    protected $availableIncludes = [
+        'thumbnail',
+        'technical_informations',
+        'subdefs',
+        'metadata',
+//        'metadatas',
+        'status',
+        'caption'
+    ];
 
-    protected $defaultIncludes = ['thumbnail', 'technical_informations'];
+    protected $defaultIncludes = [
+        'thumbnail',
+        'technical_informations',
+//        'metadatas',
+    ];
 
     /**
      * @var SubdefTransformer
@@ -34,8 +46,9 @@ class RecordTransformer extends TransformerAbstract
         $this->technicalDataTransformer = $technicalDataTransformer;
     }
 
-    public function transform(RecordView $recordView)
+    public function transform($recordView)
     {
+        /** @var RecordView $recordView */
         $record = $recordView->getRecord();
 
         return [
@@ -54,19 +67,29 @@ class RecordTransformer extends TransformerAbstract
         ];
     }
 
+    protected function getSubdefTransformer()
+    {
+        return $this->subdefTransformer;
+    }
+
+    protected function getTechnicalDataTransformer()
+    {
+        return $this->technicalDataTransformer;
+    }
+
     public function includeThumbnail(RecordView $recordView)
     {
-        return $this->item($recordView->getSubdef('thumbnail'), $this->subdefTransformer);
+        return $this->item($recordView->getSubdef('thumbnail'), $this->getSubdefTransformer());
     }
 
     public function includeTechnicalInformations(RecordView $recordView)
     {
-        return $this->collection($recordView->getTechnicalDataView()->getDataSet(), $this->technicalDataTransformer);
+        return $this->collection($recordView->getTechnicalDataView()->getDataSet(), $this->getTechnicalDataTransformer());
     }
 
     public function includeSubdefs(RecordView $recordView)
     {
-        return $this->collection($recordView->getSubdefs(), $this->subdefTransformer);
+        return $this->collection($recordView->getSubdefs(), $this->getSubdefTransformer());
     }
 
     public function includeMetadata(RecordView $recordView)
