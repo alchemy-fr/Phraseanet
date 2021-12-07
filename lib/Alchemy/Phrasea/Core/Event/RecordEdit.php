@@ -15,4 +15,18 @@ use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 
 class RecordEdit extends RecordEvent
 {
+    /** @var array  */
+    private $previousDescription;
+
+    public function __construct(\record_adapter $record, array $previousDescription = [])
+    {
+        parent::__construct($record);
+
+        $this->previousDescription = $previousDescription;
+    }
+
+    public function getPrevousDescription()
+    {
+        return $this->previousDescription;
+    }
 }

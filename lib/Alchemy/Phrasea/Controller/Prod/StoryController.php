@@ -112,6 +112,7 @@ class StoryController extends Controller
     public function addElementsAction(Request $request, $sbas_id, $record_id)
     {
         $Story = new \record_adapter($this->app, $sbas_id, $record_id);
+        $previousDescription = $Story->getRecordDescriptionAsArray();
 
         if (!$this->getAclForUser()->has_right_on_base($Story->getBaseId(), \ACL::CANMODIFRECORD)) {
             throw new AccessDeniedHttpException('You can not add document to this Story');
@@ -130,7 +131,7 @@ class StoryController extends Controller
             $n++;
         }
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($Story, $previousDescription));
 
         $data = [
             'success' => true,
@@ -187,6 +188,7 @@ class StoryController extends Controller
     {
         try {
             $story = new \record_adapter($this->app, $sbas_id, $record_id);
+            $previousDescription = $story->getRecordDescriptionAsArray();
 
             if (!$story->isStory()) {
                 throw new \Exception('This is not a story');
@@ -210,7 +212,7 @@ class StoryController extends Controller
 
             $stmt->closeCursor();
 
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
             $ret = ['success' => true, 'message' => $this->app->trans('Story updated')];
         } catch (ControllerException $e) {
             $ret = ['success' => false, 'message' => $e->getMessage()];

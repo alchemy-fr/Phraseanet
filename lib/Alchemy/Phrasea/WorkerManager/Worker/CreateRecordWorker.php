@@ -286,6 +286,7 @@ class CreateRecordWorker implements WorkerInterface
     private function addRecordInStory($user, $elementCreated, $sbasId, $storyId, $formData)
     {
         $story = new \record_adapter($this->app, $sbasId, $storyId);
+        $previousDescription = $story->getRecordDescriptionAsArray();
 
         if (!$this->getAclForUser($user)->has_right_on_base($story->getBaseId(), \ACL::CANMODIFRECORD)) {
             $this->messagePublisher->pushLog(sprintf("The user %s can not add document to the story story_id = %d", $user->getLogin(), $story->getRecordId()));
@@ -321,7 +322,7 @@ class CreateRecordWorker implements WorkerInterface
             }
 
             $this->messagePublisher->pushLog(sprintf('The record record_id= %d was successfully added in the story record_id= %d', $elementCreated->getRecordId(), $story->getRecordId()));
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescription));
         }
     }
 
