@@ -25,12 +25,12 @@ class CollectionChangedEvent extends RecordEvent
 
         $this->beforeCollection = [
             'collection_name'   => $beforeCol->get_name(),
-            'collection_id'     => $beforeCol->get_base_id()
+            'base_id'           => $beforeCol->get_base_id()
         ];
 
         $this->afterCollection = [
             'collection_name'   => $afterCol->get_name(),
-            'collection_id'     => $afterCol->get_base_id()
+            'base_id'           => $afterCol->get_base_id()
         ];
     }
 
