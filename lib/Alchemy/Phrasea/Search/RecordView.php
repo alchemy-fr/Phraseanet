@@ -18,7 +18,7 @@ class RecordView
     /**
      * @var \record_adapter
      */
-    private $record;
+    protected $record;
 
     /**
      * @var TechnicalDataView
