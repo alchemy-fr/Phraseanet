@@ -83,6 +83,10 @@
       - $ref: '#/_Record_'
       - type: object
         properties:
+          record_id:
+            type: integer
+            example:
+              34
           mime_type:
             type: string
             example:
@@ -134,6 +138,14 @@
       - $ref: '#/_Record_'
       - type: object
         properties:
+          story_id:
+            type: integer
+            example:
+              1400
+          cover_record_id:
+            $ref: 'common.yaml#/ID'
+            description: 'id of the record chosen as "cover" (or null)'
+            example: 55
           mime_type:
             type: string
             default: null
