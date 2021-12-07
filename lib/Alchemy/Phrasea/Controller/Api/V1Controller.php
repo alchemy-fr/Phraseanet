@@ -2013,6 +2013,7 @@ class V1Controller extends Controller
     {
         $databox = $this->findDataboxById($databox_id);
         $record = $databox->get_record($record_id);
+        $previousDescription = $record->getRecordDescriptionAsArray();
         $statusStructure = $databox->getStatusStructure();
 
         $status = $request->get('status');
@@ -2039,7 +2040,7 @@ class V1Controller extends Controller
         $record->setStatus(strrev($datas));
 
         // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
 
         $ret = ["status" => $this->listRecordStatus($record)];
 
@@ -2624,11 +2625,12 @@ class V1Controller extends Controller
     {
         $data = $this->decodeJsonBody($request, 'story_records.json');
         $story = new \record_adapter($this->app, $databox_id, $story_id);
+        $previousDescriptions = $story->getRecordDescriptionAsArray();
 
         $records = $this->addOrDelStoryRecordsFromData($story, $data->story_records, $action);
         $result = Result::create($request, array('records' => $records));
 
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($story, $previousDescriptions));
 
         return $result->createResponse();
     }

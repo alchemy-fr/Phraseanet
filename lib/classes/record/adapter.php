@@ -37,6 +37,7 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Record\RecordReference;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\DBAL\Connection;
@@ -840,6 +841,35 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function getCaption(array $fields = null)
     {
         return $this->getCaptionFieldsMap($this->get_caption()->get_fields($fields, true));
+    }
+
+    /**
+     * @return array
+     */
+    public function getRecordDescriptionAsArray()
+    {
+        $helpers = new PhraseanetExtension($this->app);
+        $description = [];
+
+        foreach ($this->getDatabox()->get_meta_structure()->get_elements() as $data_field) {
+            $fieldName = $data_field->get_name();
+
+            if ($this->get_caption()->has_field($fieldName)) {
+                try {
+                    $captionField =  $this->get_caption()->get_field($fieldName);
+                } catch (\Exception $e) {
+                    continue;
+                }
+
+                $fieldValues = $captionField->get_values();
+
+                $fieldLabel = $helpers->getCaptionFieldLabel($this, $fieldName);
+
+                $description[$fieldLabel] = $helpers->getCaptionField($this, $fieldName, $fieldValues);
+            }
+        }
+
+        return $description;
     }
 
     /**
@@ -1704,6 +1734,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         if(!$this->isStory) {
             throw new \Exception(sprintf('Record is not a story'));
         }
+
+        $previousDescription = $this->getRecordDescriptionAsArray();
         $coverSources = array_merge(['thumbnail_cover_source' => 'thumbnail', 'preview_cover_source' => 'preview'], $coverSources);
 
         $fromChildRecord = new self($this->app, $this->getDataboxId(), $fromChildRecordId);
@@ -1750,7 +1782,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->delete_data_from_cache();
 
         $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($this, $fromChildRecord));
-        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($this));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($this, $previousDescription));
 
         return $fromChildRecord->getId();
     }
