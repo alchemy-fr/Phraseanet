@@ -95,6 +95,17 @@
                                 </button>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                {{ "developers:: Webhook active" | trans }}
+                            </td>
+                            <td>
+                                <input class="update-webhook-status" type="checkbox" id="webhook_active"
+                                       data-path="{{ path('developers_application_active_webhook', {"application" : application.getId()}) }}"
+                                        {% if application.isWebhookActive() %} checked {% endif %}
+                                       name="webhook_active"  value="1"/>
+                            </td>
+                        </tr>
                     {% endif %}
                 </tbody>
             </table>

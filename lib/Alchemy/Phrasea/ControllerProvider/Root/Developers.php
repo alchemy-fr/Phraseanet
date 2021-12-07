@@ -65,6 +65,11 @@ class Developers implements ControllerProviderInterface, ServiceProviderInterfac
             ->assert('application', '\d+')
             ->bind('developers_application_listened_event');
 
+        $controllers->post('/application/{application}/active-webhook', 'controller.account.developers:activeWebhook')
+            ->before($app['middleware.api-application.converter'])
+            ->assert('application', '\d+')
+            ->bind('developers_application_active_webhook');
+
         $controllers->delete('/application/{application}/', 'controller.account.developers:deleteApp')
             ->before($app['middleware.api-application.converter'])
             ->assert('application', '\d+')

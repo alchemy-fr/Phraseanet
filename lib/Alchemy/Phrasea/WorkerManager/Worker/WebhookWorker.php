@@ -180,6 +180,12 @@ class WebhookWorker implements WorkerInterface
         $requests = [];
         /** @var ApiApplication $thirdPartyApplication */
         foreach ($thirdPartyApplications as $thirdPartyApplication) {
+
+            // skip if webhook is not active
+            if (!$thirdPartyApplication->isWebhookActive()) {
+                continue;
+            }
+
             $creator = $thirdPartyApplication->getCreator();
 
             if ($creator == null) {

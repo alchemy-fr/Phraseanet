@@ -173,6 +173,8 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
         $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
 
+        self::$DI['app']['manipulator.api-application']->setWebhookUrl(self::$DI['oauth2-app-user1'], 'http://webhook.com/webhook');
+
         $requestResult = $webhookWorker->deliverEvent($client, [self::$DI['oauth2-app-user1']], $event, $payload);
 
         // normally no request sended because user creator have no access to the record collection
@@ -195,6 +197,7 @@ class WebhookWorkerTest extends \PhraseanetTestCase
         $webhookWorker = new WebhookWorker(self::$DI['app']);
         $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
         $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
+        self::$DI['app']['manipulator.api-application']->setWebhookUrl(self::$DI['oauth2-app-user1'], 'http://webhook.com/webhook');
 
         foreach ($this->events as $type => $tEvent) {
             foreach ($tEvent as $eventName) {
@@ -324,6 +327,8 @@ class WebhookWorkerTest extends \PhraseanetTestCase
                 $webhookWorker = new WebhookWorker(self::$DI['app']);
                 $webhookWorker->setApplicationBox(self::$DI['app']['phraseanet.appbox']);
                 $webhookWorker->setDispatcher(self::$DI['app']['dispatcher']);
+
+                self::$DI['app']['manipulator.api-application']->setWebhookUrl(self::$DI['oauth2-app-user1'], 'http://webhook.com/webhook');
 
                 $payload = [
                     'id'    => $event->getId(),

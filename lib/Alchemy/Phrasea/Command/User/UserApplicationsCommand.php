@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Command\User;
 
 use Alchemy\Phrasea\Command\Command;
+use Alchemy\Phrasea\Model\Manipulator\ApiApplicationManipulator;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Alchemy\Phrasea\ControllerProvider\Api\V2;
 use Alchemy\Phrasea\Core\LazyLocator;
@@ -35,7 +36,7 @@ class UserApplicationsCommand extends Command
     {
         parent::__construct('user:applications');
 
-        $this->setDescription('List, Create, Edit, Delete application in Phraseanet <comment>(experimental)</>')
+        $this->setDescription('List, Create, Edit, Delete application in Phraseanet <comment>(experimental)</comment>')
             ->addOption('list', null, InputOption::VALUE_NONE, 'List all applications or user applications if --user_id is set')
             ->addOption('create', null, InputOption::VALUE_NONE, 'Create application for user in Phraseanet')
             ->addOption('edit', null, InputOption::VALUE_NONE, 'Edit application in Phraseanet work only if app_id is set')
@@ -49,6 +50,7 @@ class UserApplicationsCommand extends Command
             ->addOption('callback', 'c', InputOption::VALUE_OPTIONAL, 'The desired endpoint for callback, required for web kind eg: -c "https://www.alchemy.fr/callback"')
             ->addOption('webhook_url', null, InputOption::VALUE_REQUIRED, 'The webhook url')
             ->addOption('active', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate  the app, values true or false', 'true')
+            ->addOption('webhook_active', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate webhook, values true or false', 'false')
             ->addOption('generate_token', null, InputOption::VALUE_NONE, 'Generate or regenerate the access token')
             ->addOption('password_oauth2_gt', null, InputOption::VALUE_OPTIONAL, 'Activate or deactivate password OAuth2 grant type , values true or false', 'false')           
             ->addOption('jsonformat', null, InputOption::VALUE_NONE, 'Output in json format')
@@ -69,6 +71,7 @@ class UserApplicationsCommand extends Command
         $urlCallback        = $input->getOption('callback');
         $webhookUrl         = $input->getOption('webhook_url');
         $active             = $input->getOption('active');
+        $webhookActive      = $input->getOption('webhook_active');
         $generateToken      = $input->getOption('generate_token');
         $passwordOauth2Gt   = $input->getOption('password_oauth2_gt');
         $create             = $input->getOption('create');
@@ -77,6 +80,7 @@ class UserApplicationsCommand extends Command
         $list               = $input->getOption('list');
         $jsonformat         = $input->getOption('jsonformat');
 
+        /** @var ApiApplicationManipulator $applicationManipulator */
         $applicationManipulator   = $this->container['manipulator.api-application'];
         $apiOauthTokenManipulator = $this->container['manipulator.api-oauth-token'];
         $accountRepository        = $this->container['repo.api-accounts'];
@@ -135,6 +139,22 @@ class UserApplicationsCommand extends Command
                 if ($webhookUrl) {
                     $applicationManipulator->setWebhookUrl($application, $webhookUrl);
                     $applicationManipulator->update($application);
+                }
+
+                if ($webhookActive !== null) {
+                    if (in_array($webhookActive, ['true', 'false'])) {
+                        if ($webhookActive == 'true' && !empty($application->getWebhookUrl())) {
+                            $application->setWebhookActive(true);
+                        } else {
+                            $application->setWebhookActive(false);
+                        }
+
+                        $applicationManipulator->update($application);
+                    } else {
+                        $output->writeln('<error>Value of option --webhook_active should be "true" or "false"</error>');
+
+                        return 0;
+                    }
                 }
 
                 if ($active) {
@@ -207,6 +227,22 @@ class UserApplicationsCommand extends Command
             }
             if ($webhookUrl) {
                 $applicationManipulator->setWebhookUrl($application, $webhookUrl);
+            }
+
+            if ($webhookActive !== null) {
+                if (in_array($webhookActive, ['true', 'false'])) {
+                    if ($webhookActive == 'true' && !empty($application->getWebhookUrl())) {
+                        $application->setWebhookActive(true);
+                    } else {
+                        $application->setWebhookActive(false);
+                    }
+
+                    $applicationManipulator->update($application);
+                } else {
+                    $output->writeln('<error>Value of option --webhook_active should be "true" or "false"</error>');
+
+                    return 0;
+                }
             }
 
             if ($active) {
@@ -283,10 +319,10 @@ class UserApplicationsCommand extends Command
                 /** @var DialogHelper $dialog */
                 $dialog = $this->getHelperSet()->get('dialog');
 
-                $continue = $dialog->askConfirmation($output, "<question>It's a special phraseanet application, do you want really to delete it? (N/y)</>", false);
+                $continue = $dialog->askConfirmation($output, "<question>It's a special phraseanet application, do you want really to delete it? (N/y)</question>", false);
 
                 if (!$continue) {
-                    $output->writeln("<info>See you later !</>");
+                    $output->writeln("<info>See you later !</info>");
 
                     return 0;
                 }

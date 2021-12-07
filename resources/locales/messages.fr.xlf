@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-12-06T07:15:22Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2021-12-06T14:57:41Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="263">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2455,7 +2455,7 @@
       <trans-unit id="dcce9368ad626fe4addfa719b7a16807d464aa9b" resname="Derniers envois" approved="yes">
         <source>Derniers envois</source>
         <target state="translated">Derniers envois</target>
-        <jms:reference-file line="165">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="176">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ec52b98c45f63139a4bee23fa7d177838f2b3628" resname="Des difficultes ont ete rencontres a la connection au serveur distant" approved="yes">
         <source>Des difficultes ont ete rencontres a la connection au serveur distant</source>
@@ -2534,7 +2534,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -4077,7 +4077,7 @@
       <trans-unit id="a596c989f20650068f6278338c1a966b7a8693f8" resname="Le token n'a pas encore ete genere" approved="yes">
         <source>Le token n'a pas encore ete genere</source>
         <target state="translated">Le jeton n'a pas encore été généré</target>
-        <jms:reference-file line="116">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="127">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1631f9ce8e5a06bac66c8816aa84071c22aae2aa" resname="Les developpeurs peuvent editer l'enregistrement de leurs application grace a l'onglet 'developpeurs' ci-dessus" approved="yes">
         <source>Les developpeurs peuvent editer l'enregistrement de leurs application grace a l'onglet 'developpeurs' ci-dessus</source>
@@ -4110,7 +4110,7 @@
       <trans-unit id="01a2d0aa51659266a513add42e582eff234bc34b" resname="Les paramétres oauth de votre application." approved="yes">
         <source>Les paramétres oauth de votre application.</source>
         <target state="translated">Paramètres Oauth de l'application</target>
-        <jms:reference-file line="103">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="114">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a733c2df9772facab04b4773c9d2bed560c25e9a" resname="Les status de certains documents ne sont pas accessibles par manque de droits" approved="yes">
         <source>Les status de certains documents ne sont pas accessibles par manque de droits</source>
@@ -5924,7 +5924,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="1d72d3b024f99631791dcfbc8288caa16d3ff388" resname="Résultats des derniers envois effectués pour cette application" approved="yes">
         <source>Résultats des derniers envois effectués pour cette application</source>
         <target state="translated">Résultats des derniers envois effectués pour cette application</target>
-        <jms:reference-file line="166">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="177">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="741cd64a01685389e2fabdb7091a3b70f6be63ee" resname="SMTP encryption" approved="yes">
         <source>SMTP encryption</source>
@@ -6950,7 +6950,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="a1141eb96836ed960ae0be11b9889597388b5df0" resname="Token" approved="yes">
         <source>Token</source>
         <target state="translated">Jeton</target>
-        <jms:reference-file line="109">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="120">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e894979930445d4b2bd8c947d6e2e6b816fcb0ab" resname="Token not found" approved="yes">
         <source>Token not found</source>
@@ -7510,7 +7510,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="e8307e1f9879fad17b5c158a1b5d0c8ef35da0ad" resname="Votre token d'access" approved="yes">
         <source>Votre token d'access</source>
         <target state="translated">Votre token d'accès</target>
-        <jms:reference-file line="102">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="113">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59bfdda091099123ccec390f4f5fb4c6c4065be0" resname="Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage pour vos documents, et de configurer votre serveur web pour qu'il publie certains de ces dossiers de stockage." approved="yes">
         <source>Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage pour vos documents, et de configurer votre serveur web pour qu'il publie certains de ces dossiers de stockage.</source>
@@ -9928,7 +9928,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="ce91bb36902944da7788997865b8c482a59e80fe" resname="boutton::generer" approved="yes">
         <source>boutton::generer</source>
         <target state="translated">Générer</target>
-        <jms:reference-file line="119">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="130">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b93e2160edf563e86eb2e7ef4d92dce4856759ee" resname="boutton::imprimer" approved="yes">
         <source>boutton::imprimer</source>
@@ -9997,7 +9997,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="e0af1d0d7872c48928d4faef76c45567426e62f9" resname="boutton::retour" approved="yes">
         <source>boutton::retour</source>
         <target state="translated">Retour</target>
-        <jms:reference-file line="193">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="204">web/developers/application.html.twig</jms:reference-file>
         <jms:reference-file line="116">web/developers/application_form.html.twig</jms:reference-file>
         <jms:reference-file line="20">Bridge/Flickr/photo_deleteelement.html.twig</jms:reference-file>
         <jms:reference-file line="20">Bridge/Flickr/photoset_deleteelement.html.twig</jms:reference-file>
@@ -10357,102 +10357,107 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       <trans-unit id="8e82b164f61602c25d57b485ed09c7a59a8e0919" resname="developers:: Events name">
         <source>developers:: Events name</source>
         <target state="translated">Nom des événements</target>
-        <jms:reference-file line="134">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="145">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f717955140c0a034f0e08cfc1416b8443e86cbb5" resname="developers:: Events trigger this webhook">
         <source>developers:: Events trigger this webhook</source>
         <target state="needs-translation">Evénements disponibles</target>
-        <jms:reference-file line="125">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="136">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a425cde38ee310e52988e9e9970f1c8dd376c13" resname="developers:: Events type">
         <source>developers:: Events type</source>
         <target state="needs-translation">Evénements sur</target>
-        <jms:reference-file line="131">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="142">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0b3e5bbe37fa58fc7ce4682309017ffcebe95a23" resname="developers:: Select events to trigger this webhook url">
         <source>developers:: Select events to trigger this webhook url</source>
         <target state="needs-translation">Quels événements souhaiteriez-vous déclencher avec ce Webhook? La réception d'un événement dépend des droits de l'utilisateur. Exemple: pour être notifié de "record.edited", vous devez avoir le droit d'éditing sur la collection contenant le record.</target>
-        <jms:reference-file line="126">web/developers/application.html.twig</jms:reference-file>
+        <jms:reference-file line="137">web/developers/application.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c03c368311dce85c42b5851061524a1c707a5890" resname="developers:: Webhook active">
+        <source>developers:: Webhook active</source>
+        <target state="new">developers:: Webhook active</target>
+        <jms:reference-file line="100">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bffa41c7a64fc38e50153ea0f6f7c2368b008028" resname="developers:: a order delivered">
         <source>developers:: a order delivered</source>
         <target state="needs-translation">Commande effectuée</target>
-        <jms:reference-file line="372">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="394">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b74fc2656c9e78eec665260f31b446edf548932" resname="developers:: a order denied">
         <source>developers:: a order denied</source>
         <target state="needs-translation">Commande refusée</target>
-        <jms:reference-file line="373">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="395">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c2d24cc69b826a71661c25cbd5291cdaaf95208c" resname="developers:: collection changed for record">
         <source>developers:: collection changed for record</source>
         <target state="needs-translation">Collection changée pour un record/reportage</target>
-        <jms:reference-file line="352">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="374">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1066a8925f76bd4aadebd7ec114b0ff771ab05ed" resname="developers:: media substituted for record">
         <source>developers:: media substituted for record</source>
         <target state="needs-translation">Le média a été substitué pour des sous-définitions d'un record ou le fichier original</target>
-        <jms:reference-file line="351">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="373">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab1c856fecf799bb87498cb26ea74b3db85b4f0b" resname="developers:: new feed entry on phraseanet">
         <source>developers:: new feed entry on phraseanet</source>
         <target state="needs-translation">Une nouvelle publication ont été effectuées sur un flux RSS</target>
-        <jms:reference-file line="368">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="390">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
         <source>developers:: new order created</source>
         <target state="needs-translation">Une nouvelle commande a été créée</target>
-        <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="393">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="30396a053ecc23d5897f4008d2d22de6dcb97a5d" resname="developers:: new user created">
         <source>developers:: new user created</source>
         <target state="needs-translation">Un nouvel utilisateur a été créé</target>
-        <jms:reference-file line="360">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="382">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
         <source>developers:: record or story created</source>
         <target state="needs-translation">Un record ou un reportage a été créé</target>
-        <jms:reference-file line="348">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="370">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f036a4965ecb781192393a08a5aa0510a94524c" resname="developers:: record or story deleted">
         <source>developers:: record or story deleted</source>
         <target state="needs-translation">Un record ou un reportage a été supprimé</target>
-        <jms:reference-file line="350">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="372">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98121e43abc2802cfec12de894e041f54d7c9b2c" resname="developers:: record or story edited">
         <source>developers:: record or story edited</source>
         <target state="needs-translation">Un record ou un reportage a été édité</target>
-        <jms:reference-file line="349">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7479330e0d56c8b37e71013043acecd329ce5f08" resname="developers:: status changed for record">
         <source>developers:: status changed for record</source>
         <target state="needs-translation">Un statut a été changé pour un record ou un reportage</target>
-        <jms:reference-file line="353">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="375">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db026e337fa7eeba8352e87ca00a28e19c854453" resname="developers:: subdef created for a record">
         <source>developers:: subdef created for a record</source>
         <target state="needs-translation">Une sous-définition a été créée</target>
-        <jms:reference-file line="356">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="378">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18fc15413169b19baf33adc2572d53a76b86f1f5" resname="developers:: subdef creation failed for a record">
         <source>developers:: subdef creation failed for a record</source>
         <target state="needs-translation">La création d'une sous-définition a échoué</target>
-        <jms:reference-file line="357">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="379">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e59d8fc44e34b786247fa5924eeb12a4a1202215" resname="developers:: user deleted on phraseanet">
         <source>developers:: user deleted on phraseanet</source>
         <target state="needs-translation">Un utilisateur a été supprimé</target>
-        <jms:reference-file line="361">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="383">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="13577491a21410883cb7990ce9fdd481fca5c58b" resname="developers:: user registration granted on phraseanet">
         <source>developers:: user registration granted on phraseanet</source>
         <target state="needs-translation">Inscription d'utilisateur approuvée</target>
-        <jms:reference-file line="364">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="386">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7786ecdfe826e6f347dbf643191d79a196c6057" resname="developers:: user registration rejected on phraseanet">
         <source>developers:: user registration rejected on phraseanet</source>
         <target state="needs-translation">Inscription d'utilisateur refusée</target>
-        <jms:reference-file line="365">Controller/Root/DeveloperController.php</jms:reference-file>
+        <jms:reference-file line="387">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="55a2ad6e3d1c02d871104d64fb811f08c54bd1b9" resname="do you want to validate" approved="yes">
         <source>do you want to validate</source>
@@ -11829,7 +11834,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="564">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -14466,7 +14471,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1338">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="542">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
