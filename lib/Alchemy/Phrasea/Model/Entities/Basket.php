@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -88,10 +89,38 @@ class Basket
     private $validation;
 
     /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="vote_initiator_id", referencedColumnName="id", nullable=true)
+     *
+     * @return User
+     **/
+    private $vote_initiator;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $vote_created;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $vote_updated;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $vote_expires;
+
+    /**
      * @ORM\OneToMany(targetEntity="BasketElement", mappedBy="basket", cascade={"ALL"})
      * @ORM\OrderBy({"ord" = "ASC"})
      */
     private $elements;
+
+    /**
+     * @ORM\OneToMany(targetEntity="BasketParticipant", mappedBy="basket", cascade={"ALL"})
+     */
+    private $participants;
 
     /**
      * @ORM\OneToOne(targetEntity="Order", mappedBy="basket", cascade={"ALL"})
@@ -314,6 +343,97 @@ class Basket
     }
 
     /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function setVoteInitiator(User $user)
+    {
+        $this->vote_initiator = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get vote initiator
+     *
+     * @return User
+     */
+    public function getVoteInitiator()
+    {
+        return $this->vote_initiator;
+    }
+
+    /**
+     * Set vote created
+     *
+     * @param  DateTime         $created
+     * @return self
+     */
+    public function setVoteCreated(DateTime $created)
+    {
+        $this->vote_created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get vote created
+     *
+     * @return DateTime
+     */
+    public function getVoteCreated()
+    {
+        return $this->vote_created;
+    }
+
+    /**
+     * Set vote updated
+     *
+     * @param  DateTime         $updated
+     * @return self
+     */
+    public function setVoteUpdated(DateTime $updated)
+    {
+        $this->vote_updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get vote updated
+     *
+     * @return DateTime
+     */
+    public function getVoteUpdated()
+    {
+        return $this->vote_updated;
+    }
+
+    /**
+     * Set vote expires
+     *
+     * @param  DateTime         $expires
+     * @return self
+     */
+    public function setExpires($expires)
+    {
+        $this->vote_expires = $expires;
+
+        return $this;
+    }
+
+    /**
+     * Get vote expires
+     *
+     * @return DateTime|null
+     */
+    public function getVoteExpires()
+    {
+        return $this->vote_expires;
+    }
+
+    /**
      * Add element
      *
      * @param  BasketElement $element
@@ -338,6 +458,37 @@ class Basket
     {
         if ($this->elements->removeElement($element)) {
             $element->setBasket();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Add participant
+     *
+     * @param  BasketParticipant $participant
+     * @return Basket
+     */
+    public function addParticipant(BasketParticipant $participant)
+    {
+        $this->participants[] = $participant;
+        $participant->setBasket($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove participant
+     *
+     * @param BasketParticipant $participant
+     * @return bool
+     */
+    public function removeParticipant(BasketParticipant $participant)
+    {
+        if ($this->elements->removeElement($participant)) {
+            $participant->setBasket();
 
             return true;
         }
