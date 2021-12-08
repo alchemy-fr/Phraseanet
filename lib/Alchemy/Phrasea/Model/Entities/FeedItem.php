@@ -230,21 +230,4 @@ class FeedItem
     {
         return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
     }
-
-    /**
-     * @param Application $app
-     * @return bool
-     */
-    public function isRecordExist(Application $app)
-    {
-        try {
-            return (new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd())) != null ? true : false ;
-        } catch (\Exception $e) {
-            // remove feeditem from the feed entry if record don't exist
-            $app['orm.em']->remove($this);
-            $app['orm.em']->flush();
-
-            return false;
-        }
-    }
 }
