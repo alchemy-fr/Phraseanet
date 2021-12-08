@@ -20,6 +20,8 @@ class DatabaseMaintenanceService
         'ApiOauthTokens',
         'AuthFailures',
         'BasketElements',
+        'BasketElementVotes',
+        'BasketParticipants',
         'Baskets',
         'FeedEntries',
         'FeedItems',
