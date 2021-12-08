@@ -1,6 +1,6 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 
-{% if item.isRecordInPublication(app) %}
+{% if item.isRecordExist(app) %}
 
     {% set record  = item.record(app) %}
 
