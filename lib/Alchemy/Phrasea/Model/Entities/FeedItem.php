@@ -228,10 +228,22 @@ class FeedItem
      */
     public function getRecord(Application $app)
     {
+        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
+    }
+
+    /**
+     * @param Application $app
+     * @return bool
+     */
+    public function isRecordInPublication(Application $app)
+    {
         try {
-            return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
+            return (new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd())) != null ? true : false ;
         } catch (\Exception $e) {
-            return null;
+            $app['orm.em']->remove($this);
+            $app['orm.em']->flush();
+
+            return false;
         }
     }
 }

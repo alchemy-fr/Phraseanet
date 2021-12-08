@@ -1,8 +1,9 @@
 {% import 'common/thumbnail.html.twig' as thumbnail %}
 
-{% set record  = item.record(app) %}
+{% if item.isRecordInPublication(app) %}
 
-{% if record is not null %}
+    {% set record  = item.record(app) %}
+
     <div style="width:{{ images_size+30 }}px;"
      sbas="{{ record.databoxId }}"
      id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
