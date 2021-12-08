@@ -2,7 +2,8 @@
 
 {% set record  = item.record(app) %}
 
-<div style="width:{{ images_size+30 }}px;"
+{% if record is not null %}
+    <div style="width:{{ images_size+30 }}px;"
      sbas="{{ record.databoxId }}"
      id="{{'PUBLI_' ~ entry.id ~ '_' ~ record.id }}"
      class="IMGT diapo type-{{ record.type }} open-preview-action"
@@ -82,3 +83,4 @@
         </div>
     </div>
 </div>
+{% endif %}

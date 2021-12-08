@@ -224,10 +224,14 @@ class FeedItem
      *
      * @param Application $app
      *
-     * @return \record_adapter
+     * @return \record_adapter|null
      */
     public function getRecord(Application $app)
     {
-        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
+        try {
+            return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }
