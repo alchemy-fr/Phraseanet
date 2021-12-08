@@ -32,6 +32,7 @@ use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
@@ -2144,6 +2145,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         foreach ($basketElementRepository->findElementsByRecord($this) as $basket_element) {
             $this->app['orm.em']->remove($basket_element);
+        }
+
+        /** @var FeedItemRepository $feedItemRepository */
+        $feedItemRepository = $this->app['repo.feed-items'];
+
+        // remove the record from publications
+        foreach($feedItemRepository->findBy(['recordId' =>  $this->getRecordId()]) as $feedItem) {
+            $this->app['orm.em']->remove($feedItem);
         }
 
         $this->app['orm.em']->flush();
