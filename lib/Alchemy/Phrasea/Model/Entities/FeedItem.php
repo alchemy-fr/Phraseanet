@@ -224,7 +224,7 @@ class FeedItem
      *
      * @param Application $app
      *
-     * @return \record_adapter|null
+     * @return \record_adapter
      */
     public function getRecord(Application $app)
     {
