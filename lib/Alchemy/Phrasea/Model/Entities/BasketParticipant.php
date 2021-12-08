@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Model\Entities;
 
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -62,7 +61,7 @@ class BasketParticipant
     /**
      * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="participant", cascade={"all"})
      */
-    private $datas;
+    private $votes;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -86,9 +85,11 @@ class BasketParticipant
     /**
      * ValidationParticipant constructor.
      */
-    public function __construct()
+    public function __construct(User $user, Basket $basket)
     {
-        $this->datas = new ArrayCollection();
+        $this->setUser($user);
+        $this->setBasket($basket);
+        $this->votes = new ArrayCollection();
     }
 
     /**
@@ -96,7 +97,7 @@ class BasketParticipant
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -104,7 +105,7 @@ class BasketParticipant
     /**
      * @return User
      */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -114,7 +115,7 @@ class BasketParticipant
      *
      * @return self
      */
-    public function setUser(User $user)
+    private function setUser(User $user): BasketParticipant
     {
         $this->user = $user;
 
@@ -124,7 +125,7 @@ class BasketParticipant
     /**
      * @return Basket
      */
-    public function getBasket()
+    public function getBasket(): Basket
     {
         return $this->basket;
     }
@@ -134,7 +135,7 @@ class BasketParticipant
      *
      * @return self
      */
-    public function setBasket(Basket $basket = null)
+    private function setBasket(Basket $basket): BasketParticipant
     {
         $this->basket = $basket;
 
@@ -146,7 +147,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getIsAware()
+    public function getIsAware(): bool
     {
         return $this->is_aware;
     }
@@ -154,10 +155,10 @@ class BasketParticipant
     /**
      * Set is_aware
      *
-     * @param  boolean               $isAware
+     * @param boolean $isAware
      * @return self
      */
-    public function setIsAware($isAware)
+    public function setIsAware(bool $isAware): BasketParticipant
     {
         $this->is_aware = $isAware;
 
@@ -169,7 +170,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getCanAgree()
+    public function getCanAgree(): bool
     {
         return $this->can_agree;
     }
@@ -177,10 +178,10 @@ class BasketParticipant
     /**
      * Set can_agree
      *
-     * @param  boolean               $canAgree
+     * @param boolean $canAgree
      * @return self
      */
-    public function setCanAgree($canAgree)
+    public function setCanAgree(bool $canAgree): BasketParticipant
     {
         $this->can_agree = $canAgree;
 
@@ -192,7 +193,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getCanSeeOthers()
+    public function getCanSeeOthers(): bool
     {
         return $this->can_see_others;
     }
@@ -200,10 +201,10 @@ class BasketParticipant
     /**
      * Set can_see_others
      *
-     * @param  boolean               $canSeeOthers
+     * @param boolean $canSeeOthers
      * @return self
      */
-    public function setCanSeeOthers($canSeeOthers)
+    public function setCanSeeOthers(bool $canSeeOthers): BasketParticipant
     {
         $this->can_see_others = $canSeeOthers;
 
@@ -215,7 +216,7 @@ class BasketParticipant
      *
      * @return DateTime
      */
-    public function getReminded()
+    public function getReminded(): DateTime
     {
         return $this->reminded;
     }
@@ -223,10 +224,10 @@ class BasketParticipant
     /**
      * Set reminded
      *
-     * @param  DateTime             $reminded
+     * @param DateTime $reminded
      * @return self
      */
-    public function setReminded($reminded)
+    public function setReminded(DateTime $reminded): BasketParticipant
     {
         $this->reminded = $reminded;
 
@@ -234,38 +235,37 @@ class BasketParticipant
     }
 
     /**
-     * Add datas
+     * Add vote
      *
-     * @param  ValidationData        $datas
+     * @param  BasketElementVote $basketElementVote
      * @return self
      */
-    public function addData(ValidationData $datas)
+    public function addVote(BasketElementVote $basketElementVote): BasketParticipant
     {
-        $this->datas[] = $datas;
+        $this->votes[] = $basketElementVote;
 
         return $this;
     }
 
     /**
-     * Remove datas
+     * Remove vote
      *
-     * @param ValidationData $datas
+     * @param BasketElementVote $basketElementVote
      */
-    public function removeData(ValidationData $datas)
+    public function removeData(BasketElementVote $basketElementVote)
     {
-        $this->datas->removeElement($datas);
+        $this->votes->removeElement($basketElementVote);
     }
 
-    public function isReleasable()
+    public function isReleasable(): bool
     {
-
         if ($this->getIsConfirmed()) {
             return false;
         }
 
-        foreach ($this->getDatas() as $validation_data) {
-            /* @var $validation_data ValidationData */
-            if ($validation_data->getAgreement() === null) {
+        foreach ($this->getVotes() as $basketElementVote) {
+            /* @var $basketElementVote BasketElementVote */
+            if ($basketElementVote->getAgreement() === null) {
                 return false;
             }
         }
@@ -278,7 +278,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getIsConfirmed()
+    public function getIsConfirmed(): bool
     {
         return $this->is_confirmed;
     }
@@ -286,10 +286,10 @@ class BasketParticipant
     /**
      * Set is_confirmed
      *
-     * @param  boolean               $isConfirmed
+     * @param boolean $isConfirmed
      * @return self
      */
-    public function setIsConfirmed($isConfirmed)
+    public function setIsConfirmed(bool $isConfirmed): BasketParticipant
     {
         $this->is_confirmed = $isConfirmed;
 
@@ -299,10 +299,10 @@ class BasketParticipant
     /**
      * Get datas
      *
-     * @return Collection
+     * @return ArrayCollection
      */
-    public function getDatas()
+    public function getVotes(): ArrayCollection
     {
-        return $this->datas;
+        return $this->votes;
     }
 }

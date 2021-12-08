@@ -11,20 +11,19 @@
 
 namespace Alchemy\Phrasea\Core\Event\Subscriber;
 
-use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone;
-use Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest;
 use Alchemy\Phrasea\Notification\Receiver;
 
 class ValidationSubscriber extends AbstractNotificationSubscriber
 {
-    public function onCreate(ValidationEvent $event)
+    public function onCreate(BasketParticipantVoteEvent $event)
     {
         $params = [
-            'from'    => $event->getBasket()->getValidation()->getInitiator()->getId(),
+            'from'    => $event->getBasket()->getVoteInitiator()->getId(),
             'to'      => $event->getParticipant()->getUser()->getId(),
             'message' => $event->getMessage(),
             'ssel_id' => $event->getBasket()->getId(),
@@ -71,11 +70,11 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
         return $this->app['events-manager']->notify($params['to'], 'eventsmanager_notify_validate', $datas, $mailed);
     }
 
-    public function onFinish(ValidationEvent $event)
+    public function onFinish(BasketParticipantVoteEvent $event)
     {
         $params = [
             'from'    => $event->getParticipant()->getUser()->getId(),
-            'to'      => $event->getBasket()->getValidation()->getInitiator()->getId(),
+            'to'      => $event->getBasket()->getVoteInitiator()->getId(),
             'ssel_id' => $event->getBasket()->getId(),
         ];
 
@@ -83,11 +82,11 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
 
         $mailed = false;
 
-        if ($this->shouldSendNotificationFor($event->getBasket()->getValidation()->getInitiator(), 'eventsmanager_notify_validationdone')) {
+        if ($this->shouldSendNotificationFor($event->getBasket()->getVoteInitiator(), 'eventsmanager_notify_validationdone')) {
             $readyToSend = false;
             try {
                 $user_from = $event->getParticipant()->getUser();
-                $user_to = $event->getBasket()->getValidation()->getInitiator();
+                $user_to = $event->getBasket()->getVoteInitiator();
 
                 $basket = $event->getBasket();
                 $title = $basket->getName();

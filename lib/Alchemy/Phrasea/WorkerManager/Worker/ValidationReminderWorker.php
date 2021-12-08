@@ -7,17 +7,16 @@ use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
-use Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DateTime;
-use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ValidationReminderWorker implements WorkerInterface
@@ -52,7 +51,7 @@ class ValidationReminderWorker implements WorkerInterface
             return 0;
         }
 
-        foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, new DateTime()) as $participant) {
+        foreach ($this->getBasketParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, new DateTime()) as $participant) {
             $validationSession = $participant->getSession();
             $basket = $validationSession->getBasket();
 
@@ -104,7 +103,7 @@ class ValidationReminderWorker implements WorkerInterface
         $this->getEntityManager()->flush();
     }
 
-    private function doRemind(ValidationParticipant $participant, Basket $basket, $url, $timeLeft)
+    private function doRemind(BasketParticipant $participant, Basket $basket, $url, $timeLeft)
     {
         $params = [
             'from'    => $basket->getValidation()->getInitiator()->getId(),
@@ -188,11 +187,11 @@ class ValidationReminderWorker implements WorkerInterface
     }
 
     /**
-     * @return ValidationParticipantRepository
+     * @return BasketParticipantRepository
      */
-    private function getValidationParticipantRepository()
+    private function getBasketParticipantRepository()
     {
-        return $this->app['repo.validation-participants'];
+        return $this->app['repo.basket-participants'];
     }
 
     /**

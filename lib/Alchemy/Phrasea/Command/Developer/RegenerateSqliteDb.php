@@ -36,9 +36,6 @@ use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
 use Alchemy\Phrasea\Model\Entities\UsrListEntry;
 use Alchemy\Phrasea\Model\Entities\UsrListOwner;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
-use Alchemy\Phrasea\Model\Entities\ValidationSession;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
 use Alchemy\Phrasea\Model\Entities\WebhookEventDelivery;
 use Alchemy\Phrasea\Model\Manipulator\ApiAccountManipulator;
@@ -578,28 +575,21 @@ class RegenerateSqliteDb extends Command
             $em->persist($basketElement);
         }
 
-        $validationSession = new ValidationSession();
-        $validationSession->setBasket($basket4);
-        $basket4->setValidation($validationSession);
+        $basket4->startVoteSession($this->getUser());
         $expires = new \DateTime();
         $expires->modify('+1 week');
-        $validationSession->setExpires($expires);
-        $validationSession->setInitiator($this->getUser());
+        $basket4->setVoteExpires($expires);
 
         foreach ([$this->getUser(), $DI['user_alt1'], $DI['user_alt2']] as $user) {
-            $validationParticipant = new ValidationParticipant();
-            $validationParticipant->setUser($user);
-            $validationParticipant->setSession($validationSession);
-            $validationParticipant->setCanAgree(true);
-            $validationSession->addParticipant($validationParticipant);
+            $basketParticipant = $basket4->addParticipant($user);
+            $basketParticipant->setCanAgree(true);
+
             foreach ($basket4->getElements() as $basketElement) {
-                $data = new ValidationData();
-                $data->setParticipant($validationParticipant);
-                $validationParticipant->addData($data);
-                $data->setBasketElement($basketElement);
-                $em->persist($data);
+                $basketElementVote = $basketElement->createVote($basketParticipant);
+
+                $em->persist($basketElementVote);
             }
-            $em->persist($validationParticipant);
+            $em->persist($basketParticipant);
         }
 
         $DI['basket_4'] = $basket4;

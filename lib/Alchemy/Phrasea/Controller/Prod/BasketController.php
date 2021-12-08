@@ -14,7 +14,6 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
@@ -345,6 +344,8 @@ class BasketController extends Controller
             $oldBasket->removeElement($basket_element);
             $basket->addElement($basket_element);
 
+            /* why do we want to create empty validation data ?
+
             //  configure participant when moving from other type of basket to basket type feedback
             if ($oldBasket->getValidation() == null &&  ($validationSession = $basket->getValidation()) !== null) {
 
@@ -358,6 +359,8 @@ class BasketController extends Controller
                     $this->getEntityManager()->persist($validationData);
                 }
             }
+
+            */
 
             $n++;
         }

@@ -11,12 +11,11 @@
 namespace Alchemy\Phrasea\Controller;
 
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
-use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Alchemy\Phrasea\Model\Entities\Token;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
@@ -432,10 +431,10 @@ class LightboxController extends Controller
             }
 
             $this->assertAtLeastOneElementAgreed($basket);
-            $participant = $basket->getValidation()->getParticipant($this->getAuthenticatedUser());
+            $participant = $basket->getParticipant($this->getAuthenticatedUser());
 
             // find / create a "validate" token so the initator of the session can view results (no expiration)
-            $initiatorUser = $basket->getValidation()->getInitiator();
+            $initiatorUser = $basket->getVoteInitiator();
 
             if(is_null($token = $this->getTokenRepository()->findValidationToken($basket, $initiatorUser))) {
                 // should not happen since when a validation is created, the initiator is force-included as a participant
@@ -447,7 +446,7 @@ class LightboxController extends Controller
             }
             $url = $this->app->url('lightbox', ['LOG' => $token->getValue()]);
 
-            $this->dispatch(PhraseaEvents::VALIDATION_DONE, new ValidationEvent($participant, $basket, $url));
+            $this->dispatch(PhraseaEvents::VALIDATION_DONE, new BasketParticipantVoteEvent($participant, $url));
 
             $participant->setIsConfirmed(true);
 

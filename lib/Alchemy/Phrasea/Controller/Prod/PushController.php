@@ -16,17 +16,15 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
+use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\Event\PushEvent;
-use Alchemy\Phrasea\Core\Event\ValidationEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrList;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
-use Alchemy\Phrasea\Model\Entities\ValidationSession;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
@@ -247,14 +245,23 @@ class PushController extends Controller
             //
             if ($pusher->is_basket()) {
                 $basket = $pusher->get_original_basket();
+                if($basket->getVoteInitiator()) {
+                    // this basket is already under vote (should not be possible from front/ux)
+                    // we do not allow, even if the initiator is alreadu me
+                    // if(!$basket->isVoteInitiator($this->getAuthenticatedUser())) {
+                        // one tries to initiate a vote session on a basket which already has another vote initiaton
+                        throw new ControllerException("basket already have another vote initiator");
+                    // }
+                }
             }
             else {
                 // ...so if we got a list of elements (records), we create a basket for those
                 $basket = new Basket();
-                $basket->setName($validation_name);
-                $basket->setDescription($validation_description);
-                $basket->setUser($this->getAuthenticatedUser());
-                $basket->markUnread();
+                $basket
+                    ->setName($validation_name)
+                    ->setDescription($validation_description)
+                    ->setUser($this->getAuthenticatedUser())
+                    ->markUnread();
 
                 $manager->persist($basket);
 
@@ -267,43 +274,32 @@ class PushController extends Controller
 
                     $basket->addElement($basketElement);
                 }
-                $manager->flush();
             }
+            $basket->setVoteInitiator($this->getAuthenticatedUser());
 
-            $manager->refresh($basket);
-
-            // if the basket is already under validation, we work on it
-            // else we create a validationSession
-            //
             $expireDate = null;
-            if (!$basket->getValidation()) {
-                // create the validationSession
-                $Validation = new ValidationSession();
-                $Validation->setInitiator($this->getAuthenticatedUser());
-                $Validation->setBasket($basket);
-
-                // add an expiration date if a duration was specified
-                $duration = (int)$request->request->get('duration');
-
-                if ($duration > 0) {
-                    $expireDate = new DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));
-                    $Validation->setExpires($expireDate);
-                }
-
-                $basket->setValidation($Validation);
-                $manager->persist($Validation);
+            // add an expiration date if a duration was specified
+            $duration = (int)$request->request->get('duration');
+            if ($duration > 0) {
+                $expireDate = new DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));
+                $basket->setVoteExpires($expireDate);
             }
             else {
                 // go on with existing validationSession
-                $Validation = $basket->getValidation();
-                $expireDate = $Validation->getExpires();
+                $expireDate = $basket->getVoteExpires();
             }
+
+            $manager->persist($basket);
+            $manager->flush();
+
+            $manager->refresh($basket);
+
 
             // we always add the author of the validation request (current user) to the participants
             //
             $found = false;
             foreach ($participants as $key => $participant) {
-                if ($Validation->isInitiator($this->getAuthenticatedUser()) && $participant['usr_id'] == $this->getAuthenticatedUser()->getId()) {
+                if ($participant['usr_id'] == $this->getAuthenticatedUser()->getId()) {
                     // the initiator always can see others
                     $participants[$key]['see_others'] = 1;
                     $found = true;
@@ -325,7 +321,7 @@ class PushController extends Controller
             $feedbackAction = $request->request->get('feedbackAction');
             $remainingParticipantsUserId = [];
             if ($feedbackAction == 'adduser') {
-                $remainingParticipantsUserId = $Validation->getListParticipantsUserId();
+                $remainingParticipantsUserId = $basket->getListParticipantsUserId();
             }
 
             // add participants to the validationSession
@@ -356,34 +352,31 @@ class PushController extends Controller
                 }
                 // end of sanity check
 
-                // if participant already exists, just update right
+                // if participant already exists, just update right AND CONTINUE WITH NEXT USER
                 try {
-                    $validationParticipant = $Validation->getParticipant($participantUser);
-                    $validationParticipant->setCanAgree($participant['agree']);
-                    $validationParticipant->setCanSeeOthers($participant['see_others']);
-                    $manager->persist($validationParticipant);
+                    $basketParticipant = $basket->getParticipant($participantUser);
+                    $basketParticipant->setCanAgree($participant['agree']);
+                    $basketParticipant->setCanSeeOthers($participant['see_others']);
+                    $manager->persist($basketParticipant);
                     $manager->flush();
 
-                    continue;
+                    continue; // !!!
                 }
                 catch (NotFoundHttpException $e) {
-                    // participant not yet exists, create
+                    // no-op
                 }
 
-                $validationParticipant = new ValidationParticipant();
-                $validationParticipant->setUser($participantUser);
-                $validationParticipant->setSession($Validation);
+                // here the participant did not exist, create
+                $basketParticipant = $basket->addParticipant($participantUser);
+                // set right
+                $basketParticipant
+                    ->setCanAgree($participant['agree'])
+                    ->setCanSeeOthers($participant['see_others']);
 
-                $validationParticipant->setCanAgree($participant['agree']);
-                $validationParticipant->setCanSeeOthers($participant['see_others']);
-
-                $manager->persist($validationParticipant);
+                $manager->persist($basketParticipant);
 
                 foreach ($basket->getElements() as $basketElement) {
-                    $validationData = new ValidationData();
-                    $validationData->setParticipant($validationParticipant);
-                    $validationData->setBasketElement($basketElement);
-                    $basketElement->addValidationData($validationData);
+                    $basketParticipantVote = $basketElement->createVote($basketParticipant);
 
                     if ($participant['HD']) {
                         $this->getAclForUser($participantUser)->grant_hd_on(
@@ -401,7 +394,7 @@ class PushController extends Controller
                     }
 
                     $manager->merge($basketElement);
-                    $manager->persist($validationData);
+                    $manager->persist($basketParticipantVote);
 
                     $this->getDataboxLogger($basketElement->getRecord($this->app)->getDatabox())->log(
                         $basketElement->getRecord($this->app),
@@ -410,11 +403,10 @@ class PushController extends Controller
                         ''
                     );
 
-                    $validationParticipant->addData($validationData);
                 }
 
-                /** @var ValidationParticipant $validationParticipant */
-                $validationParticipant = $manager->merge($validationParticipant);
+                /** @var BasketParticipant $basketParticipant */
+                $basketParticipant = $manager->merge($basketParticipant);
 
                 $manager->flush();
 
@@ -445,13 +437,13 @@ class PushController extends Controller
 
                 $receipt = $request->get('recept') ? $this->getAuthenticatedUser()->getEmail() : '';
 
+
                 // send only mail if notify is needed
                 if ($request->request->get('notify') == 1) {
                     $this->dispatch(
                         PhraseaEvents::VALIDATION_CREATE,
-                        new ValidationEvent(
-                            $validationParticipant,
-                            $basket,
+                        new BasketParticipantVoteEvent(
+                            $basketParticipant,
                             $url,
                             $request->request->get('message'),
                             $receipt,
@@ -466,27 +458,28 @@ class PushController extends Controller
                     try {
                         /** @var  User $participantUser */
                         $participantUser = $this->getUserRepository()->find($userIdToRemove);
-                    } catch (Exception $e) {
+                    }
+                    catch (Exception $e) {
                         throw new ControllerException(
                             $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
                         );
                     }
-                    $validationParticipant = $Validation->getParticipant($participantUser);
+                    $basketParticipant = $basket->getParticipant($participantUser);
 
                     // if initiator is removed from the user selection,
                     // do not remove it to the participant list, just set can_agree to false for it
-                    if ($Validation->isInitiator($participantUser)) {
-                        $validationParticipant->setCanAgree(false);
-                        $manager->persist($validationParticipant);
-                    } else {
-                        $Validation->removeParticipant($validationParticipant);
-                        $manager->remove($validationParticipant);
+                    if ($basket->isVoteInitiator($participantUser)) {
+                        $basketParticipant->setCanAgree(false);
+                        $manager->persist($basketParticipant);
+                    }
+                    else {
+                        $basket->removeParticipant($basketParticipant);
+                        $manager->remove($basketParticipant);
                     }
                 }
             }
 
             $manager->merge($basket);
-            $manager->merge($Validation);
             $manager->flush();
 
             $message = $this->app->trans(
@@ -773,18 +766,18 @@ class PushController extends Controller
         try {
             $basket = $this->getBasketRepository()->findUserBasket($request->request->get('basket_id'), $this->app->getAuthenticatedUser(), true);
             $expirationDate = new DateTime($request->request->get('date') . " 23:59:59");
-            $validation = $basket->getValidation();
-            if (is_null($validation)) {
+
+            if (is_null($basket->getVoteInitiator())) {
                 throw new Exception('Unable to find the validation session');
             }
 
             // update validation tokens expiration
             //
-            /** @var ValidationParticipant $participant */
-            foreach($validation->getParticipants() as $participant) {
+            /** @var BasketParticipant $participant */
+            foreach($basket->getParticipants() as $participant) {
                 try {
                     if(!is_null($token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser()))) {
-                        if($participant->getUser()->getId() === $validation->getInitiator()->getId()) {
+                        if($participant->getUser()->getId() === $basket->getVoteInitiator()->getId()) {
                             // the initiator keeps a no-expiration token
                             $token->setExpiration(null);    // shoud already be null, but who knows...
                         }
@@ -800,8 +793,8 @@ class PushController extends Controller
                 }
             }
 
-            $validation->setExpires($expirationDate);
-            $manager->persist($validation);
+            $basket->setVoteExpires($expirationDate);
+            $manager->persist($basket);
             $manager->flush();
             $manager->commit();
             $ret = [
@@ -907,15 +900,15 @@ class PushController extends Controller
         $initiatorUserId = null;
 
         if ($context === 'Feedback' && $feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
-            $participants = $push->get_original_basket()->getValidation()->getParticipants();
-            $participantUserIds = implode('_', $push->get_original_basket()->getValidation()->getListParticipantsUserId());
-            $initiatorUserId = $push->get_original_basket()->getValidation()->getInitiator()->getId();
-        } elseif ($context === 'Feedback') {
+            $participants = $push->get_original_basket()->getParticipants();
+            $participantUserIds = implode('_', $push->get_original_basket()->getListParticipantsUserId());
+            $initiatorUserId = $push->get_original_basket()->getVoteInitiator()->getId();
+        }
+        elseif ($context === 'Feedback') {
             // Display the initiator in the participant list window when the first time to create a feedback
-            $validationParticipant =  new ValidationParticipant();
-            $validationParticipant->setUser($this->getAuthenticatedUser());
-            $validationParticipant->setCanSeeOthers(1);
-            array_push($participants, $validationParticipant);
+            $basketParticipant = $push->get_original_basket()->addParticipant($this->getAuthenticatedUser());
+            $basketParticipant->setCanSeeOthers(1);
+            array_push($participants, $basketParticipant);
             $initiatorUserId = $participantUserIds = $this->getAuthenticatedUser()->getId();
         }
 

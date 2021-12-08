@@ -13,9 +13,11 @@ use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Authentication\AccountCreator;
-use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
-use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
 use Alchemy\Phrasea\Authentication\Context;
+use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
+use Alchemy\Phrasea\Authentication\Exception\AuthenticationException;
+use Alchemy\Phrasea\Authentication\Exception\NotAuthenticatedException;
+use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordAuthenticationInterface;
 use Alchemy\Phrasea\Authentication\Phrasea\PasswordEncoder;
 use Alchemy\Phrasea\Authentication\Provider\ProviderInterface;
@@ -27,45 +29,42 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Configuration\ConfigurationInterface;
 use Alchemy\Phrasea\Core\Configuration\RegistrationManager;
 use Alchemy\Phrasea\Core\Event\LogoutEvent;
-use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\Event\PostAuthenticate;
-use Alchemy\Phrasea\Core\Event\ValidationEvent;
+use Alchemy\Phrasea\Core\Event\PreAuthenticate;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\FormProcessingException;
+use Alchemy\Phrasea\Exception\InvalidArgumentException;
 use Alchemy\Phrasea\Exception\RuntimeException;
+use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
+use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
+use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
 use Alchemy\Phrasea\Helper\User\Manage;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\UsrAuthProvider;
 use Alchemy\Phrasea\Model\Manipulator\RegistrationManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
+use Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrAuthProviderRepository;
-use Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository;
-use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationRegistered;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessEmailConfirmationUnregistered;
-use Alchemy\Phrasea\Authentication\Exception\RequireCaptchaException;
-use Alchemy\Phrasea\Authentication\Exception\AccountLockedException;
-use Alchemy\Phrasea\Form\Login\PhraseaAuthenticationForm;
-use Alchemy\Phrasea\Form\Login\PhraseaForgotPasswordForm;
-use Alchemy\Phrasea\Form\Login\PhraseaRecoverPasswordForm;
-use Alchemy\Phrasea\Form\Login\PhraseaRegisterForm;
+use Alchemy\Phrasea\Notification\Receiver;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Neutron\ReCaptcha\ReCaptcha;
 use RandomLib\Generator;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\FormInterface;
 
 class LoginController extends Controller
 {
@@ -968,11 +967,11 @@ class LoginController extends Controller
     }
 
     /**
-     * @return ValidationParticipantRepository
+     * @return BasketParticipantRepository
      */
-    private function getValidationParticipantRepository()
+    private function getBasketParticipantRepository()
     {
-        return $this->app['repo.validation-participants'];
+        return $this->app['repo.basket-participants'];
     }
 
     /**

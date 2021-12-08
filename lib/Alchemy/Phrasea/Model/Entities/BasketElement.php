@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Entities;
 use Alchemy\Phrasea\Application;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -250,7 +251,7 @@ class BasketElement
      * @param  Basket        $basket
      * @return BasketElement
      */
-    public function setBasket(Basket $basket = null)
+    public function setBasket(Basket $basket = null): BasketElement
     {
         $this->basket = $basket;
 
@@ -262,17 +263,31 @@ class BasketElement
      *
      * @return Basket
      */
-    public function getBasket()
+    public function getBasket(): Basket
     {
         return $this->basket;
     }
 
     /**
+     * create a vote data for a participant on this element (unique)
+     *
+     * @param BasketParticipant $participant
+     * @return BasketElementVote
+     */
+    public function createVote(BasketParticipant $participant): BasketElementVote
+    {
+        $bev = new BasketElementVote($participant, $this);
+        $participant->addVote($bev);
+
+        return $bev;
+    }
+
+    /**
      * @param User $user
      * @return ValidationData
-     * @throws \Exception
+     * @throws Exception
      */
-    public function getUserValidationDatas(User $user)
+    public function getUserValidationDatas(User $user): ValidationData
     {
         foreach ($this->validation_datas as $validationData) {
             if ($validationData->getParticipant()->getUser()->getId() == $user->getId()) {
@@ -280,6 +295,6 @@ class BasketElement
             }
         }
 
-        throw new \Exception('There is no such participant ' . $user->getEmail());
+        throw new Exception('There is no such participant ' . $user->getEmail());
     }
 }

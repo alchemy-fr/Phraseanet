@@ -55,6 +55,13 @@ class BasketElementVote
      */
     private $basket_element;
 
+    public function __construct(BasketParticipant $participant, BasketElement $element)
+    {
+        $this
+            ->setBasketElement($element)
+            ->setParticipant($participant);
+    }
+
     /**
      * Get id
      *
@@ -137,7 +144,7 @@ class BasketElementVote
     /**
      * Get participant
      *
-     * @return ValidationParticipant
+     * @return BasketParticipant
      */
     public function getParticipant()
     {
@@ -147,10 +154,10 @@ class BasketElementVote
     /**
      * Set participant
      *
-     * @param  ValidationParticipant $participant
+     * @param  BasketParticipant $participant
      * @return self
      */
-    public function setParticipant(ValidationParticipant $participant = null)
+    private function setParticipant(BasketParticipant $participant = null)
     {
         $this->participant = $participant;
 
@@ -173,7 +180,7 @@ class BasketElementVote
      * @param  BasketElement  $basketElement
      * @return self
      */
-    public function setBasketElement(BasketElement $basketElement = null)
+    private function setBasketElement(BasketElement $basketElement = null)
     {
         $this->basket_element = $basketElement;
 

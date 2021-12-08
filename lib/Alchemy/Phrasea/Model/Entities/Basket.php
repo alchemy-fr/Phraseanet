@@ -17,6 +17,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use record_adapter;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ORM\Table(name="Baskets")
@@ -82,11 +84,6 @@ class Basket
      * @ORM\Column(type="datetime")
      */
     private $updated;
-
-    /**
-     * @ORM\OneToOne(targetEntity="ValidationSession", mappedBy="basket", cascade={"ALL"})
-     */
-    private $validation;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -320,29 +317,6 @@ class Basket
     }
 
     /**
-     * Set validation
-     *
-     * @param  ValidationSession $validation
-     * @return Basket
-     */
-    public function setValidation(ValidationSession $validation = null)
-    {
-        $this->validation = $validation;
-
-        return $this;
-    }
-
-    /**
-     * Get validation
-     *
-     * @return ValidationSession
-     */
-    public function getValidation()
-    {
-        return $this->validation;
-    }
-
-    /**
      * @param User $user
      *
      * @return $this
@@ -416,7 +390,7 @@ class Basket
      * @param  DateTime         $expires
      * @return self
      */
-    public function setExpires($expires)
+    public function setVoteExpires($expires)
     {
         $this->vote_expires = $expires;
 
@@ -437,7 +411,7 @@ class Basket
      * Add element
      *
      * @param  BasketElement $element
-     * @return Basket
+     * @return self
      */
     public function addElement(BasketElement $element)
     {
@@ -468,15 +442,15 @@ class Basket
     /**
      * Add participant
      *
-     * @param  BasketParticipant $participant
-     * @return Basket
+     * @param  User $participant
+     * @return BasketParticipant
      */
-    public function addParticipant(BasketParticipant $participant)
+    public function addParticipant(User $participant)
     {
-        $this->participants[] = $participant;
-        $participant->setBasket($this);
+        $bp = new BasketParticipant($participant, $this);
+        $this->participants[] = $bp;
 
-        return $this;
+        return $bp;
     }
 
     /**
@@ -487,8 +461,8 @@ class Basket
      */
     public function removeParticipant(BasketParticipant $participant)
     {
-        if ($this->elements->removeElement($participant)) {
-            $participant->setBasket();
+        if ($this->participants->removeElement($participant)) {
+            // $participant->setBasket();
 
             return true;
         }
@@ -497,12 +471,87 @@ class Basket
     }
 
     /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * todo : implement getVoteParticipants (or accept a filter)
+     * Get participants
+     *
+     * @return Collection
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    /**
+     * Check if a user is a participant
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function isParticipant(User $user): bool
+    {
+        /** @var BasketParticipant $participant */
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() == $user->getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param User $user
+     *
+     * @return boolean
+     */
+    public function isVoteInitiator(User $user)
+    {
+        return $this->getVoteInitiator()->getId() == $user->getId();
+    }
+
+    /**
+     * Get list of participant user Ids
+     *
+     * @return array
+     */
+    public function getListParticipantsUserId(): array
+    {
+        $userIds = [];
+        foreach ($this->getParticipants() as $participant) {
+            $userIds[] = $participant->getUser()->getId();
+        }
+
+        return $userIds;
+    }
+
+    /**
+     * Get a participant
+     *
+     * @param User $user
+     *
+     * @return BasketParticipant
+     */
+    public function getParticipant(User $user): BasketParticipant
+    {
+        foreach ($this->getParticipants() as $participant) {
+            if ($participant->getUser()->getId() == $user->getId()) {
+                return $participant;
+            }
+        }
+
+        throw new NotFoundHttpException('Participant not found' . $user->getEmail());
+    }
+
+
+
+    /**
      * Set order
      *
      * @param  Order  $order
-     * @return Basket
+     * @return self
      */
-    public function setOrder(Order $order = null)
+    public function setOrder(Order $order = null): Basket
     {
         $this->order = $order;
 
@@ -514,7 +563,7 @@ class Basket
      *
      * @return Order
      */
-    public function getOrder()
+    public function getOrder(): Order
     {
         return $this->order;
     }
@@ -530,10 +579,26 @@ class Basket
     }
 
     /**
+     * start a vote session on this basket
+     *
+     * @param User $initiator
+     * @return self
+     */
+    public function startVoteSession(User $initiator): Basket
+    {
+        $now = new DateTime();
+        $this->setVoteInitiator($initiator)
+            ->setVoteCreated($now)
+            ->setVoteUpdated($now);
+
+        return $this;
+    }
+
+    /**
      * @param string $order one of self::ELEMENTSORDER_* const
      * @return ArrayCollection|BasketElement[]
      */
-    public function getElementsByOrder($order)
+    public function getElementsByOrder(string $order)
     {
         $elements = $this->elements->toArray();
 
@@ -555,7 +620,7 @@ class Basket
      * @param BasketElement $element2
      * @return int
      */
-    private static function setBEOrderDESC(BasketElement $element1, BasketElement $element2)
+    private static function setBEOrderDESC(BasketElement $element1, BasketElement $element2): int
     {
         $total_el1 = 0;
         $total_el2 = 0;
@@ -583,7 +648,7 @@ class Basket
      * @param BasketElement $element2
      * @return int
      */
-    private static function setBEOrderASC(BasketElement $element1, BasketElement $element2)
+    private static function setBEOrderASC(BasketElement $element1, BasketElement $element2): int
     {
         $total_el1 = 0;
         $total_el2 = 0;
@@ -606,17 +671,17 @@ class Basket
         return $total_el1 < $total_el2 ? 1 : -1;
     }
 
-    public function hasRecord(Application $app, \record_adapter $record)
+    public function hasRecord(Application $app, record_adapter $record)
     {
         return !is_null($this->getElementByRecord($app, $record));
     }
 
     /**
      * @param Application $app
-     * @param \record_adapter $record
+     * @param record_adapter $record
      * @return BasketElement
      */
-    public function getElementByRecord(Application $app, \record_adapter $record)
+    public function getElementByRecord(Application $app, record_adapter $record)
     {
         foreach ($this->getElements() as $basket_element) {
             $bask_record = $basket_element->getRecord($app);
@@ -628,6 +693,48 @@ class Basket
         }
 
         return null;
+    }
+
+    /**
+     *  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * todo : rename as isVoteFinished
+     * @return bool|null
+     */
+    public function isFinished()
+    {
+        if (is_null($this->getVoteExpires())) {
+            return null;
+        }
+
+        $date_obj = new DateTime();
+
+        return $date_obj > $this->getVoteExpires();
+    }
+
+    public function getVoteString(Application $app, User $user): string
+    {
+        if ($this->isVoteInitiator($user)) {
+            if ($this->isFinished()) {
+                return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
+            }
+
+            return $app->trans('Vous avez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
+        }
+        else {
+            if ($this->getParticipant($user)->getCanSeeOthers()) {
+                return $app->trans('Processus de validation recu de %user% et concernant %n% utilisateurs', ['%user%' => $this->getVoteInitiator()->getDisplayName(), '%n%' => count($this->getParticipants()) - 1]);
+            }
+
+            return $app->trans('Processus de validation recu de %user%', ['%user%' => $this->getVoteInitiator()->getDisplayName()]);
+        }
+    }
+
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     */
+    public function getValidation()
+    {
+        die("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THIS METHOD IS TO BE REMOVED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
     public function getSize(Application $app)
