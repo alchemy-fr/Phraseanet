@@ -14,14 +14,13 @@ use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
-use Alchemy\Phrasea\Model\Repositories\ValidationParticipantRepository;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationReminder;
 use Alchemy\Phrasea\Notification\Receiver;
-use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -121,12 +120,12 @@ class SendValidationRemindersCommand extends Command
         $fmt = '   participant: %-11s  user: %-10s %s  token: %-10s ';
         //$output->writeln(sprintf($fmt, 'session', 'basket', 'participant', 'user', 'token', 'email'));
 
-        $last_session = null;
-        foreach ($this->getValidationParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($this->timeLeftPercent, $this->now) as $participant) {
-            $validationSession = $participant->getSession();
-            $basket = $validationSession->getBasket();
+        $last_basket = null;
+        foreach ($this->getBasketParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($this->timeLeftPercent, $this->now) as $participant) {
 
-            $expiresDate = $validationSession->getExpires();
+            $basket = $participant->getBasket();
+
+            $expiresDate = $basket->getVoteExpires();
             $diffInterval = $expiresDate->diff(new DateTime());
 
             if ($diffInterval->days) {
@@ -136,7 +135,7 @@ class SendValidationRemindersCommand extends Command
             }
 
             // change session ? display header
-            if($validationSession->getId() !== $last_session) {
+            if($basket->getId() !== $last_basket) {
                 try {
                     $basket_name = $basket->getName();
                 }
@@ -146,7 +145,7 @@ class SendValidationRemindersCommand extends Command
                 }
 
                 try {
-                    $initiator_email = $validationSession->getInitiator()->getEmail();
+                    $initiator_email = $basket->getVoteInitiator()->getEmail();
                 }
                 catch(Exception $e) {
                     // initiator user not found ?
@@ -154,16 +153,16 @@ class SendValidationRemindersCommand extends Command
                 }
 
                 $output->writeln('');
-                $output->writeln(sprintf('session_id: %s (created %s by "%s", expire %s), basket_id: %s ("%s")',
-                    $validationSession->getId(),
-                    $validationSession->getCreated()->format(self::DATE_FMT),
+                $output->writeln(sprintf('basket_id: %s (created %s by "%s", expire %s), basket_id: %s ("%s")',
+                    $basket->getId(),
+                    $basket->getCreated()->format(self::DATE_FMT),
                     $initiator_email,
-                    $validationSession->getExpires()->format(self::DATE_FMT),
+                    $basket->getVoteExpires()->format(self::DATE_FMT),
                     $basket->getId(),
                     $basket_name
                 ));
 
-                $last_session = $validationSession->getId();
+                $last_basket = $basket->getId();
             }
 
             // now display participant
@@ -253,10 +252,10 @@ class SendValidationRemindersCommand extends Command
         return $s;
     }
 
-    private function doRemind(ValidationParticipant $participant, Basket $basket, $url, $timeLeft)
+    private function doRemind(BasketParticipant $participant, Basket $basket, $url, $timeLeft)
     {
         $params = [
-            'from'    => $basket->getValidation()->getInitiator()->getId(),
+            'from'    => $basket->getVoteInitiator()->getId(),
             'to'      => $participant->getUser()->getId(),
             'ssel_id' => $basket->getId(),
             'url'     => $url,
@@ -267,7 +266,7 @@ class SendValidationRemindersCommand extends Command
 
         $mailed = false;
 
-        $user_from = $basket->getValidation()->getInitiator();
+        $user_from = $basket->getVoteInitiator();
         $user_to = $participant->getUser();
 
         if ($this->shouldSendNotificationFor($participant->getUser(), 'eventsmanager_notify_validationreminder')) {
@@ -331,11 +330,11 @@ class SendValidationRemindersCommand extends Command
     }
 
     /**
-     * @return ValidationParticipantRepository
+     * @return BasketParticipantRepository
      */
-    private function getValidationParticipantRepository()
+    private function getBasketParticipantRepository()
     {
-        return $this->container['repo.validation-participants'];
+        return $this->container['repo.basket-participants'];
     }
 
     /**

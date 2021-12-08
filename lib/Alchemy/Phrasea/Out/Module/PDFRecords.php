@@ -12,10 +12,11 @@
 namespace Alchemy\Phrasea\Out\Module;
 
 use Alchemy\Phrasea\Application;
-use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 use Alchemy\Phrasea\Helper\Record\Printer;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
-use \IntlDateFormatter as DateFormatter;
+use Alchemy\Phrasea\Model\Entities\BasketParticipant;
+use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
+use caption_field;
+use IntlDateFormatter as DateFormatter;
 
 class PDFRecords extends PDF
 {
@@ -376,14 +377,15 @@ class PDFRecords extends PDF
 
     protected function print_preview($withtdm, $write_caption, $withfeedback)
     {
-        $basket = $validation = null;
+        $basket = null;
+        $isVoteBasket = false;
 
         if($this->printer->is_basket()) {
             $basket = $this->printer->get_original_basket();
+            $isVoteBasket = !is_null($basket->getVoteInitiator());
 
-            if($withfeedback) {
+            if($withfeedback && $isVoteBasket) {
                 // first page : validation informations
-                $validation = $basket->getValidation();
 
                 $this->pdf->AddPage();
 
@@ -404,29 +406,29 @@ class PDFRecords extends PDF
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated by : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->getDisplayName($validation->getInitiator()));
+                $this->pdf->Write(5, $this->getDisplayName($basket->getVoteInitiator()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->formatDate($validation->getCreated()));
+                $this->pdf->Write(5, $this->formatDate($basket->getVoteCreated()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expiring on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->formatDate($validation->getExpires()));
+                $this->pdf->Write(5, $this->formatDate($basket->getVoteExpires()));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $validation->isFinished() ? $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expired")) : $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback active"));
+                $basket->isFinished() ? $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expired")) : $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback active"));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Participants : "));
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                foreach ($validation->getParticipants() as $participant) {
+                foreach ($basket->getParticipants() as $participant) {
                     $this->pdf->Write(5, "\n - " . $this->getDisplayName($participant->getUser()));
                 }
             }
@@ -624,8 +626,8 @@ class PDFRecords extends PDF
             $this->pdf->Write(6, "\n");
 
             $nf = 0;
-            if($basket && $validation) {
-                /** @var ValidationParticipant $participant */
+            if($basket && $isVoteBasket) {
+                /** @var BasketParticipant $participant */
 
                 if ($nf > 0) {
                     $this->pdf->Write(6, "\n");
@@ -638,7 +640,7 @@ class PDFRecords extends PDF
                 $basketElement = $basket->getElementByRecord($this->app, $rec);
 
                 $iparticipant = 0;
-                foreach ($validation->getParticipants() as $participant) {
+                foreach ($basket->getParticipants() as $participant) {
                     $this->pdf->Write(6, "\n");
                     if($iparticipant++ > 0) {
                         // $this->pdf->SetY($this->pdf->GetY()+1);

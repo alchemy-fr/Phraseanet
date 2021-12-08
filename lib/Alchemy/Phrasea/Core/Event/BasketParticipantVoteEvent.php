@@ -11,23 +11,22 @@
 
 namespace Alchemy\Phrasea\Core\Event;
 
-use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
+use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 
-class ValidationEvent extends PushEvent
+class BasketParticipantVoteEvent extends PushEvent
 {
     private $participant;
     private $duration;
 
-    public function __construct(ValidationParticipant $participant, Basket $basket, $url, $message = null, $receipt = false, $duration = 0)
+    public function __construct(BasketParticipant $participant, $url, $message = null, $receipt = false, $duration = 0)
     {
-        parent::__construct($basket, $message, $url, $receipt);
+        parent::__construct($participant->getBasket(), $message, $url, $receipt);
         $this->participant = $participant;
         $this->duration = $duration;
     }
 
     /**
-     * @return ValidationParticipant
+     * @return BasketParticipant
      */
     public function getParticipant()
     {

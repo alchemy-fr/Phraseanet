@@ -45,6 +45,7 @@ use Alchemy\Phrasea\Fractal\TraceableArraySerializer;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
@@ -54,7 +55,6 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\ValidationData;
-use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
@@ -1917,11 +1917,11 @@ class V1Controller extends Controller
             'pusher'            => $basket->getPusher() ? $this->listUser($basket->getPusher()) : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
             'unread'            => !$basket->isRead(),
-            'validation_basket' => !!$basket->getValidation(),
+            'validation_basket' => !!$basket->getVoteInitiator(),
         ];
 
-        if ($basket->getValidation()) {
-            $users = array_map(function (ValidationParticipant $participant) {
+        if ($basket->getVoteInitiator()) {
+            $users = array_map(function (BasketParticipant $participant) {
                 $user = $participant->getUser();
 
                 return [
@@ -1933,21 +1933,17 @@ class V1Controller extends Controller
                     'readonly' => $user->getId() != $this->getAuthenticatedUser()->getId(),
                     'user' => $this->listUser($user),
                 ];
-            }, iterator_to_array($basket->getValidation()->getParticipants()));
+            }, iterator_to_array($basket->getParticipants()));
 
-            $expires_on_atom = NullableDateTime::format($basket->getValidation()->getExpires());
+            $expires_on_atom = NullableDateTime::format($basket->getVoteExpires());
 
             $ret = array_merge([
                 'validation_users'          => $users,
                 'expires_on'                => $expires_on_atom,
-                'validation_infos'          => $basket->getValidation()
-                    ->getValidationString($this->app, $this->getAuthenticatedUser()),
-                'validation_confirmed'      => $basket->getValidation()
-                    ->getParticipant($this->getAuthenticatedUser())
-                    ->getIsConfirmed(),
-                'validation_initiator'      => $basket->getValidation()
-                    ->isInitiator($this->getAuthenticatedUser()),
-                'validation_initiator_user' => $this->listUser($basket->getValidation()->getInitiator()),
+                'validation_infos'          => $basket->getVoteString($this->app, $this->getAuthenticatedUser()),
+                'validation_confirmed'      => $basket->getParticipant($this->getAuthenticatedUser())->getIsConfirmed(),
+                'validation_initiator'      => $basket->isVoteInitiator($this->getAuthenticatedUser()),
+                'validation_initiator_user' => $this->listUser($basket->getVoteInitiator()),
             ], $ret);
         }
 
