@@ -182,7 +182,3 @@ services:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
     networks:
       - internal
-
-  elasticsearch:
-    ports:
-      - 9200:9200
