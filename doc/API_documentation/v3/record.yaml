@@ -5,10 +5,6 @@
         type: integer
         example:
           2
-      record_id:
-        type: integer
-        example:
-          34
       updated_on:
         type: string
         format: date-time
@@ -80,13 +76,19 @@
 
   Record:
     allOf:     # Combines the basic _Record_ and the records-only properties
-      - $ref: '#/_Record_'
       - type: object
         properties:
           record_id:
             type: integer
             example:
               34
+      - $ref: '#/_Record_'
+      - type: object
+        properties:
+#          record_id:
+#            type: integer
+#            example:
+#              34
           mime_type:
             type: string
             example:
@@ -133,15 +135,15 @@
       - $ref: '#/_record_extension_'
 
 
-  Story:
+  _Story_:
     allOf:     # Combines the basic _Record_ and the stories-only properties
       - $ref: '#/_Record_'
       - type: object
         properties:
-          story_id:
-            type: integer
-            example:
-              1400
+#          story_id:
+#            type: integer
+#            example:
+#              1400
           cover_record_id:
             $ref: 'common.yaml#/ID'
             description: 'id of the record chosen as "cover" (or null)'
@@ -182,12 +184,36 @@
               items:
                 $ref: '#/Record'
 
+  StoryWithStoryId:
+    allOf:
+      - type: object
+        properties:
+          story_id:
+            type: integer
+            example:
+              1400
+      - $ref: '#/_Story_'
+
+  StoryWithRecordId:
+    allOf:
+      - type: object
+        properties:
+          record_id:
+            type: integer
+            example:
+              1400
+      - $ref: '#/_Story_'
+
   Story_extended:
     allOf:
-      - $ref: '#/Story'
+      - type: object
+        properties:
+          record_id: # on route /stories, the story has a record_id !!!
+            type: integer
+            example:
+              1400
+      - $ref: '#/StoryWithRecordId'
       - $ref: '#/_record_extension_'
-
-
 
   TechnicalInformation:
     type: object
@@ -289,7 +315,14 @@
       meta:
         $ref: 'common.yaml#/ApiResponse_meta'
       response:
-        $ref: '#/Story'
+        allOf:
+          - type: object
+            properties:
+              record_id:    # on route /stories, the story has a record_id !!!
+                type: integer
+                example:
+                  1400
+          - $ref: '#/StoryWithRecordId'
 
   ApiResponse_story_extended:
     type: object
