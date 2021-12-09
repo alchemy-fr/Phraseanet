@@ -92,15 +92,19 @@ components:
         type: integer
         minimum: 1
         maximum: 100
+    bases:
+      name: bases
+      in: query
+      description: |
+        'bases_id s to search on as seen in `Collection id ("base_id" API side)` in _admin > Databases > ... collection_
+        If not set: search all collections'
+      required: false
+      schema:
+        type: array
+        uniqueItems: false
+        items:
+          type: integer
 paths:
-  /me:
-    get:
-      description: todo
-      responses:
-        '200':
-          description: successful operation
-        default:
-          description: Any error
   /search:
     post:
       tags:
@@ -450,6 +454,17 @@ paths:
             search for records or stories
               * `0` - search for records
               * `1` - search for stories
+        - name: bases
+          in: query
+          description: |
+            'bases_id s to search on as seen in `Collection id ("base_id" API side)` in _admin > Databases > ... collection_
+            If not set: search all collections'
+          required: false
+          schema:
+            type: array
+            uniqueItems: false
+            items:
+              type: integer
         - name: page
           in: query
           description: 'page number, from 1. Use along with "per_page"'
@@ -502,7 +517,21 @@ paths:
               type: string
               enum:
                 - facets
+                - suggestions
                 - result.stories.children
+                - results.records.subdefs
+                - results.stories.subdefs
+                - results.records.caption
+                - results.stories.caption
+                - results.records.metadata
+                - results.stories.metadata
+                - results.records.status
+                - results.stories.status
+                - results.records.children
+                - results.records.children.subdefs
+                - results.records.children.caption
+                - results.records.children.metadata
+                - results.records.children.status
       responses:
         '200':
           description: ok
@@ -565,291 +594,292 @@ paths:
                               allOf:
                                 - type: object
                                   properties:
-                                    databox_id:
-                                      type: integer
-                                      example: 2
-                                    record_id:
-                                      type: integer
-                                      example: 34
-                                    updated_on:
-                                      type: string
-                                      format: date-time
-                                    created_on:
-                                      type: string
-                                      format: date-time
-                                    collection_id:
-                                      type: integer
-                                      example: 5
-                                    base_id:
-                                      type: integer
-                                      example: 14
-                                    thumbnail:
-                                      allOf:
-                                        - type: object
-                                          properties:
-                                            name:
-                                              example: thumbnail
-                                            mime_type:
-                                              example: image/jpeg
-                                            height:
-                                              example: 160
-                                            width:
-                                              example: 240
-                                            filesize:
-                                              example: 2375
-                                            url:
-                                              example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
-                                        - type: object
-                                          properties:
-                                            name:
-                                              type: string
-                                            permalink:
-                                              type: object
-                                              properties:
-                                                created_on:
-                                                  type: string
-                                                  format: date-time
-                                                id:
-                                                  type: integer
-                                                is_activated:
-                                                  type: boolean
-                                                label:
-                                                  type: string
-                                                updated_on:
-                                                  type: string
-                                                  format: date-time
-                                                page_url:
-                                                  type: string
-                                                download_url:
-                                                  type: string
-                                                url:
-                                                  type: string
-                                            height:
-                                              type: integer
-                                            width:
-                                              type: integer
-                                            filesize:
-                                              type: integer
-                                            devices:
-                                              type: array
-                                              items:
-                                                type: string
-                                                enum:
-                                                  - screen
-                                                  - printer ?
-                                            player_type:
-                                              type: string
-                                              enum:
-                                                - IMAGE
-                                            mime_type:
-                                              type: string
-                                            substituted:
-                                              type: boolean
-                                              example: false
-                                            created_on:
-                                              type: string
-                                              format: date-time
-                                            updated_on:
-                                              type: string
-                                              format: date-time
-                                            url:
-                                              type: string
-                                            url_ttl:
-                                              type: integer
-                                              example: 7200
-                                    uuid:
-                                      type: string
-                                      example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
-                                - type: object
-                                  properties:
                                     story_id:
                                       type: integer
                                       example: 1400
-                                    cover_record_id:
-                                      type: integer
-                                      description: id of the record chosen as "cover" (or null)
-                                      example: 55
-                                    mime_type:
-                                      type: string
-                                      default: null
-                                    title:
-                                      type: string
-                                      example: sans-titre
-                                    original_name:
-                                      type: string
-                                      default: null
-                                    is_story:
-                                      type: boolean
-                                      default: true
-                                    children_offset:
-                                      type: integer
-                                      description: Children pagination offset ; Always 0
-                                      example: 0
-                                    children_limit:
-                                      type: integer
-                                      description: Children pagination limit ; Equal to "story_children_limit" passed in request
-                                      example: 10
-                                    children_count:
-                                      type: integer
-                                      description: 'Number of children in "children" array ; [0...limit]'
-                                      example: 5
-                                    children_total:
-                                      type: integer
-                                      description: Total number of __visibles for user__ children in this story
-                                      example: 5
-                                    children:
-                                      type: array
-                                      items:
-                                        type: object
-                                        items:
+                                - allOf:
+                                    - type: object
+                                      properties:
+                                        databox_id:
+                                          type: integer
+                                          example: 2
+                                        updated_on:
+                                          type: string
+                                          format: date-time
+                                        created_on:
+                                          type: string
+                                          format: date-time
+                                        collection_id:
+                                          type: integer
+                                          example: 5
+                                        base_id:
+                                          type: integer
+                                          example: 14
+                                        thumbnail:
                                           allOf:
                                             - type: object
                                               properties:
-                                                databox_id:
-                                                  type: integer
-                                                  example: 2
-                                                record_id:
-                                                  type: integer
-                                                  example: 34
-                                                updated_on:
+                                                name:
+                                                  example: thumbnail
+                                                mime_type:
+                                                  example: image/jpeg
+                                                height:
+                                                  example: 160
+                                                width:
+                                                  example: 240
+                                                filesize:
+                                                  example: 2375
+                                                url:
+                                                  example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+                                            - type: object
+                                              properties:
+                                                name:
                                                   type: string
-                                                  format: date-time
+                                                permalink:
+                                                  type: object
+                                                  properties:
+                                                    created_on:
+                                                      type: string
+                                                      format: date-time
+                                                    id:
+                                                      type: integer
+                                                    is_activated:
+                                                      type: boolean
+                                                    label:
+                                                      type: string
+                                                    updated_on:
+                                                      type: string
+                                                      format: date-time
+                                                    page_url:
+                                                      type: string
+                                                    download_url:
+                                                      type: string
+                                                    url:
+                                                      type: string
+                                                height:
+                                                  type: integer
+                                                width:
+                                                  type: integer
+                                                filesize:
+                                                  type: integer
+                                                devices:
+                                                  type: array
+                                                  items:
+                                                    type: string
+                                                    enum:
+                                                      - screen
+                                                      - printer ?
+                                                player_type:
+                                                  type: string
+                                                  enum:
+                                                    - IMAGE
+                                                mime_type:
+                                                  type: string
+                                                substituted:
+                                                  type: boolean
+                                                  example: false
                                                 created_on:
                                                   type: string
                                                   format: date-time
-                                                collection_id:
+                                                updated_on:
+                                                  type: string
+                                                  format: date-time
+                                                url:
+                                                  type: string
+                                                url_ttl:
                                                   type: integer
-                                                  example: 5
-                                                base_id:
-                                                  type: integer
-                                                  example: 14
-                                                thumbnail:
-                                                  allOf:
-                                                    - type: object
-                                                      properties:
-                                                        name:
-                                                          example: thumbnail
-                                                        mime_type:
-                                                          example: image/jpeg
-                                                        height:
-                                                          example: 160
-                                                        width:
-                                                          example: 240
-                                                        filesize:
-                                                          example: 2375
-                                                        url:
-                                                          example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
-                                                    - type: object
-                                                      properties:
-                                                        name:
-                                                          type: string
-                                                        permalink:
-                                                          type: object
+                                                  example: 7200
+                                        uuid:
+                                          type: string
+                                          example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
+                                    - type: object
+                                      properties:
+                                        cover_record_id:
+                                          type: integer
+                                          description: id of the record chosen as "cover" (or null)
+                                          example: 55
+                                        mime_type:
+                                          type: string
+                                          default: null
+                                        title:
+                                          type: string
+                                          example: sans-titre
+                                        original_name:
+                                          type: string
+                                          default: null
+                                        is_story:
+                                          type: boolean
+                                          default: true
+                                        children_offset:
+                                          type: integer
+                                          description: Children pagination offset ; Always 0
+                                          example: 0
+                                        children_limit:
+                                          type: integer
+                                          description: Children pagination limit ; Equal to "story_children_limit" passed in request
+                                          example: 10
+                                        children_count:
+                                          type: integer
+                                          description: 'Number of children in "children" array ; [0...limit]'
+                                          example: 5
+                                        children_total:
+                                          type: integer
+                                          description: Total number of __visibles for user__ children in this story
+                                          example: 5
+                                        children:
+                                          type: array
+                                          items:
+                                            type: object
+                                            items:
+                                              allOf:
+                                                - type: object
+                                                  properties:
+                                                    record_id:
+                                                      type: integer
+                                                      example: 34
+                                                - type: object
+                                                  properties:
+                                                    databox_id:
+                                                      type: integer
+                                                      example: 2
+                                                    updated_on:
+                                                      type: string
+                                                      format: date-time
+                                                    created_on:
+                                                      type: string
+                                                      format: date-time
+                                                    collection_id:
+                                                      type: integer
+                                                      example: 5
+                                                    base_id:
+                                                      type: integer
+                                                      example: 14
+                                                    thumbnail:
+                                                      allOf:
+                                                        - type: object
                                                           properties:
+                                                            name:
+                                                              example: thumbnail
+                                                            mime_type:
+                                                              example: image/jpeg
+                                                            height:
+                                                              example: 160
+                                                            width:
+                                                              example: 240
+                                                            filesize:
+                                                              example: 2375
+                                                            url:
+                                                              example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+                                                        - type: object
+                                                          properties:
+                                                            name:
+                                                              type: string
+                                                            permalink:
+                                                              type: object
+                                                              properties:
+                                                                created_on:
+                                                                  type: string
+                                                                  format: date-time
+                                                                id:
+                                                                  type: integer
+                                                                is_activated:
+                                                                  type: boolean
+                                                                label:
+                                                                  type: string
+                                                                updated_on:
+                                                                  type: string
+                                                                  format: date-time
+                                                                page_url:
+                                                                  type: string
+                                                                download_url:
+                                                                  type: string
+                                                                url:
+                                                                  type: string
+                                                            height:
+                                                              type: integer
+                                                            width:
+                                                              type: integer
+                                                            filesize:
+                                                              type: integer
+                                                            devices:
+                                                              type: array
+                                                              items:
+                                                                type: string
+                                                                enum:
+                                                                  - screen
+                                                                  - printer ?
+                                                            player_type:
+                                                              type: string
+                                                              enum:
+                                                                - IMAGE
+                                                            mime_type:
+                                                              type: string
+                                                            substituted:
+                                                              type: boolean
+                                                              example: false
                                                             created_on:
                                                               type: string
                                                               format: date-time
-                                                            id:
-                                                              type: integer
-                                                            is_activated:
-                                                              type: boolean
-                                                            label:
-                                                              type: string
                                                             updated_on:
                                                               type: string
                                                               format: date-time
-                                                            page_url:
-                                                              type: string
-                                                            download_url:
-                                                              type: string
                                                             url:
                                                               type: string
-                                                        height:
-                                                          type: integer
-                                                        width:
-                                                          type: integer
-                                                        filesize:
-                                                          type: integer
-                                                        devices:
-                                                          type: array
-                                                          items:
-                                                            type: string
-                                                            enum:
-                                                              - screen
-                                                              - printer ?
-                                                        player_type:
-                                                          type: string
-                                                          enum:
-                                                            - IMAGE
-                                                        mime_type:
-                                                          type: string
-                                                        substituted:
-                                                          type: boolean
-                                                          example: false
-                                                        created_on:
-                                                          type: string
-                                                          format: date-time
-                                                        updated_on:
-                                                          type: string
-                                                          format: date-time
-                                                        url:
-                                                          type: string
-                                                        url_ttl:
-                                                          type: integer
-                                                          example: 7200
-                                                uuid:
-                                                  type: string
-                                                  example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
-                                            - type: object
-                                              properties:
-                                                record_id:
-                                                  type: integer
-                                                  example: 34
-                                                mime_type:
-                                                  type: string
-                                                  example: image/jpeg
-                                                title:
-                                                  type: string
-                                                  example: Sleepy cat
-                                                original_name:
-                                                  type: string
-                                                  example: DSC_12345.jpg
-                                                technical_informations:
-                                                  type: array
-                                                  items:
-                                                    type: object
-                                                    additionalProperties:
+                                                            url_ttl:
+                                                              type: integer
+                                                              example: 7200
+                                                    uuid:
                                                       type: string
-                                                    example:
-                                                      Aperture: 6.3
-                                                      CameraModel: Canon EOS 5D Mark II
-                                                      Channels: 3
-                                                      ColorSpace: RGB
-                                                      FileSize: 5618218
-                                                sha256:
-                                                  type: string
-                                                  example: 6f330ac0ae2...
-                                                phrasea_type:
-                                                  type: string
-                                                  enum:
-                                                    - image
-                                                    - video
-                                                  example: image
-                                                is_story:
-                                                  type: boolean
-                                                  default: false
+                                                      example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
+                                                - type: object
+                                                  properties:
+                                                    mime_type:
+                                                      type: string
+                                                      example: image/jpeg
+                                                    title:
+                                                      type: string
+                                                      example: Sleepy cat
+                                                    original_name:
+                                                      type: string
+                                                      example: DSC_12345.jpg
+                                                    technical_informations:
+                                                      type: array
+                                                      items:
+                                                        type: object
+                                                        additionalProperties:
+                                                          type: string
+                                                        example:
+                                                          Aperture: 6.3
+                                                          CameraModel: Canon EOS 5D Mark II
+                                                          Channels: 3
+                                                          ColorSpace: RGB
+                                                          FileSize: 5618218
+                                                    sha256:
+                                                      type: string
+                                                      example: 6f330ac0ae2...
+                                                    phrasea_type:
+                                                      type: string
+                                                      enum:
+                                                        - image
+                                                        - video
+                                                      example: image
+                                                    is_story:
+                                                      type: boolean
+                                                      default: false
                           records:
                             type: array
                             items:
                               allOf:
                                 - type: object
                                   properties:
-                                    databox_id:
-                                      type: integer
-                                      example: 2
                                     record_id:
                                       type: integer
                                       example: 34
+                                - type: object
+                                  properties:
+                                    databox_id:
+                                      type: integer
+                                      example: 2
                                     updated_on:
                                       type: string
                                       format: date-time
@@ -941,9 +971,6 @@ paths:
                                       example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
                                 - type: object
                                   properties:
-                                    record_id:
-                                      type: integer
-                                      example: 34
                                     mime_type:
                                       type: string
                                       example: image/jpeg
@@ -1044,6 +1071,17 @@ paths:
             search for records or stories
               * `0` - search for records
               * `1` - search for stories
+        - name: bases
+          in: query
+          description: |
+            'bases_id s to search on as seen in `Collection id ("base_id" API side)` in _admin > Databases > ... collection_
+            If not set: search all collections'
+          required: false
+          schema:
+            type: array
+            uniqueItems: false
+            items:
+              type: integer
         - name: page
           in: query
           description: 'page number, from 1. Use along with "per_page"'
@@ -1403,12 +1441,14 @@ paths:
                     allOf:
                       - type: object
                         properties:
-                          databox_id:
-                            type: integer
-                            example: 2
                           record_id:
                             type: integer
                             example: 34
+                      - type: object
+                        properties:
+                          databox_id:
+                            type: integer
+                            example: 2
                           updated_on:
                             type: string
                             format: date-time
@@ -1500,9 +1540,6 @@ paths:
                             example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
                       - type: object
                         properties:
-                          record_id:
-                            type: integer
-                            example: 34
                           mime_type:
                             type: string
                             example: image/jpeg
@@ -1574,12 +1611,14 @@ paths:
                       - allOf:
                           - type: object
                             properties:
-                              databox_id:
-                                type: integer
-                                example: 2
                               record_id:
                                 type: integer
                                 example: 34
+                          - type: object
+                            properties:
+                              databox_id:
+                                type: integer
+                                example: 2
                               updated_on:
                                 type: string
                                 format: date-time
@@ -1671,9 +1710,6 @@ paths:
                                 example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
                           - type: object
                             properties:
-                              record_id:
-                                type: integer
-                                example: 34
                               mime_type:
                                 type: string
                                 example: image/jpeg
@@ -2266,12 +2302,14 @@ paths:
                     allOf:
                       - type: object
                         properties:
-                          databox_id:
-                            type: integer
-                            example: 2
                           record_id:
                             type: integer
                             example: 34
+                      - type: object
+                        properties:
+                          databox_id:
+                            type: integer
+                            example: 2
                           updated_on:
                             type: string
                             format: date-time
@@ -2363,9 +2401,6 @@ paths:
                             example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
                       - type: object
                         properties:
-                          record_id:
-                            type: integer
-                            example: 34
                           mime_type:
                             type: string
                             example: image/jpeg
@@ -2625,279 +2660,284 @@ paths:
                     allOf:
                       - type: object
                         properties:
-                          databox_id:
-                            type: integer
-                            example: 2
                           record_id:
                             type: integer
-                            example: 34
-                          updated_on:
-                            type: string
-                            format: date-time
-                          created_on:
-                            type: string
-                            format: date-time
-                          collection_id:
-                            type: integer
-                            example: 5
-                          base_id:
-                            type: integer
-                            example: 14
-                          thumbnail:
-                            allOf:
+                            example: 1400
+                      - allOf:
+                          - type: object
+                            properties:
+                              record_id:
+                                type: integer
+                                example: 1400
+                          - allOf:
                               - type: object
                                 properties:
-                                  name:
-                                    example: thumbnail
-                                  mime_type:
-                                    example: image/jpeg
-                                  height:
-                                    example: 160
-                                  width:
-                                    example: 240
-                                  filesize:
-                                    example: 2375
-                                  url:
-                                    example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
-                              - type: object
-                                properties:
-                                  name:
-                                    type: string
-                                  permalink:
-                                    type: object
-                                    properties:
-                                      created_on:
-                                        type: string
-                                        format: date-time
-                                      id:
-                                        type: integer
-                                      is_activated:
-                                        type: boolean
-                                      label:
-                                        type: string
-                                      updated_on:
-                                        type: string
-                                        format: date-time
-                                      page_url:
-                                        type: string
-                                      download_url:
-                                        type: string
-                                      url:
-                                        type: string
-                                  height:
+                                  databox_id:
                                     type: integer
-                                  width:
-                                    type: integer
-                                  filesize:
-                                    type: integer
-                                  devices:
-                                    type: array
-                                    items:
-                                      type: string
-                                      enum:
-                                        - screen
-                                        - printer ?
-                                  player_type:
-                                    type: string
-                                    enum:
-                                      - IMAGE
-                                  mime_type:
-                                    type: string
-                                  substituted:
-                                    type: boolean
-                                    example: false
-                                  created_on:
-                                    type: string
-                                    format: date-time
+                                    example: 2
                                   updated_on:
                                     type: string
                                     format: date-time
-                                  url:
+                                  created_on:
                                     type: string
-                                  url_ttl:
+                                    format: date-time
+                                  collection_id:
                                     type: integer
-                                    example: 7200
-                          uuid:
-                            type: string
-                            example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
-                      - type: object
-                        properties:
-                          story_id:
-                            type: integer
-                            example: 1400
-                          cover_record_id:
-                            type: integer
-                            description: id of the record chosen as "cover" (or null)
-                            example: 55
-                          mime_type:
-                            type: string
-                            default: null
-                          title:
-                            type: string
-                            example: sans-titre
-                          original_name:
-                            type: string
-                            default: null
-                          is_story:
-                            type: boolean
-                            default: true
-                          children_offset:
-                            type: integer
-                            description: Children pagination offset ; Always 0
-                            example: 0
-                          children_limit:
-                            type: integer
-                            description: Children pagination limit ; Equal to "story_children_limit" passed in request
-                            example: 10
-                          children_count:
-                            type: integer
-                            description: 'Number of children in "children" array ; [0...limit]'
-                            example: 5
-                          children_total:
-                            type: integer
-                            description: Total number of __visibles for user__ children in this story
-                            example: 5
-                          children:
-                            type: array
-                            items:
-                              type: object
-                              items:
-                                allOf:
-                                  - type: object
-                                    properties:
-                                      databox_id:
-                                        type: integer
-                                        example: 2
-                                      record_id:
-                                        type: integer
-                                        example: 34
-                                      updated_on:
-                                        type: string
-                                        format: date-time
-                                      created_on:
-                                        type: string
-                                        format: date-time
-                                      collection_id:
-                                        type: integer
-                                        example: 5
-                                      base_id:
-                                        type: integer
-                                        example: 14
-                                      thumbnail:
-                                        allOf:
-                                          - type: object
+                                    example: 5
+                                  base_id:
+                                    type: integer
+                                    example: 14
+                                  thumbnail:
+                                    allOf:
+                                      - type: object
+                                        properties:
+                                          name:
+                                            example: thumbnail
+                                          mime_type:
+                                            example: image/jpeg
+                                          height:
+                                            example: 160
+                                          width:
+                                            example: 240
+                                          filesize:
+                                            example: 2375
+                                          url:
+                                            example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+                                      - type: object
+                                        properties:
+                                          name:
+                                            type: string
+                                          permalink:
+                                            type: object
                                             properties:
-                                              name:
-                                                example: thumbnail
-                                              mime_type:
-                                                example: image/jpeg
-                                              height:
-                                                example: 160
-                                              width:
-                                                example: 240
-                                              filesize:
-                                                example: 2375
-                                              url:
-                                                example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
-                                          - type: object
-                                            properties:
-                                              name:
-                                                type: string
-                                              permalink:
-                                                type: object
-                                                properties:
-                                                  created_on:
-                                                    type: string
-                                                    format: date-time
-                                                  id:
-                                                    type: integer
-                                                  is_activated:
-                                                    type: boolean
-                                                  label:
-                                                    type: string
-                                                  updated_on:
-                                                    type: string
-                                                    format: date-time
-                                                  page_url:
-                                                    type: string
-                                                  download_url:
-                                                    type: string
-                                                  url:
-                                                    type: string
-                                              height:
-                                                type: integer
-                                              width:
-                                                type: integer
-                                              filesize:
-                                                type: integer
-                                              devices:
-                                                type: array
-                                                items:
-                                                  type: string
-                                                  enum:
-                                                    - screen
-                                                    - printer ?
-                                              player_type:
-                                                type: string
-                                                enum:
-                                                  - IMAGE
-                                              mime_type:
-                                                type: string
-                                              substituted:
-                                                type: boolean
-                                                example: false
                                               created_on:
                                                 type: string
                                                 format: date-time
+                                              id:
+                                                type: integer
+                                              is_activated:
+                                                type: boolean
+                                              label:
+                                                type: string
                                               updated_on:
                                                 type: string
                                                 format: date-time
+                                              page_url:
+                                                type: string
+                                              download_url:
+                                                type: string
                                               url:
                                                 type: string
-                                              url_ttl:
-                                                type: integer
-                                                example: 7200
-                                      uuid:
-                                        type: string
-                                        example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
-                                  - type: object
-                                    properties:
-                                      record_id:
-                                        type: integer
-                                        example: 34
-                                      mime_type:
-                                        type: string
-                                        example: image/jpeg
-                                      title:
-                                        type: string
-                                        example: Sleepy cat
-                                      original_name:
-                                        type: string
-                                        example: DSC_12345.jpg
-                                      technical_informations:
-                                        type: array
-                                        items:
-                                          type: object
-                                          additionalProperties:
+                                          height:
+                                            type: integer
+                                          width:
+                                            type: integer
+                                          filesize:
+                                            type: integer
+                                          devices:
+                                            type: array
+                                            items:
+                                              type: string
+                                              enum:
+                                                - screen
+                                                - printer ?
+                                          player_type:
                                             type: string
-                                          example:
-                                            Aperture: 6.3
-                                            CameraModel: Canon EOS 5D Mark II
-                                            Channels: 3
-                                            ColorSpace: RGB
-                                            FileSize: 5618218
-                                      sha256:
-                                        type: string
-                                        example: 6f330ac0ae2...
-                                      phrasea_type:
-                                        type: string
-                                        enum:
-                                          - image
-                                          - video
-                                        example: image
-                                      is_story:
-                                        type: boolean
-                                        default: false
+                                            enum:
+                                              - IMAGE
+                                          mime_type:
+                                            type: string
+                                          substituted:
+                                            type: boolean
+                                            example: false
+                                          created_on:
+                                            type: string
+                                            format: date-time
+                                          updated_on:
+                                            type: string
+                                            format: date-time
+                                          url:
+                                            type: string
+                                          url_ttl:
+                                            type: integer
+                                            example: 7200
+                                  uuid:
+                                    type: string
+                                    example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
+                              - type: object
+                                properties:
+                                  cover_record_id:
+                                    type: integer
+                                    description: id of the record chosen as "cover" (or null)
+                                    example: 55
+                                  mime_type:
+                                    type: string
+                                    default: null
+                                  title:
+                                    type: string
+                                    example: sans-titre
+                                  original_name:
+                                    type: string
+                                    default: null
+                                  is_story:
+                                    type: boolean
+                                    default: true
+                                  children_offset:
+                                    type: integer
+                                    description: Children pagination offset ; Always 0
+                                    example: 0
+                                  children_limit:
+                                    type: integer
+                                    description: Children pagination limit ; Equal to "story_children_limit" passed in request
+                                    example: 10
+                                  children_count:
+                                    type: integer
+                                    description: 'Number of children in "children" array ; [0...limit]'
+                                    example: 5
+                                  children_total:
+                                    type: integer
+                                    description: Total number of __visibles for user__ children in this story
+                                    example: 5
+                                  children:
+                                    type: array
+                                    items:
+                                      type: object
+                                      items:
+                                        allOf:
+                                          - type: object
+                                            properties:
+                                              record_id:
+                                                type: integer
+                                                example: 34
+                                          - type: object
+                                            properties:
+                                              databox_id:
+                                                type: integer
+                                                example: 2
+                                              updated_on:
+                                                type: string
+                                                format: date-time
+                                              created_on:
+                                                type: string
+                                                format: date-time
+                                              collection_id:
+                                                type: integer
+                                                example: 5
+                                              base_id:
+                                                type: integer
+                                                example: 14
+                                              thumbnail:
+                                                allOf:
+                                                  - type: object
+                                                    properties:
+                                                      name:
+                                                        example: thumbnail
+                                                      mime_type:
+                                                        example: image/jpeg
+                                                      height:
+                                                        example: 160
+                                                      width:
+                                                        example: 240
+                                                      filesize:
+                                                        example: 2375
+                                                      url:
+                                                        example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+                                                  - type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                      permalink:
+                                                        type: object
+                                                        properties:
+                                                          created_on:
+                                                            type: string
+                                                            format: date-time
+                                                          id:
+                                                            type: integer
+                                                          is_activated:
+                                                            type: boolean
+                                                          label:
+                                                            type: string
+                                                          updated_on:
+                                                            type: string
+                                                            format: date-time
+                                                          page_url:
+                                                            type: string
+                                                          download_url:
+                                                            type: string
+                                                          url:
+                                                            type: string
+                                                      height:
+                                                        type: integer
+                                                      width:
+                                                        type: integer
+                                                      filesize:
+                                                        type: integer
+                                                      devices:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                          enum:
+                                                            - screen
+                                                            - printer ?
+                                                      player_type:
+                                                        type: string
+                                                        enum:
+                                                          - IMAGE
+                                                      mime_type:
+                                                        type: string
+                                                      substituted:
+                                                        type: boolean
+                                                        example: false
+                                                      created_on:
+                                                        type: string
+                                                        format: date-time
+                                                      updated_on:
+                                                        type: string
+                                                        format: date-time
+                                                      url:
+                                                        type: string
+                                                      url_ttl:
+                                                        type: integer
+                                                        example: 7200
+                                              uuid:
+                                                type: string
+                                                example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
+                                          - type: object
+                                            properties:
+                                              mime_type:
+                                                type: string
+                                                example: image/jpeg
+                                              title:
+                                                type: string
+                                                example: Sleepy cat
+                                              original_name:
+                                                type: string
+                                                example: DSC_12345.jpg
+                                              technical_informations:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  additionalProperties:
+                                                    type: string
+                                                  example:
+                                                    Aperture: 6.3
+                                                    CameraModel: Canon EOS 5D Mark II
+                                                    Channels: 3
+                                                    ColorSpace: RGB
+                                                    FileSize: 5618218
+                                              sha256:
+                                                type: string
+                                                example: 6f330ac0ae2...
+                                              phrasea_type:
+                                                type: string
+                                                enum:
+                                                  - image
+                                                  - video
+                                                example: image
+                                              is_story:
+                                                type: boolean
+                                                default: false
             application/vnd.phraseanet.record-extended+json:
               schema:
                 type: object
@@ -2933,282 +2973,286 @@ paths:
                         example: UTF-8
                   response:
                     allOf:
+                      - type: object
+                        properties:
+                          record_id:
+                            type: integer
+                            example: 1400
                       - allOf:
                           - type: object
                             properties:
-                              databox_id:
-                                type: integer
-                                example: 2
                               record_id:
                                 type: integer
-                                example: 34
-                              updated_on:
-                                type: string
-                                format: date-time
-                              created_on:
-                                type: string
-                                format: date-time
-                              collection_id:
-                                type: integer
-                                example: 5
-                              base_id:
-                                type: integer
-                                example: 14
-                              thumbnail:
-                                allOf:
-                                  - type: object
-                                    properties:
-                                      name:
-                                        example: thumbnail
-                                      mime_type:
-                                        example: image/jpeg
-                                      height:
-                                        example: 160
-                                      width:
-                                        example: 240
-                                      filesize:
-                                        example: 2375
-                                      url:
-                                        example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
-                                  - type: object
-                                    properties:
-                                      name:
-                                        type: string
-                                      permalink:
-                                        type: object
-                                        properties:
-                                          created_on:
-                                            type: string
-                                            format: date-time
-                                          id:
-                                            type: integer
-                                          is_activated:
-                                            type: boolean
-                                          label:
-                                            type: string
-                                          updated_on:
-                                            type: string
-                                            format: date-time
-                                          page_url:
-                                            type: string
-                                          download_url:
-                                            type: string
-                                          url:
-                                            type: string
-                                      height:
-                                        type: integer
-                                      width:
-                                        type: integer
-                                      filesize:
-                                        type: integer
-                                      devices:
-                                        type: array
-                                        items:
-                                          type: string
-                                          enum:
-                                            - screen
-                                            - printer ?
-                                      player_type:
-                                        type: string
-                                        enum:
-                                          - IMAGE
-                                      mime_type:
-                                        type: string
-                                      substituted:
-                                        type: boolean
-                                        example: false
-                                      created_on:
-                                        type: string
-                                        format: date-time
-                                      updated_on:
-                                        type: string
-                                        format: date-time
-                                      url:
-                                        type: string
-                                      url_ttl:
-                                        type: integer
-                                        example: 7200
-                              uuid:
-                                type: string
-                                example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
-                          - type: object
-                            properties:
-                              story_id:
-                                type: integer
                                 example: 1400
-                              cover_record_id:
-                                type: integer
-                                description: id of the record chosen as "cover" (or null)
-                                example: 55
-                              mime_type:
-                                type: string
-                                default: null
-                              title:
-                                type: string
-                                example: sans-titre
-                              original_name:
-                                type: string
-                                default: null
-                              is_story:
-                                type: boolean
-                                default: true
-                              children_offset:
-                                type: integer
-                                description: Children pagination offset ; Always 0
-                                example: 0
-                              children_limit:
-                                type: integer
-                                description: Children pagination limit ; Equal to "story_children_limit" passed in request
-                                example: 10
-                              children_count:
-                                type: integer
-                                description: 'Number of children in "children" array ; [0...limit]'
-                                example: 5
-                              children_total:
-                                type: integer
-                                description: Total number of __visibles for user__ children in this story
-                                example: 5
-                              children:
-                                type: array
-                                items:
-                                  type: object
-                                  items:
+                          - allOf:
+                              - type: object
+                                properties:
+                                  databox_id:
+                                    type: integer
+                                    example: 2
+                                  updated_on:
+                                    type: string
+                                    format: date-time
+                                  created_on:
+                                    type: string
+                                    format: date-time
+                                  collection_id:
+                                    type: integer
+                                    example: 5
+                                  base_id:
+                                    type: integer
+                                    example: 14
+                                  thumbnail:
                                     allOf:
                                       - type: object
                                         properties:
-                                          databox_id:
-                                            type: integer
-                                            example: 2
-                                          record_id:
-                                            type: integer
-                                            example: 34
-                                          updated_on:
+                                          name:
+                                            example: thumbnail
+                                          mime_type:
+                                            example: image/jpeg
+                                          height:
+                                            example: 160
+                                          width:
+                                            example: 240
+                                          filesize:
+                                            example: 2375
+                                          url:
+                                            example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+                                      - type: object
+                                        properties:
+                                          name:
                                             type: string
-                                            format: date-time
+                                          permalink:
+                                            type: object
+                                            properties:
+                                              created_on:
+                                                type: string
+                                                format: date-time
+                                              id:
+                                                type: integer
+                                              is_activated:
+                                                type: boolean
+                                              label:
+                                                type: string
+                                              updated_on:
+                                                type: string
+                                                format: date-time
+                                              page_url:
+                                                type: string
+                                              download_url:
+                                                type: string
+                                              url:
+                                                type: string
+                                          height:
+                                            type: integer
+                                          width:
+                                            type: integer
+                                          filesize:
+                                            type: integer
+                                          devices:
+                                            type: array
+                                            items:
+                                              type: string
+                                              enum:
+                                                - screen
+                                                - printer ?
+                                          player_type:
+                                            type: string
+                                            enum:
+                                              - IMAGE
+                                          mime_type:
+                                            type: string
+                                          substituted:
+                                            type: boolean
+                                            example: false
                                           created_on:
                                             type: string
                                             format: date-time
-                                          collection_id:
+                                          updated_on:
+                                            type: string
+                                            format: date-time
+                                          url:
+                                            type: string
+                                          url_ttl:
                                             type: integer
-                                            example: 5
-                                          base_id:
-                                            type: integer
-                                            example: 14
-                                          thumbnail:
-                                            allOf:
-                                              - type: object
-                                                properties:
-                                                  name:
-                                                    example: thumbnail
-                                                  mime_type:
-                                                    example: image/jpeg
-                                                  height:
-                                                    example: 160
-                                                  width:
-                                                    example: 240
-                                                  filesize:
-                                                    example: 2375
-                                                  url:
-                                                    example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
-                                              - type: object
-                                                properties:
-                                                  name:
-                                                    type: string
-                                                  permalink:
-                                                    type: object
+                                            example: 7200
+                                  uuid:
+                                    type: string
+                                    example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
+                              - type: object
+                                properties:
+                                  cover_record_id:
+                                    type: integer
+                                    description: id of the record chosen as "cover" (or null)
+                                    example: 55
+                                  mime_type:
+                                    type: string
+                                    default: null
+                                  title:
+                                    type: string
+                                    example: sans-titre
+                                  original_name:
+                                    type: string
+                                    default: null
+                                  is_story:
+                                    type: boolean
+                                    default: true
+                                  children_offset:
+                                    type: integer
+                                    description: Children pagination offset ; Always 0
+                                    example: 0
+                                  children_limit:
+                                    type: integer
+                                    description: Children pagination limit ; Equal to "story_children_limit" passed in request
+                                    example: 10
+                                  children_count:
+                                    type: integer
+                                    description: 'Number of children in "children" array ; [0...limit]'
+                                    example: 5
+                                  children_total:
+                                    type: integer
+                                    description: Total number of __visibles for user__ children in this story
+                                    example: 5
+                                  children:
+                                    type: array
+                                    items:
+                                      type: object
+                                      items:
+                                        allOf:
+                                          - type: object
+                                            properties:
+                                              record_id:
+                                                type: integer
+                                                example: 34
+                                          - type: object
+                                            properties:
+                                              databox_id:
+                                                type: integer
+                                                example: 2
+                                              updated_on:
+                                                type: string
+                                                format: date-time
+                                              created_on:
+                                                type: string
+                                                format: date-time
+                                              collection_id:
+                                                type: integer
+                                                example: 5
+                                              base_id:
+                                                type: integer
+                                                example: 14
+                                              thumbnail:
+                                                allOf:
+                                                  - type: object
                                                     properties:
+                                                      name:
+                                                        example: thumbnail
+                                                      mime_type:
+                                                        example: image/jpeg
+                                                      height:
+                                                        example: 160
+                                                      width:
+                                                        example: 240
+                                                      filesize:
+                                                        example: 2375
+                                                      url:
+                                                        example: 'http://phraseanet.demo.fr/medias/eyJ0eXAiOiJKV1Q...'
+                                                  - type: object
+                                                    properties:
+                                                      name:
+                                                        type: string
+                                                      permalink:
+                                                        type: object
+                                                        properties:
+                                                          created_on:
+                                                            type: string
+                                                            format: date-time
+                                                          id:
+                                                            type: integer
+                                                          is_activated:
+                                                            type: boolean
+                                                          label:
+                                                            type: string
+                                                          updated_on:
+                                                            type: string
+                                                            format: date-time
+                                                          page_url:
+                                                            type: string
+                                                          download_url:
+                                                            type: string
+                                                          url:
+                                                            type: string
+                                                      height:
+                                                        type: integer
+                                                      width:
+                                                        type: integer
+                                                      filesize:
+                                                        type: integer
+                                                      devices:
+                                                        type: array
+                                                        items:
+                                                          type: string
+                                                          enum:
+                                                            - screen
+                                                            - printer ?
+                                                      player_type:
+                                                        type: string
+                                                        enum:
+                                                          - IMAGE
+                                                      mime_type:
+                                                        type: string
+                                                      substituted:
+                                                        type: boolean
+                                                        example: false
                                                       created_on:
                                                         type: string
                                                         format: date-time
-                                                      id:
-                                                        type: integer
-                                                      is_activated:
-                                                        type: boolean
-                                                      label:
-                                                        type: string
                                                       updated_on:
                                                         type: string
                                                         format: date-time
-                                                      page_url:
-                                                        type: string
-                                                      download_url:
-                                                        type: string
                                                       url:
                                                         type: string
-                                                  height:
-                                                    type: integer
-                                                  width:
-                                                    type: integer
-                                                  filesize:
-                                                    type: integer
-                                                  devices:
-                                                    type: array
-                                                    items:
-                                                      type: string
-                                                      enum:
-                                                        - screen
-                                                        - printer ?
-                                                  player_type:
-                                                    type: string
-                                                    enum:
-                                                      - IMAGE
-                                                  mime_type:
-                                                    type: string
-                                                  substituted:
-                                                    type: boolean
-                                                    example: false
-                                                  created_on:
-                                                    type: string
-                                                    format: date-time
-                                                  updated_on:
-                                                    type: string
-                                                    format: date-time
-                                                  url:
-                                                    type: string
-                                                  url_ttl:
-                                                    type: integer
-                                                    example: 7200
-                                          uuid:
-                                            type: string
-                                            example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
-                                      - type: object
-                                        properties:
-                                          record_id:
-                                            type: integer
-                                            example: 34
-                                          mime_type:
-                                            type: string
-                                            example: image/jpeg
-                                          title:
-                                            type: string
-                                            example: Sleepy cat
-                                          original_name:
-                                            type: string
-                                            example: DSC_12345.jpg
-                                          technical_informations:
-                                            type: array
-                                            items:
-                                              type: object
-                                              additionalProperties:
+                                                      url_ttl:
+                                                        type: integer
+                                                        example: 7200
+                                              uuid:
                                                 type: string
-                                              example:
-                                                Aperture: 6.3
-                                                CameraModel: Canon EOS 5D Mark II
-                                                Channels: 3
-                                                ColorSpace: RGB
-                                                FileSize: 5618218
-                                          sha256:
-                                            type: string
-                                            example: 6f330ac0ae2...
-                                          phrasea_type:
-                                            type: string
-                                            enum:
-                                              - image
-                                              - video
-                                            example: image
-                                          is_story:
-                                            type: boolean
-                                            default: false
+                                                example: 5b079f33-0851-4aec-a978-b7f8d7204e5a
+                                          - type: object
+                                            properties:
+                                              mime_type:
+                                                type: string
+                                                example: image/jpeg
+                                              title:
+                                                type: string
+                                                example: Sleepy cat
+                                              original_name:
+                                                type: string
+                                                example: DSC_12345.jpg
+                                              technical_informations:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  additionalProperties:
+                                                    type: string
+                                                  example:
+                                                    Aperture: 6.3
+                                                    CameraModel: Canon EOS 5D Mark II
+                                                    Channels: 3
+                                                    ColorSpace: RGB
+                                                    FileSize: 5618218
+                                              sha256:
+                                                type: string
+                                                example: 6f330ac0ae2...
+                                              phrasea_type:
+                                                type: string
+                                                enum:
+                                                  - image
+                                                  - video
+                                                example: image
+                                              is_story:
+                                                type: boolean
+                                                default: false
                       - type: object
                         properties:
                           subdefs:
