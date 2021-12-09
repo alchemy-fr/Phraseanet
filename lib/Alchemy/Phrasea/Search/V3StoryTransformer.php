@@ -50,9 +50,14 @@ class V3StoryTransformer extends RecordTransformer
         /** @var StoryView $storyView */
         $story = $storyView->getStory();
 
+        $r = $this->recordTransformer->transform($storyView);
+        $r['story_id'] = $r['record_id'];
+        unset($r['record_id']);
+
         return array_merge(
-            $this->recordTransformer->transform($storyView),
+            $r,
             [
+                'cover_record_id' => $story->getCoverRecordId(),
                 'children_offset' => $storyView->getData('childrenOffset'),
                 'children_limit'  => $storyView->getData('childrenLimit'),
                 'children_count'  => count($storyView->getChildren()),
