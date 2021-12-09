@@ -44,6 +44,13 @@ services:
     - .:/var/alchemy/Phraseanet
     networks:
       - internal
+      
+  elasticsearch:
+    ports:
+      - 9200:9200
+    networks:
+      - internal
+      
 
   worker:
     volumes:
