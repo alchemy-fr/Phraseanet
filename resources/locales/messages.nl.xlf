@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-12-06T14:58:01Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2021-12-10T11:13:24Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -239,7 +239,7 @@
         <source>%quantity% records added</source>
         <target state="new">%quantity% records added</target>
         <jms:reference-file line="319">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="137">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="138">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="24927cf9f90bef4e8f7333ff97f602c0fcce6c8d" resname="%quantity% records moved">
         <source>%quantity% records moved</source>
@@ -620,7 +620,7 @@
       <trans-unit id="43c8f4baa612c748fb9c0b6672d77827013ff2be" resname="Action Forbidden : You are not the publisher" approved="yes">
         <source>Action Forbidden : You are not the publisher</source>
         <target state="translated">Verboden actie : U bent niet de publisher</target>
-        <jms:reference-file line="189">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="231">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c3cd636a585b20c40ac2df5ffb403e83cb2eef51" resname="Actions" approved="yes">
         <source>Actions</source>
@@ -977,7 +977,7 @@
         <jms:reference-file line="257">Controller/Prod/LazaretController.php</jms:reference-file>
         <jms:reference-file line="262">Controller/Prod/BasketController.php</jms:reference-file>
         <jms:reference-file line="176">Controller/Prod/ToolsController.php</jms:reference-file>
-        <jms:reference-file line="218">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="220">Controller/Prod/StoryController.php</jms:reference-file>
         <jms:reference-file line="71">Controller/Admin/DataboxesController.php</jms:reference-file>
         <jms:reference-file line="86">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="159">Controller/Admin/DataboxController.php</jms:reference-file>
@@ -1047,8 +1047,8 @@
         <target state="translated">Er is een fout opgetreden</target>
         <jms:reference-file line="77">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="234">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="2083">Controller/Api/V1Controller.php</jms:reference-file>
-        <jms:reference-file line="2529">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2084">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2530">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="136">Controller/Admin/SearchEngineController.php</jms:reference-file>
         <jms:reference-file line="531">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="126">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -3333,8 +3333,8 @@
       <trans-unit id="246a65679a39e030c98cad396903b0a3d8874dbc" resname="Fils disponibles" approved="yes">
         <source>Fils disponibles</source>
         <target state="translated">Beschikbare paden</target>
-        <jms:reference-file line="58">actions/publish/publish.html.twig</jms:reference-file>
-        <jms:reference-file line="44">actions/publish/publish_edit.html.twig</jms:reference-file>
+        <jms:reference-file line="61">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="58">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d7decf1aa22b02ae8abf9a96849ee423eee838e4" resname="Filter">
         <source>Filter</source>
@@ -4783,7 +4783,8 @@
       <trans-unit id="3ccc3824ae2ffdfea7482564cbc8cf35de78766d" resname="Notify users about this publication" approved="yes">
         <source>Notify users about this publication</source>
         <target state="translated">Meld gebruikers over deze publicatie</target>
-        <jms:reference-file line="40">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="56">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="50">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b60af374cd884ac6a6ae5b76829ba6efa085f0f7" resname="Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations" approved="yes">
         <source>Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations</source>
@@ -5616,7 +5617,7 @@
       <trans-unit id="3cd74928930cda94205568949be186e4cae37119" resname="Record Not Found" approved="yes">
         <source>Record Not Found</source>
         <target state="translated">Document niet gevonden</target>
-        <jms:reference-file line="2081">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2082">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0112aa634cbad5a586b72e4befe1ab1a39e73f" resname="Record removed from basket" approved="yes">
         <source>Record removed from basket</source>
@@ -5626,7 +5627,7 @@
       <trans-unit id="0a10e48d87332985ab5d267f0a5aaae0a9b87b00" resname="Record removed from story" approved="yes">
         <source>Record removed from story</source>
         <target state="translated">Record uit de story verwijderd</target>
-        <jms:reference-file line="160">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="161">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="23e6fd4f4c57db844886711c1f92a6411880f3b7" resname="Record_id">
         <source>Record_id</source>
@@ -6429,7 +6430,7 @@
       <trans-unit id="315bc332aafca63cad8ac042c2e2f5111544fe9d" resname="Story Not Found" approved="yes">
         <source>Story Not Found</source>
         <target state="translated">Artikel niet gevonden</target>
-        <jms:reference-file line="2527">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2528">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="94e347da85f4797810ed7987973c8ef79092057e" resname="Story created" approved="yes">
         <source>Story created</source>
@@ -6449,7 +6450,7 @@
       <trans-unit id="99d3daf4dbe8d07dc3e14c9840c17f17e28c94d9" resname="Story updated">
         <source>Story updated</source>
         <target>Story updated</target>
-        <jms:reference-file line="214">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="216">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="92822e4942a5e4eee63c1ccbb4dc08a6028c65bb" resname="Story_id" approved="yes">
         <source>Story_id</source>
@@ -6865,7 +6866,7 @@
       <trans-unit id="19a0de998e454fffb6e0636256a5bdcdccbb9033" resname="This feed is public" approved="yes">
         <source>This feed is public</source>
         <target state="translated">Deze feed is publiek</target>
-        <jms:reference-file line="65">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="68">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="89">admin/publications/list.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dedbaded6d5a4ed17eefa2e4ee3eee026b7d1d11" resname="This field is required" approved="yes">
@@ -7861,7 +7862,7 @@
       <trans-unit id="dff09f0ed93eb1657329f3588569d2c43b4e65ff" resname="You can not edit this story" approved="yes">
         <source>You can not edit this story</source>
         <target state="translated">U kan deze story niet bewerken</target>
-        <jms:reference-file line="196">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="198">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4a67615bcd64fcc9443c499676a462d835ad841e" resname="You can not upload files" approved="yes">
         <source>You can not upload files</source>
@@ -13280,56 +13281,71 @@
       <trans-unit id="9647ab4603346566d2218fda731606baafcbe408" resname="publication : autheur" approved="yes">
         <source>publication : autheur</source>
         <target state="translated">Auteur</target>
-        <jms:reference-file line="51">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="45">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="37">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="12f6f5d3ef3c414e9819bcf0fbbdaf454ce0fd27" resname="publication : email autheur" approved="yes">
         <source>publication : email autheur</source>
         <target state="translated">Email auteur</target>
-        <jms:reference-file line="53">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="47">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="39">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ccb2f7d7041e31cd822bd95ee74b5f9b38d9f7ac" resname="publication : sous titre" approved="yes">
         <source>publication : sous titre</source>
         <target state="translated">Onder titel</target>
-        <jms:reference-file line="46">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="40">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="32">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e53680d42ba7c2071293a23790dfaef8d0761e60" resname="publication : subtitle alert">
         <source>publication : subtitle alert</source>
         <target state="new">publication : subtitle alert</target>
-        <jms:reference-file line="48">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="42">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="34">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3cc295db2f960fa339ba3b57e33fe421923e3026" resname="publication : subtitle warning">
         <source>publication : subtitle warning</source>
         <target state="new">publication : subtitle warning</target>
-        <jms:reference-file line="46">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="40">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="32">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af22a65a7f5adb86b9f18a891c7a895146af5f23" resname="publication : title alert">
         <source>publication : title alert</source>
         <target state="new">publication : title alert</target>
-        <jms:reference-file line="45">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="39">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="31">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="856fe6736a6901d5c5b1e079b82ce987dd06ff7b" resname="publication : title warning">
         <source>publication : title warning</source>
         <target state="new">publication : title warning</target>
-        <jms:reference-file line="43">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="37">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="29">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="be21ab93e45780fe4f40141bc3569f200fb4a028" resname="publication : titre" approved="yes">
         <source>publication : titre</source>
         <target state="translated">Titel</target>
-        <jms:reference-file line="43">actions/publish/publish.html.twig</jms:reference-file>
+        <jms:reference-file line="37">actions/publish/publish.html.twig</jms:reference-file>
         <jms:reference-file line="29">actions/publish/publish_edit.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a85c5b39743bad12b07c179a912cf5dbc47860f8" resname="publication:: %count% users to notify">
+        <source>publication:: %count% users to notify</source>
+        <target state="new">publication:: %count% users to notify</target>
+        <jms:reference-file line="149">Controller/Prod/FeedController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="c4664885fa2a9f300cc01beed066cfcfafe4dd39" resname="publication:: no feed selected">
+        <source>publication:: no feed selected</source>
+        <target state="new">publication:: no feed selected</target>
+        <jms:reference-file line="143">Controller/Prod/FeedController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ca39344d1a31b5ef8ebb4f9104fd83a5d70a3d46" resname="publication:: notification done on">
+        <source>publication:: notification done on</source>
+        <target state="new">publication:: notification done on</target>
+        <jms:reference-file line="54">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="02387557776e7e3b2a78b21c54e9fb019a9a6fc3" resname="publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications." approved="yes">
         <source>publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications.</source>
         <target state="translated">Hier uw persoonlijke RSS feed. Deze laat u toe om op de hoogte te blijven van de publicaties.</target>
-        <jms:reference-file line="243">Controller/Prod/FeedController.php</jms:reference-file>
-        <jms:reference-file line="268">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="285">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="310">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc8cb61c550777cb4f094762ef7744693875ce09" resname="publications:: s'abonner aux publications" approved="yes">
         <source>publications:: s'abonner aux publications</source>
@@ -13340,20 +13356,20 @@
       <trans-unit id="d16bcb6609333ab86ad12c169212d30658b18ed4" resname="publications::Ne le partagez pas, il est strictement confidentiel" approved="yes">
         <source>publications::Ne le partagez pas, il est strictement confidentiel</source>
         <target state="translated">Deel deze niet, hij is strikt confidentieel</target>
-        <jms:reference-file line="245">Controller/Prod/FeedController.php</jms:reference-file>
-        <jms:reference-file line="270">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="287">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="312">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf670e94fb7cc858d6c28745ea4fd8248eed01fb" resname="publications::copy">
         <source>publications::copy</source>
         <target state="new">publications::copy</target>
-        <jms:reference-file line="247">Controller/Prod/FeedController.php</jms:reference-file>
-        <jms:reference-file line="272">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="289">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="314">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="317aac7149d4bb63238dbe1f9461b3d817f1ff65" resname="publications::votre rss personnel" approved="yes">
         <source>publications::votre rss personnel</source>
         <target state="translated">Uw persoonlijke rss feed</target>
-        <jms:reference-file line="248">Controller/Prod/FeedController.php</jms:reference-file>
-        <jms:reference-file line="273">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="290">Controller/Prod/FeedController.php</jms:reference-file>
+        <jms:reference-file line="315">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="70e2a7238a2b25916f8dda4ca72e2b8617edde67" resname="push::mail:: Rapport de validation de %user% pour %title%">
         <source>push::mail:: Rapport de validation de %user% pour %title%</source>
@@ -13484,7 +13500,7 @@
       <trans-unit id="e32952b1a087c6ba28e13097e0ebb5395c2f2105" resname="reponses::document sans titre" approved="yes">
         <source>reponses::document sans titre</source>
         <target state="translated">Documenten zonder titel</target>
-        <jms:reference-file line="977">classes/record/adapter.php</jms:reference-file>
+        <jms:reference-file line="1008">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)">
         <source>report:: (connexions)</source>
