@@ -75,6 +75,9 @@ class Feed implements ControllerProviderInterface, ServiceProviderInterface
             ->bind('prod_feeds_subscribe_feed')
             ->assert('id', '\d+');
 
+        $controllers->post('/notify/count/', 'controller.prod.feed:notifyCountAction')
+            ->bind('prod_feeds_notify_count');
+
         return $controllers;
     }
 }

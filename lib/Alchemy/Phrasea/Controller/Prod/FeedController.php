@@ -79,6 +79,10 @@ class FeedController extends Controller
             ->setPublisher($publisher)
             ->setSubtitle($request->request->get('subtitle', ''));
 
+        if ($request->request->get('notify')) {
+            $entry->setNotifyEmailOn(new \DateTime());
+        }
+
         $feed->addEntry($entry);
 
         $publishing = RecordsRequest::fromRequest($this->app, $request, true, [], [\ACL::BAS_CHUPUB]);
@@ -118,7 +122,37 @@ class FeedController extends Controller
         );
     }
 
-    public function updateEntryAction(Request $request, $id) {
+    public function notifyCountAction(Request $request)
+    {
+        /** @var Feed|null $feed */
+        $feed = $this->getFeedRepository()->find($request->request->get('feed_id'));
+
+        /** @var \User_Query $Query */
+        $Query = $this->app['phraseanet.user-query'];
+
+        $Query->include_phantoms(true)
+            ->include_invite(false)
+            ->include_templates(false)
+            ->email_not_null(true);
+
+        if ($feed !== null && $feed->getCollection($this->app)) {
+            $Query->on_base_ids([$feed->getCollection($this->app)->get_base_id()]);
+        } elseif ($feed == null) {
+            return $this->app->json([
+                'success'   => false,
+                'message'   => $this->app->trans('publication:: no feed selected')
+            ]);
+        }
+
+        return $this->app->json([
+            'success'   => true,
+            'message'   => $this->app->trans('publication:: %count% users to notify', ['%count%' => $Query->execute()->get_total()])
+        ]);
+    }
+
+    public function updateEntryAction(Request $request, $id)
+    {
+        /** @var FeedEntry $entry */
         $entry = $this->getFeedEntryRepository()->find($id);
 
         if (null === $entry) {
@@ -137,6 +171,10 @@ class FeedController extends Controller
             ->setTitle($title)
             ->setSubtitle($request->request->get('subtitle', ''))
         ;
+
+        if ($request->request->get('notify')) {
+            $entry->setNotifyEmailOn(new \DateTime());
+        }
 
         $current_feed_id = $entry->getFeed()->getId();
         $new_feed_id = $request->request->get('feed_id', $current_feed_id);
@@ -169,6 +207,10 @@ class FeedController extends Controller
 
         $manager->persist($entry);
         $manager->flush();
+
+        $this->dispatch(PhraseaEvents::FEED_ENTRY_UPDATE, new FeedEntryEvent(
+            $entry, $request->request->get('notify')
+        ));
 
         return $this->app->json([
             'error'   => false,
