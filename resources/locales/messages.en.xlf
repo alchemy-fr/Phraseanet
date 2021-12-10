@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-12-06T14:57:23Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2021-12-10T11:48:43Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -239,7 +239,7 @@
         <source>%quantity% records added</source>
         <target state="translated">%quantity% records added</target>
         <jms:reference-file line="319">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="137">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="138">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="24927cf9f90bef4e8f7333ff97f602c0fcce6c8d" resname="%quantity% records moved" approved="yes">
         <source>%quantity% records moved</source>
@@ -976,7 +976,7 @@
         <jms:reference-file line="257">Controller/Prod/LazaretController.php</jms:reference-file>
         <jms:reference-file line="262">Controller/Prod/BasketController.php</jms:reference-file>
         <jms:reference-file line="176">Controller/Prod/ToolsController.php</jms:reference-file>
-        <jms:reference-file line="218">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="220">Controller/Prod/StoryController.php</jms:reference-file>
         <jms:reference-file line="71">Controller/Admin/DataboxesController.php</jms:reference-file>
         <jms:reference-file line="86">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="159">Controller/Admin/DataboxController.php</jms:reference-file>
@@ -1046,8 +1046,8 @@
         <target state="translated">An error occurred</target>
         <jms:reference-file line="77">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="234">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="2083">Controller/Api/V1Controller.php</jms:reference-file>
-        <jms:reference-file line="2529">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2084">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2530">Controller/Api/V1Controller.php</jms:reference-file>
         <jms:reference-file line="136">Controller/Admin/SearchEngineController.php</jms:reference-file>
         <jms:reference-file line="531">Controller/Admin/DataboxController.php</jms:reference-file>
         <jms:reference-file line="126">Controller/Admin/CollectionController.php</jms:reference-file>
@@ -5607,7 +5607,7 @@
       <trans-unit id="3cd74928930cda94205568949be186e4cae37119" resname="Record Not Found" approved="yes">
         <source>Record Not Found</source>
         <target state="translated">Record not found</target>
-        <jms:reference-file line="2081">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2082">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef0112aa634cbad5a586b72e4befe1ab1a39e73f" resname="Record removed from basket" approved="yes">
         <source>Record removed from basket</source>
@@ -5617,7 +5617,7 @@
       <trans-unit id="0a10e48d87332985ab5d267f0a5aaae0a9b87b00" resname="Record removed from story" approved="yes">
         <source>Record removed from story</source>
         <target state="translated">Record removed from story</target>
-        <jms:reference-file line="160">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="161">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="23e6fd4f4c57db844886711c1f92a6411880f3b7" resname="Record_id" approved="yes">
         <source>Record_id</source>
@@ -6420,7 +6420,7 @@
       <trans-unit id="315bc332aafca63cad8ac042c2e2f5111544fe9d" resname="Story Not Found" approved="yes">
         <source>Story Not Found</source>
         <target state="translated">Story not found</target>
-        <jms:reference-file line="2527">Controller/Api/V1Controller.php</jms:reference-file>
+        <jms:reference-file line="2528">Controller/Api/V1Controller.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="94e347da85f4797810ed7987973c8ef79092057e" resname="Story created" approved="yes">
         <source>Story created</source>
@@ -6440,7 +6440,7 @@
       <trans-unit id="99d3daf4dbe8d07dc3e14c9840c17f17e28c94d9" resname="Story updated" approved="yes">
         <source>Story updated</source>
         <target state="translated">Story updated</target>
-        <jms:reference-file line="214">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="216">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="92822e4942a5e4eee63c1ccbb4dc08a6028c65bb" resname="Story_id" approved="yes">
         <source>Story_id</source>
@@ -7852,7 +7852,7 @@
       <trans-unit id="dff09f0ed93eb1657329f3588569d2c43b4e65ff" resname="You can not edit this story" approved="yes">
         <source>You can not edit this story</source>
         <target state="translated">You cannot edit this story</target>
-        <jms:reference-file line="196">Controller/Prod/StoryController.php</jms:reference-file>
+        <jms:reference-file line="198">Controller/Prod/StoryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4a67615bcd64fcc9443c499676a462d835ad841e" resname="You can not upload files" approved="yes">
         <source>You can not upload files</source>
@@ -13481,7 +13481,7 @@ It is possible to place several search areas</target>
       <trans-unit id="e32952b1a087c6ba28e13097e0ebb5395c2f2105" resname="reponses::document sans titre" approved="yes">
         <source>reponses::document sans titre</source>
         <target state="translated">Untitled</target>
-        <jms:reference-file line="977">classes/record/adapter.php</jms:reference-file>
+        <jms:reference-file line="1008">classes/record/adapter.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3efac4485920b8a4db663f9d5295e6fabd4e4a99" resname="report:: (connexions)" approved="yes">
         <source>report:: (connexions)</source>
@@ -14843,11 +14843,6 @@ It is possible to place several search areas</target>
         <target state="needs-translation">Value</target>
         <jms:reference-file line="61">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c3db76add91c95968a2304a6dbdcc0e885ecd247" resname="thesaurus::edit WIP/Experimental">
-        <source>thesaurus::edit WIP/Experimental</source>
-        <target state="needs-translation">Beta features</target>
-        <jms:reference-file line="2">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="8af9255cc750e3e0a3418e0aadcac20dc34c679b" resname="thesaurus::edit add">
         <source>thesaurus::edit add</source>
         <target state="new">thesaurus::edit add</target>
@@ -14897,6 +14892,11 @@ It is possible to place several search areas</target>
         <source>thesaurus::edit simple mode</source>
         <target state="needs-translation">Simple mode</target>
         <jms:reference-file line="29">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="72266cf84ae3ea99b0b6d985b2ddead0eeb48cc8" resname="thesaurus::edit windows title">
+        <source>thesaurus::edit windows title</source>
+        <target state="new">thesaurus::edit windows title</target>
+        <jms:reference-file line="2">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2c5f2b28d83092ce72002a1b384b4a28ce66dad" resname="thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)">
         <source>thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)</source>
