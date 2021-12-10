@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-12-10T11:12:58Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2021-12-10T15:32:17Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -14862,11 +14862,6 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Valeur</target>
         <jms:reference-file line="61">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c3db76add91c95968a2304a6dbdcc0e885ecd247" resname="thesaurus::edit WIP/Experimental">
-        <source>thesaurus::edit WIP/Experimental</source>
-        <target state="translated">Fonctionnalité en Bêta</target>
-        <jms:reference-file line="2">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="8af9255cc750e3e0a3418e0aadcac20dc34c679b" resname="thesaurus::edit add">
         <source>thesaurus::edit add</source>
         <target state="new">thesaurus::edit add</target>
@@ -14916,6 +14911,11 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <source>thesaurus::edit simple mode</source>
         <target state="translated">Mode simple</target>
         <jms:reference-file line="29">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="72266cf84ae3ea99b0b6d985b2ddead0eeb48cc8" resname="thesaurus::edit windows title">
+        <source>thesaurus::edit windows title</source>
+        <target state="new">thesaurus::edit windows title</target>
+        <jms:reference-file line="2">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2c5f2b28d83092ce72002a1b384b4a28ce66dad" resname="thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)">
         <source>thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)</source>
