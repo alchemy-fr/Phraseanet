@@ -45,6 +45,7 @@ use Alchemy\Phrasea\Fractal\TraceableArraySerializer;
 use Alchemy\Phrasea\Model\Entities\ApiOauthToken;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\BasketElementVote;
 use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\Feed;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
@@ -54,7 +55,6 @@ use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use Alchemy\Phrasea\Model\Entities\Task;
 use Alchemy\Phrasea\Model\Entities\User;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\TaskManipulator;
 use Alchemy\Phrasea\Model\Manipulator\UserManipulator;
 use Alchemy\Phrasea\Model\RecordReferenceInterface;
@@ -2207,14 +2207,14 @@ class V1Controller extends Controller
             'validation_item'   => null != $basket_element->getBasket()->getValidation(),
         ];
 
-        if ($basket_element->getBasket()->getValidation()) {
+        if ($basket_element->getBasket()->getVoteInitiator()) {
             $choices = [];
             $agreement = null;
             $note = '';
 
-            /** @var ValidationData $validationData */
-            foreach ($basket_element->getValidationDatas() as $validationData) {
-                $participant = $validationData->getParticipant();
+            /** @var BasketElementVote $vote */
+            foreach ($basket_element->getVotes() as $vote) {
+                $participant = $vote->getParticipant();
                 $user = $participant->getUser();
                 $choices[] = [
                     'validation_user' => [
@@ -2226,14 +2226,14 @@ class V1Controller extends Controller
                         'readonly'       => $user->getId() != $this->getAuthenticatedUser()->getId(),
                         'user'           => $this->listUser($user),
                     ],
-                    'agreement'       => $validationData->getAgreement(),
-                    'updated_on'      => $validationData->getUpdated()->format(DATE_ATOM),
-                    'note'            => null === $validationData->getNote() ? '' : $validationData->getNote(),
+                    'agreement'       => $vote->getAgreement(),
+                    'updated_on'      => $vote->getUpdated()->format(DATE_ATOM),
+                    'note'            => is_null($vote->getNote()) ? '' : $vote->getNote(),
                 ];
 
                 if ($user->getId() == $this->getAuthenticatedUser()->getId()) {
-                    $agreement = $validationData->getAgreement();
-                    $note = null === $validationData->getNote() ? '' : $validationData->getNote();
+                    $agreement = $vote->getAgreement();
+                    $note = is_null($vote->getNote()) ? '' : $vote->getNote();
                 }
 
                 $ret['validation_choices'] = $choices;

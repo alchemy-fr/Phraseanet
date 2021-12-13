@@ -15,8 +15,8 @@ use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Exception\SessionNotFound;
 use Alchemy\Phrasea\Model\Entities\Basket;
+use Alchemy\Phrasea\Model\Entities\BasketElementVote;
 use Alchemy\Phrasea\Model\Entities\FeedEntry;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
@@ -347,10 +347,12 @@ class LightboxController extends Controller
 
         $basket_element = $repository->findUserElement($sselcont_id, $this->getAuthenticatedUser());
 
-        $validationData = $basket_element->getUserValidationDatas($this->getAuthenticatedUser());
-        /** @var ValidationData $validationData */
-        $validationData = $this->app['orm.em']->merge($validationData);
-        $validationData->setNote($note);
+        // get the vote (create if not exists)
+        $vote = $basket_element->getUserVote($this->getAuthenticatedUser(), true);
+
+        /** @var BasketElementVote $vote */
+        $vote = $this->app['orm.em']->merge($vote);
+        $vote->setNote($note);
         $this->app['orm.em']->flush();
 
         $data = $this->render('lightbox/sc_note.html.twig', ['basket_element' => $basket_element]);

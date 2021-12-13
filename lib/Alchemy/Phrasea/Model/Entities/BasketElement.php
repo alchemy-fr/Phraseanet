@@ -12,10 +12,12 @@
 namespace Alchemy\Phrasea\Model\Entities;
 
 use Alchemy\Phrasea\Application;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use Gedmo\Mapping\Annotation as Gedmo;
+use record_adapter;
 
 /**
  * @ORM\Table(name="BasketElements", uniqueConstraints={@ORM\UniqueConstraint(name="unique_recordcle", columns={"basket_id","sbas_id","record_id"})})
@@ -58,9 +60,9 @@ class BasketElement
     private $updated;
 
     /**
-     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="basket_element", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="BasketElementVote", mappedBy="basket_element", cascade={"all"})
      */
-    private $validation_datas;
+    private $votes;
 
     /**
      * @ORM\ManyToOne(targetEntity="Basket", inversedBy="elements", cascade={"persist"})
@@ -73,7 +75,7 @@ class BasketElement
      */
     public function __construct()
     {
-        $this->validation_datas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->votes = new ArrayCollection();
     }
 
     /**
@@ -81,7 +83,7 @@ class BasketElement
      *
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -89,10 +91,10 @@ class BasketElement
     /**
      * Set record_id
      *
-     * @param  integer       $recordId
+     * @param integer $recordId
      * @return BasketElement
      */
-    public function setRecordId($recordId)
+    public function setRecordId(int $recordId): BasketElement
     {
         $this->record_id = $recordId;
 
@@ -104,7 +106,7 @@ class BasketElement
      *
      * @return integer
      */
-    public function getRecordId()
+    public function getRecordId(): int
     {
         return $this->record_id;
     }
@@ -112,10 +114,10 @@ class BasketElement
     /**
      * Set sbas_id
      *
-     * @param  integer       $sbasId
-     * @return BasketElement
+     * @param integer $sbasId
+     * @return self
      */
-    public function setSbasId($sbasId)
+    public function setSbasId(int $sbasId): BasketElement
     {
         $this->sbas_id = $sbasId;
 
@@ -127,17 +129,17 @@ class BasketElement
      *
      * @return integer
      */
-    public function getSbasId()
+    public function getSbasId(): int
     {
         return $this->sbas_id;
     }
 
-    public function getRecord(Application $app)
+    public function getRecord(Application $app): record_adapter
     {
-        return new \record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
+        return new record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
     }
 
-    public function setRecord(\record_adapter $record)
+    public function setRecord(record_adapter $record)
     {
         $this->setRecordId($record->getRecordId());
         $this->setSbasId($record->getDataboxId());
@@ -146,10 +148,10 @@ class BasketElement
     /**
      * Set ord
      *
-     * @param  integer       $ord
-     * @return BasketElement
+     * @param integer $ord
+     * @return self
      */
-    public function setOrd($ord)
+    public function setOrd(int $ord): BasketElement
     {
         $this->ord = $ord;
 
@@ -161,7 +163,7 @@ class BasketElement
      *
      * @return integer
      */
-    public function getOrd()
+    public function getOrd(): int
     {
         return $this->ord;
     }
@@ -169,10 +171,10 @@ class BasketElement
     /**
      * Set created
      *
-     * @param  \DateTime     $created
-     * @return BasketElement
+     * @param  DateTime     $created
+     * @return self
      */
-    public function setCreated(\DateTime $created)
+    public function setCreated(DateTime $created): BasketElement
     {
         $this->created = $created;
 
@@ -182,9 +184,9 @@ class BasketElement
     /**
      * Get created
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreated()
+    public function getCreated(): DateTime
     {
         return $this->created;
     }
@@ -192,10 +194,10 @@ class BasketElement
     /**
      * Set updated
      *
-     * @param  \DateTime     $updated
-     * @return BasketElement
+     * @param  DateTime     $updated
+     * @return self
      */
-    public function setUpdated(\DateTime $updated)
+    public function setUpdated(DateTime $updated): BasketElement
     {
         $this->updated = $updated;
 
@@ -205,44 +207,44 @@ class BasketElement
     /**
      * Get updated
      *
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getUpdated()
+    public function getUpdated(): DateTime
     {
         return $this->updated;
     }
 
     /**
-     * Add validation_datas
+     * Add vote
      *
-     * @param  ValidationData $validationDatas
-     * @return BasketElement
+     * @param  BasketElementVote $vote
+     * @return self
      */
-    public function addValidationData(ValidationData $validationDatas)
+    public function addVote(BasketElementVote $vote): BasketElement
     {
-        $this->validation_datas[] = $validationDatas;
+        $this->votes[] = $vote;
 
         return $this;
     }
 
     /**
-     * Remove validation_datas
+     * Remove vote
      *
-     * @param ValidationData $validationDatas
+     * @param BasketElementVote $vote
      */
-    public function removeValidationData(ValidationData $validationDatas)
+    public function removeVote(BasketElementVote $vote)
     {
-        $this->validation_datas->removeElement($validationDatas);
+        $this->votes->removeElement($vote);
     }
 
     /**
-     * Get validation_datas
+     * Get votes
      *
-     * @return Collection|ValidationData[]
+     * @return ArrayCollection|BasketElementVote[]
      */
-    public function getValidationDatas()
+    public function getVotes()
     {
-        return $this->validation_datas;
+        return $this->votes;
     }
 
     /**
@@ -276,6 +278,7 @@ class BasketElement
      */
     public function createVote(BasketParticipant $participant): BasketElementVote
     {
+        // !!!!!!!!!!!!!!!!!!!!!!!!!! persist ?
         $bev = new BasketElementVote($participant, $this);
         $participant->addVote($bev);
 
@@ -284,15 +287,22 @@ class BasketElement
 
     /**
      * @param User $user
-     * @return ValidationData
+     * @param bool $createIfMissing
+     * @return BasketElementVote
      * @throws Exception
      */
-    public function getUserValidationDatas(User $user): ValidationData
+    public function getUserVote(User $user, bool $createIfMissing): BasketElementVote
     {
-        foreach ($this->validation_datas as $validationData) {
-            if ($validationData->getParticipant()->getUser()->getId() == $user->getId()) {
-                return $validationData;
+        // ensure the user is a participant
+        $participant = $this->getBasket()->getParticipant($user);
+
+        foreach ($this->getVotes() as $vote) {
+            if ($vote->getParticipant()->getId() == $participant->getId()) {
+                return $vote;
             }
+        }
+        if($createIfMissing) {
+            return $this->createVote($participant);
         }
 
         throw new Exception('There is no such participant ' . $user->getEmail());

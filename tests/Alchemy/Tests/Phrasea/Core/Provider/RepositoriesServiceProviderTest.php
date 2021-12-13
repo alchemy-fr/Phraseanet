@@ -19,7 +19,6 @@ class RepositoriesServiceProviderTest extends ServiceProviderTestCase
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.baskets', 'Alchemy\Phrasea\Model\Repositories\BasketRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.basket-elements', 'Alchemy\Phrasea\Model\Repositories\BasketElementRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.basket-participants', 'Alchemy\Phrasea\Model\Repositories\BasketParticipantRepository'],
-            ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.validation-session', 'Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.story-wz', 'Alchemy\Phrasea\Model\Repositories\StoryWZRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.orders', 'Alchemy\Phrasea\Model\Repositories\OrderRepository'],
             ['Alchemy\Phrasea\Core\Provider\RepositoriesServiceProvider', 'repo.order-elements', 'Alchemy\Phrasea\Model\Repositories\OrderElementRepository'],
