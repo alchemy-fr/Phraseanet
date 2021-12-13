@@ -34,7 +34,6 @@ use Alchemy\Phrasea\Model\Repositories\ApiApplicationRepository;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\FeedPublisherRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
-use Alchemy\Phrasea\Model\Repositories\ValidationSessionRepository;
 use Alchemy\Phrasea\Notification\Mail\MailRequestAccountDelete;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailUpdate;
 use Alchemy\Phrasea\Notification\Mail\MailSuccessAccountDelete;
@@ -317,7 +316,7 @@ class AccountController extends Controller
 
         $ownedFeeds = $this->getFeedPublisherRepository()->findBy(['user' => $user, 'owner' => true]);
 
-        $initiatedValidations = $this->getValidationSessionRepository()->findby(['initiator' => $user, ]);
+        $initiatedValidations = $this->getBasketRepository()->findby(['vote_initiator' => $user, ]);
 
         return $this->render('account/account.html.twig', [
             'user'                  => $user,
@@ -693,11 +692,4 @@ class AccountController extends Controller
         return $this->app['repo.feed-publishers'];
     }
 
-    /**
-     * @return ValidationSessionRepository
-     */
-    private function getValidationSessionRepository()
-    {
-        return $this->app['repo.validation-session'];
-    }
 }

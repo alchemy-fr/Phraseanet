@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Model\Repositories;
 use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
 use DateTime;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 class ValidationParticipantRepository extends EntityRepository

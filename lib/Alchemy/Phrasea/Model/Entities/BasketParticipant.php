@@ -59,7 +59,7 @@ class BasketParticipant
     private $reminded;
 
     /**
-     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="participant", cascade={"all"})
+     * @ORM\OneToMany(targetEntity="BasketElementVote", mappedBy="participant", cascade={"all"})
      */
     private $votes;
 
