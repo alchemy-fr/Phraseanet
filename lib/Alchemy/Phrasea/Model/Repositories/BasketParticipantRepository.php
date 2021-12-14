@@ -28,7 +28,7 @@ class BasketParticipantRepository extends EntityRepository
      * @return BasketParticipant[]
      * @throws \Exception
      */
-    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent(float $timeLeftPercent, DateTime $today=null): array
+    public function findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent(float $timeLeftPercent, DateTime $today=null)
     {
         $rsm = new ResultSetMappingBuilder($this->_em);
         $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\BasketParticipant', 'p');

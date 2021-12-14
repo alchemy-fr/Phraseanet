@@ -8,13 +8,6 @@ namespace Alchemy\Phrasea\Model\Proxies\__CG__\Alchemy\Phrasea\Model\Entities;
 class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipant implements \Doctrine\ORM\Proxy\Proxy
 {
     /**
-     * @var array properties to be lazy loaded, with keys being the property
-     *            names and values being their default values
-     *
-     * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
-     */
-    public static $lazyPropertiesDefaults = [];
-    /**
      * @var \Closure the callback responsible for loading properties in the proxy object. This callback is called with
      *      three parameters, being respectively the proxy object to be initialized, the method that triggered the
      *      initialization process and an array of ordered parameters that were passed to that method.
@@ -22,18 +15,30 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
      * @see \Doctrine\Common\Persistence\Proxy::__setInitializer
      */
     public $__initializer__;
+
     /**
      * @var \Closure the callback responsible of loading properties that need to be copied in the cloned object
      *
      * @see \Doctrine\Common\Persistence\Proxy::__setCloner
      */
     public $__cloner__;
+
     /**
      * @var boolean flag indicating if this object was already initialized
      *
      * @see \Doctrine\Common\Persistence\Proxy::__isInitialized
      */
     public $__isInitialized__ = false;
+
+    /**
+     * @var array properties to be lazy loaded, with keys being the property
+     *            names and values being their default values
+     *
+     * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
+     */
+    public static $lazyPropertiesDefaults = [];
+
+
 
     /**
      * @param \Closure $initializer
@@ -88,17 +93,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     }
 
     /**
-     * {@inheritDoc}
-     * @internal generated method: use only when explicitly handling proxy specific loading logic
-     * @static
-     */
-    public function __getLazyProperties()
-    {
-        return self::$lazyPropertiesDefaults;
-    }
-
-    /**
-     *
+     * 
      */
     public function __clone()
     {
@@ -135,6 +130,15 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
      */
+    public function __setInitializer(\Closure $initializer = null)
+    {
+        $this->__initializer__ = $initializer;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @internal generated method: use only when explicitly handling proxy specific loading logic
+     */
     public function __getInitializer()
     {
         return $this->__initializer__;
@@ -144,9 +148,9 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
      */
-    public function __setInitializer(\Closure $initializer = null)
+    public function __setCloner(\Closure $cloner = null)
     {
-        $this->__initializer__ = $initializer;
+        $this->__cloner__ = $cloner;
     }
 
     /**
@@ -161,12 +165,14 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
+     * @static
      */
-    public function __setCloner(\Closure $cloner = null)
+    public function __getLazyProperties()
     {
-        $this->__cloner__ = $cloner;
+        return self::$lazyPropertiesDefaults;
     }
 
+    
     /**
      * {@inheritDoc}
      */

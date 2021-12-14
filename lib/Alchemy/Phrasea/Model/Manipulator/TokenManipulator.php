@@ -105,7 +105,7 @@ class TokenManipulator implements ManipulatorInterface
      */
     public function createBasketValidationToken(Basket $basket, User $user, $expiration)
     {
-        if (null === $basket->getValidation()) {
+        if (!$basket->isVoteBasket()) {
             throw new InvalidArgumentException('A validation token requires a validation basket.');
         }
 

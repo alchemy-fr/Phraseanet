@@ -316,7 +316,7 @@ class BasketRepository extends EntityRepository
             LEFT JOIN b.participants p
             WHERE (b.user = :usr_id AND b.archived = false)
               OR (b.user != :usr_id AND p.user = :usr_id
-                  AND (b.vote_expires IS NULL OR b.vote_.expires > CURRENT_TIMESTAMP())
+                  AND (b.vote_expires IS NULL OR b.vote_expires > CURRENT_TIMESTAMP())
                   )';
 
         if ($sort == 'date') {
