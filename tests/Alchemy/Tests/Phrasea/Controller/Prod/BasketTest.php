@@ -358,8 +358,11 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(4, $basket->getElements());
+
+        /* no. votes are now dynamic, so adding elements to a "vote" basket do not add empty votes for participnts
         $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:BasketElementVote')->findAll();
         $this->assertTrue($countData < count($datas), 'assert that ' . count($datas) . ' > ' . $countData);
+        */
     }
 
     public function testAddElementPostJSON()

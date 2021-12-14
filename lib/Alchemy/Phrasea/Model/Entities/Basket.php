@@ -447,7 +447,8 @@ class Basket
      */
     public function addParticipant(User $participant)
     {
-        $bp = new BasketParticipant($participant, $this);
+        $bp = new BasketParticipant($participant);
+        $bp->setBasket($this);
         $this->participants[] = $bp;
 
         return $bp;
