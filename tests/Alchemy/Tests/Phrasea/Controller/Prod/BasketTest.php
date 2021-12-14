@@ -335,7 +335,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
     public function testAddElementToValidationPost()
     {
-        $countData = count(self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll());
+        $countData = count(self::$DI['app']['orm.em']->getRepository('Phraseanet:BasketElementVote')->findAll());
 
         $basket = self::$DI['app']['orm.em']->find('Phraseanet:Basket', 4);
         $this->assertCount(2, $basket->getElements());
@@ -358,7 +358,7 @@ class BasketTest extends \PhraseanetAuthenticatedWebTestCase
 
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertCount(4, $basket->getElements());
-        $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:ValidationData')->findAll();
+        $datas = self::$DI['app']['orm.em']->getRepository('Phraseanet:BasketElementVote')->findAll();
         $this->assertTrue($countData < count($datas), 'assert that ' . count($datas) . ' > ' . $countData);
     }
 

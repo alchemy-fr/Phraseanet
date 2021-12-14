@@ -11,7 +11,7 @@ use Alchemy\Phrasea\Form\Constraint\NewEmailValidator;
 class NewEmailValidatorTest extends \PhraseanetTestCase
 {
     /**
-     * @dataProvider provideValidationData
+     * @dataProvider provideVoteData
      */
     public function testValidate($value, $alreadyRegistered)
     {
@@ -37,7 +37,7 @@ class NewEmailValidatorTest extends \PhraseanetTestCase
         $validator->validate($value, $constraint);
     }
 
-    public function provideValidationData()
+    public function provideVoteData()
     {
         return [
             ['romain@neutron.io', true],
