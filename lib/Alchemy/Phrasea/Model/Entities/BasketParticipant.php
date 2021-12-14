@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Model\Entities;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * @ORM\Table(name="BasketParticipants", uniqueConstraints={@ORM\UniqueConstraint(name="unique_participant", columns={"basket_id","user_id"})})
@@ -85,10 +86,9 @@ class BasketParticipant
     /**
      * BasketParticipant constructor.
      */
-    public function __construct(User $user, Basket $basket)
+    public function __construct(User $user)
     {
         $this->setUser($user);
-        $this->setBasket($basket);
         $this->votes = new ArrayCollection();
     }
 
@@ -135,7 +135,7 @@ class BasketParticipant
      *
      * @return self
      */
-    private function setBasket(Basket $basket): BasketParticipant
+    public function setBasket(Basket $basket): BasketParticipant
     {
         $this->basket = $basket;
 
@@ -299,9 +299,9 @@ class BasketParticipant
     /**
      * Get datas
      *
-     * @return ArrayCollection
+     * @return ArrayCollection|PersistentCollection
      */
-    public function getVotes(): ArrayCollection
+    public function getVotes()
     {
         return $this->votes;
     }

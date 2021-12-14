@@ -906,7 +906,7 @@ class PushController extends Controller
         }
         elseif ($context === 'Feedback') {
             // Display the initiator in the participant list window when the first time to create a feedback
-            $basketParticipant = $push->get_original_basket()->addParticipant($this->getAuthenticatedUser());
+            $basketParticipant = new BasketParticipant($this->getAuthenticatedUser());
             $basketParticipant->setCanSeeOthers(1);
             array_push($participants, $basketParticipant);
             $initiatorUserId = $participantUserIds = $this->getAuthenticatedUser()->getId();

@@ -209,6 +209,17 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
+    public function setBasket(\Alchemy\Phrasea\Model\Entities\Basket $basket): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBasket', [$basket]);
+
+        return parent::setBasket($basket);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getIsAware(): bool
     {
 
@@ -352,7 +363,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getVotes(): \Doctrine\Common\Collections\ArrayCollection
+    public function getVotes()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVotes', []);
