@@ -55,7 +55,7 @@ class FacetsResponse
                 if (!empty($aggregation['buckets'])) {      // don't add to a field with no aggs (no buckets), since it will enforce display of the irrelevant facet
                     if($response['aggregations'][$name . '#empty']['doc_count'] > 0) {  // don't add a facet for 0 results
                         $aggregation['buckets'][] = [
-                            'key'       => '_empty_',
+                            'key'       => '_unset_',
                             'value'     => $this->translator->trans('prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)', ['%fieldname%' =>$name]),   // special homemade prop to display a human value instead of the key
                             'doc_count' => $response['aggregations'][$name . '#empty']['doc_count']
                         ];
