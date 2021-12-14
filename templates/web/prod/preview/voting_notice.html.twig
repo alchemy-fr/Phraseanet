@@ -2,8 +2,7 @@
 <br>
 {% for basket_element in feedbackElementDatas %}
     {% set basket = basket_element.getBasket() %}
-    {% set validationSession = basket.getValidation() %}
-    {% if validationSession.isParticipant(app.getAuthenticatedUser()) and (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationSession.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() )%}
+    {% if basket.isParticipant(app.getAuthenticatedUser()) and (basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or basket.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() )%}
         {% set basketName = basket.getName() %}
         <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
             <dt data-kind="BASK"
@@ -15,7 +14,7 @@
             >
                 {{ basketName }}
 
-                {% if validationSession.getExpires() < date() %}
+                {% if basket.getVoteExpires() < date() %}
                     ( {{ 'preview::tab:feedback closed' | trans }} )
                 {% else %}
                     ( {{ 'preview::tab:feedback open' | trans }} )
@@ -23,18 +22,18 @@
             </dt>
             <dd style="color:#afb0b1;text-align:center;margin-bottom:10px;">
                 {% set initiator %}
-                    <a style="color:#27bbe2;" href="mailto:{{ validationSession.getInitiator().getEmail() }}?subject={{ 'preview::tab:feedback mail subject' | trans | url_encode}}{{ ' ' ~ basketName | url_encode }}">
-                        {{ validationSession.getInitiator().getDisplayName() }}
+                    <a style="color:#27bbe2;" href="mailto:{{ basket.getVoteInitiator().getEmail() }}?subject={{ 'preview::tab:feedback mail subject' | trans | url_encode}}{{ ' ' ~ basketName | url_encode }}">
+                        {{ basket.getVoteInitiator().getDisplayName() }}
                     </a>
                 {% endset %}
 
-                {% set createdDate = app['date-formatter'].getDateTranslated(validationSession.getCreated()) %}
+                {% set createdDate = app['date-formatter'].getDateTranslated(basket.getVoteCreated()) %}
 
                 {% trans with {'%initiator%' : initiator, '%createdDate%': createdDate} %}Feedback:: Requested by %initiator% on %createdDate%{% endtrans %}
             </dd>
 
-            {% for choice in basket_element.getValidationDatas() %}
-                {% if validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() %}
+            {% for choice in basket_element.getVotes() %}
+                {% if basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() %}
                     {% if choice.getParticipant().getCanAgree() %}
                         <dd style="margin-bottom: 5px;position:relative;">
                             <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>

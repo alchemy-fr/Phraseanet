@@ -31,9 +31,8 @@ class BasketElementRepository extends EntityRepository
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN e.validation_datas vd
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
+LEFT JOIN e.votes vd
+LEFT JOIN b.participants p
 WHERE (b.user = :usr_id OR p.user = :same_usr_id)
     AND e.id = :element_id
 DQL;
@@ -64,8 +63,7 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
+LEFT JOIN b.participants p
 WHERE e.record_id = :record_id
 AND e.sbas_id = :sbas_id
 DQL;
@@ -89,8 +87,7 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
+LEFT JOIN b.participants p
 WHERE e.sbas_id = :sbas_id
 DQL;
 
@@ -108,9 +105,8 @@ DQL;
 SELECT be
 FROM Phraseanet:BasketElement AS be
 INNER JOIN be.basket b
-INNER JOIN b.validation AS vs
-INNER JOIN vs.participants AS vp
-INNER JOIN vp.datas AS vd 
+INNER JOIN b.participants AS vp
+INNER JOIN vp.votes AS vd 
 WHERE be.record_id = :record_id
 AND be.sbas_id = :sbas_id
 ORDER BY b.created DESC
@@ -136,8 +132,7 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN b.validation s
-LEFT JOIN s.participants p
+LEFT JOIN b.participants p
 WHERE b.user = :usr_id
 AND b.pusher IS NOT NULL
 AND e.record_id = :record_id
@@ -165,8 +160,7 @@ DQL;
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-JOIN b.validation v
-JOIN v.participants p
+JOIN b.participants p
 WHERE p.user = :usr_id
 AND e.record_id = :record_id
 AND e.sbas_id = :sbas_id

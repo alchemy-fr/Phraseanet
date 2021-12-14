@@ -19,7 +19,7 @@
 {% macro valid_baskets_length(baskets) %}
     {% set number = 0 %}
     {% for item in baskets %}
-        {% if item.getValidation() %}
+        {% if item.isVoteBasket() %}
             {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
@@ -29,7 +29,7 @@
 {% macro baskets_length(baskets) %}
     {% set number = 0 %}
     {% for item in baskets %}
-        {% if item.getValidation() == false %}
+        {% if not item.isVoteBasket %}
             {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
@@ -107,7 +107,7 @@
         <div class="feed-list">
             <ul data-role="listview"  style="width:100%;margin: 0;">
                     {% for basket in baskets_collection | sort | reverse%}
-                      {% if basket.getValidation() %}
+                      {% if basket.isVoteBasket() %}
                         {% set basket_length = basket.getElements().count() %}
                         <li>
                           {% if basket.getElements().first() %}
@@ -148,7 +148,7 @@
         <div class="feed-list">
             <ul data-role="listview"  style="width:100%;margin: 0;">
                     {% for basket in baskets_collection | sort | reverse %}
-                      {% if basket.getValidation() is empty %}
+                      {% if not basket.isVoteBasket() %}
                         {% set basket_length = basket.getElements().count() %}
                         <li>
                           {% if basket.getElements().first() %}

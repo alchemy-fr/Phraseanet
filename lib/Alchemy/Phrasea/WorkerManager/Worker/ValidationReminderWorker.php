@@ -52,10 +52,10 @@ class ValidationReminderWorker implements WorkerInterface
         }
 
         foreach ($this->getBasketParticipantRepository()->findNotConfirmedAndNotRemindedParticipantsByTimeLeftPercent($timeLeftPercent, new DateTime()) as $participant) {
-            $validationSession = $participant->getSession();
-            $basket = $validationSession->getBasket();
 
-            $expiresDate = $validationSession->getExpires();
+            $basket = $participant->getBasket();
+
+            $expiresDate = $basket->getVoteExpires();
             $diffInterval = $expiresDate->diff(new DateTime());
 
             if ($diffInterval->days) {
@@ -106,7 +106,7 @@ class ValidationReminderWorker implements WorkerInterface
     private function doRemind(BasketParticipant $participant, Basket $basket, $url, $timeLeft)
     {
         $params = [
-            'from'    => $basket->getValidation()->getInitiator()->getId(),
+            'from'    => $basket->getVoteInitiator()->getId(),
             'to'      => $participant->getUser()->getId(),
             'ssel_id' => $basket->getId(),
             'url'     => $url,
@@ -117,7 +117,7 @@ class ValidationReminderWorker implements WorkerInterface
 
         $mailed = false;
 
-        $userFrom = $basket->getValidation()->getInitiator();
+        $userFrom = $basket->getVoteInitiator();
         $userTo = $participant->getUser();
 
         if ($this->shouldSendNotificationFor($participant->getUser(), 'eventsmanager_notify_validationreminder')) {

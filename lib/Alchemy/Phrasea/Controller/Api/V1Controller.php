@@ -1917,10 +1917,10 @@ class V1Controller extends Controller
             'pusher'            => $basket->getPusher() ? $this->listUser($basket->getPusher()) : null,
             'updated_on'        => $basket->getUpdated()->format(DATE_ATOM),
             'unread'            => !$basket->isRead(),
-            'validation_basket' => !!$basket->getVoteInitiator(),
+            'validation_basket' => $basket->isVoteBasket(),
         ];
 
-        if ($basket->getVoteInitiator()) {
+        if ($basket->isVoteBasket()) {
             $users = array_map(function (BasketParticipant $participant) {
                 $user = $participant->getUser();
 
@@ -2204,10 +2204,10 @@ class V1Controller extends Controller
             'basket_element_id' => $basket_element->getId(),
             'order'             => $basket_element->getOrd(),
             'record'            => $this->listRecord($request, $basket_element->getRecord($this->app)),
-            'validation_item'   => null != $basket_element->getBasket()->getValidation(),
+            'validation_item'   => $basket_element->getBasket()->isVoteBasket(),
         ];
 
-        if ($basket_element->getBasket()->getVoteInitiator()) {
+        if ($basket_element->getBasket()->isVoteBasket()) {
             $choices = [];
             $agreement = null;
             $note = '';

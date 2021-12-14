@@ -30,7 +30,7 @@
     <form action="">
         <textarea class="note_area"
           id="note_area_{{basket_element.getId()}}"
-          {% if basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getNote() == '' %}placeholder="Note"{% endif %}>{{basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getNote()}}</textarea>
+          {% if basket_element.getUserVote(app.getAuthenticatedUser(), true).getNote() == '' %}placeholder="Note"{% endif %}>{{basket_element.getUserVote(app.getAuthenticatedUser(), true).getNote()}}</textarea>
           <button type="submit" class="note_area_validate">{{ 'boutton::valider' | trans }}</button>
         <input name="sselcont_id" value="{{basket_element.getId()}}" type="hidden"/>
     </form>

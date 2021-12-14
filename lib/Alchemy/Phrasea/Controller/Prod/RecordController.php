@@ -10,7 +10,6 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\SearchEngineAware;
 use Alchemy\Phrasea\Controller\Controller;
@@ -19,11 +18,10 @@ use Alchemy\Phrasea\Core\Event\Record\DeleteEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
+use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
 use Alchemy\Phrasea\Model\Repositories\StoryWZRepository;
 use Alchemy\Phrasea\SearchEngine\SearchEngineOptions;
-use Alchemy\Phrasea\Twig\Fit;
 use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -106,9 +104,11 @@ class RecordController extends Controller
         $containerType = null;
 
         if ($env === 'BASK') {
-            if ($record->get_container()->getValidation()) {
+            /** @var Basket $basket */
+            $basket = $record->get_container();
+            if ($basket->isVoteBasket()) {
                 $containerType = 'feedback';
-            } elseif ($record->get_container()->getPusher()) {
+            } elseif ($basket->getPusher()) {
                 $containerType = 'push';
             } else {
                 $containerType = 'basket';

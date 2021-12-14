@@ -16,14 +16,14 @@
                     </div>
                 </div>
                 <div class="chim-right">
-                    {% for validationDatas in basket_element.getValidationDatas()%}
-                        {% if basket_element.getBasket().getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationDatas.getParticipant().getUser() == app.getAuthenticatedUser() %}
+                    {% for vote in basket_element.getVotes()%}
+                        {% if basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or vote.getParticipant().getUser() == app.getAuthenticatedUser() %}
 
                             <div class="basket_report_user_wrapper ui-corner-all">
-                                    {% if validationDatas.getAgreement() == true %}
+                                    {% if vote.getAgreement() == true %}
                                         {% set imguser = '<span class="icomoon icon-agree">&#xe95f;</span>' %}
                                         {% set styleuser = '' %}
-                                    {% elseif validationDatas.getAgreement() is null %}
+                                    {% elseif vote.getAgreement() is null %}
                                         {% set imguser = '&nbsp;' %}
                                         {% set styleuser = 'margin-left:18px;' %}
                                     {% else %}
@@ -35,9 +35,9 @@
                                         {{imguser|raw}}
                                 </div>
                                 <div class="validate-info">
-                                    <h3> {{validationDatas.getParticipant().getUser().getDisplayName()}}</h3>
-                                    {% if validationDatas.getNote() != '' %}
-                                       <p> {{validationDatas.getNote()|nl2br}}</p>
+                                    <h3> {{vote.getParticipant().getUser().getDisplayName()}}</h3>
+                                    {% if vote.getNote() != '' %}
+                                       <p> {{vote.getNote()|nl2br}}</p>
                                     {% endif %}
                                 </div>
                             </div>

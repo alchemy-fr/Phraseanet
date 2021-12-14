@@ -38,9 +38,9 @@ class BasketController extends Controller
             $this->getEntityManager()->flush();
         }
 
-        if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+        if ($basket->isVoteBasket()) {
+            if ($basket->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
+                $basket->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
                 $this->getEntityManager()->flush();
             }
         }
@@ -59,9 +59,9 @@ class BasketController extends Controller
 
     public function displayReminder(Request $request, Basket $basket)
     {
-        if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+        if ($basket->isVoteBasket()) {
+            if ($basket->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
+                $basket->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
                 $this->getEntityManager()->flush();
             }
         }
@@ -73,9 +73,9 @@ class BasketController extends Controller
 
     public function doReminder(Request $request, Basket $basket)
     {
-        $userFrom = $basket->getValidation()->getInitiator();
+        $userFrom = $basket->getVoteInitiator();
 
-        $expireDate = $basket->getValidation()->getExpires();
+        $expireDate = $basket->getVoteExpires();
         $emitter = Emitter::fromUser($userFrom);
         $localeFrom = $userFrom->getLocale();
 

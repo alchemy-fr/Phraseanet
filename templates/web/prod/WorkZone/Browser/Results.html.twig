@@ -32,7 +32,7 @@
             <div class="content">
               <h1 class="title">
                 <img class="loader" src="/assets/prod/images/Basket/Browser/loader.gif" />
-                {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(app.getAuthenticatedUser()) %}
+                {% if not Basket.isVoteBasket() or Basket.isVoteInitiator(app.getAuthenticatedUser()) %}
                 <a href="{{ path('prod_baskets_basket_archive', { 'basket' : Basket.getId(), 'archive' : 1 }) }}" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
                   &nbsp;
                 </a>
@@ -56,10 +56,10 @@
               {% endif %}
 
 
-              {% if Basket.getValidation() %}
+              {% if Basket.isVoteBasket() %}
               <p>
                 {% set list_participants = '' %}
-                {% for Participant in Basket.getValidation().getParticipants() %}
+                {% for Participant in Basket.getParticipants() %}
 
                   {% if list_participants != '' %}
                     {% set list_participants = list_participants ~ ', ' %}

@@ -362,7 +362,7 @@ class LightboxTest extends \PhraseanetAuthenticatedWebTestCase
         $this->mockUserNotificationSettings('eventsmanager_notify_validationdone');
 
         foreach ($validationBasket->getElements() as $element) {
-            $element->getUserValidationDatas(self::$DI['user'])->setAgreement(true);
+            $element->getUserVote(self::$DI['user'], true)->setAgreement(true);
             break;
         }
 

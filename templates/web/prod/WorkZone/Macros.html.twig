@@ -89,7 +89,7 @@
                         </div>
                       </div>
 
-                      {% if basket.getValidation() %}
+                      {% if basket.isVoteBasket() %}
                         <div title="" class="context-menu-item">
                           <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
                             <div class="context-menu-item-inner">
@@ -115,10 +115,10 @@
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
-                    {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}{% if basket.getValidation() %} feedbacks-block {% elseif basket.getPusher() %} pushes-block {% else %} baskets-block {% endif %} ">
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}{% if basket.isVoteBasket() %} feedbacks-block {% elseif basket.getPusher() %} pushes-block {% else %} baskets-block {% endif %} ">
           <a class="workzone-menu-title" href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
             <span>
-              {% if basket.getValidation() %}
+              {% if basket.isVoteBasket() %}
                 <img src='/assets/common/images/icons/basket_validation.png' title=''/>
               {% elseif basket.getPusher() %}
                 {% if not basket.isRead() %}
@@ -136,7 +136,7 @@
             <table>
                   <tr>
                     <!--
-                       {% if basket.getValidation() %}
+                       {% if basket.isVoteBasket() %}
                             <td>
                                 <img
                                     style="display:inline;padding:0;margin:0;"
@@ -186,7 +186,7 @@
                         </div>
                       </div>
 
-                      {% if basket.getValidation() %}
+                      {% if basket.isVoteBasket() %}
                         <div title="" class="context-menu-item">
                           <div class="context-menu-item-inner">
                             <a target="_blank" href="{{ path('lightbox_validation', { 'basket' : basket.getId() }) }}">
@@ -406,18 +406,18 @@
                   </td>
                   <td style="width:100%;">
                       <table style=width:100%>
-                          {% for choice in basket_element.getValidationDatas() %}
-                              {% if basket.getValidation().getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
+                          {% for vote in basket_element.getVotes() %}
+                              {% if basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or vote.getParticipant().getUser() == app.getAuthenticatedUser() %}
                               <tr>
                                   <td style="position: relative">
-                                      <span class="feedback_user_name">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
+                                      <span class="feedback_user_name">{{ vote.getParticipant().getUser().getDisplayName() }}</span>
                                       <span class="line_separator"></span>
                                   </td>
                                   <td>
-                                  {% if choice.getParticipant().getCanAgree() %}
-                                        {% if choice.getAgreement() == true %}
+                                  {% if vote.getParticipant().getCanAgree() %}
+                                        {% if vote.getAgreement() == true %}
                                             <img style="cursor:help;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
-                                        {% elseif choice.getAgreement() is null %}
+                                        {% elseif vote.getAgreement() is null %}
                                             <img style="cursor:help;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
                                         {% else %}
                                             <img style="cursor:help;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
@@ -427,8 +427,8 @@
                                   {% endif %}
                                   </td>
                                   <td style="width:25px;">
-                                  {% if choice.getNote() != '' %}
-                                      <span class="noteTips macroFileEdit"  title="{{choice.getNote()|nl2br}}">&nbsp;</span>
+                                  {% if vote.getNote() != '' %}
+                                      <span class="noteTips macroFileEdit"  title="{{vote.getNote()|nl2br}}">&nbsp;</span>
                                   {% endif %}
                                   </td>
                               </tr>
