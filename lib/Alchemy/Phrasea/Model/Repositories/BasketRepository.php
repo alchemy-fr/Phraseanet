@@ -142,7 +142,7 @@ class BasketRepository extends EntityRepository
             JOIN b.participants p
             JOIN p.votes v
             WHERE b.user != ?1 AND p.user = ?2
-             AND (b.vote_expires IS NULL OR b.vote_.expires > CURRENT_TIMESTAMP()) ';
+             AND (b.vote_expires IS NULL OR b.vote_expires > CURRENT_TIMESTAMP()) ';
 
         if ($sort == 'date') {
             $dql .= "\nORDER BY b.created DESC";
