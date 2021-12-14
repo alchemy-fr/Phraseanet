@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2021-12-14T11:49:19Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2021-12-14T14:24:19Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -14823,37 +14823,37 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="50249b8800f530a969945b1ae0fa1f2ec307db52" resname="thesaurus::edit Action">
         <source>thesaurus::edit Action</source>
         <target state="needs-translation">Aktion</target>
-        <jms:reference-file line="60">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="58">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a06db0073854dd5f0dd65e92cc2a27a6bd34e161" resname="thesaurus::edit Field">
         <source>thesaurus::edit Field</source>
         <target state="needs-translation">Feld</target>
-        <jms:reference-file line="59">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="57">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1a3e770bced63e1e0c5e9b04a12a6f102771f34d" resname="thesaurus::edit Value">
         <source>thesaurus::edit Value</source>
         <target state="needs-translation">Wert</target>
-        <jms:reference-file line="61">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="59">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8af9255cc750e3e0a3418e0aadcac20dc34c679b" resname="thesaurus::edit add">
         <source>thesaurus::edit add</source>
         <target state="new">thesaurus::edit add</target>
-        <jms:reference-file line="76">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="74">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="27b11cf3daaac2d61e7909bffc3f0bd715d72b72" resname="thesaurus::edit add %selected_value% to the field  %field_name%">
         <source>thesaurus::edit add %selected_value% to the field %field_name%</source>
         <target state="new">thesaurus::edit add %selected_value% to the field  %field_name%</target>
-        <jms:reference-file line="45">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="43">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ca22ac6da238dca073cb83b175497d53c9db1ad" resname="thesaurus::edit advanced mode">
         <source>thesaurus::edit advanced mode</source>
         <target state="needs-translation">Erweiterter Modus</target>
-        <jms:reference-file line="33">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="31">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="248812bd2d17773c8414398b5c9f052008e169fb" resname="thesaurus::edit clear">
         <source>thesaurus::edit clear</source>
         <target state="needs-translation">Löschen</target>
-        <jms:reference-file line="81">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="79">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d0667dac38f2673134efb588468b259910245c8f" resname="thesaurus::edit editing %count% record(s)">
         <source>thesaurus::edit editing %count% record(s)</source>
@@ -14863,37 +14863,32 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="e69e92a4ad2d11f9eb060e4c1210bd3b2c7db08c" resname="thesaurus::edit remove">
         <source>thesaurus::edit remove</source>
         <target state="new">thesaurus::edit remove</target>
-        <jms:reference-file line="78">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="76">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="280a8eb09e6215e067f7851759ede2c4610cce1e" resname="thesaurus::edit replace all with">
         <source>thesaurus::edit replace all with</source>
         <target state="new">thesaurus::edit replace all with</target>
-        <jms:reference-file line="77">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="75">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b51ac2a92fc234c9147ef77fe0cdd7a68c1c44f0" resname="thesaurus::edit set  %field_name%  to  %selected_value%">
         <source>thesaurus::edit set %field_name% to %selected_value%</source>
         <target state="needs-translation">Das Feld %field_name% mit Wert %selected_value% definieren</target>
-        <jms:reference-file line="47">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="45">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2775ff21e6c238255219119c457b6f75f0eae0d9" resname="thesaurus::edit set to">
         <source>thesaurus::edit set to</source>
         <target state="needs-translation">gleich</target>
-        <jms:reference-file line="80">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="78">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc24c56b4d5b8d5e4d41a2f565da3f7f8bb8626d" resname="thesaurus::edit simple mode">
         <source>thesaurus::edit simple mode</source>
         <target state="needs-translation">Einfacher Modus</target>
-        <jms:reference-file line="29">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="72266cf84ae3ea99b0b6d985b2ddead0eeb48cc8" resname="thesaurus::edit windows title">
-        <source>thesaurus::edit windows title</source>
-        <target state="new">thesaurus::edit windows title</target>
-        <jms:reference-file line="2">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="27">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2c5f2b28d83092ce72002a1b384b4a28ce66dad" resname="thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)">
         <source>thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)</source>
         <target state="needs-translation">Sie haben nicht die notwendigen Rechte, um %rejected_cnt% Datensatz(e) zu bearbeiten</target>
-        <jms:reference-file line="12">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
+        <jms:reference-file line="10">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="yes">
         <source>thesaurus::menu: Mettre dans le stock</source>
