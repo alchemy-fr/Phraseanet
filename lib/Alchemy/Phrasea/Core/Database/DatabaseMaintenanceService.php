@@ -51,9 +51,6 @@ class DatabaseMaintenanceService
         'UsrListOwners',
         'UsrLists',
         'UsrListsContent',
-        'ValidationDatas',
-        'ValidationParticipants',
-        'ValidationSessions',
     ];
 
     private $app;

@@ -1,4 +1,4 @@
-{% if basket_element and basket_element.getBasket().getValidation() %}
+{% if basket_element and basket_element.getBasket().isVoteBasket() %}
 <div class="notes_wrapper">
     <div class="notes_overlay"></div>
     <div class="notes well-small">
@@ -6,18 +6,18 @@
             <h2 class="title15">{{ 'validation:: votre note' | trans }}</h2>
         </div>
         <hr/>
-        {% for validationDatas in basket_element.getValidationDatas() %}
-            {% if validationDatas.getNote() != '' %}
-                <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser().getId() == app.getAuthenticatedUser().getId() %}my_note{% endif %} ">
+        {% for vote in basket_element.getVotes() %}
+            {% if vote.getNote() != '' %}
+                <div class="note_wrapper ui-corner-all {% if vote.getParticipant().getUser().getId() == app.getAuthenticatedUser().getId() %}my_note{% endif %} ">
                     <span class="note_author title15">
-                      {{validationDatas.getParticipant().getUser().getDisplayName()}}
-                    </span> : {{ validationDatas.getNote()|nl2br }}
+                      {{vote.getParticipant().getUser().getDisplayName()}}
+                    </span> : {{ vote.getNote()|nl2br }}
                 </div>
           {% endif %}
         {% endfor %}
 
         <form>
-            <textarea>{{basket_element.getUserValidationDatas(app.getAuthenticatedUser()).getNote()}}</textarea>
+            <textarea>{{basket_element.getUserVote(app.getAuthenticatedUser(), true).getNote()}}</textarea>
             <div class="buttons">
                 <button class="note_closer ui-corner-all">
                   {{ 'boutton::fermer' | trans }}

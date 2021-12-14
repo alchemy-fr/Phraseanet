@@ -625,14 +625,14 @@ class Basket
         $total_el1 = 0;
         $total_el2 = 0;
 
-        foreach ($element1->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el1 += $data->getAgreement() ? 1 : 0;
+        foreach ($element1->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el1 += $vote->getAgreement() ? 1 : 0;
             }
         }
-        foreach ($element2->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el2 += $data->getAgreement() ? 1 : 0;
+        foreach ($element2->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el2 += $vote->getAgreement() ? 1 : 0;
             }
         }
 
@@ -653,14 +653,14 @@ class Basket
         $total_el1 = 0;
         $total_el2 = 0;
 
-        foreach ($element1->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el1 += $data->getAgreement() ? 0 : 1;
+        foreach ($element1->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el1 += $vote->getAgreement() ? 0 : 1;
             }
         }
-        foreach ($element2->getValidationDatas() as $data) {
-            if ($data->getAgreement() !== null) {
-                $total_el2 += $data->getAgreement() ? 0 : 1;
+        foreach ($element2->getVotes() as $vote) {
+            if ($vote->getAgreement() !== null) {
+                $total_el2 += $vote->getAgreement() ? 0 : 1;
             }
         }
 
@@ -696,11 +696,20 @@ class Basket
     }
 
     /**
-     *  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * todo : rename as isVoteFinished
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! easy way to tell if a basket "is" a vote (former = has "validation")
+     * @return bool
+     */
+    public function isVoteBasket()
+    {
+        return !!$this->getVoteInitiator();
+    }
+
+    /**
+     * /!\ returns null if the basket has no voteExpires date
+     *
      * @return bool|null
      */
-    public function isFinished()
+    public function isVoteFinished()
     {
         if (is_null($this->getVoteExpires())) {
             return null;
@@ -714,7 +723,7 @@ class Basket
     public function getVoteString(Application $app, User $user): string
     {
         if ($this->isVoteInitiator($user)) {
-            if ($this->isFinished()) {
+            if ($this->isVoteFinished()) {
                 return $app->trans('Vous aviez envoye cette demande a %n% utilisateurs', ['%n%' => count($this->getParticipants()) - 1]);
             }
 
@@ -729,13 +738,6 @@ class Basket
         }
     }
 
-    /**
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     */
-    public function getValidation()
-    {
-        die("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THIS METHOD IS TO BE REMOVED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
 
     public function getSize(Application $app)
     {

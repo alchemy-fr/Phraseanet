@@ -382,7 +382,7 @@ class PDFRecords extends PDF
 
         if($this->printer->is_basket()) {
             $basket = $this->printer->get_original_basket();
-            $isVoteBasket = !is_null($basket->getVoteInitiator());
+            $isVoteBasket = $basket->isVoteBasket();
 
             if($withfeedback && $isVoteBasket) {
                 // first page : validation informations
@@ -422,7 +422,7 @@ class PDFRecords extends PDF
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $basket->isFinished() ? $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expired")) : $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback active"));
+                $basket->isVoteFinished() ? $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expired")) : $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback active"));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
@@ -645,11 +645,13 @@ class PDFRecords extends PDF
                     if($iparticipant++ > 0) {
                         // $this->pdf->SetY($this->pdf->GetY()+1);
                     }
-                    $validationData = $basketElement->getUserValidationDatas($participant->getUser());
+
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! we should not use createMissing=true here, but for now it's easier for the following code
+                    $vote = $basketElement->getUserVote($participant->getUser(), true);
 
                     $this->pdf->Write(5, '- ' . $this->getDisplayName($participant->getUser(), true). " : ");
 
-                    $r = $validationData->getAgreement();
+                    $r = $vote->getAgreement();
                     $this->pdf->SetX(100);
                     if ($r === null) {
                         $this->pdf->Write(0, $this->app->trans("print_feedback:: non voté"));
@@ -664,10 +666,10 @@ class PDFRecords extends PDF
                             $this->pdf->Write(0, $this->app->trans("print_feedback:: Non"));
                         }
                         $this->pdf->SetTextColor(0);
-                        $this->pdf->Write(0, "  (" . $this->formatDate($validationData->getUpdated()) . ")");
+                        $this->pdf->Write(0, "  (" . $this->formatDate($vote->getUpdated()) . ")");
                     }
 
-                    if (($note = (string)($validationData->getNote())) !== '') {
+                    if (($note = (string)($vote->getNote())) !== '') {
                         $this->pdf->SetFont(PhraseaPDF::FONT, 'I', 11);
                         $this->pdf->Write(5,"\n");
                         $this->pdf->SetX(100);

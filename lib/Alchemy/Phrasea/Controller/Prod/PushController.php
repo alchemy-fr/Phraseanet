@@ -245,7 +245,7 @@ class PushController extends Controller
             //
             if ($pusher->is_basket()) {
                 $basket = $pusher->get_original_basket();
-                if($basket->getVoteInitiator()) {
+                if($basket->isVoteBasket()) {
                     // this basket is already under vote (should not be possible from front/ux)
                     // we do not allow, even if the initiator is alreadu me
                     // if(!$basket->isVoteInitiator($this->getAuthenticatedUser())) {
@@ -285,7 +285,7 @@ class PushController extends Controller
                 $basket->setVoteExpires($expireDate);
             }
             else {
-                // go on with existing validationSession
+                // go on with existing votes
                 $expireDate = $basket->getVoteExpires();
             }
 
@@ -324,7 +324,7 @@ class PushController extends Controller
                 $remainingParticipantsUserId = $basket->getListParticipantsUserId();
             }
 
-            // add participants to the validationSession
+            // add participants to the vote
             //
             foreach ($participants as $key => $participant) {
 
@@ -767,7 +767,7 @@ class PushController extends Controller
             $basket = $this->getBasketRepository()->findUserBasket($request->request->get('basket_id'), $this->app->getAuthenticatedUser(), true);
             $expirationDate = new DateTime($request->request->get('date') . " 23:59:59");
 
-            if (is_null($basket->getVoteInitiator())) {
+            if (!$basket->isVoteBasket()) {
                 throw new Exception('Unable to find the validation session');
             }
 
@@ -899,7 +899,7 @@ class PushController extends Controller
         $participantUserIds = '';
         $initiatorUserId = null;
 
-        if ($context === 'Feedback' && $feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->getValidation()) {
+        if ($context === 'Feedback' && $feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->isVoteBasket()) {
             $participants = $push->get_original_basket()->getParticipants();
             $participantUserIds = implode('_', $push->get_original_basket()->getListParticipantsUserId());
             $initiatorUserId = $push->get_original_basket()->getVoteInitiator()->getId();

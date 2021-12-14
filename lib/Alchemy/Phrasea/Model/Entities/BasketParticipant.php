@@ -83,7 +83,7 @@ class BasketParticipant
 
 
     /**
-     * ValidationParticipant constructor.
+     * BasketParticipant constructor.
      */
     public function __construct(User $user, Basket $basket)
     {

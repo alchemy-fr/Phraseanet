@@ -88,9 +88,9 @@
             {% endfor %}
         {% endif %}
     </div>
-    {% if basket.getValidation() %}
+    {% if basket.isVoteBasket() %}
         {% set disabled = '' %}
-        {% if basket.getValidation().isFinished() %}
+        {% if basket.isVoteFinished() %}
             {% set disabled = 'disabled' %}
         {% endif %}
 
@@ -106,9 +106,9 @@
             </p>
             <div class="record-number">  {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}</div>
 
-            {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getValidation().getExpires()) %}
+            {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getVoteExpires()) %}
             <div class="expiredDate">
-                {% if basket.getValidation().getExpires() < date() %}
+                {% if basket.getVoteExpires() < date() %}
                     <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
                 {% else %}
                     <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>
@@ -137,7 +137,7 @@
 
     {% import 'prod/WorkZone/Macros.html.twig' as Macros %}
 
-    {% if basket.getValidation() %}
+    {% if basket.isVoteBasket() %}
         {{ Macros.display_validation(app, basket, ordre) }}
 
 {% else %}
@@ -145,7 +145,7 @@
 {% endif %}
 </div>
 
-{% if basket.getValidation() %}
+{% if basket.isVoteBasket() %}
 
 <script type="text/javascript">
     $( function() {

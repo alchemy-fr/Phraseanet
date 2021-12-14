@@ -99,13 +99,12 @@ class BasketRepository extends EntityRepository
             . " UNION\n"
             . "SELECT b.id\n"
             . " FROM Baskets b\n"
-            . "  INNER JOIN ValidationSessions s ON (s.`basket_id` = b.`id`)\n"
-            . "  INNER JOIN ValidationParticipants p ON (p.`validation_session_id` = s.`id`)\n"
+            . "  INNER JOIN BasketParticipants p ON (p.`basket_id` = b.`id`)\n"
             . " WHERE b.archived = 0\n"
             . "   AND b.user_id != :usr_id_ownertwo\n"
             . "   AND p.user_id = :usr_id_participant\n"
             . "   AND p.is_aware = 0\n"
-            . "   AND s.expires > CURRENT_TIMESTAMP()";
+            . "   AND b.vote_expires > CURRENT_TIMESTAMP()";
 
         $params = [
             'usr_id_owner'       => $user->getId(),
@@ -137,24 +136,13 @@ class BasketRepository extends EntityRepository
      */
     public function findActiveValidationByUser(User $user, $sort = null)
     {
-        // checked : 2 usages, "b.elements" seems useless.
-        $dql = "SELECT b\n"
-            . "FROM Phraseanet:Basket b\n"
-            // . "  JOIN b.elements e\n"
-            // . "  JOIN e.validation_datas v\n"
-            . "  JOIN b.validation s\n"
-            . "  JOIN s.participants p\n"
-            . "WHERE b.user != ?1 AND p.user = ?2\n"
-            . "  AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())";
-
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
             JOIN b.elements e
-            JOIN e.validation_datas v
-            JOIN b.validation s
-            JOIN s.participants p
+            JOIN b.participants p
+            JOIN p.votes v
             WHERE b.user != ?1 AND p.user = ?2
-             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()) ';
+             AND (b.vote_expires IS NULL OR b.vote_.expires > CURRENT_TIMESTAMP()) ';
 
         if ($sort == 'date') {
             $dql .= "\nORDER BY b.created DESC";
@@ -182,7 +170,6 @@ class BasketRepository extends EntityRepository
         // checked : 3 usages, "b.elements e" seems useless
         $dql = "SELECT b\n"
             . " FROM Phraseanet:Basket b\n"
-            // . " LEFT JOIN b.elements e\n"
             . " WHERE b.id = :basket_id";
 
         $query = $this->_em->createQuery($dql);
@@ -198,9 +185,9 @@ class BasketRepository extends EntityRepository
         if ($basket->getUser()->getId() != $user->getId()) {
             $participant = false;
 
-            if ($basket->getValidation() && !$requireOwner) {
+            if ($basket->isVoteBasket() && !$requireOwner) {
                 try {
-                    $basket->getValidation()->getParticipant($user);
+                    $basket->getParticipant($user);
                     $participant = true;
                 } catch (\Exception $e) {
 
@@ -238,7 +225,6 @@ class BasketRepository extends EntityRepository
     {
         switch ($type) {
             case self::RECEIVED:
-                // todo : check when called, and if "LEFT JOIN b.elements e" is usefull
                 $dql = "SELECT b\n"
                     . "FROM Phraseanet:Basket b\n"
                     . "  JOIN b.elements e\n"
@@ -252,28 +238,26 @@ class BasketRepository extends EntityRepository
                 $dql = "SELECT b\n"
                     . "FROM Phraseanet:Basket b\n"
                     . "  JOIN b.elements e\n"
-                    . "  JOIN b.validation s\n"
-                    . "  JOIN s.participants p\n"
+                    . "  JOIN b.participants p\n"
                     . "WHERE b.user != ?1 AND p.user = ?2";
                 $params = [
                     1 => $user->getId(),
                     2 => $user->getId()
                 ];
                 break;
-            case self::VALIDATION_SENT:
+            case self::VALIDATION_SENT:         // we expect initiator = owner
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
-                JOIN b.validation v
-                WHERE b.user = :usr_id';
+                WHERE b.vote_initiator = :usr_id1 AND  b.user = :usr_id2';
                 $params = [
-                    'usr_id' => $user->getId()
+                    'usr_id1' => $user->getId(),
+                    'usr_id2' => $user->getId()
                 ];
                 break;
             case self::MYBASKETS:
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
-                LEFT JOIN b.validation s
-                LEFT JOIN s.participants p
+                LEFT JOIN b.participants p
                 WHERE (b.user = :usr_id)';
                 $params = [
                     'usr_id' => $user->getId()
@@ -284,9 +268,8 @@ class BasketRepository extends EntityRepository
                 $dql = 'SELECT b
                 FROM Phraseanet:Basket b
                 LEFT JOIN b.elements e
-                LEFT JOIN b.validation s
-                LEFT JOIN s.participants p
-                WHERE (b.user = :usr_id OR p.user = :validating_usr_id)';
+                LEFT JOIN b.participants p
+                WHERE (b.user = :usr_id OR b.vote_initiator = :validating_usr_id)';     // !!!!!!!!!!! always same user ?
                 $params = [
                     'usr_id'            => $user->getId(),
                     'validating_usr_id' => $user->getId()
@@ -330,11 +313,10 @@ class BasketRepository extends EntityRepository
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
             LEFT JOIN b.elements e
-            LEFT JOIN b.validation s
-            LEFT JOIN s.participants p
+            LEFT JOIN b.participants p
             WHERE (b.user = :usr_id AND b.archived = false)
               OR (b.user != :usr_id AND p.user = :usr_id
-                  AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())
+                  AND (b.vote_expires IS NULL OR b.vote_.expires > CURRENT_TIMESTAMP())
                   )';
 
         if ($sort == 'date') {

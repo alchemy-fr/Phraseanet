@@ -25,8 +25,8 @@ class PrinterController extends Controller
         $printer = new RecordHelper\Printer($this->app, $request);
 
         $basketFeedbackId = null;
-        if($printer->is_basket() && ($basket = $printer->get_original_basket()) && ($validation = $basket->getValidation())) {
-            if($validation->getInitiator()->getId() === $this->app->getAuthenticatedUser()->getId()) {
+        if($printer->is_basket() && ($basket = $printer->get_original_basket()) && $basket->isVoteBasket()) {
+            if($basket->getVoteInitiator()->getId() === $this->app->getAuthenticatedUser()->getId()) {
                 $basketFeedbackId = $basket->getId();
             }
         }
