@@ -10912,9 +10912,9 @@
         <target state="translated">Rotate</target>
         <jms:reference-file line="34">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="no">
         <source>index::advance_search: disable-facet</source>
-        <target state="translated">Hide facets with 1 result (experimental)</target>
+        <target state="needs-translation">Hide facets with 1 result</target>
         <jms:reference-file line="273">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet" approved="yes">
@@ -13263,7 +13263,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="9fb38743f0e67ac389f4d31a55eff4ec5acac703" resname="prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)">
         <source>prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)</source>
-        <target state="needs-translation">Unset value (%fieldname%)</target>
+        <target state="needs-translation">Unset value for %fieldname%</target>
         <jms:reference-file line="59">Elastic/Search/FacetsResponse.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
