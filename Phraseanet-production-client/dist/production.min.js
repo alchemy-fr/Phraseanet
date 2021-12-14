@@ -68020,11 +68020,11 @@ var search = function search(services) {
     };
 
     var updateHiddenFacetsListInPrefsScreen = function updateHiddenFacetsListInPrefsScreen() {
-        var $hiddenFacetsContainer = (0, _jquery2.default)('#look_box_settings').find('.hiddenFiltersListContainer');
+        var $hiddenFacetsContainer = (0, _jquery2.default)('.card-body').find('.hiddenFiltersListContainer');
         if (savedHiddenFacetsList.length > 0) {
             $hiddenFacetsContainer.empty();
             _.each(savedHiddenFacetsList, function (value) {
-                var $html = (0, _jquery2.default)('<span class="facetFilter" data-name="' + value.name + '"><span class="facetFilter-label" title="' + value.title + '">' + value.title + '<span class="facetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
+                var $html = (0, _jquery2.default)('<span class="hiddenFacetFilter" data-name="' + value.name + '"><span class="hiddenFacetFilter-label" title="' + value.title + '">' + value.title + '<span class="hiddenFacetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
 
                 $hiddenFacetsContainer.append($html);
 
