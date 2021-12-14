@@ -14870,7 +14870,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="e69e92a4ad2d11f9eb060e4c1210bd3b2c7db08c" resname="thesaurus::edit remove">
         <source>thesaurus::edit remove</source>
-        <target state="needs-translation">remove</target>
+        <target state="needs-translation">Remove</target>
         <jms:reference-file line="76">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="280a8eb09e6215e067f7851759ede2c4610cce1e" resname="thesaurus::edit replace all with">
