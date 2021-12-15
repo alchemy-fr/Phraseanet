@@ -3204,6 +3204,10 @@ h3.metadatas-title:after {
   line-height: 26px;
 }
 
+#proposals #collapseOne {
+  background: #292929;
+}
+
 .ui-dialog .ui-dialog-content.loading,
 .loading {
   background-image: url("/assets/common/images/icons/loading.svg");
