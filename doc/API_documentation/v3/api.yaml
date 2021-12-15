@@ -110,6 +110,21 @@ components:
         minimum: 1
         maximum: 100
         # default:
+
+    bases:
+      name: bases
+      in: query
+      description: >
+        'bases_id s to search on as seen in `Collection id ("base_id" API side)` in _admin > Databases > ... collection_
+
+        If not set: search all collections'
+      required: false
+      schema:
+        type: array
+        uniqueItems: false
+        items:
+          type: integer
+
 #  securitySchemes:
 #      api_key:
 #          type: apiKey
@@ -123,14 +138,14 @@ components:
 #                  tokenUrl: azea
 
 paths:
-  '/me':
-    get:
-      description: 'todo'
-      responses:
-        200:
-          description: successful operation
-        default:
-          description: Any error
+#  '/me':
+#    get:
+#      description: 'todo'
+#      responses:
+#        200:
+#          description: successful operation
+#        default:
+#          description: Any error
 
   # ---------------- search ----------------
   '/search':
@@ -464,6 +479,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/query'
         - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/bases'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/per_page'
         - $ref: '#/components/parameters/offset'
@@ -488,7 +504,21 @@ paths:
               type: string
               enum:
                 - facets
+                - suggestions
                 - result.stories.children
+                - results.records.subdefs
+                - results.stories.subdefs
+                - results.records.caption
+                - results.stories.caption
+                - results.records.metadata
+                - results.stories.metadata
+                - results.records.status
+                - results.stories.status
+                - results.records.children
+                - results.records.children.subdefs
+                - results.records.children.caption
+                - results.records.children.metadata
+                - results.records.children.status
       responses:
         200:
           description: ok
@@ -513,6 +543,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/query'
         - $ref: '#/components/parameters/search_type'
+        - $ref: '#/components/parameters/bases'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/per_page'
         - $ref: '#/components/parameters/offset'

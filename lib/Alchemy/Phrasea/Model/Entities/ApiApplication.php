@@ -151,7 +151,7 @@ class ApiApplication
      *
      * @ORM\Column(name="webhook_active", type="boolean", nullable=false)
      */
-    private $webhookActive = true;
+    private $webhookActive = false;
 
     public function __construct()
     {

@@ -109,6 +109,7 @@ const account = (services) => {
             var modifierBtn = $(this);
             var saveBtn = $('a.save_webhook');
             var input = $('.url_webhook_input');
+            var checkboxActive = $('.update-webhook-status');
             var inputVal = input.html();
 
             modifierBtn.hide();
@@ -135,6 +136,7 @@ const account = (services) => {
                     success: function (data) {
                         if (data.success) {
                             input.empty().append(webhook);
+                            checkboxActive.prop('checked', true);
                         } else {
                             input.empty().append(inputVal);
                         }
@@ -176,6 +178,20 @@ const account = (services) => {
                 dataType: 'json',
                 data: {
                     action: $this.is(':checked') ? 'add' : 'remove'
+                },
+                success: function (data) {
+                }
+            });
+        });
+
+        $container.on('click', '.update-webhook-status', function () {
+            let $this = $(this);
+            $.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: $this.is(':checked') ? 'activate' : 'deactivate'
                 },
                 success: function (data) {
                 }

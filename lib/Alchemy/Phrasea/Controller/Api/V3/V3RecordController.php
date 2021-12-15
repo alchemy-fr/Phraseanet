@@ -252,6 +252,7 @@ class V3RecordController extends Controller
     public function indexAction_PATCH(Request $request, $databox_id, $record_id)
     {
         $record = $this->findDataboxById($databox_id)->get_record($record_id);
+        $previousDescription = $record->getRecordDescriptionAsArray();
 
         try {
             $body = $this->decodeJsonBody($request);
@@ -272,7 +273,7 @@ class V3RecordController extends Controller
 
         if(!$dry) {
             // @todo Move event dispatch inside record_adapter class (keeps things encapsulated)
-            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record));
+            $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($record, $previousDescription));
 
             $ret = $this->getResultHelpers()->listRecord($request, $record, $this->getAclForUser());
 
