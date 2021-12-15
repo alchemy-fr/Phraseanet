@@ -10909,9 +10909,9 @@
         <target state="translated">Bild Werkzeug</target>
         <jms:reference-file line="34">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="yes">
+      <trans-unit id="0d25ab4ea387d19f49a120acb928c7f9500b0cf3" resname="index::advance_search: disable-facet" approved="no">
         <source>index::advance_search: disable-facet</source>
-        <target state="translated">Facetten mit nur einem Ergebnis ausblenden (experimentell)</target>
+        <target state="needs-translation">Facetten, die nur ein Ergebnis enthalten, nicht anzeigen</target>
         <jms:reference-file line="273">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="16b1c68bd21754876991dfc8df38b024383fbca4" resname="index::advance_search: facet" approved="no">
@@ -13255,7 +13255,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="9fb38743f0e67ac389f4d31a55eff4ec5acac703" resname="prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)">
         <source>prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)</source>
-        <target state="needs-translation">Undefinierter Wert (%fieldname%)</target>
+        <target state="needs-translation">Wert nicht gesetzt für %fieldname%</target>
         <jms:reference-file line="59">Elastic/Search/FacetsResponse.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
