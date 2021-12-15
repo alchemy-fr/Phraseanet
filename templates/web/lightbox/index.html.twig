@@ -96,7 +96,7 @@
                     </th>
                 </tr>
                 {% for basket in baskets_collection | sort | reverse%}
-                  {% if basket.getValidation is null %}
+                  {% if not basket.isVoteBasket() %}
                       {% set basket_length = basket.getElements().count() %}
                       {% set counter = ( counter | default(0) ) + 1 %}
                       {% set counter_length = baskets_collection | length %}
