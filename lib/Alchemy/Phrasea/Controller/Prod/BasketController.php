@@ -50,7 +50,8 @@ class BasketController extends Controller
 
         return $this->render('prod/WorkZone/Basket.html.twig', [
             'basket' => $basket,
-            'ordre'  => $request->query->get('order'),
+            // !!!!!!!!!!!!!!!!!!!!!!!! order is null when a "vote" (feedback) is deployed in wz
+            'ordre'  => $request->query->get('order') ?: Basket::ELEMENTSORDER_NAT,
             'plugins' => [
                 'actionbar' => $filter('workzone.basket.actionbar'),
             ],
