@@ -3916,6 +3916,8 @@ var workzoneFacets = function workzoneFacets(services) {
 
         treeSource = _parseColors(treeSource);
 
+        treeSource = _colorUnsetText(treeSource);
+
         return _getFacetsTree().reload(treeSource).done(function () {
             _.each((0, _jquery2.default)('#proposals').find('.fancytree-expanded'), function (element, i) {
                 (0, _jquery2.default)(element).find('.fancytree-title, .fancytree-expander').css('line-height', '50px');
@@ -3973,6 +3975,21 @@ var workzoneFacets = function workzoneFacets(services) {
             }
             return string;
         }
+    }
+
+    function _colorUnsetText(source) {
+        _.forEach(source, function (facet) {
+            if (!_.isUndefined(facet.children) && facet.children.length > 0) {
+                _.forEach(facet.children, function (child) {
+                    if (child.raw_value.toString() === '_unset_') {
+                        var title = child.title;
+                        child.title = '<span style="color:#2196f3;">' + title.toString() + '</span>';
+                    }
+                });
+            }
+        });
+
+        return source;
     }
 
     // from stackoverflow
