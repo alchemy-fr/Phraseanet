@@ -244,6 +244,26 @@ class BasketElement
      */
     public function getVotes()
     {
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // hack : a participant+element may have no matching "vote" row
+        // if the basket is a "vote", we fix this here
+        if($this->getBasket()->isVoteBasket()) {
+            /** @var BasketParticipant $participant */
+            foreach($this->getBasket()->getParticipants() as $participant) {
+                // don't call getUserVote() as it will call getVotes() ...
+                $found = false;
+                foreach ($this->votes as $vote) {
+                    if ($vote->getParticipant()->getId() == $participant->getId()) {
+                        $found = true;
+                        break;
+                    }
+                }
+                if(!$found) {
+                    $this->addVote($this->createVote($participant));
+                }
+            }
+        }
+
         return $this->votes;
     }
 
@@ -278,7 +298,6 @@ class BasketElement
      */
     public function createVote(BasketParticipant $participant)
     {
-        // !!!!!!!!!!!!!!!!!!!!!!!!!! persist ?
         $bev = new BasketElementVote($participant, $this);
         $participant->addVote($bev);
 
