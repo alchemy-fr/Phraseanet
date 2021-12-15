@@ -1,5 +1,185 @@
 # CHANGELOG
 
+## 4.1.5 
+
+### Version summary :
+
+- Search Engine 
+  - It is possible to search for records where fields are filled with a given value, eg : search record where field is fullfilled ```Title=_set_```
+  - It is also possible to search record using documentary field if empty,  eg : search record where "Title" field is empty ```Title=_unset_```  .
+  - Display an "Unset" facet  to quick filter results with no value in field.
+    This is an option that the user can activate in "Prod", "workzone",  "facets setting", useful to detect and fix an incomplete indexing.
+
+- Record classification by drag and drop on thesaurus terms
+  - This now is possible to add terms to record or story by drag and drop them to a thesaurus term.   
+ 
+- Feedback improvement: 
+  -  Change the feedback's deadline or reopen it.
+  -  Add manually new user during the feedback. 
+  -  Send manually a feedback reminder by email to selected users including a new connection link (token).
+ 
+ - Including a CGU files (as pdf) in the downloaded ZIP.
+   - the attached PDF include thumbnails and description of downloaded files. 
+
+- Phrasea Expose in Phraseanet Production
+    -  Better integration between Prod and Phrasea Expose service.
+    - Add mapping for fields and subdefinitions when adding records to a publication.
+  
+- Databox subdefs - Create watermarked subdefs.
+
+- Generate sub definition for HEIC file.
+
+- Worker Record Actions for replacing legacy task "record mover".     
+
+- Webhook Improvement 
+   - It is now possible to subscribe only on some events.
+   - More events are emitted on record/story actions.
+     - record/story creation / deletion
+     - record/story editing 
+     - record/story status changed 
+     - record/story collection change
+     - record/story file substitution
+     - Change the webhook json content, including "before" and "after" state for 
+         - Collection change 
+         - StatusBits change
+         - Indexation change 
+
+- docker and docker-compose
+  - Add docker-compose ```profiles``` for a better stack compositing  
+  - Add container for legacy schedulers 
+
+- API improvement on story and search endpoint
+     - Story search mode improvement of ```include```.  
+
+- Implement HTTP proxy support server side for request made by : 
+    - Webhook Emit 
+    - Geonames request
+    - Communication with Phrasea Expose 
+    - Communication with Phrasea Uploader
+   
+
+### Bug Fix :
+
+```
+PHRAS-3566 Prod - upload - It is possible to apply status on upload even if the user does not have "Change status" right
+PHRAS-3565 Prod - Editing - fields using Geonames service - the fields are not filled  anymore
+PHRAS-3544 Prod - tool - file with is not invalidate when made rotation or recreate subdefinition.
+PHRAS-3541 Prod - Image rotation NOK - ETAG is not renew -  File is correctly rotated but not invalidate in browser cache.
+PHRAS-3528 Prod - export - web browser loops download zip file 
+PHRAS-3509 Prod - tools - document substitution - the generation message for sub-definition is published twice.
+PHRAS-3460 Prod - Detailed view - Timeline tab (History) -  events sorting is wrong and some events do not appear
+PHRAS-3386 Prod - Baskets zone is blank after re-opening the workzone
+PHRAS-3356 Prod - detailed view -  related story - broken when no right to Access report
+PHRAS-3348 Prod - Feedback (AKA Validation) : Update validation expiration date do not update the validation token expiration Date
+PHRAS-3126 Prod - search bar - background blue coloration is missing when search filter is active.
+PHRAS-3032 Prod - Multi Stories editing - Editing need to be applied only on stories (not on included records).
+PHRAS-3374 Prod - upload overlay - rendering issue on Upload Overlays loading
+PHRAS-3421 Prod - expose - authentication for multi expose with password is NOK
+PHRAS-3443 Prod - Maintenance message is not displayed to the end user
+PHRAS-3490 Admin - databases - collection setting- A duplication of value occurs when deleting suggested values
+PHRAS-2832 Lightbox Error 500 when a basket contains recordid not anymore in the DB
+PHRAS-3285 Thesaurus - the Stock is not available on the candidates section of the Thesaurus
+PHRAS-3583 Search Engine - Sort records results on customer's Fields date or number return 500 error.
+PHRAS-3360 Configuration.yml , Missing "Worker" section introduce in version 4.1.1
+PHRAS-2441 Lifetimes for session in configuration.yml not taken into account , make clean between "TTL" and "lifetimes"
+```
+
+### New Features :
+
+```
+PHRAS-3417 Search on field with no value and generate facets
+PHRAS-3381 Prod - Thesaurus as tx - use Thesaurus for classification plan - Drag and Drop record on a terms
+PHRAS-3216 Prod - Feedback- Workzone - feedback improvement , renew user , manual
+PHRAS-3288 Prod - Workzone - Add more users in existing feedback.
+PHRAS-3287 Prod - Workzone - feedback -  send a reminder email with link to feedback, 
+PHRAS-3080 When a document is exported , add a PDF File with Databox's CGU
+PHRAS-2896 Generate subdef for HEIC file - HEIF (High Efficiency Image Format)
+PHRAS-3535 Prod - Feedback (AKA Validation) - Add features , send a new access token to user in message windows, reload basket after expiration date change
+PHRAS-3580 Admin - databoxs - databox subdefs - Create watermarked subdefs
+```
+
+### Improvements :
+
+```
+PHRAS-3584 Story - maintain a link between the story cover and the record used to define it.
+PHRAS-3536 Admin - Users list - add "last connection " colon in user list - mapped on colon "Users.last_connection" of application box
+PHRAS-3456 Admin - User registration  - Send the email unlock account in first, Before e-mail for  password definition
+PHRAS-3366 Admin - base base setting -  Button "Re-index database now" change behavior, send a populate
+PHRAS-3524 Prod - windows Notification -  Notification for a "received basket"  require a double click.
+PHRAS-3522 Prod - Notification - notifications windows contain uninterpreted HTML (URL)
+PHRAS-3516 Prod - Advance search -Sort results by field type string
+PHRAS-3256 Email notification - Take the recipient language (locale) in account
+PHRAS-3519 Use "move" method after each Copy (upload, worker, API)
+PHRAS-3469 optimisation of slow request  “get notifications”  due to "MySQL Baskets select"
+PHRAS-3499 Worker -  Stamp process - Stamp on file is made by worker export by email
+PHRAS-3447 Worker - add flock (file lock) and Get Mutex in WorkerRunningJob table
+PHRAS-3445 Worker - editrecord - explode editing mds to small message for each records - add retry and error queues
+PHRAS-3427 Worker - configuration  - rabbitmq support the AMQPS SSL connection.
+PHRAS-3454 Worker - write metadata « undefined index count »
+PHRAS-3494 Docker - launch a container with worker images in legacy scheduler context "bin/console scheduler: start"
+PHRAS-3484 Docker - Check rabbitmq and Mariadb version and fix
+PHRAS-3551 Docker-compose - refacto - worker - use profile - launch one worker for each Job
+PHRAS-3463 Docker - worker container - add (again) Supervisor into it and launch "Phraseanet worker" with  (env based)
+PHRAS-3372 Docker -  entrypoint.sh refacto add env: for Playing upgrade,  for no setup if need
+PHRAS-3364 Docker-compose - Add COMPOSE_FILE  in .env - put mailhog in other docker-compose file
+PHRAS-3361 Docker-compose - Declaring a network for Phraseanet stack - stop using "default" network
+PHRAS-3346 Docker - add Healthcheck for gateway container option
+PHRAS-3324 Docker-compose.yml upgrade from 3.4 to 3.9 version and add profiles for stack compositing.
+PHRAS-3102 Docker-compose - MariaDb container-  Add env for set slow query - max_connection etc ...
+PHRAS-3475 Prod - expose - expose setting , define and store mapping - which subdefinition is uploaded to an publication
+PHRAS-3474 Prod - expose - expose setting  , define and store mapping for field send to expose asset description
+PHRAS-3507 Prod - Expose - Set null when user select "No parent publication" and other fix
+PHRAS-3442 Optimise List_notifications in 4.1
+PHRAS-3438 conf/configuration.yml - Set an http and ftp proxy (squid in dev mode) and use serveur Side eg worker ; geocoding request, ftp, uploader etc...
+PHRAS-3413 Webhook emit improvement , define an emit Timeout - default 30 sec - this timeout can be override in configuration.yml
+PHRAS-3399 Prod - feedback - Right issue and others improvements
+PHRAS-3394 Prod - CSS - Rewriting "black-dialog-wrap" classe
+PHRAS-3393 API V3 patch use record adapter
+PHRAS-3391 Prod - Detailed view - feedback context - add confirmation when user try to delete a Record
+PHRAS-3390 Prod - Workzone - basket tab - local menu - "Delete" action, add "Archive" and "Cancel" choice in confirmation windows
+PHRAS-3389 Search - thesaurus - Concept Path - Stop to use Thesaurus from other databox.
+PHRAS-3388 Prod - Baskets - Validation Basket - Improve validation UX - show feedback result in Detailed view
+PHRAS-3378 Prod -Detailed view - Apply number formatting to result count " Result 1 900 / 902 723"
+PHRAS-3375 Export by email - add  download-link-validity: 24 , Email - download link TTL
+PHRAS-3371 Prod - Detailed View - Check navigation between records  with keyboards.
+PHRAS-3353 Prod - Avoid purging the browser's local cache for JS - versioned file for commons.min.js production.mn.js
+PHRAS-3352 Prod- Workzone - keep sort (order) and filter define by the user - date or alpha
+PHRAS-3350 Password renewal and creation - link send by email - token TTL  - token table of applicationBox
+PHRAS-3341 Prod - Detailed view - title bar  - refactoring UX
+PHRAS-3237 Worker - Port "record mover" task as Worker And rename It "RecordsActions"
+PHRAS-3166 Worker webhook - clean old webhook table (maintains value)
+PHRAS-3146 Worker - Consuming Dead Letters - Add TTL to msg in error for auto purge
+PHRAS-3457 Notifications cleanup
+```
+
+
+
+### Others (change on external lib, documentation update )
+
+```
+PHRAS-3534 Embed-bundle bump PDFJS version.
+PHRAS-3250 Prod - answer grid - GUI freeze  at end of search query execution (after loading data)
+PHRAS-3245 Install - scheduler - stop to create (default) tasks - subview and write metadata.
+PHRAS-3266 Documentation Phraseanet - How to migrate Phraseanet data under docker
+PHRAS-3153 API V3 - Add documentation to swaggehub and serve by it - sync swaggerhub with Phraseanet github repository
+PHRAS-3335 Admin - Dashboard - requirement - fix warning
+PHRAS-3050 Documentation update for install storage option added in 4.1
+PHRAS-2487 Documentation of Add - upload asset, as record in Phraseanet, by URL
+PHRAS-3610 Documentation update search option in  Elasticsearch 
+PHRAS-3411 Prod - String for Thesaurus as tx windows
+```
+
+Note : For technical reasons, no Docker image and packaged version have been generated for the 4.1.4 version. Therefore, the release notes below concern both versions 4.1.4 and 4.1.5.
+
+
+
+# 4.1.4
+
+
+### Version summary : see upper 4.1.5
+   
+
+
 ## 4.1.3
 
 Release notes - Phraseanet - Version 4.1.3
