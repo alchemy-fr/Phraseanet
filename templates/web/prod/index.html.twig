@@ -228,7 +228,7 @@
                                                     </button>
                                                 </h5>
                                             </div>
-                                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion" style="background:#292929">
+                                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                                 <div class="card-body">
                                                     <div class="left-facet-filter facet-filter">
                                                         <h4>{{ 'index::advance_search: facet-order' | trans }}</h4>
@@ -265,7 +265,7 @@
 
                                                     <div style="padding-left: 5px;">
                                                         {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
-                                                        {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show__empty__facet') %}
+                                                        {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show_unset_field_facet') %}
                                                         <h5 style="font-size:13px;">{{ 'index::advance_search: facet' | trans }}</h5>
 
                                                         <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em;font-size:13px;">
@@ -274,7 +274,7 @@
                                                         </label>
                                                         <br/>
                                                         <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em;font-size:13px;">
-                                                            <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == 'true' %}checked="checked"{% endif %}>
+                                                            <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == '1' %}checked="checked"{% endif %}>
                                                             {{ 'index::advance_search: show-unset-field-facet' | trans }}
                                                         </label>
 
