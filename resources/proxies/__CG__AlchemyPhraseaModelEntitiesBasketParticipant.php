@@ -176,8 +176,12 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getId(): int
+    public function getId()
     {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
@@ -187,7 +191,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getUser(): \Alchemy\Phrasea\Model\Entities\User
+    public function getUser()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
@@ -198,7 +202,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getBasket(): \Alchemy\Phrasea\Model\Entities\Basket
+    public function getBasket()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBasket', []);
@@ -209,7 +213,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function setBasket(\Alchemy\Phrasea\Model\Entities\Basket $basket): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function setBasket(\Alchemy\Phrasea\Model\Entities\Basket $basket)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBasket', [$basket]);
@@ -220,7 +224,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getIsAware(): bool
+    public function getIsAware()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIsAware', []);
@@ -231,7 +235,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function setIsAware(bool $isAware): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function setIsAware(bool $isAware)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIsAware', [$isAware]);
@@ -242,7 +246,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getCanAgree(): bool
+    public function getCanAgree()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCanAgree', []);
@@ -253,7 +257,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function setCanAgree(bool $canAgree): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function setCanAgree(bool $canAgree)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCanAgree', [$canAgree]);
@@ -264,7 +268,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getCanSeeOthers(): bool
+    public function getCanSeeOthers()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCanSeeOthers', []);
@@ -275,7 +279,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function setCanSeeOthers(bool $canSeeOthers): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function setCanSeeOthers(bool $canSeeOthers)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCanSeeOthers', [$canSeeOthers]);
@@ -297,7 +301,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function setReminded(\DateTime $reminded): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function setReminded(\DateTime $reminded)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setReminded', [$reminded]);
@@ -308,7 +312,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function addVote(\Alchemy\Phrasea\Model\Entities\BasketElementVote $basketElementVote): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function addVote(\Alchemy\Phrasea\Model\Entities\BasketElementVote $basketElementVote)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addVote', [$basketElementVote]);
@@ -319,18 +323,18 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function removeData(\Alchemy\Phrasea\Model\Entities\BasketElementVote $basketElementVote)
+    public function removeVote(\Alchemy\Phrasea\Model\Entities\BasketElementVote $basketElementVote)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeData', [$basketElementVote]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeVote', [$basketElementVote]);
 
-        return parent::removeData($basketElementVote);
+        return parent::removeVote($basketElementVote);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function isReleasable(): bool
+    public function isReleasable()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isReleasable', []);
@@ -341,7 +345,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function getIsConfirmed(): bool
+    public function getIsConfirmed()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIsConfirmed', []);
@@ -352,7 +356,7 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
-    public function setIsConfirmed(bool $isConfirmed): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function setIsConfirmed(bool $isConfirmed)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIsConfirmed', [$isConfirmed]);

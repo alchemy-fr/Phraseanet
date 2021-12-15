@@ -252,7 +252,7 @@ class BasketParticipant
      *
      * @param BasketElementVote $basketElementVote
      */
-    public function removeData(BasketElementVote $basketElementVote)
+    public function removeVote(BasketElementVote $basketElementVote)
     {
         $this->votes->removeElement($basketElementVote);
     }

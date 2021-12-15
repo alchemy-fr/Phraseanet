@@ -324,6 +324,7 @@ class Basket
     public function setVoteInitiator(User $user)
     {
         $this->vote_initiator = $user;
+        $this->upadteVoteDates();
 
         return $this;
     }
@@ -393,6 +394,7 @@ class Basket
     public function setVoteExpires($expires)
     {
         $this->vote_expires = $expires;
+        $this->upadteVoteDates();
 
         return $this;
     }
@@ -405,6 +407,18 @@ class Basket
     public function getVoteExpires()
     {
         return $this->vote_expires;
+    }
+
+    /**
+     * for every method that touch a "vote" data : maintain created/updated
+     */
+    private function upadteVoteDates()
+    {
+        $now = new DateTime();
+        if(is_null($this->getVoteCreated())) {
+            $this->setVoteCreated($now);
+        }
+        $this->setVoteUpdated($now);
     }
 
     /**
@@ -581,6 +595,7 @@ class Basket
 
     /**
      * start a vote session on this basket
+     * !!!!!!!!!!!!!!!!!!!!! used only by RegenerateSqlite ? !!!!!!!!!!!!!!!
      *
      * @param User $initiator
      * @return self

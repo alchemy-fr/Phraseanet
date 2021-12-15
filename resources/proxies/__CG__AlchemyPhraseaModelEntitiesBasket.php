@@ -510,7 +510,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getParticipants(): \Doctrine\Common\Collections\Collection
+    public function getParticipants()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipants', []);
@@ -521,7 +521,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function isParticipant(\Alchemy\Phrasea\Model\Entities\User $user): bool
+    public function isParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isParticipant', [$user]);
@@ -543,7 +543,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getListParticipantsUserId(): array
+    public function getListParticipantsUserId()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getListParticipantsUserId', []);
@@ -554,7 +554,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getParticipant(\Alchemy\Phrasea\Model\Entities\User $user): \Alchemy\Phrasea\Model\Entities\BasketParticipant
+    public function getParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipant', [$user]);
@@ -565,7 +565,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setOrder(\Alchemy\Phrasea\Model\Entities\Order $order = NULL): \Alchemy\Phrasea\Model\Entities\Basket
+    public function setOrder(\Alchemy\Phrasea\Model\Entities\Order $order = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOrder', [$order]);
@@ -576,7 +576,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getOrder(): \Alchemy\Phrasea\Model\Entities\Order
+    public function getOrder()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOrder', []);
@@ -598,7 +598,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function startVoteSession(\Alchemy\Phrasea\Model\Entities\User $initiator): \Alchemy\Phrasea\Model\Entities\Basket
+    public function startVoteSession(\Alchemy\Phrasea\Model\Entities\User $initiator)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'startVoteSession', [$initiator]);
@@ -664,7 +664,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getVoteString(\Alchemy\Phrasea\Application $app, \Alchemy\Phrasea\Model\Entities\User $user): string
+    public function getVoteString(\Alchemy\Phrasea\Application $app, \Alchemy\Phrasea\Model\Entities\User $user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVoteString', [$app, $user]);

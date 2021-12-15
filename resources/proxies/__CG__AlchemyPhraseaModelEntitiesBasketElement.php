@@ -176,8 +176,12 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getId(): int
+    public function getId()
     {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
@@ -187,7 +191,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function setRecordId(int $recordId): \Alchemy\Phrasea\Model\Entities\BasketElement
+    public function setRecordId(int $recordId)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRecordId', [$recordId]);
@@ -198,7 +202,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getRecordId(): int
+    public function getRecordId()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRecordId', []);
@@ -209,7 +213,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function setSbasId(int $sbasId): \Alchemy\Phrasea\Model\Entities\BasketElement
+    public function setSbasId(int $sbasId)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSbasId', [$sbasId]);
@@ -220,7 +224,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getSbasId(): int
+    public function getSbasId()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSbasId', []);
@@ -231,7 +235,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getRecord(\Alchemy\Phrasea\Application $app): \record_adapter
+    public function getRecord(\Alchemy\Phrasea\Application $app)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRecord', [$app]);
@@ -253,7 +257,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function setOrd(int $ord): \Alchemy\Phrasea\Model\Entities\BasketElement
+    public function setOrd(int $ord)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOrd', [$ord]);
@@ -264,7 +268,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getOrd(): int
+    public function getOrd()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOrd', []);
@@ -275,7 +279,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function setCreated(\DateTime $created): \Alchemy\Phrasea\Model\Entities\BasketElement
+    public function setCreated(\DateTime $created)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
@@ -286,7 +290,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getCreated(): \DateTime
+    public function getCreated()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreated', []);
@@ -297,7 +301,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function setUpdated(\DateTime $updated): \Alchemy\Phrasea\Model\Entities\BasketElement
+    public function setUpdated(\DateTime $updated)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdated', [$updated]);
@@ -308,7 +312,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getUpdated(): \DateTime
+    public function getUpdated()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdated', []);
@@ -319,7 +323,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function addVote(\Alchemy\Phrasea\Model\Entities\BasketElementVote $vote): \Alchemy\Phrasea\Model\Entities\BasketElement
+    public function addVote(\Alchemy\Phrasea\Model\Entities\BasketElementVote $vote)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addVote', [$vote]);
@@ -352,7 +356,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function setBasket(\Alchemy\Phrasea\Model\Entities\Basket $basket = NULL): \Alchemy\Phrasea\Model\Entities\BasketElement
+    public function setBasket(\Alchemy\Phrasea\Model\Entities\Basket $basket = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBasket', [$basket]);
@@ -363,7 +367,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getBasket(): \Alchemy\Phrasea\Model\Entities\Basket
+    public function getBasket()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBasket', []);
@@ -374,7 +378,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function createVote(\Alchemy\Phrasea\Model\Entities\BasketParticipant $participant): \Alchemy\Phrasea\Model\Entities\BasketElementVote
+    public function createVote(\Alchemy\Phrasea\Model\Entities\BasketParticipant $participant)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'createVote', [$participant]);
@@ -385,7 +389,7 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getUserVote(\Alchemy\Phrasea\Model\Entities\User $user, bool $createIfMissing): \Alchemy\Phrasea\Model\Entities\BasketElementVote
+    public function getUserVote(\Alchemy\Phrasea\Model\Entities\User $user, bool $createIfMissing)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserVote', [$user, $createIfMissing]);
