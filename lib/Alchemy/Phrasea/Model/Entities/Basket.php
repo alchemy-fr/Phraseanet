@@ -478,7 +478,7 @@ class Basket
      *
      * @return Collection
      */
-    public function getParticipants(): Collection
+    public function getParticipants()
     {
         return $this->participants;
     }
@@ -489,7 +489,7 @@ class Basket
      * @param User $user
      * @return bool
      */
-    public function isParticipant(User $user): bool
+    public function isParticipant(User $user)
     {
         /** @var BasketParticipant $participant */
         foreach ($this->getParticipants() as $participant) {
@@ -516,7 +516,7 @@ class Basket
      *
      * @return array
      */
-    public function getListParticipantsUserId(): array
+    public function getListParticipantsUserId()
     {
         $userIds = [];
         foreach ($this->getParticipants() as $participant) {
@@ -533,7 +533,7 @@ class Basket
      *
      * @return BasketParticipant
      */
-    public function getParticipant(User $user): BasketParticipant
+    public function getParticipant(User $user)
     {
         foreach ($this->getParticipants() as $participant) {
             if ($participant->getUser()->getId() == $user->getId()) {
@@ -552,7 +552,7 @@ class Basket
      * @param  Order  $order
      * @return self
      */
-    public function setOrder(Order $order = null): Basket
+    public function setOrder(Order $order = null)
     {
         $this->order = $order;
 
@@ -564,7 +564,7 @@ class Basket
      *
      * @return Order
      */
-    public function getOrder(): Order
+    public function getOrder()
     {
         return $this->order;
     }
@@ -585,7 +585,7 @@ class Basket
      * @param User $initiator
      * @return self
      */
-    public function startVoteSession(User $initiator): Basket
+    public function startVoteSession(User $initiator)
     {
         $now = new DateTime();
         $this->setVoteInitiator($initiator)
@@ -621,7 +621,7 @@ class Basket
      * @param BasketElement $element2
      * @return int
      */
-    private static function setBEOrderDESC(BasketElement $element1, BasketElement $element2): int
+    private static function setBEOrderDESC(BasketElement $element1, BasketElement $element2)
     {
         $total_el1 = 0;
         $total_el2 = 0;
@@ -649,7 +649,7 @@ class Basket
      * @param BasketElement $element2
      * @return int
      */
-    private static function setBEOrderASC(BasketElement $element1, BasketElement $element2): int
+    private static function setBEOrderASC(BasketElement $element1, BasketElement $element2)
     {
         $total_el1 = 0;
         $total_el2 = 0;
@@ -721,7 +721,7 @@ class Basket
         return $date_obj > $this->getVoteExpires();
     }
 
-    public function getVoteString(Application $app, User $user): string
+    public function getVoteString(Application $app, User $user)
     {
         if ($this->isVoteInitiator($user)) {
             if ($this->isVoteFinished()) {

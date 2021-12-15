@@ -97,7 +97,7 @@ class BasketParticipant
      *
      * @return integer
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -105,7 +105,7 @@ class BasketParticipant
     /**
      * @return User
      */
-    public function getUser(): User
+    public function getUser()
     {
         return $this->user;
     }
@@ -115,7 +115,7 @@ class BasketParticipant
      *
      * @return self
      */
-    private function setUser(User $user): BasketParticipant
+    private function setUser(User $user)
     {
         $this->user = $user;
 
@@ -125,7 +125,7 @@ class BasketParticipant
     /**
      * @return Basket
      */
-    public function getBasket(): Basket
+    public function getBasket()
     {
         return $this->basket;
     }
@@ -135,7 +135,7 @@ class BasketParticipant
      *
      * @return self
      */
-    public function setBasket(Basket $basket): BasketParticipant
+    public function setBasket(Basket $basket)
     {
         $this->basket = $basket;
 
@@ -147,7 +147,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getIsAware(): bool
+    public function getIsAware()
     {
         return $this->is_aware;
     }
@@ -158,7 +158,7 @@ class BasketParticipant
      * @param boolean $isAware
      * @return self
      */
-    public function setIsAware(bool $isAware): BasketParticipant
+    public function setIsAware(bool $isAware)
     {
         $this->is_aware = $isAware;
 
@@ -170,7 +170,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getCanAgree(): bool
+    public function getCanAgree()
     {
         return $this->can_agree;
     }
@@ -181,7 +181,7 @@ class BasketParticipant
      * @param boolean $canAgree
      * @return self
      */
-    public function setCanAgree(bool $canAgree): BasketParticipant
+    public function setCanAgree(bool $canAgree)
     {
         $this->can_agree = $canAgree;
 
@@ -193,7 +193,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getCanSeeOthers(): bool
+    public function getCanSeeOthers()
     {
         return $this->can_see_others;
     }
@@ -204,7 +204,7 @@ class BasketParticipant
      * @param boolean $canSeeOthers
      * @return self
      */
-    public function setCanSeeOthers(bool $canSeeOthers): BasketParticipant
+    public function setCanSeeOthers(bool $canSeeOthers)
     {
         $this->can_see_others = $canSeeOthers;
 
@@ -227,7 +227,7 @@ class BasketParticipant
      * @param DateTime $reminded
      * @return self
      */
-    public function setReminded(DateTime $reminded): BasketParticipant
+    public function setReminded(DateTime $reminded)
     {
         $this->reminded = $reminded;
 
@@ -240,7 +240,7 @@ class BasketParticipant
      * @param  BasketElementVote $basketElementVote
      * @return self
      */
-    public function addVote(BasketElementVote $basketElementVote): BasketParticipant
+    public function addVote(BasketElementVote $basketElementVote)
     {
         $this->votes[] = $basketElementVote;
 
@@ -257,7 +257,7 @@ class BasketParticipant
         $this->votes->removeElement($basketElementVote);
     }
 
-    public function isReleasable(): bool
+    public function isReleasable()
     {
         if ($this->getIsConfirmed()) {
             return false;
@@ -278,7 +278,7 @@ class BasketParticipant
      *
      * @return boolean
      */
-    public function getIsConfirmed(): bool
+    public function getIsConfirmed()
     {
         return $this->is_confirmed;
     }
@@ -289,7 +289,7 @@ class BasketParticipant
      * @param boolean $isConfirmed
      * @return self
      */
-    public function setIsConfirmed(bool $isConfirmed): BasketParticipant
+    public function setIsConfirmed(bool $isConfirmed)
     {
         $this->is_confirmed = $isConfirmed;
 

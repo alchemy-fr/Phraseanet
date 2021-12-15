@@ -83,7 +83,7 @@ class BasketElement
      *
      * @return integer
      */
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
@@ -94,7 +94,7 @@ class BasketElement
      * @param integer $recordId
      * @return BasketElement
      */
-    public function setRecordId(int $recordId): BasketElement
+    public function setRecordId(int $recordId)
     {
         $this->record_id = $recordId;
 
@@ -106,7 +106,7 @@ class BasketElement
      *
      * @return integer
      */
-    public function getRecordId(): int
+    public function getRecordId()
     {
         return $this->record_id;
     }
@@ -117,7 +117,7 @@ class BasketElement
      * @param integer $sbasId
      * @return self
      */
-    public function setSbasId(int $sbasId): BasketElement
+    public function setSbasId(int $sbasId)
     {
         $this->sbas_id = $sbasId;
 
@@ -129,12 +129,12 @@ class BasketElement
      *
      * @return integer
      */
-    public function getSbasId(): int
+    public function getSbasId()
     {
         return $this->sbas_id;
     }
 
-    public function getRecord(Application $app): record_adapter
+    public function getRecord(Application $app)
     {
         return new record_adapter($app, $this->getSbasId(), $this->getRecordId(), $this->getOrd());
     }
@@ -151,7 +151,7 @@ class BasketElement
      * @param integer $ord
      * @return self
      */
-    public function setOrd(int $ord): BasketElement
+    public function setOrd(int $ord)
     {
         $this->ord = $ord;
 
@@ -163,7 +163,7 @@ class BasketElement
      *
      * @return integer
      */
-    public function getOrd(): int
+    public function getOrd()
     {
         return $this->ord;
     }
@@ -174,7 +174,7 @@ class BasketElement
      * @param  DateTime     $created
      * @return self
      */
-    public function setCreated(DateTime $created): BasketElement
+    public function setCreated(DateTime $created)
     {
         $this->created = $created;
 
@@ -186,7 +186,7 @@ class BasketElement
      *
      * @return DateTime
      */
-    public function getCreated(): DateTime
+    public function getCreated()
     {
         return $this->created;
     }
@@ -197,7 +197,7 @@ class BasketElement
      * @param  DateTime     $updated
      * @return self
      */
-    public function setUpdated(DateTime $updated): BasketElement
+    public function setUpdated(DateTime $updated)
     {
         $this->updated = $updated;
 
@@ -209,7 +209,7 @@ class BasketElement
      *
      * @return DateTime
      */
-    public function getUpdated(): DateTime
+    public function getUpdated()
     {
         return $this->updated;
     }
@@ -220,7 +220,7 @@ class BasketElement
      * @param  BasketElementVote $vote
      * @return self
      */
-    public function addVote(BasketElementVote $vote): BasketElement
+    public function addVote(BasketElementVote $vote)
     {
         $this->votes[] = $vote;
 
@@ -253,7 +253,7 @@ class BasketElement
      * @param  Basket        $basket
      * @return BasketElement
      */
-    public function setBasket(Basket $basket = null): BasketElement
+    public function setBasket(Basket $basket = null)
     {
         $this->basket = $basket;
 
@@ -265,7 +265,7 @@ class BasketElement
      *
      * @return Basket
      */
-    public function getBasket(): Basket
+    public function getBasket()
     {
         return $this->basket;
     }
@@ -276,7 +276,7 @@ class BasketElement
      * @param BasketParticipant $participant
      * @return BasketElementVote
      */
-    public function createVote(BasketParticipant $participant): BasketElementVote
+    public function createVote(BasketParticipant $participant)
     {
         // !!!!!!!!!!!!!!!!!!!!!!!!!! persist ?
         $bev = new BasketElementVote($participant, $this);
@@ -291,7 +291,7 @@ class BasketElement
      * @return BasketElementVote
      * @throws Exception
      */
-    public function getUserVote(User $user, bool $createIfMissing): BasketElementVote
+    public function getUserVote(User $user, bool $createIfMissing)
     {
         // ensure the user is a participant
         $participant = $this->getBasket()->getParticipant($user);
