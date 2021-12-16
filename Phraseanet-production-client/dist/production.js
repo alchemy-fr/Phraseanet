@@ -68148,7 +68148,7 @@ var search = function search(services) {
     var updateFacetData = function updateFacetData() {
         appEvents.emit('facets.doLoadFacets', {
             facets: facets,
-            filterFacet: (0, _jquery2.default)('#look_box_settings input[name=filter_facet]').prop('checked'),
+            filterFacet: (0, _jquery2.default)('.look_box_settings input[name=filter_facet]').prop('checked'),
             facetOrder: (0, _jquery2.default)('.look_box_settings select[name=orderFacet]').val(),
             facetValueOrder: (0, _jquery2.default)('.look_box_settings select[name=facetValuesOrder]').val(),
             hiddenFacetsList: savedHiddenFacetsList
