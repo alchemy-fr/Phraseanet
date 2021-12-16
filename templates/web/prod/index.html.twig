@@ -268,11 +268,12 @@
                                                         {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show_unset_field_facet') %}
                                                         <h5 style="font-size:13px;">{{ 'index::advance_search: facet' | trans }}</h5>
 
-                                                        <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em;font-size:13px;">
-                                                            <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
-                                                            {{ 'index::advance_search: disable-facet' | trans }}
-                                                        </label>
-                                                        <br/>
+                                                         {# TODO : make behaviour as in 4.0 #}
+{#                                                        <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em;font-size:13px;">#}
+{#                                                            <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>#}
+{#                                                            {{ 'index::advance_search: disable-facet' | trans }}#}
+{#                                                        </label>#}
+{#                                                        <br/>#}
                                                         <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em;font-size:13px;">
                                                             <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == '1' %}checked="checked"{% endif %}>
                                                             {{ 'index::advance_search: show-unset-field-facet' | trans }}

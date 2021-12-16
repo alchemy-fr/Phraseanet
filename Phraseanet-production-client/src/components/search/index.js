@@ -431,7 +431,7 @@ const search = services => {
     const updateFacetData = () => {
         appEvents.emit('facets.doLoadFacets', {
             facets: facets,
-            filterFacet: $('#look_box_settings input[name=filter_facet]').prop('checked'),
+            filterFacet: $('.look_box_settings input[name=filter_facet]').prop('checked'),
             facetOrder: $('.look_box_settings select[name=orderFacet]').val(),
             facetValueOrder: $('.look_box_settings select[name=facetValuesOrder]').val(),
             hiddenFacetsList: savedHiddenFacetsList
