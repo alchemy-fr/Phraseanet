@@ -77,8 +77,9 @@ class patch_415PHRAS3604 implements patchInterface
                     $app['orm.em']->remove($feedItem);
                 }
             } catch (NotFoundHttpException $e) {
-                // the referenced sbas_id is not found, so delete also the feedItem
-                $app['orm.em']->remove($feedItem);
+                // the referenced sbas_id is not found,
+
+                // $app['orm.em']->remove($feedItem);  // do nothing
             }
         }
 
