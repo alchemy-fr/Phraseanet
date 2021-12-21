@@ -386,9 +386,26 @@ class AMQPConnection
     /**
      * @param $queueName
      * @return AMQPChannel|null
+     * @throws Exception
      */
     public function setQueue($queueName)
     {
+        // first send heartbeat
+        // catch if connection closed, and get a new one connection
+        if (!empty($this->connection)) {
+            try {
+                $this->connection->checkHeartBeat();
+            } catch(\Exception $e) {
+                unset($this->connection);
+                unset($this->channel);
+                $this->getChannel();
+            }
+        } else {
+            unset($this->connection);
+            unset($this->channel);
+            $this->getChannel();
+        }
+
         if (!isset($this->channel)) {
             $this->getChannel();
             if (!isset($this->channel)) {
