@@ -310,7 +310,7 @@ class AMQPConnection
 
     public function getConnection()
     {
-        if (!isset($this->connection)) {
+        if (empty($this->connection)) {
             try {
                 $heartbeat = $this->hostConfig['heartbeat'] ?? 60;
 
