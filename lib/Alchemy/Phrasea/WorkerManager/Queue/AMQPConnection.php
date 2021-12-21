@@ -360,9 +360,9 @@ class AMQPConnection
 
     public function getChannel()
     {
-        if (!isset($this->channel)) {
+        if (empty($this->channel)) {
             $this->getConnection();
-            if (isset($this->connection)) {
+            if (!empty($this->connection)) {
                 $this->channel = $this->connection->channel();
 
                 return $this->channel;
@@ -396,13 +396,13 @@ class AMQPConnection
             try {
                 $this->connection->checkHeartBeat();
             } catch(\Exception $e) {
-                unset($this->connection);
-                unset($this->channel);
+                $this->connection = null;
+                $this->channel = null;
                 $this->getChannel();
             }
         } else {
-            unset($this->connection);
-            unset($this->channel);
+            $this->connection = null;
+            $this->channel = null;
             $this->getChannel();
         }
 
