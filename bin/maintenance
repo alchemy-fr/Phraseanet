@@ -7,6 +7,7 @@ use Alchemy\Phrasea\Command\Maintenance\CleanUsers;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Maintenance\CleanRecords;
 use Alchemy\Phrasea\Command\Maintenance\CleanBases;
+use Alchemy\Phrasea\Command\Maintenance\CleanRights;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -34,5 +35,7 @@ $cli->command(new CleanRecords());
 $cli->command(new CleanUsers());
 
 $cli->command(new CleanBases());
+
+$cli->command(new CleanRights());
 
 $cli->run();

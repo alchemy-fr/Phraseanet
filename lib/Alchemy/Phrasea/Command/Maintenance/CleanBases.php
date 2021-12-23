@@ -31,6 +31,7 @@ class CleanBases extends Command
         $databoxRepository = $this->container['repo.databoxes'];
 
         if ($input->getOption('orphan') === true) {
+            $output->writeln("<info> Remove collections bas that refers a non existing sbas</info>");
             /** @var CollectionReference $collectionReference */
             foreach ($dbalCollectionReferenceRepository->findAll() as $collectionReference) {
                 if ($databoxRepository->find($collectionReference->getDataboxId()) == null) {
