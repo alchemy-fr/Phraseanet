@@ -36,7 +36,7 @@ class CleanUsers extends Command
 
     public function __construct()
     {
-        parent::__construct('maintenance:clean:users');
+        parent::__construct('clean:users');
 
         $this
             ->setDescription('Delete "sleepy" users (not connected since a long time)')

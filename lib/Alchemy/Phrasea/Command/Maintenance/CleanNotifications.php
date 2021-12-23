@@ -20,7 +20,7 @@ class CleanNotifications extends Command
 {
     public function __construct()
     {
-        parent::__construct('maintenance:clean:notifications');
+        parent::__construct('clean:notifications');
 
         $this
             ->setDescription('Delete old user notifications')

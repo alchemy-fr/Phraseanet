@@ -182,9 +182,6 @@ $cli->command(new NetworkProxiesTestCommand('network-proxies:test'));
 
 $cli->command(new BuildPermalinks());
 
-$cli->command(new CleanNotifications());
-$cli->command(new CleanUsers());
-
 $cli->loadPlugins();
 
 $cli->run();

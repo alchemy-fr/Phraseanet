@@ -2,6 +2,8 @@
 <?php
 
 use Alchemy\Phrasea\CLI;
+use Alchemy\Phrasea\Command\Maintenance\CleanNotifications;
+use Alchemy\Phrasea\Command\Maintenance\CleanUsers;
 use Alchemy\Phrasea\Core\Version;
 use Alchemy\Phrasea\Command\Maintenance\CleanRecords;
 
@@ -24,6 +26,10 @@ $cli = new CLI("
 $cli->command(new \module_console_aboutAuthors('about:authors'));
 $cli->command(new \module_console_aboutLicense('about:license'));
 
+$cli->command(new CleanNotifications());
+
 $cli->command(new CleanRecords());
+
+$cli->command(new CleanUsers());
 
 $cli->run();
