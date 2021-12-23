@@ -24,9 +24,7 @@ class CleanRecords extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output)
     {
-        $fromBaskets = $input->getOption('from_baskets');
-
-        if ($fromBaskets === true) {
+        if ($input->getOption('from_baskets') === true) {
             $output->writeln("<info> Remove orphans records from basket</info>");
             $this->removeOrphansFromBasket();
         }
