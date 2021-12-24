@@ -49,6 +49,8 @@ class CleanRights extends Command
                     $stmt = $conn->prepare($sqlDelete);
                     $stmt->execute([':base_id' => $baseId]);
                     $stmt->closeCursor();
+
+                    $output->writeln(sprintf("base_id = %s not found, basusr with base_id = %s => deleted", $baseId, $baseId));
                 }
             }
 
@@ -66,11 +68,13 @@ class CleanRights extends Command
 
             foreach ($sBaseIds as $sBaseId) {
                 if ($databoxRepository->find($sBaseId) == null) {
-                    // not found the corresponding sbas_id, so delete the right in sbasusr
+                    // not found the reference sbas_id, so delete the right in sbasusr
                     $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
                     $stmt = $conn->prepare($sql);
                     $stmt->execute([':sbas_id' => $sBaseId]);
                     $stmt->closeCursor();
+
+                    $output->writeln(sprintf("sbas_id = %s not found, sbasusr with sbas_id = %s => deleted", $sBaseId, $sBaseId));
                 }
             }
         } else {
