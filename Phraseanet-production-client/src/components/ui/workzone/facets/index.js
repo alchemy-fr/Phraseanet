@@ -156,6 +156,8 @@ const workzoneFacets = services => {
 
         treeSource = _parseColors(treeSource);
 
+        treeSource = _colorUnsetText(treeSource);
+
         return _getFacetsTree().reload(treeSource)
             .done(function () {
                 _.each($('#proposals').find('.fancytree-expanded'), function (element, i) {
@@ -213,6 +215,21 @@ const workzoneFacets = services => {
             }
             return string;
         }
+    }
+
+    function _colorUnsetText(source) {
+        _.forEach(source, function (facet) {
+            if (!_.isUndefined(facet.children) && (facet.children.length > 0)) {
+                _.forEach(facet.children, function (child) {
+                    if (child.raw_value.toString() === '_unset_') {
+                        var title = child.title;
+                        child.title = '<span style="color:#2196f3;">' + title.toString() +'</span>';
+                    }
+                });
+            }
+        });
+
+        return source;
     }
 
 

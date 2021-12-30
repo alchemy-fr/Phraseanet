@@ -3,6 +3,7 @@
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Entities\FeedItem;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class patch_415PHRAS3604 implements patchInterface
 {
@@ -71,8 +72,13 @@ class patch_415PHRAS3604 implements patchInterface
         /** @var FeedItem $feedItem */
         foreach ($feedItemRepository->findAll() as $feedItem) {
             // if the record is not found, delete the feedItem
-            if ($app->findDataboxById($feedItem->getSbasId())->getRecordRepository()->find($feedItem->getRecordId()) == null) {
-                $app['orm.em']->remove($feedItem);
+            try {
+                if ($app->findDataboxById($feedItem->getSbasId())->getRecordRepository()->find($feedItem->getRecordId()) == null) {
+                    $app['orm.em']->remove($feedItem);
+                }
+            } catch (NotFoundHttpException $e) {
+                // the referenced sbas_id is not found, so delete also the feedItem
+                 $app['orm.em']->remove($feedItem);
             }
         }
 
