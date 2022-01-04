@@ -27,8 +27,7 @@
                             <!--
                             <img src="/assets/common/images/icons/hand-grey.png"/>
                             -->
-                            <span class="fa fa-hand-stop-o"></span>
-                            {{ 'Grant rights' | trans }}
+                            <i class="fa fa-hand-stop-o"></i>&nbsp;{{ 'Grant rights' | trans }}
                         </span>
                         <ul class="general_togglers">
                             {% if context == 'Feedback' or context == 'Sharebasket' %}
@@ -41,8 +40,7 @@
                                         <img src="/assets/common/images/icons/green-pen.png" class="image-normal"/>
                                         <img src="/assets/common/images/icons/white-pen.png" class="image-hover"/>
                                         -->
-                                        <span class="fa fa-pencil"></span>
-                                        {{ 'Contributor' | trans }}
+                                        <i class="fa fa-pencil"></i>&nbsp;{{ 'Contributor' | trans }}
                                     </button>
                                 </li>
                             {% endif %}
@@ -53,8 +51,7 @@
                                         <img src="/assets/common/images/icons/green-user.png" class="image-normal"/>
                                         <img src="/assets/common/images/icons/white-user.png" class="image-hover"/>
                                         -->
-                                        <span class="fa fa-users"></span>
-                                        {{ 'See others' | trans }}
+                                        <i class="fa fa-users"></i>&nbsp;{{ 'See others' | trans }}
                                     </button>
                                 </li>
                             {% endif %}
@@ -69,8 +66,7 @@
                                     {% endif %}
                                     <img src="/assets/common/images/icons/download-white.png" class="image-hover"/>
                                     -->
-                                    <span class="fa fa-download"></span>
-                                    {{ 'HD Download' | trans }}
+                                    <i class="fa fa-download"></i>&nbsp;{{ 'HD Download' | trans }}
                                 </button>
                             </li>
                         </ul>
@@ -80,8 +76,7 @@
                             <!--
                             <img src="/assets/common/images/icons/list-grey.png"/>
                             -->
-                            <span class="fa fa-users"></span>
-                            {{ 'Lists' | trans }}
+                            <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
                         </span>
                         <a href="{{ path('prod_lists_all') }}" title="Refresh list"
                            class="list_refresh push-refresh-list-action btn pull-right" style="margin-top: -2px;">
@@ -97,7 +92,7 @@
                             <img src="/assets/common/images/icons/white-refresh.png" alt="Refresh list"
                                  class="image-hover">
                             -->
-                            <span class="fa fa-refresh"></span>
+                            <i class="fa fa-refresh"></i>
                         </a>
                     </div>
                     <ul class="lists">
@@ -120,13 +115,13 @@
                                     <img src="/assets/common/images/icons/delete-white.png" class="image-hover"/>
                                 </button>
                                 -->
-                                <span class="list-trash-btn fa fa-trash" style="font-size: 170%; cursor: pointer; display: none;"></span>
+                                <i class="list-trash-btn fa fa-trash" style="font-size: 170%; cursor: pointer; display: none;"></i>
                             </li>
                         {% endfor %}
                     </ul>
                     <span style="width:100%; display:block; text-align:center;">
                     <a href="#" class="btn list_manager">
-                        <span class="fa fa-list"></span>&nbsp;
+                        <i class="fa fa-list"></i>&nbsp;
                         <b>{{ 'List Manager' | trans }}</b>
                     </a>
                 </span>
@@ -137,7 +132,7 @@
             <div class="PNB10" style="height:46px;bottom:auto;line-height:26px;padding:0 20px 0 18px;">
                 <div style="float: left;">
                     <div id="find-user">
-                        <input class="search" name="users-search" placeholder="{{ 'Users' | trans }}" type="text"
+                        <input class="search colored inverse" name="users-search" placeholder="{{ 'Users' | trans }}" type="text"
                                style="width:210px;"/>
                     </div>
                     <p id="recommanded-users">
@@ -201,14 +196,15 @@
                     </div>
                 </div>
 
+                {#  --- add-user button will open a modal to create a new user on the fly ---  #}
+                {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
                 <div style="float: left;">
-                    {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
-                        <button type="button" class="colored with_icon push-add-user">
-                            <span class="fa fa-plus"></span>&nbsp;
-                            {{ 'Add user' | trans }}
-                        </button>
-                    {% endif %}
-                </div>
+                    <button type="button" class="colored with_icon push-add-user" data-context="{{ context }}">
+                        <i class="fa fa-plus"></i>&nbsp;
+                        {{ 'Add user' | trans }}
+                    </button>
+                 </div>
+                {% endif %}
 
                 <span style="font-size: 21px;font-family: Roboto;margin-left: 30px;font-weight: 700; {% if context == 'Push' %}color: #2196f3;{% else %}color: #8bc34a;{% endif %}">
                     {% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}
@@ -266,7 +262,7 @@
                         </table>
                     </div>
                     <form name="FeedBackForm" method="post"
-                            {# todo : name routes from context : no more "if" ! #}
+                            {# !!!!!!!!!!!!!!!!!!! todo : name routes from context : no more "if" ? !!!!!!!!!!!!!!!!!!!!!! #}
                             {% if context == 'Push' %}
                                 action="{{ path('prod_push_send') }}"
                             {% elseif context == 'Sharebasket' %}
@@ -368,7 +364,7 @@
                             <div class="btn-toolbar">
                                 <input type="text" name="list_name" placeholder="{{ 'Save this list' | trans }}"/>
                                 <button class="colored inverse with_icon saveList">
-                                    <span class="fa fa-heart"></span>
+                                    <i class="fa fa-heart"></i>
                                 </button>
                             </div>
                         </form>
@@ -389,8 +385,7 @@
         <div class="PNB" style="width:220px;">
             <div style="padding:10px">
                 <a class="back_link btn colored with_icon">
-                    <span class="fa fa-arrow-left"></span>
-                    {{ 'Back' | trans }}
+                    <i class="fa fa-arrow-left"></i>&nbsp;{{ 'Back' | trans }}
                 </a>
             </div>
             <div class="PNB10 all-lists LeftColumn" style="top:55px;">

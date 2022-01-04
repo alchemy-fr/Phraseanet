@@ -9220,6 +9220,7 @@ input.text_input_white {
 
 .whole_dialog_container .btn,
 .whole_dialog_container .btn-inverse {
+  font-weight: normal;
   background-image: none;
 }
 
@@ -9229,6 +9230,10 @@ input.text_input_white {
 
 .whole_dialog_container .inverse {
   background-color: white;
+}
+
+.whole_dialog_container .colored.inverse {
+  color: white;
 }
 
 .whole_dialog_container BUTTON,
@@ -9260,9 +9265,9 @@ input.text_input_white {
   padding-left: 35px;
 }
 
-.whole_dialog_container BUTTON.with_icon SPAN.fa,
-.whole_dialog_container A.with_icon SPAN.fa {
-  font-size: 170%;
+.whole_dialog_container BUTTON.with_icon I.fa,
+.whole_dialog_container A.with_icon I.fa {
+  font-size: 160%;
   position: absolute;
   left: 10px;
   top: 3px;
@@ -9292,6 +9297,28 @@ input.text_input_white {
   background-color: #282828;
 }
 
+.whole_dialog_container input[type=text],
+.whole_dialog_container input[type=text]::-webkit-input-placeholder,
+.whole_dialog_container input[type=text]::-moz-placeholder,
+.whole_dialog_container input[type=text]:-ms-input-placeholder,
+.whole_dialog_container input[type=text]:-moz-placeholder {
+  /* Firefox 18- */
+}
+
+.whole_dialog_container input[type=text].colored,
+.whole_dialog_container input[type=text]::-webkit-input-placeholder.colored,
+.whole_dialog_container input[type=text]::-moz-placeholder.colored,
+.whole_dialog_container input[type=text]:-ms-input-placeholder.colored,
+.whole_dialog_container input[type=text]:-moz-placeholder.colored {
+  color: #ffffff;
+}
+
+.whole_dialog_container INPUT[type=text] + BUTTON {
+  height: 30px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
 .whole_dialog_container .PushBox .push-add-user {
   margin-left: 30px;
 }
@@ -9307,12 +9334,6 @@ input.text_input_white {
   line-height: 40px;
   display: block;
   padding-left: 33px;
-}
-
-.whole_dialog_container .saveList {
-  height: 30px;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
 }
 
 .whole_dialog_container #PushBox .list_manager {
@@ -9385,96 +9406,96 @@ input.text_input_white {
  * theme dependant fixes
  *****************************/
 
-.push .colored {
+.Push .colored {
   color: #2196f3;
 }
 
-.push .colored.inverse {
+.Push .colored.inverse {
   background-color: #2196f3;
 }
 
-.push BUTTON.colored:hover,
-.push A.colored:hover {
+.Push BUTTON.colored:hover,
+.Push A.colored:hover {
   background-color: #2196f3;
 }
 
-.push BUTTON.colored.inverse:hover,
-.push A.colored.inverse:hover {
+.Push BUTTON.colored.inverse:hover,
+.Push A.colored.inverse:hover {
   color: #2196f3;
   background-color: revert;
 }
 
-.push BUTTON.colored.status_on,
-.push BUTTON.colored.status_off:hover,
-.push A.colored.status_on,
-.push A.colored.status_off:hover {
+.Push BUTTON.colored.status_on,
+.Push BUTTON.colored.status_off:hover,
+.Push A.colored.status_on,
+.Push A.colored.status_off:hover {
   color: #2196f3;
 }
 
-.push BUTTON,
-.push A.btn {
+.Push BUTTON,
+.Push A.btn {
   border-color: #2196f3;
 }
 
-.feedback .colored {
+.Feedback .colored {
   color: #8bc34a;
 }
 
-.feedback .colored.inverse {
+.Feedback .colored.inverse {
   background-color: #8bc34a;
 }
 
-.feedback BUTTON.colored:hover,
-.feedback A.colored:hover {
+.Feedback BUTTON.colored:hover,
+.Feedback A.colored:hover {
   background-color: #8bc34a;
 }
 
-.feedback BUTTON.colored.inverse:hover,
-.feedback A.colored.inverse:hover {
+.Feedback BUTTON.colored.inverse:hover,
+.Feedback A.colored.inverse:hover {
   color: #8bc34a;
   background-color: revert;
 }
 
-.feedback BUTTON.colored.status_on,
-.feedback BUTTON.colored.status_off:hover,
-.feedback A.colored.status_on,
-.feedback A.colored.status_off:hover {
+.Feedback BUTTON.colored.status_on,
+.Feedback BUTTON.colored.status_off:hover,
+.Feedback A.colored.status_on,
+.Feedback A.colored.status_off:hover {
   color: #8bc34a;
 }
 
-.feedback BUTTON,
-.feedback A.btn {
+.Feedback BUTTON,
+.Feedback A.btn {
   border-color: #8bc34a;
 }
 
-.sharebasket .colored {
+.Sharebasket .colored {
   color: #E0215D;
 }
 
-.sharebasket .colored.inverse {
+.Sharebasket .colored.inverse {
   background-color: #E0215D;
 }
 
-.sharebasket BUTTON.colored:hover,
-.sharebasket A.colored:hover {
+.Sharebasket BUTTON.colored:hover,
+.Sharebasket A.colored:hover {
   background-color: #E0215D;
 }
 
-.sharebasket BUTTON.colored.inverse:hover,
-.sharebasket A.colored.inverse:hover {
+.Sharebasket BUTTON.colored.inverse:hover,
+.Sharebasket A.colored.inverse:hover {
   color: #E0215D;
   background-color: revert;
 }
 
-.sharebasket BUTTON.colored.status_on,
-.sharebasket BUTTON.colored.status_off:hover,
-.sharebasket A.colored.status_on,
-.sharebasket A.colored.status_off:hover {
+.Sharebasket BUTTON.colored.status_on,
+.Sharebasket BUTTON.colored.status_off:hover,
+.Sharebasket A.colored.status_on,
+.Sharebasket A.colored.status_off:hover {
   color: #E0215D;
 }
 
-.sharebasket BUTTON,
-.sharebasket A.btn {
+.Sharebasket BUTTON,
+.Sharebasket A.btn {
   border-color: #E0215D;
 }
 
@@ -9539,14 +9560,6 @@ input.text_input_white {
 }
 
 .PushBox .user_content .badges .badge.name {
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #000000;
-  text-shadow: none;
   white-space: pre-line;
   display: block;
   margin-top: 5px;
@@ -9554,14 +9567,6 @@ input.text_input_white {
 
 .PushBox .user_content .badges .badge.subtite {
   display: block;
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #000000;
-  text-shadow: none;
 }
 
 .PushBox .user_content .badges .badge.selected {
@@ -9625,62 +9630,60 @@ input.text_input_white {
   font-size: 200%;
 }
 
-.feedback #find-user input[type=text] {
-  background-color: #8bc34a;
-}
+/*
+.feedback {
 
-.feedback #quickAddUser button {
-  border: solid 1px #8bc34a;
-  color: #8bc34a;
-}
+    #find-user input[type=text] {
+//        background-color: $feedbackThemeColor;
+    }
+    #quickAddUser button {
+//        border: solid 1px $feedbackThemeColor;
+//        color: $feedbackThemeColor;
 
-.feedback #quickAddUser button:hover {
-  background-color: #8bc34a;
-}
+    }
 
-.feedback #quickAddUser button:nth-child(2) {
-  background-color: #8bc34a;
+    #quickAddUser button:hover {
+//        background-color: $feedbackThemeColor;
+    }
+    #quickAddUser button:nth-child(2) {
+//        background-color: $feedbackThemeColor;
+    }
+    .btn.btn-push-orange.btn-orange-inverse {
+        color: $textInverseColor;
+    }
+    .btn.btn-push-orange.btn-orange-inverse:hover {
+        background-color: $textInverseColor;
+        color: $orangeThemeColor;
+    }
 }
+*/
 
-.feedback .btn.btn-push-orange.btn-orange-inverse {
-  color: #ffffff;
-}
+/*
+.sharebasket {
+    #find-user input[type=text] {
+        //background-color: $sharebasketThemeColor;
+    }
+    #quickAddUser button {
+//        border: solid 1px $sharebasketThemeColor;
+//        color: $sharebasketThemeColor;
 
-.feedback .btn.btn-push-orange.btn-orange-inverse:hover {
-  background-color: #ffffff;
-  color: #ff9400;
-}
+    }
 
-.sharebasket #find-user input[type=text] {
-  background-color: #E0215D;
+    #quickAddUser button:hover {
+        //background-color: $sharebasketThemeColor;
+    }
+    #quickAddUser button:nth-child(2) {
+//        background-color: $sharebasketThemeColor;
+    }
+    .btn.btn-push-orange.btn-orange-inverse {
+        color: $textInverseColor;
+    }
+    .btn.btn-push-orange.btn-orange-inverse:hover {
+        background-color: $textInverseColor;
+        color: $orangeThemeColor;
+    }
 }
-
-.sharebasket #quickAddUser button {
-  border: solid 1px #E0215D;
-  color: #E0215D;
-}
-
-.sharebasket #quickAddUser button:hover {
-  background-color: #E0215D;
-}
-
-.sharebasket #quickAddUser button:nth-child(2) {
-  background-color: #E0215D;
-}
-
-.sharebasket .btn.btn-push-orange.btn-orange-inverse {
-  color: #ffffff;
-}
-
-.sharebasket .btn.btn-push-orange.btn-orange-inverse:hover {
-  background-color: #ffffff;
-  color: #ff9400;
-}
-
-.PushBox .delete-selection {
-  margin-left: 18px;
-  padding: 0px 16.5px;
-}
+*/
 
 .PushBox #info-box-trigger {
   float: right;
@@ -9753,74 +9756,6 @@ input.text_input_white {
 }
 
  */
-
-.btn.btn-push-orange {
-  color: #ff9400;
-  margin: 0;
-  background: #F6F6F6;
-  height: 27px;
-  line-height: 27px;
-  font-size: 12px;
-  font-weight: normal;
-}
-
-.btn.btn-push-orange img {
-  width: 16px;
-  height: 16px;
-  margin-top: -2px;
-}
-
-.btn.btn-push-orange .image-normal {
-  display: inline;
-}
-
-.btn.btn-push-orange .image-hover {
-  display: none;
-}
-
-.btn.btn-push-orange:hover {
-  color: #ffffff;
-  background-color: #ff9400;
-}
-
-.btn.btn-push-orange:hover .image-normal {
-  display: none;
-}
-
-.btn.btn-push-orange:hover .image-hover {
-  display: inline;
-}
-
-.btn.btn-push-orange > img {
-  margin-right: 20px !important;
-  margin-left: -20px;
-}
-
-.btn.btn-orange-inverse {
-  background-color: #ff9400;
-  color: #ffffff;
-}
-
-.btn.btn-orange-inverse .image-normal {
-  display: none;
-}
-
-.btn.btn-orange-inverse .image-hover {
-  display: inline;
-}
-
-.btn.btn-orange-inverse:hover {
-  color: #ff9400;
-  background-color: #fff;
-}
-
-.btn.btn-orange-inverse:hover .image-normal {
-  display: inline;
-}
-
-.btn.btn-orange-inverse:hover .image-hover {
-  display: none;
-}
 
 .select-all,
 .unselect-all {
@@ -10174,63 +10109,63 @@ input.text_input_white {
   margin: 12px 0;
 }
 
-#ListManager H1 SPAN.title {
-  font-size: 24px;
-  line-height: 24px;
-  font-weight: bold;
-  vertical-align: middle;
-}
+#ListManager .content {
+  /*
+        &.readselect {
+            .badge {
+                width: 250px;
+                display: inline-block;
+                margin: 5px;
+                background-color: #515150;
+                padding: 5px;
 
-#ListManager .content.readselect .badge {
-  width: 250px;
-  display: inline-block;
-  margin: 5px;
-  background-color: #515150;
-  padding: 5px;
-}
+                .deleter {
+                    right: 0;
+                    display: -webkit-inline-box;
+                    display: -ms-inline-flexbox;
+                    display: inline-flex;
+                }
 
-#ListManager .content.readselect .badge .deleter {
-  right: 0;
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-}
+                table {
+                    // width: auto;
+                    table-layout: fixed;
+                }
 
-#ListManager .content.readselect .badge table {
-  table-layout: fixed;
-}
+                .infos {
+                    padding: 5px 2px 2px 6px;
+                    vertical-align: top;
 
-#ListManager .content.readselect .badge .infos {
-  padding: 5px 2px 2px 6px;
-  vertical-align: top;
-}
+                    span {
+                        display: block;
+                        line-height: 20px;
+                    }
+                }
 
-#ListManager .content.readselect .badge .infos span {
-  display: block;
-  line-height: 20px;
-}
+                &.selected {
+                    border-color: $orangeThemeColor;
+                }
 
-#ListManager .content.readselect .badge.selected {
-  border-color: #ff9400;
-}
+                &.listmanager_badge {
+                    font-weight: normal;
+                    font-size: 12px;
+                    height: 77px;
+                    line-height: 77px;
+                    padding: 0;
+                    background-color: #f7f7f7;
+                    color: #000000;
+                    text-shadow: none;
+                    overflow: hidden;
 
-#ListManager .content.readselect .badge.listmanager_badge {
-  font-weight: normal;
-  font-size: 12px;
-  height: 77px;
-  line-height: 77px;
-  padding: 0;
-  background-color: #f7f7f7;
-  color: #000000;
-  text-shadow: none;
-  overflow: hidden;
-}
-
-#ListManager .content.readselect .badge.listmanager_badge .listmanager_badge_img {
-  height: 77px;
-  padding: 0 7px;
-  width: 42px;
-  background-color: #515151;
+                    .listmanager_badge_img {
+                        height: 77px;
+                        padding: 0 7px;
+                        width: 42px;
+                        background-color: #515151;
+                    }
+                }
+            }
+        }
+        */
 }
 
 #ListManager .content .lists span.action {
@@ -10248,7 +10183,17 @@ input.text_input_white {
   background-color: #aaa;
 }
 
-#ListManager #ListManager .editor {
+#ListManager .editor {
+  /* !!!!!!!!!!!!!!!!!! the footer is hidden by list
+        .footer .saveList {
+            width: 150px;
+            padding: 4px 0px 4px 0;
+//            background-color: #f7f7f7;
+            img {
+                margin-right: 15px;
+            }
+        }
+        !!!!!!!!!!!!!!!!!!!!!!!!!!         */
   /*
         .push-back-link:hover {
             color: #444444;
@@ -10258,63 +10203,11 @@ input.text_input_white {
          */
 }
 
-#ListManager #ListManager .editor .list_editor_search {
-  top: 63px;
-}
-
-#ListManager #ListManager .editor .saveList {
-  width: 120px;
-  padding: 4px 0;
-  font-weight: normal;
-  line-height: 19px;
-  border-radius: 5px;
-  background-color: #f7f7f7;
-}
-
-#ListManager #ListManager .editor .saveList .image-normal {
-  display: inline;
-}
-
-#ListManager #ListManager .editor .saveList .image-hover {
-  display: none;
-}
-
-#ListManager #ListManager .editor .saveList img {
-  margin-right: 20px;
-}
-
-#ListManager #ListManager .editor .saveList:hover {
-  color: #fff !important;
-  background-color: #ff9400 !important;
-}
-
-#ListManager #ListManager .editor .saveList:hover .image-normal {
-  display: none;
-}
-
-#ListManager #ListManager .editor .saveList:hover .image-hover {
-  display: inline;
-}
-
-#ListManager #ListManager .editor .footer .saveList {
-  width: 150px;
-  padding: 4px 0px 4px 0;
-  background-color: #f7f7f7;
-}
-
-#ListManager #ListManager .editor .footer .saveList img {
-  margin-right: 15px;
-}
-
-#ListManager #ListManager .editor #find-user input[type=text] {
-  background-color: #ff9400;
-}
-
-#ListManager #ListManager .editor .counter {
+#ListManager .editor .counter {
   font-size: 12px;
 }
 
-#ListManager #ListManager .editor .list_editor_selector td select {
+#ListManager .editor .list_editor_selector td select {
   margin: 0;
   border: 0 none;
   border-radius: 0;
@@ -10324,19 +10217,19 @@ input.text_input_white {
   color: #000;
 }
 
-#ListManager #ListManager .editor .list_editor_selector td select::-webkit-scrollbar {
+#ListManager .editor .list_editor_selector td select::-webkit-scrollbar {
   width: 4px;
 }
 
-#ListManager #ListManager .editor .list_editor_selector td select::-webkit-scrollbar-thumb {
+#ListManager .editor .list_editor_selector td select::-webkit-scrollbar-thumb {
   background-color: #d8d8d8;
 }
 
-#ListManager #ListManager .editor .list_editor_selector td select::-webkit-scrollbar-track {
+#ListManager .editor .list_editor_selector td select::-webkit-scrollbar-track {
   background-color: #ffffff;
 }
 
-#ListManager #ListManager .editor .list_editor_selector th label {
+#ListManager .editor .list_editor_selector th label {
   font-size: 12px;
   text-align: left;
   padding: 4px 0 4px 6px;
@@ -10347,21 +10240,21 @@ input.text_input_white {
   border-top-right-radius: 5px;
 }
 
-#ListManager #ListManager .editor .list_editor_selector_filter_holder {
+#ListManager .editor .list_editor_selector_filter_holder {
   width: 95%;
   overflow: hidden;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
-#ListManager #ListManager .editor .listmanager-add-user {
+#ListManager .editor .listmanager-add-user {
   width: 120px;
   margin-left: 30px;
   margin-top: 2px;
   border: 0 none;
 }
 
-#ListManager #ListManager .editor .list_refresh:hover {
+#ListManager .editor .list_refresh:hover {
   background: #ff9400;
 }
 
@@ -10370,9 +10263,11 @@ input.text_input_white {
 }
 
 #PushBox .general_togglers {
-  margin-right: 5px;
-  vertical-align: middle;
-  margin-bottom: 3px;
+  /*
+    margin-right: 5px;
+    vertical-align: middle;
+    margin-bottom: 3px;
+    */
   /*
     button {
         padding-left: 35px;
@@ -10471,17 +10366,8 @@ input.text_input_white {
 #find-user input[type=text] {
   width: 180px;
   border-radius: 5px;
-  background-color: #2196f3;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
   border: none;
-  font-family: Helvetica;
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: 0px;
-  color: #ffffff;
 }
 
 #find-user input[type=text]::-webkit-input-placeholder {
@@ -10563,32 +10449,13 @@ input.text_input_white {
 
 #quickAddUser button {
   border-radius: 15px;
-  background-color: #ffffff;
-  border: solid 1px #2196f3;
-  font-family: Roboto;
   font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #2196f3;
   height: 30px;
   min-width: 135px;
   padding-left: 20px;
   padding-right: 20px;
   margin-left: 10px;
   margin-right: 10px;
-}
-
-#quickAddUser button:hover {
-  background-color: #2196f3;
-  color: #FFFFFF;
-}
-
-#quickAddUser button:nth-child(2) {
-  background-color: #2196f3;
-  color: #FFFFFF;
 }
 
 /*

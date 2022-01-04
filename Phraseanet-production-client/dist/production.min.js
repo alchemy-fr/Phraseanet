@@ -7584,18 +7584,31 @@ var pushAddUser = function pushAddUser(services) {
         $container.on('click', '.push-add-user', function (event) {
             event.preventDefault();
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var dialogOptions = {};
+            var dialogOptions = {
+                // 'context': null,                // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ? will become a class to apply theme
+                'dialog_classes': ['dialog_container', 'whole_dialog_container' // to use css from _modal-push-scss
+                ]
+            };
+
+            // a "context" (=theme) can be passed by the button/link to apply theme css
+            // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ?
+            if ($el.attr('data-context') !== undefined) {
+                dialogOptions.dialog_classes.push($el.attr('data-context'));
+                // dialogOptions.context = $el.attr('data-context');
+            }
 
             if ($el.attr('title') !== undefined) {
                 dialogOptions.title = $el.html;
             }
 
+            // !!!!!!!!!!!!!!!!!!!!!! never passed ? better use data-context !!!!!!!!!!!!!!!!!!!!
             if ($el.hasClass('validation')) {
-                dialogOptions.isValidation = true;
+                dialogOptions.dialog_classes.push('validation');
             }
 
+            // !!!!!!!!!!!!!!!!!!!!!! better use data-context !!!!!!!!!!!!!!!!!!!!
             if ($el.hasClass('listmanager-add-user')) {
-                dialogOptions.isListManager = true;
+                dialogOptions.dialog_classes.push('push-add-user-listmanager');
             }
 
             openModal(dialogOptions);
@@ -7612,15 +7625,17 @@ var pushAddUser = function pushAddUser(services) {
             title: localeService.t('create new user')
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions, 2);
-        $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container');
 
-        if (dialogOptions.isValidation) {
-            $dialog.getDomElement().closest('.ui-dialog').addClass('validation');
+        // add classes to the whole dialog
+        var d = $dialog.getDomElement().closest('.ui-dialog'); // the whole dlg, including title
+        for (var i in options.dialog_classes) {
+            d.addClass(options.dialog_classes[i]); // 'dialog_container', 'whole_dialog_container', ...
         }
 
-        if (dialogOptions.isListManager) {
-            $dialog.getDomElement().closest('.ui-dialog').addClass('push-add-user-listmanager');
-        }
+        // // if there is a context (=theme), add a css
+        // if(options.context) {
+        //     d.addClass(options.context);
+        // }
 
         return _jquery2.default.get(url + 'prod/push/add-user/', function (data) {
             $dialog.setContent(data);
@@ -60502,7 +60517,7 @@ var sharebasketRecord = function sharebasketRecord(services, datas) {
         });
 
         // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('sharebasket');
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('Sharebasket');
 
         _jquery2.default.post(url + 'prod/push/sharebasketform/', datas, function (data) {
             $dialog.setContent(data);
@@ -61734,8 +61749,9 @@ ListManager.prototype = {
             humane.info('User already selected');
             return;
         } else {
-            var html = _.template((0, _jquery2.default)('#list_manager_badge_tpl').html())({
-                user: user
+            var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
+                user: user,
+                context: 'ListManager'
             });
 
             // p4.Feedback.appendBadge(html);
@@ -62100,7 +62116,7 @@ var pushRecord = function pushRecord(services, datas) {
         });
 
         // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('push');
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('Push');
 
         _jquery2.default.post(url + 'prod/push/sendform/', datas, function (data) {
             $dialog.setContent(data);
@@ -62425,7 +62441,7 @@ var recordFeedbackModal = function recordFeedbackModal(services, datas) {
         });
 
         // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('feedback');
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('Feedback');
 
         _jquery2.default.post(url + 'prod/push/validateform/', datas, function (data) {
             // data content's javascript can't be fully refactored
