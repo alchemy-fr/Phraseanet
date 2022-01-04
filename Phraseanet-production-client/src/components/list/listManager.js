@@ -1,11 +1,12 @@
 import $ from 'jquery';
-import {Lists, List} from './model/index';
+import {List, Lists} from './model/index';
 import listEditor from './listEditor';
 import listShare from './listShare';
 import dialog from './../../phraseanet-common/components/dialog';
 import Selectable from '../utils/selectable';
 import pushAddUser from '../record/recordPush/addUser';
 import * as _ from 'underscore';
+
 const humane = require('humane-js');
 
 const ListManager = function (services, options) {
@@ -536,8 +537,9 @@ ListManager.prototype = {
             return;
         }
         else {
-            var html = _.template($('#list_manager_badge_tpl').html())({
-                user: user
+            var html = _.template($('#_badge_tpl').html())({
+                user: user,
+                context: 'ListManager'
             });
 
             // p4.Feedback.appendBadge(html);

@@ -1,6 +1,7 @@
 {# designed to be printed in a small box #}
 <div class="PNB10" callback="{{ callback }}">
-    <form  id="quickAddUser" method="POST" action="{{ path('prod_push_do_add_user') }}" style="padding-top: 20px">
+    {# --- use the "push" class as theme : blue buttons #}
+    <form  id="quickAddUser" class="dead_push" method="POST" action="{{ path('prod_push_do_add_user') }}" style="padding-top: 20px">
         <table>
             <tr>
                 <td>
@@ -25,8 +26,8 @@
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;padding: 10px 0px;">
-                    <button class="cancel" type="button">{{ 'Cancel' | trans }}</button>
-                    <button class="valid" type="submit">{{ 'Add' | trans }}</button>
+                    <button class="cancel colored" type="button">{{ 'Cancel' | trans }}</button>
+                    <button class="valid colored inverse" type="submit">{{ 'Add' | trans }}</button>
                 </td>
             </tr>
             <tr>

@@ -63,6 +63,7 @@ input.text_input_white {
     }
 
     .btn, .btn-inverse {
+        font-weight: normal;
         background-image: none;         // remove grey (candy) gradient
     }
 
@@ -76,6 +77,10 @@ input.text_input_white {
 
     .inverse {
         background-color: white;
+    }
+
+    .colored.inverse {
+        color: white;
     }
 
     BUTTON, A {
@@ -95,8 +100,8 @@ input.text_input_white {
         &.with_icon {
             position: relative;     // needed for absolute icon
             padding-left: 35px;
-            SPAN.fa {
-                font-size: 170%;
+            I.fa {
+                font-size: 160%;
                 position: absolute;
                 left: 10px;
                 top: 3px;
@@ -117,6 +122,23 @@ input.text_input_white {
         border-radius: 13.5px;
         border: solid 1px transparent;  // transparent is changed by context / theme
         box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
+    }
+
+    input[type=text],
+    input[type=text]::-webkit-input-placeholder,    /* Chrome/Opera/Safari */
+    input[type=text]::-moz-placeholder,             /* Firefox 19+ */
+    input[type=text]:-ms-input-placeholder,         /* IE 10+ */
+    input[type=text]:-moz-placeholder {             /* Firefox 18- */
+        &.colored {
+            color: #ffffff;
+        }
+    }
+
+    // glue immediate button to text input
+    INPUT[type=text] + BUTTON {
+        height: 30px;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
     }
 
     /***********************
@@ -145,9 +167,9 @@ input.text_input_white {
 
     // save list button
     .saveList {
-        height: 30px;
-        border-bottom-left-radius: 0;
-        border-top-left-radius: 0;
+//        height: 30px;
+//        border-bottom-left-radius: 0;
+//        border-top-left-radius: 0;
     }
 
     // list manager button       ( /!\ A.btn )
@@ -157,6 +179,7 @@ input.text_input_white {
         left: 32px;
         width: 158px;
     }
+
     #PushBox .list_manager:hover {
         // since the manager has orange theme, recall this with the button
         background-color: $orangeThemeColor;
@@ -219,7 +242,7 @@ input.text_input_white {
  * theme dependant fixes
  *****************************/
 
-.push {
+.Push {
     .colored {
         color: $pushThemeColor;
         &.inverse {
@@ -243,7 +266,7 @@ input.text_input_white {
     }
 }
 
-.feedback {
+.Feedback {
     .colored {
         color: $feedbackThemeColor;
         &.inverse {
@@ -267,7 +290,7 @@ input.text_input_white {
     }
 }
 
-.sharebasket {
+.Sharebasket {
     .colored {
         color: $sharebasketThemeColor;
         &.inverse {
@@ -344,14 +367,14 @@ input.text_input_white {
         }
 
         &.name {
-            font-size: 12px;
-            font-weight: normal;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: normal;
-            letter-spacing: normal;
-            color: #000000;
-            text-shadow: none;
+            //font-size: 12px;
+            //font-weight: normal;
+            //font-style: normal;
+            //font-stretch: normal;
+            //line-height: normal;
+            //letter-spacing: normal;
+            //color: #000000;
+            //text-shadow: none;
 
             white-space: pre-line;
             display: block;
@@ -360,14 +383,14 @@ input.text_input_white {
 
         &.subtite {
             display: block;
-            font-size: 12px;
-            font-weight: normal;
-            font-style: normal;
-            font-stretch: normal;
-            line-height: normal;
-            letter-spacing: normal;
-            color: #000000;
-            text-shadow: none;
+            //font-size: 12px;
+            //font-weight: normal;
+            //font-style: normal;
+            //font-stretch: normal;
+            //line-height: normal;
+            //letter-spacing: normal;
+            //color: #000000;
+            //text-shadow: none;
         }
 
         &.selected {
@@ -426,22 +449,23 @@ input.text_input_white {
 }
 
 
+/*
 .feedback {
 
     #find-user input[type=text] {
-        background-color: $feedbackThemeColor;
+//        background-color: $feedbackThemeColor;
     }
     #quickAddUser button {
-        border: solid 1px $feedbackThemeColor;
-        color: $feedbackThemeColor;
+//        border: solid 1px $feedbackThemeColor;
+//        color: $feedbackThemeColor;
 
     }
 
     #quickAddUser button:hover {
-        background-color: $feedbackThemeColor;
+//        background-color: $feedbackThemeColor;
     }
     #quickAddUser button:nth-child(2) {
-        background-color: $feedbackThemeColor;
+//        background-color: $feedbackThemeColor;
     }
     .btn.btn-push-orange.btn-orange-inverse {
         color: $textInverseColor;
@@ -451,22 +475,24 @@ input.text_input_white {
         color: $orangeThemeColor;
     }
 }
+*/
 
+/*
 .sharebasket {
     #find-user input[type=text] {
-        background-color: $sharebasketThemeColor;
+        //background-color: $sharebasketThemeColor;
     }
     #quickAddUser button {
-        border: solid 1px $sharebasketThemeColor;
-        color: $sharebasketThemeColor;
+//        border: solid 1px $sharebasketThemeColor;
+//        color: $sharebasketThemeColor;
 
     }
 
     #quickAddUser button:hover {
-        background-color: $sharebasketThemeColor;
+        //background-color: $sharebasketThemeColor;
     }
     #quickAddUser button:nth-child(2) {
-        background-color: $sharebasketThemeColor;
+//        background-color: $sharebasketThemeColor;
     }
     .btn.btn-push-orange.btn-orange-inverse {
         color: $textInverseColor;
@@ -476,11 +502,12 @@ input.text_input_white {
         color: $orangeThemeColor;
     }
 }
+*/
 
-.PushBox .delete-selection {
-    margin-left: 18px;
-    padding: 0px 16.5px;
-}
+//.PushBox .delete-selection {
+//    margin-left: 18px;
+//    padding: 0px 16.5px;
+//}
 
 
 .PushBox #info-box-trigger {
@@ -552,60 +579,60 @@ input.text_input_white {
 }
 
  */
-.btn.btn-push-orange {
-    color: $orangeThemeColor;
-    margin: 0;
-    background: #F6F6F6;
-    height: 27px;
-    line-height: 27px;
-    font-size: 12px;
-    font-weight: normal;
-    img {
-        width: 16px;
-        height: 16px;
-        margin-top: -2px;
-    }
-    .image-normal {
-         display: inline;
-     }
-     .image-hover {
-         display: none;
-     }
-     &:hover {
-        color: $textInverseColor;
-        background-color: $orangeThemeColor;
-       .image-normal {
-            display: none;
-        }
-        .image-hover {
-            display: inline;
-        }
-    }
-}
-.btn.btn-push-orange > img {
-    margin-right: 20px !important;
-    margin-left: -20px;
-}
-.btn.btn-orange-inverse {
-    background-color: $orangeThemeColor;
-    color: $textInverseColor;
-    .image-normal {
-        display: none;
-    }
-    .image-hover {
-        display: inline;
-    }
-    &:hover {
-        color: $orangeThemeColor;
-        background-color: #fff;
-        .image-normal {
-            display: inline;
-        }
-        .image-hover {
-            display: none;
-        }
-    }
-}
+//.btn.btn-push-orange {
+//    color: $orangeThemeColor;
+//    margin: 0;
+//    background: #F6F6F6;
+//    height: 27px;
+//    line-height: 27px;
+//    font-size: 12px;
+//    font-weight: normal;
+//    img {
+//        width: 16px;
+//        height: 16px;
+//        margin-top: -2px;
+//    }
+//    .image-normal {
+//         display: inline;
+//     }
+//     .image-hover {
+//         display: none;
+//     }
+//     &:hover {
+//        color: $textInverseColor;
+//        background-color: $orangeThemeColor;
+//       .image-normal {
+//            display: none;
+//        }
+//        .image-hover {
+//            display: inline;
+//        }
+//    }
+//}
+//.btn.btn-push-orange > img {
+//    margin-right: 20px !important;
+//    margin-left: -20px;
+//}
+//.btn.btn-orange-inverse {
+//    background-color: $orangeThemeColor;
+//    color: $textInverseColor;
+//    .image-normal {
+//        display: none;
+//    }
+//    .image-hover {
+//        display: inline;
+//    }
+//    &:hover {
+//        color: $orangeThemeColor;
+//        background-color: #fff;
+//        .image-normal {
+//            display: inline;
+//        }
+//        .image-hover {
+//            display: none;
+//        }
+//    }
+//}
 
 .select-all, .unselect-all {
     border-radius: 17px;
@@ -966,13 +993,14 @@ input.text_input_white {
 
 
 #ListManager {
-    H1 SPAN.title {
-        font-size: 24px;
-        line-height: 24px;
-        font-weight: bold;
-        vertical-align: middle;
-    }
+    //H1 SPAN.title {
+    //    font-size: 24px;
+    //    line-height: 24px;
+    //    font-weight: bold;
+    //    vertical-align: middle;
+    //}
     .content {
+        /*
         &.readselect {
             .badge {
                 width: 250px;
@@ -1027,6 +1055,7 @@ input.text_input_white {
                 }
             }
         }
+        */
         .lists span.action {
             display: block;
             text-align: center;
@@ -1043,47 +1072,49 @@ input.text_input_white {
 
     }
 
-    #ListManager .editor {
-        .list_editor_search {
-            top: 63px;
-        }
+    .editor {
+        //.list_editor_search {
+        //    top: 63px;
+        //}
         .saveList {
-            width: 120px;
-            padding: 4px 0;
-            font-weight: normal;
-            line-height: 19px;
-            border-radius: 5px;
-            background-color: #f7f7f7;
-            .image-normal {
-                display: inline;
-            }
-            .image-hover {
-                display: none;
-            }
-            img {
-                margin-right: 20px;
-            }
-            &:hover {
-                color: #fff !important;
-                background-color: $orangeThemeColor !important;
-                .image-normal {
-                    display: none;
-                }
-                .image-hover {
-                    display: inline;
-                }
-            }
+            //width: 120px;
+            //padding: 4px 0;
+            //font-weight: normal;
+            //line-height: 19px;
+            //border-radius: 5px;
+            //background-color: #f7f7f7;
+            //.image-normal {
+            //    display: inline;
+            //}
+            //.image-hover {
+            //    display: none;
+            //}
+            //img {
+            //    margin-right: 20px;
+            //}
+            //&:hover {
+            //    color: #fff !important;
+            //    background-color: $orangeThemeColor !important;
+            //    .image-normal {
+            //        display: none;
+            //    }
+            //    .image-hover {
+            //        display: inline;
+            //    }
+            //}
         }
+        /* !!!!!!!!!!!!!!!!!! the footer is hidden by list
         .footer .saveList {
             width: 150px;
             padding: 4px 0px 4px 0;
-            background-color: #f7f7f7;
+//            background-color: #f7f7f7;
             img {
                 margin-right: 15px;
             }
         }
+        !!!!!!!!!!!!!!!!!!!!!!!!!!         */
         #find-user input[type=text] {
-            background-color: $orangeThemeColor;
+//            background-color: $orangeThemeColor;
         }
         .counter {
             font-size: 12px;
@@ -1148,9 +1179,11 @@ input.text_input_white {
 }
 
 #PushBox .general_togglers {
+    /*
     margin-right: 5px;
     vertical-align: middle;
     margin-bottom: 3px;
+    */
     /*
     button {
         padding-left: 35px;
@@ -1243,17 +1276,17 @@ input.text_input_white {
     input[type=text] {
         width: 180px;
         border-radius: 5px;
-        background-color: $pushThemeColor;
+//        background-color: $pushThemeColor;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
         border: none;
-        font-family: Helvetica;
-        font-size: 12px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: 0px;
-        color: #ffffff;
+//        font-family: Helvetica;
+//        font-size: 12px;
+//        font-weight: normal;
+//        font-style: normal;
+//        font-stretch: normal;
+//        line-height: normal;
+//        letter-spacing: 0px;
+//        color: #ffffff;
     }
     input[type=text]::-webkit-input-placeholder { /* Chrome/Opera/Safari */
         color: #ffffff;
@@ -1356,16 +1389,16 @@ input.text_input_white {
 
 #quickAddUser button {
     border-radius: 15px;
-    background-color: #ffffff;
-    border: solid 1px $pushThemeColor;
-    font-family: Roboto;
+//    background-color: #ffffff;
+//    border: solid 1px $pushThemeColor;
+//    font-family: Roboto;
     font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: $pushThemeColor;
+//    font-weight: normal;
+//    font-style: normal;
+//    font-stretch: normal;
+//    line-height: normal;
+//    letter-spacing: normal;
+//    color: $pushThemeColor;
     height: 30px;
     min-width: 135px;
     padding-left: 20px;
@@ -1375,12 +1408,12 @@ input.text_input_white {
 }
 
 #quickAddUser button:hover {
-    background-color: $pushThemeColor;
-    color: #FFFFFF;
+//    background-color: $pushThemeColor;
+//    color: #FFFFFF;
 }
 #quickAddUser button:nth-child(2) {
-    background-color: $pushThemeColor;
-    color: #FFFFFF;
+//    background-color: $pushThemeColor;
+//    color: #FFFFFF;
 }
 
 /*

@@ -90,9 +90,10 @@
                                     <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
                                 </td>
                             </tr>
+                            <% if(context != 'ListManager') { %>
                             <tr class="toggles">
                                 <td>
-                                    <% if(context == 'Feedback' || context == 'ShareBasket') { %>
+                                    <% if(context == 'Feedback' || context == 'Sharebasket') { %>
                                         <% if(context == 'Feedback') { %>
                                             <% msg = "{% trans %}User contribute to the feedback{% endtrans %}" %>
                                         <% } else { %>
@@ -105,13 +106,13 @@
                                     <% } %>
                                 </td>
                                 <td>
-                                <% if(context == 'Feedback') { %>
+                                    <% if(context == 'Feedback') { %>
                                     <% msg = "{% trans %}User can see others choices{% endtrans %}" %>
                                     <a href="#" class="fa fa-users colored toggle toggle_see_others status_off" title="<%= msg %>"></a>
                                     <input type="hidden"
                                            name="participants[<%= user.usr_id %>][see_others]"
                                            value="0"/>
-                                <% } %>
+                                    <% } %>
                                 </td>
                                 <td>
                                     <% msg = "{% trans %}User can download HD{% endtrans %}" %>
@@ -120,6 +121,7 @@
                                            name="participants[<%= user.usr_id %>][HD]"
                                            value="0"/>
                                 </td>
+                                <% } %>
                             </tr>
                         </table>
                     </div>

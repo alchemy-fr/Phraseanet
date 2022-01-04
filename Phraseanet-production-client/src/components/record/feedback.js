@@ -17,7 +17,7 @@ const recordFeedbackModal = (services, datas) => {
         // add classes to the whoe dialog (including title)
         $dialog.getDomElement().closest('.ui-dialog')
                .addClass('whole_dialog_container')
-               .addClass('feedback');
+               .addClass('Feedback');
 
         $.post(`${url}prod/push/validateform/`, datas, function (data) {
             // data content's javascript can't be fully refactored
