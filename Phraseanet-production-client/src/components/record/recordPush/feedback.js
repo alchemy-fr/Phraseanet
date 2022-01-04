@@ -1,9 +1,10 @@
 import $ from 'jquery';
-import { Lists } from '../../list/model/index';
+import {Lists} from '../../list/model/index';
 import dialog from './../../../phraseanet-common/components/dialog';
 import Selectable from '../../utils/selectable';
 import pushAddUser from './addUser';
 import * as _ from 'underscore';
+
 const humane = require('humane-js');
 require('./../../../phraseanet-common/components/tooltip');
 
@@ -354,7 +355,7 @@ const Feedback = function (services, options) {
 
         $this.toggleClass('status_off status_on');
 
-        $this.find('input').val($this.hasClass('status_on') ? '1' : '0');
+        $this.parent().find('input').val($this.hasClass('status_on') ? '1' : '0');
 
         return false;
     });
@@ -520,6 +521,7 @@ const Feedback = function (services, options) {
 
 Feedback.prototype = {
     selectUser: function (user) {
+console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
         if (typeof user !== 'object') {
             if (window.console) {
                 console.log('trying to select a user with wrong datas');
@@ -542,10 +544,15 @@ Feedback.prototype = {
             }
         }
 
+        /*
         var html = _.template($('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
             user: user
         });
-
+         */
+        var html = _.template($('#_badge_tpl').html())({
+            user: user,
+            context: this.Context
+        });
         // p4.Feedback.appendBadge(html);
         this.appendBadge(html);
     },

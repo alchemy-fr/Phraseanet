@@ -9179,384 +9179,217 @@ input.text_input_white {
   height: 18px;
 }
 
-.dialog_container {
-  border: 0 none !important;
-  border-radius: 6px !important;
-  background-color: #ffffff !important;
-}
+/** PUSH BOX */
 
-.dialog_container .ui-dialog-title {
-  font-family: Roboto;
-  font-size: 18px;
-  font-weight: 500;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #4a4a4a;
-}
-
-.dialog_container .ui-dialog-titlebar-close {
-  border: none;
-  margin-right: 5px;
-}
-
-.dialog_container .ui-icon.ui-icon-closethick {
-  background-image: url("/assets/common/images/icons/cross-white.png");
-  background-position: center;
-  background-size: cover;
-}
-
-.dialog_container .ui-dialog-buttonpane {
-  margin-top: 0;
-  padding-top: 0;
-  border: 0 none;
-}
-
-.dialog_container .ui-dialog-buttonpane .ui-button {
-  border-radius: 15px;
-  background-color: #ffffff;
-  border: solid 1px #2196f3;
-  font-family: Roboto;
-  font-size: 14px;
+.whole_dialog_container {
+  /******************************
+     * override default ui styles
+     ******************************/
+  font-family: Roboto, sans-serif;
+  font-size: 12px;
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
-  letter-spacing: normal;
-  color: #2196f3;
-  height: 30px;
-  min-width: 135px;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin-left: 10px;
-  margin-right: 10px;
+  letter-spacing: 0px;
+  color: #282828;
+  /*********************
+     * global styles
+     ********************/
+  /***********************
+     * specific styles
+     **********************/
 }
 
-.dialog_container .ui-dialog-buttonpane .ui-button:hover {
-  background-color: #2196f3;
-  color: #FFFFFF;
-}
-
-.dialog_container .ui-dialog-buttonpane .ui-button:nth-child(2) {
-  background-color: #2196f3;
-  color: #FFFFFF;
-}
-
-.dialog_container .ui-button-icon-only {
-  text-indent: -9999px;
-  background: transparent;
-}
-
-.dialog_container .ui-dialog-buttonpane .ui-dialog-buttonset {
-  float: none;
-  text-align: center;
-}
-
-.dialog_container .ui-widget-content {
-  color: #4a4a4a;
-}
-
-.dialog_container .ui-widget-content label,
-.dialog_container .ui-widget-content p {
-  font-family: Roboto;
-  font-size: 14px;
-  color: #4a4a4a;
-}
-
-.dialog_container .ui-widget-content input {
-  font-family: Roboto;
-  font-size: 14px;
-  background-color: #e7e7e7;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.dialog_container .ui-widget-content input[type=text]::-webkit-input-placeholder,
-.dialog_container .ui-widget-content textarea::-webkit-input-placeholder {
-  /* Chrome/Opera/Safari */
-  font-family: Roboto;
-  font-size: 14px;
-  color: #484848;
-}
-
-.dialog_container .ui-widget-content input[type=text]::-moz-placeholder,
-.dialog_container .ui-widget-content textarea::-moz-placeholder {
-  /* Firefox 19+ */
-  font-family: Roboto;
-  font-size: 14px;
-  color: #484848;
-}
-
-.dialog_container .ui-widget-content input[type=text]:-ms-input-placeholder,
-.dialog_container .ui-widget-content textarea:-ms-input-placeholder {
-  /* IE 10+ */
-  font-family: Roboto;
-  font-size: 14px;
-  color: #484848;
-}
-
-.dialog_container .ui-widget-content input[type=text]:-ms-input-placeholder,
-.dialog_container .ui-widget-content textarea:-ms-input-placeholder {
-  /* Firefox 18- */
-  font-family: Roboto;
-  font-size: 14px;
-  color: #484848;
-}
-
-.dialog_container .ui-widget-content textarea {
-  font-family: Roboto;
-  font-size: 14px;
-  background-color: #e7e7e7;
-  border-radius: 0;
-  border: none;
-  resize: none;
-  box-shadow: none;
-  padding: 4px 6px;
-  min-height: 150px;
-}
-
-.dialog_container .ui-autocomplete.ui-widget-content {
-  max-height: 250px;
-}
-
-.dialog_container.validation .ui-dialog-buttonpane .ui-button {
-  background-color: #ffffff;
-  border: solid 1px #8bc34a;
-  color: #8bc34a;
-}
-
-.dialog_container.validation .ui-dialog-buttonpane .ui-button:hover {
-  background-color: #8bc34a;
-  color: #FFFFFF;
-}
-
-.dialog_container.validation .ui-dialog-buttonpane .ui-button:last-child {
-  background-color: #8bc34a;
-  color: #FFFFFF;
-}
-
-.dialog_container.dialog_add_list {
-  border: 0 none;
-  -webkit-box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-}
-
-.dialog_container.dialog_add_list .ui-dialog-content form {
-  margin: 0;
-}
-
-.dialog_container.dialog_add_list .ui-dialog-content form label {
+.whole_dialog_container button,
+.whole_dialog_container input,
+.whole_dialog_container label,
+.whole_dialog_container select,
+.whole_dialog_container textarea {
   font-size: 12px;
-  color: #4a4a4a;
-}
-
-.dialog_container.dialog_add_list .ui-dialog-content form input {
-  margin: 10px 0 0;
-  width: calc(100% - 10px);
-}
-
-.dialog_container.dialog_add_list .ui-dialog-buttonpane {
-  border-top: 0 none;
-  margin-top: 0;
-}
-
-.dialog_container.dialog_add_list .ui-dialog-buttonpane button.ui-button {
-  background-color: #ffffff;
-  border: solid 1px #ff9400;
-  color: #ff9400;
-  min-width: 115px;
-  float: right;
-}
-
-.dialog_container.dialog_add_list .ui-dialog-buttonpane button.ui-button:hover {
-  background-color: #ff9400;
-  color: #FFFFFF;
-}
-
-.dialog_container.dialog_add_list .ui-dialog-buttonpane button.ui-button:first-child {
-  float: right;
-  background-color: #ff9400;
-  color: #FFFFFF;
-}
-
-.dialog_container.dialog_delete_list {
-  border: 0 none;
-  -webkit-box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-}
-
-.dialog_container.dialog_delete_list .ui-dialog-content form {
-  margin: 0;
-}
-
-.dialog_container.dialog_delete_list .ui-dialog-content form label {
-  font-size: 12px;
-}
-
-.dialog_container.dialog_delete_list .ui-dialog-content form input {
-  margin: 10px 0 0;
-  width: calc(100% - 10px);
-}
-
-.dialog_container.dialog_delete_list .ui-dialog-buttonpane {
-  border-top: 0 none;
-  margin-top: 0;
-}
-
-.dialog_container.dialog_delete_list .ui-dialog-buttonpane button.ui-button {
-  background-color: #ffffff;
-  border: solid 1px #2196f3;
-  color: #2196f3;
-  min-width: 115px;
-}
-
-.dialog_container.dialog_delete_list .ui-dialog-buttonpane button.ui-button:hover {
-  background-color: #2196f3;
-  color: #FFFFFF;
-}
-
-.dialog_container.dialog_delete_list .ui-dialog-buttonpane button.ui-button:first-child {
-  float: right;
-  background-color: #2196f3;
-  color: #FFFFFF;
-}
-
-.dialog_container.dialog_delete_list_listmanager .ui-dialog-content {
-  margin-top: 7px;
-  margin-bottom: -20px;
-}
-
-.dialog_container.dialog_delete_list_listmanager .ui-dialog-buttonpane button.ui-button {
-  border: solid 1px #ff9400;
-  color: #ff9400;
-}
-
-.dialog_container.dialog_delete_list_listmanager .ui-dialog-buttonpane button.ui-button:hover {
-  background-color: #ff9400;
-}
-
-.dialog_container.dialog_delete_list_listmanager .ui-dialog-buttonpane button.ui-button:first-child {
-  float: right;
-  background-color: #ff9400;
-}
-
-.dialog_container.dialog_share_list {
-  border: 0 none;
-  -webkit-box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
-}
-
-.dialog_container.dialog_share_list .ui-dialog-content form label {
-  font-size: 12px;
-  display: inline;
-}
-
-.dialog_container.dialog_share_list .ui-dialog-content form input {
-  margin: 10px 0 0;
-  width: calc(100% - 10px);
-}
-
-.dialog_container.dialog_share_list .ui-dialog-content form select {
-  width: auto;
-  height: 20px;
+  font-weight: 400;
   line-height: 20px;
-  font-size: 12px;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-buttonpane {
-  border-top: 0 none;
-  margin-top: 0;
+.whole_dialog_container button:focus,
+.whole_dialog_container input:focus,
+.whole_dialog_container label:focus,
+.whole_dialog_container select:focus,
+.whole_dialog_container textarea:focus {
+  text-decoration: none;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-buttonpane button.ui-button {
-  background-color: #ffffff;
-  border: solid 1px #ff9400;
-  color: #ff9400;
-  min-width: 115px;
+.whole_dialog_container .ui-dialog-title {
+  font-size: 21px;
+  font-weight: bold;
+  color: #ffffff;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-buttonpane button.ui-button:hover {
-  background-color: #ff9400;
-  color: #FFFFFF;
+.whole_dialog_container .ui-widget-content {
+  color: #282828;
+  background-color: white;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-buttonpane .ui-dialog-buttonset {
-  float: left;
-  width: 278px;
-}
-
-.dialog_container.dialog_share_list .ui-dialog-content form.list_share_user input[type=text] {
-  width: 250px;
-  height: 26px;
-  border-radius: 5px;
-  background-color: #ff9400;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
+.whole_dialog_container .ui-dialog-titlebar-close {
   border: none;
-  font-family: Helvetica;
-  font-size: 12px;
-  color: #ffffff;
-  padding-left: 6px;
-  background-image: url("/assets/common/images/icons/white-search.png");
-  background-repeat: no-repeat;
-  background-size: 20px;
-  background-position: right 8px center;
+  margin-right: 4px;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-content form.list_share_user input[type=text]::-webkit-input-placeholder {
-  /* Chrome/Opera/Safari */
-  color: #ffffff;
-  font-size: 12px;
+.whole_dialog_container .btn,
+.whole_dialog_container .btn-inverse {
+  background-image: none;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-content td {
-  color: #000000;
+.whole_dialog_container .PushBox {
+  background-color: #4F4F4F;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-content td label {
-  color: #000000;
+.whole_dialog_container .inverse {
+  background-color: white;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-content td.listmanager_badge_img {
-  width: 28px;
-  padding: 7px 7px;
+.whole_dialog_container BUTTON,
+.whole_dialog_container A {
+  color: #282828;
+  padding-right: 15px;
+}
+
+.whole_dialog_container BUTTON:hover,
+.whole_dialog_container A:hover {
+  color: white;
+  background-color: #282828;
+}
+
+.whole_dialog_container BUTTON.inverse,
+.whole_dialog_container A.inverse {
+  color: white;
+}
+
+.whole_dialog_container BUTTON.inverse:hover,
+.whole_dialog_container A.inverse:hover {
+  color: #282828;
+  background-color: white;
+}
+
+.whole_dialog_container BUTTON.with_icon,
+.whole_dialog_container A.with_icon {
+  position: relative;
+  padding-left: 35px;
+}
+
+.whole_dialog_container BUTTON.with_icon SPAN.fa,
+.whole_dialog_container A.with_icon SPAN.fa {
+  font-size: 170%;
+  position: absolute;
+  left: 10px;
+  top: 3px;
+}
+
+.whole_dialog_container BUTTON.toggle:hover,
+.whole_dialog_container BUTTON.toggle.status_on:hover,
+.whole_dialog_container BUTTON.toggle.status_off,
+.whole_dialog_container A.toggle:hover,
+.whole_dialog_container A.toggle.status_on:hover,
+.whole_dialog_container A.toggle.status_off {
+  background-color: transparent !important;
+  color: #666;
+}
+
+.whole_dialog_container BUTTON,
+.whole_dialog_container A.btn {
+  background-color: white;
+  border-radius: 13.5px;
+  border: solid 1px transparent;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
+}
+
+.whole_dialog_container BUTTON:hover,
+.whole_dialog_container A.btn:hover {
+  color: white;
+  background-color: #282828;
+}
+
+.whole_dialog_container .PushBox .push-add-user {
+  margin-left: 30px;
+}
+
+.whole_dialog_container A.list_refresh {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+
+.whole_dialog_container .list_link {
+  height: 40px;
+  line-height: 40px;
+  display: block;
+  padding-left: 33px;
+}
+
+.whole_dialog_container .saveList {
+  height: 30px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.whole_dialog_container #PushBox .list_manager {
+  position: fixed;
+  bottom: 31px;
+  left: 32px;
+  width: 158px;
+}
+
+.whole_dialog_container #PushBox .list_manager:hover {
   background-color: #ff9400;
 }
 
-.dialog_container.dialog_share_list .ui-dialog-content td.listmanager_badge_img img {
-  width: 28px;
+.whole_dialog_container .PushBox .delete-selection {
+  margin-left: 18px;
+  padding: 0px 16.5px;
 }
 
-/** PUSH BOX */
+.whole_dialog_container BUTTON.FeedbackSend {
+  width: 180px;
+  height: 30px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 4px 0;
+  margin-left: 20px;
+  margin-bottom: -7px;
+  float: right;
+}
 
 .push_dialog_container,
 .feedback_dialog_container {
   background: #282828;
 }
 
-.push_dialog_container .ui-dialog-title,
-.feedback_dialog_container .ui-dialog-title {
-  font-family: Roboto;
-  font-size: 21px;
-  font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: 0px;
-  color: #ffffff;
+/*
+.push_dialog_container .ui-dialog-title, .feedback_dialog_container .ui-dialog-title {
+    font-family: Roboto;
+    font-size: 21px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0px;
+    color: #ffffff;
 }
+*/
 
-.push_dialog_container .ui-widget-content,
-.feedback_dialog_container .ui-widget-content {
-  background-color: #4f4f4f;
+/*
+.push_dialog_container .ui-widget-content, .feedback_dialog_container .ui-widget-content {
+    background-color: #4f4f4f;
 }
+*/
 
-.push_dialog_container .ui-dialog-titlebar-close,
-.feedback_dialog_container .ui-dialog-titlebar-close {
-  border: none;
-  margin-right: 4px;
+/*
+.push_dialog_container .ui-dialog-titlebar-close, .feedback_dialog_container .ui-dialog-titlebar-close {
+    border: none;
+    margin-right: 4px;
 }
+*/
 
 .push_dialog_container .ui-icon.ui-icon-closethick,
 .feedback_dialog_container .ui-icon.ui-icon-closethick {
@@ -9565,211 +9398,305 @@ input.text_input_white {
   background-size: cover;
 }
 
-.feedback_dialog_container #PushBox .content .list_refresh:hover {
-  background: #8bc34a;
-}
+/*****************************
+ * theme dependant fixes
+ *****************************/
 
-.feedback_dialog_container .PushBox .round-blue-border-btn {
-  border: solid 1px #8bc34a;
-  color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .round-blue-border-btn:hover {
-  border: solid 2px #8bc34a;
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .FeedbackSend {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .FeedbackSend:hover {
-  background-color: #A3DD63;
-}
-
-.feedback_dialog_container .PushBox .saveList {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .push-add-user {
-  color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .push-add-user:hover {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .push-back-link {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .push-back-link:hover {
-  background-color: #ffffff;
-  color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .user_content .badges .badge .icon {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .PushBox .user_content .badges .badge.selected {
-  border-color: #000000;
-}
-
-.feedback_dialog_container .general_togglers button {
-  color: #8bc34a;
-  padding-left: 35px;
-}
-
-.feedback_dialog_container .general_togglers button:hover {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .general_togglers li:nth-child(2) button img {
-  width: 23px;
-}
-
-.feedback_dialog_container .general_togglers li:nth-child(3) button img {
-  width: 19px;
-}
-
-.feedback_dialog_container #find-user input[type=text] {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container #quickAddUser button {
-  border: solid 1px #8bc34a;
-  color: #8bc34a;
-}
-
-.feedback_dialog_container #quickAddUser button:hover {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container #quickAddUser button:nth-child(2) {
-  background-color: #8bc34a;
-}
-
-.feedback_dialog_container .btn.btn-push-orange {
-  color: #ff9400;
-}
-
-.feedback_dialog_container .btn.btn-push-orange:hover {
-  background-color: #ff9400;
-  color: #000;
-}
-
-.feedback_dialog_container .btn.btn-push-orange.btn-orange-inverse {
-  color: #000;
-}
-
-.feedback_dialog_container .btn.btn-push-orange.btn-orange-inverse:hover {
-  background-color: #000;
-  color: #ff9400;
-}
-
-.PushBox .round-blue-border-btn {
-  border-radius: 13.5px;
-  background-color: #ffffff;
-  border: 0 none;
-  font-family: Roboto;
-  font-size: 12px;
-  font-weight: 500;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 12px;
-  letter-spacing: normal;
+.push .colored {
   color: #2196f3;
-  padding: 8px 20px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  border: 1px solid #2196f3;
 }
 
-.PushBox .round-blue-border-btn:hover {
-  color: #ffffff;
+.push .colored.inverse {
   background-color: #2196f3;
 }
 
-.PushBox .delete-selection {
-  margin-left: 18px;
-  height: 27px;
-  border-radius: 13.5px;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.18);
-  border: 0 none;
-  font-family: Roboto;
+.push BUTTON.colored:hover,
+.push A.colored:hover {
+  background-color: #2196f3;
+}
+
+.push BUTTON.colored.inverse:hover,
+.push A.colored.inverse:hover {
+  color: #2196f3;
+  background-color: revert;
+}
+
+.push BUTTON.colored.status_on,
+.push BUTTON.colored.status_off:hover,
+.push A.colored.status_on,
+.push A.colored.status_off:hover {
+  color: #2196f3;
+}
+
+.push BUTTON,
+.push A.btn {
+  border-color: #2196f3;
+}
+
+.feedback .colored {
+  color: #8bc34a;
+}
+
+.feedback .colored.inverse {
+  background-color: #8bc34a;
+}
+
+.feedback BUTTON.colored:hover,
+.feedback A.colored:hover {
+  background-color: #8bc34a;
+}
+
+.feedback BUTTON.colored.inverse:hover,
+.feedback A.colored.inverse:hover {
+  color: #8bc34a;
+  background-color: revert;
+}
+
+.feedback BUTTON.colored.status_on,
+.feedback BUTTON.colored.status_off:hover,
+.feedback A.colored.status_on,
+.feedback A.colored.status_off:hover {
+  color: #8bc34a;
+}
+
+.feedback BUTTON,
+.feedback A.btn {
+  border-color: #8bc34a;
+}
+
+.sharebasket .colored {
+  color: #E0215D;
+}
+
+.sharebasket .colored.inverse {
+  background-color: #E0215D;
+}
+
+.sharebasket BUTTON.colored:hover,
+.sharebasket A.colored:hover {
+  background-color: #E0215D;
+}
+
+.sharebasket BUTTON.colored.inverse:hover,
+.sharebasket A.colored.inverse:hover {
+  color: #E0215D;
+  background-color: revert;
+}
+
+.sharebasket BUTTON.colored.status_on,
+.sharebasket BUTTON.colored.status_off:hover,
+.sharebasket A.colored.status_on,
+.sharebasket A.colored.status_off:hover {
+  color: #E0215D;
+}
+
+.sharebasket BUTTON,
+.sharebasket A.btn {
+  border-color: #E0215D;
+}
+
+.ListManager .colored {
+  color: #ff9400;
+}
+
+.ListManager .colored.inverse {
+  background-color: #ff9400;
+}
+
+.ListManager BUTTON.colored:hover,
+.ListManager A.colored:hover {
+  background-color: #ff9400;
+}
+
+.ListManager BUTTON.colored.inverse:hover,
+.ListManager A.colored.inverse:hover {
+  color: #ff9400;
+  background-color: revert;
+}
+
+.ListManager BUTTON.colored.status_on,
+.ListManager BUTTON.colored.status_off:hover,
+.ListManager A.colored.status_on,
+.ListManager A.colored.status_off:hover {
+  color: #ff9400;
+}
+
+.ListManager BUTTON,
+.ListManager A.btn {
+  border-color: #ff9400;
+}
+
+/****************
+ * badge(s)
+ ****************/
+
+.PushBox .user_content .badges {
+  top: 50px;
+  overflow: auto;
+  height: auto;
+  bottom: 50px;
+}
+
+.PushBox .user_content .badges .badge {
+  width: 220px;
+  height: 79px;
+  margin: 10px;
+  display: inline-block;
+  border: 3px solid #868686;
+  color: #282828;
+  background-color: #f7f7f7;
+  text-shadow: none;
+  padding: 0px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.PushBox .user_content .badges .badge.selected {
+  border: 3px solid #000000;
+}
+
+.PushBox .user_content .badges .badge.name {
   font-size: 12px;
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
   letter-spacing: normal;
-  color: #ffffff;
-  padding: 0px 16.5px;
-  background: #676767;
-  border: 1px solid #676767;
+  color: #000000;
+  text-shadow: none;
+  white-space: pre-line;
+  display: block;
+  margin-top: 5px;
 }
 
-.PushBox .delete-selection:hover {
-  background: #333333;
-  color: #fff;
-  border: 1px solid #333333;
-}
-
-.PushBox .FeedbackSend {
-  width: 180px;
-  height: 30px;
-  border-radius: 6px;
-  background-color: #2196f3;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.33);
-  font-family: Roboto;
-  font-size: 14px;
-  font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #ffffff;
-  border: none;
-  padding: 4px 0px;
-  margin-left: 20px;
-  margin-bottom: -7px;
-  float: right;
-}
-
-.PushBox .FeedbackSend:hover {
-  background-color: #53b3fc;
-}
-
-.PushBox .saveList {
-  width: 30px;
-  background-color: #2196f3;
-  font-family: Roboto;
+.PushBox .user_content .badges .badge.subtite {
+  display: block;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
   letter-spacing: normal;
-  color: #fff;
-  border: 0 none;
-  height: 30px;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+  color: #000000;
+  text-shadow: none;
 }
 
-.PushBox .saveList img {
-  width: 16px;
-  height: 16px;
-  margin-right: 10px;
+.PushBox .user_content .badges .badge.selected {
+  border-color: #000000;
 }
 
-.PushBox .saveList span {
-  vertical-align: middle;
+.PushBox .user_content .badges .badge .icon {
+  width: 42px;
+  padding: 0 7px;
+  border-radius: 7px 0px 0px 7px;
 }
 
-.PushBox .saveList:hover {
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.33);
+.PushBox .user_content .badges .badge .icon I {
+  color: white;
+  font-size: 500%;
+  margin-top: 10px;
+}
+
+.PushBox .user_content .badges .badge .infos {
+  padding-top: 3px;
+  padding-left: 5px;
+}
+
+.PushBox .user_content .badges .badge .infos TABLE {
+  height: 75px;
+}
+
+.PushBox .user_content .badges .badge .infos TR {
+  height: 15px;
+}
+
+.PushBox .user_content .badges .badge .infos TR .toggles {
+  height: 25px;
+  text-align: left;
+}
+
+.PushBox .user_content .badges .badge .deleter {
+  position: absolute;
+  right: 0;
+}
+
+.PushBox .user_content .badges .badge .deleter I {
+  color: #4f4f4f;
+  font-size: 20px;
+  padding: 4px;
+}
+
+.PushBox .user_content .badges .badge TABLE {
+  width: 93%;
+}
+
+.PushBox .user_content .badges .badge TD {
+  vertical-align: top;
+}
+
+.PushBox .user_content .badges .badge TR.toggles TD {
+  text-align: center;
+}
+
+.PushBox .user_content .badges .badge TR.toggles TD .toggle {
+  font-size: 200%;
+}
+
+.feedback #find-user input[type=text] {
+  background-color: #8bc34a;
+}
+
+.feedback #quickAddUser button {
+  border: solid 1px #8bc34a;
+  color: #8bc34a;
+}
+
+.feedback #quickAddUser button:hover {
+  background-color: #8bc34a;
+}
+
+.feedback #quickAddUser button:nth-child(2) {
+  background-color: #8bc34a;
+}
+
+.feedback .btn.btn-push-orange.btn-orange-inverse {
+  color: #000;
+}
+
+.feedback .btn.btn-push-orange.btn-orange-inverse:hover {
+  background-color: #000;
+  color: #ff9400;
+}
+
+.sharebasket #find-user input[type=text] {
+  background-color: #E0215D;
+}
+
+.sharebasket #quickAddUser button {
+  border: solid 1px #E0215D;
+  color: #E0215D;
+}
+
+.sharebasket #quickAddUser button:hover {
+  background-color: #E0215D;
+}
+
+.sharebasket #quickAddUser button:nth-child(2) {
+  background-color: #E0215D;
+}
+
+.sharebasket .btn.btn-push-orange.btn-orange-inverse {
+  color: #000;
+}
+
+.sharebasket .btn.btn-push-orange.btn-orange-inverse:hover {
+  background-color: #000;
+  color: #ff9400;
+}
+
+.PushBox .delete-selection {
+  margin-left: 18px;
+  padding: 0px 16.5px;
 }
 
 .PushBox #info-box-trigger {
@@ -9801,109 +9728,48 @@ input.text_input_white {
   margin: 0;
 }
 
-.PushBox .push-add-user {
-  height: 27px;
-  border: 0 none;
-  border-radius: 17px;
-  background: #f7f7f7;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
-  font-family: Roboto;
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: normal;
-  color: #2196f3;
-  line-height: 27px;
-  padding: 0px 16px;
-  margin-top: 2px;
-  margin-left: 30px;
-}
-
-.PushBox .push-add-user img {
-  width: 16px;
-  height: 16px;
-}
-
-.PushBox .push-add-user span {
-  line-height: 28px;
-  vertical-align: middle;
-  margin-left: 10px;
-}
-
-.PushBox .push-add-user .image-normal {
-  display: inline;
-}
-
-.PushBox .push-add-user .image-hover {
-  display: none;
-}
-
-.PushBox .push-add-user:hover {
-  transition: none;
-  background-position: 0 30px;
-  color: #f7f7f7;
-  background-color: #2196f3;
-}
-
-.PushBox .push-add-user:hover .image-normal {
-  display: none;
-}
-
-.PushBox .push-add-user:hover .image-hover {
-  display: inline;
-}
-
+/*
 .PushBox .push-back-link {
-  background-color: #2196f3;
-  background-image: none;
-  font-family: Roboto;
-  font-size: 12px;
-  font-weight: normal;
-  color: #000;
-  border-radius: 7px;
-  height: 16px;
-  line-height: 14px;
-  border: 0 none;
+    font-size: $xmediumFontSize;
+    border-radius: 7px;
+    height: 16px;
+    line-height: 14px;
+    border: 0 none;
+    img {
+        width: 16px;
+        height: 16px;
+    }
+    span {
+        vertical-align: middle;
+        margin-left: 2px;
+    }
+    .image-normal {
+        display: inline;
+    }
+    .image-hover {
+        display: none;
+    }
+    &:hover {
+        .image-normal {
+             display: none;
+        }
+        .image-hover {
+            display: inline;
+        }
+     }
 }
 
-.PushBox .push-back-link img {
-  width: 16px;
-  height: 16px;
-}
+ */
 
-.PushBox .push-back-link span {
-  vertical-align: middle;
-  margin-left: 2px;
-}
-
-.PushBox .push-back-link .image-normal {
-  display: inline;
-}
-
-.PushBox .push-back-link .image-hover {
-  display: none;
-}
-
-.PushBox .push-back-link:hover {
-  transition: none;
-  background-position: 0 30px;
-  color: #2196f3;
-  background-color: #f7f7f7;
-}
-
-.PushBox .push-back-link:hover .image-normal {
-  display: none;
-}
-
-.PushBox .push-back-link:hover .image-hover {
-  display: inline;
-}
-
+/*
 .PushBox .push-back-link.btn-inverse {
-  background-color: #444444;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.23);
+    background-color: #444444;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.23);
+    &:hover {
+     }
 }
+
+ */
 
 .btn.btn-push-orange {
   color: #ff9400;
@@ -9977,49 +9843,6 @@ input.text_input_white {
 .unselect-all {
   border-radius: 17px;
   padding: 0px 16px;
-}
-
-.list_refresh {
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  border-radius: 3px;
-  border: 0 none;
-  background: #F6F6F6;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
-}
-
-.list_refresh img {
-  width: 14px;
-  height: 14px;
-}
-
-.list_refresh .image-normal {
-  display: inline;
-}
-
-.list_refresh .image-hover {
-  display: none;
-}
-
-.list_refresh:hover .image-normal {
-  display: none;
-}
-
-.list_refresh:hover .image-hover {
-  display: inline;
-}
-
-.list_link {
-  height: 40px;
-  line-height: 40px;
-  display: block;
-  padding-left: 33px;
-  color: #000000 !important;
-}
-
-.list_link:focus {
-  text-decoration: none;
 }
 
 .lists_manager_list:hover .list_link {
@@ -10131,122 +9954,6 @@ input.text_input_white {
   left: 20px;
 }
 
-.PushBox .user_content .badges {
-  top: 50px;
-  overflow: auto;
-  height: auto;
-  bottom: 50px;
-}
-
-.PushBox .user_content .badges .badge .deleter {
-  position: absolute;
-  right: 0;
-}
-
-.PushBox .user_content .badges .badge .deleter i {
-  color: #4f4f4f;
-  font-size: 20px;
-  padding: 4px;
-}
-
-.PushBox .user_content .badges .badge {
-  width: 220px;
-  height: 79px;
-  margin: 10px;
-  display: inline-block;
-  border: 3px solid #868686;
-  background-color: #f7f7f7;
-  padding: 0px;
-  border-radius: 10px;
-  position: relative;
-}
-
-.PushBox .user_content .badges .badge.selected {
-  border: 3px solid #000000;
-}
-
-.PushBox .user_content .badges .badge .toggles .status_on .toggle_off {
-  display: none;
-}
-
-.PushBox .user_content .badges .badge .toggles .status_off .toggle_on {
-  display: none;
-}
-
-.PushBox .user_content .badges .badge td {
-  vertical-align: top;
-}
-
-.PushBox .user_content .badges .badge td.toggle {
-  vertical-align: middle;
-}
-
-.PushBox .user_content .badges .badge td.toggle img {
-  width: auto;
-  height: 20px;
-}
-
-.PushBox .user_content .badges .badge .icon {
-  width: 42px;
-  padding: 0 7px;
-  background-color: #2196f3;
-  border-radius: 7px 0px 0px 7px;
-}
-
-.PushBox .user_content .badges .badge .infos {
-  padding-top: 3px;
-  padding-left: 5px;
-}
-
-.PushBox .user_content .badges .badge table {
-  width: 93%;
-}
-
-.PushBox .user_content .badges .badge .infos table {
-  height: 75px;
-}
-
-.PushBox .user_content .badges .badge .infos tr {
-  height: 15px;
-}
-
-.PushBox .user_content .badges .badge .infos tr.toggles {
-  height: 25px;
-  text-align: left;
-}
-
-.PushBox .user_content .badges .badge .icon img {
-  margin-top: 15px;
-}
-
-.PushBox .user_content .badges .badge .name {
-  font-family: Roboto;
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #000000;
-  white-space: pre-line;
-  display: block;
-  margin-top: 5px;
-  text-shadow: none;
-}
-
-.PushBox .user_content .badges .badge .subtite {
-  display: block;
-  font-family: Roboto;
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #000000;
-  text-shadow: none;
-}
-
 .PushBox .user_content .header .options {
   text-align: right;
 }
@@ -10317,16 +10024,18 @@ input.text_input_white {
   background-color: #b8b8b8;
 }
 
+/*
 .PushBox .all-lists .push-add-user {
-  margin: 0;
+    margin: 0;
+    img {
+        width: 13px;
+        height: 13px;
+        margin-left: -25px;
+        margin-right: 25px;
+    }
 }
 
-.PushBox .all-lists .push-add-user img {
-  width: 13px;
-  height: 13px;
-  margin-left: -25px;
-  margin-right: 25px;
-}
+ */
 
 .PushBox .welcome {
   text-align: center;
@@ -10482,8 +10191,11 @@ input.text_input_white {
   margin: 12px 0;
 }
 
-#ListManager .content.readselect .badge.selected {
-  border-color: #ff9400;
+#ListManager H1 SPAN.title {
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: bold;
+  vertical-align: middle;
 }
 
 #ListManager .content.readselect .badge {
@@ -10515,6 +10227,10 @@ input.text_input_white {
   line-height: 20px;
 }
 
+#ListManager .content.readselect .badge.selected {
+  border-color: #ff9400;
+}
+
 #ListManager .content.readselect .badge.listmanager_badge {
   font-weight: normal;
   font-size: 12px;
@@ -10534,11 +10250,136 @@ input.text_input_white {
   background-color: #515151;
 }
 
-#ListManager h1 span.title {
-  font-size: 24px;
-  line-height: 24px;
+#ListManager .content .lists span.action {
+  display: block;
+  text-align: center;
   font-weight: bold;
-  vertical-align: middle;
+  width: 100%;
+}
+
+#ListManager .content UL.lists li:nth-child(even) {
+  background-color: #c8c8c8;
+}
+
+#ListManager .content UL.lists li.selected:nth-child(even) {
+  background-color: #aaa;
+}
+
+#ListManager #ListManager .editor {
+  /*
+        .push-back-link:hover {
+            color: #444444;
+            background-color: #f7f7f7;
+        }
+
+         */
+}
+
+#ListManager #ListManager .editor .list_editor_search {
+  top: 63px;
+}
+
+#ListManager #ListManager .editor .saveList {
+  width: 120px;
+  padding: 4px 0;
+  font-weight: normal;
+  line-height: 19px;
+  border-radius: 5px;
+  background-color: #f7f7f7;
+}
+
+#ListManager #ListManager .editor .saveList .image-normal {
+  display: inline;
+}
+
+#ListManager #ListManager .editor .saveList .image-hover {
+  display: none;
+}
+
+#ListManager #ListManager .editor .saveList img {
+  margin-right: 20px;
+}
+
+#ListManager #ListManager .editor .saveList:hover {
+  color: #fff !important;
+  background-color: #ff9400 !important;
+}
+
+#ListManager #ListManager .editor .saveList:hover .image-normal {
+  display: none;
+}
+
+#ListManager #ListManager .editor .saveList:hover .image-hover {
+  display: inline;
+}
+
+#ListManager #ListManager .editor .footer .saveList {
+  width: 150px;
+  padding: 4px 0px 4px 0;
+  background-color: #f7f7f7;
+}
+
+#ListManager #ListManager .editor .footer .saveList img {
+  margin-right: 15px;
+}
+
+#ListManager #ListManager .editor #find-user input[type=text] {
+  background-color: #ff9400;
+}
+
+#ListManager #ListManager .editor .counter {
+  font-size: 12px;
+}
+
+#ListManager #ListManager .editor .list_editor_selector td select {
+  margin: 0;
+  border: 0 none;
+  border-radius: 0;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  font-size: 12px;
+  color: #000;
+}
+
+#ListManager #ListManager .editor .list_editor_selector td select::-webkit-scrollbar {
+  width: 4px;
+}
+
+#ListManager #ListManager .editor .list_editor_selector td select::-webkit-scrollbar-thumb {
+  background-color: #d8d8d8;
+}
+
+#ListManager #ListManager .editor .list_editor_selector td select::-webkit-scrollbar-track {
+  background-color: #ffffff;
+}
+
+#ListManager #ListManager .editor .list_editor_selector th label {
+  font-size: 12px;
+  text-align: left;
+  padding: 4px 0 4px 6px;
+  width: calc(95% - 6px);
+  background: #676767;
+  margin-bottom: -2px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+#ListManager #ListManager .editor .list_editor_selector_filter_holder {
+  width: 95%;
+  overflow: hidden;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#ListManager #ListManager .editor .listmanager-add-user {
+  width: 120px;
+  margin-left: 30px;
+  margin-top: 2px;
+  border: 0 none;
+}
+
+#ListManager #ListManager .editor .list_refresh:hover {
+  background: #ff9400;
 }
 
 #PushBox .general_togglers li {
@@ -10549,87 +10390,47 @@ input.text_input_white {
   margin-right: 5px;
   vertical-align: middle;
   margin-bottom: 3px;
-}
+  /*
+    button {
+        padding-left: 35px;
+    }
 
-#PushBox .general_togglers button {
-  padding-left: 35px;
+     */
 }
 
 .general_togglers button {
   position: relative;
-  margin: 0;
   width: 100%;
   height: 27px;
-  border-radius: 17px;
-  background-color: #f7f7f7;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
-  font-family: Roboto;
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  letter-spacing: normal;
-  color: #2196f3;
-  line-height: 28px;
-  padding: 0px 12px;
-  border-width: 0;
+  /*
+    img {
+        width: 18px;
+        position: absolute;
+        left: 15px;
+        top: 6px;
+    }
+    .image-normal {
+        display: inline;
+    }
+    .image-hover {
+        display: none;
+    }
+
+ */
 }
 
-.general_togglers button img {
-  width: 18px;
-  position: absolute;
-  left: 15px;
-  top: 6px;
-}
-
-.general_togglers button .image-normal {
-  display: inline;
-}
-
-.general_togglers button .image-hover {
-  display: none;
-}
-
+/*
 .general_togglers button:hover {
-  background-color: #2196f3;
-  color: #f7f7f7;
+    background-color: $pushThemeColor;
+    color: #f7f7f7;
+    .image-normal {
+        display: none;
+    }
+    .image-hover {
+        display: inline;
+    }
 }
-
-.general_togglers button:hover .image-normal {
-  display: none;
-}
-
-.general_togglers button:hover .image-hover {
-  display: inline;
-}
-
-#PushBox .list_manager {
-  font-family: Roboto;
-  font-size: 13px;
-  font-weight: 500;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: 0px;
-  color: #ffffff;
-  padding: 6px 8px;
-  position: fixed;
-  bottom: 31px;
-  left: 32px;
-  width: 158px;
-}
-
-#PushBox .list_manager img {
-  width: 16px;
-  height: 16px;
-  margin-right: 5px;
-}
-
-#PushBox .list_manager:hover {
-  background-color: #FD9326;
-  transition: none;
-  background-position: 0 30px;
-}
+*/
 
 #PushBox .list_loader {
   font-family: Roboto;
@@ -10647,9 +10448,11 @@ input.text_input_white {
   float: right;
 }
 
+/*
 #PushBox .general_togglers button .ui-button-text {
-  font-weight: lighter;
+    font-weight: lighter;
 }
+*/
 
 #PushBox .content .list_saver {
   margin: 0;
@@ -10676,10 +10479,6 @@ input.text_input_white {
   margin: 0;
   padding: 0;
   height: 23px;
-}
-
-#PushBox .content .list_refresh:hover {
-  background: #2196f3;
 }
 
 #find-user {
@@ -10729,133 +10528,6 @@ input.text_input_white {
   background-repeat: no-repeat;
   background-size: 16px;
   background-position: right 8px center;
-}
-
-#ListManager .content .lists span.action {
-  display: block;
-  text-align: center;
-  font-weight: bold;
-  width: 100%;
-}
-
-#ListManager .content ul.lists li:nth-child(even) {
-  background-color: #c8c8c8;
-}
-
-#ListManager .content ul.lists li.selected:nth-child(even) {
-  background-color: #aaa;
-}
-
-#ListManager .editor .list_editor_search {
-  top: 63px;
-}
-
-#ListManager .editor .saveList {
-  width: 120px;
-  padding: 4px 0;
-  font-weight: normal;
-  line-height: 19px;
-  border-radius: 5px;
-  background-color: #f7f7f7;
-}
-
-#ListManager .editor .saveList .image-normal {
-  display: inline;
-}
-
-#ListManager .editor .saveList .image-hover {
-  display: none;
-}
-
-#ListManager .editor .saveList img {
-  margin-right: 20px;
-}
-
-#ListManager .editor .saveList:hover {
-  color: #fff !important;
-  background-color: #ff9400 !important;
-}
-
-#ListManager .editor .saveList:hover .image-normal {
-  display: none;
-}
-
-#ListManager .editor .saveList:hover .image-hover {
-  display: inline;
-}
-
-#ListManager .editor .footer .saveList {
-  width: 150px;
-  padding: 4px 0px 4px 0;
-  background-color: #f7f7f7;
-}
-
-#ListManager .editor .footer .saveList img {
-  margin-right: 15px;
-}
-
-#ListManager .editor #find-user input[type=text] {
-  background-color: #ff9400;
-}
-
-#ListManager .editor .counter {
-  font-size: 12px;
-}
-
-#ListManager .editor .list_editor_selector td select {
-  margin: 0;
-  border: 0 none;
-  border-radius: 0;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  font-size: 12px;
-  color: #000;
-}
-
-#ListManager .editor .list_editor_selector td select::-webkit-scrollbar {
-  width: 4px;
-}
-
-#ListManager .editor .list_editor_selector td select::-webkit-scrollbar-thumb {
-  background-color: #d8d8d8;
-}
-
-#ListManager .editor .list_editor_selector td select::-webkit-scrollbar-track {
-  background-color: #ffffff;
-}
-
-#ListManager .editor .list_editor_selector th label {
-  font-size: 12px;
-  text-align: left;
-  padding: 4px 0 4px 6px;
-  width: calc(95% - 6px);
-  background: #676767;
-  margin-bottom: -2px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
-
-#ListManager .editor .list_editor_selector_filter_holder {
-  width: 95%;
-  overflow: hidden;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-#ListManager .editor .listmanager-add-user {
-  width: 120px;
-  margin-left: 30px;
-  margin-top: 2px;
-  border: 0 none;
-}
-
-#ListManager .editor .list_refresh:hover {
-  background: #ff9400;
-}
-
-#ListManager .editor .push-back-link:hover {
-  color: #444444;
-  background-color: #f7f7f7;
 }
 
 #recommanded-users {
@@ -10936,21 +10608,25 @@ input.text_input_white {
   color: #FFFFFF;
 }
 
-.validation #quickAddUser button {
-  background-color: #ffffff;
-  border: solid 1px #8bc34a;
-  color: #8bc34a;
+/*
+.validation {
+    #quickAddUser button {
+        background-color: #ffffff;
+        border: solid 1px $feedbackThemeColor;
+        color: $feedbackThemeColor;
+    }
+
+    #quickAddUser button:hover {
+        background-color: $feedbackThemeColor;
+        color: #FFFFFF;
+    }
+    #quickAddUser button:nth-child(2) {
+        background-color: $feedbackThemeColor;
+        color: #FFFFFF;
+    }
 }
 
-.validation #quickAddUser button:hover {
-  background-color: #8bc34a;
-  color: #FFFFFF;
-}
-
-.validation #quickAddUser button:nth-child(2) {
-  background-color: #8bc34a;
-  color: #FFFFFF;
-}
+ */
 
 .push-add-user-listmanager #quickAddUser button {
   border: solid 1px #ff9400;

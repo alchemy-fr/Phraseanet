@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\PushController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -53,11 +53,16 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/validateform/', 'controller.prod.push:validateFormAction');
 
+        $controllers->post('/sharebasketform/', 'controller.prod.push:sharebasketFormAction');
+
         $controllers->post('/send/', 'controller.prod.push:sendAction')
             ->bind('prod_push_send');
 
         $controllers->post('/validate/', 'controller.prod.push:validateAction')
             ->bind('prod_push_validate');
+
+        $controllers->post('/sharebasket/', 'controller.prod.push:sharebasketAction')
+            ->bind('prod_push_send_sharebasket');
 
         $controllers->post('/update-expiration/', 'controller.prod.push:updateExpirationAction')
             ->bind('prod_push_do_update_expiration');

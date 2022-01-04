@@ -4,6 +4,7 @@ import editRecord from '../../record/edit';
 import deleteRecord from '../../record/delete';
 import exportRecord from '../../record/export';
 import propertyRecord from '../../record/property';
+import recordSharebasketModal from '../../record/sharebasket';
 import recordPushModal from '../../record/push';
 import recordPublish from '../../record/publish';
 import recordToolsModal from '../../record/tools/index';
@@ -194,6 +195,13 @@ const toolbar = (services) => {
          */
         $container.on('click', '.TOOL_pushdoc_btn', function (event) {
             _triggerModal(event, recordPushModal(services).openModal);
+        });
+        /**
+         * tools > Push > Share
+         */
+        $container.on('click', '.TOOL_sharebasket_btn', function (event) {
+console.log("SHARE");
+            _triggerModal(event, recordSharebasketModal(services).openModal);
         });
         /**
          * tools > Push > Feedback
