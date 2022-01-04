@@ -14,7 +14,10 @@ const pushRecord = (services, datas) => {
             title: localeService.t('push')
         });
 
-        $dialog.getDomElement().closest('.ui-dialog').addClass('push_dialog_container');
+        // add classes to the whoe dialog (including title)
+        $dialog.getDomElement().closest('.ui-dialog')
+               .addClass('whole_dialog_container')
+               .addClass('push');
 
         $.post(`${url}prod/push/sendform/`, datas, function (data) {
             $dialog.setContent(data);

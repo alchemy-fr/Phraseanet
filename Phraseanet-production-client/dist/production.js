@@ -48,7 +48,7 @@ var _user = __webpack_require__(48);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _utils = __webpack_require__(57);
+var _utils = __webpack_require__(58);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -1881,14 +1881,14 @@ var leafletMap = function leafletMap(services) {
         }
         __webpack_require__.e/* require.ensure */(3).then((function () {
             // select geocoding provider:
-            mapbox = __webpack_require__(294);
-            leafletDraw = __webpack_require__(295);
-            __webpack_require__(296);
-            mapboxgl = __webpack_require__(67);
-            var MapboxClient = __webpack_require__(297);
-            var MapboxLanguage = __webpack_require__(298);
-            MapboxCircle = __webpack_require__(299);
-            turf = __webpack_require__(300);
+            mapbox = __webpack_require__(295);
+            leafletDraw = __webpack_require__(296);
+            __webpack_require__(297);
+            mapboxgl = __webpack_require__(68);
+            var MapboxClient = __webpack_require__(298);
+            var MapboxLanguage = __webpack_require__(299);
+            MapboxCircle = __webpack_require__(300);
+            turf = __webpack_require__(301);
 
             $container.empty().append('<div id="' + mapUID + '" class="phrasea-popup" style="width: 100%;height:100%; position: absolute;top:0;left:0"></div>');
 
@@ -3016,12 +3016,140 @@ var FieldCollection = function () {
 exports.default = FieldCollection;
 
 /***/ }),
-/* 53 */,
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _feedback = __webpack_require__(206);
+
+var _feedback2 = _interopRequireDefault(_feedback);
+
+var _listManager = __webpack_require__(207);
+
+var _listManager2 = _interopRequireDefault(_listManager);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var pushRecord = function pushRecord(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var feedbackInstance = null;
+    var listManagerInstance = null;
+
+    var initialize = function initialize(options) {
+        var feedback = options.feedback,
+            listManager = options.listManager;
+
+        if ((0, _jquery2.default)('#PushBox').length > 0) {
+            feedbackInstance = new _feedback2.default(services, feedback);
+            listManagerInstance = new _listManager2.default(services, listManager);
+        } else {
+            (0, _jquery2.default)('.close-dialog-action').on('click', function () {
+                return _dialog2.default.close('1');
+            });
+        }
+    };
+
+    function reloadBridge(url) {
+        var options = (0, _jquery2.default)('#dialog_publicator form[name="current_datas"]').serializeArray();
+        var dialog = dialog.get(1);
+        dialog.load(url, 'POST', options);
+    }
+
+    function createList(listOptions) {
+        listManagerInstance.createList(listOptions);
+    }
+
+    function addUser(userOptions) {
+        feedbackInstance.addUser(userOptions);
+    }
+
+    function setActiveList() {}
+
+    function removeList(listObj) {
+        var makeDialog = function makeDialog(box) {
+
+            var buttons = {};
+
+            buttons[localeService.t('valider')] = function () {
+
+                var callbackOK = function callbackOK() {
+                    (0, _jquery2.default)('.list-container ul.list').children().each(function () {
+                        if ((0, _jquery2.default)(this).data('list-id') == listObj.list_id) {
+                            (0, _jquery2.default)(this).remove();
+                        }
+                    });
+                    _dialog2.default.get(2).close();
+                };
+
+                listManagerInstance.removeList(listObj.list_id, callbackOK);
+            };
+
+            var options = {
+                title: localeService.t('Delete the list'),
+                cancelButton: true,
+                buttons: buttons,
+                size: 'Alert'
+            };
+
+            var $dialog = _dialog2.default.create(services, options, 2);
+            if (listObj.container === '#ListManager') {
+                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
+            }
+            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
+                var self = (0, _jquery2.default)(this).children();
+                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
+            });
+            $dialog.setContent(box);
+        };
+
+        var html = _.template((0, _jquery2.default)('#list_editor_dialog_delete_tpl').html());
+
+        makeDialog(html);
+    }
+
+    appEvents.listenAll({
+        // 'push.doInitialize': initialize,
+        'push.addUser': addUser,
+        'push.setActiveList': setActiveList,
+        'push.createList': createList,
+        'push.reload': reloadBridge,
+        'push.removeList': removeList
+    });
+
+    return {
+        initialize: initialize,
+        // Feedback: Feedback,
+        // ListManager: ListManager,
+        reloadBridge: reloadBridge
+    };
+};
+
+exports.default = pushRecord;
+
+/***/ }),
 /* 54 */,
 /* 55 */,
 /* 56 */,
 /* 57 */,
-/* 58 */
+/* 58 */,
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3041,7 +3169,7 @@ var _dialog2 = _interopRequireDefault(_dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var lazyload = __webpack_require__(59);
+var lazyload = __webpack_require__(60);
 
 
 var publication = function publication(services) {
@@ -3527,7 +3655,7 @@ var publication = function publication(services) {
 exports.default = publication;
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*** IMPORTS FROM imports-loader ***/
@@ -3780,7 +3908,7 @@ exports.default = publication;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4354,7 +4482,7 @@ var workzoneFacets = function workzoneFacets(services) {
 exports.default = workzoneFacets;
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4380,23 +4508,23 @@ var _mainMenu = __webpack_require__(78);
 
 var _mainMenu2 = _interopRequireDefault(_mainMenu);
 
-var _keyboard = __webpack_require__(222);
+var _keyboard = __webpack_require__(223);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
-var _cgu = __webpack_require__(223);
+var _cgu = __webpack_require__(224);
 
 var _cgu2 = _interopRequireDefault(_cgu);
 
-var _edit = __webpack_require__(62);
+var _edit = __webpack_require__(63);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _export = __webpack_require__(72);
+var _export = __webpack_require__(73);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _share = __webpack_require__(224);
+var _share = __webpack_require__(225);
 
 var _share2 = _interopRequireDefault(_share);
 
@@ -4404,11 +4532,11 @@ var _index = __webpack_require__(77);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _addToBasket = __webpack_require__(225);
+var _addToBasket = __webpack_require__(226);
 
 var _addToBasket2 = _interopRequireDefault(_addToBasket);
 
-var _removeFromBasket = __webpack_require__(226);
+var _removeFromBasket = __webpack_require__(227);
 
 var _removeFromBasket2 = _interopRequireDefault(_removeFromBasket);
 
@@ -4416,7 +4544,7 @@ var _print = __webpack_require__(76);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _preferences = __webpack_require__(227);
+var _preferences = __webpack_require__(228);
 
 var _preferences2 = _interopRequireDefault(_preferences);
 
@@ -4424,7 +4552,7 @@ var _order = __webpack_require__(79);
 
 var _order2 = _interopRequireDefault(_order);
 
-var _recordPreview = __webpack_require__(231);
+var _recordPreview = __webpack_require__(232);
 
 var _recordPreview2 = _interopRequireDefault(_recordPreview);
 
@@ -4432,7 +4560,7 @@ var _alert = __webpack_require__(47);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _uploader = __webpack_require__(235);
+var _uploader = __webpack_require__(236);
 
 var _uploader2 = _interopRequireDefault(_uploader);
 
@@ -4858,7 +4986,7 @@ var ui = function ui(services) {
 exports.default = ui;
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5038,7 +5166,7 @@ var editRecord = function editRecord(services) {
 exports.default = editRecord;
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6497,7 +6625,7 @@ Flash.VERSION = version$1;
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6562,7 +6690,7 @@ module.exports = defineProperties;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6582,13 +6710,13 @@ module.exports = function trim() {
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var implementation = __webpack_require__(65);
+var implementation = __webpack_require__(66);
 
 var zeroWidthSpace = '\u200b';
 
@@ -6601,7 +6729,7 @@ module.exports = function getPolyfill() {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.11.0/LICENSE.txt */
@@ -6649,14 +6777,14 @@ return mapboxgl;
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var browser = __webpack_require__(161);
-var MapiClient = __webpack_require__(69);
+var MapiClient = __webpack_require__(70);
 
 function BrowserClient(options) {
   MapiClient.call(this, options);
@@ -6683,13 +6811,13 @@ module.exports = createBrowserClient;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseToken = __webpack_require__(70);
+var parseToken = __webpack_require__(71);
 var MapiRequest = __webpack_require__(167);
 var constants = __webpack_require__(46);
 
@@ -6728,7 +6856,7 @@ module.exports = MapiClient;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6784,7 +6912,7 @@ module.exports = parseToken;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = function escape(url) {
@@ -6806,7 +6934,7 @@ module.exports = function escape(url) {
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7222,134 +7350,6 @@ var exportRecord = function exportRecord(services) {
 };
 
 exports.default = exportRecord;
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _feedback = __webpack_require__(206);
-
-var _feedback2 = _interopRequireDefault(_feedback);
-
-var _listManager = __webpack_require__(207);
-
-var _listManager2 = _interopRequireDefault(_listManager);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var pushRecord = function pushRecord(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var feedbackInstance = null;
-    var listManagerInstance = null;
-
-    var initialize = function initialize(options) {
-        var feedback = options.feedback,
-            listManager = options.listManager;
-
-        if ((0, _jquery2.default)('#PushBox').length > 0) {
-            feedbackInstance = new _feedback2.default(services, feedback);
-            listManagerInstance = new _listManager2.default(services, listManager);
-        } else {
-            (0, _jquery2.default)('.close-dialog-action').on('click', function () {
-                return _dialog2.default.close('1');
-            });
-        }
-    };
-
-    function reloadBridge(url) {
-        var options = (0, _jquery2.default)('#dialog_publicator form[name="current_datas"]').serializeArray();
-        var dialog = dialog.get(1);
-        dialog.load(url, 'POST', options);
-    }
-
-    function createList(listOptions) {
-        listManagerInstance.createList(listOptions);
-    }
-
-    function addUser(userOptions) {
-        feedbackInstance.addUser(userOptions);
-    }
-
-    function setActiveList() {}
-
-    function removeList(listObj) {
-        var makeDialog = function makeDialog(box) {
-
-            var buttons = {};
-
-            buttons[localeService.t('valider')] = function () {
-
-                var callbackOK = function callbackOK() {
-                    (0, _jquery2.default)('.list-container ul.list').children().each(function () {
-                        if ((0, _jquery2.default)(this).data('list-id') == listObj.list_id) {
-                            (0, _jquery2.default)(this).remove();
-                        }
-                    });
-                    _dialog2.default.get(2).close();
-                };
-
-                listManagerInstance.removeList(listObj.list_id, callbackOK);
-            };
-
-            var options = {
-                title: localeService.t('Delete the list'),
-                cancelButton: true,
-                buttons: buttons,
-                size: 'Alert'
-            };
-
-            var $dialog = _dialog2.default.create(services, options, 2);
-            if (listObj.container === '#ListManager') {
-                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
-            }
-            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
-                var self = (0, _jquery2.default)(this).children();
-                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
-            });
-            $dialog.setContent(box);
-        };
-
-        var html = _.template((0, _jquery2.default)('#list_editor_dialog_delete_tpl').html());
-
-        makeDialog(html);
-    }
-
-    appEvents.listenAll({
-        // 'push.doInitialize': initialize,
-        'push.addUser': addUser,
-        'push.setActiveList': setActiveList,
-        'push.createList': createList,
-        'push.reload': reloadBridge,
-        'push.removeList': removeList
-    });
-
-    return {
-        initialize: initialize,
-        // Feedback: Feedback,
-        // ListManager: ListManager,
-        reloadBridge: reloadBridge
-    };
-};
-
-exports.default = pushRecord;
 
 /***/ }),
 /* 74 */
@@ -7852,15 +7852,15 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _videoScreenCapture = __webpack_require__(216);
+var _videoScreenCapture = __webpack_require__(217);
 
 var _videoScreenCapture2 = _interopRequireDefault(_videoScreenCapture);
 
-var _videoRangeCapture = __webpack_require__(219);
+var _videoRangeCapture = __webpack_require__(220);
 
 var _videoRangeCapture2 = _interopRequireDefault(_videoRangeCapture);
 
-var _videoSubtitleCapture = __webpack_require__(220);
+var _videoSubtitleCapture = __webpack_require__(221);
 
 var _videoSubtitleCapture2 = _interopRequireDefault(_videoSubtitleCapture);
 
@@ -7872,7 +7872,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(221);
+__webpack_require__(222);
 
 
 var humane = __webpack_require__(9);
@@ -7978,7 +7978,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _orderItem = __webpack_require__(230);
+var _orderItem = __webpack_require__(231);
 
 var _orderItem2 = _interopRequireDefault(_orderItem);
 
@@ -8565,7 +8565,7 @@ module.exports = {
 /* 86 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 87 */
@@ -9211,14 +9211,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(244);
-
 __webpack_require__(245);
+
 __webpack_require__(246);
 __webpack_require__(247);
 __webpack_require__(248);
 __webpack_require__(249);
 __webpack_require__(250);
+__webpack_require__(251);
 
 _jquery2.default.widget.bridge('uitooltip', _jquery2.default.fn.tooltip);
 //window.btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
@@ -9589,7 +9589,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var AppCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _publication = __webpack_require__(58);
+var _publication = __webpack_require__(59);
 
 var _publication2 = _interopRequireDefault(_publication);
 
@@ -9605,7 +9605,7 @@ var _locale = __webpack_require__(20);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _ui = __webpack_require__(61);
+var _ui = __webpack_require__(62);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -9613,7 +9613,7 @@ var _configService = __webpack_require__(16);
 
 var _configService2 = _interopRequireDefault(_configService);
 
-var _config = __webpack_require__(236);
+var _config = __webpack_require__(237);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -9621,15 +9621,15 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _user = __webpack_require__(237);
+var _user = __webpack_require__(238);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _basket = __webpack_require__(238);
+var _basket = __webpack_require__(239);
 
 var _basket2 = _interopRequireDefault(_basket);
 
-var _search = __webpack_require__(239);
+var _search = __webpack_require__(240);
 
 var _search2 = _interopRequireDefault(_search);
 
@@ -9652,7 +9652,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var humane = __webpack_require__(9);
-__webpack_require__(243);
+__webpack_require__(244);
 
 var Bootstrap = function () {
     function Bootstrap(userConfig) {
@@ -9954,7 +9954,7 @@ var _index = __webpack_require__(99);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(60);
+var _index3 = __webpack_require__(61);
 
 var _index4 = _interopRequireDefault(_index3);
 
@@ -19489,7 +19489,7 @@ var _move = __webpack_require__(116);
 
 var _move2 = _interopRequireDefault(_move);
 
-var _edit = __webpack_require__(62);
+var _edit = __webpack_require__(63);
 
 var _edit2 = _interopRequireDefault(_edit);
 
@@ -19497,7 +19497,7 @@ var _delete = __webpack_require__(203);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _export = __webpack_require__(72);
+var _export = __webpack_require__(73);
 
 var _export2 = _interopRequireDefault(_export);
 
@@ -19505,15 +19505,19 @@ var _property = __webpack_require__(204);
 
 var _property2 = _interopRequireDefault(_property);
 
-var _push = __webpack_require__(205);
+var _sharebasket = __webpack_require__(205);
+
+var _sharebasket2 = _interopRequireDefault(_sharebasket);
+
+var _push = __webpack_require__(210);
 
 var _push2 = _interopRequireDefault(_push);
 
-var _publish = __webpack_require__(210);
+var _publish = __webpack_require__(211);
 
 var _publish2 = _interopRequireDefault(_publish);
 
-var _index = __webpack_require__(211);
+var _index = __webpack_require__(212);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -19521,11 +19525,11 @@ var _print = __webpack_require__(76);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _feedback = __webpack_require__(213);
+var _feedback = __webpack_require__(214);
 
 var _feedback2 = _interopRequireDefault(_feedback);
 
-var _bridge = __webpack_require__(214);
+var _bridge = __webpack_require__(215);
 
 var _bridge2 = _interopRequireDefault(_bridge);
 
@@ -19732,6 +19736,13 @@ var toolbar = function toolbar(services) {
          */
         $container.on('click', '.TOOL_pushdoc_btn', function (event) {
             _triggerModal(event, (0, _push2.default)(services).openModal);
+        });
+        /**
+         * tools > Push > Share
+         */
+        $container.on('click', '.TOOL_sharebasket_btn', function (event) {
+            console.log("SHARE");
+            _triggerModal(event, (0, _sharebasket2.default)(services).openModal);
         });
         /**
          * tools > Push > Feedback
@@ -22573,7 +22584,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _videojsFlash = __webpack_require__(63);
+var _videojsFlash = __webpack_require__(64);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -48069,10 +48080,10 @@ module.exports = function (headers) {
 
 
 var bind = __webpack_require__(49);
-var define = __webpack_require__(64);
+var define = __webpack_require__(65);
 
-var implementation = __webpack_require__(65);
-var getPolyfill = __webpack_require__(66);
+var implementation = __webpack_require__(66);
+var getPolyfill = __webpack_require__(67);
 var shim = __webpack_require__(140);
 
 var boundTrim = bind.call(Function.call, getPolyfill());
@@ -48859,8 +48870,8 @@ module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 "use strict";
 
 
-var define = __webpack_require__(64);
-var getPolyfill = __webpack_require__(66);
+var define = __webpack_require__(65);
+var getPolyfill = __webpack_require__(67);
 
 module.exports = function shimStringTrim() {
 	var polyfill = getPolyfill();
@@ -50784,7 +50795,7 @@ module.exports = VTTRegion;
 /* 146 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 147 */
@@ -51467,7 +51478,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapboxgl = __webpack_require__(67);
+var mapboxgl = __webpack_require__(68);
 
 var markerGLCollection = function markerGLCollection(services) {
     var configService = services.configService,
@@ -53973,7 +53984,7 @@ module.exports = {
 "use strict";
 
 
-var client = __webpack_require__(68);
+var client = __webpack_require__(69);
 
 module.exports = client;
 
@@ -54558,7 +54569,7 @@ module.exports = parseHeaders;
 "use strict";
 
 
-var parseToken = __webpack_require__(70);
+var parseToken = __webpack_require__(71);
 var xtend = __webpack_require__(37);
 var EventEmitter = __webpack_require__(168);
 var urlUtils = __webpack_require__(169);
@@ -56039,9 +56050,9 @@ module.exports = objectMap;
 "use strict";
 
 
-var MapiClient = __webpack_require__(69);
+var MapiClient = __webpack_require__(70);
 // This will create the environment-appropriate client.
-var createClient = __webpack_require__(68);
+var createClient = __webpack_require__(69);
 
 function createServiceFactory(ServicePrototype) {
   return function(clientOrConfig) {
@@ -56712,7 +56723,7 @@ if(false) {
 /* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(71);
+var escape = __webpack_require__(72);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
@@ -56860,7 +56871,7 @@ if(false) {
 /* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(71);
+var escape = __webpack_require__(72);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
@@ -60529,13 +60540,13 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(73);
+var _index = __webpack_require__(53);
 
 var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var pushRecord = function pushRecord(services, datas) {
+var sharebasketRecord = function sharebasketRecord(services, datas) {
     var configService = services.configService,
         localeService = services.localeService,
         appEvents = services.appEvents;
@@ -60546,12 +60557,13 @@ var pushRecord = function pushRecord(services, datas) {
 
         var $dialog = _dialog2.default.create(services, {
             size: 'Full',
-            title: localeService.t('push')
+            title: localeService.t('sharebasket')
         });
 
-        $dialog.getDomElement().closest('.ui-dialog').addClass('push_dialog_container');
+        // add classes to the whoe dialog (including title)
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('sharebasket');
 
-        _jquery2.default.post(url + 'prod/push/sendform/', datas, function (data) {
+        _jquery2.default.post(url + 'prod/push/sharebasketform/', datas, function (data) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
@@ -60564,7 +60576,7 @@ var pushRecord = function pushRecord(services, datas) {
         (0, _index2.default)(services).initialize({
             feedback: {
                 containerId: '#PushBox',
-                context: 'Push'
+                context: 'Sharebasket'
             },
             listManager: {
                 containerId: '#ListManager'
@@ -60575,7 +60587,7 @@ var pushRecord = function pushRecord(services, datas) {
     return { openModal: openModal };
 };
 
-exports.default = pushRecord;
+exports.default = sharebasketRecord;
 
 /***/ }),
 /* 206 */
@@ -60960,7 +60972,7 @@ var Feedback = function Feedback(services, options) {
 
         $this.toggleClass('status_off status_on');
 
-        $this.find('input').val($this.hasClass('status_on') ? '1' : '0');
+        $this.parent().find('input').val($this.hasClass('status_on') ? '1' : '0');
 
         return false;
     });
@@ -61122,6 +61134,7 @@ var Feedback = function Feedback(services, options) {
 
 Feedback.prototype = {
     selectUser: function selectUser(user) {
+        console.log("===== fct SELECT USER context = " + this.Context.toLowerCase());
         if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
             if (window.console) {
                 console.log('trying to select a user with wrong datas');
@@ -61144,10 +61157,15 @@ Feedback.prototype = {
             }
         }
 
-        var html = _.template((0, _jquery2.default)('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
+        /*
+        var html = _.template($('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
             user: user
         });
-
+         */
+        var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
+            user: user,
+            context: this.Context
+        });
         // p4.Feedback.appendBadge(html);
         this.appendBadge(html);
     },
@@ -62120,7 +62138,75 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _publication = __webpack_require__(58);
+var _index = __webpack_require__(53);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var pushRecord = function pushRecord(services, datas) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+
+    var openModal = function openModal(datas) {
+
+        var $dialog = _dialog2.default.create(services, {
+            size: 'Full',
+            title: localeService.t('push')
+        });
+
+        // add classes to the whoe dialog (including title)
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('push');
+
+        _jquery2.default.post(url + 'prod/push/sendform/', datas, function (data) {
+            $dialog.setContent(data);
+            _onDialogReady();
+            return;
+        });
+
+        return true;
+    };
+
+    var _onDialogReady = function _onDialogReady() {
+        (0, _index2.default)(services).initialize({
+            feedback: {
+                containerId: '#PushBox',
+                context: 'Push'
+            },
+            listManager: {
+                containerId: '#ListManager'
+            }
+        });
+    };
+
+    return { openModal: openModal };
+};
+
+exports.default = pushRecord;
+
+/***/ }),
+/* 211 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _publication = __webpack_require__(59);
 
 var _publication2 = _interopRequireDefault(_publication);
 
@@ -62149,7 +62235,7 @@ var recordPublishModal = function recordPublishModal(services, datas) {
 exports.default = recordPublishModal;
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62167,7 +62253,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _sharingManager = __webpack_require__(212);
+var _sharingManager = __webpack_require__(213);
 
 var _sharingManager2 = _interopRequireDefault(_sharingManager);
 
@@ -62287,7 +62373,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
 exports.default = recordToolsModal;
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62359,7 +62445,7 @@ var sharingManager = function sharingManager(services, datas) {
 exports.default = sharingManager;
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62377,7 +62463,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(73);
+var _index = __webpack_require__(53);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -62397,7 +62483,8 @@ var recordFeedbackModal = function recordFeedbackModal(services, datas) {
             title: localeService.t('feedback')
         });
 
-        $dialog.getDomElement().closest('.ui-dialog').addClass('feedback_dialog_container');
+        // add classes to the whoe dialog (including title)
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('feedback');
 
         _jquery2.default.post(url + 'prod/push/validateform/', datas, function (data) {
             // data content's javascript can't be fully refactored
@@ -62427,7 +62514,7 @@ var recordFeedbackModal = function recordFeedbackModal(services, datas) {
 exports.default = recordFeedbackModal;
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62445,7 +62532,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(215);
+var _index = __webpack_require__(216);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -62483,7 +62570,7 @@ var bridgeRecord = function bridgeRecord(services) {
 exports.default = bridgeRecord;
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62822,7 +62909,7 @@ var recordBridge = function recordBridge(services) {
 exports.default = recordBridge;
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62840,7 +62927,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _screenCapture = __webpack_require__(217);
+var _screenCapture = __webpack_require__(218);
 
 var _screenCapture2 = _interopRequireDefault(_screenCapture);
 
@@ -63162,7 +63249,7 @@ var videoScreenCapture = function videoScreenCapture(services, datas) {
 exports.default = videoScreenCapture;
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63172,7 +63259,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _canvaImage = __webpack_require__(218);
+var _canvaImage = __webpack_require__(219);
 
 var _canvaImage2 = _interopRequireDefault(_canvaImage);
 
@@ -63399,7 +63486,7 @@ var ScreenCapture = function ScreenCapture(videoId, canvaId, outputOptions) {
 exports.default = ScreenCapture;
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63498,7 +63585,7 @@ Canva.prototype = {
 exports.default = Canva;
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63508,7 +63595,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _videojsFlash = __webpack_require__(63);
+var _videojsFlash = __webpack_require__(64);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -63590,7 +63677,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
 exports.default = videoRangeCapture;
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64031,13 +64118,13 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
 exports.default = videoSubtitleCapture;
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64115,7 +64202,7 @@ var keyboard = function keyboard(services) {
 exports.default = keyboard;
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64203,7 +64290,7 @@ var cgu = function cgu(services) {
 exports.default = cgu;
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64302,7 +64389,7 @@ var shareRecord = function shareRecord(services) {
 exports.default = shareRecord;
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64343,7 +64430,7 @@ var addToBasket = function addToBasket(services) {
 exports.default = addToBasket;
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64382,7 +64469,7 @@ var removeFromBasket = function removeFromBasket(services) {
 exports.default = removeFromBasket;
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64404,8 +64491,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var highlight = __webpack_require__(228);
-var colorpicker = __webpack_require__(229);
+var highlight = __webpack_require__(229);
+var colorpicker = __webpack_require__(230);
 var preferences = function preferences(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -64714,7 +64801,7 @@ var preferences = function preferences(services) {
 exports.default = preferences;
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -64751,7 +64838,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -65237,7 +65324,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66024,7 +66111,7 @@ var orderItem = function orderItem(services) {
 exports.default = orderItem;
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66062,9 +66149,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(232);
+__webpack_require__(233);
 
-var image_enhancer = __webpack_require__(233);
+var image_enhancer = __webpack_require__(234);
 __webpack_require__(14);
 var previewRecordService = function previewRecordService(services) {
     var configService = services.configService,
@@ -66793,13 +66880,13 @@ var previewRecordService = function previewRecordService(services) {
 exports.default = previewRecordService;
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -66815,7 +66902,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(234);
+__webpack_require__(235);
 
 (function ($) {
 
@@ -67044,13 +67131,13 @@ __webpack_require__(234);
 
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67605,7 +67692,7 @@ var uploader = function uploader(services) {
 exports.default = uploader;
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67633,7 +67720,7 @@ var defaultConfig = {
 exports.default = defaultConfig;
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67643,7 +67730,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _ui = __webpack_require__(61);
+var _ui = __webpack_require__(62);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -67708,7 +67795,7 @@ var user = function user(services) {
 exports.default = user;
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67763,7 +67850,7 @@ var basket = function basket() {
 exports.default = basket;
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67793,7 +67880,7 @@ var _resultInfos = __webpack_require__(80);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
-var _index = __webpack_require__(60);
+var _index = __webpack_require__(61);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -67801,7 +67888,7 @@ var _selectable = __webpack_require__(22);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchForm = __webpack_require__(240);
+var _searchForm = __webpack_require__(241);
 
 var _searchForm2 = _interopRequireDefault(_searchForm);
 
@@ -67809,7 +67896,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var lazyload = __webpack_require__(59);
+var lazyload = __webpack_require__(60);
 __webpack_require__(14);
 __webpack_require__(19);
 
@@ -68478,7 +68565,7 @@ var search = function search(services) {
 exports.default = search;
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68516,11 +68603,11 @@ var _selectable = __webpack_require__(22);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchAdvancedForm = __webpack_require__(241);
+var _searchAdvancedForm = __webpack_require__(242);
 
 var _searchAdvancedForm2 = _interopRequireDefault(_searchAdvancedForm);
 
-var _searchGeoForm = __webpack_require__(242);
+var _searchGeoForm = __webpack_require__(243);
 
 var _searchGeoForm2 = _interopRequireDefault(_searchGeoForm);
 
@@ -68685,7 +68772,7 @@ var searchForm = function searchForm(services) {
 exports.default = searchForm;
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69338,7 +69425,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
 exports.default = searchAdvancedForm;
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69563,7 +69650,7 @@ var searchGeoForm = function searchGeoForm(services) {
 exports.default = searchGeoForm;
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -69705,13 +69792,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Arabic Translation for jQuery UI date picker plugin. */
@@ -69741,7 +69828,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* German initialisation for the jQuery UI date picker plugin. */
@@ -69771,7 +69858,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Inicialización en español para la extensión 'UI date picker' para jQuery. */
@@ -69801,7 +69888,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* French initialisation for the jQuery UI date picker plugin. */
@@ -69833,7 +69920,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Dutch (UTF-8) initialisation for the jQuery UI date picker plugin. */
@@ -69863,7 +69950,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* English/UK initialisation for the jQuery UI date picker plugin. */

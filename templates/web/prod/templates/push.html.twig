@@ -64,61 +64,69 @@
 </li>
 </script>
 
-<script type="text/template" id="feedback_badge_tpl">
-<div class="badge badge_<%= user.usr_id %>">
-    <a href="#" class="deleter">
-        <i class="fa fa-times-circle"></i>
-    </a>
-    <input name="id" value="<%= user.usr_id %>" type="hidden" />
-    <input class="user-email" value="<%= user.email %>" type="hidden" />
-    <table>
-        <tr>
-            <td class="icon">
-                <img src="/assets/common/images/icons/user-white.png"/>
-            </td>
-            <td class="infos">
-                <div>
-                    <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
-                    <table>
-                        <tr>
-                            <td colspan="3">
-                                <span class="name"><%= htmlEncode(user.display_name) %></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
-                            </td>
-                        </tr>
-                        <tr class="toggles">
-                            <td class="toggle status_on toggle_agree">
-                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_off"
-                                     src="/assets/common/images/icons/grey-pen.png"/>
-                                <img title="{% trans %}User contribute to the feedback{% endtrans %}" class="toggle_on"
-                                     src="/assets/common/images/icons/dark-green-pen.png"/>
-                                <input type="hidden" name="participants[<%= user.usr_id %>][agree]" value="1" />
-                            </td>
-                            <td class="toggle status_off toggle_see_others" style="text-align: center;">
-                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_off"
-                                     src="/assets/common/images/icons/grey-user.png"/>
-                                <img title="{% trans %}User can see others choices{% endtrans %}" class="toggle_on"
-                                     src="/assets/common/images/icons/dark-green-user.png"/>
-                                <input type="hidden" name="participants[<%= user.usr_id %>][see_others]" value="0" />
-                            </td>
-                            <td class="toggle status_off toggle_HD" style="text-align: right;">
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
-                                     src="/assets/common/images/icons/download-grey.png"/>
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on"
-                                     src="/assets/common/images/icons/dark-green-download.png"/>
-                                <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
-    </table>
-</div>
+<script type="text/template" id="_badge_tpl">
+    <div class="badge badge_<%= user.usr_id %>">
+        <a href="#" class="deleter">
+            <i class="fa fa-times-circle"></i>
+        </a>
+        <input name="id" value="<%= user.usr_id %>" type="hidden" />
+        <input class="user-email" value="<%= user.email %>" type="hidden" />
+        <table>
+            <tr>
+                <td class="icon colored inverse">
+                    <i class="fa fa-user"></i>
+                </td>
+                <td class="infos">
+                    <div>
+                        <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
+                        <table>
+                            <tr>
+                                <td colspan="3">
+                                    <span class="name"><%= htmlEncode(user.display_name) %></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
+                                </td>
+                            </tr>
+                            <tr class="toggles">
+                                <td>
+                                    <% if(context == 'Feedback' || context == 'ShareBasket') { %>
+                                        <% if(context == 'Feedback') { %>
+                                            <% msg = "{% trans %}User contribute to the feedback{% endtrans %}" %>
+                                        <% } else { %>
+                                            <% msg = "{% trans %}User can modify the basket{% endtrans %}" %>
+                                        <% } %>
+                                    <a href="#" class="fa fa-pencil colored toggle toggle_agree status_on" title="<%= msg %>"></a>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][agree]"
+                                           value="1"/>
+                                    <% } %>
+                                </td>
+                                <td>
+                                <% if(context == 'Feedback') { %>
+                                    <% msg = "{% trans %}User can see others choices{% endtrans %}" %>
+                                    <a href="#" class="fa fa-users colored toggle toggle_see_others status_off" title="<%= msg %>"></a>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][see_others]"
+                                           value="0"/>
+                                <% } %>
+                                </td>
+                                <td>
+                                    <% msg = "{% trans %}User can download HD{% endtrans %}" %>
+                                    <a href="#" class="fa fa-download colored toggle toggle_HD status_off" title="<%= msg %>"></a>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][HD]"
+                                           value="0"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </script>
 
 <script type="text/template" id="list_editor_dialog_add_tpl">
@@ -216,47 +224,6 @@
 </form>
 </script>
 
-<script type="text/template" id="push_badge_tpl">
-<div class="badge badge_<%= user.usr_id %>">
-    <a href="#" class="deleter">
-        <i class="fa fa-times-circle"></i>
-    </a>
-    <input name="id" value="<%= user.usr_id %>" type="hidden" />
-    <table>
-        <tr>
-            <td class="icon">
-                <img src="/assets/common/images/icons/user-white.png"/>
-            </td>
-            <td class="infos">
-                <div>
-                    <input type="hidden" name="participants[<%= user.usr_id %>][usr_id]" value="<%= user.usr_id %>" />
-                    <table>
-                        <tr>
-                            <td colspan="3">
-                                <span class="name"><%= htmlEncode(user.display_name) %></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <span class="subtite"><%= htmlEncode(user.subtitle) || '' %></span>
-                            </td>
-                        </tr>
-                        <tr class="toggles">
-                            <td class="toggle status_off toggle_HD">
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_off"
-                                     src="/assets/common/images/icons/download-grey.png"/>
-                                <img title="{% trans %}User can download HD{% endtrans %}" class="toggle_on"
-                                     src="/assets/common/images/icons/dark-blue-download.png"/>
-                                <input type="hidden" name="participants[<%= user.usr_id %>][HD]" value="0" />
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
-    </table>
-</div>
-</script>
 <script type="text/template" id="list_manager_badge_tpl">
 <div class="badge badge_<%= user.usr_id %> listmanager_badge">
     <a href="#" class="deleter">
@@ -266,7 +233,7 @@
     <table>
       <tr>
         <td class="listmanager_badge_img">
-          <img src="/assets/common/images/icons/user-white.png"/>
+         XX
         </td>
         <td class="infos">
             <div>

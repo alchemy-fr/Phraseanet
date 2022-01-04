@@ -1,26 +1,25 @@
 import $ from 'jquery';
 import dialog from './../../phraseanet-common/components/dialog';
-import pushRecord from './recordPush/index';
+import pushRecordWindow from './recordPush/index';
 
-const recordFeedbackModal = (services, datas) => {
-    const { configService, localeService, appEvents } = services;
+const sharebasketRecord = (services, datas) => {
+    const {configService, localeService, appEvents} = services;
     const url = configService.get('baseUrl');
 
 
     const openModal = (datas) => {
-        /* disable push closeonescape as an over dialog may exist (add user) */
+
         let $dialog = dialog.create(services, {
             size: 'Full',
-            title: localeService.t('feedback')
+            title: localeService.t('sharebasket')
         });
 
         // add classes to the whoe dialog (including title)
         $dialog.getDomElement().closest('.ui-dialog')
                .addClass('whole_dialog_container')
-               .addClass('feedback');
+               .addClass('sharebasket');
 
-        $.post(`${url}prod/push/validateform/`, datas, function (data) {
-            // data content's javascript can't be fully refactored
+        $.post(`${url}prod/push/sharebasketform/`, datas, function (data) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
@@ -30,10 +29,10 @@ const recordFeedbackModal = (services, datas) => {
     };
 
     const _onDialogReady = () => {
-        pushRecord(services).initialize({
+        pushRecordWindow(services).initialize({
             feedback: {
                 containerId: '#PushBox',
-                context: 'Feedback'
+                context: 'Sharebasket'
             },
             listManager: {
                 containerId: '#ListManager'
@@ -41,7 +40,8 @@ const recordFeedbackModal = (services, datas) => {
         });
     };
 
-    return { openModal };
+
+    return {openModal};
 };
 
-export default recordFeedbackModal;
+export default sharebasketRecord;

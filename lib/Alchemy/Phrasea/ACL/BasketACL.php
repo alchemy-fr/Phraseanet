@@ -22,13 +22,13 @@ class BasketACL
             return true;
         }
 
-        if ($basket->isVoteBasket()) {
+ //       if ($basket->isVoteBasket()) {
             foreach ($basket->getParticipants() as $participant) {
                 if ($participant->getUser()->getId() === $user->getId()) {
                     return true;
                 }
             }
-        }
+ //       }
 
         return false;
     }

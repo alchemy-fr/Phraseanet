@@ -61,6 +61,11 @@ class PushController extends Controller
         return $this->renderPushTemplate($request, 'Feedback');
     }
 
+    public function sharebasketFormAction(Request $request)
+    {
+        return $this->renderPushTemplate($request, 'Sharebasket');
+    }
+
 
     /** ----------------------------------------------------------------------------------
      * a simple push is made by the current user to many "receivers" (=participants)
@@ -899,17 +904,21 @@ class PushController extends Controller
         $participantUserIds = '';
         $initiatorUserId = null;
 
-        if ($context === 'Feedback' && $feedbackaction === 'adduser' && $push->is_basket() && $push->get_original_basket()->isVoteBasket()) {
-            $participants = $push->get_original_basket()->getParticipants();
-            $participantUserIds = implode('_', $push->get_original_basket()->getListParticipantsUserId());
-            $initiatorUserId = $push->get_original_basket()->getVoteInitiator()->getId();
-        }
-        elseif ($context === 'Feedback') {
-            // Display the initiator in the participant list window when the first time to create a feedback
-            $basketParticipant = new BasketParticipant($this->getAuthenticatedUser());
-            $basketParticipant->setCanSeeOthers(1);
-            array_push($participants, $basketParticipant);
-            $initiatorUserId = $participantUserIds = $this->getAuthenticatedUser()->getId();
+        if ($context === 'Feedback' || $context === 'Sharebasket') {
+            if ($feedbackaction === 'adduser' && $push->is_basket() /* && $push->get_original_basket()->isVoteBasket() */) {
+                $participants = $push->get_original_basket()->getParticipants();
+                $participantUserIds = implode('_', $push->get_original_basket()->getListParticipantsUserId());
+                $initiatorUserId = $context === 'Feedback'
+                    ? $push->get_original_basket()->getVoteInitiator()->getId()
+                    : $this->getAuthenticatedUser()->getId();
+            }
+            else {
+                // Display the initiator in the participant list window when the first time to create a feedback
+                $basketParticipant = new BasketParticipant($this->getAuthenticatedUser());
+                $basketParticipant->setCanSeeOthers(1);
+                array_push($participants, $basketParticipant);
+                $initiatorUserId = $participantUserIds = $this->getAuthenticatedUser()->getId();
+            }
         }
 
         $repository = $this->getUserListRepository();
