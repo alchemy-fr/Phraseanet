@@ -856,6 +856,14 @@ class PushController extends Controller
     }
 
     /**
+     * from a list of records, return "users" from field(s) declared as vocabularyType/user
+     *
+     * this list of users will be displayed as "RecommendedUsers" for push
+     * !!!!!!!!!!!!!!! todo : also for share baskets ? !!!!!!!!!!!!
+     * !!!!! useless (?) in 4.1 since editing a vocab field does nothing special :
+     *       the field value has no vocab/id value
+     *
+     *
      * @param array|record_adapter[] $selection
      * @return ArrayCollection      Users
      */

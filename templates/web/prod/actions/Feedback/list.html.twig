@@ -4,17 +4,15 @@
         <div id="find-user">
             <input class="search colored inverse" name="users-search" placeholder="{{ 'Users' | trans }}" type="text" style="width:210px;"/>
         </div>
+{#
         <p id="recommanded-users">
 
         </p>
+#}
     </div>
     <div class="pull-left">
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
             <a href="#" class="push-add-user btn colored with_icon" data-context="ListManager">
-                <!--
-                <img src="/assets/common/images/icons/orange-plus.png" class="image-normal">
-                <img src="/assets/common/images/icons/white-plus.png" class="image-hover">
-                -->
                 <i class="fa fa-plus"></i>
                 {{ 'Add user' | trans }}
             </a>
@@ -26,12 +24,6 @@
                 class="btn colored with_icon push-list-share-action"
                 title="{{ 'Share the list' | trans }}"
                 data-list-id="{{ list.getId() }}">
-                <!--
-                <span>
-                    <img src="/assets/common/images/icons/orange-share.png" class="image-normal" style="margin-right: 15px;">
-                    <img src="/assets/common/images/icons/white-share.png" class="image-hover" style="margin-right: 15px;">
-                </span>
-                -->
                 <i class="fa fa-share-square-o"></i>
                 {{ 'Share my list' | trans }}
             </a>
@@ -82,19 +74,16 @@
                 {{ ListsMacros.badgeReadonly(entry, role) }}
             {% endfor %} #}
         </div>
-        <!-- !!!!!!!!!!!!!!!!!! the footer is hidden by list !!!!!!!!!!!
+
         <div class="PNB10 footer">
             <form class="list_saver">
                 <button id="saveListFooter" class="colored inverse with_icon saveList" style="display:none">
-                    < !--
-                    <img src="/assets/common/images/icons/orange-save.png" class="image-normal"/>
-                    <img src="/assets/common/images/icons/white-save.png" class="image-hover"/>
-                    -- >
-                    <i class="fa fa-heart"></i>{{ "Save the list" | trans }}
+                    <i class="fa fa-hdd-o"></i>
+                    {{ "Save the list" | trans }}
                 </button>
             </form>
         </div>
-        !!!!!!!!!!!!!!!!!!!!!! -->
+
     </div>
     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
         <div class="PNB content readwrite user_content" style="display:none;">

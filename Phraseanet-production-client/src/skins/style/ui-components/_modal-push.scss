@@ -99,12 +99,16 @@ $toggledOff: #666;       // a toggle button IS off
         }
         &.with_icon {
             position: relative;     // needed for absolute icon
-            padding-left: 35px;
+            padding-left: 30px;
+            &::before {                 // prevent empty button / needed for vertical-align icon
+                content: "|";           // any char will do
+                color:transparent;
+            }
             I.fa {
                 font-size: 160%;
+                vertical-align: middle;
                 position: absolute;
                 left: 10px;
-                top: 3px;
             }
         }
         &.toggle:hover, &.toggle.status_on:hover, &.toggle.status_off {
@@ -465,7 +469,7 @@ $toggledOff: #666;       // a toggle button IS off
         }
 
         TABLE {
-            width: 93%;
+            width: 100%;
         }
         TD {
             vertical-align: top;

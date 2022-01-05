@@ -79,7 +79,7 @@
                             <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
                         </span>
                         <a href="{{ path('prod_lists_all') }}" title="Refresh list"
-                           class="list_refresh push-refresh-list-action btn pull-right" style="margin-top: -2px;">
+                           class="list_refresh push-refresh-list-action btn pull-right colored" style="margin-top: -2px;">
                             <!--
                             {% if context == 'Push' %}
                                 <img src="/assets/common/images/icons/blue-refresh.png" alt="Refresh list"
@@ -120,7 +120,7 @@
                         {% endfor %}
                     </ul>
                     <span style="width:100%; display:block; text-align:center;">
-                    <a href="#" class="btn list_manager">
+                    <a href="#" class="btn list_manager" data-context="{{ context }}">
                         <i class="fa fa-list"></i>&nbsp;
                         <b>{{ 'List Manager' | trans }}</b>
                     </a>
@@ -136,6 +136,8 @@
                                style="width:210px;"/>
                     </div>
                     <p id="recommanded-users">
+{# !!!!!!!!!!!!!!!! "recommendations" should come from [vocabularyType=user] fields, but this seems not implemented in 4.1 #}
+{#
                         {% set recommendation = '' %}
                         {% set total = RecommendedUsers|length %}
 
@@ -174,6 +176,8 @@
                                 {% trans with {'%recommendation%' : recommendation} %}Please consider send this validation to the following users : %recommendation%{% endtrans %}
                             {% endif %}
                         {% endif %}
+#}
+{# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
                     </p>
 
                     <div style="display:none;" id="push_user_recommendations" title="{{ 'Users suggestion' | trans }}">
@@ -381,19 +385,20 @@
         </div>
     </div>
 
-    <div id="ListManager" class="PNB PushBox ListManager" style="display:none;">
+    {# do not set the "ListManager" context (=theme) globally because we want the "back" button with under-layer color #}
+    <div id="ListManager" class="PNB PushBox" style="display:none;">
         <div class="PNB" style="width:220px;">
             <div style="padding:10px">
                 <a class="back_link btn colored with_icon">
                     <i class="fa fa-arrow-left"></i>&nbsp;{{ 'Back' | trans }}
                 </a>
             </div>
-            <div class="PNB10 all-lists LeftColumn" style="top:55px;">
+            <div class="PNB10 all-lists LeftColumn ListManager" style="top:55px;">      {# theme here #}
                 {% include 'prod/actions/Feedback/lists-all.html.twig' %}
             </div>
         </div>
         <div class="PNB" style="left:220px;">
-            <div class="editor PNB">
+            <div class="editor PNB ListManager">                                  {# theme here #}
                 <div class="PNB" style="top: 45px;">
                     <div class="PNB10 content user_content grey-bg">
                         <div class="welcome">
