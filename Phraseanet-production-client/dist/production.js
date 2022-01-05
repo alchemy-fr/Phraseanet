@@ -7543,10 +7543,6 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _underscore = __webpack_require__(2);
-
-var _ = _interopRequireWildcard(_underscore);
-
 var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
@@ -7555,14 +7551,12 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * triggered via workzone > Basket > context menu
- */
-__webpack_require__(39);
+__webpack_require__(39); /**
+                                                              * triggered via workzone > Basket > context menu
+                                                              */
+
 
 var pushAddUser = function pushAddUser(services) {
     var configService = services.configService,
@@ -7607,9 +7601,11 @@ var pushAddUser = function pushAddUser(services) {
             }
 
             // !!!!!!!!!!!!!!!!!!!!!! better use data-context !!!!!!!!!!!!!!!!!!!!
-            if ($el.hasClass('listmanager-add-user')) {
-                dialogOptions.dialog_classes.push('push-add-user-listmanager');
-            }
+            /*
+                        if($el.hasClass('listmanager-add-user')) {
+                            dialogOptions.dialog_classes.push('push-add-user-listmanager');
+                        }
+            */
 
             openModal(dialogOptions);
         });
