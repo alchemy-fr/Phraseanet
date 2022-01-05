@@ -48,9 +48,11 @@ const pushAddUser = (services) => {
             }
 
             // !!!!!!!!!!!!!!!!!!!!!! better use data-context !!!!!!!!!!!!!!!!!!!!
+/*
             if($el.hasClass('listmanager-add-user')) {
                 dialogOptions.dialog_classes.push('push-add-user-listmanager');
             }
+*/
 
             openModal(dialogOptions);
         });

@@ -9164,21 +9164,6 @@ TABLE.explain3 TR TD {
   bottom: 10px;
 }
 
-.orange_text {
-  color: #ff9400 !important;
-}
-
-.orange-border {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
-  border: 1px solid #ff9400;
-}
-
-input.text_input_white {
-  border-radius: 6px;
-  border: 0 none;
-  height: 18px;
-}
-
 /** PUSH BOX */
 
 .whole_dialog_container {
@@ -9381,10 +9366,40 @@ input.text_input_white {
   float: right;
 }
 
-.push_dialog_container,
-.feedback_dialog_container {
-  background: #282828;
+.whole_dialog_container #info-box-trigger {
+  float: right;
+  margin-top: 6px;
+  cursor: pointer;
 }
+
+.whole_dialog_container #info-box {
+  z-index: 1;
+  width: 400px;
+  position: absolute;
+  top: 15px;
+  right: 40px;
+  border-radius: 8px;
+  background-color: #ededed;
+  padding: 6px;
+  font-family: Roboto;
+  font-size: 10px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.4;
+  letter-spacing: 0px;
+  color: #000000;
+}
+
+.whole_dialog_container #info-box p {
+  margin: 0;
+}
+
+/*
+.push_dialog_container, .feedback_dialog_container {
+    background: #282828;
+}
+*/
 
 /*
 .push_dialog_container .ui-dialog-title, .feedback_dialog_container .ui-dialog-title {
@@ -9702,35 +9717,6 @@ input.text_input_white {
 }
 */
 
-.PushBox #info-box-trigger {
-  float: right;
-  margin-top: 6px;
-  cursor: pointer;
-}
-
-.PushBox #info-box {
-  z-index: 1;
-  width: 400px;
-  position: absolute;
-  top: 15px;
-  right: 40px;
-  border-radius: 8px;
-  background-color: #ededed;
-  padding: 6px;
-  font-family: Roboto;
-  font-size: 10px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.4;
-  letter-spacing: 0px;
-  color: #000000;
-}
-
-.PushBox #info-box p {
-  margin: 0;
-}
-
 /*
 .PushBox .push-back-link {
     font-size: $xmediumFontSize;
@@ -9774,11 +9760,12 @@ input.text_input_white {
 
  */
 
-.select-all,
-.unselect-all {
-  border-radius: 17px;
-  padding: 0px 16px;
+/*
+.select-all, .unselect-all {
+    border-radius: 17px;
+    padding: 0px 16px;
 }
+*/
 
 .lists_manager_list:hover .list_link {
   background-color: #b8b8b8;
@@ -10495,25 +10482,29 @@ input.text_input_white {
 
  */
 
-.push-add-user-listmanager #quickAddUser button {
-  border: solid 1px #ff9400;
-  color: #ff9400;
+/*
+.push-add-user-listmanager {
+    #quickAddUser button {
+        border: solid 1px $orangeThemeColor;
+        color: $orangeThemeColor;
+    }
+    #quickAddUser button:hover {
+        background-color: $orangeThemeColor;
+        color: #FFFFFF;
+    }
+    #quickAddUser button:nth-child(2) {
+        background-color: $orangeThemeColor;
+        color: #FFFFFF;
+    }
 }
+*/
 
-.push-add-user-listmanager #quickAddUser button:hover {
-  background-color: #ff9400;
-  color: #FFFFFF;
-}
-
-.push-add-user-listmanager #quickAddUser button:nth-child(2) {
-  background-color: #ff9400;
-  color: #FFFFFF;
-}
-
+/*
 .push-add-user-listmanager.ui-dialog.ui-widget-content {
-  border: 0 none;
-  box-shadow: none;
+    border: 0 none;
+    box-shadow: none;
 }
+*/
 
 .ui-autocomplete li.list-item {
   width: 222px;
