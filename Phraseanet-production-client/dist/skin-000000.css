@@ -9247,15 +9247,21 @@ TABLE.explain3 TR TD {
 .whole_dialog_container BUTTON.with_icon,
 .whole_dialog_container A.with_icon {
   position: relative;
-  padding-left: 35px;
+  padding-left: 30px;
+}
+
+.whole_dialog_container BUTTON.with_icon::before,
+.whole_dialog_container A.with_icon::before {
+  content: "|";
+  color: transparent;
 }
 
 .whole_dialog_container BUTTON.with_icon I.fa,
 .whole_dialog_container A.with_icon I.fa {
   font-size: 160%;
+  vertical-align: middle;
   position: absolute;
   left: 10px;
-  top: 3px;
 }
 
 .whole_dialog_container BUTTON.toggle:hover,
@@ -9630,7 +9636,7 @@ TABLE.explain3 TR TD {
 }
 
 .PushBox .user_content .badges .badge TABLE {
-  width: 93%;
+  width: 100%;
 }
 
 .PushBox .user_content .badges .badge TD {

@@ -60723,13 +60723,15 @@ var Feedback = function Feedback(services, options) {
 
     this.container.on('click', '.recommended_users', function (event) {
         var usr_id = (0, _jquery2.default)('input[name="usr_id"]', (0, _jquery2.default)(this)).val();
-
+        console.log("====== click on .recommended_users ; usr_id=" + usr_id);
         $this.loadUser(usr_id, $this.selectUser);
 
         return false;
     });
 
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!! this is never called because the link is not shown ??? ( see templates/web/prod/actions/Push.html.twig
     this.container.on('click', '.recommended_users_list', function (event) {
+        console.log("====== click on .recommended_users_list");
 
         var content = (0, _jquery2.default)('#push_user_recommendations').html();
 
@@ -60763,6 +60765,7 @@ var Feedback = function Feedback(services, options) {
 
         return false;
     });
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     //this.container.on('submit', '#PushBox form[name="FeedBackForm"]', function (event) {
     (0, _jquery2.default)('#PushBox form[name="FeedBackForm"]').bind('submit', function () {
