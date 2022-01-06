@@ -49,12 +49,15 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
             $firewall->requireRight(\ACL::CANPUSH);
         });
 
+        /* click on the toolbar (push...) to push/share/feedback --> open ux */
         $controllers->post('/sendform/', 'controller.prod.push:postFormAction');
 
         $controllers->post('/validateform/', 'controller.prod.push:validateFormAction');
 
         $controllers->post('/sharebasketform/', 'controller.prod.push:sharebasketFormAction');
 
+
+        /* click on "send" button on bottom of push/share/feedback us */
         $controllers->post('/send/', 'controller.prod.push:sendAction')
             ->bind('prod_push_send');
 
@@ -63,6 +66,8 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->post('/sharebasket/', 'controller.prod.push:sharebasketAction')
             ->bind('prod_push_send_sharebasket');
+
+
 
         $controllers->post('/update-expiration/', 'controller.prod.push:updateExpirationAction')
             ->bind('prod_push_do_update_expiration');
