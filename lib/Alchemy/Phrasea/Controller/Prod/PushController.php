@@ -207,10 +207,11 @@ class PushController extends Controller
 
 
     /** ----------------------------------------------------------------------------------
-     * a validation request is made by the current user to many participants
+     * a feedback (=validation) request is made by the current user to many participants
      *
-     * this is the same code as "send" request (=simple push), except here we create a validation session,
-     *   register participants and data...
+     * this is the same code as "send" request (=simple push), except here we
+     *   - create a validation session,
+     *   - register participants and data...
      *
      *
      * @param Request $request
@@ -502,6 +503,222 @@ class PushController extends Controller
 
             $manager->commit();
         } catch (ControllerException $e) {
+            $ret['message'] = $e->getMessage();
+            $manager->rollback();
+        }
+
+        return $this->app->json($ret);
+    }
+
+    /** ----------------------------------------------------------------------------------
+     * a share basket request is made by the current user to many participants
+     *
+     * this is the same code as "feedback" request, except here
+     *   - no validation session,
+     *   - no vote, no expire, no initiator
+     *   - simply register participants and data...
+     *
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function sharebasketAction(Request $request)
+    {
+        $ret = [
+            'success' => false,
+            'message' => $this->app->trans('Unable to share the basket')
+        ];
+
+        $manager = $this->getEntityManager();
+        $manager->beginTransaction();
+
+        try {
+            $pusher = $this->getPushFromRequest($request);
+
+            $participants = $request->request->get('participants');
+
+            if (!is_array($participants) || empty($participants)) {
+                throw new ControllerException($this->app->trans('No participants specified'));
+            }
+
+            if (!is_array($pusher->get_elements()) || empty($pusher->get_elements())) {
+                throw new ControllerException($this->app->trans('No elements to validate'));
+            }
+
+            // a share must apply to a basket...
+            //
+            if ($pusher->is_basket()) {
+                $basket = $pusher->get_original_basket();
+                if($basket->isVoteBasket()) {
+                    // this basket is already under vote (should not be possible from front/ux)
+                    // we do not allow, even if the initiator is alreadu me
+                    // if(!$basket->isVoteInitiator($this->getAuthenticatedUser())) {
+                    // one tries to initiate a vote session on a basket which already has another vote initiaton
+                    throw new ControllerException("basket already have another vote initiator");
+                    // }
+                }
+            }
+            else {
+                // ...so if we got a list of elements (records), we create a basket for those
+                $basket_name = $request->request->get('name', $this->app->trans(
+                    'Share from %user%', [
+                    '%user%' => $this->getAuthenticatedUser()->getDisplayName(),
+                ]));
+
+                $basket = new Basket();
+                $basket
+                    ->setName($basket_name)
+                    ->setDescription($request->request->get('message'))
+                    ->setUser($this->getAuthenticatedUser())
+                    ->markUnread();
+
+                $manager->persist($basket);
+
+                foreach ($pusher->get_elements() as $element) {
+                    $basketElement = new BasketElement();
+                    $basketElement->setRecord($element);
+                    $basketElement->setBasket($basket);
+
+                    $manager->persist($basketElement);
+
+                    $basket->addElement($basketElement);
+                }
+            }
+
+            $manager->persist($basket);
+            $manager->flush();
+
+            $manager->refresh($basket);
+
+            // used to check participant to be removed
+            $feedbackAction = $request->request->get('feedbackAction');
+            $remainingParticipantsUserId = [];
+            if ($feedbackAction == 'adduser') {
+                $remainingParticipantsUserId = $basket->getListParticipantsUserId();
+            }
+
+            // add participants to the vote
+            //
+            foreach ($participants as $key => $participant) {
+
+                // sanity check
+                foreach (['agree', 'usr_id', 'HD'] as $mandatoryParam) {        // "agree" here means "can edit"
+                    if (!array_key_exists($mandatoryParam, $participant)) {
+                        throw new ControllerException(
+                            $this->app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryParam])
+                        );
+                    }
+                }
+
+                try {
+                    /** @var User $participantUser */
+                    $participantUser = $this->getUserRepository()->find($participant['usr_id']);
+                    if ($feedbackAction == 'adduser') {
+                        $remainingParticipantsUserId = array_diff($remainingParticipantsUserId, [$participant['usr_id']]);
+                    }
+
+                }
+                catch (Exception $e) {
+                    throw new ControllerException(
+                        $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']])
+                    );
+                }
+                // end of sanity check
+
+                // if participant already exists, just update right AND CONTINUE WITH NEXT USER
+                try {
+                    $basketParticipant = $basket->getParticipant($participantUser);
+                    /* !!!!!!!!!!!!! todo : implement edit right on basket
+                    $basketParticipant->setCanAgree($participant['agree']);
+                    */
+                    $manager->persist($basketParticipant);
+                    $manager->flush();
+
+                    continue; // !!!
+                }
+                catch (NotFoundHttpException $e) {
+                    // no-op
+                }
+
+                // here the participant did not exist, create
+                $basketParticipant = $basket->addParticipant($participantUser);
+                // set right
+                /* !!!!!!!!!!!!! todo : implement edit right on basket
+                $basketParticipant->setCanAgree(false);
+                */
+
+                $manager->persist($basketParticipant);
+
+                foreach ($basket->getElements() as $basketElement) {
+                    $basketParticipantVote = $basketElement->createVote($basketParticipant);
+
+                    if ($participant['HD']) {
+                        $this->getAclForUser($participantUser)->grant_hd_on(
+                            $basketElement->getRecord($this->app),
+                            $this->getAuthenticatedUser(),
+                            ACL::GRANT_ACTION_VALIDATE
+                        );
+                    }
+                    else {
+                        $this->getAclForUser($participantUser)->grant_preview_on(
+                            $basketElement->getRecord($this->app),
+                            $this->getAuthenticatedUser(),
+                            ACL::GRANT_ACTION_VALIDATE
+                        );
+                    }
+
+                    $manager->merge($basketElement);
+                    $manager->persist($basketParticipantVote);
+
+                    $this->getDataboxLogger($basketElement->getRecord($this->app)->getDatabox())->log(
+                        $basketElement->getRecord($this->app),
+                        Session_Logger::EVENT_VALIDATE,
+                        $participantUser->getId(),
+                        ''
+                    );
+
+                }
+
+                $manager->flush();
+            }
+
+            if ($feedbackAction == 'adduser') {
+                foreach ($remainingParticipantsUserId as $userIdToRemove) {
+                    try {
+                        /** @var  User $participantUser */
+                        $participantUser = $this->getUserRepository()->find($userIdToRemove);
+                    }
+                    catch (Exception $e) {
+                        throw new ControllerException(
+                            $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
+                        );
+                    }
+                    $basketParticipant = $basket->getParticipant($participantUser);
+                    $basket->removeParticipant($basketParticipant);
+                    $manager->remove($basketParticipant);
+                }
+            }
+
+            $manager->merge($basket);
+            $manager->flush();
+
+            $message = $this->app->trans(
+                '%quantity_records% records have been shared to %quantity_users% users',
+                [
+                    '%quantity_records%' => count($pusher->get_elements()),
+                    '%quantity_users%'   => count($request->request->get('participants')),
+                ]
+            );
+
+            $ret = [
+                'success' => true,
+                'message' => $message,
+            ];
+
+            $manager->commit();
+        }
+        catch (ControllerException $e) {
             $ret['message'] = $e->getMessage();
             $manager->rollback();
         }
