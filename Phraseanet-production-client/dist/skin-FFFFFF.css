@@ -9239,6 +9239,22 @@ TABLE.explain3 TR TD {
 }
 
 .whole_dialog_container BUTTON,
+.whole_dialog_container A.btn {
+  padding-right: 10px;
+  padding-left: 10px;
+  background-color: white;
+  border-radius: 13.5px;
+  border: solid 1px transparent;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
+}
+
+.whole_dialog_container BUTTON:hover,
+.whole_dialog_container A.btn:hover {
+  color: white;
+  background-color: #282828;
+}
+
+.whole_dialog_container BUTTON,
 .whole_dialog_container A {
   color: #282828;
 }
@@ -9288,22 +9304,6 @@ TABLE.explain3 TR TD {
 .whole_dialog_container A.toggle.status_off {
   background-color: transparent !important;
   color: #666;
-}
-
-.whole_dialog_container BUTTON,
-.whole_dialog_container A.btn {
-  padding-right: 10px;
-  padding-left: 10px;
-  background-color: white;
-  border-radius: 13.5px;
-  border: solid 1px transparent;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
-}
-
-.whole_dialog_container BUTTON:hover,
-.whole_dialog_container A.btn:hover {
-  color: white;
-  background-color: #282828;
 }
 
 .whole_dialog_container input[type=text],
@@ -9399,45 +9399,6 @@ TABLE.explain3 TR TD {
 
 .whole_dialog_container #info-box p {
   margin: 0;
-}
-
-/*
-.push_dialog_container, .feedback_dialog_container {
-    background: #282828;
-}
-*/
-
-/*
-.push_dialog_container .ui-dialog-title, .feedback_dialog_container .ui-dialog-title {
-    font-family: Roboto;
-    font-size: 21px;
-    font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: 0px;
-    color: #ffffff;
-}
-*/
-
-/*
-.push_dialog_container .ui-widget-content, .feedback_dialog_container .ui-widget-content {
-    background-color: #4f4f4f;
-}
-*/
-
-/*
-.push_dialog_container .ui-dialog-titlebar-close, .feedback_dialog_container .ui-dialog-titlebar-close {
-    border: none;
-    margin-right: 4px;
-}
-*/
-
-.push_dialog_container .ui-icon.ui-icon-closethick,
-.feedback_dialog_container .ui-icon.ui-icon-closethick {
-  background-image: url("/assets/common/images/icons/picto-close-window.png");
-  background-position: center;
-  background-size: cover;
 }
 
 /*****************************
@@ -9668,121 +9629,12 @@ TABLE.explain3 TR TD {
   font-size: 200%;
 }
 
-/*
-.feedback {
-
-    #find-user input[type=text] {
-//        background-color: $feedbackThemeColor;
-    }
-    #quickAddUser button {
-//        border: solid 1px $feedbackThemeColor;
-//        color: $feedbackThemeColor;
-
-    }
-
-    #quickAddUser button:hover {
-//        background-color: $feedbackThemeColor;
-    }
-    #quickAddUser button:nth-child(2) {
-//        background-color: $feedbackThemeColor;
-    }
-    .btn.btn-push-orange.btn-orange-inverse {
-        color: $textInverseColor;
-    }
-    .btn.btn-push-orange.btn-orange-inverse:hover {
-        background-color: $textInverseColor;
-        color: $orangeThemeColor;
-    }
-}
-*/
-
-/*
-.sharebasket {
-    #find-user input[type=text] {
-        //background-color: $sharebasketThemeColor;
-    }
-    #quickAddUser button {
-//        border: solid 1px $sharebasketThemeColor;
-//        color: $sharebasketThemeColor;
-
-    }
-
-    #quickAddUser button:hover {
-        //background-color: $sharebasketThemeColor;
-    }
-    #quickAddUser button:nth-child(2) {
-//        background-color: $sharebasketThemeColor;
-    }
-    .btn.btn-push-orange.btn-orange-inverse {
-        color: $textInverseColor;
-    }
-    .btn.btn-push-orange.btn-orange-inverse:hover {
-        background-color: $textInverseColor;
-        color: $orangeThemeColor;
-    }
-}
-*/
-
-/*
-.PushBox .push-back-link {
-    font-size: $xmediumFontSize;
-    border-radius: 7px;
-    height: 16px;
-    line-height: 14px;
-    border: 0 none;
-    img {
-        width: 16px;
-        height: 16px;
-    }
-    span {
-        vertical-align: middle;
-        margin-left: 2px;
-    }
-    .image-normal {
-        display: inline;
-    }
-    .image-hover {
-        display: none;
-    }
-    &:hover {
-        .image-normal {
-             display: none;
-        }
-        .image-hover {
-            display: inline;
-        }
-     }
-}
-
- */
-
-/*
-.PushBox .push-back-link.btn-inverse {
-    background-color: #444444;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.23);
-    &:hover {
-     }
-}
-
- */
-
-/*
-.select-all, .unselect-all {
-    border-radius: 17px;
-    padding: 0px 16px;
-}
-*/
-
 .lists_manager_list:hover .list_link {
   background-color: #b8b8b8;
 }
 
 .list:hover .list-trash-btn {
   display: block !important;
-}
-
-.feedback_dialog_container .PushBox .content .list-container {
-  top: 140px;
 }
 
 .PushBox .content {
@@ -9806,21 +9658,10 @@ TABLE.explain3 TR TD {
 }
 
 .PushBox .content .main-title {
-  font-family: Roboto;
   font-size: 16px;
   font-weight: 500;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 2px;
-  letter-spacing: 0px;
-  color: #4a4a4a;
   margin-top: 10px;
-}
-
-.PushBox .content .main-title img {
-  width: 16px;
-  margin-right: 5px;
-  margin-bottom: 3px;
 }
 
 .PushBox .user_content {
@@ -9864,13 +9705,7 @@ TABLE.explain3 TR TD {
 }
 
 .PushBox .user_content .header .text {
-  font-family: Roboto;
   font-size: 13px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.08;
-  letter-spacing: 0px;
   color: #ffffff;
 }
 
@@ -9951,19 +9786,6 @@ TABLE.explain3 TR TD {
 .PushBox .LeftColumn .content ul.lists li:hover {
   background-color: #b8b8b8;
 }
-
-/*
-.PushBox .all-lists .push-add-user {
-    margin: 0;
-    img {
-        width: 13px;
-        height: 13px;
-        margin-left: -25px;
-        margin-right: 25px;
-    }
-}
-
- */
 
 .PushBox .welcome {
   text-align: center;
@@ -10082,6 +9904,10 @@ TABLE.explain3 TR TD {
   margin-right: 20px;
 }
 
+/**
+ * content of modal dlg to select users to share a list with
+ */
+
 #ListShare .info-box-share-holder {
   position: fixed;
   margin: -35px 0 0 115px;
@@ -10104,78 +9930,14 @@ TABLE.explain3 TR TD {
 
 #ListShare .info-box-share-holder #info-box p {
   margin: 0;
-  font-family: Roboto;
   font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.4;
-  letter-spacing: 0px;
   color: #000000;
 }
 
 #ListShare table {
   width: 100%;
   margin: 12px 0;
-}
-
-#ListManager .content {
-  /*
-        &.readselect {
-            .badge {
-                width: 250px;
-                display: inline-block;
-                margin: 5px;
-                background-color: #515150;
-                padding: 5px;
-
-                .deleter {
-                    right: 0;
-                    display: -webkit-inline-box;
-                    display: -ms-inline-flexbox;
-                    display: inline-flex;
-                }
-
-                table {
-                    // width: auto;
-                    table-layout: fixed;
-                }
-
-                .infos {
-                    padding: 5px 2px 2px 6px;
-                    vertical-align: top;
-
-                    span {
-                        display: block;
-                        line-height: 20px;
-                    }
-                }
-
-                &.selected {
-                    border-color: $orangeThemeColor;
-                }
-
-                &.listmanager_badge {
-                    font-weight: normal;
-                    font-size: 12px;
-                    height: 77px;
-                    line-height: 77px;
-                    padding: 0;
-                    background-color: #f7f7f7;
-                    color: #000000;
-                    text-shadow: none;
-                    overflow: hidden;
-
-                    .listmanager_badge_img {
-                        height: 77px;
-                        padding: 0 7px;
-                        width: 42px;
-                        background-color: #515151;
-                    }
-                }
-            }
-        }
-        */
 }
 
 #ListManager .content .lists span.action {
@@ -10204,13 +9966,6 @@ TABLE.explain3 TR TD {
             }
         }
         !!!!!!!!!!!!!!!!!!!!!!!!!!         */
-  /*
-        .push-back-link:hover {
-            color: #444444;
-            background-color: #f7f7f7;
-        }
-
-         */
 }
 
 #ListManager .editor .counter {
@@ -10272,62 +10027,14 @@ TABLE.explain3 TR TD {
   margin-top: 12px;
 }
 
-#PushBox .general_togglers {
-  /*
-    margin-right: 5px;
-    vertical-align: middle;
-    margin-bottom: 3px;
-    */
-  /*
-    button {
-        padding-left: 35px;
-    }
-
-     */
-}
-
 .general_togglers button {
   position: relative;
   width: 100%;
   height: 27px;
-  /*
-    img {
-        width: 18px;
-        position: absolute;
-        left: 15px;
-        top: 6px;
-    }
-    .image-normal {
-        display: inline;
-    }
-    .image-hover {
-        display: none;
-    }
-
- */
 }
-
-/*
-.general_togglers button:hover {
-    background-color: $pushThemeColor;
-    color: #f7f7f7;
-    .image-normal {
-        display: none;
-    }
-    .image-hover {
-        display: inline;
-    }
-}
-*/
 
 #PushBox .list_loader {
-  font-family: Roboto;
   font-size: 13px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: 0px;
   color: #000000;
   width: 100%;
 }
@@ -10335,12 +10042,6 @@ TABLE.explain3 TR TD {
 #PushBox .list_loader img {
   float: right;
 }
-
-/*
-#PushBox .general_togglers button .ui-button-text {
-    font-weight: lighter;
-}
-*/
 
 #PushBox .content .list_saver {
   margin: 0;
@@ -10371,6 +10072,20 @@ TABLE.explain3 TR TD {
 
 #find-user {
   line-height: 15px;
+  /*
+    input[type=text]::-webkit-input-placeholder { !* Chrome/Opera/Safari *!
+        color: #ffffff;
+    }
+    input[type=text]::-moz-placeholder { !* Firefox 19+ *!
+        color: #ffffff;
+    }
+    input[type=text]:-ms-input-placeholder { !* IE 10+ *!
+        color: #ffffff;
+    }
+    input[type=text]:-moz-placeholder { !* Firefox 18- *!
+        color: #ffffff;
+    }
+    */
 }
 
 #find-user input[type=text] {
@@ -10378,26 +10093,6 @@ TABLE.explain3 TR TD {
   border-radius: 5px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
   border: none;
-}
-
-#find-user input[type=text]::-webkit-input-placeholder {
-  /* Chrome/Opera/Safari */
-  color: #ffffff;
-}
-
-#find-user input[type=text]::-moz-placeholder {
-  /* Firefox 19+ */
-  color: #ffffff;
-}
-
-#find-user input[type=text]:-ms-input-placeholder {
-  /* IE 10+ */
-  color: #ffffff;
-}
-
-#find-user input[type=text]:-moz-placeholder {
-  /* Firefox 18- */
-  color: #ffffff;
 }
 
 #find-user .search {
@@ -10467,50 +10162,6 @@ TABLE.explain3 TR TD {
   margin-left: 10px;
   margin-right: 10px;
 }
-
-/*
-.validation {
-    #quickAddUser button {
-        background-color: #ffffff;
-        border: solid 1px $feedbackThemeColor;
-        color: $feedbackThemeColor;
-    }
-
-    #quickAddUser button:hover {
-        background-color: $feedbackThemeColor;
-        color: #FFFFFF;
-    }
-    #quickAddUser button:nth-child(2) {
-        background-color: $feedbackThemeColor;
-        color: #FFFFFF;
-    }
-}
-
- */
-
-/*
-.push-add-user-listmanager {
-    #quickAddUser button {
-        border: solid 1px $orangeThemeColor;
-        color: $orangeThemeColor;
-    }
-    #quickAddUser button:hover {
-        background-color: $orangeThemeColor;
-        color: #FFFFFF;
-    }
-    #quickAddUser button:nth-child(2) {
-        background-color: $orangeThemeColor;
-        color: #FFFFFF;
-    }
-}
-*/
-
-/*
-.push-add-user-listmanager.ui-dialog.ui-widget-content {
-    border: 0 none;
-    box-shadow: none;
-}
-*/
 
 .ui-autocomplete li.list-item {
   width: 222px;
