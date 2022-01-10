@@ -490,7 +490,7 @@ class Basket
      * todo : implement getVoteParticipants (or accept a filter)
      * Get participants
      *
-     * @return Collection
+     * @return Collection|BasketParticipant[]
      */
     public function getParticipants()
     {
