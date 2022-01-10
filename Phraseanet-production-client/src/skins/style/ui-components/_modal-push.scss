@@ -85,7 +85,6 @@ $toggledOff: #666;       // a toggle button IS off
 
     BUTTON, A {
         color: $textColor;
-        padding-right: 15px;
         &:hover {
             color: white;
             background-color: $textColor;
@@ -118,6 +117,8 @@ $toggledOff: #666;       // a toggle button IS off
     }
 
     BUTTON, A.btn {
+        padding-right: 10px;
+        padding-left: 10px;
         background-color: white;
         &:hover {
             color: white;
@@ -192,7 +193,6 @@ $toggledOff: #666;       // a toggle button IS off
     // delete selection button      ( /!\ not colored = black/white )
     .PushBox .delete-selection {
         margin-left: 18px;
-        padding: 0px 16.5px;
     }
 
     // "send" button

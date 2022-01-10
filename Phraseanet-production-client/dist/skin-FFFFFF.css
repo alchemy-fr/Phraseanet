@@ -9241,7 +9241,6 @@ TABLE.explain3 TR TD {
 .whole_dialog_container BUTTON,
 .whole_dialog_container A {
   color: #282828;
-  padding-right: 15px;
 }
 
 .whole_dialog_container BUTTON:hover,
@@ -9293,6 +9292,8 @@ TABLE.explain3 TR TD {
 
 .whole_dialog_container BUTTON,
 .whole_dialog_container A.btn {
+  padding-right: 10px;
+  padding-left: 10px;
   background-color: white;
   border-radius: 13.5px;
   border: solid 1px transparent;
@@ -9357,7 +9358,6 @@ TABLE.explain3 TR TD {
 
 .whole_dialog_container .PushBox .delete-selection {
   margin-left: 18px;
-  padding: 0px 16.5px;
 }
 
 .whole_dialog_container BUTTON.FeedbackSend {
