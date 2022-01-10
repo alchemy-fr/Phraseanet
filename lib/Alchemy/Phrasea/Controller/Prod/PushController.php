@@ -598,7 +598,7 @@ class PushController extends Controller
                 $remainingParticipantsUserId = $basket->getListParticipantsUserId();
             }
 
-            // add participants to the vote
+            // add participants to the share
             //
             foreach ($participants as $key => $participant) {
 
@@ -629,9 +629,9 @@ class PushController extends Controller
                 // if participant already exists, just update right AND CONTINUE WITH NEXT USER
                 try {
                     $basketParticipant = $basket->getParticipant($participantUser);
-                    /* !!!!!!!!!!!!! todo : implement edit right on basket
-                    $basketParticipant->setCanAgree($participant['agree']);
-                    */
+
+                    $basketParticipant->setCanModify($participant['agree']);
+
                     $manager->persist($basketParticipant);
                     $manager->flush();
 
@@ -644,9 +644,8 @@ class PushController extends Controller
                 // here the participant did not exist, create
                 $basketParticipant = $basket->addParticipant($participantUser);
                 // set right
-                /* !!!!!!!!!!!!! todo : implement edit right on basket
-                $basketParticipant->setCanAgree(false);
-                */
+                $basketParticipant->setCanModify(false);
+
 
                 $manager->persist($basketParticipant);
 

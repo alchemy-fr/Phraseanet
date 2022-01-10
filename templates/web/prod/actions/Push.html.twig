@@ -24,9 +24,6 @@
                 <div class="PNB content" style="top:45px; overflow-y:auto;">
                     <div style="padding:10px">
                         <span class="main-title">
-                            <!--
-                            <img src="/assets/common/images/icons/hand-grey.png"/>
-                            -->
                             <i class="fa fa-hand-stop-o"></i>&nbsp;{{ 'Grant rights' | trans }}
                         </span>
                         <ul class="general_togglers">
@@ -36,10 +33,6 @@
                                     {# in case of sharebasket, the "pen" allows to edit the basket #}
                                     {# todo : share dedicated buttons (add-items, delete-items) ? #}
                                     <button type="button" class="general_toggler colored with_icon" feature="agree">
-                                        <!--
-                                        <img src="/assets/common/images/icons/green-pen.png" class="image-normal"/>
-                                        <img src="/assets/common/images/icons/white-pen.png" class="image-hover"/>
-                                        -->
                                         <i class="fa fa-pencil"></i>&nbsp;{{ 'Contributor' | trans }}
                                     </button>
                                 </li>
@@ -47,25 +40,12 @@
                             {% if context == 'Feedback' %}
                                 <li>
                                     <button type="button" class="general_toggler colored with_icon" feature="see_others">
-                                        <!--
-                                        <img src="/assets/common/images/icons/green-user.png" class="image-normal"/>
-                                        <img src="/assets/common/images/icons/white-user.png" class="image-hover"/>
-                                        -->
                                         <i class="fa fa-users"></i>&nbsp;{{ 'See others' | trans }}
                                     </button>
                                 </li>
                             {% endif %}
                             <li>
                                 <button type="button" class="general_toggler colored with_icon" feature="HD">
-                                    <!--
-                                    {% if context == 'Push' %}
-                                        <img src="/assets/common/images/icons/download-blue.png" class="image-normal"/>
-                                    {% else %}
-                                        {# for now use the same green color to feedback / sharebasket #}
-                                        <img src="/assets/common/images/icons/download-green.png" class="image-normal"/>
-                                    {% endif %}
-                                    <img src="/assets/common/images/icons/download-white.png" class="image-hover"/>
-                                    -->
                                     <i class="fa fa-download"></i>&nbsp;{{ 'HD Download' | trans }}
                                 </button>
                             </li>
@@ -73,25 +53,10 @@
                     </div>
                     <div style="padding: 10px 10px 0;">
                         <span class="main-title">
-                            <!--
-                            <img src="/assets/common/images/icons/list-grey.png"/>
-                            -->
                             <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
                         </span>
                         <a href="{{ path('prod_lists_all') }}" title="Refresh list"
                            class="list_refresh push-refresh-list-action btn pull-right colored" style="margin-top: -2px;">
-                            <!--
-                            {% if context == 'Push' %}
-                                <img src="/assets/common/images/icons/blue-refresh.png" alt="Refresh list"
-                                     class="image-normal">
-                            {% else %}
-                                {# for now use the same green color to feedback / sharebasket #}
-                                <img src="/assets/common/images/icons/green-refresh.png" alt="Refresh list"
-                                     class="image-normal">
-                            {% endif %}
-                            <img src="/assets/common/images/icons/white-refresh.png" alt="Refresh list"
-                                 class="image-hover">
-                            -->
                             <i class="fa fa-refresh"></i>
                         </a>
                     </div>
@@ -109,12 +74,6 @@
                                     {{ list.getName() }}
                                     ({{ list.getEntries().count() }})
                                 </a>
-                                <!--
-                                <button class="list-trash-btn" style="display: none;">
-                                    <img src="/assets/common/images/icons/delete-black.png" class="image-normal"/>
-                                    <img src="/assets/common/images/icons/delete-white.png" class="image-hover"/>
-                                </button>
-                                -->
                                 <i class="list-trash-btn fa fa-trash" style="font-size: 170%; cursor: pointer; display: none;"></i>
                             </li>
                         {% endfor %}
@@ -210,9 +169,11 @@
                  </div>
                 {% endif %}
 
-                <span style="font-size: 21px;font-family: Roboto;margin-left: 30px;font-weight: 700; {% if context == 'Push' %}color: #2196f3;{% else %}color: #8bc34a;{% endif %}">
+                {# !!!!!!!!!!!!!!!!! the basket name only appears on push ? not on share, feedback... !!!!!!!!!!!!!!! #}
+                <span class="colored" style="font-size: 21px;margin-left: 30px;font-weight: 700;">
                     {% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}
                 </span>
+
                 <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
                 <div id="info-box" style="display: none">
                     <p>
