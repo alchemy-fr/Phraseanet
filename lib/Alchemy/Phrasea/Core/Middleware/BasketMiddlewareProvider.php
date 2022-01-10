@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core\Middleware;
 
+use Alchemy\Phrasea\ACL\BasketACL;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +37,14 @@ class BasketMiddlewareProvider implements ServiceProviderInterface
 
         $app['middleware.basket.user-is-owner'] = $app->protect(function (Request $request, Application $app) {
             if (!$app['acl.basket']->isOwner($request->attributes->get('basket'), $app->getAuthenticatedUser())) {
+                throw new AccessDeniedHttpException('Only basket owner can modify the basket');
+            }
+        });
+
+        $app['middleware.basket.user-can-modify-content'] = $app->protect(function (Request $request, Application $app) {
+            /** @var BasketACL $acl */
+            $acl = $app['acl.basket'];
+            if (!$acl->canModifyContent($request->attributes->get('basket'), $app->getAuthenticatedUser())) {
                 throw new AccessDeniedHttpException('Only basket owner can modify the basket');
             }
         });

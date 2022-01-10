@@ -68,7 +68,7 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
             ->bind('prod_baskets_basket_element_remove')
             ->assert('basket', '\d+')
             ->assert('basket_element_id', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
+            ->before($app['middleware.basket.user-can-modify-content']);
 
         $controllers->post('/{basket}/update/', 'controller.prod.basket:updateBasket')
             ->bind('prod_baskets_basket_update')
@@ -95,7 +95,7 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
 
         $controllers->post('/{basket}/addElements/', 'controller.prod.basket:addElements')
             ->assert('basket', '\d+')
-            ->before($app['middleware.basket.user-is-owner']);
+            ->before($app['middleware.basket.user-can-modify-content']);
 
         $controllers->post('/{basket}/stealElements/', 'controller.prod.basket:stealElements')
             ->assert('basket', '\d+')
