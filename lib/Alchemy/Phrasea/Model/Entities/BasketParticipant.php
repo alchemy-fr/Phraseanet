@@ -166,6 +166,29 @@ class BasketParticipant
     }
 
     /**
+     * Get can_modify
+     *
+     * @return boolean
+     */
+    public function getCanModify()
+    {
+        return $this->can_modify;
+    }
+
+    /**
+     * Set can_modify
+     *
+     * @param boolean $canModify
+     * @return self
+     */
+    public function setCanModify(bool $canModify)
+    {
+        $this->can_modify = $canModify;
+
+        return $this;
+    }
+
+    /**
      * Get can_agree
      *
      * @return boolean

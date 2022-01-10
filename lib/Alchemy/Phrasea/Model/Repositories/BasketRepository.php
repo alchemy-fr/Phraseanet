@@ -157,13 +157,14 @@ class BasketRepository extends EntityRepository
     }
 
     /**
-     * Find a basket specified by his basket_id and his owner
+     * Find a basket specified by his basket_id and his owner or participant
      *
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     * @param  int $basket_id
-     * @param  User $user
+     * @param int $basket_id
+     * @param User $user
+     * @param $requireOwner // true: the user MUST be the owner ;
+     *                      // false: IF THE BASKET IS A FEEDBACK the user can also be simple participant
      * @return Basket
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findUserBasket($basket_id, User $user, $requireOwner)
     {
@@ -189,8 +190,9 @@ class BasketRepository extends EntityRepository
                 try {
                     $basket->getParticipant($user);
                     $participant = true;
-                } catch (\Exception $e) {
-
+                }
+                catch (\Exception $e) {
+                    // no-op
                 }
             }
             if (!$participant) {
