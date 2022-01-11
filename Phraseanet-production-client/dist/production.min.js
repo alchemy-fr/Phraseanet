@@ -19299,6 +19299,7 @@ var notifyLayout = function notifyLayout(services) {
             $notificationDialog.dialog('close');
         };
 
+        var zIndexOverlay = (0, _jquery2.default)('.ui-widget-overlay').css("z-index");
         // open the dlg (even if it is already opened when "load more")
         //
         $notificationDialog.dialog({
@@ -19310,11 +19311,16 @@ var notifyLayout = function notifyLayout(services) {
             modal: true,
             width: 500,
             height: 400,
+            dialogClass: "dialog-notification-box",
             overlay: {
                 backgroundColor: '#000',
                 opacity: 0.7
             },
+            open: function open() {
+                (0, _jquery2.default)('.ui-widget-overlay').css("z-index", (0, _jquery2.default)(".dialog-notification-box").css("z-index"));
+            },
             close: function close(event, ui) {
+                (0, _jquery2.default)('.ui-widget-overlay').css("z-index", zIndexOverlay);
                 // destroy so it will be "fresh" on next open (scrollbar on top)
                 $notificationDialog.dialog('destroy').remove();
             }
@@ -51110,7 +51116,6 @@ var geonameDatasource = function geonameDatasource(services) {
             height: "auto",
             width: 400,
             modal: true,
-            dialogClass: "dialog-edit_lat_lon",
             buttons: {
                 confirmYes: function confirmYes() {
                     (0, _jquery2.default)(this).dialog("close");

@@ -103,6 +103,7 @@ const notifyLayout = (services) => {
             $notificationDialog.dialog('close');
         };
 
+        let zIndexOverlay = $('.ui-widget-overlay').css("z-index");
         // open the dlg (even if it is already opened when "load more")
         //
         $notificationDialog
@@ -116,11 +117,16 @@ const notifyLayout = (services) => {
                     modal:         true,
                     width:         500,
                     height:        400,
+                    dialogClass:  "dialog-notification-box",
                     overlay:       {
                         backgroundColor: '#000',
                         opacity:         0.7
                     },
+                    open: function () {
+                        $('.ui-widget-overlay').css("z-index", $(".dialog-notification-box").css("z-index"));
+                    },
                     close:         function (event, ui) {
+                        $('.ui-widget-overlay').css("z-index", zIndexOverlay);
                         // destroy so it will be "fresh" on next open (scrollbar on top)
                         $notificationDialog.dialog('destroy').remove();
                     }

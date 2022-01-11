@@ -233,8 +233,9 @@ $basketBg: $darkBackgroundColor !default;
     z-index: 1999;
 }
 
-.ui-dialog.ui-widget-content.dialog-edit_lat_lon {
-    z-index: 2000 !important;
+.ui-dialog.ui-widget-content.dialog-notification-box {
+    // just less than the PREVIEWBOX and the EDITWINDOW z-index
+    z-index: 1199  !important;
 }
 
 .ui-dialog-titlebar {
