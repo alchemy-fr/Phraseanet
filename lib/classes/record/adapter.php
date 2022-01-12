@@ -2159,7 +2159,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         $this->app['filesystem']->remove($ftodel);
 
+        // delete cache of subdefs
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
+        // delete the corresponding key record_id from the cache
+        $this->delete_data_from_cache();
 
         $this->dispatch(RecordEvents::DELETED, new DeletedEvent($this));
 
