@@ -2,7 +2,8 @@
 <br>
 {% for basket_element in feedbackElementDatas %}
     {% set basket = basket_element.getBasket() %}
-    {% if basket.isParticipant(app.getAuthenticatedUser()) and (basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or basket.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() )%}
+    {% if basket.isVoteBasket() %}
+        {% if basket.isParticipant(app.getAuthenticatedUser()) and (basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or basket.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() )%}
         {% set basketName = basket.getName() %}
         <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
             <dt data-kind="BASK"
@@ -66,5 +67,6 @@
 
             {% endfor %}
         </dl>
+    {% endif %}
     {% endif %}
 {% endfor %}
