@@ -80,6 +80,7 @@ class ControllerProviderServiceProvider implements ServiceProviderInterface
             Prod\Printer::class => [],
             Prod\Property::class => [],
             Prod\Push::class => [],
+            Prod\UsersLists::class => [],
             Prod\Query::class => [],
             Prod\Record::class => [],
             \Alchemy\Phrasea\Report\ControllerProvider\ProdReportControllerProvider::class => [],

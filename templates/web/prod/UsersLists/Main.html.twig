@@ -1,0 +1,39 @@
+{# do not set the "ListManager" context (=theme) globally because we want the "back" button with under-layer color #}
+<div id="ListManager" class="PNB PushBox" style="display:none;">
+    <div class="PNB" style="width:220px;">
+        <div style="padding:10px">
+            <a class="back_link btn colored with_icon">
+                <i class="fa fa-arrow-left"></i>&nbsp;{{ 'Back' | trans }}
+            </a>
+        </div>
+        <div class="PNB10 all-lists LeftColumn ListManager" style="top:55px;">      {# theme here #}
+            {% include ':web/prod/actions/Feedback:lists-all.html.twig' %}
+        </div>
+    </div>
+    <div class="PNB" style="left:220px;">
+        <div class="editor PNB ListManager">                                  {# theme here #}
+            <div class="PNB" style="top: 45px;">
+                <div class="PNB10 content user_content grey-bg">
+                    <div class="welcome">
+                        <h1>{{ 'Welcome to the ListManager !' | trans }}</h1>
+                        {% if lists|length == 0 %}
+                            <p class="welcome">
+                                {{ 'Start by creating one by using the "add" button on the left !' | trans }}
+                            </p>
+                        {% else %}
+                            <p class="welcome">
+                                {{ 'Select a list on the left and edit it !' | trans }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="FeedbackSendForm">
+    <form method="post"></form>
+</div>
+
+
