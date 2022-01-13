@@ -6,6 +6,7 @@ import exportRecord from '../../record/export';
 import propertyRecord from '../../record/property';
 import recordSharebasketModal from '../../record/sharebasket';
 import recordPushModal from '../../record/push';
+import usersListsModal from '../../userslists/index';
 import recordPublish from '../../record/publish';
 import recordToolsModal from '../../record/tools/index';
 import printRecord from '../../record/print';
@@ -116,7 +117,7 @@ const toolbar = (services) => {
             panel.css('maxHeight', '');
         }
     }
-    const _triggerModal = (event, actionFn, nodocselected= true) => {
+    const _triggerModal = (event, actionFn, needSelectedDocs= true) => {
         event.preventDefault();
         const $el = $(event.currentTarget);
         const selectionSource = $el.data('selection-source');
@@ -125,12 +126,11 @@ const toolbar = (services) => {
         let params = _prepareParams(selection);
 
         // require a list of records a basket group or a story
-        if (params !== false) {
+        if (needSelectedDocs && params === false) {
+            alert(localeService.t('nodocselected'));
+        }
+        else {
             return actionFn.apply(null, [params]);
-        } else {
-            if (nodocselected != false) {
-                alert(localeService.t('nodocselected'));
-            }
         }
     };
 
@@ -200,8 +200,13 @@ const toolbar = (services) => {
          * tools > Push > Share
          */
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
-console.log("SHARE");
             _triggerModal(event, recordSharebasketModal(services).openModal);
+        });
+        /**
+         * tools > Push > UsersLists
+         */
+        $container.on('click', '.TOOL_userslists_btn', function (event) {
+            _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
         });
         /**
          * tools > Push > Feedback
