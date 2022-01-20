@@ -3954,6 +3954,8 @@ var workzoneFacets = function workzoneFacets(services) {
 
         treeSource = _parseColors(treeSource);
 
+        treeSource = _colorUnsetText(treeSource);
+
         return _getFacetsTree().reload(treeSource).done(function () {
             _.each((0, _jquery2.default)('#proposals').find('.fancytree-expanded'), function (element, i) {
                 (0, _jquery2.default)(element).find('.fancytree-title, .fancytree-expander').css('line-height', '50px');
@@ -4011,6 +4013,21 @@ var workzoneFacets = function workzoneFacets(services) {
             }
             return string;
         }
+    }
+
+    function _colorUnsetText(source) {
+        _.forEach(source, function (facet) {
+            if (!_.isUndefined(facet.children) && facet.children.length > 0) {
+                _.forEach(facet.children, function (child) {
+                    if (child.raw_value.toString() === '_unset_') {
+                        var title = child.title;
+                        child.title = '<span style="color:#2196f3;">' + title.toString() + '</span>';
+                    }
+                });
+            }
+        });
+
+        return source;
     }
 
     // from stackoverflow
@@ -19320,6 +19337,7 @@ var notifyLayout = function notifyLayout(services) {
             $notificationDialog.dialog('close');
         };
 
+        var zIndexOverlay = (0, _jquery2.default)('.ui-widget-overlay').css("z-index");
         // open the dlg (even if it is already opened when "load more")
         //
         $notificationDialog.dialog({
@@ -19331,11 +19349,16 @@ var notifyLayout = function notifyLayout(services) {
             modal: true,
             width: 500,
             height: 400,
+            dialogClass: "dialog-notification-box",
             overlay: {
                 backgroundColor: '#000',
                 opacity: 0.7
             },
+            open: function open() {
+                (0, _jquery2.default)('.ui-widget-overlay').css("z-index", (0, _jquery2.default)(".dialog-notification-box").css("z-index"));
+            },
             close: function close(event, ui) {
+                (0, _jquery2.default)('.ui-widget-overlay').css("z-index", zIndexOverlay);
                 // destroy so it will be "fresh" on next open (scrollbar on top)
                 $notificationDialog.dialog('destroy').remove();
             }
@@ -51131,7 +51154,6 @@ var geonameDatasource = function geonameDatasource(services) {
             height: "auto",
             width: 400,
             modal: true,
-            dialogClass: "dialog-edit_lat_lon",
             buttons: {
                 confirmYes: function confirmYes() {
                     (0, _jquery2.default)(this).dialog("close");
@@ -68169,7 +68191,7 @@ var search = function search(services) {
     var updateFacetData = function updateFacetData() {
         appEvents.emit('facets.doLoadFacets', {
             facets: facets,
-            filterFacet: (0, _jquery2.default)('#look_box_settings input[name=filter_facet]').prop('checked'),
+            filterFacet: (0, _jquery2.default)('.look_box_settings input[name=filter_facet]').prop('checked'),
             facetOrder: (0, _jquery2.default)('.look_box_settings select[name=orderFacet]').val(),
             facetValueOrder: (0, _jquery2.default)('.look_box_settings select[name=facetValuesOrder]').val(),
             hiddenFacetsList: savedHiddenFacetsList

@@ -3204,6 +3204,10 @@ h3.metadatas-title:after {
   line-height: 26px;
 }
 
+#proposals #collapseOne {
+  background: #292929;
+}
+
 .ui-dialog .ui-dialog-content.loading,
 .loading {
   background-image: url("/assets/common/images/icons/loading.svg");
@@ -3426,8 +3430,8 @@ h3.metadatas-title:after {
   z-index: 1999;
 }
 
-.ui-dialog.ui-widget-content.dialog-edit_lat_lon {
-  z-index: 2000 !important;
+.ui-dialog.ui-widget-content.dialog-notification-box {
+  z-index: 1199  !important;
 }
 
 .ui-dialog-titlebar {
@@ -8850,7 +8854,7 @@ TABLE.explain3 TR TD {
 
 #PREVIEWBOX,
 #EDITWINDOW {
-  z-index: 2000;
+  z-index: 1200;
   background-color: #1a1a1a;
   display: none;
   border: 1px solid #7f7f7f;

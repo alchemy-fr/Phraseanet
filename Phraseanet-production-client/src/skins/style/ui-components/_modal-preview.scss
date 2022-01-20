@@ -1,6 +1,6 @@
 #PREVIEWBOX,
 #EDITWINDOW {
-    z-index: 2000;  // just enough uppur than a dialog z-index
+    z-index: 1200;
     background-color: $modalBackground;
     display: none;
     border: $modalBorder; //1px solid $darkerBorderColor;

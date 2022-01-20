@@ -310,7 +310,7 @@ class AMQPConnection
 
     public function getConnection()
     {
-        if (!isset($this->connection)) {
+        if (empty($this->connection)) {
             try {
                 $heartbeat = $this->hostConfig['heartbeat'] ?? 60;
 
@@ -360,9 +360,9 @@ class AMQPConnection
 
     public function getChannel()
     {
-        if (!isset($this->channel)) {
+        if (empty($this->channel)) {
             $this->getConnection();
-            if (isset($this->connection)) {
+            if (!empty($this->connection)) {
                 $this->channel = $this->connection->channel();
 
                 return $this->channel;
@@ -386,9 +386,26 @@ class AMQPConnection
     /**
      * @param $queueName
      * @return AMQPChannel|null
+     * @throws Exception
      */
     public function setQueue($queueName)
     {
+        // first send heartbeat
+        // catch if connection closed, and get a new one connection
+        if (!empty($this->connection)) {
+            try {
+                $this->connection->checkHeartBeat();
+            } catch(\Exception $e) {
+                $this->connection = null;
+                $this->channel = null;
+                $this->getChannel();
+            }
+        } else {
+            $this->connection = null;
+            $this->channel = null;
+            $this->getChannel();
+        }
+
         if (!isset($this->channel)) {
             $this->getChannel();
             if (!isset($this->channel)) {

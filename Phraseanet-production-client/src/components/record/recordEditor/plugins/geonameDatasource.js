@@ -128,7 +128,6 @@ const geonameDatasource = (services) => {
             height: "auto",
             width: 400,
             modal: true,
-            dialogClass: "dialog-edit_lat_lon",
             buttons: {
                 confirmYes : function () {
                     $(this).dialog("close");
