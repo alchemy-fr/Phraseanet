@@ -254,6 +254,7 @@
                         <div class="PNB10 badges">
                             {% if context == 'Feedback' or context == 'Sharebasket' %}
                                 {% for participant in participants | sort | reverse %}
+                                    {# @var participant \Alchemy\Phrasea\Model\Entities\BasketParticipant #}
                                     {% set userId = participant.getUser().getId() %}
                                     <div class="badge {{ 'badge_' ~ userId }} %>">
                                         {% if initiatorUserId != userId %}
@@ -285,15 +286,23 @@
                                                             </tr>
                                                             <tr class="toggles">
                                                                 <td>
-                                                                    {% if context == 'Feedback' %}
+                                                                    {% if context == 'Feedback' or context == 'Sharebasket' %}
                                                                         {% set msg = 'User contribute to the feedback'|trans %}
-                                                                    {% else %}
-                                                                        {% set msg = 'User can modify the basket'|trans %}
+                                                                        <a href="#" class="fa fa-comment colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}" title="{{ msg }}"></a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][agree]"
+                                                                               value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
                                                                     {% endif %}
-                                                                    <a href="#" class="fa fa-pencil colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}" title="{{ msg }}"></a>
-                                                                    <input type="hidden"
-                                                                           name="participants[{{ userId }}][agree]"
-                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
+                                                                </td>
+
+                                                                <td>
+                                                                    {% if context == 'Feedback' or context == 'Sharebasket' %}
+                                                                        {% set msg = 'User can modify the basket'|trans %}
+                                                                        <a href="#" class="fa fa-pencil colored toggle toggle_modify {{ participant.canModify() ? 'status_on' : 'status_off' }}" title="{{ msg }}"></a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][modify]"
+                                                                               value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
+                                                                    {% endif %}
                                                                 </td>
 
                                                                 <td>
@@ -338,7 +347,7 @@
                         {% else %}
                             {# only Feedback and Sharebasket manage users and may have a "feedbackaction" #}
                             {# todo !!!!!!!!! see if "push" ignores feedbackaction so we can remove the "if context" #}
-                            <button class="colored inverse FeedbackSend" data-feedback-action={{ feedbackAction }}>{{ "Send" | trans }}</button>
+                            <button class="colored inverse FeedbackSend" data-feedback-action={{ feedbackAction }}>{{ "Save" | trans }}</button>
                         {% endif %}
                     </div>
                 </div>

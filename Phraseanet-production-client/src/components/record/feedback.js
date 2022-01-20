@@ -8,6 +8,8 @@ const recordFeedbackModal = (services, datas) => {
 
 
     const openModal = (datas) => {
+        // console.log("==== prepare dlg with datas: ", datas);
+
         /* disable push closeonescape as an over dialog may exist (add user) */
         let $dialog = dialog.create(services, {
             size: 'Full',

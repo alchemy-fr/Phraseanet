@@ -239,7 +239,9 @@ console.log("====== click on .recommended_users_list");
 
         var buttons = {};
 
+console.log("==== feedback sent");
         if ($el.data('feedback-action') === 'adduser') {
+console.log("==== feedback-action === adduser");
             buttons[localeService.t('feedbackSaveNotNotify')] = function () {
                 $dialog.close();
 

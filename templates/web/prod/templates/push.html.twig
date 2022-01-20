@@ -94,14 +94,19 @@
                             <tr class="toggles">
                                 <td>
                                     <% if(context == 'Feedback' || context == 'Sharebasket') { %>
-                                        <% if(context == 'Feedback') { %>
-                                            <% msg = "{% trans %}User contribute to the feedback{% endtrans %}" %>
-                                        <% } else { %>
-                                            <% msg = "{% trans %}User can modify the basket{% endtrans %}" %>
-                                        <% } %>
-                                    <a href="#" class="fa fa-pencil colored toggle toggle_agree status_on" title="<%= msg %>"></a>
+                                    <% msg = "{% trans %}User contribute to the feedback{% endtrans %}" %>
+                                    <a href="#" class="fa fa-comment colored toggle toggle_agree status_on" title="<%= msg %>"></a>
                                     <input type="hidden"
                                            name="participants[<%= user.usr_id %>][agree]"
+                                           value="1"/>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(context == 'Feedback' || context == 'Sharebasket') { %>
+                                    <% msg = "{% trans %}User can modify the basket{% endtrans %}" %>
+                                    <a href="#" class="fa fa-pencil colored toggle toggle_modify status_on" title="<%= msg %>"></a>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][modify]"
                                            value="1"/>
                                     <% } %>
                                 </td>

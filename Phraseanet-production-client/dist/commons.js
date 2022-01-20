@@ -17430,9 +17430,7 @@ var pym = __webpack_require__(17);
                     title = data;
                     positioning($.tooltip.ajaxEvent);
                 },
-                error: function error() {
-                    return;
-                }
+                error: function error() {}
             });
         }
     };
@@ -17476,7 +17474,9 @@ var pym = __webpack_require__(17);
                         filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='" + image + "')"
                     }).each(function () {
                         var position = $(this).css('position');
-                        if (position !== 'absolute' && position !== 'relative') $(this).css('position', 'relative');
+                        if (position !== 'absolute' && position !== 'relative') {
+                            $(this).css('position', 'relative');
+                        }
                     });
                 }
             });
@@ -17514,7 +17514,9 @@ var pym = __webpack_require__(17);
         .hide();
 
         // apply bgiframe if available
-        if ($.fn.bgiframe) helper.parent.bgiframe();
+        if ($.fn.bgiframe) {
+            helper.parent.bgiframe();
+        }
 
         // save references to title and url elements
         helper.title = $('h3', helper.parent);
@@ -17528,10 +17530,16 @@ var pym = __webpack_require__(17);
 
     // main event handler to start showing tooltips
     function handle(event) {
-        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) return;
+        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) {
+            return;
+        }
 
         // show helper, either with timeout or on instant
-        if (settings(this).delay) tID = setTimeout(visible, settings(this).delay);else visible();
+        if (settings(this).delay) {
+            tID = setTimeout(visible, settings(this).delay);
+        } else {
+            visible();
+        }
         show();
 
         // if selected, update the helper position when the mouse moves
@@ -17545,18 +17553,26 @@ var pym = __webpack_require__(17);
     // save elements title before the tooltip is displayed
     function save(event) {
         // if this is the current source, or it has no title (occurs with click event), stop
-        if (event.stopPropagation) event.stopPropagation();
+        if (event.stopPropagation) {
+            event.stopPropagation();
+        }
 
         event.cancelBubble = true;
 
-        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) return;
+        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) {
+            return;
+        }
 
         // save current
         $.tooltip.current = this;
         title = this.tooltipText;
 
         // if element has href or src, add and show it, otherwise hide it
-        if (settings(this).showURL && $(this).url()) helper.url.html($(this).url().replace('http://', '')).show();else helper.url.hide();
+        if (settings(this).showURL && $(this).url()) {
+            helper.url.html($(this).url().replace('http://', '')).show();
+        } else {
+            helper.url.hide();
+        }
         // add an optional class for this tip
         helper.parent.removeClass();
         helper.parent.addClass(settings(this).extraClass);
@@ -17570,7 +17586,6 @@ var pym = __webpack_require__(17);
 
             positioning.apply(this, arguments);
         }
-        return;
     }
 
     function positioning(event) {
@@ -17580,7 +17595,9 @@ var pym = __webpack_require__(17);
         var tooltipSettings = settings($this) ? settings($this) : {};
         var fixedPosition = $.tooltip.blocked;
         // fix PNG background for IE
-        if (tooltipSettings.fixPNG) helper.parent.fixPNG();
+        if (tooltipSettings.fixPNG) {
+            helper.parent.fixPNG();
+        }
         if (tooltipSettings.outside) {
             var width = 'auto';
             var height = 'auto';
@@ -17593,7 +17610,7 @@ var pym = __webpack_require__(17);
             var $imgTips = $('#' + tooltipId + ' .imgTips');
             var $videoTips = $('#' + tooltipId + ' .videoTips');
             var $documentTips = $('#' + tooltipId + ' .documentTips');
-            var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
+            var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0;
 
             // get image or video original dimensions
             var recordWidth = 400;
@@ -17727,11 +17744,20 @@ var pym = __webpack_require__(17);
                     bottomOffset = -15;
                 } else {
                     // tooltip from workzone (basket)
-                    tooltipVerticalOffset = 0;
-                    tooltipHorizontalOffset = 0;
-                    topOffset = 50;
-                    // fallback on original target if nothing found:
-                    $eventTarget = $origEventTarget;
+                    // console.log("=== tooltip on $origEventTarget = ", $origEventTarget);
+                    $eventTarget = $origEventTarget.closest('*[tooltipSrc]');
+                    if ($eventTarget.length > 0) {
+                        // console.log("=== tooltip changed on $eventTarget = ", $eventTarget);
+                        tooltipVerticalOffset = 0;
+                        tooltipHorizontalOffset = 0;
+                        // offsets are relative to the target object (basket "bloc" in wz)
+                        topOffset = 50;
+                        rightOffset = 10; // because the popup is always located on th right of the basket "bloc"
+                    } else {
+                        // console.log("=== tooltip revert $origEventTarget");
+                        // fallback on original target if nothing found:
+                        $eventTarget = $origEventTarget;
+                    }
                 }
 
                 var recordPosition = $eventTarget.offset();
@@ -17875,7 +17901,6 @@ var pym = __webpack_require__(17);
             }
         }
         handle.apply($this, arguments);
-        return;
     }
 
     // delete timeout and show helper
@@ -18075,9 +18100,13 @@ var pym = __webpack_require__(17);
             left: 0
         };
 
-        if (parseInt(zIndex, 10) > 0) css['zIndex'] = parseInt(zIndex, 10);
+        if (parseInt(zIndex, 10) > 0) {
+            css['zIndex'] = parseInt(zIndex, 10);
+        }
 
-        if (typeof callback !== 'function') callback = function callback() {};
+        if (typeof callback !== 'function') {
+            callback = function callback() {};
+        }
         $('#' + div).css(css).addClass('overlay').fadeTo(500, 0.7).bind('click', function () {
             callback();
         });
@@ -18095,7 +18124,9 @@ var pym = __webpack_require__(17);
             });
         }
         var div = 'OVERLAY';
-        if (typeof n !== 'undefined') div += n;
+        if (typeof n !== 'undefined') {
+            div += n;
+        }
         $('#' + div).hide().remove();
     };
 
@@ -37561,7 +37592,10 @@ exports.default = utilsModule;
 /* 75 */,
 /* 76 */,
 /* 77 */,
-/* 78 */
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

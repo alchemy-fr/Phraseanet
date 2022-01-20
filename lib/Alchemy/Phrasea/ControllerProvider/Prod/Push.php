@@ -57,13 +57,16 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/sharebasketform/', 'controller.prod.push:sharebasketFormAction');
 
 
-        /* click on "send" button on bottom of push/share/feedback us */
+        /* click on "send" or "save" button on bottom of push/share/feedback ux */
+        /** @uses PushController::sendAction() */
         $controllers->post('/send/', 'controller.prod.push:sendAction')
             ->bind('prod_push_send');
 
+        /** @uses PushController::validateAction() */
         $controllers->post('/validate/', 'controller.prod.push:validateAction')
             ->bind('prod_push_validate');
 
+        /** @uses PushController::sharebasketAction() */
         $controllers->post('/sharebasket/', 'controller.prod.push:sharebasketAction')
             ->bind('prod_push_send_sharebasket');
 

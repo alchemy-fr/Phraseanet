@@ -252,12 +252,12 @@ class PushController extends Controller
             if ($pusher->is_basket()) {
                 $basket = $pusher->get_original_basket();
                 if($basket->isVoteBasket()) {
-                    // this basket is already under vote (should not be possible from front/ux)
-                    // we do not allow, even if the initiator is alreadu me
-                    // if(!$basket->isVoteInitiator($this->getAuthenticatedUser())) {
+                    // this basket is already under vote
+                    // we check this is from the same initator (me)
+                    if(!$basket->isVoteInitiator($this->getAuthenticatedUser())) {
                         // one tries to initiate a vote session on a basket which already has another vote initiaton
                         throw new ControllerException("basket already have another vote initiator");
-                    // }
+                    }
                 }
             }
             else {
@@ -335,7 +335,7 @@ class PushController extends Controller
             foreach ($participants as $key => $participant) {
 
                 // sanity check
-                foreach (['see_others', 'usr_id', 'agree', 'HD'] as $mandatoryParam) {
+                foreach (['see_others', 'usr_id', 'agree', 'modify', 'HD'] as $mandatoryParam) {
                     if (!array_key_exists($mandatoryParam, $participant)) {
                         throw new ControllerException(
                             $this->app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryParam])
@@ -362,6 +362,7 @@ class PushController extends Controller
                 try {
                     $basketParticipant = $basket->getParticipant($participantUser);
                     $basketParticipant->setCanAgree($participant['agree']);
+                    $basketParticipant->setCanModify($participant['modify']);
                     $basketParticipant->setCanSeeOthers($participant['see_others']);
                     $manager->persist($basketParticipant);
                     $manager->flush();
@@ -377,6 +378,7 @@ class PushController extends Controller
                 // set right
                 $basketParticipant
                     ->setCanAgree($participant['agree'])
+                    ->setCanModify($participant['modify'])
                     ->setCanSeeOthers($participant['see_others']);
 
                 $manager->persist($basketParticipant);
@@ -512,6 +514,7 @@ class PushController extends Controller
 
     /** ----------------------------------------------------------------------------------
      * a share basket request is made by the current user to many participants
+     * todo : refacto to use ::validateAction code
      *
      * this is the same code as "feedback" request, except here
      *   - no validation session,
@@ -551,12 +554,11 @@ class PushController extends Controller
             if ($pusher->is_basket()) {
                 $basket = $pusher->get_original_basket();
                 if($basket->isVoteBasket()) {
-                    // this basket is already under vote (should not be possible from front/ux)
-                    // we do not allow, even if the initiator is alreadu me
-                    // if(!$basket->isVoteInitiator($this->getAuthenticatedUser())) {
-                    // one tries to initiate a vote session on a basket which already has another vote initiaton
-                    throw new ControllerException("basket already have another vote initiator");
-                    // }
+                    // this basket is already under vote
+                    if(!$basket->isVoteInitiator($this->getAuthenticatedUser())) {
+                        // one tries to initiate a vote session on a basket which already has another vote initiaton
+                        throw new ControllerException("basket already have another vote initiator");
+                    }
                 }
             }
             else {
