@@ -2,12 +2,13 @@
 <?php
 
 use Alchemy\Phrasea\CLI;
-use Alchemy\Phrasea\Command\Maintenance\CleanNotifications;
-use Alchemy\Phrasea\Command\Maintenance\CleanUsers;
+use Alchemy\Phrasea\Command\Maintenance\CleanNotificationsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanUsersCommand;
 use Alchemy\Phrasea\Core\Version;
-use Alchemy\Phrasea\Command\Maintenance\CleanRecords;
-use Alchemy\Phrasea\Command\Maintenance\CleanBases;
-use Alchemy\Phrasea\Command\Maintenance\CleanRights;
+use Alchemy\Phrasea\Command\Maintenance\CleanRecordsCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanBasesCommand;
+use Alchemy\Phrasea\Command\Maintenance\CleanRightsCommand;
+use Alchemy\Phrasea\Command\Maintenance\SessionsCommand;
 
 require_once __DIR__ . '/../lib/autoload.php';
 
@@ -28,14 +29,16 @@ $cli = new CLI("
 $cli->command(new \module_console_aboutAuthors('about:authors'));
 $cli->command(new \module_console_aboutLicense('about:license'));
 
-$cli->command(new CleanNotifications());
+$cli->command(new CleanNotificationsCommand());
 
-$cli->command(new CleanRecords());
+$cli->command(new CleanRecordsCommand());
 
-$cli->command(new CleanUsers());
+$cli->command(new CleanUsersCommand());
 
-$cli->command(new CleanBases());
+$cli->command(new CleanBasesCommand());
 
-$cli->command(new CleanRights());
+$cli->command(new CleanRightsCommand());
+
+$cli->command(new SessionsCommand());
 
 $cli->run();

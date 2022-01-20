@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class CleanRecords extends Command
+class CleanRecordsCommand extends Command
 {
     private $dry;
     /** @var Table */

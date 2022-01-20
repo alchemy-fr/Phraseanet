@@ -27,8 +27,6 @@ use Alchemy\Phrasea\Command\Databox\ListDataboxCommand;
 use Alchemy\Phrasea\Command\Databox\MountDataboxCommand;
 use Alchemy\Phrasea\Command\Databox\UnMountDataboxCommand;
 use Alchemy\Phrasea\Command\MailTest;
-use Alchemy\Phrasea\Command\Maintenance\CleanNotifications;
-use Alchemy\Phrasea\Command\Maintenance\CleanUsers;
 use Alchemy\Phrasea\Command\NetworkProxiesTestCommand;
 use Alchemy\Phrasea\Command\Plugin\AddPlugin;
 use Alchemy\Phrasea\Command\Plugin\ListPlugin;

@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class CleanUsers extends Command
+class CleanUsersCommand extends Command
 {
 
     const CLEAR_EMAIL = 8;
