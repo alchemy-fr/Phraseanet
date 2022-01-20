@@ -1876,7 +1876,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([
             ':coll_id'          => $collection->get_coll_id(),
             ':parent_record_id' => 0,
-            ':type'             => $file ? ($file->getType() ? $file->getType()->getType() : 'unknown') : null,
+            ':type'             => $file ? ($file->getType() ? $file->getType()->getType() : 'unknown') : 'unknown',
             ':sha256'           => $file ? $file->getMedia()->getHash('sha256') : null,
             ':uuid'             => $file ? $file->getUUID(true) : null,
             ':originalname'     => $file ? $file->getOriginalName() : null,
