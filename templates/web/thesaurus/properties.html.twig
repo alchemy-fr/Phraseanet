@@ -89,8 +89,8 @@
                                 <td style="width:30px;" id='FLG_{{ data['id'] }}' style='width:30px;'></td>
                             {% endif %}
                             <td>{{ data['t'] }}</td>
-                            <td style="width:40px;">{{ data['id'] }}</td>
-                            <td style="width:calc( 146px - 1em )" ><span class="delete_term"></span></td>
+                            <td style="width:100px;">{{ data['id'] }}</td>
+                            <td style="width:calc( 86px - 1em )" ><span class="delete_term"></span></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -272,6 +272,7 @@
 
                 td = tr.appendChild(document.createElement("td"));
                 td.style.textAlign = "center";
+                td.style.width = "40px";
                 if(nsy > 0)
                 {
                     img = td.appendChild(document.createElement("img"));
@@ -291,6 +292,7 @@
 
                 td = tr.appendChild(document.createElement("td"));
                 td.id = "FLG_"+(nsy+1);
+                td.style.width = "30px";
                 // td.innerText = n.getAttribute("lng");
                 span = td.appendChild(document.createElement("span"));
                 span.innerHTML = n.getAttribute("lng");
@@ -304,11 +306,14 @@
                 td.innerHTML = n.getAttribute("hits");*/
 
                 td = tr.appendChild(document.createElement("td"));
+                td.style.width = "100px";
                 td.innerHTML = n.getAttribute("id");
 
                 if(n.getAttribute("sel")) {
                     myGUI.select(tr);
                 }
+                td = tr.appendChild(document.createElement("td"));
+                td.style.width = "calc( 86px - 1em )";
             }
 
             newtbody = oldtbody.parentNode.replaceChild(tbody, oldtbody);
