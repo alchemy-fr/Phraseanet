@@ -128,7 +128,12 @@
             if(action != "SELECT" || !menuelem_id) {
                 return;
             }
+
             lng = menuelem_id.substr(9,2);
+
+            if (lng == '') {
+                return;
+            }
 
             url = "xmlhttp/changesylng.x.php";
             parms  = "bid={{ bid | url_encode }}";
