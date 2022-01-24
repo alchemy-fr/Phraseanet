@@ -1,3 +1,4 @@
+{# @var basket \Alchemy\Phrasea\Model\Entities\Basket #}
 <div>
     <button class="tools-accordion">{{ 'prod::workzone:Actions' | trans }}</button>
     <div class="tools-panel">
@@ -88,7 +89,8 @@
             {% endfor %}
         {% endif %}
     </div>
-    {% if basket.isVoteBasket() %}
+
+    {% if basket.isVoteBasket() and basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
         {% set disabled = '' %}
         {% if basket.isVoteFinished() %}
             {% set disabled = 'disabled' %}
@@ -145,7 +147,7 @@
 {% endif %}
 </div>
 
-{% if basket.isVoteBasket() %}
+{% if basket.isVoteBasket() and basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
 
 <script type="text/javascript">
     $( function() {

@@ -10194,10 +10194,6 @@ TABLE.explain3 TR TD {
 }
 
 @media screen and (max-width: 1200px) {
-  .PushBox .user_content .badges {
-    top: 110px !important;
-  }
-
   .PushBox .user_content .header > div:first-child {
     margin-bottom: 15px;
     width: 100%;

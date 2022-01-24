@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Feedback from './feedback';
 import ListManager from './../../list/listManager';
 import dialog from './../../../phraseanet-common/components/dialog';
+
 const pushRecord = (services) => {
     const {configService, localeService, appEvents} = services;
     let feedbackInstance = null;
@@ -9,10 +10,12 @@ const pushRecord = (services) => {
 
     const initialize = (options) => {
         let {feedback, listManager} = options;
-        if ($('#PushBox').length > 0) {
+        let $container = $('#PushBox');
+        if ($container.length > 0) {
             feedbackInstance = new Feedback(services, feedback);
             listManagerInstance = new ListManager(services, listManager);
-        } else {
+        }
+        else {
             $('.close-dialog-action').on('click', () => dialog.close('1'))
         }
     };

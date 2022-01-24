@@ -3056,7 +3056,8 @@ var pushRecord = function pushRecord(services) {
         var feedback = options.feedback,
             listManager = options.listManager;
 
-        if ((0, _jquery2.default)('#PushBox').length > 0) {
+        var $container = (0, _jquery2.default)('#PushBox');
+        if ($container.length > 0) {
             feedbackInstance = new _feedback2.default(services, feedback);
             listManagerInstance = new _listManager2.default(services, listManager);
         } else {
@@ -60980,8 +60981,15 @@ var Feedback = function Feedback(services, options) {
 
     (0, _jquery2.default)('.user_content .badges', this.container).disableSelection();
 
-    // toggle download feature for users
-    this.container.on('click', '.user_content .badges .badge .toggle', function (event) {
+    // toggle feature for user
+    var $badges = (0, _jquery2.default)('.user_content .badges .badge', this.container);
+    $badges.on('click', '.toggle', function (event) {
+        console.log("==== toggle clicked ====");
+        event.stopPropagation();
+        // event.stopImmediatePropagation();
+        // event.preventDefault();
+        // event.cancelBubble = true;
+
         var $this = (0, _jquery2.default)(this);
 
         $this.toggleClass('status_off status_on');

@@ -109,6 +109,11 @@ class Basket
     private $vote_expires;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $share_expires;
+
+    /**
      * @ORM\OneToMany(targetEntity="BasketElement", mappedBy="basket", cascade={"ALL"})
      * @ORM\OrderBy({"ord" = "ASC"})
      */
@@ -407,6 +412,30 @@ class Basket
     public function getVoteExpires()
     {
         return $this->vote_expires;
+    }
+
+    /**
+     * Set share expires
+     *
+     * @param  DateTime         $expires
+     * @return self
+     */
+    public function setShareExpires($expires)
+    {
+        $this->share_expires = $expires;
+        $this->upadteVoteDates();
+
+        return $this;
+    }
+
+    /**
+     * Get share expires
+     *
+     * @return DateTime|null
+     */
+    public function getShareExpires()
+    {
+        return $this->share_expires;
     }
 
     /**

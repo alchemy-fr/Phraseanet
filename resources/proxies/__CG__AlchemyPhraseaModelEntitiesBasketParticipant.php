@@ -246,6 +246,28 @@ class BasketParticipant extends \Alchemy\Phrasea\Model\Entities\BasketParticipan
     /**
      * {@inheritDoc}
      */
+    public function getCanModify()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCanModify', []);
+
+        return parent::getCanModify();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCanModify(bool $canModify)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCanModify', [$canModify]);
+
+        return parent::setCanModify($canModify);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCanAgree()
     {
 

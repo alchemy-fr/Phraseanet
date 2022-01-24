@@ -1,3 +1,6 @@
+{# @var basket \Alchemy\Phrasea\Model\Entities\Basket #}
+{# @var participant \Alchemy\Phrasea\Model\Entities\BasketParticipant #}
+
 {% if push.get_count_actionable() == 0 %}
     <div class="PNB">
         <div style="text-align:center;margin-top:150px;">
@@ -14,6 +17,7 @@
         </div>
     </div>
 {% else %}
+    {% set basket = push.get_original_basket() %}
     <div class="PNB PushBox" id="PushBox">
         <div class="PNB" style="width:220px;">
             <div class="PNB10 LeftColumn">
@@ -29,17 +33,21 @@
                         <ul class="general_togglers">
                             {% if context == 'Feedback' or context == 'Sharebasket' %}
                                 <li>
-                                    {# in case of feedback, the "pen" allows to vote #}
-                                    {# in case of sharebasket, the "pen" allows to edit the basket #}
-                                    {# todo : share dedicated buttons (add-items, delete-items) ? #}
                                     <button type="button" class="general_toggler colored with_icon" feature="agree">
-                                        <i class="fa fa-pencil"></i>&nbsp;{{ 'Contributor' | trans }}
+                                        <i class="fa fa-comment"></i>&nbsp;{{ 'Contributor' | trans }}
+                                    </button>
+                                </li>
+                                <li>
+                                    {% set msg = "Users can modify the basket" | trans %}
+                                    <button type="button" class="general_toggler colored with_icon" feature="modify" title="{{ msg }}">
+                                        <i class="fa fa-pencil"></i>&nbsp;{{ 'Modify' | trans }}
                                     </button>
                                 </li>
                             {% endif %}
                             {% if context == 'Feedback' %}
                                 <li>
-                                    <button type="button" class="general_toggler colored with_icon" feature="see_others">
+                                    <button type="button" class="general_toggler colored with_icon"
+                                            feature="see_others">
                                         <i class="fa fa-users"></i>&nbsp;{{ 'See others' | trans }}
                                     </button>
                                 </li>
@@ -56,7 +64,8 @@
                             <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
                         </span>
                         <a href="{{ path('prod_lists_all') }}" title="Refresh list"
-                           class="list_refresh push-refresh-list-action btn pull-right colored" style="margin-top: -2px;">
+                           class="list_refresh push-refresh-list-action btn pull-right colored"
+                           style="margin-top: -2px;">
                             <i class="fa fa-refresh"></i>
                         </a>
                     </div>
@@ -74,7 +83,8 @@
                                     {{ list.getName() }}
                                     ({{ list.getEntries().count() }})
                                 </a>
-                                <i class="list-trash-btn fa fa-trash" style="font-size: 170%; cursor: pointer; display: none;"></i>
+                                <i class="list-trash-btn fa fa-trash"
+                                   style="font-size: 170%; cursor: pointer; display: none;"></i>
                             </li>
                         {% endfor %}
                     </ul>
@@ -91,12 +101,13 @@
             <div class="PNB10" style="height:46px;bottom:auto;line-height:26px;padding:0 20px 0 18px;">
                 <div style="float: left;">
                     <div id="find-user">
-                        <input class="search colored inverse" name="users-search" placeholder="{{ 'Users' | trans }}" type="text"
+                        <input class="search colored inverse" name="users-search" placeholder="{{ 'Users' | trans }}"
+                               type="text"
                                style="width:210px;"/>
                     </div>
                     <p id="recommanded-users">
-{# !!!!!!!!!!!!!!!! "recommendations" should come from [vocabularyType=user] fields, but this seems not implemented in 4.1 #}
-{#
+                        {# !!!!!!!!!!!!!!!! "recommendations" should come from [vocabularyType=user] fields, but this seems not implemented in 4.1 #}
+                        {#
                         {% set recommendation = '' %}
                         {% set total = RecommendedUsers|length %}
 
@@ -135,8 +146,8 @@
                                 {% trans with {'%recommendation%' : recommendation} %}Please consider send this validation to the following users : %recommendation%{% endtrans %}
                             {% endif %}
                         {% endif %}
-#}
-{# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
+                        #}
+                        {# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! #}
                     </p>
 
                     <div style="display:none;" id="push_user_recommendations" title="{{ 'Users suggestion' | trans }}">
@@ -159,19 +170,19 @@
                     </div>
                 </div>
 
-                {#  --- add-user button will open a modal to create a new user on the fly ---  #}
+                {# --- add-user button will open a modal to create a new user on the fly --- #}
                 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
-                <div style="float: left;">
-                    <button type="button" class="colored with_icon push-add-user" data-context="{{ context }}">
-                        <i class="fa fa-plus"></i>&nbsp;
-                        {{ 'Add user' | trans }}
-                    </button>
-                 </div>
+                    <div style="float: left;">
+                        <button type="button" class="colored with_icon push-add-user" data-context="{{ context }}">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            {{ 'Add user' | trans }}
+                        </button>
+                    </div>
                 {% endif %}
 
                 {# !!!!!!!!!!!!!!!!! the basket name only appears on push ? not on share, feedback... !!!!!!!!!!!!!!! #}
                 <span class="colored" style="font-size: 21px;margin-left: 30px;font-weight: 700;">
-                    {% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}
+                    {% if basket %}{{ basket.getName() }}{% endif %}
                 </span>
 
                 <img id="info-box-trigger" src="/assets/common/images/icons/Info-white.png" width="18" height="18">
@@ -226,7 +237,7 @@
                             </tr>
                         </table>
                     </div>
-                    <form name="FeedBackForm" method="post"
+                    <form name="FeedBackForm" method="post" style="position: absolute; top:40px; bottom:50px; width:100%"
                             {# !!!!!!!!!!!!!!!!!!! todo : name routes from context : no more "if" ? !!!!!!!!!!!!!!!!!!!!!! #}
                             {% if context == 'Push' %}
                                 action="{{ path('prod_push_send') }}"
@@ -238,9 +249,9 @@
                     >
                         <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}"/>
                         <input name="ssel" type="hidden"
-                               value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}"/>
+                               value="{% if basket %}{{ basket.getId() }}{% endif %}"/>
                         <input name="name" type="hidden"
-                               value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}"/>
+                               value="{% if basket %}{{ basket.getName() }}{% endif %}"/>
                         <input name="feedbackAction" type="hidden" value="{{ feedbackAction }}"/>
                         <input name="notify" type="hidden" value="1"/>
                         {% if feedbackAction == 'adduser' %}
@@ -251,7 +262,14 @@
                         <input type="hidden" name="duration" value=""/>
                         <input type="checkbox" value="1" name="recept" style="display:none;"/>
                         <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
-                        <div class="PNB10 badges">
+
+                        {# dates of end-of-vote and end-of-share #}
+                        <div class="ui-dialog-content">
+                            fbk:<input type="text" class="btn" name="feedback_end_date"/>
+                            shr:<input type="text" class="btn" name="share_end_date"/>
+                        </div>
+
+                        <div class="PNB badges" style="top:40px">
                             {% if context == 'Feedback' or context == 'Sharebasket' %}
                                 {% for participant in participants | sort | reverse %}
                                     {# @var participant \Alchemy\Phrasea\Model\Entities\BasketParticipant #}
@@ -288,7 +306,9 @@
                                                                 <td>
                                                                     {% if context == 'Feedback' or context == 'Sharebasket' %}
                                                                         {% set msg = 'User contribute to the feedback'|trans %}
-                                                                        <a href="#" class="fa fa-comment colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}" title="{{ msg }}"></a>
+                                                                        <a href="#"
+                                                                           class="fa fa-comment colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}"
+                                                                           title="{{ msg }}"></a>
                                                                         <input type="hidden"
                                                                                name="participants[{{ userId }}][agree]"
                                                                                value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
@@ -298,7 +318,9 @@
                                                                 <td>
                                                                     {% if context == 'Feedback' or context == 'Sharebasket' %}
                                                                         {% set msg = 'User can modify the basket'|trans %}
-                                                                        <a href="#" class="fa fa-pencil colored toggle toggle_modify {{ participant.canModify() ? 'status_on' : 'status_off' }}" title="{{ msg }}"></a>
+                                                                        <a href="#"
+                                                                           class="fa fa-pencil colored toggle toggle_modify {{ participant.canModify() ? 'status_on' : 'status_off' }}"
+                                                                           title="{{ msg }}"></a>
                                                                         <input type="hidden"
                                                                                name="participants[{{ userId }}][modify]"
                                                                                value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
@@ -308,7 +330,9 @@
                                                                 <td>
                                                                     {% if context == 'Feedback' %}
                                                                         {% set msg = 'User can see others choices'|trans %}
-                                                                        <a href="#" class="fa fa-users colored toggle toggle_see_others {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }}" title="{{ msg }}"></a>
+                                                                        <a href="#"
+                                                                           class="fa fa-users colored toggle toggle_see_others {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }}"
+                                                                           title="{{ msg }}"></a>
                                                                         <input type="hidden"
                                                                                name="participants[{{ userId }}][see_others]"
                                                                                value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
@@ -317,7 +341,9 @@
 
                                                                 <td>
                                                                     {% set msg = 'User can download HD'|trans %}
-                                                                    <a href="#" class="fa fa-download colored toggle toggle_HD status_off" title="{{ msg }}"></a>
+                                                                    <a href="#"
+                                                                       class="fa fa-download colored toggle toggle_HD status_off"
+                                                                       title="{{ msg }}"></a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][HD]"
                                                                            value="0"/>
@@ -347,7 +373,8 @@
                         {% else %}
                             {# only Feedback and Sharebasket manage users and may have a "feedbackaction" #}
                             {# todo !!!!!!!!! see if "push" ignores feedbackaction so we can remove the "if context" #}
-                            <button class="colored inverse FeedbackSend" data-feedback-action={{ feedbackAction }}>{{ "Save" | trans }}</button>
+                            <button class="colored inverse FeedbackSend"
+                                    data-feedback-action={{ feedbackAction }}>{{ "Save" | trans }}</button>
                         {% endif %}
                     </div>
                 </div>
@@ -395,3 +422,69 @@
 
     {% include "prod/templates/push.html.twig" %}
 {% endif %}
+
+
+<script type="text/javascript">
+    $(function () {
+        $.datepicker.regional['default'] = {
+            /*
+                        closeText: "Close",
+                        prevText: "{{ 'workzone:datepicker:prevText' | trans }}",
+            nextText: "{{ 'workzone:datepicker:nextText' | trans }}",
+            currentText: "Today",
+            monthNames: [
+                "{{ 'workzone:datepicker:january' | trans }}",
+                "{{ 'workzone:datepicker:february' | trans }}",
+                "{{ 'workzone:datepicker:march' | trans }}",
+                "{{ 'workzone:datepicker:april' | trans }}",
+                "{{ 'workzone:datepicker:may' | trans }}",
+                "{{ 'workzone:datepicker:june' | trans }}",
+                "{{ 'workzone:datepicker:july' | trans }}",
+                "{{ 'workzone:datepicker:august' | trans }}",
+                "{{ 'workzone:datepicker:september' | trans }}",
+                "{{ 'workzone:datepicker:october' | trans }}",
+                "{{ 'workzone:datepicker:november' | trans }}",
+                "{{ 'workzone:datepicker:december' | trans }}"
+            ],
+            dayNames: [
+                "{{ 'workzone:datepicker:sunday' | trans }}",
+                "{{ 'workzone:datepicker:monday' | trans }}",
+                "{{ 'workzone:datepicker:tuesday' | trans }}",
+                "{{ 'workzone:datepicker:wednesday' | trans }}",
+                "{{ 'workzone:datepicker:thursday' | trans }}",
+                "{{ 'workzone:datepicker:friday' | trans }}",
+                "{{ 'workzone:datepicker:saturday' | trans }}"
+            ],
+            dayNamesMin: [ "D","L","M","M","J","V","S" ],
+            dateFormat: "d MM yy",
+            altField: ".alternate",
+            altFormat: "yy-mm-dd",
+*/
+            dateFormat: "yy-mm-dd",
+            minDate:    null
+        };
+
+        console.log("==== init feedback date pickers ====");
+
+        let $container = $('#PushBox');
+
+        $("INPUT[name=feedback_end_date]", $container)
+            .datepicker($.datepicker.regional['default'])
+            .datepicker("setDate", "{{ basket.getVoteExpires().format('Y-m-d') }}")
+            .change(function () {
+                console.log("==== feedback date changed ====");
+                //$('.submit-validation').removeClass('btn-not-shown');
+                //$('.cancel-date').removeClass('btn-not-shown');
+            });
+
+        $("INPUT[name=share_end_date]", $container)
+            .datepicker($.datepicker.regional['default'])
+            .datepicker("setDate", "{{ basket.getShareExpires().format('Y-m-d') }}")
+            .change(function () {
+                console.log("==== share date changed ====");
+                //$('.submit-validation').removeClass('btn-not-shown');
+                //$('.cancel-date').removeClass('btn-not-shown');
+            });
+    })
+
+</script>
