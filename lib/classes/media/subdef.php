@@ -782,7 +782,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     private function isStillAccessible()
     {
-        return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath(), 10);    // allow 10 secs for the file to be visible on shared fs
+        // return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath(), 10);    // allow 10 secs for the file to be visible on shared fs
+        return $this->is_physically_present && $this->getFilesystem()->exists($this->getRealPath());    // NO delay allowed, this slows down phr if any subdef is missing
     }
 
     /**

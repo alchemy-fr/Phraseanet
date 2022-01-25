@@ -194,7 +194,7 @@ class Fetcher
             $sql =  "SELECT r.*, c.asciiname AS collection_name, subdef.width, subdef.height, subdef.size\n"
                 . " FROM ((\n"
                 . "     SELECT record_id, coll_id AS collection_id, uuid, status AS flags_bitfield, sha256,\n"
-                . "            originalname AS original_name, mime, type, parent_record_id,\n"
+                . "            originalname AS original_name, mime, type, parent_record_id, cover_record_id,\n"
                 . "            credate AS created_on, moddate AS updated_on, coll_id\n"
                 . "     FROM record\n"
                 . "     WHERE -- WHERE\n"

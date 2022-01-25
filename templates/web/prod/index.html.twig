@@ -217,7 +217,8 @@
                                 <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />
                                 <input type="hidden" id="facet_and" value="{{ 'prod:workzone:facetstab:tooltips:facet_and_filter' | trans }}" />
                                 <input type="hidden" id="facet_remove" value="{{ 'prod:workzone:facetstab:tooltips:remove_facet_filter' | trans }}" />
-                                <div class="filter-facet-setting look_box_settings">
+                                <div class="filter-facet-setting look_box_settings" style="border-bottom: 1px solid #969595;
+">
                                     <div id="accordion">
                                         <div class="card">
                                             <div class="card-header" id="headingOne">
@@ -229,39 +230,60 @@
                                             </div>
                                             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                                 <div class="card-body">
-                                            <div class="left-facet-filter facet-filter">
-                                                <h4>{{ 'index::advance_search: facet-order' | trans }}</h4>
-                                                <form class="form-inline">
-                                                    {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
-                                                    <label class="select" for="orderFacet">
-                                                        <select class="preferences-facet-order" name="orderFacet" style="margin-left: 5px">
-                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
-                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
-                                                            <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
-                                                        </select>
-                                                    </label>
-                                                </form>
-                                            </div>
-                                            <div class="right-facet-filter facet-filter">
-                                                <h4>{{ 'index::advance_search: facet-values-order' | trans }}</h4>
-                                                <form class="form-inline">
-                                                    {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
-                                                    <label class="select" for="facetValuesOrder">
-                                                        <select class="preferences-facet-values-order" name="facetValuesOrder">
-                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
-                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') }}">{{ 'index::advance_search: order-by-hits-asc' | trans }}</option>
-                                                            <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
-                                                                    value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
-                                                        </select>
-                                                    </label>
-                                                </form>
-                                            </div>
-                                            </div>
+                                                    <div class="left-facet-filter facet-filter">
+                                                        <h4>{{ 'index::advance_search: facet-order' | trans }}</h4>
+                                                        <form class="form-inline">
+                                                            {% set order_facet = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'order_facet') %}
+                                                            <label class="select" for="orderFacet">
+                                                                <select class="preferences-facet-order" name="orderFacet" style="margin-left: 5px">
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_BCT') }}">{{ 'index::advance_search: facet-tech-order' | trans }}</option>
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                                    <option {% if order_facet == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') %} selected="selected" {% endif %}
+                                                                            value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_DESC') }}">{{ 'Alphabetic desc' | trans }}</option>
+                                                                </select>
+                                                            </label>
+                                                        </form>
+                                                    </div>
+                                                    <div class="right-facet-filter facet-filter">
+                                                    <h4>{{ 'index::advance_search: facet-values-order' | trans }}</h4>
+                                                    <form class="form-inline">
+                                                        {% set facet_values_order = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet_values_order') %}
+                                                        <label class="select" for="facetValuesOrder">
+                                                            <select class="preferences-facet-values-order" name="facetValuesOrder">
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS') }}">{{ 'index::advance_search: order-by-hits' | trans }}</option>
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_BY_HITS_ASC') }}">{{ 'index::advance_search: order-by-hits-asc' | trans }}</option>
+                                                                <option {% if facet_values_order == constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') %} selected="selected" {% endif %}
+                                                                        value="{{ constant('Alchemy\\Phrasea\\Core\\Configuration\\DisplaySettingService::ORDER_ALPHA_ASC') }}">{{ 'Alphabetic asc' | trans }}</option>
+                                                            </select>
+                                                        </label>
+                                                    </form>
+                                                    </div>
+
+                                                    <div style="padding-left: 5px;">
+                                                        {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
+                                                        {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show_unset_field_facet') %}
+                                                        <h5 style="font-size:13px;">{{ 'index::advance_search: facet' | trans }}</h5>
+
+                                                         {# TODO : make behaviour as in 4.0 #}
+{#                                                        <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em;font-size:13px;">#}
+{#                                                            <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>#}
+{#                                                            {{ 'index::advance_search: disable-facet' | trans }}#}
+{#                                                        </label>#}
+{#                                                        <br/>#}
+                                                        <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em;font-size:13px;">
+                                                            <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == '1' %}checked="checked"{% endif %}>
+                                                            {{ 'index::advance_search: show-unset-field-facet' | trans }}
+                                                        </label>
+
+                                                        <h5 style="font-size:13px;">{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h5>
+
+                                                        <div class="hiddenFiltersListContainer"></div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -930,25 +952,6 @@
                             </select>
                         </label>
                     </form>
-                </div>
-                <div class="box">
-                    {% set facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'facet') %}
-                    {% set _empty_facetFilter = app['settings'].getUserSetting(app.getAuthenticatedUser(), 'show__empty__facet') %}
-                    <h1>{{ 'index::advance_search: facet' | trans }}</h1>
-
-                    <label class="checkbox inline" for="ADVSRCH_FILTER_FACET" style="margin-bottom: 1em">
-                        <input id="ADVSRCH_FILTER_FACET" type="checkbox" name="filter_facet" {% if facetFilter == 'true' %}checked="checked"{% endif %}>
-                        {{ 'index::advance_search: disable-facet' | trans }}
-                    </label>
-                    <br/>
-                    <label class="checkbox inline" for="ADVSRCH_UNSET_FIELD_FACET" style="margin-bottom: 1em">
-                        <input id="ADVSRCH_UNSET_FIELD_FACET" type="checkbox" name="show_unset_field_facet" {% if _empty_facetFilter == 'true' %}checked="checked"{% endif %}>
-                        {{ 'index::advance_search: show-unset-field-facet' | trans }}
-                    </label>
-
-                    <h1>{{ 'index::advance_search: hidden-facet-values-order' | trans }}</h1>
-
-                    <div class="hiddenFiltersListContainer"></div>
                 </div>
             </div>
         </div>

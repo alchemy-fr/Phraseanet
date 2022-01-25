@@ -398,7 +398,7 @@ H3, H4 {
   padding-bottom: 10px;
 }
 
-.populate_btn {
+.populate_btn, #kth_import {
   position: absolute;
   background: #884c92;
   z-index: 2;
@@ -416,6 +416,11 @@ H3, H4 {
   }
 }
 
+#kth_import {
+  right: 150px !important;
+  text-decoration: none;
+}
+
 .thesaurus-page {
   .ui-widget-header {
     border: 1px solid darken(#884c92, 20%);
@@ -430,4 +435,5 @@ H3, H4 {
 #flagsMenu p {
   color: #fff;
   padding: 0 10px;
+  cursor: pointer;
 }

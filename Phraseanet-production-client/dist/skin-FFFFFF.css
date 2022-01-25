@@ -3221,6 +3221,10 @@ h3.metadatas-title:after {
   line-height: 26px;
 }
 
+#proposals #collapseOne {
+  background: #f8f8f8;
+}
+
 .ui-dialog .ui-dialog-content.loading,
 .loading {
   background-image: url("/assets/common/images/icons/loading.svg");
@@ -3443,8 +3447,8 @@ h3.metadatas-title:after {
   z-index: 1999;
 }
 
-.ui-dialog.ui-widget-content.dialog-edit_lat_lon {
-  z-index: 2000 !important;
+.ui-dialog.ui-widget-content.dialog-notification-box {
+  z-index: 1199  !important;
 }
 
 .ui-dialog-titlebar {
@@ -8867,7 +8871,7 @@ TABLE.explain3 TR TD {
 
 #PREVIEWBOX,
 #EDITWINDOW {
-  z-index: 2000;
+  z-index: 1200;
   background-color: #ffffff;
   display: none;
   border: 1px solid #bfbfbf;
@@ -11279,7 +11283,7 @@ input.text_input_white {
   width: 98%;
 }
 
-.hiddenFiltersListContainer .facetFilter {
+.hiddenFiltersListContainer .hiddenFacetFilter {
   font-weight: bold;
   font-family: "Roboto";
   height: 40px;
@@ -11299,14 +11303,14 @@ input.text_input_white {
   width: 262px;
 }
 
-.hiddenFiltersListContainer .facetFilter .remove-btn {
+.hiddenFiltersListContainer .hiddenFacetFilter .remove-btn {
   position: absolute;
   cursor: pointer;
   font-family: "icomoon";
   right: 13px;
 }
 
-.hiddenFiltersListContainer .facetFilter .remove-btn:before {
+.hiddenFiltersListContainer .hiddenFacetFilter .remove-btn:before {
   content: "\EA50";
   position: relative;
   z-index: 1;
@@ -11314,7 +11318,7 @@ input.text_input_white {
   font-size: 15px;
 }
 
-.hiddenFiltersListContainer .facetFilter .remove-btn:after {
+.hiddenFiltersListContainer .hiddenFacetFilter .remove-btn:after {
   content: "\E94B";
   color: #eeeeee;
   font-size: 17px;
@@ -11323,9 +11327,9 @@ input.text_input_white {
   z-index: 0;
 }
 
-.hiddenFiltersListContainer .facetFilter .remove-btn:hover:before,
-.hiddenFiltersListContainer .facetFilter .remove-btn:focus:before,
-.hiddenFiltersListContainer .facetFilter .remove-btn:active:before {
+.hiddenFiltersListContainer .hiddenFacetFilter .remove-btn:hover:before,
+.hiddenFiltersListContainer .hiddenFacetFilter .remove-btn:focus:before,
+.hiddenFiltersListContainer .hiddenFacetFilter .remove-btn:active:before {
   content: "\EA51";
   color: #333333;
 }

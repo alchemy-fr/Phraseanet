@@ -29,7 +29,7 @@
           stories:
             type: array
             items:
-              $ref: 'record.yaml#/Story'
+              $ref: 'record.yaml#/StoryWithStoryId'
           records:
             type: array
             items:

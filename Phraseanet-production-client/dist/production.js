@@ -3343,6 +3343,8 @@ var publication = function publication(services) {
     var onSubmitPublication = function onSubmitPublication() {
         var $dialog = _dialog2.default.get(1);
         var error = false;
+        (0, _jquery2.default)('.publish-dialog button').prop('disabled', true);
+
         var $form = (0, _jquery2.default)('form.main_form', $dialog.getDomElement());
 
         (0, _jquery2.default)('.required_text', $form).each(function (i, el) {
@@ -3354,6 +3356,7 @@ var publication = function publication(services) {
 
         if (error) {
             alert(localeService.t('feed_require_fields'));
+            (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
         }
 
         if ((0, _jquery2.default)('input[name="feed_id"]', $form).val() === '') {
@@ -3362,6 +3365,7 @@ var publication = function publication(services) {
         }
 
         if (error) {
+            (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             return false;
         }
 
@@ -3371,19 +3375,19 @@ var publication = function publication(services) {
             data: $form.serializeArray(),
             dataType: 'json',
             beforeSend: function beforeSend() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', true);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', true);
             },
             error: function error() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             },
             timeout: function timeout() {
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
             },
             success: function success(data) {
                 (0, _jquery2.default)('.state-navigation').trigger('click');
-                (0, _jquery2.default)('button', $dialog.getDomElement()).prop('disabled', false);
                 if (data.error === true) {
                     alert(data.message);
+                    (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
                     return;
                 }
 
@@ -3401,6 +3405,7 @@ var publication = function publication(services) {
                     });
                 }
 
+                (0, _jquery2.default)('.publish-dialog button').prop('disabled', false);
                 $dialog.close(1);
             }
         });
@@ -3911,6 +3916,8 @@ var workzoneFacets = function workzoneFacets(services) {
 
         treeSource = _parseColors(treeSource);
 
+        treeSource = _colorUnsetText(treeSource);
+
         return _getFacetsTree().reload(treeSource).done(function () {
             _.each((0, _jquery2.default)('#proposals').find('.fancytree-expanded'), function (element, i) {
                 (0, _jquery2.default)(element).find('.fancytree-title, .fancytree-expander').css('line-height', '50px');
@@ -3968,6 +3975,21 @@ var workzoneFacets = function workzoneFacets(services) {
             }
             return string;
         }
+    }
+
+    function _colorUnsetText(source) {
+        _.forEach(source, function (facet) {
+            if (!_.isUndefined(facet.children) && facet.children.length > 0) {
+                _.forEach(facet.children, function (child) {
+                    if (child.raw_value.toString() === '_unset_') {
+                        var title = child.title;
+                        child.title = '<span style="color:#2196f3;">' + title.toString() + '</span>';
+                    }
+                });
+            }
+        });
+
+        return source;
     }
 
     // from stackoverflow
@@ -19277,6 +19299,7 @@ var notifyLayout = function notifyLayout(services) {
             $notificationDialog.dialog('close');
         };
 
+        var zIndexOverlay = (0, _jquery2.default)('.ui-widget-overlay').css("z-index");
         // open the dlg (even if it is already opened when "load more")
         //
         $notificationDialog.dialog({
@@ -19288,11 +19311,16 @@ var notifyLayout = function notifyLayout(services) {
             modal: true,
             width: 500,
             height: 400,
+            dialogClass: "dialog-notification-box",
             overlay: {
                 backgroundColor: '#000',
                 opacity: 0.7
             },
+            open: function open() {
+                (0, _jquery2.default)('.ui-widget-overlay').css("z-index", (0, _jquery2.default)(".dialog-notification-box").css("z-index"));
+            },
             close: function close(event, ui) {
+                (0, _jquery2.default)('.ui-widget-overlay').css("z-index", zIndexOverlay);
                 // destroy so it will be "fresh" on next open (scrollbar on top)
                 $notificationDialog.dialog('destroy').remove();
             }
@@ -51088,7 +51116,6 @@ var geonameDatasource = function geonameDatasource(services) {
             height: "auto",
             width: 400,
             modal: true,
-            dialogClass: "dialog-edit_lat_lon",
             buttons: {
                 confirmYes: function confirmYes() {
                     (0, _jquery2.default)(this).dialog("close");
@@ -68015,11 +68042,11 @@ var search = function search(services) {
     };
 
     var updateHiddenFacetsListInPrefsScreen = function updateHiddenFacetsListInPrefsScreen() {
-        var $hiddenFacetsContainer = (0, _jquery2.default)('#look_box_settings').find('.hiddenFiltersListContainer');
+        var $hiddenFacetsContainer = (0, _jquery2.default)('.card-body').find('.hiddenFiltersListContainer');
         if (savedHiddenFacetsList.length > 0) {
             $hiddenFacetsContainer.empty();
             _.each(savedHiddenFacetsList, function (value) {
-                var $html = (0, _jquery2.default)('<span class="facetFilter" data-name="' + value.name + '"><span class="facetFilter-label" title="' + value.title + '">' + value.title + '<span class="facetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
+                var $html = (0, _jquery2.default)('<span class="hiddenFacetFilter" data-name="' + value.name + '"><span class="hiddenFacetFilter-label" title="' + value.title + '">' + value.title + '<span class="hiddenFacetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
 
                 $hiddenFacetsContainer.append($html);
 
@@ -68126,7 +68153,7 @@ var search = function search(services) {
     var updateFacetData = function updateFacetData() {
         appEvents.emit('facets.doLoadFacets', {
             facets: facets,
-            filterFacet: (0, _jquery2.default)('#look_box_settings input[name=filter_facet]').prop('checked'),
+            filterFacet: (0, _jquery2.default)('.look_box_settings input[name=filter_facet]').prop('checked'),
             facetOrder: (0, _jquery2.default)('.look_box_settings select[name=orderFacet]').val(),
             facetValueOrder: (0, _jquery2.default)('.look_box_settings select[name=facetValuesOrder]').val(),
             hiddenFacetsList: savedHiddenFacetsList

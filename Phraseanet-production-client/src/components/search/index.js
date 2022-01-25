@@ -303,13 +303,13 @@ const search = services => {
     }
 
     const updateHiddenFacetsListInPrefsScreen = () => {
-        const $hiddenFacetsContainer = $('#look_box_settings').find('.hiddenFiltersListContainer');
+        const $hiddenFacetsContainer = $('.card-body').find('.hiddenFiltersListContainer');
         if (savedHiddenFacetsList.length > 0) {
             $hiddenFacetsContainer.empty();
             _.each(savedHiddenFacetsList, function (value) {
-                var $html = $('<span class="facetFilter" data-name="' + value.name + '"><span class="facetFilter-label" title="'
+                var $html = $('<span class="hiddenFacetFilter" data-name="' + value.name + '"><span class="hiddenFacetFilter-label" title="'
                     + value.title + '">' + value.title
-                    + '<span class="facetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
+                    + '<span class="hiddenFacetFilter-gradient">&nbsp;</span></span><a class="remove-btn"></a></span>');
 
                 $hiddenFacetsContainer.append($html);
 
@@ -431,7 +431,7 @@ const search = services => {
     const updateFacetData = () => {
         appEvents.emit('facets.doLoadFacets', {
             facets: facets,
-            filterFacet: $('#look_box_settings input[name=filter_facet]').prop('checked'),
+            filterFacet: $('.look_box_settings input[name=filter_facet]').prop('checked'),
             facetOrder: $('.look_box_settings select[name=orderFacet]').val(),
             facetValueOrder: $('.look_box_settings select[name=facetValuesOrder]').val(),
             hiddenFacetsList: savedHiddenFacetsList

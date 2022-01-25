@@ -74,23 +74,28 @@ class FeedEntryProcessor implements ProcessorInterface
         } while (count($results) > 0);
 
         return [
-            'event' => $event->getName(),
-            'users_were_notified' => isset($data['notify_email']) ? (bool) $data['notify_email'] : false,
+            'event'                 => $event->getName(),
+            'webhookId'             => $event->getId(),
+            'version'               => WebhookEvent::WEBHOOK_VERSION,
+            'url'                   => $data['url'],
+            'instance_name'         => $data['instance_name'],
+            'users_were_notified'   => isset($data['notify_email']) ? (bool) $data['notify_email'] : false,
             'feed' => [
-                'id' => $feed->getId(),
+                'id'    => $feed->getId(),
                 'title' => $feed->getTitle(),
                 'description' => $feed->getSubtitle(),
             ],
             'entry' => [
-                'id' => $entry->getId(),
+                'id'     => $entry->getId(),
                 'author' => [
-                    'name' => $entry->getAuthorName(),
+                    'name'  => $entry->getAuthorName(),
                     'email' => $entry->getAuthorEmail()
                 ],
-                'title' => $entry->getTitle(),
-                'description' => $entry->getSubtitle(),
+                'title'         => $entry->getTitle(),
+                'description'   => $entry->getSubtitle(),
             ],
-            'users' => $users
+            'users'         => $users,
+            'event_time'    => $data['event_time']
         ];
     }
 }

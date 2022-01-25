@@ -8,7 +8,7 @@ use Alchemy\Phrasea\SearchEngine\Elastic\Search\QueryPostProcessor;
 
 class MissingExpression extends Node
 {
-    const MISSING_VALUE = '_empty_';
+    const MISSING_VALUE = '_unset_';
 
     private $key;
     private $value;

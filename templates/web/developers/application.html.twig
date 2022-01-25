@@ -95,6 +95,17 @@
                                 </button>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                {{ "developers:: Webhook active" | trans }}
+                            </td>
+                            <td>
+                                <input class="update-webhook-status" type="checkbox" id="webhook_active"
+                                       data-path="{{ path('developers_application_active_webhook', {"application" : application.getId()}) }}"
+                                        {% if application.isWebhookActive() %} checked {% endif %}
+                                       name="webhook_active"  value="1"/>
+                            </td>
+                        </tr>
                     {% endif %}
                 </tbody>
             </table>
@@ -122,6 +133,45 @@
                 </tbody>
             </table>
 
+            <h1>{{ "developers:: Events trigger this webhook" | trans }}</h1>
+            <p>{{ "developers:: Select events to trigger this webhook url" | trans }}</p>
+            <table class="table table-condensed  table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            {{ "developers:: Events type" | trans }}
+                        </th>
+                        <th>
+                            {{ "developers:: Events name" | trans }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for webhook_type, webhooks in webhook_event_list %}
+                        <tr>
+                            <td>
+                                {{ webhook_type }}
+                            </td>
+                            <td>
+                                <ul class="unstyled">
+                                    {% for webhook_name, webhook_description in webhooks %}
+                                        <li>
+                                            <label class="checkbox" for="{{ webhook_name }}" >
+                                                <input class="update-listened-event" type="checkbox" id="{{ webhook_name }}"
+                                                       data-path="{{ path('developers_application_listened_event', {"application" : application.getId(), "event_name": webhook_name}) }}"
+                                                        {% if webhook_name in application.getListenedEvents() %} checked {% endif %}
+                                                       name="{{ webhook_name }}"  value="1"/>
+                                                <strong> {{ webhook_name }} </strong>
+                                                <p> {{ webhook_description }} </p>
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             {% if deliveries | length > 0 %}
             <h1>{{ "Derniers envois" | trans }}</h1>
             <p> {{ "Résultats des derniers envois effectués pour cette application" | trans }}</p>

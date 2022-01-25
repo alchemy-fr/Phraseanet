@@ -4157,6 +4157,7 @@ var account = function account(services) {
             var modifierBtn = (0, _jquery2.default)(this);
             var saveBtn = (0, _jquery2.default)('a.save_webhook');
             var input = (0, _jquery2.default)('.url_webhook_input');
+            var checkboxActive = (0, _jquery2.default)('.update-webhook-status');
             var inputVal = input.html();
 
             modifierBtn.hide();
@@ -4178,6 +4179,7 @@ var account = function account(services) {
                     success: function success(data) {
                         if (data.success) {
                             input.empty().append(webhook);
+                            checkboxActive.prop('checked', true);
                         } else {
                             input.empty().append(inputVal);
                         }
@@ -4206,6 +4208,32 @@ var account = function account(services) {
                 url: $this.attr('value'),
                 dataType: 'json',
                 data: { grant: $this.is(':checked') ? '1' : '0' },
+                success: function success(data) {}
+            });
+        });
+
+        $container.on('click', '.update-listened-event', function () {
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: $this.is(':checked') ? 'add' : 'remove'
+                },
+                success: function success(data) {}
+            });
+        });
+
+        $container.on('click', '.update-webhook-status', function () {
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: $this.attr('data-path'),
+                dataType: 'json',
+                data: {
+                    action: $this.is(':checked') ? 'activate' : 'deactivate'
+                },
                 success: function success(data) {}
             });
         });

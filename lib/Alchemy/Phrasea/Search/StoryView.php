@@ -23,15 +23,10 @@ use Assert\Assertion;
  * @package Alchemy\Phrasea\Search
  */
 
-class StoryView
+class StoryView extends RecordView
 {
     use SubdefsAware;
     use CaptionAware;
-
-    /**
-     * @var \record_adapter
-     */
-    private $story;
 
     /**
      * @var RecordView[]
@@ -51,7 +46,7 @@ class StoryView
      */
     public function __construct(\record_adapter $story)
     {
-        $this->story = $story;
+        parent::__construct($story);
     }
 
     /**
@@ -59,7 +54,7 @@ class StoryView
      */
     public function getStory()
     {
-        return $this->story;
+        return $this->record;
     }
 
     /**

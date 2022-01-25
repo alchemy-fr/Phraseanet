@@ -9,6 +9,9 @@
  */
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
+use Alchemy\Phrasea\Application\Helper\DispatcherAware;
+use Alchemy\Phrasea\Application\Helper\SubDefinitionSubstituerAware;
 use Alchemy\Phrasea\Border\File;
 use Alchemy\Phrasea\Cache\Exception;
 use Alchemy\Phrasea\Core\Event\Record\CollectionChangedEvent;
@@ -16,10 +19,12 @@ use Alchemy\Phrasea\Core\Event\Record\CreatedEvent;
 use Alchemy\Phrasea\Core\Event\Record\DeletedEvent;
 use Alchemy\Phrasea\Core\Event\Record\MetadataChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\OriginalNameChangedEvent;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvent;
 use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
 use Alchemy\Phrasea\Core\Event\Record\StatusChangedEvent;
+use Alchemy\Phrasea\Core\Event\Record\StoryCoverChangedEvent;
 use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
+use Alchemy\Phrasea\Core\Event\RecordEdit;
+use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\Subdef\MediaSubdefRepository;
 use Alchemy\Phrasea\Filesystem\FilesystemService;
@@ -27,11 +32,13 @@ use Alchemy\Phrasea\Media\TechnicalData;
 use Alchemy\Phrasea\Media\TechnicalDataSet;
 use Alchemy\Phrasea\Metadata\Tag\TfBasename;
 use Alchemy\Phrasea\Metadata\Tag\TfFilename;
+use Alchemy\Phrasea\Model\Repositories\FeedItemRepository;
 use Alchemy\Phrasea\Model\Entities\OrderElement;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\RecordInterface;
 use Alchemy\Phrasea\Model\Serializer\CaptionSerializer;
 use Alchemy\Phrasea\Record\RecordReference;
+use Alchemy\Phrasea\Twig\PhraseanetExtension;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\DBAL\Connection;
@@ -39,10 +46,15 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use MediaVorus\MediaVorus;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 
 class record_adapter implements RecordInterface, cache_cacheableInterface
 {
+    use DataboxLoggerAware;
+    use DispatcherAware;
+    use SubDefinitionSubstituerAware;
+
     const CACHE_ORIGINAL_NAME = 'originalname';
     const CACHE_TECHNICAL_DATA = 'technical_data';
     const CACHE_MIME = 'mime';
@@ -88,6 +100,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     private $type;
     private $sha256;
     private $isStory;
+    private $cover_record_id;
     private $duration;
     /** @var DateTime */
     private $created;
@@ -146,6 +159,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->original_name = $record->getOriginalName();
         $this->type = $record->getType();
         $this->isStory = $record->isStory();
+        $this->cover_record_id = $record->getCoverRecordId();
         $this->uuid = $record->getUuid();
         $this->updated = $record->getUpdated();
         $this->created = $record->getCreated();
@@ -267,11 +281,13 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
     /**
      * @param string $type
+     * @param bool $shouldSubdefsBeRebuilt
+     *
      * @return $this
      * @throws Exception
      * @throws DBALException
      */
-    public function setType($type)
+    public function setType($type, $shouldSubdefsBeRebuilt = true)
     {
         $type = strtolower($type);
 
@@ -284,7 +300,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $sql = 'UPDATE record SET moddate = NOW(), type = :type WHERE record_id = :record_id';
         $this->getDataboxConnection()->executeUpdate($sql, ['type' => $type, 'record_id' => $this->getRecordId()]);
 
-        if ($old_type !== $type) {
+        if (($old_type !== $type) && $shouldSubdefsBeRebuilt) {
             $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
         }
 
@@ -330,8 +346,17 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->setMimeType($mime);
     }
 
-    public function setMimeType($mime)
+    /**
+     * @param $mime
+     * @param bool $shouldSubdefsBeRebuilt
+     *
+     * @return $this
+     * @throws DBALException
+     */
+    public function setMimeType($mime, $shouldSubdefsBeRebuilt = true)
     {
+        $oldMime = $this->getMimeType();
+
         // see http://lists.w3.org/Archives/Public/xml-dist-app/2003Jul/0064.html
         if (!preg_match("/^[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+\\/[a-zA-Z0-9!#$%^&\\*_\\-\\+{}\\|'.`~]+$/", $mime)) {
             throw new \Exception(sprintf('Unrecognized mime type %s', $mime));
@@ -342,7 +367,9 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             array(':mime' => $mime, ':record_id' => $this->getRecordId())
         )) {
 
-            $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+            if (($oldMime !== $mime) && $shouldSubdefsBeRebuilt) {
+                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($this));
+            }
 
             $this->delete_data_from_cache();
         }
@@ -380,6 +407,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function isStory()
     {
         return $this->isStory;
+    }
+
+    public function getCoverRecordId()
+    {
+        return $this->cover_record_id;
     }
 
     /**
@@ -532,6 +564,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             return $this;
         }
 
+        $beforeCollection = $this->getCollection();
         $coll_id_from = $this->getCollectionId();
         $coll_id_to = $collection->get_coll_id();
 
@@ -554,7 +587,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->app['phraseanet.logger']($this->getDatabox())
             ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '', $coll_id_from);
 
-        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this));
+        $this->dispatch(RecordEvents::COLLECTION_CHANGED, new CollectionChangedEvent($this, $beforeCollection, $collection));
 
         return $this;
     }
@@ -812,6 +845,35 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     }
 
     /**
+     * @return array
+     */
+    public function getRecordDescriptionAsArray()
+    {
+        $helpers = new PhraseanetExtension($this->app);
+        $description = [];
+
+        foreach ($this->getDatabox()->get_meta_structure()->get_elements() as $data_field) {
+            $fieldName = $data_field->get_name();
+
+            if ($this->get_caption()->has_field($fieldName)) {
+                try {
+                    $captionField =  $this->get_caption()->get_field($fieldName);
+                } catch (\Exception $e) {
+                    continue;
+                }
+
+                $fieldValues = $captionField->get_values();
+
+                $fieldLabel = $helpers->getCaptionFieldLabel($this, $fieldName);
+
+                $description[$fieldLabel] = $helpers->getCaptionField($this, $fieldName, $fieldValues);
+            }
+        }
+
+        return $description;
+    }
+
+    /**
      * @param caption_field[] $fields
      * @return array
      */
@@ -1035,7 +1097,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
 
         foreach ($mandatoryParams as $k) {
             if (!array_key_exists($k, $params)) {
-                throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $param));
+                throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $k));
             }
             $params[$k] = trim($params[$k]);
         }
@@ -1602,7 +1664,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this;
     }
 
-    private function dispatch($eventName, RecordEvent $event)
+    private function dispatch($eventName, Event $event)
     {
         $this->app['dispatcher']->dispatch($eventName, $event);
     }
@@ -1618,8 +1680,8 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     {
         $connection = $collection->get_databox()->get_connection();
 
-        $sql = 'INSERT INTO record (coll_id, record_id, parent_record_id, moddate, credate, type, sha256, uuid, originalname, mime)'
-            .' VALUES (:coll_id, NULL, :parent_record_id, NOW(), NOW(), :type, :sha256, :uuid , :originalname, :mime)';
+        $sql = 'INSERT INTO record (coll_id, record_id, parent_record_id, cover_record_id, moddate, credate, type, sha256, uuid, originalname, mime)'
+            .' VALUES (:coll_id, NULL, :parent_record_id, NULL, NOW(), NOW(), :type, :sha256, :uuid , :originalname, :mime)';
 
         $stmt = $connection->prepare($sql);
 
@@ -1660,6 +1722,71 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $story;
     }
 
+    /**
+     * set the cover of a story by copying thumbnail and prewiew from a selected child
+     * @param $fromChildRecordId
+     * @param array $coverSources   for apiV1 : one can map the story thmb/prev to another subdef, e.g. ['preview_cover_source' => "preview1200"]
+     *                              default to same thumbnail/preview
+     * @return string               id of the selected child (for apiv1)
+     * @throws \Exception
+     */
+    public function setStoryCover($fromChildRecordId, $coverSources = [])
+    {
+        if(!$this->isStory) {
+            throw new \Exception(sprintf('Record is not a story'));
+        }
+
+        $previousDescription = $this->getRecordDescriptionAsArray();
+        $coverSources = array_merge(['thumbnail_cover_source' => 'thumbnail', 'preview_cover_source' => 'preview'], $coverSources);
+
+        $fromChildRecord = new self($this->app, $this->getDataboxId(), $fromChildRecordId);
+
+        if (!$this->hasChild($fromChildRecord)) {
+            throw new \Exception(sprintf('Record identified by databox_id %s and record_id %s is not in the story', $this->getDataboxId(), $fromChildRecordId));
+        }
+
+        $this->cover_record_id = $fromChildRecordId;
+
+        $databox = $this->getDatabox();
+        $sql = "UPDATE record SET `cover_record_id` = :cover_record_id WHERE record_id = :story_id";
+        $connection = $databox->get_connection();
+        $stmt = $connection->prepare($sql);
+        $stmt->execute([
+            ':cover_record_id' => $this->getCoverRecordId(),
+            ':story_id'        => $this->getRecordId()
+        ]);
+        $stmt->closeCursor();
+
+        // try to copy thumbnail & preview
+
+        foreach ($fromChildRecord->get_subdefs() as $name => $value) {
+            if (!($key = array_search($name, $coverSources))) {
+                continue;
+            }
+            if ($value->get_type() !== \media_subdef::TYPE_IMAGE) {
+                continue;
+            }
+
+            $name = ($key == 'thumbnail_cover_source') ? 'thumbnail': 'preview';
+
+            $media = $this->app->getMediaFromUri($value->getRealPath());
+            // same db => no need to adapt size, do a simple copy
+            $this->getSubDefinitionSubstituer()->substituteSubdef($this, $name, $media, false);
+            $this->getDataboxLogger($this->getDatabox())->log(
+                $this,
+                \Session_Logger::EVENT_SUBSTITUTE,
+                $name,
+                ''
+            );
+        }
+
+        $this->delete_data_from_cache();
+
+        $this->dispatch(RecordEvents::STORY_COVER_CHANGED, new StoryCoverChangedEvent($this, $fromChildRecord));
+        $this->dispatch(PhraseaEvents::RECORD_EDIT, new RecordEdit($this, $previousDescription));
+
+        return $fromChildRecord->getId();
+    }
 
     /**
      * @param File $file
@@ -1749,7 +1876,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $stmt->execute([
             ':coll_id'          => $collection->get_coll_id(),
             ':parent_record_id' => 0,
-            ':type'             => $file ? ($file->getType() ? $file->getType()->getType() : 'unknown') : null,
+            ':type'             => $file ? ($file->getType() ? $file->getType()->getType() : 'unknown') : 'unknown',
             ':sha256'           => $file ? $file->getMedia()->getHash('sha256') : null,
             ':uuid'             => $file ? $file->getUUID(true) : null,
             ':originalname'     => $file ? $file->getOriginalName() : null,
@@ -2020,11 +2147,23 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
             $this->app['orm.em']->remove($basket_element);
         }
 
+        /** @var FeedItemRepository $feedItemRepository */
+        $feedItemRepository = $this->app['repo.feed-items'];
+
+        // remove the record from publications
+        foreach($feedItemRepository->findBy(['recordId' =>  $this->getRecordId()]) as $feedItem) {
+            $this->app['orm.em']->remove($feedItem);
+        }
+
         $this->app['orm.em']->flush();
 
         $this->app['filesystem']->remove($ftodel);
 
+        // delete cache of subdefs
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
+        // delete the corresponding key record_id from the cache
+        $this->delete_data_from_cache();
 
         $this->dispatch(RecordEvents::DELETED, new DeletedEvent($this));
 
@@ -2043,15 +2182,16 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function clearSubdefCache($subdefname)
     {
         if ($this->has_subdef($subdefname)) {
-            $this->get_subdef($subdefname)->delete_data_from_cache();
+            $sd = $this->get_subdef($subdefname);
 
-            $permalink = $this->get_subdef($subdefname)->get_permalink();
-
+            $permalink = $sd->get_permalink();
             if ($permalink instanceof media_Permalink_Adapter) {
                 $permalink->delete_data_from_cache();
             }
-        }
 
+            $sd->delete_data_from_cache();
+
+        }
         $this->delete_data_from_cache(self::CACHE_SUBDEFS);
     }
 
@@ -2348,6 +2488,14 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
      */
     public function setStatus($status)
     {
+        $statusBefore['status'] = [];
+        foreach ($this->getStatusStructure() as $bit => $st) {
+            $statusBefore['status'][] = [
+                'bit'   => $bit,
+                'state' => \databox_status::bitIsSet($this->getStatusBitField(), $bit),
+            ];
+        }
+
         $this->getDataboxConnection()->executeUpdate(
             'UPDATE record SET moddate = NOW(), status = :status WHERE record_id=:record_id',
             ['status' => bindec($status), 'record_id' => $this->getRecordId()]
@@ -2357,7 +2505,15 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         // modification date is now unknown, delete from cache to reload on another record
         $this->delete_data_from_cache();
 
-        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this));
+        $newStatus['status'] = [];
+        foreach ($this->getStatusStructure() as $bit => $st) {
+            $newStatus['status'][] = [
+                'bit'   => $bit,
+                'state' => \databox_status::bitIsSet($this->getStatusBitField(), $bit),
+            ];
+        }
+
+        $this->dispatch(RecordEvents::STATUS_CHANGED, new StatusChangedEvent($this, $statusBefore, $newStatus));
     }
 
     /**
@@ -2388,17 +2544,18 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
     public function putInCache()
     {
         $data = [
-            'mime'          => $this->mime,
-            'sha256'        => $this->sha256,
-            'originalName'  => $this->original_name,
-            'type'          => $this->type,
-            'isStory'       => $this->isStory,
-            'uuid'          => $this->uuid,
-            'updated'       => $this->updated->format(DATE_ISO8601),
-            'created'       => $this->created->format(DATE_ISO8601),
-            'base_id'       => $this->base_id,
-            'collection_id' => $this->collection_id,
-            'status' => $this->status,
+            'mime'            => $this->mime,
+            'sha256'          => $this->sha256,
+            'originalName'    => $this->original_name,
+            'type'            => $this->type,
+            'isStory'         => $this->isStory,
+            'cover_record_id' => $this->cover_record_id,
+            'uuid'            => $this->uuid,
+            'updated'         => $this->updated->format(DATE_ISO8601),
+            'created'         => $this->created->format(DATE_ISO8601),
+            'base_id'         => $this->base_id,
+            'collection_id'   => $this->collection_id,
+            'status'          => $this->status,
         ];
 
         $this->set_data_to_cache($data);
@@ -2420,6 +2577,7 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         $this->uuid = $row['uuid'];
 
         $this->isStory = ($row['isStory'] == '1');
+        $this->cover_record_id = is_null($row['cover_record_id']) ? null : (int) $row['cover_record_id'];
         $this->type = $row['type'];
         $this->original_name = $row['originalName'];
         $this->sha256 = $row['sha256'];
