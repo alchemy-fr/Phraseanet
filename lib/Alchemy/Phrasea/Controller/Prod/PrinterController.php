@@ -40,11 +40,14 @@ class PrinterController extends Controller
         $b = $printer->get_original_basket();
 
         $layout = $request->request->get('lay');
+        $title = $request->request->get('print-pdf-title') ? : '';
+        $description = $request->request->get('print-pdf-description') ? : '';
 
         foreach ($printer->get_elements() as $record) {
             $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
-        $PDF = new PDFRecords($this->app, $printer, $layout);
+
+        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description);
 
         $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
         $response->headers->set('Pragma', 'public', true);

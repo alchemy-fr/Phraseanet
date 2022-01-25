@@ -2,6 +2,15 @@
 <form target="_blank" name="formprintpage" method="POST" action="{{ path('prod_printer_print') }}">
     <div id="printBox">
         <div style="padding:10px;">
+            <div style="margin: 20px 5px;">
+                <h4 style="margin-left: 0px;">{{ 'print:: pdf title' | trans }}</h4>
+                <input type="text" value="" name="print-pdf-title" class="print-pdf-title" style="margin-left: 0px"/>
+            </div>
+            <div style="margin: 20px 5px;">
+                <h4 style="margin-left: 0px;">{{ 'print:: pdf description' | trans }}</h4>
+                <textarea name="print-pdf-description" class="print-pdf-description" id="" cols="0" rows="5" style="margin-left: 20px;width:530px;"></textarea>
+            </div>
+
             {% if basketFeedbackId %}
                 <h4>{{ 'phraseanet:: basket feedback' | trans }}</h4>
                 <input type="hidden" name="ssel" value="{{ basketFeedbackId }}" />
@@ -73,6 +82,16 @@
         var $form = $("form[name=formprintpage]");
         $form.bind('submit', function(){ 
             $("#DIALOG").dialog('destroy');
+            $('#DIALOG').css('display', 'none');
+        });
+
+        tinymce.remove();
+
+        tinymce.init({
+            selector: '.print-pdf-description',
+            menubar: 'edit view insert format table help',
+            plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
+            toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
         });
     });
 </script>

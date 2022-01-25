@@ -22,10 +22,16 @@ class PDFRecords extends PDF
     /** @var Printer */
     private $printer;
 
-    public function __construct(Application $app, Printer $printer, $layout)
+    private $pdfTitle;
+    private $pdfDescription;
+    private $isUserInputPrinted = false;
+
+    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '')
     {
         parent::__construct($app);
         $this->printer = $printer;
+        $this->pdfTitle = $pdfTitle;
+        $this->pdfDescription = $pdfDescription;
 
         $records = $printer->get_elements();
 
@@ -115,6 +121,8 @@ class PDFRecords extends PDF
 
     protected function print_thumbnailGrid($links = false)
     {
+        $this->addUserInput();
+
         $NDiapoW = 3;
         $NDiapoH = 4;
 
@@ -187,7 +195,7 @@ class PDFRecords extends PDF
 
                 if ($links) {
                     $lk = $this->pdf->AddLink();
-                    $this->pdf->SetLink($lk, 0, $npages + $rec->getNumber());
+                    $this->pdf->SetLink($lk, 0, ($this->pdf->getPage() - 1) + ($npages - $ipage) + $rec->getNumber());
                     $this->pdf->Image(
                         $fimg
                         , $x + (($DiapoW - $wimg) / 2)
@@ -211,6 +219,8 @@ class PDFRecords extends PDF
 
     protected function print_thumbnailList()
     {
+        $this->addUserInput();
+
         $this->pdf->AddPage();
         $oldMargins = $this->pdf->getMargins();
 
@@ -312,6 +322,8 @@ class PDFRecords extends PDF
 
     protected function print_caption()
     {
+        $this->addUserInput();
+
         $this->pdf->AddPage();
         $oldMargins = $this->pdf->getMargins();
 
@@ -322,7 +334,7 @@ class PDFRecords extends PDF
             $title = "record : " . $rec->get_title();
 
             $y = $this->pdf->GetY();
-            if($this->pdf->getPageHeight() - $y < 20){ // height of the footer is 15
+            if($this->pdf->getPageHeight() - $y < 30){ // height of the footer is 15
                 $this->pdf->AddPage();
                 $y = $oldMargins['top'];
             }
@@ -377,6 +389,8 @@ class PDFRecords extends PDF
     protected function print_preview($withtdm, $write_caption, $withfeedback)
     {
         $basket = $validation = null;
+
+        $this->addUserInput();
 
         if($this->printer->is_basket()) {
             $basket = $this->printer->get_original_basket();
@@ -486,10 +500,15 @@ class PDFRecords extends PDF
             $y = $this->pdf->GetY();
             $this->pdf->MultiCell(95, 7, $LEFT__TEXT, "LTB", "L", 1);
             $y2 = $this->pdf->GetY();
+
             $h = $y2 - $y;
             $this->pdf->SetY($y);
             $this->pdf->SetX(105);
             $this->pdf->Cell(95, $h, $RIGHT_TEXT, "TBR", 1, "R", 1);
+
+            $this->pdf->SetY($y);
+            $this->pdf->write(7, "record " . $rec->getNumber(), '', false, 'C');
+            $this->pdf->SetY($y2);
 
             if($basket) {
                 $ord = $basket->getElementByRecord($this->app, $rec)->getOrd();
@@ -786,4 +805,23 @@ class PDFRecords extends PDF
         }
     }
 
+    private function addUserInput()
+    {
+        if (!$this->isUserInputPrinted && (!empty($this->pdfTitle) || !empty($this->pdfDescription))) {
+            $this->pdf->AddPage();
+
+            $this->pdf->SetY(50);
+            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 14);
+            $this->pdf->Cell(0, 0,
+                $this->pdfTitle,
+                '', 1, 'C', false);
+
+            $this->pdf->Write(20, "\n");
+
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            $this->pdf->writeHTML($this->pdfDescription);
+
+            $this->isUserInputPrinted = true;
+        }
+    }
 }
