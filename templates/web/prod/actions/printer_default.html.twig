@@ -11,6 +11,8 @@
                 <textarea name="print-pdf-description" class="print-pdf-description" id="" cols="0" rows="5" style="margin-left: 20px;width:530px;"></textarea>
             </div>
 
+            <h3 style="margin-left: 5px;">{{ 'print:: choose model' | trans }}</h3>
+
             {% if basketFeedbackId %}
                 <h4>{{ 'phraseanet:: basket feedback' | trans }}</h4>
                 <input type="hidden" name="ssel" value="{{ basketFeedbackId }}" />
@@ -27,7 +29,6 @@
             {% endif %}
 
             {% if printer.get_count_actionable() > 0 %}
-                <h3>{{ 'print:: choose model' | trans }}</h3>
                 {% if printer.get_count_preview() > 0 %}
                 <h4>{{ 'phraseanet:: preview' | trans }}</h4>
                 <div style="margin: 10px 0 20px 0; padding: 0 10px;">
