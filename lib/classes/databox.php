@@ -1523,7 +1523,7 @@ class databox extends base implements ThumbnailedElement
      */
     public function getSubdefStorage(){
 
-        return p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'subdefs'])).$this->get_dbname()."/subview/";
+        return p4string::addEndSlash($this->app['conf']->get(['main', 'storage', 'subdefs'])).$this->get_dbname()."/subdefs/";
     }
 
     protected function retrieve_structure()

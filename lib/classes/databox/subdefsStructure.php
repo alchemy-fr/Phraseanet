@@ -197,6 +197,8 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef = $dom_struct->createElement('subdef');
         $subdef->setAttribute('class', $class);
         $subdef->setAttribute('name', mb_strtolower($name));
+
+        $preset = ($preset == 'Choose') ? 'Custom' : $preset ;
         $subdef->setAttribute('presets', $preset);
 
         $mediaTypeElement = $dom_struct->createElement('mediatype');
