@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import dialog from './../../phraseanet-common/components/dialog';
-import pushRecordWindow from './recordPush/index';
+import pushOrShareIndex from './pushOrShare/index';
 
-const pushRecord = (services, datas) => {
-    const {configService, localeService, appEvents} = services;
+const sharebasketModal = (services, datas) => {
+    const { configService, localeService, appEvents} = services;
     const url = configService.get('baseUrl');
 
 
@@ -11,15 +11,16 @@ const pushRecord = (services, datas) => {
 
         let $dialog = dialog.create(services, {
             size: 'Full',
-            title: localeService.t('push')
+            title: localeService.t('sharebasket')
         });
 
         // add classes to the whoe dialog (including title)
         $dialog.getDomElement().closest('.ui-dialog')
                .addClass('whole_dialog_container')
-               .addClass('Push');
+               .addClass('Sharebasket');
 
-        $.post(`${url}prod/push/sendform/`, datas, function (data) {
+        $.post(`${url}prod/push/sharebasketform/`, datas, function (data) {
+            // data content's javascript can't be fully refactored
             $dialog.setContent(data);
             _onDialogReady();
             return;
@@ -29,10 +30,10 @@ const pushRecord = (services, datas) => {
     };
 
     const _onDialogReady = () => {
-        pushRecordWindow(services).initialize({
-            feedback: {
+        pushOrShareIndex(services).initialize({
+            container: {
                 containerId: '#PushBox',
-                context: 'Push'
+                context: 'Sharebasket'
             },
             listManager: {
                 containerId: '#ListManager'
@@ -40,8 +41,7 @@ const pushRecord = (services, datas) => {
         });
     };
 
-
     return {openModal};
 };
 
-export default pushRecord;
+export default sharebasketModal;

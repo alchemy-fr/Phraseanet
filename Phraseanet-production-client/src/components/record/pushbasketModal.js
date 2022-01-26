@@ -1,28 +1,25 @@
 import $ from 'jquery';
 import dialog from './../../phraseanet-common/components/dialog';
-import pushRecord from './recordPush/index';
+import pushOrShareIndex from './pushOrShare/index';
 
-const recordFeedbackModal = (services, datas) => {
-    const { configService, localeService, appEvents } = services;
+const pushbasketModal = (services, datas) => {
+    const {configService, localeService, appEvents} = services;
     const url = configService.get('baseUrl');
 
 
     const openModal = (datas) => {
-        // console.log("==== prepare dlg with datas: ", datas);
 
-        /* disable push closeonescape as an over dialog may exist (add user) */
         let $dialog = dialog.create(services, {
             size: 'Full',
-            title: localeService.t('feedback')
+            title: localeService.t('push')
         });
 
         // add classes to the whoe dialog (including title)
         $dialog.getDomElement().closest('.ui-dialog')
                .addClass('whole_dialog_container')
-               .addClass('Feedback');
+               .addClass('Push');
 
-        $.post(`${url}prod/push/validateform/`, datas, function (data) {
-            // data content's javascript can't be fully refactored
+        $.post(`${url}prod/push/sendform/`, datas, function (data) {
             $dialog.setContent(data);
             _onDialogReady();
             return;
@@ -32,10 +29,10 @@ const recordFeedbackModal = (services, datas) => {
     };
 
     const _onDialogReady = () => {
-        pushRecord(services).initialize({
-            feedback: {
+        pushOrShareIndex(services).initialize({
+            container: {
                 containerId: '#PushBox',
-                context: 'Feedback'
+                context: 'Push'
             },
             listManager: {
                 containerId: '#ListManager'
@@ -43,7 +40,8 @@ const recordFeedbackModal = (services, datas) => {
         });
     };
 
-    return { openModal };
+
+    return {openModal};
 };
 
-export default recordFeedbackModal;
+export default pushbasketModal;

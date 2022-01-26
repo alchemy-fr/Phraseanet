@@ -1,7 +1,8 @@
+{# @var push \Alchemy\Phrasea\Helper\Record\Push #}
 {# @var basket \Alchemy\Phrasea\Model\Entities\Basket #}
 {# @var participant \Alchemy\Phrasea\Model\Entities\BasketParticipant #}
 
-{% if push.get_count_actionable() == 0 %}
+{% if push._count_actionable == 0 %}
     <div class="PNB">
         <div style="text-align:center;margin-top:150px;">
             {% if context == 'Push' %}
@@ -9,7 +10,7 @@
             {% elseif context == 'Sharebasket' %}
                 {% trans %}None of the selected records can be shared.{% endtrans %}
             {% else %}
-                {% trans %}None of the selected records can be sent for feedback.{% endtrans %}
+                {# should not happen, only 2 posssible contexts #}
             {% endif %}
         </div>
         <div style="text-align:center;margin-top:15px;">
@@ -17,23 +18,30 @@
         </div>
     </div>
 {% else %}
-    {% set basket = push.get_original_basket() %}
+    {% set basket = push._original_basket %}
     <div class="PNB PushBox" id="PushBox">
+
+        {# left column : icon, general togglers, users lists #}
+
         <div class="PNB" style="width:220px;">
             <div class="PNB10 LeftColumn">
                 <div class="PNB" style="text-align:center;">
-                    <img style="width: 36px; height: 36px"
-                         src="/assets/common/images/icons/{{ context|lower }}-icon.png"/>
+                    <i class="main-icon fa fa-share colored inverse feedback_only_false"></i>
+                    <i class="main-icon fa fa-bullhorn colored inverse feedback_only_true"></i>
                 </div>
                 <div class="PNB content" style="top:45px; overflow-y:auto;">
+
+                    {# general togglers act on selection #}
+
                     <div style="padding:10px">
                         <span class="main-title">
                             <i class="fa fa-hand-stop-o"></i>&nbsp;{{ 'Grant rights' | trans }}
                         </span>
                         <ul class="general_togglers">
-                            {% if context == 'Feedback' or context == 'Sharebasket' %}
+                            {% if context == 'Sharebasket' %}
                                 <li>
-                                    <button type="button" class="general_toggler colored with_icon" feature="agree">
+                                    {% set msg = "Users contribute to the feedback" | trans %}
+                                    <button type="button" class="general_toggler colored with_icon" feature="agree" title="{{ msg }}">
                                         <i class="fa fa-comment"></i>&nbsp;{{ 'Contributor' | trans }}
                                     </button>
                                 </li>
@@ -43,22 +51,24 @@
                                         <i class="fa fa-pencil"></i>&nbsp;{{ 'Modify' | trans }}
                                     </button>
                                 </li>
-                            {% endif %}
-                            {% if context == 'Feedback' %}
                                 <li>
-                                    <button type="button" class="general_toggler colored with_icon"
-                                            feature="see_others">
+                                    {% set msg = "Users can see others choices" | trans %}
+                                    <button type="button" class="general_toggler colored with_icon" feature="see_others" title="{{ msg }}">
                                         <i class="fa fa-users"></i>&nbsp;{{ 'See others' | trans }}
                                     </button>
                                 </li>
                             {% endif %}
                             <li>
-                                <button type="button" class="general_toggler colored with_icon" feature="HD">
+                                {% set msg = "Users can download HD" | trans %}
+                                <button type="button" class="general_toggler colored with_icon" feature="HD" title="{{ msg }}">
                                     <i class="fa fa-download"></i>&nbsp;{{ 'HD Download' | trans }}
                                 </button>
                             </li>
                         </ul>
                     </div>
+
+                    {# users lists #}
+
                     <div style="padding: 10px 10px 0;">
                         <span class="main-title">
                             <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
@@ -97,6 +107,9 @@
                 </div>
             </div>
         </div>
+
+        {# main zone : search/add users, select badges buttons, form (dates, badges) #}
+
         <div class="PNB" style="left:220px;">
             <div class="PNB10" style="height:46px;bottom:auto;line-height:26px;padding:0 20px 0 18px;">
                 <div style="float: left;">
@@ -191,9 +204,9 @@
                         {% if context == 'Push' %}
                             {{ 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' | trans }}
                         {% elseif context == 'Sharebasket' %}
-                            {{ 'Push::a basket share allows participants to see/act on a common basket' | trans }}
+                            {{ 'Push::a basket share allows participants to see/comment/act on a common basket' | trans }}
                         {% else %}
-                            {{ 'Push::une validation est une demande d\'appreciation a d\'autres personnes' | trans }}
+                            {# should not happen, only 2 posssible contexts #}
                         {% endif %}
                     </p>
                 </div>
@@ -220,11 +233,14 @@
                                             {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                         {% endif %}
                                     {% else %}
+                                        {# should not happen, only 2 posssible contexts #}
+                                        {#
                                         {% if nb_not_available == 0 %}
                                             {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to ask for feedback for %nb_push_items% records.{% endtrans %}
                                         {% else %}
                                             {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to ask for feedback for %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                         {% endif %}
+                                        #}
                                     {% endif %}
                                 </span>
                                 </td>
@@ -244,6 +260,7 @@
                             {% elseif context == 'Sharebasket' %}
                                 action="{{ path('prod_push_send_sharebasket') }}"
                             {% else %}
+                                {# should not happen, only 2 posssible contexts #}
                                 action="{{ path('prod_push_validate') }}"
                             {% endif %}
                     >
@@ -264,13 +281,19 @@
                         <input type="checkbox" value="1" name="force_authentication" style="display:none;"/>
 
                         {# dates of end-of-vote and end-of-share #}
+                        {% if context == 'Sharebasket' %}
                         <div class="ui-dialog-content">
-                            fbk:<input type="text" class="btn" name="feedback_end_date"/>
                             shr:<input type="text" class="btn" name="share_end_date"/>
+                            <span class="feedback_only_true">
+                                fbk:<input type="text" class="btn" name="feedback_end_date"/>
+                            </span>
                         </div>
+                        {% endif %}
 
                         <div class="PNB badges" style="top:40px">
-                            {% if context == 'Feedback' or context == 'Sharebasket' %}
+                            {% if context == 'Push' %}
+                                {# a push has no pariticipants saved (only added now) #}
+                            {% elseif context == 'Sharebasket' %}
                                 {% for participant in participants | sort | reverse %}
                                     {# @var participant \Alchemy\Phrasea\Model\Entities\BasketParticipant #}
                                     {% set userId = participant.getUser().getId() %}
@@ -304,46 +327,50 @@
                                                             </tr>
                                                             <tr class="toggles">
                                                                 <td>
-                                                                    {% if context == 'Feedback' or context == 'Sharebasket' %}
-                                                                        {% set msg = 'User contribute to the feedback'|trans %}
-                                                                        <a href="#"
-                                                                           class="fa fa-comment colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}"
-                                                                           title="{{ msg }}"></a>
-                                                                        <input type="hidden"
-                                                                               name="participants[{{ userId }}][agree]"
-                                                                               value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
-                                                                    {% endif %}
+                                                                    {% set msg = 'User contribute to the feedback'|trans %}
+                                                                    <a href="#"
+                                                                       class="colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}"
+                                                                       title="{{ msg }}">
+                                                                        <i class="fa fa-comment"></i>
+                                                                    </a>
+                                                                    <input type="hidden"
+                                                                           name="participants[{{ userId }}][agree]"
+                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
-                                                                    {% if context == 'Feedback' or context == 'Sharebasket' %}
-                                                                        {% set msg = 'User can modify the basket'|trans %}
-                                                                        <a href="#"
-                                                                           class="fa fa-pencil colored toggle toggle_modify {{ participant.canModify() ? 'status_on' : 'status_off' }}"
-                                                                           title="{{ msg }}"></a>
-                                                                        <input type="hidden"
-                                                                               name="participants[{{ userId }}][modify]"
-                                                                               value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
-                                                                    {% endif %}
+                                                                    {% set msg = 'User can modify the basket'|trans %}
+                                                                    <a href="#"
+                                                                       class="colored toggle toggle_modify {{ participant.canModify() ? 'status_on' : 'status_off' }}"
+                                                                       title="{{ msg }}">
+                                                                        <i class="fa fa-pencil"></i>
+                                                                    </a>
+                                                                    <input type="hidden"
+                                                                           name="participants[{{ userId }}][modify]"
+                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
-                                                                    {% if context == 'Feedback' %}
-                                                                        {% set msg = 'User can see others choices'|trans %}
+                                                                    {% set msg = 'User can see others choices'|trans %}
+                                                                    <span class="feedback_only_true">
                                                                         <a href="#"
-                                                                           class="fa fa-users colored toggle toggle_see_others {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }}"
-                                                                           title="{{ msg }}"></a>
-                                                                        <input type="hidden"
-                                                                               name="participants[{{ userId }}][see_others]"
-                                                                               value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
-                                                                    {% endif %}
+                                                                           class="colored toggle toggle_see_others {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }}"
+                                                                           title="{{ msg }}">
+                                                                            <i class="fa fa-users"></i>
+                                                                        </a>
+                                                                    </span>
+                                                                    <input type="hidden"
+                                                                           name="participants[{{ userId }}][see_others]"
+                                                                           value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
                                                                     {% set msg = 'User can download HD'|trans %}
                                                                     <a href="#"
-                                                                       class="fa fa-download colored toggle toggle_HD status_off"
-                                                                       title="{{ msg }}"></a>
+                                                                       class="colored toggle toggle_HD status_off"
+                                                                       title="{{ msg }}">
+                                                                        <i class="fa fa-download"></i>
+                                                                    </a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][HD]"
                                                                            value="0"/>
@@ -356,6 +383,8 @@
                                         </table>
                                     </div>
                                 {% endfor %}
+                            {% else %}
+                                {# should not happen, only 2 posssible contexts #}
                             {% endif %}
                         </div>
                     </form>
@@ -368,13 +397,12 @@
                                 </button>
                             </div>
                         </form>
-                        {% if context == 'Push' %}
-                            <button class="colored inverse FeedbackSend">{{ "Send" | trans }}</button>
-                        {% else %}
-                            {# only Feedback and Sharebasket manage users and may have a "feedbackaction" #}
-                            {# todo !!!!!!!!! see if "push" ignores feedbackaction so we can remove the "if context" #}
+                        {% if context=='Sharebasket' and basket %}
+                            {# only Sharebasket manage users and may have a "feedbackaction" #}
                             <button class="colored inverse FeedbackSend"
                                     data-feedback-action={{ feedbackAction }}>{{ "Save" | trans }}</button>
+                        {% else %}
+                            <button class="colored inverse FeedbackSend">{{ "Send" | trans }}</button>
                         {% endif %}
                     </div>
                 </div>

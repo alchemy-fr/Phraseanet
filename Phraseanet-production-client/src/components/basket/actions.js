@@ -1,6 +1,5 @@
 import $ from 'jquery';
-import recordFeedbackModal from "../record/feedback";
-import recordShareModal from "../record/sharebasket";
+import sharebasketModal from "../record/sharebasketModal";
 
 const shareBasket = (services) => {
     const { configService, localeService, appEvents } = services;
@@ -13,14 +12,16 @@ const shareBasket = (services) => {
         // basket general menu : click on "share"
         $container.on('click', '.basket-share-action', function (event) {
             event.preventDefault();
-            _triggerModal(event, recordShareModal(services).openModal);
+            _triggerModal(event, sharebasketModal(services).openModal);
         });
-
+/*
         // basket general menu : click on "feedback"
         $container.on('click', '.basket-feedback-action', function (event) {
             event.preventDefault();
             _triggerModal(event, recordFeedbackModal(services).openModal);
         });
+
+*/
     };
 
     const _triggerModal = (event, actionFn) => {

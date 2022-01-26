@@ -169,19 +169,7 @@
                             {% set nparticipants = basket.getParticipants | length %}
 
                             {% if nparticipants == 0 %}
-                                {# if simple basket : show both share & feedback button (for creation) #}
-                                <div title="" class="context-menu-item menu3-custom-item">
-                                    <div class="context-menu-item-inner basket-feedback-action"
-                                         data-kind="basket"
-                                         data-id="{{ basket.getId() }}"
-                                    >
-                                        <a href="#" title="{{ 'action::feedback basket' | trans }}">
-                                            <i class="fa fa-bullhorn"></i>
-                                            &nbsp;
-                                            <span>{{ 'action::feedback basket' | trans }}</span>
-                                        </a>
-                                    </div>
-                                </div>
+                                {# if simple basket : show both share button (for creation) #}
                                 <div title="" class="context-menu-item menu3-custom-item">
                                     <div class="context-menu-item-inner basket-share-action"
                                          data-kind="basket"
@@ -195,35 +183,23 @@
                                     </div>
                                 </div>
                             {% else %}
-                                {% if basket.isVoteBasket() %}
-                                    {# if feedback : show feedback button (for modification) #}
-                                    <div title="" class="context-menu-item menu3-custom-item">
-                                        <div class="context-menu-item-inner basket-feedback-action"
-                                             data-kind="basket"
-                                             data-id="{{ basket.getId() }}"
-                                        >
-                                            <a href="#" title="{{ 'action::modify feedback basket' | trans }}">
+                                {# if share : show share button (for modification) #}
+                                <div title="" class="context-menu-item menu3-custom-item">
+                                    <div class="context-menu-item-inner basket-share-action"
+                                         data-kind="basket"
+                                         data-id="{{ basket.getId() }}"
+                                    >
+                                        <a href="#" title="{{ 'action::modify share basket' | trans }}">
+                                            {% if basket.isVoteBasket() %}
                                                 <i class="fa fa-bullhorn"></i>
-                                                &nbsp;
-                                                <span>{{ 'action::modify feedback basket' | trans }}</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    {# if share : show share button (for modification) #}
-                                    <div title="" class="context-menu-item menu3-custom-item">
-                                        <div class="context-menu-item-inner basket-share-action"
-                                             data-kind="basket"
-                                             data-id="{{ basket.getId() }}"
-                                        >
-                                            <a href="#" title="{{ 'action::modify share basket' | trans }}">
+                                            {% else %}
                                                 <i class="fa fa-share"></i>
-                                                &nbsp;
-                                                <span>{{ 'action::modify share basket' | trans }}</span>
-                                            </a>
-                                        </div>
+                                            {% endif%}
+                                            &nbsp;
+                                            <span>{{ 'action::modify share basket' | trans }}</span>
+                                        </a>
                                     </div>
-                                {% endif %}
+                                </div>
                             {% endif %}
                         {% endif %}
 

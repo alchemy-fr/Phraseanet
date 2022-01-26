@@ -4,13 +4,12 @@ import editRecord from '../../record/edit';
 import deleteRecord from '../../record/delete';
 import exportRecord from '../../record/export';
 import propertyRecord from '../../record/property';
-import recordSharebasketModal from '../../record/sharebasket';
-import recordPushModal from '../../record/push';
+import sharebasketModal from '../../record/sharebasketModal';
+import pushbasketModal from '../../record/pushbasketModal';
 import usersListsModal from '../../userslists/index';
 import recordPublish from '../../record/publish';
 import recordToolsModal from '../../record/tools/index';
 import printRecord from '../../record/print';
-import recordFeedbackModal from '../../record/feedback';
 import bridgeRecord from '../../record/bridge';
 import videoToolsModal from '../../record/videoEditor/index';
 import merge from 'lodash.merge';
@@ -194,13 +193,13 @@ const toolbar = (services) => {
          * tools > Push
          */
         $container.on('click', '.TOOL_pushdoc_btn', function (event) {
-            _triggerModal(event, recordPushModal(services).openModal);
+            _triggerModal(event, pushbasketModal(services).openModal);
         });
         /**
          * tools > Push > Share
          */
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
-            _triggerModal(event, recordSharebasketModal(services).openModal);
+            _triggerModal(event, sharebasketModal(services).openModal);
         });
         /**
          * tools > Push > UsersLists
@@ -208,25 +207,18 @@ const toolbar = (services) => {
         $container.on('click', '.TOOL_userslists_btn', function (event) {
             _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
         });
-        /**
-         * tools > Push > Feedback
-         */
-        $container.on('click', '.TOOL_feedback_btn', function (event) {
-
-            _triggerModal(event, recordFeedbackModal(services).openModal);
-        });
 
         /**
-         * workzone > feedback
+         * workzone (opened basket) > feedback
          */
         $container.on('click', '.feedback-user', function (event) {
             event.preventDefault();
             let $el = $(event.currentTarget);
-            let params = {};
-            params.ssel = $el.data('basket-id');
-            params.feedbackaction = 'adduser';
 
-            recordFeedbackModal(services).openModal(params);
+            sharebasketModal(services).openModal({
+                ssel: $el.data('basket-id'),
+                feedbackaction: 'adduser'
+            });
         });
 
         /**

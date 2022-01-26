@@ -2,23 +2,27 @@ import $ from 'jquery';
 import {Lists} from '../../list/model/index';
 import dialog from './../../../phraseanet-common/components/dialog';
 import Selectable from '../../utils/selectable';
-import pushAddUser from './addUser';
+import pushOrShareAddUser from './addUser';
 import * as _ from 'underscore';
 
 const humane = require('humane-js');
 require('./../../../phraseanet-common/components/tooltip');
 
-const Feedback = function (services, options) {
+const pushOrShare = function (services, container) {
     const { configService, localeService, appEvents } = services;
     const url = configService.get('baseUrl');
     let $container;
-    let { containerId, context } = options;
+    let { containerId, context } = container;
 
+    this.appEvents = appEvents;
     this.url = url;
     this.container = $container = $(containerId);
     this.userList = new Lists();
 
     this.Context = context;
+
+    let $badges = $('.user_content .badges .badge', this.container);
+
 
     this.selection = new Selectable(services,
         $('.user_content .badges', this.container),
@@ -27,7 +31,7 @@ const Feedback = function (services, options) {
         }
     );
 
-    pushAddUser(services).initialize({$container: this.container});
+    pushOrShareAddUser(services).initialize({$container: this.container});
 
     var $this = this;
 
@@ -230,8 +234,14 @@ console.log("====== click on .recommended_users_list");
         return false;
     });
 
+    /**
+     * click on the main dlg send (or save) button
+     */
     $('.FeedbackSend', this.container).bind('click', function (event) {
         const $el = $(event.currentTarget);
+
+        console.log("==== clicked main dlg save button with feedbackaction=" + $el.data('feedback-action') + "====");
+
         if ($('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
             return;
@@ -239,10 +249,12 @@ console.log("====== click on .recommended_users_list");
 
         var buttons = {};
 
-console.log("==== feedback sent");
+        // if we edit an existing basket, add a "save" button to send without email notification
+        //
         if ($el.data('feedback-action') === 'adduser') {
 console.log("==== feedback-action === adduser");
             buttons[localeService.t('feedbackSaveNotNotify')] = function () {
+                console.log("==== clicked popup dlg save button ====");
                 $dialog.close();
 
                 $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
@@ -254,7 +266,12 @@ console.log("==== feedback-action === adduser");
             };
         }
 
+        // normal "send button"
+        //
         buttons[localeService.t('send')] = function () {
+            console.log("==== clicked popup dlg send button ====");
+
+            // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {
                 if ($.trim($('input[name="name"]', $dialog.getDomElement()).val()) === '') {
                     var options = {
@@ -269,8 +286,7 @@ console.log("==== feedback-action === adduser");
                 }
             }
 
-            $dialog.close();
-
+            // complete the main dlg (ux) form with infos from save dlg
             if ($el.data('feedback-action') !== 'adduser') {
                 $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
                 $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
@@ -281,6 +297,10 @@ console.log("==== feedback-action === adduser");
             $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="notify"]', $FeedBackForm).val('1');
 
+            // close the popup save dlg
+            $dialog.close();
+
+            // submit the main form
             $FeedBackForm.trigger('submit');
         };
 
@@ -353,25 +373,6 @@ console.log("==== feedback-action === adduser");
 
     $('.user_content .badges', this.container).disableSelection();
 
-
-    // toggle feature for user
-    let $badges = $('.user_content .badges .badge', this.container);
-    $badges.on('click', '.toggle', function (event) {
-        console.log("==== toggle clicked ====");
-        event.stopPropagation();
-        // event.stopImmediatePropagation();
-        // event.preventDefault();
-        // event.cancelBubble = true;
-
-        var $this = $(this);
-
-        $this.toggleClass('status_off status_on');
-
-        $this.parent().find('input').val($this.hasClass('status_on') ? '1' : '0');
-
-        return false;
-    });
-
     this.container.on('mouseenter', '#info-box-trigger', function(event) {
         $('#info-box').show();
     });
@@ -399,33 +400,6 @@ console.log("==== feedback-action === adduser");
         return false;
     });
 
-    this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
-        var $elem = $(this).closest('.badge');
-        let userEmailEl = $elem.find('.user-email').val();
-        let action = $('input[name="feedbackAction"]').val();
-
-        if (action == 'adduser') {
-            let value = $('#newParticipantsUser').val();
-            let actualParticipantsName = value.split('; ');
-            // remove the user in the list of new participant if yet exist
-            let key = $.inArray(userEmailEl, actualParticipantsName);
-            if (key > -1) {
-                actualParticipantsName.splice(key, 1);
-                if (actualParticipantsName.length != 0) {
-                    value = actualParticipantsName.join('; ');
-                    $('#newParticipantsUser').val(value);
-                } else {
-                    $('#newParticipantsUser').val('');
-                }
-            }
-        }
-
-        $elem.fadeOut(function () {
-            $elem.remove();
-        });
-        return false;
-    });
-
     this.container.on('click', '.list_manager', function (event) {
         $('#PushBox').hide();
         $('#ListManager').show();
@@ -448,6 +422,7 @@ console.log("==== feedback-action === adduser");
 
 
     $('form.list_saver', this.container).bind('submit', () => {
+        console.log("==== save ====");
         var $form = $(event.currentTarget);
         var $input = $('input[name="list_name"]', $form);
 
@@ -528,10 +503,97 @@ console.log("==== feedback-action === adduser");
         return $(html).data('ui-autocomplete-item', item).appendTo(ul);
     };
 
+    appEvents.listenAll({
+        'sharebasket.participantsChanged': function(o) {
+            console.log("==== user list changed with context " + o.context + "====");
+
+            // the list on participants (badges) have changed : set event handlers on specific elements...
+
+            const $badges = $('.user_content .badges .badge', o.container);
+
+            // ... delete badge handler
+            //
+            $badges.off('click', '.deleter')
+                   .on('click', '.deleter', function (event) {
+                var $elem = $(this).closest('.badge');
+                let userEmailEl = $elem.find('.user-email').val();
+                let action = $('input[name="feedbackAction"]').val();
+
+                if (action === 'adduser') {
+                    let value = $('#newParticipantsUser').val();
+                    let actualParticipantsName = value.split('; ');
+                    // remove the user in the list of new participant if yet exist
+                    let key = $.inArray(userEmailEl, actualParticipantsName);
+                    if (key > -1) {
+                        actualParticipantsName.splice(key, 1);
+                        if (actualParticipantsName.length != 0) {
+                            value = actualParticipantsName.join('; ');
+                            $('#newParticipantsUser').val(value);
+                        } else {
+                            $('#newParticipantsUser').val('');
+                        }
+                    }
+                }
+
+                $elem.fadeOut(function () {
+                    $elem.remove();
+                });
+
+                appEvents.emit('sharebasket.participantsChanged', {container:this.container, context:'user-deleted'});
+
+                return false;
+            });
+
+            // ... toggle buttons handlers
+            //
+            $badges.off('click', '.toggle')
+                   .on('click', '.toggle', function (event) {
+                console.log("==== toggle clicked ====");
+                event.stopPropagation();
+
+                const $this = $(this);
+
+                $this.toggleClass('status_off status_on');
+
+                $this.parent().find('input').val($this.hasClass('status_on') ? '1' : '0');
+
+                // if a "comment" toggle is on, the basket becomes a "feedback"
+                if($('.status_on.toggle_agree', $badges).length > 0) {
+                    $('#feedback_end_date', o.container).show();
+                }
+                else {
+                    $('#feedback_end_date', o.container).hide();
+                }
+
+                appEvents.emit('sharebasket.toggleChanged', {container:this.container, context:'toggle-changed'});
+
+                return false;
+            });
+            // if user list changes, toggles also
+            appEvents.emit('sharebasket.toggleChanged', { container:this.container, context:o.context });
+        },
+        'sharebasket.toggleChanged': function(o) {
+            // a toggle on a user badge was changed
+            const $badges = $('.user_content .badges .badge', o.container);
+
+            // if a "comment" toggle is on, the basket becomes a "feedback"
+            if($('.status_on.toggle_agree', $badges).length > 0) {
+                $('.feedback_only_false', o.container).hide();
+                $('.feedback_only_true', o.container).show();
+            }
+            else {
+                $('.feedback_only_true', o.container).hide();
+                $('.feedback_only_false', o.container).show();
+            }
+        }
+    });
+
+    appEvents.emit('sharebasket.participantsChanged', { container:this.container, context:'init' });
+
     return this;
 };
 
-Feedback.prototype = {
+pushOrShare.prototype = {
     selectUser: function (user) {
 console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
         if (typeof user !== 'object') {
@@ -567,6 +629,9 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
         });
         // p4.Feedback.appendBadge(html);
         this.appendBadge(html);
+
+        this.appEvents.emit('sharebasket.participantsChanged', {container:this.container, context:'user-added'});
+
     },
     loadUser: function (usr_id, callback) {
         var $this = this;
@@ -638,4 +703,4 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
 };
 
 
-export default Feedback;
+export default pushOrShare;

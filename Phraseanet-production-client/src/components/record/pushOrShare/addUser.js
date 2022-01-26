@@ -7,7 +7,7 @@ import merge from 'lodash.merge';
 
 require('geonames-server-jquery-plugin/jquery.geonames.js');
 
-const pushAddUser = (services) => {
+const pushOrShareAddUser = (services) => {
     const { configService, localeService, appEvents } = services;
     const url = configService.get('baseUrl');
     let searchSelectionSerialized = '';
@@ -156,4 +156,4 @@ const pushAddUser = (services) => {
     return {initialize};
 };
 
-export default pushAddUser;
+export default pushOrShareAddUser;

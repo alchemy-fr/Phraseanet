@@ -56,11 +56,6 @@ class PushController extends Controller
         return $this->renderPushTemplate($request, 'Push');
     }
 
-    public function validateFormAction(Request $request)
-    {
-        return $this->renderPushTemplate($request, 'Feedback');
-    }
-
     public function sharebasketFormAction(Request $request)
     {
         return $this->renderPushTemplate($request, 'Sharebasket');
@@ -207,7 +202,7 @@ class PushController extends Controller
 
 
     /** ----------------------------------------------------------------------------------
-     * a feedback (=validation) request is made by the current user to many participants
+     * a sharebasket request is made by the current user to many participants
      *
      * this is the same code as "send" request (=simple push), except here we
      *   - create a validation session,
@@ -218,7 +213,7 @@ class PushController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function validateAction(Request $request)
+    public function sharebasketAction(Request $request)
     {
         $ret = [
             'success' => false,
@@ -375,7 +370,7 @@ class PushController extends Controller
 
                 // here the participant did not exist, create
                 $basketParticipant = $basket->addParticipant($participantUser);
-                // set right
+                // set rights (nb: hd right is managed by acl on record for the user)
                 $basketParticipant
                     ->setCanAgree($participant['agree'])
                     ->setCanModify($participant['modify'])
@@ -410,7 +405,6 @@ class PushController extends Controller
                         $participantUser->getId(),
                         ''
                     );
-
                 }
 
                 /** @var BasketParticipant $basketParticipant */
@@ -526,7 +520,8 @@ class PushController extends Controller
      * @return JsonResponse
      * @throws Exception
      */
-    public function sharebasketAction(Request $request)
+
+    public function dead_sharebasketAction(Request $request)
     {
         $ret = [
             'success' => false,
@@ -1130,21 +1125,29 @@ class PushController extends Controller
         $participantUserIds = '';
         $initiatorUserId = null;
 
-        if ($context === 'Feedback' || $context === 'Sharebasket') {
-            if ($feedbackaction === 'adduser' && $push->is_basket() /* && $push->get_original_basket()->isVoteBasket() */) {
-                $participants = $push->get_original_basket()->getParticipants();
-                $participantUserIds = implode('_', $push->get_original_basket()->getListParticipantsUserId());
-                $initiatorUserId = $context === 'Feedback'
+        if ($context === 'Sharebasket') {
+            if ($push->is_basket() ) {
+                // edit an existing sharebasket
+                //
+                $basket = $push->get_original_basket();
+                $participants = $basket->getParticipants();
+                $participantUserIds = implode('_', $basket->getListParticipantsUserId());
+                $initiatorUserId = $basket->isVoteBasket()
                     ? $push->get_original_basket()->getVoteInitiator()->getId()
                     : $this->getAuthenticatedUser()->getId();
             }
             else {
-                // Display the initiator in the participant list window when the first time to create a feedback
+                // initiate a share from a list of records
+                // add the initiator in the participant list window when the first time to create a feedback
                 $basketParticipant = new BasketParticipant($this->getAuthenticatedUser());
                 $basketParticipant->setCanSeeOthers(1);
                 array_push($participants, $basketParticipant);
-                $initiatorUserId = $participantUserIds = $this->getAuthenticatedUser()->getId();
+                $participantUserIds = $this->getAuthenticatedUser()->getId();   // list with a single user
+                $initiatorUserId = $this->getAuthenticatedUser()->getId();
             }
+        }
+        else {
+            // context = "Push"
         }
 
         $repository = $this->getUserListRepository();

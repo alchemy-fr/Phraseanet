@@ -4,7 +4,7 @@ import listEditor from './listEditor';
 import listShare from './listShare';
 import dialog from './../../phraseanet-common/components/dialog';
 import Selectable from '../utils/selectable';
-import pushAddUser from '../record/recordPush/addUser';
+import pushOrShareAddUser from '../record/pushOrShare/addUser';
 import * as _ from 'underscore';
 
 const humane = require('humane-js');
@@ -25,7 +25,7 @@ const ListManager = function (services, options) {
     this.removeUserMethod = '';
     this.addUserMethod = '';
 
-    pushAddUser(services).initialize({$container: this.container});
+    pushOrShareAddUser(services).initialize({$container: this.container});
 
     $container.on('click', '.back_link', function () {
             $('#PushBox').show();

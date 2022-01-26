@@ -9288,21 +9288,21 @@ TABLE.explain3 TR TD {
   color: transparent;
 }
 
-.whole_dialog_container BUTTON.with_icon I.fa,
-.whole_dialog_container A.with_icon I.fa {
+.whole_dialog_container BUTTON.with_icon > I.fa,
+.whole_dialog_container A.with_icon > I.fa {
   font-size: 160%;
   vertical-align: middle;
   position: absolute;
   left: 10px;
 }
 
-.whole_dialog_container BUTTON.toggle:hover,
-.whole_dialog_container BUTTON.toggle.status_on:hover,
-.whole_dialog_container BUTTON.toggle.status_off,
-.whole_dialog_container A.toggle:hover,
-.whole_dialog_container A.toggle.status_on:hover,
-.whole_dialog_container A.toggle.status_off {
+.whole_dialog_container BUTTON.toggle,
+.whole_dialog_container A.toggle {
   background-color: transparent !important;
+}
+
+.whole_dialog_container BUTTON.toggle.status_off,
+.whole_dialog_container A.toggle.status_off {
   color: #666;
 }
 
@@ -9326,6 +9326,13 @@ TABLE.explain3 TR TD {
   height: 30px;
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
+}
+
+.whole_dialog_container .main-icon {
+  font-size: 25px;
+  display: inline-block;
+  border-radius: 30px;
+  padding: 5px;
 }
 
 .whole_dialog_container .PushBox .push-add-user {
@@ -9425,9 +9432,7 @@ TABLE.explain3 TR TD {
 }
 
 .Push BUTTON.colored.status_on,
-.Push BUTTON.colored.status_off:hover,
-.Push A.colored.status_on,
-.Push A.colored.status_off:hover {
+.Push A.colored.status_on {
   color: #2196f3;
 }
 
@@ -9456,9 +9461,7 @@ TABLE.explain3 TR TD {
 }
 
 .Feedback BUTTON.colored.status_on,
-.Feedback BUTTON.colored.status_off:hover,
-.Feedback A.colored.status_on,
-.Feedback A.colored.status_off:hover {
+.Feedback A.colored.status_on {
   color: #8bc34a;
 }
 
@@ -9487,9 +9490,7 @@ TABLE.explain3 TR TD {
 }
 
 .Sharebasket BUTTON.colored.status_on,
-.Sharebasket BUTTON.colored.status_off:hover,
-.Sharebasket A.colored.status_on,
-.Sharebasket A.colored.status_off:hover {
+.Sharebasket A.colored.status_on {
   color: #E0215D;
 }
 
@@ -9518,9 +9519,7 @@ TABLE.explain3 TR TD {
 }
 
 .ListManager BUTTON.colored.status_on,
-.ListManager BUTTON.colored.status_off:hover,
-.ListManager A.colored.status_on,
-.ListManager A.colored.status_off:hover {
+.ListManager A.colored.status_on {
   color: #ff9400;
 }
 

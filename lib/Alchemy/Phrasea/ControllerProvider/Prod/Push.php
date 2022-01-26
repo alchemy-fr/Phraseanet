@@ -49,11 +49,12 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
             $firewall->requireRight(\ACL::CANPUSH);
         });
 
-        /* click on the toolbar (push...) to push/share/feedback --> open ux */
+        /* click on the toolbar button "push" --> open ux */
+        /** @uses \Alchemy\Phrasea\Controller\Prod\PushController::postFormAction */
         $controllers->post('/sendform/', 'controller.prod.push:postFormAction');
 
-        $controllers->post('/validateform/', 'controller.prod.push:validateFormAction');
-
+        /* click on the toolbar button "share" --> open ux */
+        /** @uses \Alchemy\Phrasea\Controller\Prod\PushController::sharebasketFormAction */
         $controllers->post('/sharebasketform/', 'controller.prod.push:sharebasketFormAction');
 
 
@@ -61,10 +62,6 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         /** @uses PushController::sendAction() */
         $controllers->post('/send/', 'controller.prod.push:sendAction')
             ->bind('prod_push_send');
-
-        /** @uses PushController::validateAction() */
-        $controllers->post('/validate/', 'controller.prod.push:validateAction')
-            ->bind('prod_push_validate');
 
         /** @uses PushController::sharebasketAction() */
         $controllers->post('/sharebasket/', 'controller.prod.push:sharebasketAction')

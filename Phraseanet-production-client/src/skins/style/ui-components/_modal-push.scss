@@ -102,16 +102,19 @@ $toggledOff: #666;       // a toggle button IS off
                 content: "|";           // any char will do
                 color:transparent;
             }
-            I.fa {
+            &>I.fa {
                 font-size: 160%;
                 vertical-align: middle;
                 position: absolute;
                 left: 10px;
             }
         }
-        &.toggle:hover, &.toggle.status_on:hover, &.toggle.status_off {
+        // prevent toggle buttons to change on :hover
+        &.toggle {
             background-color: transparent !important;   // important because we don't want A:hover to change background
-            color: $toggledOff;
+            &.status_off {
+                color: $toggledOff;
+            }
         }
     }
 
@@ -130,6 +133,14 @@ $toggledOff: #666;       // a toggle button IS off
         height: 30px;
         border-bottom-left-radius: 0;
         border-top-left-radius: 0;
+    }
+
+    // a <i class="fa fa-xxx"> as a big round icon (pleasa add "colored inverse" classes to see the disc!)
+    .main-icon {
+        font-size: 25px;
+        display: inline-block;
+        border-radius: 30px;
+        padding: 5px;
     }
 
     /***********************
@@ -239,7 +250,7 @@ $toggledOff: #666;       // a toggle button IS off
             color: $pushThemeColor;
             background-color: revert;
         }
-        &.status_on, &.status_off:hover {
+        &.status_on {
             color: $pushThemeColor;
         }
     }
@@ -263,7 +274,7 @@ $toggledOff: #666;       // a toggle button IS off
             color: $feedbackThemeColor;
             background-color: revert;
         }
-        &.status_on, &.status_off:hover {
+        &.status_on {
             color: $feedbackThemeColor;
         }
     }
@@ -287,7 +298,7 @@ $toggledOff: #666;       // a toggle button IS off
             color: $sharebasketThemeColor;
             background-color: revert;
         }
-        &.status_on, &.status_off:hover {
+        &.status_on {
             color: $sharebasketThemeColor;
         }
     }
@@ -311,7 +322,7 @@ $toggledOff: #666;       // a toggle button IS off
             color: $listManagerThemeColor;
             background-color: revert;
         }
-        &.status_on, &.status_off:hover {
+        &.status_on {
             color: $listManagerThemeColor;
         }
     }

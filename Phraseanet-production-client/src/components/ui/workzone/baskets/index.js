@@ -77,7 +77,6 @@ const workzoneBaskets = (services) => {
     return {
         initialize,
         openBasketPreferences
-
     };
 };
 
