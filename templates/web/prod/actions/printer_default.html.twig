@@ -4,7 +4,7 @@
         <div style="padding:10px;">
             <div style="margin: 20px 5px;">
                 <h4 style="margin-left: 0px;">{{ 'print:: pdf title' | trans }}</h4>
-                <input type="text" value="" name="print-pdf-title" class="print-pdf-title" style="margin-left: 0px"/>
+                <input type="text" value="" name="print-pdf-title" class="print-pdf-title" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
             </div>
             <div style="margin: 20px 5px;">
                 <h4 style="margin-left: 0px;">{{ 'print:: pdf description' | trans }}</h4>
@@ -27,6 +27,7 @@
             {% endif %}
 
             {% if printer.get_count_actionable() > 0 %}
+                <h3>{{ 'print:: choose model' | trans }}</h3>
                 {% if printer.get_count_preview() > 0 %}
                 <h4>{{ 'phraseanet:: preview' | trans }}</h4>
                 <div style="margin: 10px 0 20px 0; padding: 0 10px;">

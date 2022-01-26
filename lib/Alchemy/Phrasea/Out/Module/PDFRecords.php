@@ -33,6 +33,8 @@ class PDFRecords extends PDF
         $this->pdfTitle = $pdfTitle;
         $this->pdfDescription = $pdfDescription;
 
+        $this->pdf->setPrintOwnerUser($app->getAuthenticatedUser());
+
         $records = $printer->get_elements();
 
         $list = [];
@@ -507,7 +509,7 @@ class PDFRecords extends PDF
             $this->pdf->Cell(95, $h, $RIGHT_TEXT, "TBR", 1, "R", 1);
 
             $this->pdf->SetY($y);
-            $this->pdf->write(7, "record " . $rec->getNumber(), '', false, 'C');
+            $this->pdf->write(7, $rec->getNumber(), '', false, 'C');
             $this->pdf->SetY($y2);
 
             if($basket) {
