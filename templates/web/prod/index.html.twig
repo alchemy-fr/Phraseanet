@@ -155,6 +155,13 @@
             $('body').addClass('{{ cssfile }}');
 
         });
+
+        // manage focus in a ui dialog
+        $(document).on('focusin', function(e) {
+            if ($(event.target).closest(".mce-window").length) {
+                e.stopImmediatePropagation();
+            }
+        });
     </script>
     {% include "common/templates.html.twig" %}
 {% endblock %}
