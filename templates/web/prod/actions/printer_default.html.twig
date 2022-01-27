@@ -30,39 +30,52 @@
 
             {% if printer.get_count_actionable() > 0 %}
                 {% if printer.get_count_preview() > 0 %}
-                <h4>{{ 'phraseanet:: preview' | trans }}</h4>
-                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
-                    <label for="RADI_PRE_LAB" class="radio">
-                        <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
-                            {{ 'print:: image de choix seulement' | trans }}
-                    </label>
-                    <label for="RADI_PRE_CAP" class="radio">
-                        <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
-                            {{ 'print:: image de choix et description' | trans }}
-                    </label>
-                    <label for="RADI_PRE_TDM" class="radio">
-                        <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
-                            {{ 'print:: image de choix et description avec planche contact' | trans }}
-                    </label>
-                    <label for="RADI_CAP" class="radio">
-                        <input type="radio" name="lay" value="caption" id="RADI_CAP" />
-                            {{ 'print:: description' | trans }}
-                    </label>
-                </div>
+                    <h4>{{ 'phraseanet:: preview' | trans }}</h4>
+                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                        <label for="RADI_PRE_LAB" class="radio">
+                            <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
+                                {{ 'print:: image de choix seulement' | trans }}
+                        </label>
+                        <label for="RADI_PRE_CAP" class="radio">
+                            <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
+                                {{ 'print:: image de choix et description' | trans }}
+                        </label>
+                        <label for="RADI_PRE_TDM" class="radio">
+                            <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
+                                {{ 'print:: image de choix et description avec planche contact' | trans }}
+                        </label>
+                        <label for="RADI_CAP" class="radio">
+                            <input type="radio" name="lay" value="caption" id="RADI_CAP" />
+                                {{ 'print:: description' | trans }}
+                        </label>
+                    </div>
                 {% endif %}
                 {% if printer.get_count_thumbnail() > 0 %}
-                <h4>{{ 'print:: imagette' | trans }}</h4>
-                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
-                    <label for="RADI_PRE_THUM" class="radio">
-                        <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
-                            {{ 'print:: liste d\'imagettes' | trans }}
-                    </label>
-                    <label for="RADI_PRE_THUMGRI" class="radio">
-                        <input type="radio" name="lay" {% if not basketFeedbackId %} checked {% endif %} value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
-                            {{ 'print:: planche contact (mosaique)' | trans }}
+                    <h4>{{ 'print:: imagette' | trans }}</h4>
+                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                        <label for="RADI_PRE_THUM" class="radio">
+                            <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
+                                {{ 'print:: liste d\'imagettes' | trans }}
+                        </label>
+                        <label for="RADI_PRE_THUMGRI" class="radio">
+                            <input type="radio" name="lay" {% if not basketFeedbackId %} checked {% endif %} value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
+                                {{ 'print:: planche contact (mosaique)' | trans }}
+                        </label>
+                    </div>
+                {% endif %}
+
+                <h3 style="margin-left: 5px;">{{ 'print:: some options' | trans }}</h3>
+                <div style="margin: 20px 5px;">
+                    <h4 style="margin-left: 0px;">{{ 'print:: add and remember password to protect the pdf' | trans }}</h4>
+                    <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
+                </div>
+
+                <div style="margin: 20px 5px;">
+                    <label class="checkbox" for="can-download-preview">
+                        <input type="checkbox" id="can-download-preview" name="can-download-preview" value="1" />
+                        {{ 'print:: Can download preview' | trans }}
                     </label>
                 </div>
-                {% endif %}
 
                 {% if printer.get_count_thumbnail() > 0 or printer.get_count_preview() > 0 %}
                     <div style="margin-bottom: 10px; text-align: center;">
@@ -75,6 +88,7 @@
             {% else %}
                 {{ 'export:: erreur : aucun document selectionne' | trans }}
             {% endif %}
+
             </div>
         </div>
     </form>

@@ -25,13 +25,29 @@ class PDFRecords extends PDF
     private $pdfTitle;
     private $pdfDescription;
     private $isUserInputPrinted = false;
+    private $canDownload;
 
-    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '')
+    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false)
     {
         parent::__construct($app);
         $this->printer = $printer;
         $this->pdfTitle = $pdfTitle;
         $this->pdfDescription = $pdfDescription;
+        $this->canDownload = $canDownload;
+
+        $this->pdf->SetProtection([
+            'print',
+            'modify',
+            'copy',
+            'annot-forms',
+            'fill-forms',
+            'extract',
+            'assemble',
+            'print-high',
+            'owner'
+        ],
+            $userPassword
+        );
 
         $this->pdf->setPrintOwnerUser($app->getAuthenticatedUser());
 
@@ -214,6 +230,11 @@ class PDFRecords extends PDF
                 }
 
                 $this->pdf->MultiCell($DiapoW, $TitleH, $t, '0', 'C', false);
+
+                $this->pdf->SetXY($x, $y + $DiapoH - 5);
+                $this->pdf->Circle($x + $DiapoW / 2, $y + $DiapoH - 3, 3, 0, 360, "F", [], [200, 200, 200]);
+                $this->pdf->MultiCell($DiapoW, '8', $rec->getNumber(), '0', 'C', false);
+
             }
         }
         $this->pdf->SetLeftMargin($oldMargins['left']);
@@ -607,6 +628,14 @@ class PDFRecords extends PDF
             }
 
             $this->pdf->Image($f, (210 - $finalWidth) / 2, $y, $finalWidth, $finalHeight);
+
+            if ($this->canDownload) {
+                $this->pdf->SetXY($lmargin, $this->pdf->GetY() -1);
+
+                $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$subdef->get_permalink()->get_url(), $this->app->trans("print:: download"));
+
+                $this->pdf->writeHTML($downloadLink);
+            }
 
             if ($miniConv != NULL) {
                 foreach ($miniConv as $oneF)

@@ -42,12 +42,14 @@ class PrinterController extends Controller
         $layout = $request->request->get('lay');
         $title = $request->request->get('print-pdf-title') ? : '';
         $description = $request->request->get('print-pdf-description') ? : '';
+        $userPassword = $request->request->get('print-pdf-password') ? : '';
+        $canDownload = $request->request->get('can-download-preview') == 1 ? true : false ;
 
         foreach ($printer->get_elements() as $record) {
             $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
 
-        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description);
+        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload);
 
         $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
         $response->headers->set('Pragma', 'public', true);
