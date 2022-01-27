@@ -393,7 +393,7 @@ class Basket
     /**
      * Set vote expires
      *
-     * @param  DateTime         $expires
+     * @param  DateTime|null         $expires
      * @return self
      */
     public function setVoteExpires($expires)
@@ -417,7 +417,7 @@ class Basket
     /**
      * Set share expires
      *
-     * @param  DateTime         $expires
+     * @param  DateTime|null         $expires
      * @return self
      */
     public function setShareExpires($expires)

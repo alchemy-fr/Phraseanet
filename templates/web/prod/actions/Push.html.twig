@@ -26,8 +26,14 @@
         <div class="PNB" style="width:220px;">
             <div class="PNB10 LeftColumn">
                 <div class="PNB" style="text-align:center;">
-                    <i class="main-icon fa fa-share colored inverse feedback_only_false"></i>
-                    <i class="main-icon fa fa-bullhorn colored inverse feedback_only_true"></i>
+                    {% if context == "Push" %}
+                        <i class="main-icon fa fa-clone colored inverse"></i>
+                    {% elseif context == "Sharebasket" %}
+                        <i class="main-icon fa fa-share colored inverse feedback_only_false"></i>
+                        <i class="main-icon fa fa-bullhorn colored inverse feedback_only_true"></i>
+                    {% else %}
+                        {# should not happen, only 2 posssible contexts #}
+                    {% endif %}
                 </div>
                 <div class="PNB content" style="top:45px; overflow-y:auto;">
 
@@ -283,10 +289,22 @@
                         {# dates of end-of-vote and end-of-share #}
                         {% if context == 'Sharebasket' %}
                         <div class="ui-dialog-content">
-                            shr:<input type="text" class="btn" name="share_end_date"/>
-                            <span class="feedback_only_true">
-                                fbk:<input type="text" class="btn" name="feedback_end_date"/>
+                            <span id="shareExpiresBlock">
+                                share expires: <input type="text" class="btn" name="shareExpires" style="width: 100px;" />
+                                <i class="fa fa-ellipsis-h colored inverse delta-toggle" data-dest="shareExpires"></i>
                             </span>
+                            <span class="feedback_only_true" style="margin-left:30px;">
+                                feedback expires: <input type="text" class="btn" name="voteExpires" style="width: 100px;" />
+                                <i class="fa fa-ellipsis-h colored inverse delta-toggle" data-dest="voteExpires"></i>
+                            </span>
+                            <ul id="delta-menu" style="position:fixed; z-index: 999; width:80px; height:auto; display:block; top:-1000px;">
+                                <li data-delta=""><a href="#">never</a></li>
+                                <li data-delta="+1"><a href="#">1 day</a></li>
+                                <li data-delta="+2"><a href="#">2 days</a></li>
+                                <li data-delta="+5"><a href="#">5 days</a></li>
+                                <li data-delta="+10"><a href="#">10 days</a></li>
+                                <li data-delta="+30"><a href="#">30 days</a></li>
+                            </ul>
                         </div>
                         {% endif %}
 
@@ -496,16 +514,16 @@
 
         let $container = $('#PushBox');
 
-        $("INPUT[name=feedback_end_date]", $container)
+        $("INPUT[name=voteExpires]", $container)
             .datepicker($.datepicker.regional['default'])
             .datepicker("setDate", "{{ basket.getVoteExpires().format('Y-m-d') }}")
             .change(function () {
-                console.log("==== feedback date changed ====");
+                console.log("==== vote date changed ====");
                 //$('.submit-validation').removeClass('btn-not-shown');
                 //$('.cancel-date').removeClass('btn-not-shown');
             });
 
-        $("INPUT[name=share_end_date]", $container)
+        const $shareExpires = $("INPUT[name=shareExpires]", $container)
             .datepicker($.datepicker.regional['default'])
             .datepicker("setDate", "{{ basket.getShareExpires().format('Y-m-d') }}")
             .change(function () {
@@ -513,6 +531,45 @@
                 //$('.submit-validation').removeClass('btn-not-shown');
                 //$('.cancel-date').removeClass('btn-not-shown');
             });
+
+        // prepare delta dropdown
+        $("#delta-menu", $container)
+            .menu({
+                select: function (event, ui) {
+                    console.log("==== delta changed ====", ui);
+                    const dest = $(this).data('dest');
+                    const $input = $("INPUT[name="+dest+"]", $container)
+                    const delta = $(ui.item[0]).data('delta');
+                    if (delta === '') {
+                        // no end for shareExpires = empty will become null in db
+                        $input.val('')
+                    }
+                    else {
+                        const d = new Date();
+                        d.setDate(d.getDate() + parseInt(delta));
+                        const mm = ((d.getMonth()+1) < 10 ? '0':'') + (d.getMonth()+1);
+                        const dd = (d.getDate() < 10 ? '0':'') + d.getDate();
+
+                        $input.val(d.getFullYear()+'-'+mm+'-'+dd);
+                    }
+                    $(this).hide();
+                }
+            })
+            .mouseleave(function(event, ui) {
+                $(this).hide();
+            })
+            .hide();
+
+        // click to ... to drop
+        $("I.delta-toggle", $container).click(
+            function(event, ui) {
+                console.log("==== dodrop ====", ui);
+                $("#delta-menu", $container)
+                    .data('dest', $(event.currentTarget).data('dest'))  // copy the dest to the menu (easier to handle "select")
+                    .css({top:event.clientY-6, left:event.clientX-6})
+                    .show();
+            }
+        );
     })
 
 </script>

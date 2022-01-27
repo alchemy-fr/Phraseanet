@@ -9164,6 +9164,13 @@ TABLE.explain3 TR TD {
   /*********************
      * global styles
      ********************/
+  /* prefered fa-clone fou
+    // fix the fa-send icon (paper-plane) for a better centering
+    .main-icon.fa-send {
+        padding-left: 5px;
+        padding-right:11px;
+    }
+    */
   /***********************
      * specific styles
      **********************/
@@ -9315,7 +9322,7 @@ TABLE.explain3 TR TD {
   font-size: 25px;
   display: inline-block;
   border-radius: 30px;
-  padding: 5px;
+  padding: 8px;
 }
 
 .whole_dialog_container .PushBox .push-add-user {

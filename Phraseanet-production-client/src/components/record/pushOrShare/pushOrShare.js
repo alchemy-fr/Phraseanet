@@ -557,14 +557,6 @@ console.log("==== feedback-action === adduser");
 
                 $this.parent().find('input').val($this.hasClass('status_on') ? '1' : '0');
 
-                // if a "comment" toggle is on, the basket becomes a "feedback"
-                if($('.status_on.toggle_agree', $badges).length > 0) {
-                    $('#feedback_end_date', o.container).show();
-                }
-                else {
-                    $('#feedback_end_date', o.container).hide();
-                }
-
                 appEvents.emit('sharebasket.toggleChanged', {container:this.container, context:'toggle-changed'});
 
                 return false;

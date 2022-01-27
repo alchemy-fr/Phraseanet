@@ -242,7 +242,7 @@ class PushController extends Controller
                 throw new ControllerException($this->app->trans('No elements to validate'));
             }
 
-            // a validation must apply to a basket...
+            // a sharebasket must apply to a basket...
             //
             if ($pusher->is_basket()) {
                 $basket = $pusher->get_original_basket();
@@ -277,18 +277,37 @@ class PushController extends Controller
                 }
             }
             $basket->setVoteInitiator($this->getAuthenticatedUser());
-
-            $expireDate = null;
+/*
+            $voteExpiresDate = null;
             // add an expiration date if a duration was specified
             $duration = (int)$request->request->get('duration');
             if ($duration > 0) {
-                $expireDate = new DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));
-                $basket->setVoteExpires($expireDate);
+                $voteExpiresDate = new DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));
+                $basket->setVoteExpires($voteExpiresDate);
             }
             else {
                 // go on with existing votes
-                $expireDate = $basket->getVoteExpires();
+                $voteExpiresDate = $basket->getVoteExpires();
             }
+*/
+            if(!empty($shareExpiresDate = $request->request->get('shareExpires'))) {
+                $shareExpiresDate = new DateTime($shareExpiresDate);     // d: "Y-m-d"
+            }
+            else {
+                $shareExpiresDate = null;
+            }
+            $basket->setShareExpires($shareExpiresDate);    // can be null
+
+            if(!empty($voteExpiresDate = $request->request->get('voteExpires'))) {
+                $voteExpiresDate = new DateTime($voteExpiresDate);     // d: "Y-m-d"
+            }
+            else {
+                $voteExpiresDate = null;
+            }
+            $basket->setVoteExpires($voteExpiresDate);      // can be null, will be used for token
+
+
+
 
             $manager->persist($basket);
             $manager->flush();
@@ -429,8 +448,8 @@ class PushController extends Controller
                         $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, null)->getValue();
                     }
                     else {
-                        // a "normal" participant/user gets a expiring token
-                        $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, $expireDate)->getValue();
+                        // a "normal" participant/user gets a expiring token, expirationdate CAN be null
+                        $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, $voteExpiresDate)->getValue();
                     }
                 }
 
