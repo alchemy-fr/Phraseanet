@@ -231,10 +231,25 @@ class PDFRecords extends PDF
 
                 $this->pdf->MultiCell($DiapoW, $TitleH, $t, '0', 'C', false);
 
-                $this->pdf->SetXY($x, $y + $DiapoH - 5);
-                $this->pdf->Circle($x + $DiapoW / 2, $y + $DiapoH - 3, 3, 0, 360, "F", [], [200, 200, 200]);
-                $this->pdf->MultiCell($DiapoW, '8', $rec->getNumber(), '0', 'C', false);
 
+                $this->pdf->Circle($x + 6, $y + $DiapoH - 6, 5, 0, 360, "F", [], [200, 200, 200]);
+
+                // center num in the cercle
+                switch (strlen($rec->getNumber())) {
+                    case 1:
+                        $xNum = $x + 4;
+                        break;
+                    case 2:
+                        $xNum = $x + 3;
+                        break;
+                    case 3:
+                        $xNum = $x + 2;
+                        break;
+                    default:
+                        $xNum = $x + 1;
+                }
+                $this->pdf->SetXY($xNum, $y + $DiapoH - 10);
+                $this->pdf->Write('8', $rec->getNumber());
             }
         }
         $this->pdf->SetLeftMargin($oldMargins['left']);
@@ -632,7 +647,7 @@ class PDFRecords extends PDF
             if ($this->canDownload) {
                 $this->pdf->SetXY($lmargin, $this->pdf->GetY() -1);
 
-                $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$subdef->get_permalink()->get_url(), $this->app->trans("print:: download"));
+                $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$subdef->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
 
                 $this->pdf->writeHTML($downloadLink);
             }
