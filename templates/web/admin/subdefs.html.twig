@@ -227,6 +227,17 @@
                 }
             }
 
+            function isOptionChosen(o) {
+                console.log(o.val());
+                if (o.val() != 'Choose') {
+                    return true;
+                } else {
+                    o.addClass("ui-state-error");
+                    updateTips("Choose an option");
+                    return false;
+                }
+            }
+
             function checkPresence(mediaType, o) {
 
                 var el = $('input[name="subdefs[]"][value="' + mediaType + '_' + o.val() + '"]');
@@ -268,6 +279,8 @@
                         allFields.removeClass("ui-state-error");
 
                         bValid = bValid && checkLength(name, "subdef name", 3, 16);
+                        bValid = bValid && isOptionChosen(subviewType);
+                        bValid = bValid && isOptionChosen(mediaType);
                         bValid = bValid && checkSpecialChar(name);
                         bValid = bValid && checkPresence(subviewType.val(), name);
                         bValid = bValid && isNotEmpty(subviewPath);
@@ -487,7 +500,7 @@
                                         Path
                                     </td>
                                     <td>
-                                        <input class="path_testable test_writeable" type="text"
+                                        <input class="required path_testable test_writeable" type="text"
                                                value="{{ subdef.get_path() }}"
                                                name="{{ subdefgroup }}_{{ subdefname }}_path"/>
                                     </td>

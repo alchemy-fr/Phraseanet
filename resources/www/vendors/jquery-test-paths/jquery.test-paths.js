@@ -68,11 +68,11 @@
                                     el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                                     return;
                                 }
-                                if ($this.hasClass('test_writeable') && data.writeable === false) {
+                                if ($this.hasClass('test_writeable') && data.results === false) {
                                     el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                                     return;
                                 }
-                                if ($this.hasClass('test_readable') && data.readable === false) {
+                                if ($this.hasClass('test_readable') && data.results === false) {
                                     el_status.attr('src', '/assets/common/images/icons/delete.png').css('visibility', 'visible');
                                     return;
                                 }
