@@ -72,27 +72,6 @@
                 </div>
 
                 <div style="margin: 20px 5px;">
-                    <label class="checkbox" for="can-download-subdef" style="margin-top: 5px;display: inline-block;height: 21px;padding-top: 2px;padding-bottom: 2px;">
-                        <input type="checkbox" id="can-download-subdef" name="can-download-subdef" value="1" />
-                        {{ 'print:: Can download subdef' | trans }}
-                    </label>
-                    <div id="print-download-subdef" style="display: none;">
-                        <select id="print-select-download-subdef" name="print-select-download-subdef" >
-                            {% for subdefName in printer.getAvailableSubdefName %}
-                                <option value="{{ subdefName}}"
-                                        data-count="{{ printer.getSubdefCount[subdefName] }} / {{ total_count }} "
-                                        {% if subdefName == "preview" %} selected {% endif %} >
-                                    {{ subdefName }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 200px;text-align: center;margin-bottom: 0px;">
-                            <span class="download-count-info">{{ printer.getSubdefCount['preview'] }} / {{ total_count }} </span>{{ 'print:: element downloadable' | trans }}
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin: 20px 5px;">
                     <label>{{ 'print:: Choose subdef for preview' | trans }} </label>
                     <select id="print-choose-preview" name="preview-chosen" >
                         {% for subdefName in printer.getAvailableSubdefName(true) %}
@@ -121,6 +100,27 @@
                     </select>
                     <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 400px;text-align: center;">
                         <span class="thumbnail-count-info">{{ printer.getSubdefImageCount['thumbnail'] }} / {{ total_count }} </span>{{ 'print:: element printable on thumbnail model' | trans }}
+                    </div>
+                </div>
+
+                <div style="margin: 20px 5px;">
+                    <label class="checkbox" for="can-download-subdef" style="margin-top: 5px;height: 21px;padding-top: 2px;padding-bottom: 2px;">
+                        <input type="checkbox" id="can-download-subdef" name="can-download-subdef" value="1" />
+                        {{ 'print:: Can download subdef' | trans }}
+                    </label>
+                    <div id="print-download-subdef" style="display: none;">
+                        <select id="print-select-download-subdef" name="print-select-download-subdef" >
+                            {% for subdefName in printer.getAvailableSubdefName %}
+                                <option value="{{ subdefName}}"
+                                        data-count="{{ printer.getSubdefCount[subdefName] }} / {{ total_count }} "
+                                        {% if subdefName == "preview" %} selected {% endif %} >
+                                    {{ subdefName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 200px;text-align: center;margin-bottom: 0px;">
+                            <span class="download-count-info">{{ printer.getSubdefCount['preview'] }} / {{ total_count }} </span>{{ 'print:: element downloadable' | trans }}
+                        </div>
                     </div>
                 </div>
 
@@ -175,7 +175,7 @@
         $("#can-download-subdef").change(function (e) {
             var that = this;
             if ($( that ).is(":checked")) {
-                $("#print-download-subdef").css("display", "inline-block");
+                $("#print-download-subdef").show();
             } else {
                 $("#print-download-subdef").hide();
             }
