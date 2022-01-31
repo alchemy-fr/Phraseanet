@@ -13,6 +13,7 @@
 
             <h3 style="margin-left: 5px;">{{ 'print:: choose model' | trans }}</h3>
 
+            {% set total_count = printer.get_count_actionable() %}
             {% if basketFeedbackId %}
                 <h4>{{ 'phraseanet:: basket feedback' | trans }}</h4>
                 <input type="hidden" name="ssel" value="{{ basketFeedbackId }}" />
@@ -28,7 +29,7 @@
                 </div>
             {% endif %}
 
-            {% if printer.get_count_actionable() > 0 %}
+            {% if total_count > 0 %}
                 {% if printer.get_count_preview() > 0 %}
                     <h4>{{ 'phraseanet:: preview' | trans }}</h4>
                     <div style="margin: 10px 0 20px 0; padding: 0 10px;">
@@ -77,6 +78,38 @@
                     </label>
                 </div>
 
+                <div style="margin: 20px 5px;">
+                    <label>{{ 'print:: Choose subdef for preview' | trans }} </label>
+                    <select id="print-choose-preview" name="preview-chosen" >
+                        {% for subdefName in printer.getAvailableSubdefName %}
+                            <option value="{{ subdefName }}"
+                                    data-count="{{ printer.getSubdefCount[subdefName] }} / {{ total_count }}"
+                                    {% if subdefName == "preview" %} selected {% endif %} >
+                                {{ subdefName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;margin-bottom: 0px;width: 400px;text-align: center;">
+                        <span class="preview-count-info" >{{ printer.getSubdefCount['preview'] }} / {{ total_count }} </span>{{ 'print:: element printable on preview model' | trans }}
+                    </div>
+                </div>
+
+                <div style="margin: 20px 5px;">
+                    <label>{{ 'print:: Choose subdef for thumbnail' | trans }} </label>
+                    <select id="print-choose-thumbnail" name="thumbnail-chosen" >
+                        {% for subdefName in printer.getAvailableSubdefName %}
+                            <option value="{{ subdefName}}"
+                                    data-count="{{ printer.getSubdefCount[subdefName] }} / {{ total_count }}"
+                                    {% if subdefName == "thumbnail" %} selected {% endif %} >
+                                {{ subdefName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 400px;text-align: center;">
+                        <span class="thumbnail-count-info">{{ printer.getSubdefCount['thumbnail'] }} / {{ total_count }} </span>{{ 'print:: element printable on thumbnail model' | trans }}
+                    </div>
+                </div>
+
                 {% if printer.get_count_thumbnail() > 0 or printer.get_count_preview() > 0 %}
                     <div style="margin-bottom: 10px; text-align: center;">
                         <input type="hidden" name="lst" value="{{ printer.get_serialize_list }}" />
@@ -109,5 +142,16 @@
             plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
             toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
         });
+
+        $("#print-choose-preview").on('change', function() {
+            var selectedSubdef = $(this).children('option:selected');
+            $(".preview-count-info").empty().html(selectedSubdef.attr("data-count"));
+        });
+
+        $("#print-choose-thumbnail").on('change', function() {
+            var selectedSubdef = $(this).children('option:selected');
+            $(".thumbnail-count-info").empty().html(selectedSubdef.attr("data-count"));
+        });
+
     });
 </script>

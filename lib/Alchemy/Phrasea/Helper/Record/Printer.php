@@ -13,11 +13,14 @@ namespace Alchemy\Phrasea\Helper\Record;
 
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
+use Alchemy\Phrasea\Media\Subdef\Subdef;
 use Symfony\Component\HttpFoundation\Request;
 
 class Printer extends RecordHelper
 {
     protected $flatten_groupings = true;
+    private $thumbnailName = 'thumbnail';
+    private $previewName = 'preview;';
 
     /**
      *
@@ -70,5 +73,68 @@ class Printer extends RecordHelper
         }
 
         return $n;
+    }
+
+    public function getSubdefCount()
+    {
+        $countSubdefs = [];
+        foreach ($this->get_elements() as $element) {
+            foreach ($this->getAvailableSubdefName() as $subdefName) {
+                if (!isset($countSubdefs[$subdefName])) {
+                    $countSubdefs[$subdefName] = 0;
+                }
+                if ($element->has_subdef($subdefName) &&
+                    $element->get_subdef($subdefName)->get_type() == \media_subdef::TYPE_IMAGE &&
+                    $element->get_subdef($subdefName)->is_physically_present()) {
+
+                    $countSubdefs[$subdefName] ++;
+                }
+            }
+        }
+
+        return $countSubdefs;
+    }
+
+    public function getAvailableSubdefName()
+    {
+        $databoxes = $this->app->getApplicationBox()->get_databoxes();
+        $availableSubdefNameForImage = [];
+
+        foreach ($this->selection->get_distinct_sbas_ids() as $sbasId) {
+            if (isset($databoxes[$sbasId])) {
+                /** @var \databox $databox */
+                $databox = $databoxes[$sbasId];
+                foreach ($databox->get_subdef_structure() as $subdefGroup) {
+                    /** @var \databox_subdef $subdef */
+                    foreach ($subdefGroup as $subdef) {
+                        if ($subdef->getSubdefType()->getType() == Subdef::TYPE_IMAGE) {
+                            $availableSubdefNameForImage[] = $subdef->get_name();
+                        }
+                    }
+                }
+            }
+        }
+
+        return array_unique($availableSubdefNameForImage);
+    }
+
+    public function setPreviewName($previewName)
+    {
+        $this->previewName = $previewName;
+    }
+
+    public function setThumbnailName($thumbnailName)
+    {
+        $this->thumbnailName = $thumbnailName;
+    }
+
+    public function getPreviewName()
+    {
+        return $this->previewName;
+    }
+
+    public function getThumbnailName()
+    {
+        return $this->thumbnailName;
     }
 }

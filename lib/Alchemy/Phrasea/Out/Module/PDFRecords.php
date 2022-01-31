@@ -27,13 +27,18 @@ class PDFRecords extends PDF
     private $isUserInputPrinted = false;
     private $canDownload;
 
+    private $thumbnailName  = 'thumbnail';
+    private $previewName    = 'preview;';
+
     public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false)
     {
         parent::__construct($app);
-        $this->printer = $printer;
+        $this->printer  = $printer;
         $this->pdfTitle = $pdfTitle;
         $this->pdfDescription = $pdfDescription;
-        $this->canDownload = $canDownload;
+        $this->canDownload    = $canDownload;
+        $this->thumbnailName  = $printer->getThumbnailName();
+        $this->previewName    = $printer->getPreviewName();
 
         $this->pdf->SetProtection([
             'print',
@@ -66,10 +71,11 @@ class PDFRecords extends PDF
                 case self::LAYOUT_PREVIEWCAPTION:
                 case self::LAYOUT_PREVIEWCAPTIONTDM:
                     try {
-                        $subdef = $record->get_subdef('preview');
+                        $subdef = $record->get_subdef($this->previewName);
                         // fallback to thumbnail ( video, sound, doc ) ..
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                            $subdef = $record->get_thumbnail();
+                            $subdef = $record->get_subdef($this->thumbnailName);
+//                            $subdef = $record->get_thumbnail();
                         }
 
                         if (!$subdef->is_physically_present()) {
@@ -86,7 +92,7 @@ class PDFRecords extends PDF
                 case self::LAYOUT_THUMBNAILLIST:
                 case self::LAYOUT_THUMBNAILGRID:
                     try {
-                        $subdef = $record->get_thumbnail();
+                        $subdef = $record->get_subdef($this->thumbnailName);
                         if (!$subdef->is_physically_present()) {
                             continue 2;
                         }
@@ -179,10 +185,11 @@ class PDFRecords extends PDF
             $fimg = null;
             $himg = 0;
 
-            $subdef = $rec->get_subdef('preview');
+            $subdef = $rec->get_subdef($this->previewName);
 
             if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                $subdef = $rec->get_thumbnail();
+                $subdef = $rec->get_subdef($this->thumbnailName);
+//                $subdef = $rec->get_thumbnail();
             }
 
             $fimg = $subdef->getRealPath();
@@ -270,7 +277,7 @@ class PDFRecords extends PDF
         $ndoc = 0;
         foreach ($this->records as $rec) {
             /* @var \record_adapter $rec */
-            $subdef = $rec->get_subdef('thumbnail');
+            $subdef = $rec->get_subdef($this->thumbnailName);
 
             $fimg = $subdef->getRealPath();
 
@@ -485,7 +492,7 @@ class PDFRecords extends PDF
         }
 
         if ($withtdm === true) {
-            $this->print_thumbnailGrid($this->pdf, $this->records, true);
+            $this->print_thumbnailGrid(true);
         }
 
         foreach ($this->records as $krec => $rec) {
@@ -609,10 +616,11 @@ class PDFRecords extends PDF
 
             $y = $this->pdf->GetY() + 5;
 
-            $subdef = $rec->get_subdef('preview');
+            $subdef = $rec->get_subdef($this->previewName);
 
             if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                $subdef = $rec->get_thumbnail();
+                $subdef = $rec->get_subdef($this->thumbnailName);
+//                $subdef = $rec->get_thumbnail();
             }
 
             $f = $subdef->getRealPath();

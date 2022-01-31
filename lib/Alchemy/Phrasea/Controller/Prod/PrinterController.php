@@ -31,12 +31,19 @@ class PrinterController extends Controller
             }
         }
 
-        return $this->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '', 'basketFeedbackId' => $basketFeedbackId]);
+        return $this->render('prod/actions/printer_default.html.twig', [
+            'printer' => $printer,
+            'message' => '',
+            'basketFeedbackId' => $basketFeedbackId,
+        ]);
     }
 
     public function printAction(Request $request)
     {
         $printer = new RecordHelper\Printer($this->app, $request);
+        $printer->setThumbnailName($request->request->get('thumbnail-chosen'));
+        $printer->setPreviewName($request->request->get('preview-chosen'));
+
         $b = $printer->get_original_basket();
 
         $layout = $request->request->get('lay');
