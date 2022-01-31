@@ -50,13 +50,18 @@ class PrinterController extends Controller
         $title = $request->request->get('print-pdf-title') ? : '';
         $description = $request->request->get('print-pdf-description') ? : '';
         $userPassword = $request->request->get('print-pdf-password') ? : '';
-        $canDownload = $request->request->get('can-download-preview') == 1 ? true : false ;
+        $canDownload = $request->request->get('can-download-subdef') == 1 ? true : false ;
+
+        $downloadSubdef = '';
+        if ($canDownload) {
+            $downloadSubdef = $request->request->get('print-select-download-subdef');
+        }
 
         foreach ($printer->get_elements() as $record) {
             $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
 
-        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload);
+        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload, $downloadSubdef);
 
         $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
         $response->headers->set('Pragma', 'public', true);

@@ -75,11 +75,16 @@ class Printer extends RecordHelper
         return $n;
     }
 
-    public function getSubdefCount()
+    /**
+     * Get count of available subdef with image printable
+     *
+     * @return array
+     */
+    public function getSubdefImageCount()
     {
         $countSubdefs = [];
         foreach ($this->get_elements() as $element) {
-            foreach ($this->getAvailableSubdefName() as $subdefName) {
+            foreach ($this->getAvailableSubdefName(true) as $subdefName) {
                 if (!isset($countSubdefs[$subdefName])) {
                     $countSubdefs[$subdefName] = 0;
                 }
@@ -95,10 +100,34 @@ class Printer extends RecordHelper
         return $countSubdefs;
     }
 
-    public function getAvailableSubdefName()
+    /**
+     * Get count of available subdef
+     *
+     * @return array
+     */
+    public function getSubdefCount()
+    {
+        $countSubdefs = [];
+        foreach ($this->get_elements() as $element) {
+            foreach ($this->getAvailableSubdefName() as $subdefName) {
+                if (!isset($countSubdefs[$subdefName])) {
+                    $countSubdefs[$subdefName] = 0;
+                }
+                if ($element->has_subdef($subdefName) &&
+                    $element->get_subdef($subdefName)->is_physically_present()) {
+
+                    $countSubdefs[$subdefName] ++;
+                }
+            }
+        }
+
+        return $countSubdefs;
+    }
+
+    public function getAvailableSubdefName($isForImage = false)
     {
         $databoxes = $this->app->getApplicationBox()->get_databoxes();
-        $availableSubdefNameForImage = [];
+        $availableSubdefName = [];
 
         foreach ($this->selection->get_distinct_sbas_ids() as $sbasId) {
             if (isset($databoxes[$sbasId])) {
@@ -107,15 +136,17 @@ class Printer extends RecordHelper
                 foreach ($databox->get_subdef_structure() as $subdefGroup) {
                     /** @var \databox_subdef $subdef */
                     foreach ($subdefGroup as $subdef) {
-                        if ($subdef->getSubdefType()->getType() == Subdef::TYPE_IMAGE) {
-                            $availableSubdefNameForImage[] = $subdef->get_name();
+                        if ($isForImage && $subdef->getSubdefType()->getType() == Subdef::TYPE_IMAGE) {
+                            $availableSubdefName[] = $subdef->get_name();
+                        } elseif (!$isForImage) {
+                            $availableSubdefName[] = $subdef->get_name();
                         }
                     }
                 }
             }
         }
 
-        return array_unique($availableSubdefNameForImage);
+        return array_unique($availableSubdefName);
     }
 
     public function setPreviewName($previewName)

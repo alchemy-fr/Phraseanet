@@ -26,17 +26,19 @@ class PDFRecords extends PDF
     private $pdfDescription;
     private $isUserInputPrinted = false;
     private $canDownload;
+    private $downloadSubdef;
 
     private $thumbnailName  = 'thumbnail';
     private $previewName    = 'preview;';
 
-    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false)
+    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '')
     {
         parent::__construct($app);
         $this->printer  = $printer;
         $this->pdfTitle = $pdfTitle;
         $this->pdfDescription = $pdfDescription;
         $this->canDownload    = $canDownload;
+        $this->downloadSubdef = $downloadSubdef;
         $this->thumbnailName  = $printer->getThumbnailName();
         $this->previewName    = $printer->getPreviewName();
 
@@ -652,10 +654,11 @@ class PDFRecords extends PDF
 
             $this->pdf->Image($f, (210 - $finalWidth) / 2, $y, $finalWidth, $finalHeight);
 
-            if ($this->canDownload) {
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
                 $this->pdf->SetXY($lmargin, $this->pdf->GetY() -1);
+                $sd = $rec->get_subdef($this->downloadSubdef);
 
-                $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$subdef->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
+                $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$sd->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
 
                 $this->pdf->writeHTML($downloadLink);
             }
