@@ -52,7 +52,6 @@
                 url = "./export_"+format+".php?bid={{ bid }}&piv={{ piv }}&id={{ id }}&typ={{ typ }}&dlg=0&smp=1";
                 url += "&osl=" + ($('.osl_1')[0].checked ? "1" : $('.osl_0')[0].checked ? "0" : "0");
                 url += "&iln=" + ($('.iln')[0].checked ? "1" : "0");
-                url += "&hit=" + ($('.hit')[0].checked ? "1" : "0");
                 url += "&ilg=" + ($('.ilg')[0].checked ? "1" : "0");
                 document.getElementById("ifrsample").src = url;
             }
@@ -100,10 +99,6 @@
                                 <div style="white-space:nowrap">
                                     <input type='checkbox' name='ilg' class="ilg" value='1' onclick="chgFormat();">
                                     {{ 'thesaurus:: export : inclure la langue' | trans }}
-                                </div>
-                                <div style="white-space:nowrap">
-                                    <input type='checkbox' name='hit' class="hit" value='1' onclick="chgFormat();">
-                                    {{ 'thesaurus:: export : inclure les hits' | trans }}
                                 </div>
                             </div>
                         </td>

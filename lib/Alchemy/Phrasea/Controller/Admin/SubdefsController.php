@@ -91,7 +91,7 @@ class SubdefsController extends Controller
                 //On applique directement les valeurs du preset à la sous def
                 switch ($mediatype) {
                     case Subdef::TYPE_IMAGE :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Image::OPTION_SIZE] = $config["image"]["definitions"][$preset][Image::OPTION_SIZE];
@@ -105,7 +105,7 @@ class SubdefsController extends Controller
                         }
                         break;
                     case Subdef::TYPE_VIDEO :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Video::OPTION_AUDIOBITRATE] = $config["video"]["definitions"][$preset][Video::OPTION_AUDIOBITRATE];
@@ -121,7 +121,7 @@ class SubdefsController extends Controller
                         }
                         break;
                     case Subdef::TYPE_FLEXPAPER :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         foreach ($config["document"]["definitions"][$preset]["devices"] as $devices) {
@@ -129,7 +129,7 @@ class SubdefsController extends Controller
                         }
                         break;
                     case Subdef::TYPE_ANIMATION :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Gif::OPTION_SIZE] = $config["gif"]["definitions"][$preset][Gif::OPTION_SIZE];
@@ -139,7 +139,7 @@ class SubdefsController extends Controller
                         }
                         break;
                     case Subdef::TYPE_AUDIO :
-                        $options["path"] = "";
+                        $options["path"] = $path;
                         $options["meta"] = true;
                         $options["mediatype"] = $mediatype;
                         $options[Audio::OPTION_AUDIOBITRATE] = $config["audio"]["definitions"][$preset][Audio::OPTION_AUDIOBITRATE];

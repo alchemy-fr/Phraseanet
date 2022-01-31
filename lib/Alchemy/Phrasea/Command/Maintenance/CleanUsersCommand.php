@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class CleanUsers extends Command
+class CleanUsersCommand extends Command
 {
 
     const CLEAR_EMAIL = 8;
@@ -36,7 +36,7 @@ class CleanUsers extends Command
 
     public function __construct()
     {
-        parent::__construct('maintenance:clean:users');
+        parent::__construct('clean:users');
 
         $this
             ->setDescription('Delete "sleepy" users (not connected since a long time)')
