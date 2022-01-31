@@ -18,6 +18,7 @@
 !/bin/console
 !/bin/developer
 !/bin/setup
+!/bin/maintenance
 /cache
 /config/configuration.yml
 /config/configuration-compiled.php
