@@ -50,6 +50,7 @@
 !/bin/console
 !/bin/developer
 !/bin/setup
+!/bin/maintenance
 
 # Exclude composer
 composer.phar
