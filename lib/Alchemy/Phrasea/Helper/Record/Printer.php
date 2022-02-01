@@ -127,7 +127,7 @@ class Printer extends RecordHelper
     public function getAvailableSubdefName($isForImage = false)
     {
         $databoxes = $this->app->getApplicationBox()->get_databoxes();
-        $availableSubdefName = [];
+        $availableSubdefName[] = 'document';
 
         foreach ($this->selection->get_distinct_sbas_ids() as $sbasId) {
             if (isset($databoxes[$sbasId])) {
