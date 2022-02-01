@@ -54,8 +54,9 @@ class ValidationParticipant
      */
     private $reminded;
 
-    private $datas;
-
+    /**
+     * @ORM\Column(type="integer", nullable=true, name="validation_session_id")
+     */
     private $session;
 
     /**
@@ -77,9 +78,8 @@ class ValidationParticipant
     }
 
     /**
-     *
-     * @return User
-     **/
+     * @ORM\Column(type="integer", nullable=true, name="user_id")
+     */
     private $user;
 
     /**

@@ -43,8 +43,14 @@ class ValidationData
      */
     private $updated;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true, name="participant_id")
+     */
     private $participant;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true, name="basket_element_id")
+     */
     private $basket_element;
 
     /**
