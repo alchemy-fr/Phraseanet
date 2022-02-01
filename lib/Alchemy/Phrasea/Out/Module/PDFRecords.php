@@ -655,12 +655,14 @@ class PDFRecords extends PDF
             $this->pdf->Image($f, (210 - $finalWidth) / 2, $y, $finalWidth, $finalHeight);
 
             if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
-                $this->pdf->SetXY($lmargin, $this->pdf->GetY() -1);
                 $sd = $rec->get_subdef($this->downloadSubdef);
+                if ($sd->is_physically_present()) {
+                    $this->pdf->SetXY($lmargin, $this->pdf->GetY() -1);
 
-                $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$sd->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$sd->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
 
-                $this->pdf->writeHTML($downloadLink);
+                    $this->pdf->writeHTML($downloadLink);
+                }
             }
 
             if ($miniConv != NULL) {
