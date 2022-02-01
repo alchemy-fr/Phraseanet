@@ -44,13 +44,13 @@ class BasketElementVote
     private $updated;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BasketParticipant", inversedBy="datas", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="BasketParticipant", inversedBy="votes", cascade={"persist"})
      * @ORM\JoinColumn(name="participant_id", referencedColumnName="id")
      */
     private $participant;
 
     /**
-     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="validation_datas", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="BasketElement", inversedBy="votes", cascade={"persist"})
      * @ORM\JoinColumn(name="basket_element_id", referencedColumnName="id")
      */
     private $basket_element;

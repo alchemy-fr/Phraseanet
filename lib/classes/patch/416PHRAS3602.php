@@ -6,7 +6,7 @@ use Alchemy\Phrasea\Application;
 class patch_416PHRAS3602 implements patchInterface
 {
     /** @var string */
-    private $release = '4.1.6';
+    private $release = '4.1.6-rc1';
 
     /** @var array */
     private $concern = [base::APPLICATION_BOX];

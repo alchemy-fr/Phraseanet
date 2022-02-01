@@ -32,10 +32,7 @@ class ValidationSession
      */
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="initiator_id", referencedColumnName="id", nullable=false)
-     *
+    /***
      * @return User
      **/
     private $initiator;
@@ -58,13 +55,10 @@ class ValidationSession
     private $expires;
 
     /**
-     * @ORM\OneToOne(targetEntity="Basket", inversedBy="validation", cascade={"persist"})
-     * @ORM\JoinColumn(name="basket_id", referencedColumnName="id")
      */
     private $basket;
 
     /**
-     * @ORM\OneToMany(targetEntity="ValidationParticipant", mappedBy="session", cascade={"all"})
      */
     private $participants;
 
