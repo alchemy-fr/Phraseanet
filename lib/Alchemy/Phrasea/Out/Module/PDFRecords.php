@@ -59,6 +59,7 @@ class PDFRecords extends PDF
         $this->pdf->setPrintOwnerUser($app->getAuthenticatedUser());
 
         $records = $printer->get_elements();
+        $aclUser = $this->app->getAclForUser($this->app->getAuthenticatedUser());
 
         $list = [];
 
@@ -77,10 +78,18 @@ class PDFRecords extends PDF
                         // fallback to thumbnail ( video, sound, doc ) ..
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
                             $subdef = $record->get_subdef($this->thumbnailName);
-//                            $subdef = $record->get_thumbnail();
                         }
 
                         if (!$subdef->is_physically_present()) {
+                            continue 2;
+                        }
+
+                        // check access right on the subdef
+                        if (
+                            ($subdef->get_name() != 'document' && !$aclUser->has_access_to_subdef($record, $subdef->get_name()))
+                            ||
+                            ($subdef->get_name() == 'document' && !$aclUser->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD))
+                        ) {
                             continue 2;
                         }
 
@@ -96,6 +105,15 @@ class PDFRecords extends PDF
                     try {
                         $subdef = $record->get_subdef($this->thumbnailName);
                         if (!$subdef->is_physically_present()) {
+                            continue 2;
+                        }
+
+                        // check access right on the subdef
+                        if (
+                            ($subdef->get_name() != 'document' && !$aclUser->has_access_to_subdef($record, $subdef->get_name()))
+                            ||
+                            ($subdef->get_name() == 'document' && !$aclUser->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD))
+                        ) {
                             continue 2;
                         }
 

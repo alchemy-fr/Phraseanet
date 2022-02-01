@@ -21,6 +21,10 @@ class Printer extends RecordHelper
     protected $flatten_groupings = true;
     private $thumbnailName = 'thumbnail';
     private $previewName = 'preview;';
+    /**
+     * @var \ACL
+     */
+    private $userACL;
 
     /**
      *
@@ -32,6 +36,7 @@ class Printer extends RecordHelper
     public function __construct(Application $app, Request $Request)
     {
         parent::__construct($app, $Request);
+        $this->userACL = $app->getAclForUser($app->getAuthenticatedUser());
 
         $grep = function (\record_adapter $record) {
                 try {
@@ -79,6 +84,7 @@ class Printer extends RecordHelper
      * Get count of available subdef with image printable
      *
      * @return array
+     * @throws \Exception
      */
     public function getSubdefImageCount()
     {
@@ -88,10 +94,16 @@ class Printer extends RecordHelper
                 if (!isset($countSubdefs[$subdefName])) {
                     $countSubdefs[$subdefName] = 0;
                 }
-                if ($element->has_subdef($subdefName) &&
+                if (
+                    ($subdefName == 'document' && $element->getType() == 'image' && $element->get_subdef($subdefName)->is_physically_present() &&
+                    $this->userACL->has_right_on_base($element->getBaseId(), \ACL::CANDWNLDHD))
+                    ||
+                    ($subdefName != 'document' && $element->has_subdef($subdefName) &&
                     $element->get_subdef($subdefName)->get_type() == \media_subdef::TYPE_IMAGE &&
-                    $element->get_subdef($subdefName)->is_physically_present()) {
-
+                    $this->userACL->has_access_to_subdef($element, $subdefName) &&
+                    $element->get_subdef($subdefName)->is_physically_present())
+                )
+                {
                     $countSubdefs[$subdefName] ++;
                 }
             }
@@ -104,6 +116,7 @@ class Printer extends RecordHelper
      * Get count of available subdef
      *
      * @return array
+     * @throws \Exception
      */
     public function getSubdefCount()
     {
@@ -113,8 +126,15 @@ class Printer extends RecordHelper
                 if (!isset($countSubdefs[$subdefName])) {
                     $countSubdefs[$subdefName] = 0;
                 }
-                if ($element->has_subdef($subdefName) &&
-                    $element->get_subdef($subdefName)->is_physically_present()) {
+                if (
+                    ($subdefName == 'document' &&
+                    $this->userACL->has_right_on_base($element->getBaseId(), \ACL::CANDWNLDHD))
+                    ||
+                    ($subdefName != 'document' && $element->has_subdef($subdefName) &&
+                    $this->userACL->has_access_to_subdef($element, $subdefName) &&
+                    $element->get_subdef($subdefName)->is_physically_present())
+                )
+                {
 
                     $countSubdefs[$subdefName] ++;
                 }
