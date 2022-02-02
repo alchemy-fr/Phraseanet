@@ -31,20 +31,37 @@ class PrinterController extends Controller
             }
         }
 
-        return $this->render('prod/actions/printer_default.html.twig', ['printer' => $printer, 'message' => '', 'basketFeedbackId' => $basketFeedbackId]);
+        return $this->render('prod/actions/printer_default.html.twig', [
+            'printer' => $printer,
+            'message' => '',
+            'basketFeedbackId' => $basketFeedbackId,
+        ]);
     }
 
     public function printAction(Request $request)
     {
         $printer = new RecordHelper\Printer($this->app, $request);
+        $printer->setThumbnailName($request->request->get('thumbnail-chosen'));
+        $printer->setPreviewName($request->request->get('preview-chosen'));
+
         $b = $printer->get_original_basket();
 
         $layout = $request->request->get('lay');
+        $title = $request->request->get('print-pdf-title') ? : '';
+        $description = $request->request->get('print-pdf-description') ? : '';
+        $userPassword = $request->request->get('print-pdf-password') ? : '';
+        $canDownload = $request->request->get('can-download-subdef') == 1 ? true : false ;
+
+        $downloadSubdef = '';
+        if ($canDownload) {
+            $downloadSubdef = $request->request->get('print-select-download-subdef');
+        }
 
         foreach ($printer->get_elements() as $record) {
             $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
-        $PDF = new PDFRecords($this->app, $printer, $layout);
+
+        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload, $downloadSubdef);
 
         $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
         $response->headers->set('Pragma', 'public', true);

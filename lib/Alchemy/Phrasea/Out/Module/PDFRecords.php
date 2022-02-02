@@ -22,12 +22,44 @@ class PDFRecords extends PDF
     /** @var Printer */
     private $printer;
 
-    public function __construct(Application $app, Printer $printer, $layout)
+    private $pdfTitle;
+    private $pdfDescription;
+    private $isUserInputPrinted = false;
+    private $canDownload;
+    private $downloadSubdef;
+
+    private $thumbnailName  = 'thumbnail';
+    private $previewName    = 'preview;';
+
+    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '')
     {
         parent::__construct($app);
-        $this->printer = $printer;
+        $this->printer  = $printer;
+        $this->pdfTitle = $pdfTitle;
+        $this->pdfDescription = $pdfDescription;
+        $this->canDownload    = $canDownload;
+        $this->downloadSubdef = $downloadSubdef;
+        $this->thumbnailName  = $printer->getThumbnailName();
+        $this->previewName    = $printer->getPreviewName();
+
+        $this->pdf->SetProtection([
+            'print',
+            'modify',
+            'copy',
+            'annot-forms',
+            'fill-forms',
+            'extract',
+            'assemble',
+            'print-high',
+            'owner'
+        ],
+            $userPassword
+        );
+
+        $this->pdf->setPrintOwnerUser($app->getAuthenticatedUser());
 
         $records = $printer->get_elements();
+        $aclUser = $this->app->getAclForUser($this->app->getAuthenticatedUser());
 
         $list = [];
 
@@ -42,36 +74,56 @@ class PDFRecords extends PDF
                 case self::LAYOUT_PREVIEWCAPTION:
                 case self::LAYOUT_PREVIEWCAPTIONTDM:
                     try {
-                        $subdef = $record->get_subdef('preview');
+                        $subdef = $record->get_subdef($this->previewName);
                         // fallback to thumbnail ( video, sound, doc ) ..
                         if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                            $subdef = $record->get_thumbnail();
+                            $subdef = $record->get_subdef($this->thumbnailName);
                         }
 
-                        if (!$subdef->is_physically_present()) {
+//                        if (!$subdef->is_physically_present()) {
+//                            continue 2;
+//                        }
+
+                        // check access right on the subdef
+                        if (
+                            ($subdef->get_name() != 'document' && !$aclUser->has_access_to_subdef($record, $subdef->get_name()))
+                            ||
+                            ($subdef->get_name() == 'document' && !$aclUser->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD))
+                        ) {
                             continue 2;
                         }
 
-                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                            continue 2;
-                        }
+//                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+//                            continue 2;
+//                        }
                     } catch (\Exception $e) {
-                        continue 2;
+                        // use substitution image if the subdef is not available
+                        //continue 2;
                     }
                     break;
                 case self::LAYOUT_THUMBNAILLIST:
                 case self::LAYOUT_THUMBNAILGRID:
                     try {
-                        $subdef = $record->get_thumbnail();
-                        if (!$subdef->is_physically_present()) {
+                        $subdef = $record->get_subdef($this->thumbnailName);
+//                        if (!$subdef->is_physically_present()) {
+//                            continue 2;
+//                        }
+
+                        // check access right on the subdef
+                        if (
+                            ($subdef->get_name() != 'document' && !$aclUser->has_access_to_subdef($record, $subdef->get_name()))
+                            ||
+                            ($subdef->get_name() == 'document' && !$aclUser->has_right_on_base($record->getBaseId(), \ACL::CANDWNLDHD))
+                        ) {
                             continue 2;
                         }
 
-                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                            continue 2;
-                        }
+//                        if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
+//                            continue 2;
+//                        }
                     } catch (\Exception $e) {
-                        continue 2;
+                        // use substitution image if the subdef is not available
+                        //continue 2;
                     }
                     break;
                 case self::LAYOUT_CAPTION:
@@ -115,6 +167,8 @@ class PDFRecords extends PDF
 
     protected function print_thumbnailGrid($links = false)
     {
+        $this->addUserInput();
+
         $NDiapoW = 3;
         $NDiapoH = 4;
 
@@ -150,28 +204,48 @@ class PDFRecords extends PDF
                     $this->pdf->AddPage();
                 }
             }
+
             $fimg = null;
-            $himg = 0;
-
-            $subdef = $rec->get_subdef('preview');
-
-            if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                $subdef = $rec->get_thumbnail();
-            }
-
-            $fimg = $subdef->getRealPath();
-
-            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::NOWATERMARK)
-                && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
-                $fimg = \recordutils_image::watermark($this->app, $subdef);
-            }
 
             $wimg = $himg = $ImgSize;
-            if ($subdef->get_height() > 0 && $subdef->get_width() > 0) {
-                if ($subdef->get_width() > $subdef->get_height())
-                    $himg = $wimg * $subdef->get_height() / $subdef->get_width();
-                else
-                    $wimg = $himg * $subdef->get_width() / $subdef->get_height();
+
+            $subdef = null;
+
+            if ($rec->has_subdef($this->thumbnailName)) {
+                $subdef = $rec->get_subdef($this->thumbnailName);
+            }
+
+            if ($subdef == null ||
+                ($subdef !== null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()))) {
+                $fimg = sprintf('%s/assets/common/images/icons/substitution/%s.png',
+                    $this->app['root.path']."/www",
+                    str_replace('/', '_', $rec->getMimeType())
+                );
+
+                if ($size = @getimagesize($fimg)) {
+                    $wmm = (int) $size[0] ;
+                    $hmm = (int) $size[1] ;
+                    if ($wmm > $hmm) {
+                        $himg = $wimg * $hmm / $wmm;
+                    } else {
+                        $wimg = $himg * $wmm / $hmm;
+                    }
+                }
+
+            } else {
+                $fimg = $subdef->getRealPath();
+                if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::NOWATERMARK)
+                    && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
+                    $fimg = \recordutils_image::watermark($this->app, $subdef);
+                }
+
+                if ($subdef->get_height() > 0 && $subdef->get_width() > 0) {
+                    if ($subdef->get_width() > $subdef->get_height()) {
+                        $himg = $wimg * $subdef->get_height() / $subdef->get_width();
+                    } else {
+                        $wimg = $himg * $subdef->get_width() / $subdef->get_height();
+                    }
+                }
             }
 
             if ($fimg) {
@@ -187,7 +261,7 @@ class PDFRecords extends PDF
 
                 if ($links) {
                     $lk = $this->pdf->AddLink();
-                    $this->pdf->SetLink($lk, 0, $npages + $rec->getNumber());
+                    $this->pdf->SetLink($lk, 0, ($this->pdf->getPage() - 1) + ($npages - $ipage) + $rec->getNumber());
                     $this->pdf->Image(
                         $fimg
                         , $x + (($DiapoW - $wimg) / 2)
@@ -204,6 +278,26 @@ class PDFRecords extends PDF
                 }
 
                 $this->pdf->MultiCell($DiapoW, $TitleH, $t, '0', 'C', false);
+
+
+                $this->pdf->Circle($x + 6, $y + $DiapoH - 6, 5, 0, 360, "F", [], [200, 200, 200]);
+
+                // center num in the cercle
+                switch (strlen($rec->getNumber())) {
+                    case 1:
+                        $xNum = $x + 4;
+                        break;
+                    case 2:
+                        $xNum = $x + 3;
+                        break;
+                    case 3:
+                        $xNum = $x + 2;
+                        break;
+                    default:
+                        $xNum = $x + 1;
+                }
+                $this->pdf->SetXY($xNum, $y + $DiapoH - 10);
+                $this->pdf->Write('8', $rec->getNumber());
             }
         }
         $this->pdf->SetLeftMargin($oldMargins['left']);
@@ -211,6 +305,8 @@ class PDFRecords extends PDF
 
     protected function print_thumbnailList()
     {
+        $this->addUserInput();
+
         $this->pdf->AddPage();
         $oldMargins = $this->pdf->getMargins();
 
@@ -221,15 +317,38 @@ class PDFRecords extends PDF
 
         $ndoc = 0;
         foreach ($this->records as $rec) {
-            /* @var \record_adapter $rec */
-            $subdef = $rec->get_subdef('thumbnail');
+            $subdef = null;
 
-            $fimg = $subdef->getRealPath();
+            if ($rec->has_subdef($this->thumbnailName)) {
+                /* @var \record_adapter $rec */
+                $subdef = $rec->get_subdef($this->thumbnailName);
+            }
 
             $wimg = $himg = 50;
+
+            $fimg = null;
+
+            if ($subdef == null ||
+                ($subdef !== null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()))) {
+                $fimg = sprintf('%s/assets/common/images/icons/substitution/%s.png',
+                    $this->app['root.path']."/www",
+                    str_replace('/', '_', $rec->getMimeType())
+                );
+
+                if ($size = @getimagesize($fimg)) {
+                    $wi = (int) $size[0] ;
+                    $hi = (int) $size[1] ;
+                }
+            } else {
+                $fimg = $subdef->getRealPath();
+                $wi = $subdef->get_width();
+                $hi = $subdef->get_height();
+            }
+
             // 1px = 3.77952 mm
-            $finalWidth = round($subdef->get_width() / 3.779528, 2);
-            $finalHeight = round($subdef->get_height() / 3.779528, 2);
+            $finalWidth = round($wi / 3.779528, 2);
+            $finalHeight = round($hi / 3.779528, 2);
+
             $aspectH = $finalWidth/$finalHeight;
             $aspectW = $finalHeight/$finalWidth;
 
@@ -312,6 +431,8 @@ class PDFRecords extends PDF
 
     protected function print_caption()
     {
+        $this->addUserInput();
+
         $this->pdf->AddPage();
         $oldMargins = $this->pdf->getMargins();
 
@@ -322,7 +443,7 @@ class PDFRecords extends PDF
             $title = "record : " . $rec->get_title();
 
             $y = $this->pdf->GetY();
-            if($this->pdf->getPageHeight() - $y < 20){ // height of the footer is 15
+            if($this->pdf->getPageHeight() - $y < 30){ // height of the footer is 15
                 $this->pdf->AddPage();
                 $y = $oldMargins['top'];
             }
@@ -377,6 +498,8 @@ class PDFRecords extends PDF
     protected function print_preview($withtdm, $write_caption, $withfeedback)
     {
         $basket = $validation = null;
+
+        $this->addUserInput();
 
         if($this->printer->is_basket()) {
             $basket = $this->printer->get_original_basket();
@@ -433,7 +556,7 @@ class PDFRecords extends PDF
         }
 
         if ($withtdm === true) {
-            $this->print_thumbnailGrid($this->pdf, $this->records, true);
+            $this->print_thumbnailGrid(true);
         }
 
         foreach ($this->records as $krec => $rec) {
@@ -486,6 +609,7 @@ class PDFRecords extends PDF
             $y = $this->pdf->GetY();
             $this->pdf->MultiCell(95, 7, $LEFT__TEXT, "LTB", "L", 1);
             $y2 = $this->pdf->GetY();
+
             $h = $y2 - $y;
             $this->pdf->SetY($y);
             $this->pdf->SetX(105);
@@ -496,6 +620,10 @@ class PDFRecords extends PDF
                 $this->pdf->SetY($y);
                 $this->pdf->SetX(10);
                 $this->pdf->Cell(190, $h, $ord, "", 1, "C", 0);
+            } else {
+                $this->pdf->SetY($y);
+                $this->pdf->write(7, $rec->getNumber(), '', false, 'C');
+                $this->pdf->SetY($y2);
             }
 
             if ($LEFT__TEXT == "" && is_file($LEFT__IMG)) {
@@ -552,23 +680,41 @@ class PDFRecords extends PDF
 
             $y = $this->pdf->GetY() + 5;
 
-            $subdef = $rec->get_subdef('preview');
+            $subdef = null;
 
-            if ($subdef->get_type() !== \media_subdef::TYPE_IMAGE) {
-                $subdef = $rec->get_thumbnail();
+            if ($rec->has_subdef($this->previewName)) {
+                /* @var \record_adapter $rec */
+                $subdef = $rec->get_subdef($this->previewName);
             }
-
-            $f = $subdef->getRealPath();
-
-            if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::NOWATERMARK)
-                && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
-                $f = \recordutils_image::watermark($this->app, $subdef);
 
             // original height / original width x new width = new height
             $wimg = $himg = 150; // preview dans un carre de 150 mm
+
+            if ($subdef == null ||
+                ($subdef !== null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()))) {
+                $f = sprintf('%s/assets/common/images/icons/substitution/%s.png',
+                    $this->app['root.path']."/www",
+                    str_replace('/', '_', $rec->getMimeType())
+                );
+
+                if ($size = @getimagesize($f)) {
+                    $wi = (int) $size[0] ;
+                    $hi = (int) $size[1] ;
+                }
+            } else {
+                $f = $subdef->getRealPath();
+
+                if (!$this->app->getAclForUser($this->app->getAuthenticatedUser())->has_right_on_base($rec->getBaseId(), \ACL::NOWATERMARK)
+                    && $subdef->get_type() == \media_subdef::TYPE_IMAGE) {
+                    $f = \recordutils_image::watermark($this->app, $subdef);
+                }
+                $wi = $subdef->get_width();
+                $hi = $subdef->get_height();
+            }
+
             // 1px = 3.77952 mm
-            $finalWidth = round($subdef->get_width() / 3.779528, 2);
-            $finalHeight = round($subdef->get_height() / 3.779528, 2);
+            $finalWidth = round($wi / 3.779528, 2);
+            $finalHeight = round($hi / 3.779528, 2);
             $aspectH = $finalWidth/$finalHeight;
             $aspectW = $finalHeight/$finalWidth;
 
@@ -592,6 +738,16 @@ class PDFRecords extends PDF
                     unlink($oneF);
             }
             $this->pdf->SetXY($lmargin, $y += ( $finalHeight + 5));
+
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+                $sd = $rec->get_subdef($this->downloadSubdef);
+                if ($sd->is_physically_present()) {
+
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$sd->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
+
+                    $this->pdf->writeHTML($downloadLink, true, false, false, true);
+                }
+            }
 
             $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
             $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
@@ -786,4 +942,23 @@ class PDFRecords extends PDF
         }
     }
 
+    private function addUserInput()
+    {
+        if (!$this->isUserInputPrinted && (!empty($this->pdfTitle) || !empty($this->pdfDescription))) {
+            $this->pdf->AddPage();
+
+            $this->pdf->SetY(50);
+            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 14);
+            $this->pdf->Cell(0, 0,
+                $this->pdfTitle,
+                '', 1, 'C', false);
+
+            $this->pdf->Write(20, "\n");
+
+            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            $this->pdf->writeHTML($this->pdfDescription);
+
+            $this->isUserInputPrinted = true;
+        }
+    }
 }

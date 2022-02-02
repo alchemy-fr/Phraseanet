@@ -51,7 +51,9 @@ const printRecord = (services) => {
                     $(this).dialog('widget').css('z-index', '1999');
                 },
                 close: function (event, ui) {
-                    $(this).dialog('widget').css('z-index', 'auto');
+                    // $(this).dialog('widget').css('z-index', 'auto');
+                    $('#DIALOG').dialog('destroy');
+                    $('#DIALOG').css('display', 'none');
                 }
             })
             .dialog('open');
