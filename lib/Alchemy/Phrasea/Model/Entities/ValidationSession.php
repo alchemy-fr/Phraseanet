@@ -32,10 +32,9 @@ class ValidationSession
      */
     private $id;
 
-    /***
+    /**
      * @ORM\Column(type="integer", nullable=true, name="initiator_id")
-     * @return User
-     **/
+     */
     private $initiator;
 
     /**
