@@ -12140,12 +12140,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="5dfd076ab7424cb8f409096cd1fcc674f4634386" resname="print:: Choose subdef for preview">
         <source>print:: Choose subdef for preview</source>
-        <target state="needs-translation">Sélectionner une sous-définition pour l'impression de la Prévisualisation</target>
+        <target state="needs-translation">Sélectionner une sous-définition pour l'impression de la prévisualisation</target>
         <jms:reference-file line="78">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="175a292d892bd53e1449e70d810c7c8f5a799a82" resname="print:: Choose subdef for thumbnail">
         <source>print:: Choose subdef for thumbnail</source>
-        <target state="needs-translation">Sélectionner la sous-définition pour l'impression de la Vignette</target>
+        <target state="needs-translation">Sélectionner la sous-définition pour l'impression de la vignette</target>
         <jms:reference-file line="94">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="803a88bdcb07cb8055e10ca28aee9b3c74992da6" resname="print:: add and remember password to protect the pdf">
@@ -12180,7 +12180,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="502dbd857425df79d57c72240847110224a79aa6" resname="print:: element downloadable">
         <source>print:: element downloadable</source>
-        <target state="needs-translation">Choisir la sous définition téléchargé</target>
+        <target state="needs-translation">Choisir la sous définition téléchargée</target>
         <jms:reference-file line="128">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="732e978726502a9af6249fecfbe0aa53c3c8cf25" resname="print:: element printable on preview model">
@@ -12235,7 +12235,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
         <source>print:: some options</source>
-        <target state="needs-translation">Options supplémentaire</target>
+        <target state="needs-translation">Options supplémentaires</target>
         <jms:reference-file line="68">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="698d678afe4394e810eda66c18abb93d7c5b8a00" resname="print:: warning! Only available image for chosen subdef is printed">
