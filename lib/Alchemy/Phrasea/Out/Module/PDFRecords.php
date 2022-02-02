@@ -615,15 +615,15 @@ class PDFRecords extends PDF
             $this->pdf->SetX(105);
             $this->pdf->Cell(95, $h, $RIGHT_TEXT, "TBR", 1, "R", 1);
 
-            $this->pdf->SetY($y);
-            $this->pdf->write(7, $rec->getNumber(), '', false, 'C');
-            $this->pdf->SetY($y2);
-
             if($basket) {
                 $ord = $basket->getElementByRecord($this->app, $rec)->getOrd();
                 $this->pdf->SetY($y);
                 $this->pdf->SetX(10);
                 $this->pdf->Cell(190, $h, $ord, "", 1, "C", 0);
+            } else {
+                $this->pdf->SetY($y);
+                $this->pdf->write(7, $rec->getNumber(), '', false, 'C');
+                $this->pdf->SetY($y2);
             }
 
             if ($LEFT__TEXT == "" && is_file($LEFT__IMG)) {
@@ -733,22 +733,21 @@ class PDFRecords extends PDF
 
             $this->pdf->Image($f, (210 - $finalWidth) / 2, $y, $finalWidth, $finalHeight);
 
-            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
-                $sd = $rec->get_subdef($this->downloadSubdef);
-                if ($sd->is_physically_present()) {
-                    $this->pdf->SetXY($lmargin, $this->pdf->GetY() -1);
-
-                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$sd->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
-
-                    $this->pdf->writeHTML($downloadLink);
-                }
-            }
-
             if ($miniConv != NULL) {
                 foreach ($miniConv as $oneF)
                     unlink($oneF);
             }
             $this->pdf->SetXY($lmargin, $y += ( $finalHeight + 5));
+
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+                $sd = $rec->get_subdef($this->downloadSubdef);
+                if ($sd->is_physically_present()) {
+
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$sd->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
+
+                    $this->pdf->writeHTML($downloadLink, true, false, false, true);
+                }
+            }
 
             $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
             $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
