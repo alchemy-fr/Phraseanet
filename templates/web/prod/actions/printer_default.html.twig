@@ -71,7 +71,10 @@
                     <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
                 </div>
 
-                <div style="margin: 20px 5px;">
+                <div class="alert alert-danger" style="padding-top: 4px;padding-bottom: 4px;width: 480px;text-align: center;margin-left: 5px;margin-bottom: 10px;">
+                    <span> {{ 'print:: warning! Only available image for chosen subdef is printed' | trans }} </span>
+                </div>
+                <div style="margin: 0px 5px 20px 5px;">
                     <label>{{ 'print:: Choose subdef for preview' | trans }} </label>
                     <select id="print-choose-preview" name="preview-chosen" >
                         {% for subdefName in printer.getAvailableSubdefName(true) %}
@@ -109,7 +112,10 @@
                         {{ 'print:: Can download subdef' | trans }}
                     </label>
                     <div id="print-download-subdef" style="display: none;">
-                        <select id="print-select-download-subdef" name="print-select-download-subdef" >
+                        <div class="alert alert-danger" style="padding-top: 4px;padding-bottom: 4px;width: 480px;text-align: center;margin-left: 0px;margin-bottom: 10px;">
+                            <span> {{ 'print:: warning! Only available media for chosen subdef is downloadble' | trans }} </span>
+                        </div>
+                        <select id="print-select-download-subdef" name="print-select-download-subdef" style="margin-left: 0px;">
                             {% for subdefName in printer.getAvailableSubdefName %}
                                 <option value="{{ subdefName}}"
                                         data-count="{{ printer.getSubdefCount[subdefName] }} / {{ total_count }} "
