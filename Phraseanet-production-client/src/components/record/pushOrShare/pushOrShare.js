@@ -23,6 +23,9 @@ const pushOrShare = function (services, container) {
 
     let $badges = $('.user_content .badges .badge', this.container);
 
+//    var $this = this;
+    var pushOrShare = this;
+
 
     this.selection = new Selectable(services,
         $('.user_content .badges', this.container),
@@ -32,8 +35,6 @@ const pushOrShare = function (services, container) {
     );
 
     pushOrShareAddUser(services).initialize({$container: this.container});
-
-    var $this = this;
 
     this.container.on('mouseenter', '.list-trash-btn', function (event) {
         var $el = $(event.currentTarget);
@@ -67,20 +68,22 @@ const pushOrShare = function (services, container) {
 
             var refreshContent = $('.LeftColumn .content .lists', $container);
             refreshContent.removeClass('loading').append(dataList);
+
+            appEvents.emit('sharebasket.usersListsChanged', { container:pushOrShare.container, context:'reload' });
         };
 
         $('.LeftColumn .content .lists', $container).empty().addClass('loading');
 
-        $this.userList.get(callback, 'html');
+        pushOrShare.userList.get(callback, 'html');
     });
 
 
     this.container.on('click', '.content .options .select-all', function (event) {
-        $this.selection.selectAll();
+        pushOrShare.selection.selectAll();
     });
 
     this.container.on('click', '.content .options .unselect-all', function (event) {
-        $this.selection.empty();
+        pushOrShare.selection.empty();
     });
 
     this.container.on('click', '.content .options .delete-selection', function (event) {
@@ -153,7 +156,7 @@ const pushOrShare = function (services, container) {
     this.container.on('click', '.recommended_users', function (event) {
         var usr_id = $('input[name="usr_id"]', $(this)).val();
 console.log("====== click on .recommended_users ; usr_id=" + usr_id);
-        $this.loadUser(usr_id, $this.selectUser);
+        pushOrShare.loadUser(usr_id, pushOrShare.selectUser);
 
         return false;
     });
@@ -178,7 +181,7 @@ console.log("====== click on .recommended_users_list");
 
             var usr_id = $(this).closest('tr').find('input[name="usr_id"]').val();
 
-            $this.loadUser(usr_id, $this.selectUser);
+            pushOrShare.loadUser(usr_id, pushOrShare.selectUser);
 
             return false;
         });
@@ -187,7 +190,7 @@ console.log("====== click on .recommended_users_list");
 
             var usr_id = $(this).closest('tr').find('input[name="usr_id"]').val();
 
-            if ($('.badge_' + usr_id, $this.container).length > 0) {
+            if ($('.badge_' + usr_id, pushOrShare.container).length > 0) {
                 $(this).addClass('added');
             }
 
@@ -364,7 +367,7 @@ console.log("==== feedback-action === adduser");
         }
 
         $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
-        $('.' + $this.Context, $dialog.getDomElement()).show();
+        $('.' + pushOrShare.Context, $dialog.getDomElement()).show();
 
         $('form', $dialog.getDomElement()).submit(function () {
             return false;
@@ -406,21 +409,6 @@ console.log("==== feedback-action === adduser");
         return false;
     });
 
-    this.container.on('click', 'a.list_push_loader', function (event) {
-        var url = $(this).attr('href');
-
-        var callbackList = function (list) {
-            for (let i in list.entries) {
-                this.selectUser(list.entries[i].User);
-            }
-        };
-
-        $this.loadList(url, callbackList);
-
-        return false;
-    });
-
-
     $('form.list_saver', this.container).bind('submit', () => {
         console.log("==== save ====");
         var $form = $(event.currentTarget);
@@ -434,7 +422,7 @@ console.log("==== feedback-action === adduser");
         }
 
         // appEvents.emit('push.createList', {name: $input.val(), collection: users});
-        $this.createList({ name: $input.val(), collection: users });
+        pushOrShare.createList({ name: $input.val(), collection: users });
         $input.val('');
         /*
          p4.Lists.create($input.val(), function (list) {
@@ -464,10 +452,10 @@ console.log("==== feedback-action === adduser");
             },
             select: function (event, ui) {
                 if (ui.item.type === 'USER') {
-                    $this.selectUser(ui.item);
+                    pushOrShare.selectUser(ui.item);
                 } else if (ui.item.type === 'LIST') {
                     for (let e in ui.item.entries) {
-                        $this.selectUser(ui.item.entries[e].User);
+                        pushOrShare.selectUser(ui.item.entries[e].User);
                     }
                 }
                 return false;
@@ -481,13 +469,13 @@ console.log("==== feedback-action === adduser");
                 item: item
             });
 
-            if ($this.Context === 'Push') {
+            if (pushOrShare.Context === 'Push') {
                 setTimeout(() => {
                     $('.ui-menu .ui-menu-item a').css('box-shadow', 'inset 0 -1px #2196f3');
                     $('img[src="/assets/common/images/icons/user-orange.png"]').attr('src', '/assets/common/images/icons/user-blue.png');
                 }, 100);
             }
-            else if ($this.Context === 'Feedback') {
+            else if (pushOrShare.Context === 'Feedback') {
                 setTimeout(() => {
                     $('.ui-menu .ui-menu-item a').css('box-shadow', 'inset 0 -1px #8bc34a');
                     $('img[src="/assets/common/images/icons/user-orange.png"]').attr('src', '/assets/common/images/icons/user-green.png');
@@ -504,6 +492,24 @@ console.log("==== feedback-action === adduser");
     };
 
     appEvents.listenAll({
+        'sharebasket.usersListsChanged': function(o) {
+            console.log("==== catch usersListsChanged");
+            o.container
+             .off('click', '.LeftColumn .content .lists a.list_link')
+             .on('click', '.LeftColumn .content .lists a.list_link', function (event) {
+                const url = $(this).attr('href');
+
+                var callbackList = function (list) {
+                    for (let i in list.entries) {
+                        this.selectUser(list.entries[i].User);
+                    }
+                };
+
+                pushOrShare.loadList(url, callbackList);
+
+                return false;
+            });
+        },
         'sharebasket.participantsChanged': function(o) {
             console.log("==== user list changed with context " + o.context + "====");
 
@@ -580,6 +586,10 @@ console.log("==== feedback-action === adduser");
         }
     });
 
+    // load users lists (left zone)
+    $('.push-refresh-list-action', this.container).click();
+    // appEvents.emit('sharebasket.usersListsChanged', { container:this.container, context:'init' });
+
     appEvents.emit('sharebasket.participantsChanged', { container:this.container, context:'init' });
 
     return this;
@@ -626,7 +636,7 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
 
     },
     loadUser: function (usr_id, callback) {
-        var $this = this;
+        var _this = this;
         $.ajax({
             type: 'GET',
             url: `${this.url}prod/push/user/${usr_id}/`,
@@ -636,7 +646,7 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
             },
             success: function (data) {
                 if (typeof callback === 'function') {
-                    callback.call($this, data);
+                    callback.call(_this, data);
                 }
             }
         });
@@ -649,7 +659,7 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
         });
     },
     loadList: function (url, callback) {
-        var $this = this;
+        var _this = this;
 
         $.ajax({
             type: 'GET',
@@ -657,7 +667,7 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
             dataType: 'json',
             success: function (data) {
                 if (typeof callback === 'function') {
-                    callback.call($this, data);
+                    callback.call(_this, data);
                 }
             }
         });
@@ -667,7 +677,7 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
     },
     addUser: function (options) {
         let {$userForm, callback} = options;
-        var $this = this;
+        var _this = this;
         $.ajax({
             type: 'POST',
             url: `${this.url}prod/push/add-user/`,
@@ -676,7 +686,7 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
             success: function (data) {
                 if (data.success) {
                     humane.info(data.message);
-                    $this.selectUser(data.user);
+                    _this.selectUser(data.user);
                     callback;
                 } else {
                     humane.error(data.message);

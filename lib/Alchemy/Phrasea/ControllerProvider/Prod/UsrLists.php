@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\UsrListController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -41,6 +41,7 @@ class UsrLists implements ControllerProviderInterface, ServiceProviderInterface
     {
         $controllers = $this->createAuthenticatedCollection($app);
 
+        /** @uses UsrListController::getAll() */
         $controllers->get('/all/', 'controller.prod.usr-lists:getAll')
             ->bind('prod_lists_all');
 

@@ -129,10 +129,21 @@ $toggledOff: #666;       // a toggle button IS off
     }
 
     // glue immediate button to text input
-    INPUT[type=text] + BUTTON {
-        height: 30px;
-        border-bottom-left-radius: 0;
-        border-top-left-radius: 0;
+    .inputWithButton {
+        SPAN {
+            vertical-align: middle
+        }
+        INPUT[type=text] {
+            margin: 0;
+            border-right: 0;
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+        INPUT[type=text] + BUTTON {
+            height: 30px;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+        }
     }
 
     // a <i class="fa fa-xxx"> as a big round icon (please add "colored inverse" classes to see the disc!)
