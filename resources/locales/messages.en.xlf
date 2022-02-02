@@ -12145,12 +12145,12 @@
       </trans-unit>
       <trans-unit id="175a292d892bd53e1449e70d810c7c8f5a799a82" resname="print:: Choose subdef for thumbnail">
         <source>print:: Choose subdef for thumbnail</source>
-        <target state="needs-translation">Choose a sub-definition for printed "thumbnail"</target>
+        <target state="needs-translation">Choose a subdefinition for printed "thumbnail"</target>
         <jms:reference-file line="94">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="803a88bdcb07cb8055e10ca28aee9b3c74992da6" resname="print:: add and remember password to protect the pdf">
         <source>print:: add and remember password to protect the pdf</source>
-        <target state="needs-translation">Define a password for protect the PDF</target>
+        <target state="needs-translation">Define a password to protect the PDF</target>
         <jms:reference-file line="70">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="yes">
@@ -12165,7 +12165,7 @@
       </trans-unit>
       <trans-unit id="50176955761a18d473255055c57e8653cc1be124" resname="print:: choose model">
         <source>print:: choose model</source>
-        <target state="needs-translation">Select a print Model</target>
+        <target state="needs-translation">Select a printing template</target>
         <jms:reference-file line="14">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d369ca0ef132e64f45e4cef5bfa2aaff9104a276" resname="print:: description" approved="yes">
@@ -12240,12 +12240,12 @@
       </trans-unit>
       <trans-unit id="698d678afe4394e810eda66c18abb93d7c5b8a00" resname="print:: warning! Only available image for chosen subdef is printed">
         <source>print:: warning! Only available image for chosen subdef is printed</source>
-        <target state="needs-translation">If the selected sub definition is missing , the substitution pict will be use in place</target>
+        <target state="needs-translation">If the selected subdefinition is missing, it will be replaced by a substitute image</target>
         <jms:reference-file line="75">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d16a375bd489fa9232346a1c6e48570bbf53a479" resname="print:: warning! Only available media for chosen subdef is downloadable">
         <source>print:: warning! Only available media for chosen subdef is downloadable</source>
-        <target state="needs-translation">If the selected sub-definition miss , the substitution images will be use in place</target>
+        <target state="needs-translation">If the selected subdefinition is missing, it will be replaced by a substitute image</target>
         <jms:reference-file line="116">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="yes">
