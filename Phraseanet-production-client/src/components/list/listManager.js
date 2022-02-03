@@ -172,6 +172,7 @@ const ListManager = function (services, options) {
          return false;
          });*/
         $container.on('click', '.list-edit-action', (event) => {
+            console.log("==== list-edit-action");
             event.preventDefault();
             _this.removeUserItemsArray = [];
             _this.addUserItemsArray = [];

@@ -10060,31 +10060,17 @@ TABLE.explain3 TR TD {
   float: right;
 }
 
-#PushBox .content .list_saver {
+.PushBox .content .list_saver {
   margin: 0;
   display: inline-block;
 }
 
-#PushBox .content .list_saver .btn-toolbar {
+.PushBox .content .list_saver .btn-toolbar {
   margin: 0;
 }
 
-#PushBox .content .list_saver input {
-  margin: 0;
-  padding: 2px 2px 2px 10px;
+.PushBox .content .list_saver input {
   width: 260px;
-  height: 26px;
-  border: 0 none;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-#PushBox .content .list_saver .btn {
-  margin: 0;
-  padding: 0;
-  height: 23px;
 }
 
 #find-user {

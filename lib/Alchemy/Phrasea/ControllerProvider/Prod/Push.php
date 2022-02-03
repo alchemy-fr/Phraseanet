@@ -87,6 +87,7 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
 
         $controllers->get('/search-user/', 'controller.prod.push:searchUserAction');
 
+        /** @uses PushController::editListAction() */
         $controllers->match('/edit-list/{list_id}/', 'controller.prod.push:editListAction')
             ->bind('prod_push_list_edit')
             ->assert('list_id', '\d+');

@@ -880,7 +880,7 @@ $toggledOff: #666;       // a toggle button IS off
     }
 }
 
-#PushBox .content {
+.PushBox .content {
     .list_saver {
         margin: 0;
         display: inline-block;
@@ -888,21 +888,13 @@ $toggledOff: #666;       // a toggle button IS off
             margin: 0;
         }
         input {
-            margin: 0;
-            padding: 2px 2px 2px 10px;
             width: 260px;
-            height: 26px;
-            border: 0 none;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
         }
-        .btn {
-            margin: 0;
-            padding: 0;
-            height: 23px;
-        }
+        //.btn {
+        //    margin: 0;
+        //    padding: 0;
+        //    height: 23px;
+        //}
     }
 }
 

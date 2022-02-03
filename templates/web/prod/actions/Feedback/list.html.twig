@@ -31,12 +31,18 @@
     </div>
 </div>
 <div class="PNB10" style="top:55px;">
-    <div class="PNB content user_content readselect grey-bg">
-        <div class="PNB10 header" style="height:25px; bottom:auto;">
+    <div class="PNB content user_content readselect grey-bg"
+         {# todo : move all those style to css #}
+         style="display: flex; flex-direction: column; position: relative;
+         padding:5px;
+         top: 0; left: 0; width: calc(100% - 10px); height: calc(100% - 10px)">
+
+        <div class="header">
             <div class="pull-left">
                 <h2 style="font-size:25px;margin:0;line-height:30px;">{{ list.getName() }}</h2>
                 {% set length = list.getEntries().count() %}
-                <span class="counter current">{% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
+                <span class="counter current">
+                    {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
                 </span>
             </div>
             <div class="pull-right">
@@ -68,16 +74,20 @@
                 </div>
             </div>
         </div>
-        <div class="PNB10 badges" style="top:80px;overflow:auto;margin-left:3px;">
+
+        <div style="display: flex; flex-direction: column; flex-grow: 1; overflow: auto;
+                                    padding: 0; margin: 0;">
+            <div class="badges">
             {# {% set role = list.getOwner(app.getAuthenticatedUser()).getRole() %}
             {% for entry in list.getEntries() %}
                 {{ ListsMacros.badgeReadonly(entry, role) }}
             {% endfor %} #}
+            </div>
         </div>
 
-        <div class="PNB10 footer">
-            <form class="list_saver">
-                <button id="saveListFooter" class="colored inverse with_icon saveList" style="display:none">
+        <div class="footer">
+            <form class="list_saver" style="margin: 0">
+                <button id="saveListFooter" class="colored inverse saveList">
                     <i class="fa fa-hdd-o"></i>
                     {{ "Save the list" | trans }}
                 </button>
