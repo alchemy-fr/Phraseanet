@@ -261,8 +261,6 @@ class PDFRecords extends PDF
 
                 $this->pdf->SetXY($x, $y + 1);
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 10);
-                $t = $irow . '-' . $x;
-                $t = $rec->get_title();
 
                 if ($links) {
                     $lk = $this->pdf->AddLink();
@@ -282,8 +280,16 @@ class PDFRecords extends PDF
                     );
                 }
 
-                $this->pdf->MultiCell($DiapoW, $TitleH, $t, '0', 'C', false);
+                $downloadLink = $rec->get_title();
 
+                if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+                    $sd = $rec->get_subdef($this->downloadSubdef);
+                    if ($sd->is_physically_present()) {
+                        $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $rec->get_title());
+                    }
+                }
+
+                $this->pdf->MultiCell($DiapoW, $TitleH, $downloadLink, '0', 'C', false, 1, '', '', true, 0, true);
 
                 $this->pdf->Circle($x + 6, $y + $DiapoH - 6, 5, 0, 360, "F", [], [200, 200, 200]);
 
