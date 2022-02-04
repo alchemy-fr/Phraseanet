@@ -12237,7 +12237,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="49bc88aef571df633eac0a80173eb1c76a9d06d7" resname="print:: pdf description">
         <source>print:: pdf description</source>
-        <target state="needs-translation">Message</target>
+        <target state="needs-translation">Message (optionnel)</target>
         <jms:reference-file line="10">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab85773220ced0dddd0e679a51116015c6436143" resname="print:: pdf title">
