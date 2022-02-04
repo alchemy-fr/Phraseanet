@@ -20,7 +20,9 @@ class Printer extends RecordHelper
 {
     protected $flatten_groupings = true;
     private $thumbnailName = 'thumbnail';
-    private $previewName = 'preview;';
+    private $previewName = 'preview';
+    private $urlTtl = null;
+
     /**
      * @var \ACL
      */
@@ -135,7 +137,6 @@ class Printer extends RecordHelper
                     $element->get_subdef($subdefName)->is_physically_present())
                 )
                 {
-
                     $countSubdefs[$subdefName] ++;
                 }
             }
@@ -179,6 +180,16 @@ class Printer extends RecordHelper
         $this->thumbnailName = $thumbnailName;
     }
 
+    public function setUrlTtl($urlTtl)
+    {
+        $this->urlTtl = $urlTtl;
+    }
+
+    public function getUrlTtl()
+    {
+        return $this->urlTtl;
+    }
+
     public function getPreviewName()
     {
         return $this->previewName;
@@ -188,4 +199,6 @@ class Printer extends RecordHelper
     {
         return $this->thumbnailName;
     }
+
+
 }

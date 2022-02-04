@@ -71,6 +71,7 @@
                     <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
                 </div>
 
+                <h4 style="margin-left: 5px;font-weight: 700;">{{ 'print:: subdef mapping' | trans }}</h4>
                 <div class="alert alert-warning" style="padding-top: 4px;padding-bottom: 4px;width: 480px;text-align: center;margin-left: 5px;margin-bottom: 10px;">
                     <span> {{ 'print:: warning! Only available image for chosen subdef is printed' | trans }} </span>
                 </div>
@@ -78,15 +79,15 @@
                     <label>{{ 'print:: Choose subdef for preview' | trans }} </label>
                     <select id="print-choose-preview" name="preview-chosen" >
                         {% for subdefName in printer.getAvailableSubdefName(true) %}
-                            <option value="{{ subdefName }}"
-                                    data-count="{{ printer.getSubdefImageCount[subdefName] }} / {{ total_count }} "
+                            <option value="{{ subdefName }}" class="subdef-{{ subdefName }}"
+                                    data-count=""
                                     {% if subdefName == "preview" %} selected {% endif %} >
                                 {{ subdefName }}
                             </option>
                         {% endfor %}
                     </select>
                     <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;margin-bottom: 0px;width: 400px;text-align: center;">
-                        <span class="preview-count-info" >{{ printer.getSubdefImageCount['preview'] }} / {{ total_count }} </span>{{ 'print:: element printable on preview model' | trans }}
+                        <span class="preview-count-info" ></span> {{ 'print:: element printable on preview model' | trans }}
                     </div>
                 </div>
 
@@ -94,15 +95,15 @@
                     <label>{{ 'print:: Choose subdef for thumbnail' | trans }} </label>
                     <select id="print-choose-thumbnail" name="thumbnail-chosen" >
                         {% for subdefName in printer.getAvailableSubdefName(true) %}
-                            <option value="{{ subdefName}}"
-                                    data-count="{{ printer.getSubdefImageCount[subdefName] }} / {{ total_count }} "
+                            <option value="{{ subdefName}}" class="subdef-{{ subdefName }}"
+                                    data-count=""
                                     {% if subdefName == "thumbnail" %} selected {% endif %} >
                                 {{ subdefName }}
                             </option>
                         {% endfor %}
                     </select>
                     <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 400px;text-align: center;">
-                        <span class="thumbnail-count-info">{{ printer.getSubdefImageCount['thumbnail'] }} / {{ total_count }} </span>{{ 'print:: element printable on thumbnail model' | trans }}
+                        <span class="thumbnail-count-info"></span> {{ 'print:: element printable on thumbnail model' | trans }}
                     </div>
                 </div>
 
@@ -117,15 +118,25 @@
                         </div>
                         <select id="print-select-download-subdef" name="print-select-download-subdef" style="margin-left: 0px;">
                             {% for subdefName in printer.getAvailableSubdefName %}
-                                <option value="{{ subdefName}}"
-                                        data-count="{{ printer.getSubdefCount[subdefName] }} / {{ total_count }} "
+                                <option value="{{ subdefName}}" class="download-{{ subdefName }}"
+                                        data-count=""
                                         {% if subdefName == "preview" %} selected {% endif %} >
                                     {{ subdefName }}
                                 </option>
                             {% endfor %}
                         </select>
                         <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 400px;text-align: center;margin-bottom: 0px;">
-                            <span class="download-count-info">{{ printer.getSubdefCount['preview'] }} / {{ total_count }} </span>{{ 'print:: element downloadable' | trans }}
+                            <span class="download-count-info"></span> {{ 'print:: element downloadable' | trans }}
+                        </div>
+                        <div style="margin:10px 0px;">
+                            <label style="display:inline-block;width:220px">{{ 'print:: subdef url ttl' | trans }} :</label>
+                            <input style="margin-bottom: 2px;width:100px;" type="number" min="0" name="print-download-ttl" />
+                            <select id="print-download-ttl-unit" name="print-download-ttl-unit" style="margin-left: 0px;width:100px">
+                                <option value="3600" >{{ 'print:: hour' | trans }}</option>
+                                <option value="86400" >{{ 'print:: day' | trans }}</option>
+                                <option value="604800" >{{ 'print:: week' | trans }}</option>
+                                <option value="2592000" >{{ 'print:: month' | trans }}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -162,6 +173,25 @@
             plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
             toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
         });
+
+        // add dynamically the subdef count in the select option
+        var totalCount = {{ total_count }};
+        var subdefImageCount = JSON.parse('{{ printer.getSubdefImageCount|json_encode|raw }}');
+        var subdefCount = JSON.parse('{{ printer.getSubdefCount|json_encode|raw }}');
+
+        for (const [key, value] of Object.entries(subdefCount)) {
+            $(".download-"+ key).attr('data-count', value + " / " + totalCount);
+            if (key == 'preview') {
+                $('.download-count-info').empty().text(value + " / " + totalCount);
+            }
+        }
+
+        for (const [key, value] of Object.entries(subdefImageCount)) {
+            $(".subdef-"+ key).attr('data-count', value + " / " + totalCount);
+            if (key === 'thumbnail' || key === 'preview') {
+                $("." + key +"-count-info").empty().text(value + " / " + totalCount);
+            }
+        }
 
         $("#print-choose-preview").on('change', function() {
             var selectedSubdef = $(this).children('option:selected');
