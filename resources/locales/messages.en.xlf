@@ -9202,7 +9202,7 @@
       </trans-unit>
       <trans-unit id="f259faf8d97eb0b6b07b51102a45bf34fe44caed" resname="admin::workermanager:tab:RecordsActions: xml view">
         <source>admin::workermanager:tab:RecordsActions: xml view</source>
-        <target state="needs-translation">XML view</target>
+        <target state="translated">XML view</target>
         <jms:reference-file line="26">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="40b3163a21978717195a7ae687589ade1e0561c7" resname="admin::workermanager:tab:Reminder: Interval in second" approved="yes">
@@ -9533,7 +9533,7 @@
       </trans-unit>
       <trans-unit id="87e2b9b3d64117a271e1b6bda1a6b442df3f3f88" resname="admin:databases:database:file-size-detail-warning-title">
         <source>admin:databases:database:file-size-detail-warning-title</source>
-        <target state="needs-translation">Info about the file size of databox details</target>
+        <target state="translated">Info about the file size of databox details</target>
         <jms:reference-file line="4">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="48">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
@@ -10361,12 +10361,12 @@
       </trans-unit>
       <trans-unit id="f717955140c0a034f0e08cfc1416b8443e86cbb5" resname="developers:: Events trigger this webhook">
         <source>developers:: Events trigger this webhook</source>
-        <target state="needs-translation">Available Events</target>
+        <target state="translated">Available Events</target>
         <jms:reference-file line="136">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a425cde38ee310e52988e9e9970f1c8dd376c13" resname="developers:: Events type">
         <source>developers:: Events type</source>
-        <target state="needs-translation">Events On</target>
+        <target state="translated">Events On</target>
         <jms:reference-file line="142">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0b3e5bbe37fa58fc7ce4682309017ffcebe95a23" resname="developers:: Select events to trigger this webhook url">
@@ -10391,17 +10391,17 @@
       </trans-unit>
       <trans-unit id="c2d24cc69b826a71661c25cbd5291cdaaf95208c" resname="developers:: collection changed for record">
         <source>developers:: collection changed for record</source>
-        <target state="needs-translation">Collection changed for record/story</target>
+        <target state="translated">Collection changed for record/story</target>
         <jms:reference-file line="374">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1066a8925f76bd4aadebd7ec114b0ff771ab05ed" resname="developers:: media substituted for record">
         <source>developers:: media substituted for record</source>
-        <target state="needs-translation">The file has been substituted for record's subdefinitions or original file.</target>
+        <target state="translated">The file has been substituted for record's subdefinitions or original file.</target>
         <jms:reference-file line="373">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab1c856fecf799bb87498cb26ea74b3db85b4f0b" resname="developers:: new feed entry on phraseanet">
         <source>developers:: new feed entry on phraseanet</source>
-        <target state="needs-translation">New publication have been made on a RSS feed.</target>
+        <target state="translated">New publication have been made on a RSS feed.</target>
         <jms:reference-file line="390">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
@@ -10411,7 +10411,7 @@
       </trans-unit>
       <trans-unit id="30396a053ecc23d5897f4008d2d22de6dcb97a5d" resname="developers:: new user created">
         <source>developers:: new user created</source>
-        <target state="needs-translation">A new User has been created</target>
+        <target state="translated">A new User has been created</target>
         <jms:reference-file line="382">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
@@ -10421,37 +10421,37 @@
       </trans-unit>
       <trans-unit id="1f036a4965ecb781192393a08a5aa0510a94524c" resname="developers:: record or story deleted">
         <source>developers:: record or story deleted</source>
-        <target state="needs-translation">A record or story has been deleted</target>
+        <target state="translated">A record or story has been deleted</target>
         <jms:reference-file line="372">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98121e43abc2802cfec12de894e041f54d7c9b2c" resname="developers:: record or story edited">
         <source>developers:: record or story edited</source>
-        <target state="needs-translation">A record or story has been edited</target>
+        <target state="translated">A record or story has been edited</target>
         <jms:reference-file line="371">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7479330e0d56c8b37e71013043acecd329ce5f08" resname="developers:: status changed for record">
         <source>developers:: status changed for record</source>
-        <target state="needs-translation">Status bits value has been changed for record or story</target>
+        <target state="translated">Status bits value has been changed for record or story</target>
         <jms:reference-file line="375">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db026e337fa7eeba8352e87ca00a28e19c854453" resname="developers:: subdef created for a record">
         <source>developers:: subdef created for a record</source>
-        <target state="needs-translation">Subview has been created</target>
+        <target state="translated">Subview has been created</target>
         <jms:reference-file line="378">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18fc15413169b19baf33adc2572d53a76b86f1f5" resname="developers:: subdef creation failed for a record">
         <source>developers:: subdef creation failed for a record</source>
-        <target state="needs-translation">Subview creation has failed</target>
+        <target state="translated">Subview creation has failed</target>
         <jms:reference-file line="379">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e59d8fc44e34b786247fa5924eeb12a4a1202215" resname="developers:: user deleted on phraseanet">
         <source>developers:: user deleted on phraseanet</source>
-        <target state="needs-translation">A user has been deleted</target>
+        <target state="translated">A user has been deleted</target>
         <jms:reference-file line="383">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="13577491a21410883cb7990ce9fdd481fca5c58b" resname="developers:: user registration granted on phraseanet">
         <source>developers:: user registration granted on phraseanet</source>
-        <target state="needs-translation">User registration granted</target>
+        <target state="translated">User registration granted</target>
         <jms:reference-file line="386">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7786ecdfe826e6f347dbf643191d79a196c6057" resname="developers:: user registration rejected on phraseanet">
@@ -10689,7 +10689,7 @@
       </trans-unit>
       <trans-unit id="de194ec1b45176c3893db71678f89d9448a07ba3" resname="expose::setting Choose profile and check all field to be uploaded in %exposeName% expose">
         <source>expose::setting Choose profile and check all field to be uploaded in %exposeName% expose</source>
-        <target state="needs-translation">Choose Expose profile %exposeName% and check all fields constituting the asset caption</target>
+        <target state="translated">Choose Expose profile %exposeName% and check all fields constituting the asset caption</target>
         <jms:reference-file line="18">prod/WorkZone/ExposeFieldMapping.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="22631003381860d578864d236a5873213fd51975" resname="expose::setting Field mapping">
@@ -12135,7 +12135,7 @@
       </trans-unit>
       <trans-unit id="a5378b9deb644538f67be6179092beefcbf10038" resname="print:: Can download subdef">
         <source>print:: Can download subdef</source>
-        <target state="needs-translation">Add a download link</target>
+        <target state="translated">Add a download link</target>
         <jms:reference-file line="113">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5dfd076ab7424cb8f409096cd1fcc674f4634386" resname="print:: Choose subdef for preview">
@@ -12145,12 +12145,12 @@
       </trans-unit>
       <trans-unit id="175a292d892bd53e1449e70d810c7c8f5a799a82" resname="print:: Choose subdef for thumbnail">
         <source>print:: Choose subdef for thumbnail</source>
-        <target state="needs-translation">Choose a subdefinition for printed "thumbnail"</target>
+        <target state="translated">Choose a subdefinition for printed "thumbnail"</target>
         <jms:reference-file line="95">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="803a88bdcb07cb8055e10ca28aee9b3c74992da6" resname="print:: add and remember password to protect the pdf">
         <source>print:: add and remember password to protect the pdf</source>
-        <target state="needs-translation">Define a password to protect the PDF</target>
+        <target state="translated">Define a password to protect the PDF</target>
         <jms:reference-file line="70">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="yes">
@@ -12165,12 +12165,12 @@
       </trans-unit>
       <trans-unit id="50176955761a18d473255055c57e8653cc1be124" resname="print:: choose model">
         <source>print:: choose model</source>
-        <target state="needs-translation">Select a printing template</target>
+        <target state="translated">Select a printing template</target>
         <jms:reference-file line="14">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1eaa7dd62af622612377b17dacd8b2ebbee9ff90" resname="print:: day">
         <source>print:: day</source>
-        <target state="needs-translation">Day</target>
+        <target state="translated">Day</target>
         <jms:reference-file line="136">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d369ca0ef132e64f45e4cef5bfa2aaff9104a276" resname="print:: description" approved="yes">
@@ -12187,7 +12187,7 @@
       </trans-unit>
       <trans-unit id="502dbd857425df79d57c72240847110224a79aa6" resname="print:: element downloadable">
         <source>print:: element downloadable</source>
-        <target state="needs-translation">Define the downloaded subdefinition</target>
+        <target state="translated">Define the downloaded subdefinition</target>
         <jms:reference-file line="129">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="732e978726502a9af6249fecfbe0aa53c3c8cf25" resname="print:: element printable on preview model">
@@ -12202,7 +12202,7 @@
       </trans-unit>
       <trans-unit id="03dcea0e67ff75a7d366e7abd21c7124ed67dc92" resname="print:: hour">
         <source>print:: hour</source>
-        <target state="needs-translation">Hour</target>
+        <target state="translated">Hour</target>
         <jms:reference-file line="135">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f25fd9ac189dce63bc51d1eccc253051ada2bf4" resname="print:: image de choix et description" approved="yes">
@@ -12232,17 +12232,17 @@
       </trans-unit>
       <trans-unit id="81f119c55f14043d43beccb64c0bf0b090a624c8" resname="print:: month">
         <source>print:: month</source>
-        <target state="needs-translation">Month</target>
+        <target state="translated">Month</target>
         <jms:reference-file line="138">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="49bc88aef571df633eac0a80173eb1c76a9d06d7" resname="print:: pdf description">
         <source>print:: pdf description</source>
-        <target state="needs-translation">Message (optional)</target>
+        <target state="translated">Message (optional)</target>
         <jms:reference-file line="10">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab85773220ced0dddd0e679a51116015c6436143" resname="print:: pdf title">
         <source>print:: pdf title</source>
-        <target state="needs-translation">PDF Title (optional)</target>
+        <target state="translated">PDF Title (optional)</target>
         <jms:reference-file line="6">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9a447b4210f0a24a385031830ab4848abb61793" resname="print:: planche contact (mosaique)" approved="yes">
@@ -12252,12 +12252,12 @@
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
         <source>print:: some options</source>
-        <target state="needs-translation">More Options</target>
+        <target state="translated">More Options</target>
         <jms:reference-file line="68">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="be0543f570963b35cd3c119d878d45410b363316" resname="print:: subdef mapping">
         <source>print:: subdef mapping</source>
-        <target state="needs-translation">Define subdefinitions used for print</target>
+        <target state="translated">Define subdefinitions used for print</target>
         <jms:reference-file line="74">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="64522de5f98e57af6d90d10707181ef4fecdafdd" resname="print:: subdef url ttl">
@@ -12272,12 +12272,12 @@
       </trans-unit>
       <trans-unit id="d16a375bd489fa9232346a1c6e48570bbf53a479" resname="print:: warning! Only available media for chosen subdef is downloadable">
         <source>print:: warning! Only available media for chosen subdef is downloadable</source>
-        <target state="needs-translation">Leave the field empty for a permanent validity</target>
+        <target state="needs-translation">Leave the duration empty or set to 0 for a permanent validity</target>
         <jms:reference-file line="117">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="52acc8afb73e42ebb15886d76b723d8e8907d8eb" resname="print:: week">
         <source>print:: week</source>
-        <target state="needs-translation">Week</target>
+        <target state="translated">Week</target>
         <jms:reference-file line="137">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="yes">
@@ -12807,7 +12807,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="3bfba160718dd58907bb18b25df9446b8e1a9efb" resname="prod::workzone:manual feedback reminder send new token">
         <source>prod::workzone:manual feedback reminder send new token</source>
-        <target state="needs-translation">Include a new connection link (the old link will no longer be valid)</target>
+        <target state="translated">Include a new connection link (the old link will no longer be valid)</target>
         <jms:reference-file line="16">prod/WorkZone/Reminder.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="yes">
@@ -12973,7 +12973,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="e2562f49e9bd07c1ac7db0bab221a9dbf209d523" resname="prod:expose:publication:Info drag element and set order">
         <source>prod:expose:publication:Info drag element and set order</source>
-        <target state="needs-translation">Drag and drop to order items</target>
+        <target state="translated">Drag and drop to order items</target>
         <jms:reference-file line="22">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="879311e23dbb4491b0144ce49a6d66e83bd660e7" resname="prod:expose:publication:Layout" approved="yes">
@@ -13074,7 +13074,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="9d9ba3cf749d5ab678b4474e81826e427804e9d9" resname="prod:expose:publication:Set order">
         <source>prod:expose:publication:Set order</source>
-        <target state="needs-translation">Save order</target>
+        <target state="translated">Save order</target>
         <jms:reference-file line="4">prod/WorkZone/ExposePublicationAssets.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="77e197ee00b2da0b378e08f9717e9029907dde6d" resname="prod:expose:publication:Slug" approved="yes">
