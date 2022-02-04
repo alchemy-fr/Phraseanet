@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Out\Module;
 
 use Alchemy\Phrasea\Application;
+use Alchemy\Phrasea\Media\MediaSubDefinitionUrlGenerator;
 use Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 use Alchemy\Phrasea\Helper\Record\Printer;
 use Alchemy\Phrasea\Model\Entities\ValidationParticipant;
@@ -21,6 +22,9 @@ class PDFRecords extends PDF
 {
     /** @var Printer */
     private $printer;
+
+    /** @var MediaSubDefinitionUrlGenerator */
+    private $urlGenerator;
 
     private $pdfTitle;
     private $pdfDescription;
@@ -34,6 +38,7 @@ class PDFRecords extends PDF
     public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '')
     {
         parent::__construct($app);
+        $this->urlGenerator = $app['media_accessor.subdef_url_generator'];
         $this->printer  = $printer;
         $this->pdfTitle = $pdfTitle;
         $this->pdfDescription = $pdfDescription;
@@ -316,11 +321,11 @@ class PDFRecords extends PDF
         $this->pdf->SetLeftMargin($lmargin + 55);
 
         $ndoc = 0;
+        /* @var \record_adapter $rec */
         foreach ($this->records as $rec) {
             $subdef = null;
 
             if ($rec->has_subdef($this->thumbnailName)) {
-                /* @var \record_adapter $rec */
                 $subdef = $rec->get_subdef($this->thumbnailName);
             }
 
@@ -410,6 +415,17 @@ class PDFRecords extends PDF
             $this->pdf->SetX($lmargin + 55);
             $p0 = $this->pdf->PageNo();
             $y0 = $this->pdf->GetY();
+
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+                $sd = $rec->get_subdef($this->downloadSubdef);
+                if ($sd->is_physically_present()) {
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $this->app->trans("print:: download"));
+
+                    $this->pdf->writeHTML($downloadLink, true, false, false, true);
+                }
+            }
+            $this->pdf->SetY($this->pdf->GetY() + 2);
+
             foreach ($rec->get_caption()->get_fields() as $field) {
                 /* @var $field caption_field */
 
@@ -439,6 +455,7 @@ class PDFRecords extends PDF
         $lmargin = $oldMargins['left'];
         $rmargin = $oldMargins['right'];
 
+        /* @var \record_adapter $rec */
         foreach ($this->records as $rec) {
             $title = "record : " . $rec->get_title();
 
@@ -474,6 +491,15 @@ class PDFRecords extends PDF
             $this->pdf->SetY($y = $y2);
             $this->pdf->SetY($y + 2);
 
+            if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
+                $sd = $rec->get_subdef($this->downloadSubdef);
+                if ($sd->is_physically_present()) {
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $this->app->trans("print:: download"));
+
+                    $this->pdf->writeHTML($downloadLink, true, false, false, true);
+                }
+            }
+            $this->pdf->SetY($this->pdf->GetY() + 2);
             foreach ($rec->get_caption()->get_fields() as $field) {
                 if ($field->get_databox_field()->get_gui_visible()) {
                     $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
@@ -742,8 +768,7 @@ class PDFRecords extends PDF
             if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
                 $sd = $rec->get_subdef($this->downloadSubdef);
                 if ($sd->is_physically_present()) {
-
-                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$sd->get_permalink()->get_url()."&download=1", $this->app->trans("print:: download"));
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $this->app->trans("print:: download"));
 
                     $this->pdf->writeHTML($downloadLink, true, false, false, true);
                 }

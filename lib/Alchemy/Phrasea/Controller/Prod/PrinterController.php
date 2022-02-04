@@ -44,8 +44,6 @@ class PrinterController extends Controller
         $printer->setThumbnailName($request->request->get('thumbnail-chosen'));
         $printer->setPreviewName($request->request->get('preview-chosen'));
 
-        $b = $printer->get_original_basket();
-
         $layout = $request->request->get('lay');
         $title = $request->request->get('print-pdf-title') ? : '';
         $description = $request->request->get('print-pdf-description') ? : '';
@@ -53,8 +51,11 @@ class PrinterController extends Controller
         $canDownload = $request->request->get('can-download-subdef') == 1 ? true : false ;
 
         $downloadSubdef = '';
+        $urlTtl = null;
         if ($canDownload) {
             $downloadSubdef = $request->request->get('print-select-download-subdef');
+            $urlTtl = $request->request->get('print-download-ttl') ? (int)$request->request->get('print-download-ttl') * (int)$request->request->get('print-download-ttl-unit') : null;
+            $printer->setUrlTtl($urlTtl);
         }
 
         foreach ($printer->get_elements() as $record) {
