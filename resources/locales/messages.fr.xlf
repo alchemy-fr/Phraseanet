@@ -12257,12 +12257,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="be0543f570963b35cd3c119d878d45410b363316" resname="print:: subdef mapping">
         <source>print:: subdef mapping</source>
-        <target state="new">print:: subdef mapping</target>
+        <target state="needs-translation">Définir les sous définitions utilisées pour l'impression.</target>
         <jms:reference-file line="74">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="64522de5f98e57af6d90d10707181ef4fecdafdd" resname="print:: subdef url ttl">
         <source>print:: subdef url ttl</source>
-        <target state="new">print:: subdef url ttl</target>
+        <target state="needs-translation">Durée de validité du lien de téléchargement.</target>
         <jms:reference-file line="132">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="698d678afe4394e810eda66c18abb93d7c5b8a00" resname="print:: warning! Only available image for chosen subdef is printed">
