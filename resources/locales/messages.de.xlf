@@ -762,7 +762,7 @@
       </trans-unit>
       <trans-unit id="7cf2f352b50d8f0ace0fe5aea59c030dadbb342b" resname="Advanced Search:: By numeric field">
         <source>Advanced Search:: By numeric field</source>
-        <target state="needs-translation">Numerische Felder</target>
+        <target state="translated">Numerische Felder</target>
         <jms:reference-file line="524">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="423c34c17c6487b93f9e853a64b545b8de5b13a3" resname="Advanced Search:: By string field">
@@ -3561,7 +3561,7 @@
       </trans-unit>
       <trans-unit id="3557dddb635d5a299d56eb77ab302f7362548d65" resname="Graphic view">
         <source>Graphic view</source>
-        <target state="needs-translation">Geeignete Datensätze ansehen</target>
+        <target state="translated">Geeignete Datensätze ansehen</target>
         <jms:reference-file line="70">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd6d6f27b3e16afd7cdd573b85b3cc5bfd22e8db" resname="GraphicsMagick" approved="yes">
@@ -5638,7 +5638,7 @@
       </trans-unit>
       <trans-unit id="7ade26313918bb06d63dc52c35414ab8cab25945" resname="Refresh graphic view">
         <source>Refresh graphic view</source>
-        <target state="needs-translation">Die Regeln testen</target>
+        <target state="translated">Die Regeln testen</target>
         <jms:reference-file line="66">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68bac4f29bb7ff60923642c9caaae69862bbd2dc" resname="Refus d'elements de commande" approved="yes">
@@ -7678,7 +7678,7 @@
       </trans-unit>
       <trans-unit id="ecf870ab34b23495fb940231b71ebe6e952e7cd7" resname="Watermark text">
         <source>Watermark text</source>
-        <target state="new">Watermark text</target>
+        <target state="translated">Watermark text</target>
         <jms:reference-file line="41">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8bfada821419f7b1c35da6470b04b8c1b0c72d91" resname="Weak" approved="yes">
@@ -8614,7 +8614,7 @@
       </trans-unit>
       <trans-unit id="cf2c27fd3397da734c39d1d24e9439442d221255" resname="admin::compte-utilisateur derniere connexion">
         <source>admin::compte-utilisateur derniere connexion</source>
-        <target state="needs-translation">Letzte Verbindung</target>
+        <target state="translated">Letzte Verbindung</target>
         <jms:reference-file line="132">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d79bdc62fa5ecc611e96fe7ab9f5cf4d4debabae" resname="admin::compte-utilisateur email" approved="yes">
@@ -9194,7 +9194,7 @@
       </trans-unit>
       <trans-unit id="8d4650a4ed70863f59f4f6d2aae9d0fdc67ac792" resname="admin::workermanager:tab:RecordsActions: period in second">
         <source>admin::workermanager:tab:RecordsActions: period in second</source>
-        <target state="needs-translation">Zeitintervall Ausführung</target>
+        <target state="translated">Zeitintervall Ausführung</target>
         <jms:reference-file line="23">WorkerManager/Form/WorkerRecordsActionsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f259faf8d97eb0b6b07b51102a45bf34fe44caed" resname="admin::workermanager:tab:RecordsActions: xml view">
@@ -9324,12 +9324,12 @@
       </trans-unit>
       <trans-unit id="422861193dcc4649ea76a8c2dfa4c5760ee1d755" resname="admin::workermanager:tab:recordsActions: description">
         <source>admin::workermanager:tab:recordsActions: description</source>
-        <target state="needs-translation">Änderungen auf Datensätze mit SQL vornehmen</target>
+        <target state="translated">Änderungen auf Datensätze mit SQL vornehmen</target>
         <jms:reference-file line="53">admin/worker-manager/worker_records_actions.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="437cb2151c10d29613cfc9e637b5b4ee0ab8eec5" resname="admin::workermanager:tab:recordsActions: title">
         <source>admin::workermanager:tab:recordsActions: title</source>
-        <target state="needs-translation">Records actions</target>
+        <target state="translated">Records actions</target>
         <jms:reference-file line="50">admin/worker-manager/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="15a2a28d354353ef62c87266c96a8586ea6d7f00" resname="admin::workermanager:tab:reminder: title" approved="yes">
@@ -10353,7 +10353,7 @@
       </trans-unit>
       <trans-unit id="8e82b164f61602c25d57b485ed09c7a59a8e0919" resname="developers:: Events name">
         <source>developers:: Events name</source>
-        <target state="needs-translation">Webhook Ereignisse</target>
+        <target state="translated">Webhook Ereignisse</target>
         <jms:reference-file line="145">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f717955140c0a034f0e08cfc1416b8443e86cbb5" resname="developers:: Events trigger this webhook">
@@ -10363,7 +10363,7 @@
       </trans-unit>
       <trans-unit id="3a425cde38ee310e52988e9e9970f1c8dd376c13" resname="developers:: Events type">
         <source>developers:: Events type</source>
-        <target state="needs-translation">Ereignisse auf</target>
+        <target state="translated">Ereignisse auf</target>
         <jms:reference-file line="142">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0b3e5bbe37fa58fc7ce4682309017ffcebe95a23" resname="developers:: Select events to trigger this webhook url">
@@ -10388,7 +10388,7 @@
       </trans-unit>
       <trans-unit id="c2d24cc69b826a71661c25cbd5291cdaaf95208c" resname="developers:: collection changed for record">
         <source>developers:: collection changed for record</source>
-        <target state="needs-translation">Kollektion geändert für Datensatz/Bericht</target>
+        <target state="translated">Kollektion geändert für Datensatz/Bericht</target>
         <jms:reference-file line="374">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1066a8925f76bd4aadebd7ec114b0ff771ab05ed" resname="developers:: media substituted for record">
