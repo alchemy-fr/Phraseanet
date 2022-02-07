@@ -1,3 +1,6 @@
-phrasea:
-  external:
-    name: ps_internal
+version: "3.9"
+
+networks:
+    phrasea:
+      external:
+        name: PS_NETWORK_NAME
