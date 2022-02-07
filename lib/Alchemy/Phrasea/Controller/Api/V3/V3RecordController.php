@@ -21,7 +21,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use collection;
 use Doctrine\DBAL\DBALException;
 use Exception;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
 use p4field;
 use record_adapter;
@@ -104,8 +104,8 @@ class V3RecordController extends Controller
                 $tempfile = $tmpFs->createTemporaryFile('download_', null, $pi['extension']);
 
                 try {
-                    $guzzle = new Guzzle($url);
-                    $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                    $guzzle = new Guzzle(['base_uri' => $url]);
+                    $res = $guzzle->get("", ['save_to' => $tempfile]);
                 }
                 catch (Exception $e) {
                     return Result::createBadRequest($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));
