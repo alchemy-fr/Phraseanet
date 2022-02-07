@@ -14929,7 +14929,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="27b11cf3daaac2d61e7909bffc3f0bd715d72b72" resname="thesaurus::edit add %selected_value% to the field  %field_name%">
         <source>thesaurus::edit add %selected_value% to the field %field_name%</source>
-        <target state="new">thesaurus::edit add %selected_value% to the field  %field_name%</target>
+        <target state="needs-translation">Begriff %selected_value% zum Feld %field_name% hinzufügen</target>
         <jms:reference-file line="43">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ca22ac6da238dca073cb83b175497d53c9db1ad" resname="thesaurus::edit advanced mode">
