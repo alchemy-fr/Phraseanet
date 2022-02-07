@@ -35,7 +35,7 @@ services:
       - internal
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=PS_NETWORK_NAME"
+      - "traefik.docker.network=${PS_NETWORK_NAME}"
       - "traefik.http.routers.phraseanet.rule=Host(`${PHRASEANET_HOSTNAME}`)"
       - "traefik.http.routers.phraseanet.tls=true"
 

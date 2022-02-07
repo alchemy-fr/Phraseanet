@@ -3,4 +3,4 @@ version: "3.9"
 networks:
     phrasea:
       external:
-        name: PS_NETWORK_NAME
+        name: ${PS_NETWORK_NAME}
