@@ -353,6 +353,30 @@ $toggledOff: #666;       // a toggle button IS off
 /****************
  * badge(s)
  ****************/
+.PushBox .user_content .owner_badge {
+    width: 1400px;
+    display: inline-block;
+    margin: 10px;
+    border: 3px solid #868686;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+
+    TABLE {
+        width: 100%;
+    }
+    TD {
+        vertical-align: top;
+        text-align: center;
+        font-size:200%;
+    }
+    .icon {
+        background-color: #673AB7;
+        color: white;
+        width: 56px;        // 7+42+7 (same size as badge)
+        border-radius: 7px 0px 0px 7px;
+    }
+}
+
 .PushBox .user_content .badges {
     top: 50px;
     overflow: auto;
@@ -385,9 +409,6 @@ $toggledOff: #666;       // a toggle button IS off
             display: block;
         }
 
-        &.selected {
-            border-color: #000000;
-        }
         .icon {
             width: 42px;
             padding: 0 7px;

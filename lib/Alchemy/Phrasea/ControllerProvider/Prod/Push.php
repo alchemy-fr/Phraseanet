@@ -75,6 +75,7 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->get('/user/{usr_id}/', 'controller.prod.push:getUserAction')
             ->assert('usr_id', '\d+');
 
+        /** @uses PushController::getListAction */
         $controllers->get('/list/{list_id}/', 'controller.prod.push:getListAction')
             ->bind('prod_push_lists_list')
             ->assert('list_id', '\d+');

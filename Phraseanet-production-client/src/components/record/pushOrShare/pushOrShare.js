@@ -21,7 +21,7 @@ const pushOrShare = function (services, container) {
 
     this.Context = context;
 
-    let $badges = $('.user_content .badges .badge', this.container);
+//    let $badges = $('.user_content .badges .badge', this.container);
 
 //    var $this = this;
     var pushOrShare = this;
@@ -30,7 +30,10 @@ const pushOrShare = function (services, container) {
     this.selection = new Selectable(services,
         $('.user_content .badges', this.container),
         {
-            selector: '.badge'
+            selector: '.badge',
+            selectStop: function(event, ui) {
+                appEvents.emit('sharebasket.participantsSelectionChanged', {container:$container});
+            }
         }
     );
 
@@ -86,7 +89,7 @@ const pushOrShare = function (services, container) {
         pushOrShare.selection.empty();
     });
 
-    this.container.on('click', '.content .options .delete-selection', function (event) {
+    this.container.on('click', '.content .general_togglers .delete-selection', function (event) {
         _.each($('.badges.selectionnable').children(), function(item) {
             var $elem = $(item);
             if($elem.hasClass('selected')) {
@@ -112,9 +115,12 @@ const pushOrShare = function (services, container) {
 
                 $elem.fadeOut(function () {
                     $elem.remove();
+
+                    appEvents.emit('sharebasket.participantsChanged', {container:container, context:'user-added'});
                 });
             }
         });
+
         return false;
     });
 
@@ -388,7 +394,7 @@ console.log("==== feedback-action === adduser");
     this.container.on('click', '.general_togglers .general_toggler', function (event) {
         var feature = $(this).attr('feature');
 
-        var $badges = $('.user_content .badge.selected', this.container);
+        var $badges = $('.user_content .badge.selected', $container.container);
 
         var toggles = $('.status_off.toggle_' + feature, $badges);
 
@@ -453,7 +459,8 @@ console.log("==== feedback-action === adduser");
             select: function (event, ui) {
                 if (ui.item.type === 'USER') {
                     pushOrShare.selectUser(ui.item);
-                } else if (ui.item.type === 'LIST') {
+                }
+                else if (ui.item.type === 'LIST') {
                     for (let e in ui.item.entries) {
                         pushOrShare.selectUser(ui.item.entries[e].User);
                     }
@@ -492,6 +499,7 @@ console.log("==== feedback-action === adduser");
     };
 
     appEvents.listenAll({
+        // users lists (left) are async loaded
         'sharebasket.usersListsChanged': function(o) {
             console.log("==== catch usersListsChanged");
             o.container
@@ -516,6 +524,7 @@ console.log("==== feedback-action === adduser");
             // the list on participants (badges) have changed : set event handlers on specific elements...
 
             const $badges = $('.user_content .badges .badge', o.container);
+            const $toggles = $('.user_content .toggles .toggle', o.container);
 
             // ... delete badge handler
             //
@@ -543,17 +552,16 @@ console.log("==== feedback-action === adduser");
 
                 $elem.fadeOut(function () {
                     $elem.remove();
+                    appEvents.emit('sharebasket.participantsChanged', {container:$container, context:'user-deleted'});
                 });
-
-                appEvents.emit('sharebasket.participantsChanged', {container:this.container, context:'user-deleted'});
 
                 return false;
             });
 
             // ... toggle buttons handlers
             //
-            $badges.off('click', '.toggle')
-                   .on('click', '.toggle', function (event) {
+            $toggles.off('click')
+                   .on('click', function (event) {
                 console.log("==== toggle clicked ====");
                 event.stopPropagation();
 
@@ -561,27 +569,75 @@ console.log("==== feedback-action === adduser");
 
                 $this.toggleClass('status_off status_on');
 
-                $this.parent().find('input').val($this.hasClass('status_on') ? '1' : '0');
+                const input_value = $this.hasClass('status_on') ? '1' : '0';
+                $this.parent().find('input').val(input_value);
 
-                appEvents.emit('sharebasket.toggleChanged', {container:this.container, context:'toggle-changed'});
+                if($(event.currentTarget).attr('id') === 'toggleFeedback') {
+                    appEvents.emit('sharebasket.toggleFeedbackChanged', { container:$container, context:o.context });
+/*
+                    // special owner toggle to set the share as a feedback
+                    if(input_value === '0') {
+                        // simple share
+                        $('.feedback_only_true', o.container).hide();
+                        $('.feedback_only_false', o.container).show();
+                    }
+                    else {
+                        // we want feedback from this share
+                        $('.feedback_only_false', o.container).hide();
+                        $('.feedback_only_true', o.container).show();
+                    }
+*/
+                }
+                else {
+                    // normal toggle
+                    appEvents.emit('sharebasket.toggleChanged', {
+                        container: $container,
+                        context:   'toggle-changed'
+                    });
+                }
 
                 return false;
             });
-            // if user list changes, toggles also
-            appEvents.emit('sharebasket.toggleChanged', { container:this.container, context:o.context });
+            // if user list changes, selection also ?
+            appEvents.emit('sharebasket.participantsSelectionChanged', { container:$container, context:'init' });
+            // fake toggleFeedbackChanged to show/hide togglers of (new) participants
+            appEvents.emit('sharebasket.toggleFeedbackChanged', { container:$container,  context: 'init' });
         },
-        'sharebasket.toggleChanged': function(o) {
-            // a toggle on a user badge was changed
-            const $badges = $('.user_content .badges .badge', o.container);
+        'sharebasket.toggleFeedbackChanged': function(o) {
 
-            // if a "comment" toggle is on, the basket becomes a "feedback"
-            if($('.status_on.toggle_agree', $badges).length > 0) {
+            if($("INPUT[name=isFeedback]").val() === '0') {
+                // simple share
+                $('.feedback_only_true', o.container).hide();
+                $('.feedback_only_false', o.container).show();
+            }
+            else {
+                // we want feedback from this share
                 $('.feedback_only_false', o.container).hide();
                 $('.feedback_only_true', o.container).show();
             }
+        },
+        'sharebasket.participantsSelectionChanged': function(o) {
+            console.log("==== selection changed");
+            // a toggle on a user badge was changed
+            const $badges = $('.user_content .badges .badge', o.container);
+            const selectedCount = $badges.filter('.selected').length;
+            if(selectedCount === 0) {
+                // none selected
+                $('.selected_all').hide();
+                $('.selected_partial').hide();
+                $('.selected_none').show();
+            }
+            else if (selectedCount === $badges.length) {
+                // all selected
+                $('.selected_none').hide();
+                $('.selected_partial').hide();
+                $('.selected_all').show();
+            }
             else {
-                $('.feedback_only_true', o.container).hide();
-                $('.feedback_only_false', o.container).show();
+                // partial selection
+                $('.selected_none').hide();
+                $('.selected_all').hide();
+                $('.selected_partial').show();
             }
         }
     });
@@ -604,7 +660,7 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
             }
         }
         if ($('.badge_' + user.usr_id, this.container).length > 0) {
-            humane.info('User already selected');
+            // humane.info('User already selected');
             return;
         }
 

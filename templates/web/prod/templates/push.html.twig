@@ -93,24 +93,35 @@
                             <% if(context != 'ListManager') { %>
                             <tr class="toggles">
                                 <td>
-                                    <% if(context == 'Sharebasket') { %>
-                                    <% msg = "{% trans %}User contribute to the feedback{% endtrans %}" %>
-                                    <a href="#" class="colored toggle toggle_agree status_on" title="<%= msg %>">
-                                        <i class="fa fa-comment"></i>
+                                    <% msg = "{% trans %}User can download HD{% endtrans %}" %>
+                                    <a href="#" class="colored toggle toggle_HD status_off" title="<%= msg %>">
+                                        <i class="fa fa-download"></i>
                                     </a>
                                     <input type="hidden"
-                                           name="participants[<%= user.usr_id %>][agree]"
-                                           value="1"/>
-                                    <% } %>
+                                           name="participants[<%= user.usr_id %>][HD]"
+                                           value="0"/>
                                 </td>
                                 <td>
                                     <% if(context == 'Sharebasket') { %>
                                     <% msg = "{% trans %}User can modify the basket{% endtrans %}" %>
-                                    <a href="#" class="colored toggle toggle_modify status_on" title="<%= msg %>">
+                                    <a href="#" class="colored toggle toggle_modify status_off" title="<%= msg %>">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                     <input type="hidden"
                                            name="participants[<%= user.usr_id %>][modify]"
+                                           value="0"/>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if(context == 'Sharebasket') { %>
+                                    <% msg = "{% trans %}User contribute to the feedback{% endtrans %}" %>
+                                    <span class="feedback_only_true">
+                                        <a href="#" class="colored toggle toggle_agree status_on" title="<%= msg %>">
+                                            <i class="fa fa-comment"></i>
+                                        </a>
+                                    </span>
+                                    <input type="hidden"
+                                           name="participants[<%= user.usr_id %>][agree]"
                                            value="1"/>
                                     <% } %>
                                 </td>
@@ -126,15 +137,6 @@
                                            name="participants[<%= user.usr_id %>][see_others]"
                                            value="0"/>
                                     <% } %>
-                                </td>
-                                <td>
-                                    <% msg = "{% trans %}User can download HD{% endtrans %}" %>
-                                    <a href="#" class="colored toggle toggle_HD status_off" title="<%= msg %>">
-                                        <i class="fa fa-download"></i>
-                                    </a>
-                                    <input type="hidden"
-                                           name="participants[<%= user.usr_id %>][HD]"
-                                           value="0"/>
                                 </td>
                                 <% } %>
                             </tr>
