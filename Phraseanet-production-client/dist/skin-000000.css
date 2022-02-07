@@ -9534,21 +9534,12 @@ TABLE.explain3 TR TD {
  ****************/
 
 .PushBox .user_content .owner_badge {
-  width: 220px;
+  width: 140px;
   display: inline-block;
   margin: 10px;
   border: 3px solid #868686;
-  color: #282828;
   background-color: #f7f7f7;
   border-radius: 10px;
-  position: relative;
-  /*
-    &.name {
-        white-space: pre-line;
-        display: block;
-        margin-top: 5px;
-    }
-    */
 }
 
 .PushBox .user_content .owner_badge TABLE {
@@ -9564,10 +9555,8 @@ TABLE.explain3 TR TD {
 .PushBox .user_content .owner_badge .icon {
   background-color: #673AB7;
   color: white;
-  width: 42px;
+  width: 56px;
   border-radius: 7px 0px 0px 7px;
-  padding-left: 7px;
-  padding-right: 7px;
 }
 
 .PushBox .user_content .badges {
