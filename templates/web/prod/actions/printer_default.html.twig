@@ -138,6 +138,17 @@
                                 <option value="2592000" >{{ 'print:: month' | trans }}</option>
                             </select>
                         </div>
+                        <div style="margin:10px 0px;">
+                            <label>{{ 'print:: choose filename' | trans }}</label>
+                            <label for="download-title-name" class="radio" style="margin-left: 10px;">
+                                <input type="radio" name="print-filename" id="download-title-name" checked value="title" />
+                                {{ 'print:: title' | trans }}
+                            </label>
+                            <label for="download-original-name" class="radio" style="margin-left: 10px;">
+                                <input type="radio" name="print-filename" id="download-original-name" value="originalname" />
+                                {{ 'print:: original media name' | trans }}
+                            </label>
+                        </div>
                     </div>
                 </div>
 

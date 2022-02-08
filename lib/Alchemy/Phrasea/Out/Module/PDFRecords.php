@@ -20,6 +20,8 @@ use \IntlDateFormatter as DateFormatter;
 
 class PDFRecords extends PDF
 {
+    private static $maxFilenameLength = 256;
+
     /** @var Printer */
     private $printer;
 
@@ -285,7 +287,8 @@ class PDFRecords extends PDF
                 if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
                     $sd = $rec->get_subdef($this->downloadSubdef);
                     if ($sd->is_physically_present()) {
-                        $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $rec->get_title());
+                        $url = $this->getDownloadUrl($sd);
+                        $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', $url, $rec->get_title());
                     }
                 }
 
@@ -425,11 +428,13 @@ class PDFRecords extends PDF
             if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
                 $sd = $rec->get_subdef($this->downloadSubdef);
                 if ($sd->is_physically_present()) {
-                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $this->app->trans("print:: download"));
+                    $url = $this->getDownloadUrl($sd);
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', $url, $this->app->trans("print:: download"));
 
                     $this->pdf->writeHTML($downloadLink, true, false, false, true);
                 }
             }
+
             $this->pdf->SetY($this->pdf->GetY() + 2);
 
             foreach ($rec->get_caption()->get_fields() as $field) {
@@ -500,11 +505,13 @@ class PDFRecords extends PDF
             if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
                 $sd = $rec->get_subdef($this->downloadSubdef);
                 if ($sd->is_physically_present()) {
-                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $this->app->trans("print:: download"));
+                    $url = $this->getDownloadUrl($sd);
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', $url, $this->app->trans("print:: download"));
 
                     $this->pdf->writeHTML($downloadLink, true, false, false, true);
                 }
             }
+
             $this->pdf->SetY($this->pdf->GetY() + 2);
             foreach ($rec->get_caption()->get_fields() as $field) {
                 if ($field->get_databox_field()->get_gui_visible()) {
@@ -774,7 +781,8 @@ class PDFRecords extends PDF
             if ($this->canDownload && !empty($this->downloadSubdef) && $rec->has_subdef($this->downloadSubdef)) {
                 $sd = $rec->get_subdef($this->downloadSubdef);
                 if ($sd->is_physically_present()) {
-                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $sd, $this->printer->getUrlTtl())."?download=1", $this->app->trans("print:: download"));
+                    $url = $this->getDownloadUrl($sd);
+                    $downloadLink = sprintf('<a style="text-decoration: none;" href="%s">%s</a>', $url, $this->app->trans("print:: download"));
 
                     $this->pdf->writeHTML($downloadLink, true, false, false, true);
                 }
@@ -991,5 +999,17 @@ class PDFRecords extends PDF
 
             $this->isUserInputPrinted = true;
         }
+    }
+
+    private function getDownloadUrl(\media_subdef $subdef)
+    {
+        $url = (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $subdef, $this->printer->getUrlTtl())."?download=1";
+        if ($this->printer->getTitleAsDownloadName()) {
+            $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(), 0, self::$maxFilenameLength));
+            $infos = pathinfo($subdef->getRealPath());
+            $url = $url . "&filename=" . $filename . '.' . $infos['extension'];
+        }
+
+        return $url;
     }
 }

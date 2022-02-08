@@ -22,6 +22,7 @@ class Printer extends RecordHelper
     private $thumbnailName = 'thumbnail';
     private $previewName = 'preview';
     private $urlTtl = null;
+    private $titleAsDownloadName = true;
 
     /**
      * @var \ACL
@@ -185,6 +186,11 @@ class Printer extends RecordHelper
         $this->urlTtl = $urlTtl;
     }
 
+    public function setTitleAsDownloadName($titleAsDownloadName)
+    {
+        $this->titleAsDownloadName = !!$titleAsDownloadName;
+    }
+
     public function getUrlTtl()
     {
         return $this->urlTtl;
@@ -200,5 +206,9 @@ class Printer extends RecordHelper
         return $this->thumbnailName;
     }
 
+    public function getTitleAsDownloadName()
+    {
+        return $this->titleAsDownloadName;
+    }
 
 }

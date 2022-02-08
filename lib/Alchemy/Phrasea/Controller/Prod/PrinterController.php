@@ -56,6 +56,8 @@ class PrinterController extends Controller
             $downloadSubdef = $request->request->get('print-select-download-subdef');
             $urlTtl = $request->request->get('print-download-ttl') ? (int)$request->request->get('print-download-ttl') * (int)$request->request->get('print-download-ttl-unit') : null;
             $printer->setUrlTtl($urlTtl);
+            $useTitle = ($request->request->get('print-filename') === 'title') ? true : false;
+            $printer->setTitleAsDownloadName($useTitle);
         }
 
         foreach ($printer->get_elements() as $record) {
