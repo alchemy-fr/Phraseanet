@@ -17,6 +17,7 @@ const sharebasketModal = (services, datas) => {
         // add classes to the whoe dialog (including title)
         $dialog.getDomElement().closest('.ui-dialog')
                .addClass('whole_dialog_container')
+               // .addClass('dialog_container')
                .addClass('Sharebasket');
 
         $.post(`${url}prod/push/sharebasketform/`, datas, function (data) {

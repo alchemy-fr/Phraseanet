@@ -140,7 +140,7 @@
                 {# --- add-user button will open a modal to create a new user on the fly --- #}
                 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
                     <div style="float: left;">
-                        <button type="button" class="colored with_icon push-add-user" data-context="{{ context }}">
+                        <button type="button" class="colored push-add-user" data-context="{{ context }}">
                             <i class="fa fa-plus"></i>&nbsp;
                             {{ 'Add user' | trans }}
                         </button>
@@ -166,7 +166,7 @@
                 </div>
             </div>
             <div class="PNB10" style="top:55px;">
-                <div class="content user_content grey-bg"
+                <div class="content user_content"
                      {# todo : move all those style to css #}
                      style="display: flex; flex-direction: column; position: relative;
                      padding:5px;
@@ -226,21 +226,21 @@
                             {% if context == 'Sharebasket' %}
                                 <li>
                                     {% set msg = "Users contribute to the feedback" | trans %}
-                                    <button type="button" class="general_toggler colored with_icon" feature="agree"
+                                    <button type="button" class="general_toggler colored" feature="agree"
                                             title="{{ msg }}">
                                         <i class="fa fa-comment"></i>{# &nbsp;{{ 'Contributor' | trans }} #}
                                     </button>
                                 </li>
                                 <li>
                                     {% set msg = "Users can modify the basket" | trans %}
-                                    <button type="button" class="general_toggler colored with_icon" feature="modify"
+                                    <button type="button" class="general_toggler colored" feature="modify"
                                             title="{{ msg }}">
                                         <i class="fa fa-pencil"></i>{# &nbsp;{{ 'Modify' | trans }} #}
                                     </button>
                                 </li>
                                 <li>
                                     {% set msg = "Users can see others choices" | trans %}
-                                    <button type="button" class="general_toggler colored with_icon" feature="see_others"
+                                    <button type="button" class="general_toggler colored " feature="see_others"
                                             title="{{ msg }}">
                                         <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
                                     </button>
@@ -248,7 +248,7 @@
                             {% endif %}
                             <li>
                                 {% set msg = "Users can download HD" | trans %}
-                                <button type="button" class="general_toggler colored with_icon" feature="HD"
+                                <button type="button" class="general_toggler colored" feature="HD"
                                         title="{{ msg }}">
                                     <i class="fa fa-download"></i>{# &nbsp;{{ 'HD Download' | trans }} #}
                                 </button>
@@ -541,7 +541,7 @@
     <div id="ListManager" class="PNB PushBox" style="display:none;">
         <div class="PNB" style="width:220px;">
             <div style="padding:10px">
-                <a class="back_link btn colored with_icon">
+                <a class="back_link btn colored">
                     <i class="fa fa-arrow-left"></i>&nbsp;{{ 'Back' | trans }}
                 </a>
             </div>

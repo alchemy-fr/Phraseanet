@@ -17,6 +17,7 @@ const pushbasketModal = (services, datas) => {
         // add classes to the whoe dialog (including title)
         $dialog.getDomElement().closest('.ui-dialog')
                .addClass('whole_dialog_container')
+               // .addClass('dialog_container')
                .addClass('Push');
 
         $.post(`${url}prod/push/sendform/`, datas, function (data) {

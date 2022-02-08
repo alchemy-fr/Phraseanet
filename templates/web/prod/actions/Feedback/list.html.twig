@@ -12,7 +12,7 @@
     </div>
     <div class="pull-left">
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
-            <a href="#" class="push-add-user btn colored with_icon" data-context="ListManager">
+            <a href="#" class="push-add-user btn colored" data-context="ListManager">
                 <i class="fa fa-plus"></i>
                 {{ 'Add user' | trans }}
             </a>
@@ -21,7 +21,7 @@
      <div class="pull-right">
         {% if list.getOwner(app.getAuthenticatedUser()).getRole() == constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_ADMIN') %}
             <a href="{{ path('prod_lists_list_share', { 'list_id' : list.getId() }) }}" 
-                class="btn colored with_icon push-list-share-action"
+                class="btn colored push-list-share-action"
                 title="{{ 'Share the list' | trans }}"
                 data-list-id="{{ list.getId() }}">
                 <i class="fa fa-share-square-o"></i>
@@ -109,7 +109,7 @@
                                     <span class="counter current">
                                         {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
                                     </span>
-                                    <button class="saveList pull-right colored with_icon">
+                                    <button class="saveList pull-right colored">
                                         <!--
                                         <img src="/assets/common/images/icons/orange-save.png" class="image-normal">
                                         <img src="/assets/common/images/icons/white-save.png" class="image-hover">

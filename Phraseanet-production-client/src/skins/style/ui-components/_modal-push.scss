@@ -8,19 +8,29 @@ $toggledOff: #666;       // a toggle button IS off
 
 /** PUSH BOX */
 
+.ui-dialog {
+//    font-family: Roboto, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0;
+}
+
 .whole_dialog_container {      // the whole dialog content (including the title)
 
     /******************************
      * override default ui styles
      ******************************/
 
-    font-family: Roboto, sans-serif;
+//    font-family: Roboto, sans-serif;
     font-size: 12px;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
     line-height: normal;
-    letter-spacing: 0px;
+    letter-spacing: 0;
     color: $textColor;
 
     button, input, label, select, textarea {
@@ -35,7 +45,7 @@ $toggledOff: #666;       // a toggle button IS off
     .ui-dialog-title {
         font-size: 21px;
         font-weight: bold;
-        color: #ffffff;
+        // color: #ffffff;      // skins ok
     }
 
     .ui-widget-content {
@@ -70,8 +80,8 @@ $toggledOff: #666;       // a toggle button IS off
     }
 
     BUTTON, A.btn {
-        padding-right: 10px;
-        padding-left: 10px;
+        //padding-right: 10px;
+        //padding-left: 10px;
         background-color: white;
         &:hover {
             color: white;
@@ -95,20 +105,7 @@ $toggledOff: #666;       // a toggle button IS off
             color: $textColor;
             background-color: white;
         }
-        &.with_icon {
-            position: relative;     // needed for absolute icon
-            padding-left: 30px;
-            &::before {                 // prevent empty button / needed for vertical-align icon
-                content: "|";           // any char will do
-                color:transparent;
-            }
-            &>I.fa {
-                font-size: 160%;
-                vertical-align: middle;
-                position: absolute;
-                left: 10px;
-            }
-        }
+
         // prevent toggle buttons to change on :hover
         &.toggle {
             background-color: transparent !important;   // important because we don't want A:hover to change background
@@ -153,13 +150,6 @@ $toggledOff: #666;       // a toggle button IS off
         border-radius: 30px;
         padding: 8px;
     }
-    /* prefered fa-clone fou
-    // fix the fa-send icon (paper-plane) for a better centering
-    .main-icon.fa-send {
-        padding-left: 5px;
-        padding-right:11px;
-    }
-    */
 
     /***********************
      * specific styles
@@ -185,6 +175,22 @@ $toggledOff: #666;       // a toggle button IS off
         padding-left: 33px;
     }
 
+    #PushBox .general_togglers {
+        text-align: right;
+        ul {
+            margin:0;
+            list-style:none;
+            li {
+                display: inline-block;
+            }
+        }
+        button {
+//            width: auto;
+//            height: 27px;
+        }
+    }
+
+
     // list manager button       ( /!\ A.btn )
     #PushBox .list_manager {
         position: fixed;
@@ -199,8 +205,9 @@ $toggledOff: #666;       // a toggle button IS off
     }
 
     // delete selection button      ( /!\ not colored = black/white )
+    // button is along the general-togglers
     .PushBox .delete-selection {
-        margin-left: 18px;
+//        margin-left: 10px;
     }
 
     // "send" button
@@ -232,13 +239,13 @@ $toggledOff: #666;       // a toggle button IS off
         border-radius: 8px;
         background-color: #ededed;
         padding: 6px;
-        font-family: Roboto;
+        //font-family: Roboto;
         font-size: 10px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
+        //font-weight: normal;
+        //font-style: normal;
+        //font-stretch: normal;
         line-height: 1.4;
-        letter-spacing: 0px;
+        //letter-spacing: 0px;
         color: #000000;
         p {
             margin: 0;
@@ -246,6 +253,134 @@ $toggledOff: #666;       // a toggle button IS off
     }
 
 
+}
+
+.dialog_container {
+    border: 0 none !important;
+    border-radius: 6px !important;
+    background-color: #ffffff !important;
+
+    .ui-dialog-title {
+        //font-family: Roboto;
+        font-size: 18px;
+        font-weight: 500;
+        //font-style: normal;
+        //font-stretch: normal;
+        //line-height: normal;
+        //letter-spacing: normal;
+        color: #4a4a4a;
+    }
+    .ui-dialog-titlebar-close {
+        border: none;
+        margin-right: 5px;
+    }
+    .ui-icon.ui-icon-closethick {
+        background-image: url("/assets/common/images/icons/cross-white.png");
+        background-position: center;
+        background-size: cover;
+    }
+    .ui-dialog-buttonpane {
+        margin-top: 0;
+        padding-top: 0;
+        border: 0 none;
+    }
+    .ui-dialog-buttonpane .ui-button {
+        border-radius: 15px;
+        background-color: #ffffff;
+        border: solid 1px $pushThemeColor;
+//        font-family: Roboto;
+        font-size: 14px;
+        //font-weight: normal;
+        //font-style: normal;
+        //font-stretch: normal;
+        //line-height: normal;
+        //letter-spacing: normal;
+        color: $pushThemeColor;
+        height: 30px;
+        min-width: 135px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    .ui-dialog-buttonpane .ui-button:hover {
+        background-color: $pushThemeColor;
+        color: #FFFFFF;
+    }
+    .ui-dialog-buttonpane .ui-button:nth-child(2) {
+        background-color: $pushThemeColor;
+        color: #FFFFFF;
+    }
+    .ui-button-icon-only {
+        text-indent: -9999px;
+        background: transparent;
+    }
+    .ui-dialog-buttonpane .ui-dialog-buttonset {
+        float: none;
+        text-align: center;
+    }
+    .ui-widget-content {
+        color: #4a4a4a;
+        label, p {
+//            font-family: Roboto;
+            font-size: 14px;
+            color: #4a4a4a;
+        }
+        input {
+//            font-family: Roboto;
+            font-size: 14px;
+            background-color: #e7e7e7;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        input[type=text]::-webkit-input-placeholder, textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+//            font-family: Roboto;
+            font-size: 14px;
+            color: #484848;
+        }
+        input[type=text]::-moz-placeholder, textarea::-moz-placeholder { /* Firefox 19+ */
+//            font-family: Roboto;
+            font-size: 14px;
+            color: #484848;
+        }
+        input[type=text]:-ms-input-placeholder, textarea:-ms-input-placeholder { /* IE 10+ */
+//            font-family: Roboto;
+            font-size: 14px;
+            color: #484848;
+        }
+        input[type=text]:-ms-input-placeholder, textarea:-ms-input-placeholder { /* Firefox 18- */
+//            font-family: Roboto;
+            font-size: 14px;
+            color: #484848;
+        }
+        textarea {
+//            font-family: Roboto;
+            font-size: 14px;;
+            background-color: #e7e7e7;
+            border-radius: 0;
+            border: none;
+            resize: none;
+            box-shadow: none;
+            padding: 4px 6px;
+            min-height: 150px;
+        }
+    }
+    .ui-autocomplete.ui-widget-content {
+        max-height: 250px;
+    }
+}
+
+.PushBox .user_content {
+    border-radius: 5px;
+    //background-color: #868686;
+    //color: white;
+    .header {
+        font-size: 13px;
+        .options {
+            text-align: right;
+        }
+    }
 }
 
 
@@ -357,7 +492,7 @@ $toggledOff: #666;       // a toggle button IS off
     width: 140px;
     display: inline-block;
     margin: 10px;
-    border: 3px solid #868686;
+    outline: 3px solid transparent;
     background-color: #f7f7f7;
     border-radius: 10px;
 
@@ -378,16 +513,16 @@ $toggledOff: #666;       // a toggle button IS off
 }
 
 .PushBox .user_content .badges {
-    top: 50px;
+    // top: 50px;
     overflow: auto;
     height: auto;
-    bottom: 50px;
+    // bottom: 50px;
     .badge {
         width: 220px;
         height: 79px;
         margin: 10px;
         display: inline-block;
-        border: 3px solid #868686;
+        outline: 3px solid transparent;
         color: $textColor;
         background-color: #f7f7f7;
         text-shadow: none;
@@ -396,7 +531,7 @@ $toggledOff: #666;       // a toggle button IS off
         position: relative;
 
         &.selected {
-            border: 3px solid #000000;
+            outline: 3px solid #000000;
         }
 
         &.name {
@@ -473,7 +608,7 @@ $toggledOff: #666;       // a toggle button IS off
 
 .PushBox .content {
     border-radius: 5px;
-    background-color: #c8c8c8;
+    background-color: #AAA;
     .list-container {
         position: absolute;
         top: 80px;
@@ -493,11 +628,6 @@ $toggledOff: #666;       // a toggle button IS off
         line-height: 2px;
         margin-top: 10px;
     }
-}
-
-.PushBox .user_content {
-    border-radius: 5px;
-    background-color: #868686;
 }
 
 .PushBox .LeftColumn h1 {
@@ -529,32 +659,8 @@ $toggledOff: #666;       // a toggle button IS off
     overflow: visible;
 }
 
-.PushBox .user_content .header {
-    height: 35px;
-    padding: 0 10px;
-    bottom: auto;
-    .text {
-        font-size: 13px;
-        color: #ffffff;
-    }
-}
-
-.PushBox .user_content .footer {
-    height: 35px;
-    top: auto;
-    right: 20px;
-    bottom: 10px;
-    left: 20px;
-    //text-align: right;
-}
 
 
-
-
-
-.PushBox .user_content .header .options {
-    text-align: right;
-}
 
 .PushBox .all-lists .lists {
     overflow: auto;
@@ -589,7 +695,7 @@ $toggledOff: #666;       // a toggle button IS off
 }
 
 .PushBox .LeftColumn .content ul.lists li {
-    font-family: Roboto;
+//    font-family: Roboto;
     font-size: 13px;
     font-weight: normal;
     font-style: normal;
@@ -631,7 +737,7 @@ $toggledOff: #666;       // a toggle button IS off
         font-weight: bold;
         margin: 60px 0 20px;
         font-size: 31px;
-        font-family: Roboto;
+//        font-family: Roboto;
     }
     p {
         font-size: 20px;
@@ -880,18 +986,13 @@ $toggledOff: #666;       // a toggle button IS off
     }
 }
 
-
-#PushBox .general_togglers li {
-    margin-top: 12px;
-}
-
-
+/*
 .general_togglers button {
     position: relative;
     width: 100%;
     height: 27px;
 }
-
+*/
 #PushBox .list_loader {
     font-size: 13px;
     color: #000000;
