@@ -337,10 +337,10 @@
                             <span class="colored status_on feedback_only_true" title="{{ msg }}">
                                             <i class="fa fa-users"></i>
                                         </span>
+                            #}
                             <input type="hidden"
                                    name="participants[{{ owner.getId() }}][see_others]"
                                    value="1"/>
-                            #}
 
                             {# owner can always modify basket (even if the right is useless) #}
                             {#
@@ -349,10 +349,10 @@
                                 <i class="fa fa-pencil"></i>
                             </span>
                             #}
-
                             <input type="hidden"
                                    name="participants[{{ owner.getId() }}][modify]"
                                    value="1"/>
+
                             {# do not give the HD to the owner (useless) to not create tokens #}
                             <input type="hidden"
                                    name="participants[{{ owner.getId() }}][HD]"

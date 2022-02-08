@@ -232,6 +232,8 @@ class PushController extends Controller
             ]));
             $validation_description = $request->request->get('message');
 
+            $isFeedback = $request->request->get('isFeedback') == "1";
+
             $participants = $request->request->get('participants');
 
             if (!is_array($participants) || empty($participants)) {
@@ -306,15 +308,22 @@ class PushController extends Controller
             }
             $basket->setVoteExpires($voteExpiresDate);      // can be null, will be used for token
 
-
-
+            if($isFeedback) {
+                // in case of feedback, the owner must be participant (to see others votes)
+                // he is already on the participants
+                $basket->setVoteInitiator($this->getAuthenticatedUser());
+            }
+            else {
+                // for a simple share, we will ignore the owner
+                $basket->setVoteInitiator(null);
+            }
 
             $manager->persist($basket);
             $manager->flush();
 
             $manager->refresh($basket);
 
-
+/*
             // we always add the author of the validation request (current user) to the participants
             //
             $found = false;
@@ -337,7 +346,7 @@ class PushController extends Controller
                     'HD'         => 1,
                 ];
             }
-
+*/
             // used to check participant to be removed
             $feedbackAction = $request->request->get('feedbackAction');
             $remainingParticipantsUserId = [];
@@ -348,6 +357,18 @@ class PushController extends Controller
             // add participants to the vote
             //
             foreach ($participants as $key => $participant) {
+
+                if(!$isFeedback && $participant['usr_id'] == $basket->getUser()->getId()) {
+                    // For simple "share" basket, the owner does not have to be in participants.
+                    // The front may prevent this, but we fiter here anyway
+                    /** @var User $participantUser */
+//                    $participantUser = $this->getUserRepository()->find($participant['usr_id']);
+//                    $basketParticipant = $basket->getParticipant($participantUser);
+//                    $basket->removeParticipant($basketParticipant);
+//                    $manager->remove($basketParticipant);
+//                    $manager->flush();
+                    continue;
+                }
 
                 // sanity check
                 foreach (['see_others', 'usr_id', 'agree', 'modify', 'HD'] as $mandatoryParam) {
@@ -475,7 +496,7 @@ class PushController extends Controller
                 }
             }
 
-            if ($feedbackAction == 'adduser') {
+//            if ($feedbackAction == 'adduser') {
                 foreach ($remainingParticipantsUserId as $userIdToRemove) {
                     try {
                         /** @var  User $participantUser */
@@ -486,20 +507,25 @@ class PushController extends Controller
                             $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
                         );
                     }
-                    $basketParticipant = $basket->getParticipant($participantUser);
+                    try {
+                        $basketParticipant = $basket->getParticipant($participantUser);
 
-                    // if initiator is removed from the user selection,
-                    // do not remove it to the participant list, just set can_agree to false for it
-                    if ($basket->isVoteInitiator($participantUser)) {
-                        $basketParticipant->setCanAgree(false);
-                        $manager->persist($basketParticipant);
+                        // if initiator is removed from the user selection,
+                        // do not remove it to the participant list, just set can_agree to false for it
+                        if ($isFeedback && $basket->isVoteInitiator($participantUser)) {
+                            $basketParticipant->setCanAgree(false);
+                            $manager->persist($basketParticipant);
+                        }
+                        else {
+                            $basket->removeParticipant($basketParticipant);
+                            $manager->remove($basketParticipant);
+                        }
                     }
-                    else {
-                        $basket->removeParticipant($basketParticipant);
-                        $manager->remove($basketParticipant);
+                    catch (Exception $e) {
+                        // no-op
                     }
                 }
-            }
+//            }
 
             $manager->merge($basket);
             $manager->flush();

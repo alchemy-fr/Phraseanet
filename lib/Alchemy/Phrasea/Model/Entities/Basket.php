@@ -322,11 +322,11 @@ class Basket
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      *
      * @return $this
      */
-    public function setVoteInitiator(User $user)
+    public function setVoteInitiator($user)
     {
         $this->vote_initiator = $user;
         $this->upadteVoteDates();
@@ -551,7 +551,10 @@ class Basket
      */
     public function isVoteInitiator(User $user)
     {
-        return $this->getVoteInitiator()->getId() == $user->getId();
+        if($this->getVoteInitiator() !== null) {
+            return $this->getVoteInitiator()->getId() == $user->getId();
+        }
+        return false;
     }
 
     /**
