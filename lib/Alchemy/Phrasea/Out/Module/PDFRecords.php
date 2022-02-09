@@ -1004,11 +1004,17 @@ class PDFRecords extends PDF
     private function getDownloadUrl(\media_subdef $subdef)
     {
         $url = (string)$this->urlGenerator->generate($this->app->getAuthenticatedUser(), $subdef, $this->printer->getUrlTtl())."?download=1";
+        $infos = pathinfo($subdef->getRealPath());
+
         if ($this->printer->getTitleAsDownloadName()) {
             $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(), 0, self::$maxFilenameLength));
-            $infos = pathinfo($subdef->getRealPath());
-            $url = $url . "&filename=" . $filename . '.' . $infos['extension'];
+        } else {
+            $originalName = $subdef->get_record()->get_original_name(true);
+            $originalName = empty($originalName) ? $subdef->get_record()->getId() : $originalName;
+            $filename = $subdef->get_name() == 'document' ? $originalName : $originalName . '_' . $subdef->get_name() ;
         }
+
+        $url = $url . "&filename=" . $filename . '.' . $infos['extension'];
 
         return $url;
     }
