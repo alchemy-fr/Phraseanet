@@ -278,7 +278,6 @@ class PushController extends Controller
                     $basket->addElement($basketElement);
                 }
             }
-            $basket->setVoteInitiator($this->getAuthenticatedUser());
 /*
             $voteExpiresDate = null;
             // add an expiration date if a duration was specified
@@ -361,12 +360,8 @@ class PushController extends Controller
                 if(!$isFeedback && $participant['usr_id'] == $basket->getUser()->getId()) {
                     // For simple "share" basket, the owner does not have to be in participants.
                     // The front may prevent this, but we fiter here anyway
-                    /** @var User $participantUser */
-//                    $participantUser = $this->getUserRepository()->find($participant['usr_id']);
-//                    $basketParticipant = $basket->getParticipant($participantUser);
-//                    $basket->removeParticipant($basketParticipant);
-//                    $manager->remove($basketParticipant);
-//                    $manager->flush();
+
+                    // ignored here, so user will still be present in remainingParticipantsUserId, and removed
                     continue;
                 }
 
@@ -483,16 +478,21 @@ class PushController extends Controller
 
                 // send only mail if notify is needed
                 if ($request->request->get('notify') == 1) {
-                    $this->dispatch(
-                        PhraseaEvents::VALIDATION_CREATE,
-                        new BasketParticipantVoteEvent(
-                            $basketParticipant,
-                            $url,
-                            $request->request->get('message'),
-                            $receipt,
-                            (int)$request->request->get('duration')
-                        )
-                    );
+                    if($basket->isVoteBasket()) {
+                        $this->dispatch(
+                            PhraseaEvents::VALIDATION_CREATE,
+                            new BasketParticipantVoteEvent(
+                                $basketParticipant,
+                                $url,
+                                $request->request->get('message'),
+                                $receipt,
+                                (int)$request->request->get('duration')
+                            )
+                        );
+                    }
+                    else {
+                        // todo ========== create email for simple share =========
+                    }
                 }
             }
 

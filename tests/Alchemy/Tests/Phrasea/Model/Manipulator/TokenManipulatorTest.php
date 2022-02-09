@@ -63,12 +63,12 @@ class TokenManipulatorTest extends \PhraseanetTestCase
         $this->assertSame(null, $token->getExpiration());
     }
 
-    public function testCreateBasketValidationTokenWithInvalidBasket()
-    {
-        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens'], self::$DI['app']['tmp.download.path'], self::$DI['app']['conf']);
-        $this->setExpectedException('InvalidArgumentException', 'A validation token requires a validation basket.');
-        $manipulator->createBasketValidationToken(self::$DI['basket_1'], self::$DI['user_1'], null);
-    }
+//    public function testCreateBasketValidationTokenWithInvalidBasket()
+//    {
+//        $manipulator = new TokenManipulator(self::$DI['app']['orm.em'], self::$DI['app']['random.low'], self::$DI['app']['repo.tokens'], self::$DI['app']['tmp.download.path'], self::$DI['app']['conf']);
+//        $this->setExpectedException('InvalidArgumentException', 'A validation token requires a validation basket.');
+//        $manipulator->createBasketValidationToken(self::$DI['basket_1'], self::$DI['user_1'], null);
+//    }
 
     public function testCreateBasketAccessToken()
     {
