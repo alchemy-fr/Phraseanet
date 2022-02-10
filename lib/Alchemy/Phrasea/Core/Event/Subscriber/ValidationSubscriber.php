@@ -22,11 +22,14 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
 {
     public function onCreate(BasketParticipantVoteEvent $event)
     {
+        $basket = $event->getBasket();
+        $user_from = $basket->isVoteBasket() ? $basket->getVoteInitiator() : $basket->getUser();
+
         $params = [
-            'from'    => $event->getBasket()->getVoteInitiator()->getId(),
+            'from'    => $user_from->getId(),
             'to'      => $event->getParticipant()->getUser()->getId(),
             'message' => $event->getMessage(),
-            'ssel_id' => $event->getBasket()->getId(),
+            'ssel_id' => $basket->getId(),
         ];
 
         $datas = json_encode($params);
@@ -34,18 +37,16 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
         $mailed = false;
 
         if ($this->shouldSendNotificationFor($event->getParticipant()->getUser(), 'eventsmanager_notify_validate')) {
+            $user_to = $receiver = $emitter = null;
             try {
-                $user_from = $event->getBasket()->getVoteInitiator();
                 $user_to = $event->getParticipant()->getUser();
-
-                $basket = $event->getBasket();
-                $title = $basket->getName();
 
                 $receiver = Receiver::fromUser($user_to);
                 $emitter = Emitter::fromUser($user_from);
 
                 $readyToSend = true;
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 $readyToSend = false;
             }
 
@@ -53,12 +54,17 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
                 $mail = MailInfoValidationRequest::create($this->app, $receiver, $emitter, $params['message']);
                 $mail->setButtonUrl($event->getUrl());
                 $mail->setDuration($event->getDuration());
-                $mail->setTitle($title);
+                $mail->setIsVote($event->getIsVote());
+                $mail->setShareExpires($event->getShareExpires());
+                $mail->setVoteExpires($event->getVoteExpires());
+                $mail->setTitle($basket->getName());
                 $mail->setUser($user_from);
+                $mail->setParticipant($event->getParticipant());
 
                 if (($locale = $user_to->getLocale()) != null) {
                     $mail->setLocale($locale);
-                } elseif (($locale1 = $user_from->getLocale()) != null) {
+                }
+                elseif (($locale1 = $user_from->getLocale()) != null) {
                     $mail->setLocale($locale1);
                 }
 

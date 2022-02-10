@@ -12,7 +12,9 @@
 namespace Alchemy\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Exception\LogicException;
+use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\User;
+use DateTime;
 
 class MailInfoValidationRequest extends AbstractMailWithLink
 {
@@ -22,6 +24,14 @@ class MailInfoValidationRequest extends AbstractMailWithLink
     private $user;
     /** @var integer */
     private $duration;
+    /** @var bool */
+    private $isVote;
+    /** @var BasketParticipant */
+    private $participant;
+    /** @var DateTime|null */
+    private $shareExpiresDate;
+    /** @var DateTime|null */
+    private $voteExpiresDate;
 
     /**
      * Sets the title of the validation
@@ -36,7 +46,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
     /**
      * Sets the user that asks for the validation
      *
-     * @param string $user
+     * @param User $user
      */
     public function setUser($user)
     {
@@ -46,6 +56,26 @@ class MailInfoValidationRequest extends AbstractMailWithLink
     public function setDuration($duration)
     {
         $this->duration = (int) $duration;
+    }
+
+    public function setParticipant($participant)
+    {
+        $this->participant = $participant;
+    }
+
+    public function setShareExpires($shareExpiresDate)
+    {
+        $this->shareExpiresDate = $shareExpiresDate;
+    }
+
+    public function setVoteExpires($voteExpiresDate)
+    {
+        $this->voteExpiresDate = $voteExpiresDate;
+    }
+
+    public function setIsVote($isVote)
+    {
+        $this->isVote = $isVote;
     }
 
     /**
@@ -59,8 +89,14 @@ class MailInfoValidationRequest extends AbstractMailWithLink
         if (!$this->title) {
             throw new LogicException('You must set a title before calling getSubject');
         }
-
-        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
+        if($this->isVote && $this->participant->getCanAgree()) {
+            // the particiapnt can vote
+            return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
+        }
+        else {
+            // simple share or participant don't vote
+            return $this->app->trans("Basket '%title%' shared from %user%", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
+        }
     }
 
     /**
@@ -68,6 +104,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
      */
     public function getMessage()
     {
+        /*
         if (0 < $this->duration) {
             if (1 < $this->duration) {
                 return $this->message . "\n\n" . $this->app->trans("You have %quantity% days to validate the selection.", ['%quantity%' => $this->duration], 'messages', $this->getLocale());
@@ -75,7 +112,14 @@ class MailInfoValidationRequest extends AbstractMailWithLink
                 return $this->message . "\n\n" . $this->app->trans("You have 1 day to validate the selection.", [], 'messages', $this->getLocale());
             }
         }
-
+        */
+        // todo: convert dates back to days ?
+        if(!is_null($this->shareExpiresDate)) {
+            $this->message .= "\n\n" . $this->app->trans("Share will expire on %expire%", ['%expire%' => $this->shareExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
+        }
+        if(!is_null($this->voteExpiresDate)) {
+            $this->message .= "\n\n" . $this->app->trans("Vote will expire on %expire%", ['%expire%' => $this->voteExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
+        }
         return $this->message;
     }
 
@@ -84,7 +128,12 @@ class MailInfoValidationRequest extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
+        if($this->isVote && $this->participant->getCanAgree()) {
+            return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
+        }
+        else {
+            return $this->app->trans('Open with Lightbox', [], 'messages', $this->getLocale());
+        }
     }
 
     /**

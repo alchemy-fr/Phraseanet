@@ -355,6 +355,7 @@ class PushController extends Controller
 
             // add participants to the vote
             //
+
             foreach ($participants as $key => $participant) {
 
                 if(!$isFeedback && $participant['usr_id'] == $basket->getUser()->getId()) {
@@ -477,8 +478,12 @@ class PushController extends Controller
 
 
                 // send only mail if notify is needed
+
+                // if basket is a vote and the user can vote -> "vote request email"
+                // else -> "shared with you" email
+                //     done during email build, from event data
                 if ($request->request->get('notify') == 1) {
-                    if($basket->isVoteBasket()) {
+//                    if($basket->isVoteBasket() && $basketParticipant->getCanAgree()) {
                         $this->dispatch(
                             PhraseaEvents::VALIDATION_CREATE,
                             new BasketParticipantVoteEvent(
@@ -486,13 +491,16 @@ class PushController extends Controller
                                 $url,
                                 $request->request->get('message'),
                                 $receipt,
-                                (int)$request->request->get('duration')
+                                (int)$request->request->get('duration'),
+                                $basket->isVoteBasket(),
+                                $shareExpiresDate,
+                                $voteExpiresDate
                             )
                         );
-                    }
-                    else {
-                        // todo ========== create email for simple share =========
-                    }
+//                    }
+//                    else {
+//                        // todo ========== create email for simple share =========
+//                    }
                 }
             }
 
@@ -508,18 +516,10 @@ class PushController extends Controller
                         );
                     }
                     try {
+                        // nb: for a vote, the owner IS participant and can't be removed
                         $basketParticipant = $basket->getParticipant($participantUser);
-
-                        // if initiator is removed from the user selection,
-                        // do not remove it to the participant list, just set can_agree to false for it
-                        if ($isFeedback && $basket->isVoteInitiator($participantUser)) {
-                            $basketParticipant->setCanAgree(false);
-                            $manager->persist($basketParticipant);
-                        }
-                        else {
-                            $basket->removeParticipant($basketParticipant);
-                            $manager->remove($basketParticipant);
-                        }
+                        $basket->removeParticipant($basketParticipant);
+                        $manager->remove($basketParticipant);
                     }
                     catch (Exception $e) {
                         // no-op
