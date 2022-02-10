@@ -389,6 +389,36 @@ class eventsmanager_broker
         return $this;
     }
 
+    /**
+     * mark all user notification as read
+     * @param $usr_id
+     * @return $this
+     */
+    public function readAll($usr_id)
+    {
+        /** @var Connection $connection */
+        $connection = $this->app->getApplicationBox()->get_connection();
+        $builder = $connection->createQueryBuilder();
+        $builder
+            ->update('notifications')
+            ->set('unread', '0')
+            ->where(
+                $builder->expr()->eq('usr_id', ':usr_id')
+            )
+            ->setParameters(
+                [
+                    'usr_id' => $usr_id,
+                ],
+                [
+                    'usr_id' => PDO::PARAM_INT,
+                ]
+            )
+            ->execute()
+        ;
+
+        return $this;
+    }
+
     public function list_notifications_available(User $user)
     {
         $personal_notifications = [];

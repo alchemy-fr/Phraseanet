@@ -209,6 +209,20 @@ const notifyLayout = (services) => {
                 }
             }
         });
+
+        $notificationDialog.on('click', '.mark-all-read', function(event) {
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/user/notifications/read-all/',
+                success: function (data) {
+                    if (data.success == true) {
+                        print_notifications(0);
+                    }
+                }
+            });
+
+        });
     };
 
     const markNotificationRead = (notification_id, $notification) => {

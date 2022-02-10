@@ -159,6 +159,27 @@ class UserNotificationController extends Controller
         }
     }
 
+    /**
+     * mark all notification as read
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function readAllNotification(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            $this->app->abort(400);
+        }
+
+        try {
+            $this->getEventsManager()->readAll($this->getAuthenticatedUser()->getId());
+
+            return $this->app->json(['success' => true, 'message' => '']);
+        }
+        catch (\Exception $e) {
+            return $this->app->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 
     /**
      * Get all notifications
