@@ -76,7 +76,7 @@
                         {{ 'print:: Can download subdef' | trans }}
                     </label>
                     <div id="print-download-subdef" style="display: none;">
-                        <fieldset style="border-bottom: 1px inset #6d6666;border-top: 1px inset #6d6666;padding:10px;">
+                        <fieldset style="padding:10px;">
                             <select id="print-select-download-subdef" name="print-select-download-subdef" style="margin-left: 0px;">
                                 {% for subdefName in printer.getAvailableSubdefName %}
                                     <option value="{{ subdefName}}" class="download-{{ subdefName }}"
