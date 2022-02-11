@@ -992,7 +992,7 @@ class PDFRecords extends PDF
                 $this->pdfTitle,
                 '', 1, 'C', false);
 
-            $this->pdf->Write(20, "\n");
+            $this->pdf->SetY($this->pdf->GetY() + 15);
 
             $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
             $this->pdf->writeHTML($this->pdfDescription);

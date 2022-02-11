@@ -2,6 +2,14 @@
 <form target="_blank" name="formprintpage" method="POST" action="{{ path('prod_printer_print') }}">
     <div id="printBox">
         <div style="padding:10px;">
+            <div style="margin: 20px 5px;">
+                <h4 style="margin-left: 0px;">{{ 'print:: pdf title' | trans }}</h4>
+                <input type="text" value="{{ pdfTitle }}" name="print-pdf-title" class="print-pdf-title" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
+            </div>
+            <div style="margin: 20px 5px;">
+                <h4 style="margin-left: 0px;">{{ 'print:: pdf description' | trans }}</h4>
+                <textarea name="print-pdf-description" class="print-pdf-description" id="print-pdf-description" cols="0" rows="5" style="margin-left: 20px;width:660px;"></textarea>
+            </div>
             <h3 style="margin-left: 5px;">{{ 'print:: choose model' | trans }}</h3>
 
             {% set total_count = printer.get_count_actionable() %}
@@ -57,14 +65,6 @@
                 {% endif %}
 
                 <h3 style="margin-left: 5px;">{{ 'print:: some options' | trans }}</h3>
-                <div style="margin: 20px 5px;">
-                    <h4 style="margin-left: 0px;">{{ 'print:: pdf title' | trans }}</h4>
-                    <input type="text" value="{{ pdfTitle }}" name="print-pdf-title" class="print-pdf-title" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
-                </div>
-                <div style="margin: 20px 5px;">
-                    <h4 style="margin-left: 0px;">{{ 'print:: pdf description' | trans }}</h4>
-                    <textarea name="print-pdf-description" class="print-pdf-description" id="" cols="0" rows="5" style="margin-left: 20px;width:530px;"></textarea>
-                </div>
                 <div style="margin: 20px 5px;">
                     <h4 style="margin-left: 0px;">{{ 'print:: add and remember password to protect the pdf' | trans }}</h4>
                     <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
