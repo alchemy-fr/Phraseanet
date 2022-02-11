@@ -14,6 +14,8 @@ namespace Alchemy\Phrasea\Helper\Record;
 use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 use Alchemy\Phrasea\Media\Subdef\Subdef;
+use Alchemy\Phrasea\Out\Module\PDFRecords;
+use Cocur\Slugify\Slugify;
 use Symfony\Component\HttpFoundation\Request;
 
 class Printer extends RecordHelper
@@ -23,6 +25,7 @@ class Printer extends RecordHelper
     private $previewName = 'preview';
     private $urlTtl = null;
     private $titleAsDownloadName = true;
+    private $slugify;
 
     /**
      * @var \ACL
@@ -209,6 +212,22 @@ class Printer extends RecordHelper
     public function getTitleAsDownloadName()
     {
         return $this->titleAsDownloadName;
+    }
+
+    public function sanitizeString($string)
+    {
+        return str_replace(['/', '\\'], '', $string);
+    }
+
+    public function normalizeString($string)
+    {
+        if (!isset($this->slugify)) {
+            $this->slugify = new Slugify();
+        }
+
+        $string = $this->sanitizeString($string);
+
+        return mb_substr($this->slugify->slugify($string, '-'), 0, PDFRecords::$maxFilenameLength);
     }
 
 }

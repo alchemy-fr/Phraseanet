@@ -11,10 +11,12 @@ namespace Alchemy\Phrasea\Controller\Prod;
 
 use Alchemy\Phrasea\Application\Helper\DataboxLoggerAware;
 use Alchemy\Phrasea\Controller\Controller;
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Alchemy\Phrasea\Out\Module\PDFRecords;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class PrinterController extends Controller
 {
@@ -31,9 +33,25 @@ class PrinterController extends Controller
             }
         }
 
+        $pdfTitle = '';
+        $storyId = null;
+
+        if ($printer->is_basket()) {
+            $pdfTitle = $printer->get_original_basket()->getName();
+        }
+
+        $r = RecordsRequest::fromRequest($this->app, $request, false);
+
+        if ($r->isSingleStory()) {
+            $pdfTitle = $r->singleStory()->get_title();
+            $storyId = $r->singleStory()->getId();
+        }
+
         return $this->render('prod/actions/printer_default.html.twig', [
             'printer' => $printer,
             'message' => '',
+            'storyId' => $storyId,
+            'pdfTitle'=> $pdfTitle,
             'basketFeedbackId' => $basketFeedbackId,
         ]);
     }
@@ -66,9 +84,22 @@ class PrinterController extends Controller
 
         $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload, $downloadSubdef);
 
+        $pdfName = '';
+
+        if (!empty($title)) {
+            $pdfName = $printer->normalizeString($title);
+            $pdfName .= '.pdf';
+        }
+
         $response = new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
         $response->headers->set('Pragma', 'public', true);
         $response->setMaxAge(0);
+
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            $pdfName
+        );
+        $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
     }

@@ -20,7 +20,7 @@ use \IntlDateFormatter as DateFormatter;
 
 class PDFRecords extends PDF
 {
-    private static $maxFilenameLength = 256;
+    public static $maxFilenameLength = 256;
 
     /** @var Printer */
     private $printer;
