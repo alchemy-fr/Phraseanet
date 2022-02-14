@@ -158,7 +158,6 @@ class BasketRepository extends EntityRepository
             FROM Phraseanet:Basket b
             JOIN b.elements e
             JOIN b.participants p
-            JOIN p.votes v
             WHERE b.user != ?1 AND p.user = ?2
              AND (
                b.share_expires IS NULL
