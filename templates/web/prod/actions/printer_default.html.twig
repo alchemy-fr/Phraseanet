@@ -2,6 +2,17 @@
 <form target="_blank" name="formprintpage" method="POST" action="{{ path('prod_printer_print') }}">
     <div id="printBox">
         <div style="padding:10px;">
+            <div style="margin: 20px 5px;">
+                <h4 style="margin-left: 0px;">{{ 'print:: pdf title' | trans }}</h4>
+                <input type="text" value="{{ pdfTitle }}" name="print-pdf-title" class="print-pdf-title" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
+            </div>
+            <div style="margin: 20px 5px;">
+                <h4 style="margin-left: 0px;">{{ 'print:: pdf description' | trans }}</h4>
+                <textarea name="print-pdf-description" class="print-pdf-description" id="print-pdf-description" cols="0" rows="5" style="margin-left: 20px;width:660px;"></textarea>
+            </div>
+            <h3 style="margin-left: 5px;">{{ 'print:: choose model' | trans }}</h3>
+
+            {% set total_count = printer.get_count_actionable() %}
             {% if basketFeedbackId %}
                 <h4>{{ 'phraseanet:: basket feedback' | trans }}</h4>
                 <input type="hidden" name="ssel" value="{{ basketFeedbackId }}" />
@@ -17,45 +28,137 @@
                 </div>
             {% endif %}
 
-            {% if printer.get_count_actionable() > 0 %}
+            {% if total_count > 0 %}
                 {% if printer.get_count_preview() > 0 %}
-                <h4>{{ 'phraseanet:: preview' | trans }}</h4>
-                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
-                    <label for="RADI_PRE_LAB" class="radio">
-                        <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
-                            {{ 'print:: image de choix seulement' | trans }}
-                    </label>
-                    <label for="RADI_PRE_CAP" class="radio">
-                        <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
-                            {{ 'print:: image de choix et description' | trans }}
-                    </label>
-                    <label for="RADI_PRE_TDM" class="radio">
-                        <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
-                            {{ 'print:: image de choix et description avec planche contact' | trans }}
-                    </label>
-                    <label for="RADI_CAP" class="radio">
-                        <input type="radio" name="lay" value="caption" id="RADI_CAP" />
-                            {{ 'print:: description' | trans }}
-                    </label>
-                </div>
+                    <h4>{{ 'phraseanet:: preview' | trans }}</h4>
+                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                        <label for="RADI_PRE_LAB" class="radio">
+                            <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
+                                {{ 'print:: image de choix seulement' | trans }}
+                        </label>
+                        <label for="RADI_PRE_CAP" class="radio">
+                            <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
+                                {{ 'print:: image de choix et description' | trans }}
+                        </label>
+                        <label for="RADI_PRE_TDM" class="radio">
+                            <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
+                                {{ 'print:: image de choix et description avec planche contact' | trans }}
+                        </label>
+                        <label for="RADI_CAP" class="radio">
+                            <input type="radio" name="lay" value="caption" id="RADI_CAP" />
+                                {{ 'print:: description' | trans }}
+                        </label>
+                    </div>
                 {% endif %}
                 {% if printer.get_count_thumbnail() > 0 %}
-                <h4>{{ 'print:: imagette' | trans }}</h4>
-                <div style="margin: 10px 0 20px 0; padding: 0 10px;">
-                    <label for="RADI_PRE_THUM" class="radio">
-                        <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
-                            {{ 'print:: liste d\'imagettes' | trans }}
-                    </label>
-                    <label for="RADI_PRE_THUMGRI" class="radio">
-                        <input type="radio" name="lay" {% if not basketFeedbackId %} checked {% endif %} value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
-                            {{ 'print:: planche contact (mosaique)' | trans }}
-                    </label>
-                </div>
+                    <h4>{{ 'print:: imagette' | trans }}</h4>
+                    <div style="margin: 10px 0 20px 0; padding: 0 10px;">
+                        <label for="RADI_PRE_THUM" class="radio">
+                            <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
+                                {{ 'print:: liste d\'imagettes' | trans }}
+                        </label>
+                        <label for="RADI_PRE_THUMGRI" class="radio">
+                            <input type="radio" name="lay" {% if not basketFeedbackId %} checked {% endif %} value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
+                                {{ 'print:: planche contact (mosaique)' | trans }}
+                        </label>
+                    </div>
                 {% endif %}
+
+                <h3 style="margin-left: 5px;">{{ 'print:: some options' | trans }}</h3>
+                <div style="margin: 20px 5px;">
+                    <h4 style="margin-left: 0px;">{{ 'print:: add and remember password to protect the pdf' | trans }}</h4>
+                    <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
+                </div>
+
+                <div style="margin: 20px 5px;">
+                    <label class="checkbox" for="can-download-subdef" style="margin-top: 5px;height: 21px;padding-top: 2px;padding-bottom: 2px;">
+                        <input type="checkbox" id="can-download-subdef" name="can-download-subdef" value="1" />
+                        {{ 'print:: Can download subdef' | trans }}
+                    </label>
+                    <div id="print-download-subdef" style="display: none;">
+                        <fieldset style="padding:10px;">
+                            <select id="print-select-download-subdef" name="print-select-download-subdef" style="margin-left: 0px;">
+                                {% for subdefName in printer.getAvailableSubdefName %}
+                                    <option value="{{ subdefName}}" class="download-{{ subdefName }}"
+                                            data-count=""
+                                            {% if subdefName == "preview" %} selected {% endif %} >
+                                        {{ subdefName }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 400px;text-align: center;margin-bottom: 0px;">
+                                <span class="download-count-info"></span> {{ 'print:: element downloadable' | trans }}
+                            </div>
+                            <div class="alert alert-warning" style="padding-top: 4px;padding-bottom: 4px;width: 480px;text-align: center;margin-left: 0px;margin-top: 10px;margin-bottom: 10px;">
+                                <span> {{ 'print:: warning! Only available media for chosen subdef is downloadable' | trans }} </span>
+                            </div>
+                            <div style="margin:10px 0px;">
+                                <label>{{ 'print:: subdef url ttl' | trans }}</label>
+                                <input style="margin-bottom: 2px;width:100px;" type="number" min="0" name="print-download-ttl" value ="2"/>
+                                <select id="print-download-ttl-unit" name="print-download-ttl-unit" style="margin-left: 0px;width:100px">
+                                    <option value="3600" >{{ 'print:: hour' | trans }}</option>
+                                    <option value="86400" selected>{{ 'print:: day' | trans }}</option>
+                                    <option value="604800" >{{ 'print:: week' | trans }}</option>
+                                    <option value="2592000" >{{ 'print:: month' | trans }}</option>
+                                </select>
+                            </div>
+                            <div style="margin:10px 0px;">
+                                <label>{{ 'print:: choose filename' | trans }}</label>
+                                <label for="download-title-name" class="radio" style="margin-left: 10px;">
+                                    <input type="radio" name="print-filename" id="download-title-name" checked value="title" />
+                                    {{ 'print:: title' | trans }}
+                                </label>
+                                <label for="download-original-name" class="radio" style="margin-left: 10px;">
+                                    <input type="radio" name="print-filename" id="download-original-name" value="originalname" />
+                                    {{ 'print:: original media name' | trans }}
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <h4 style="margin-left: 5px;font-weight: 700;">{{ 'print:: subdef mapping' | trans }}</h4>
+
+                <div class="alert alert-warning" style="padding-top: 4px;padding-bottom: 4px;width: 480px;text-align: center;margin-left: 5px;margin-bottom: 10px;">
+                    <span> {{ 'print:: warning! Only available image for chosen subdef is printed' | trans }} </span>
+                </div>
+
+                <div style="margin:20px 5px;">
+                    <label>{{ 'print:: Choose subdef for preview' | trans }} </label>
+                    <select id="print-choose-preview" name="preview-chosen" >
+                        {% for subdefName in printer.getAvailableSubdefName(true) %}
+                            <option value="{{ subdefName }}" class="subdef-{{ subdefName }}"
+                                    data-count=""
+                                    {% if subdefName == "preview" %} selected {% endif %} >
+                                {{ subdefName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;margin-bottom: 0px;width: 400px;text-align: center;">
+                        <span class="preview-count-info" ></span> {{ 'print:: element printable on preview model' | trans }}
+                    </div>
+                </div>
+
+                <div style="margin: 20px 5px;">
+                    <label>{{ 'print:: Choose subdef for thumbnail' | trans }} </label>
+                    <select id="print-choose-thumbnail" name="thumbnail-chosen" >
+                        {% for subdefName in printer.getAvailableSubdefName(true) %}
+                            <option value="{{ subdefName}}" class="subdef-{{ subdefName }}"
+                                    data-count=""
+                                    {% if subdefName == "thumbnail" %} selected {% endif %} >
+                                {{ subdefName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="acceptDl-info" style="display:inline-block;padding-top: 4px;width: 400px;text-align: center;">
+                        <span class="thumbnail-count-info"></span> {{ 'print:: element printable on thumbnail model' | trans }}
+                    </div>
+                </div>
 
                 {% if printer.get_count_thumbnail() > 0 or printer.get_count_preview() > 0 %}
                     <div style="margin-bottom: 10px; text-align: center;">
                         <input type="hidden" name="lst" value="{{ printer.get_serialize_list }}" />
+                        <input type="hidden" name="storyId" value="{{ storyId }}" />
                         <button type="submit" class="btn btn-inverse">{{ 'boutton::imprimer' | trans }}</button>
                     </div>
                 {% endif %}
@@ -64,6 +167,7 @@
             {% else %}
                 {{ 'export:: erreur : aucun document selectionne' | trans }}
             {% endif %}
+
             </div>
         </div>
     </form>
@@ -73,6 +177,59 @@
         var $form = $("form[name=formprintpage]");
         $form.bind('submit', function(){ 
             $("#DIALOG").dialog('destroy');
+            $('#DIALOG').css('display', 'none');
+        });
+
+        tinymce.remove();
+
+        tinymce.init({
+            selector: '.print-pdf-description',
+            menubar: 'edit view insert format table help',
+            plugins: 'preview searchreplace visualblocks visualchars link table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists textcolor wordcount contextmenu colorpicker textpattern help',
+            toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+        });
+
+        // add dynamically the subdef count in the select option
+        var totalCount = {{ total_count }};
+        var subdefImageCount = JSON.parse('{{ printer.getSubdefImageCount|json_encode|raw }}');
+        var subdefCount = JSON.parse('{{ printer.getSubdefCount|json_encode|raw }}');
+
+        for (const [key, value] of Object.entries(subdefCount)) {
+            $(".download-"+ key).attr('data-count', value + " / " + totalCount);
+            if (key == 'preview') {
+                $('.download-count-info').empty().text(value + " / " + totalCount);
+            }
+        }
+
+        for (const [key, value] of Object.entries(subdefImageCount)) {
+            $(".subdef-"+ key).attr('data-count', value + " / " + totalCount);
+            if (key === 'thumbnail' || key === 'preview') {
+                $("." + key +"-count-info").empty().text(value + " / " + totalCount);
+            }
+        }
+
+        $("#print-choose-preview").on('change', function() {
+            var selectedSubdef = $(this).children('option:selected');
+            $(".preview-count-info").empty().html(selectedSubdef.attr("data-count"));
+        });
+
+        $("#print-choose-thumbnail").on('change', function() {
+            var selectedSubdef = $(this).children('option:selected');
+            $(".thumbnail-count-info").empty().html(selectedSubdef.attr("data-count"));
+        });
+
+        $("#print-select-download-subdef").on('change', function() {
+            var selectedSubdef = $(this).children('option:selected');
+            $(".download-count-info").empty().html(selectedSubdef.attr("data-count"));
+        });
+
+        $("#can-download-subdef").change(function (e) {
+            var that = this;
+            if ($( that ).is(":checked")) {
+                $("#print-download-subdef").show();
+            } else {
+                $("#print-download-subdef").hide();
+            }
         });
     });
 </script>

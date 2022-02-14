@@ -26,7 +26,7 @@ use Alchemy\Phrasea\Model\Entities\LazaretFile;
 use Alchemy\Phrasea\Model\Entities\LazaretSession;
 use DataURI\Exception\Exception as DataUriException;
 use DataURI\Parser;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,10 +88,10 @@ class UploadController extends Controller
             $url = $request->get('url');
             $basename = pathinfo($url, PATHINFO_BASENAME);
 
-            $guzzle = new Guzzle($url);
-            $res = $guzzle->head("")->send();
-            $response['content-type'] = $res->getContentType();
-            $response['content-length'] = $res->getContentLength();
+            $guzzle = new Guzzle(['base_uri' => $url]);
+            $res = $guzzle->head('');
+            $response['content-type'] = $res->getHeaderLine('content-type');
+            $response['content-length'] = doubleval($res->getHeaderLine('content-length'));
             $response['basename'] = $basename;
         }
         catch (\Exception $e) {
@@ -161,8 +161,8 @@ class UploadController extends Controller
             $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, $pi['extension']);
 
             try {
-                $guzzle = new Guzzle($url);
-                $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                $guzzle = new Guzzle(['base_uri' => $url]);
+                $res = $guzzle->get("", ['save_to' => $tempfile]);
             }
             catch (\Exception $e) {
                 throw new BadRequestHttpException(sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));

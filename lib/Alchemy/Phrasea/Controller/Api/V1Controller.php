@@ -92,7 +92,7 @@ use Alchemy\Phrasea\WorkerManager\Event\AssetsCreateEvent;
 use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Doctrine\ORM\EntityManager;
-use Guzzle\Http\Client as Guzzle;
+use GuzzleHttp\Client as Guzzle;
 use League\Fractal\Resource\Item;
 use media_subdef;
 use Neutron\TemporaryFilesystem\TemporaryFilesystemInterface;
@@ -963,8 +963,8 @@ class V1Controller extends Controller
                 $tempfile = $tmpFs->createTemporaryFile('download_', null, $pi['extension']);
 
                 try {
-                    $guzzle = new Guzzle($url);
-                    $res = $guzzle->get("", [], ['save_to' => $tempfile])->send();
+                    $guzzle = new Guzzle(['base_uri' => $url]);
+                    $res = $guzzle->get("", ['save_to' => $tempfile]);
                 }
                 catch (\Exception $e) {
                     return $this->getBadRequestAction($request, sprintf('Error "%s" downloading "%s"', $e->getMessage(), $url));

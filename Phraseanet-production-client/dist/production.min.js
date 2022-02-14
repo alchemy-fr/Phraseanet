@@ -7810,7 +7810,9 @@ var printRecord = function printRecord(services) {
                 (0, _jquery2.default)(this).dialog('widget').css('z-index', '1999');
             },
             close: function close(event, ui) {
-                (0, _jquery2.default)(this).dialog('widget').css('z-index', 'auto');
+                // $(this).dialog('widget').css('z-index', 'auto');
+                (0, _jquery2.default)('#DIALOG').dialog('destroy');
+                (0, _jquery2.default)('#DIALOG').css('display', 'none');
             }
         }).dialog('open');
 
