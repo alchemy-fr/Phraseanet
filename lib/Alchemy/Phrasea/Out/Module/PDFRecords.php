@@ -20,7 +20,7 @@ use \IntlDateFormatter as DateFormatter;
 
 class PDFRecords extends PDF
 {
-    private static $maxFilenameLength = 256;
+    public static $maxFilenameLength = 256;
 
     /** @var Printer */
     private $printer;
@@ -992,7 +992,7 @@ class PDFRecords extends PDF
                 $this->pdfTitle,
                 '', 1, 'C', false);
 
-            $this->pdf->Write(20, "\n");
+            $this->pdf->SetY($this->pdf->GetY() + 15);
 
             $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
             $this->pdf->writeHTML($this->pdfDescription);
