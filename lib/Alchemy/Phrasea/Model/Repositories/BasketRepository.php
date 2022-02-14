@@ -106,8 +106,10 @@ class BasketRepository extends EntityRepository
             . "   AND p.is_aware = 0\n"
             // see truth-table in findActiveValidationByUser()
             . "   AND (\n"
-            . "    (b.share_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.share_expires)\n"
-            . "    OR\n"
+            . "    b.share_expires IS NULL\n"
+            . "     OR\n"
+            . "    CURRENT_TIMESTAMP() < b.share_expires\n"
+            . "     OR\n"
             . "    (b.vote_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.vote_expires)\n"
             . "   )";
 
@@ -159,8 +161,10 @@ class BasketRepository extends EntityRepository
             JOIN p.votes v
             WHERE b.user != ?1 AND p.user = ?2
              AND (
-               (b.share_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.share_expires) 
-               OR
+               b.share_expires IS NULL
+                OR 
+               CURRENT_TIMESTAMP() < b.share_expires 
+                OR
                (b.vote_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.vote_expires) 
              )';
 
