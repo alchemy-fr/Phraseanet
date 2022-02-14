@@ -104,7 +104,12 @@ class BasketRepository extends EntityRepository
             . "   AND b.user_id != :usr_id_ownertwo\n"
             . "   AND p.user_id = :usr_id_participant\n"
             . "   AND p.is_aware = 0\n"
-            . "   AND b.vote_expires > CURRENT_TIMESTAMP()";
+            // see truth-table in findActiveValidationByUser()
+            . "   AND (\n"
+            . "    (b.share_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.share_expires)\n"
+            . "    OR\n"
+            . "    (b.vote_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.vote_expires)\n"
+            . "   )";
 
         $params = [
             'usr_id_owner'       => $user->getId(),
@@ -127,12 +132,23 @@ class BasketRepository extends EntityRepository
     }
 
     /**
-     * Returns all baskets that are in validation session not expired  and
+     * Returns all baskets that are not expired (share or vote) and
      * where a specified user is participant (not owner)
      *
      * @param  User         $user
      * @param  null|string  $sort
      * @return Basket[]
+     *
+     *  0, 1 or 2 dates on a timeline : V="end-of-vote" ; S="end-of-share)
+     *  .: basket is visible ; _:basket no nore visible
+     *
+     *  ..............     // no dates : always visible
+     *  ......V.......     // vote with no end-of-share : always visible
+     *  ......S_______     // hidden after simple end-of-share
+     *  ....V....S____     // hidden after end-of-share
+     *  ....S....V____     // end-of-vote extends end-of-share
+     *  ......VS______     // same date : trivial
+     *
      */
     public function findActiveValidationByUser(User $user, $sort = null)
     {
@@ -142,7 +158,11 @@ class BasketRepository extends EntityRepository
             JOIN b.participants p
             JOIN p.votes v
             WHERE b.user != ?1 AND p.user = ?2
-             AND (b.vote_expires IS NULL OR b.vote_expires > CURRENT_TIMESTAMP()) ';
+             AND (
+               (b.share_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.share_expires) 
+               OR
+               (b.vote_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.vote_expires) 
+             )';
 
         if ($sort == 'date') {
             $dql .= "\nORDER BY b.created DESC";
