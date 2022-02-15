@@ -10372,7 +10372,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="0b3e5bbe37fa58fc7ce4682309017ffcebe95a23" resname="developers:: Select events to trigger this webhook url">
         <source>developers:: Select events to trigger this webhook url</source>
-        <target state="needs-translation">Quels événements souhaiteriez-vous déclencher avec ce Webhook? La réception d'un événement dépend des droits de l'utilisateur. Exemple: pour être notifié de "record.edited", vous devez avoir le droit d'éditing sur la collection contenant le record.</target>
+        <target state="translated">Quels événements souhaiteriez-vous déclencher avec ce Webhook? La réception d'un événement dépend des droits de l'utilisateur. Exemple: pour être notifié de "record.edited", vous devez avoir le droit d'éditing sur la collection contenant le record.</target>
         <jms:reference-file line="137">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c03c368311dce85c42b5851061524a1c707a5890" resname="developers:: Webhook active">
@@ -12171,7 +12171,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ed8bd782df1ab7fd098439e5832a0744cad5d051" resname="print:: choose filename">
         <source>print:: choose filename</source>
-        <target state="needs-translation">Définition du nom des fichiers téléchargés</target>
+        <target state="translated">Définition du nom des fichiers téléchargés</target>
         <jms:reference-file line="106">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="50176955761a18d473255055c57e8653cc1be124" resname="print:: choose model">
@@ -12191,7 +12191,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="8e7fd7ad380fbbffb814c1bf6dcc60fbbc57ec39" resname="print:: download">
         <source>print:: download</source>
-        <target state="needs-translation">Lien de téléchargement</target>
+        <target state="translated">Lien de téléchargement</target>
         <jms:reference-file line="432">Out/Module/PDFRecords.php</jms:reference-file>
         <jms:reference-file line="509">Out/Module/PDFRecords.php</jms:reference-file>
         <jms:reference-file line="785">Out/Module/PDFRecords.php</jms:reference-file>
@@ -12248,7 +12248,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ad790dd900033c4e8547f115ae71efce8809bf88" resname="print:: original media name">
         <source>print:: original media name</source>
-        <target state="needs-translation">Nom original du fichier</target>
+        <target state="translated">Nom original du fichier</target>
         <jms:reference-file line="113">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="49bc88aef571df633eac0a80173eb1c76a9d06d7" resname="print:: pdf description">
@@ -12278,12 +12278,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="64522de5f98e57af6d90d10707181ef4fecdafdd" resname="print:: subdef url ttl">
         <source>print:: subdef url ttl</source>
-        <target state="needs-translation">Durée de validité du lien de téléchargement</target>
+        <target state="translated">Durée de validité du lien de téléchargement</target>
         <jms:reference-file line="96">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="501f2f6dd77b371a4408b96b29d4045a8e8d15ba" resname="print:: title">
         <source>print:: title</source>
-        <target state="needs-translation">Titre du document</target>
+        <target state="translated">Titre du document</target>
         <jms:reference-file line="109">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="698d678afe4394e810eda66c18abb93d7c5b8a00" resname="print:: warning! Only available image for chosen subdef is printed">
@@ -12293,7 +12293,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="d16a375bd489fa9232346a1c6e48570bbf53a479" resname="print:: warning! Only available media for chosen subdef is downloadable">
         <source>print:: warning! Only available media for chosen subdef is downloadable</source>
-        <target state="needs-translation">Laisser la durée vide (ou 0) pour une validité permanente</target>
+        <target state="translated">Laisser la durée vide pour une validité permanente</target>
         <jms:reference-file line="93">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="52acc8afb73e42ebb15886d76b723d8e8907d8eb" resname="print:: week">
@@ -14991,7 +14991,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="d0667dac38f2673134efb588468b259910245c8f" resname="thesaurus::edit editing %count% record(s)">
         <source>thesaurus::edit editing %count% record(s)</source>
-        <target state="needs-translation">Edition de %count% record(s)</target>
+        <target state="translated">Edition de %count% record(s)</target>
         <jms:reference-file line="180">Controller/Prod/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e69e92a4ad2d11f9eb060e4c1210bd3b2c7db08c" resname="thesaurus::edit remove">
