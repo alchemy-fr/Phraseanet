@@ -31,6 +31,7 @@ final class PhraseaEvents
     const ORDER_DENY = 'order.deny';
 
     const FEED_ENTRY_CREATE = 'feed-entry.create';
+    const FEED_ENTRY_UPDATE = 'feed-entry.update';
 
     const REGISTRATION_CREATE = 'registration.create';
     const REGISTRATION_AUTOREGISTER = 'registration.autoregister';

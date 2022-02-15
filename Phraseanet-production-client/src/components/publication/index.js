@@ -261,6 +261,7 @@ const publication = (services) => {
         let $feed_title_warning = $('.feed_title_warning', modal.getDomElement());
         let $feed_subtitle_field = $('#feed_add_subtitle', modal.getDomElement());
         let $feed_subtitle_warning = $('.feed_subtitle_warning', modal.getDomElement());
+        let $feed_add_notify = $('#feed_add_notify', modal.getDomElement());
         feedFieldValidator($feed_title_field,$feed_title_warning, 128);
         feedFieldValidator($feed_subtitle_field,$feed_subtitle_warning, 1024);
 
@@ -268,6 +269,11 @@ const publication = (services) => {
             $feeds_item.removeClass('selected');
             $(this).addClass('selected');
             $('input[name="feed_id"]', $form).val($('input', this).val());
+            if ($('#modal_feed #feed_add_notify').is(':checked')) {
+                getUserCount();
+            } else {
+                $('#publication-notify-message').empty();
+            }
         }).hover(function () {
             $(this).addClass('hover');
         }, function () {
@@ -302,7 +308,39 @@ const publication = (services) => {
             }
         });
 
+        $('#modal_feed #feed_add_notify').on('click', function() {
+            let $this = $(this);
+
+            if ($this.is(':checked')) {
+                getUserCount();
+            } else {
+                $('#publication-notify-message').empty();
+            }
+        });
+
         return;
+    };
+
+    var getUserCount = function () {
+        $.ajax({
+            type: 'POST',
+            url: '/prod/feeds/notify/count/',
+            dataType: 'json',
+            data: {
+                feed_id: $('#modal_feed input[name="feed_id"]').val(),
+            },
+            beforeSend: function () {
+                $('#publication-notify-message').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            },
+            success: function (data) {
+                if (data.success) {
+                    $('#publication-notify-message').empty().append(data.message);
+                } else {
+                    $('#publication-notify-message').empty().append(data.message);
+                    $('#modal_feed #feed_add_notify').prop('checked', false);
+                }
+            }
+        });
     };
 
     const onSubmitPublication = () => {

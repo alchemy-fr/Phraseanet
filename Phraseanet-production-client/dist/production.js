@@ -3298,6 +3298,7 @@ var publication = function publication(services) {
         var $feed_title_warning = (0, _jquery2.default)('.feed_title_warning', modal.getDomElement());
         var $feed_subtitle_field = (0, _jquery2.default)('#feed_add_subtitle', modal.getDomElement());
         var $feed_subtitle_warning = (0, _jquery2.default)('.feed_subtitle_warning', modal.getDomElement());
+        var $feed_add_notify = (0, _jquery2.default)('#feed_add_notify', modal.getDomElement());
         feedFieldValidator($feed_title_field, $feed_title_warning, 128);
         feedFieldValidator($feed_subtitle_field, $feed_subtitle_warning, 1024);
 
@@ -3305,6 +3306,11 @@ var publication = function publication(services) {
             $feeds_item.removeClass('selected');
             (0, _jquery2.default)(this).addClass('selected');
             (0, _jquery2.default)('input[name="feed_id"]', $form).val((0, _jquery2.default)('input', this).val());
+            if ((0, _jquery2.default)('#modal_feed #feed_add_notify').is(':checked')) {
+                getUserCount();
+            } else {
+                (0, _jquery2.default)('#publication-notify-message').empty();
+            }
         }).hover(function () {
             (0, _jquery2.default)(this).addClass('hover');
         }, function () {
@@ -3337,7 +3343,39 @@ var publication = function publication(services) {
             }
         });
 
+        (0, _jquery2.default)('#modal_feed #feed_add_notify').on('click', function () {
+            var $this = (0, _jquery2.default)(this);
+
+            if ($this.is(':checked')) {
+                getUserCount();
+            } else {
+                (0, _jquery2.default)('#publication-notify-message').empty();
+            }
+        });
+
         return;
+    };
+
+    var getUserCount = function getUserCount() {
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: '/prod/feeds/notify/count/',
+            dataType: 'json',
+            data: {
+                feed_id: (0, _jquery2.default)('#modal_feed input[name="feed_id"]').val()
+            },
+            beforeSend: function beforeSend() {
+                (0, _jquery2.default)('#publication-notify-message').empty().html('<img src="/assets/common/images/icons/main-loader.gif" alt="loading"/>');
+            },
+            success: function success(data) {
+                if (data.success) {
+                    (0, _jquery2.default)('#publication-notify-message').empty().append(data.message);
+                } else {
+                    (0, _jquery2.default)('#publication-notify-message').empty().append(data.message);
+                    (0, _jquery2.default)('#modal_feed #feed_add_notify').prop('checked', false);
+                }
+            }
+        });
     };
 
     var onSubmitPublication = function onSubmitPublication() {
