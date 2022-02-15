@@ -370,9 +370,9 @@ const workzone = (services) => {
             extraClass: 'tooltip_flat'
         });
 
-        $('.basket_title').tooltip({
-            extraClass: 'tooltip_flat'
-        });
+        // $('.basket_title').tooltip({
+        //     extraClass: 'tooltip_flat'
+        // });
 
         $('#idFrameC .tabs')
             .data('hash', null)  // unknowk for now

@@ -12,7 +12,9 @@
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  */
-
+/**
+ * todo : find where this code is used (it's a close copy of Phraseanet-production-client/src/phraseanet-common/components/tooltip.js)
+ */
 (function ($) {
 
     // the tooltip element

@@ -296,9 +296,9 @@
             <div id="validations-block" class="validations-block">
                 {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
 
-                    <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
+                    <div
                          id="SSTT_{{ basket.getId() }}"
-                         class="basketTips ui-accordion-header ui-state-default
+                         class="ui-accordion-header ui-state-default
                          ui-corner-all header SSTT basket {% if not basket.getId() %}unread{% endif %}
                          {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
 
@@ -314,7 +314,9 @@
                             <span>
                                 <i class="fa fa-shopping-basket"></i>
                                 &nbsp;
+                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
                                 {{ basket.getName()|e }}
+                                </span>
 
                                 {% if basket.isVoteBasket() %}
                                     <i class="fa fa-comment" title="please comment"></i>
@@ -344,9 +346,9 @@
             <div id="all_baskets-block" class="all_baskets-block">
                 {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
 
-                    <div tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
+                    <div
                          id="SSTT_{{ basket.getId() }}"
-                         class="basketTips ui-accordion-header ui-state-default
+                         class="ui-accordion-header ui-state-default
                          ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
                          {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
                          {% if basket.isVoteBasket() %} feedbacks-block {% elseif basket.getPusher() %} pushes-block {% else %} baskets-block {% endif %} ">
@@ -363,8 +365,9 @@
                             <span>
                                 <i class="fa fa-shopping-basket"></i>
                                 &nbsp;
+                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
                                 {{ basket.getName()|e }}
-
+                                </span>
 
                                 {% if basket.getPusher() %}
                                     {# i own this basket but it was pushed to me #}
@@ -397,9 +400,9 @@
 
             <div id="stories-block" class="stories-block">
                 {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
-                    <div tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}"
+                    <div
                          id="SSWZ_{{ story.getId() }}" sbas="{{ story.getSbasId() }}"
-                         class="STORY_{{ story.getRecord(app).get_serialize_key() }} basketTips ui-accordion-header ui-state-default
+                         class="STORY_{{ story.getRecord(app).get_serialize_key() }} ui-accordion-header ui-state-default
                          ui-corner-all header SSTT grouping
                          {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
 
@@ -411,7 +414,9 @@
                             <span>
                                 <i class="fa fa-folder"></i>
                                 &nbsp;
+                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}">
                                 {{ story.getRecord(app).get_title() }}
+                                </span>
                             </span>
                         </a>
 

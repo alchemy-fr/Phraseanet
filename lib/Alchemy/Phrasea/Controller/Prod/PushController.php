@@ -453,7 +453,7 @@ class PushController extends Controller
                     'basket' => $basket->getId(),
                 ];
 
-                // here we send an email to each participant
+                // here we email to each participant
                 //
                 // if we don't request the user to auth (=type his login/pwd),
                 //  we generate a !!!! 'validate' !!!! token to be included as 'LOG' parameter in url
@@ -466,7 +466,7 @@ class PushController extends Controller
                         $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, null)->getValue();
                     }
                     else {
-                        // a "normal" participant/user gets a expiring token, expirationdate CAN be null
+                        // a "normal" participant/user gets an expiring token, expirationdate CAN be null
                         $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, $voteExpiresDate)->getValue();
                     }
                 }
@@ -483,24 +483,19 @@ class PushController extends Controller
                 // else -> "shared with you" email
                 //     done during email build, from event data
                 if ($request->request->get('notify') == 1) {
-//                    if($basket->isVoteBasket() && $basketParticipant->getCanAgree()) {
-                        $this->dispatch(
-                            PhraseaEvents::VALIDATION_CREATE,
-                            new BasketParticipantVoteEvent(
-                                $basketParticipant,
-                                $url,
-                                $request->request->get('message'),
-                                $receipt,
-                                (int)$request->request->get('duration'),
-                                $basket->isVoteBasket(),
-                                $shareExpiresDate,
-                                $voteExpiresDate
-                            )
-                        );
-//                    }
-//                    else {
-//                        // todo ========== create email for simple share =========
-//                    }
+                    $this->dispatch(
+                        PhraseaEvents::VALIDATION_CREATE,
+                        new BasketParticipantVoteEvent(
+                            $basketParticipant,
+                            $url,
+                            $request->request->get('message'),
+                            $receipt,
+                            (int)$request->request->get('duration'),
+                            $basket->isVoteBasket(),
+                            $shareExpiresDate,
+                            $voteExpiresDate
+                        )
+                    );
                 }
             }
 

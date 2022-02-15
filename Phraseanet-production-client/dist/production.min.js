@@ -10351,9 +10351,9 @@ var workzone = function workzone(services) {
             extraClass: 'tooltip_flat'
         });
 
-        (0, _jquery2.default)('.basket_title').tooltip({
-            extraClass: 'tooltip_flat'
-        });
+        // $('.basket_title').tooltip({
+        //     extraClass: 'tooltip_flat'
+        // });
 
         (0, _jquery2.default)('#idFrameC .tabs').data('hash', null) // unknowk for now
         .tabs({

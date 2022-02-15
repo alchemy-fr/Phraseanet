@@ -450,9 +450,6 @@ var pym = __webpack_require__(17);
     // timeout id for delayed tooltips
     tID = void 0,
 
-    // IE 5.5 or 6
-    IE = navigator.userAgent.match(/msie/i) && /MSIE\s(5\.5|6\.)/.test(navigator.userAgent),
-
     // flag for mouse tracking
     track = false;
 
@@ -467,7 +464,7 @@ var pym = __webpack_require__(17);
             delay: 700,
             fixable: false,
             fixableIndex: 100,
-            fade: true,
+            fade: false, // DO NOT SET TO TRUE ! (makes some random blinks/loops)
             showURL: true,
             outside: true,
             isBrowsable: false,
@@ -508,6 +505,7 @@ var pym = __webpack_require__(17);
                 this.tooltipSrc = $(this).attr('tooltipsrc');
 
                 this.ajaxLoad = $.trim(this.tooltipText) === '' && this.tooltipSrc !== '';
+
                 this.ajaxTimeout;
 
                 this.orEl = $(this);
@@ -525,33 +523,6 @@ var pym = __webpack_require__(17);
                     }, 500);
                 }
             }).mousedown(fix);
-        },
-        fixPNG: IE ? function () {
-            return this.each(function () {
-                var image = $(this).css('backgroundImage');
-                if (image.match(/^url\(["']?(.*\.png)["']?\)$/i)) {
-                    image = RegExp.$1;
-                    $(this).css({
-                        backgroundImage: 'none',
-                        filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='" + image + "')"
-                    }).each(function () {
-                        var position = $(this).css('position');
-                        if (position !== 'absolute' && position !== 'relative') $(this).css('position', 'relative');
-                    });
-                }
-            });
-        } : function () {
-            return this;
-        },
-        unfixPNG: IE ? function () {
-            return this.each(function () {
-                $(this).css({
-                    filter: '',
-                    backgroundImage: ''
-                });
-            });
-        } : function () {
-            return this;
         },
         hideWhenEmpty: function hideWhenEmpty() {
             return this.each(function () {
@@ -588,10 +559,18 @@ var pym = __webpack_require__(17);
 
     // main event handler to start showing tooltips
     function handle(event) {
-        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) return;
+        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) {
+            return;
+        }
 
+        // DONT UN-COMMENT ; fix blinking
         // show helper, either with timeout or on instant
-        if (settings(this).delay) tID = setTimeout(visible, settings(this).delay);else visible();
+        // if (settings(this).delay) {
+        //     tID = setTimeout(visible, settings(this).delay);
+        // }
+        // else {
+        visible();
+        // }
         show();
 
         // if selected, update the helper position when the mouse moves
@@ -609,14 +588,20 @@ var pym = __webpack_require__(17);
 
         event.cancelBubble = true;
 
-        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) return;
+        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) {
+            return;
+        }
 
         // save current
         $.tooltip.current = this;
         title = this.tooltipText;
 
         // if element has href or src, add and show it, otherwise hide it
-        if (settings(this).showURL && $(this).url()) helper.url.html($(this).url().replace('http://', '')).show();else helper.url.hide();
+        if (settings(this).showURL && $(this).url()) {
+            helper.url.html($(this).url().replace('http://', '')).show();
+        } else {
+            helper.url.hide();
+        }
         // add an optional class for this tip
         helper.parent.removeClass();
         helper.parent.addClass(settings(this).extraClass);
@@ -639,8 +624,6 @@ var pym = __webpack_require__(17);
         var $this = $.tooltip.current;
         var tooltipSettings = settings($this) ? settings($this) : {};
         var fixedPosition = $.tooltip.blocked;
-        // fix PNG background for IE
-        if (tooltipSettings.fixPNG) helper.parent.fixPNG();
         if (tooltipSettings.outside) {
             var width = 'auto';
             var height = 'auto';
@@ -790,8 +773,12 @@ var pym = __webpack_require__(17);
                     tooltipVerticalOffset = 0;
                     tooltipHorizontalOffset = 0;
                     topOffset = 50;
-                    // fallback on original target if nothing found:
-                    $eventTarget = $origEventTarget;
+                    // the origEventTarget is only the title, locate the container block
+                    $eventTarget = $origEventTarget.closest('.SSTT');
+                    if ($eventTarget.length === 0) {
+                        // fallback on original target if nothing found:
+                        $eventTarget = $origEventTarget;
+                    }
                 }
 
                 var recordPosition = $eventTarget.offset();
@@ -946,8 +933,12 @@ var pym = __webpack_require__(17);
             isBrowsable = settings($.tooltip.current).isBrowsable;
         }
 
-        if ((!IE || !$.fn.bgiframe) && settings($.tooltip.current).fade) {
-            if (helper.parent.is(':animated')) helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);else helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
+        if (settings($.tooltip.current).fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);
+            } else {
+                helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
+            }
         } else {
             helper.parent.show();
         }
@@ -1072,6 +1063,7 @@ var pym = __webpack_require__(17);
 
     // hide helper and restore added classes and the title
     function hide(event) {
+
         var isBrowsable = false;
         if ($.tooltip.current !== null) {
             isBrowsable = settings($.tooltip.current).isBrowsable;
@@ -1100,11 +1092,15 @@ var pym = __webpack_require__(17);
             helper.parent.removeClass(tsettings.extraClass).hide().css('opacity', '');
         }
 
-        if ((!IE || !$.fn.bgiframe) && tsettings.fade) {
-            if (helper.parent.is(':animated')) helper.parent.stop().fadeTo(tsettings.fade, 0, complete);else helper.parent.stop().fadeOut(tsettings.fade, complete);
-        } else complete();
-
-        if (tsettings.fixPNG) helper.parent.unfixPNG();
+        if (tsettings.fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().fadeTo(tsettings.fade, 0, complete);
+            } else {
+                helper.parent.stop().fadeOut(tsettings.fade, complete);
+            }
+        } else {
+            complete();
+        }
     }
 
     function unfixTooltip() {
