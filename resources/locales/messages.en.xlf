@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-02-09T11:52:01Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2022-02-10T14:27:41Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4764,7 +4764,7 @@
       <trans-unit id="ac0b3b17f88b480b11c468d0b5bea6409bbd14b8" resname="Notifications globales" approved="yes">
         <source>Notifications globales</source>
         <target state="translated">Global notifications</target>
-        <jms:reference-file line="401">classes/eventsmanager/broker.php</jms:reference-file>
+        <jms:reference-file line="431">classes/eventsmanager/broker.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18ee7ad22bf04f818fd95599481303c7f7d1b29f" resname="Notify third party application when an event occurs in Phraseanet" approved="yes">
         <source>Notify third party application when an event occurs in Phraseanet</source>
@@ -11233,6 +11233,11 @@
         <jms:reference-file line="76">lightbox/IE6/feed.html.twig</jms:reference-file>
         <jms:reference-file line="92">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="77">web/lightbox/feed.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
+        <source>notification:: mark all notification as read</source>
+        <target state="new">notification:: mark all notification as read</target>
+        <jms:reference-file line="4">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
         <source>notification::read:tooltip</source>

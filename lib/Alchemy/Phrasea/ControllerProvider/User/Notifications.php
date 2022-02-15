@@ -58,6 +58,10 @@ class Notifications implements ControllerProviderInterface, ServiceProviderInter
             ->assert('notification_id', '\d+')
             ->bind('set_notifications_readed');
 
+        /** @uses UserNotificationController::readAllNotification() */
+        $controllers->post('/read-all/', 'controller.user.notifications:readAllNotification')
+            ->bind('set_all_notifications_readed');
+
         /*
         /** @uses  UserNotificationController::listNotifications * /
         $controllers->get('/', 'controller.user.notifications:getNotifications')

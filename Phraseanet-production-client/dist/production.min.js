@@ -19402,6 +19402,20 @@ var notifyLayout = function notifyLayout(services) {
                 }
             }
         });
+
+        $notificationDialog.on('click', '.mark-all-read', function (event) {
+            event.preventDefault();
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/user/notifications/read-all/',
+                success: function success(data) {
+                    if (data.success == true) {
+                        print_notifications(0);
+                        commonModule.pollNotifications(null, true, false);
+                    }
+                }
+            });
+        });
     };
 
     var markNotificationRead = function markNotificationRead(notification_id, $notification) {
