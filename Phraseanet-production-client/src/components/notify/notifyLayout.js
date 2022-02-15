@@ -218,6 +218,7 @@ const notifyLayout = (services) => {
                 success: function (data) {
                     if (data.success == true) {
                         print_notifications(0);
+                        commonModule.pollNotifications(null, true, false);
                     }
                 }
             });

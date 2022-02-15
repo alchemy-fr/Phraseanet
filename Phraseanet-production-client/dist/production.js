@@ -19411,6 +19411,7 @@ var notifyLayout = function notifyLayout(services) {
                 success: function success(data) {
                     if (data.success == true) {
                         print_notifications(0);
+                        commonModule.pollNotifications(null, true, false);
                     }
                 }
             });
