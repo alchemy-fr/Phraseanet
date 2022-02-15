@@ -10377,7 +10377,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="c03c368311dce85c42b5851061524a1c707a5890" resname="developers:: Webhook active">
         <source>developers:: Webhook active</source>
-        <target state="needs-translation">Activer l'émission de webhook vers le endpoint</target>
+        <target state="translated">Activer l'émission de webhook vers le endpoint</target>
         <jms:reference-file line="100">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bffa41c7a64fc38e50153ea0f6f7c2368b008028" resname="developers:: a order delivered">
@@ -12298,7 +12298,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="52acc8afb73e42ebb15886d76b723d8e8907d8eb" resname="print:: week">
         <source>print:: week</source>
-        <target state="needs-translation">Semaine</target>
+        <target state="translated">Semaine</target>
         <jms:reference-file line="101">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="yes">
