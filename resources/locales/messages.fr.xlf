@@ -11237,7 +11237,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
         <source>notification:: mark all notification as read</source>
-        <target state="needs-translation">Accuser réception de toutes les notifications ou marquer toutes les notifications comme "LU"</target>
+        <target state="translated">Marquer toutes les notifications comme "LU"</target>
         <jms:reference-file line="4">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
@@ -12146,7 +12146,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="5dfd076ab7424cb8f409096cd1fcc674f4634386" resname="print:: Choose subdef for preview">
         <source>print:: Choose subdef for preview</source>
-        <target state="needs-translation">Sélectionner une sous-définition pour l'impression de la prévisualisation</target>
+        <target state="translated">Sélectionner une sous-définition pour l'impression de la prévisualisation</target>
         <jms:reference-file line="127">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="175a292d892bd53e1449e70d810c7c8f5a799a82" resname="print:: Choose subdef for thumbnail">
