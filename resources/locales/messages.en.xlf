@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-02-15T09:10:09Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="263">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2537,7 +2537,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -9413,7 +9413,7 @@
       </trans-unit>
       <trans-unit id="789f4de86070d382232e79c2f04f4d29e62cf0e2" resname="admin::workermanager:tab:workerconfig:n_workers">
         <source>admin::workermanager:tab:workerconfig:n_workers</source>
-        <target state="needs-translation">n_workers</target>
+        <target state="translated">n_workers</target>
         <jms:reference-file line="27">WorkerManager/Form/QueueSettingsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c58dddc36e0e84e788241efcd87bfdb9c2793ee0" resname="admin::workermanager:tab:workerconfig:retry delay in seconds" approved="yes">
@@ -9528,7 +9528,7 @@
       </trans-unit>
       <trans-unit id="f153abd48aaee38d404f7d6007433850b63c631b" resname="admin:databases:database:file-size-detail-warning-message">
         <source>admin:databases:database:file-size-detail-warning-message</source>
-        <target state="needs-translation">The size displayed is the sum of the binary size of all files but doesn't reflect the real occupated size on the storage system.</target>
+        <target state="translated">The size displayed is the sum of the binary size of all files but doesn't reflect the real occupated size on the storage system.</target>
         <jms:reference-file line="6">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="50">admin/databox/databox.html.twig</jms:reference-file>
       </trans-unit>
@@ -9676,13 +9676,13 @@
       </trans-unit>
       <trans-unit id="6d3478b79db541608a0ba8e3877cba7c52256add" resname="admin:searchengine:aggregates:New field, please confirm setting.">
         <source>admin:searchengine:aggregates:New field, please confirm setting.</source>
-        <target state="new">admin:searchengine:aggregates:New field, please confirm setting.</target>
+        <target state="translated">admin:searchengine:aggregates:New field, please confirm setting.</target>
         <jms:reference-file line="146">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
         <jms:reference-file line="157">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b6dee9dc48adef7fe2f3a1e52b98e7a009fef83d" resname="admin:searchengine:aggregates:This field does not exists in current databoxes.">
         <source>admin:searchengine:aggregates:This field does not exists in current databoxes.</source>
-        <target state="new">admin:searchengine:aggregates:This field does not exists in current databoxes.</target>
+        <target state="translated">admin:searchengine:aggregates:This field does not exists in current databoxes.</target>
         <jms:reference-file line="136">SearchEngine/Elastic/ElasticsearchSettingsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3cd845b8adbcdf064486cdd24733f53bce8bb3" resname="admin:worker Retrieve configuration error" approved="yes">
@@ -10377,17 +10377,17 @@
       </trans-unit>
       <trans-unit id="c03c368311dce85c42b5851061524a1c707a5890" resname="developers:: Webhook active">
         <source>developers:: Webhook active</source>
-        <target state="new">developers:: Webhook active</target>
+        <target state="translated">Enable webhook transmission to the endpoint</target>
         <jms:reference-file line="100">web/developers/application.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bffa41c7a64fc38e50153ea0f6f7c2368b008028" resname="developers:: a order delivered">
         <source>developers:: a order delivered</source>
-        <target state="needs-translation">Order has been delivered</target>
+        <target state="translated">Order has been delivered</target>
         <jms:reference-file line="394">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b74fc2656c9e78eec665260f31b446edf548932" resname="developers:: a order denied">
         <source>developers:: a order denied</source>
-        <target state="needs-translation">Order denied</target>
+        <target state="translated">Order denied</target>
         <jms:reference-file line="395">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c2d24cc69b826a71661c25cbd5291cdaaf95208c" resname="developers:: collection changed for record">
@@ -10407,7 +10407,7 @@
       </trans-unit>
       <trans-unit id="92259dc5125d969b7ba7fb1af0afd121147d1839" resname="developers:: new order created">
         <source>developers:: new order created</source>
-        <target state="needs-translation">A new order has been created</target>
+        <target state="translated">A new order has been created</target>
         <jms:reference-file line="393">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="30396a053ecc23d5897f4008d2d22de6dcb97a5d" resname="developers:: new user created">
@@ -10417,7 +10417,7 @@
       </trans-unit>
       <trans-unit id="4d09e2ac8748c5ea4bb66d3cd247941f99478125" resname="developers:: record or story created">
         <source>developers:: record or story created</source>
-        <target state="needs-translation">A record or story has been created</target>
+        <target state="translated">A record or story has been created</target>
         <jms:reference-file line="370">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f036a4965ecb781192393a08a5aa0510a94524c" resname="developers:: record or story deleted">
@@ -10457,7 +10457,7 @@
       </trans-unit>
       <trans-unit id="b7786ecdfe826e6f347dbf643191d79a196c6057" resname="developers:: user registration rejected on phraseanet">
         <source>developers:: user registration rejected on phraseanet</source>
-        <target state="needs-translation">User registration rejected</target>
+        <target state="translated">User registration rejected</target>
         <jms:reference-file line="387">Controller/Root/DeveloperController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="55a2ad6e3d1c02d871104d64fb811f08c54bd1b9" resname="do you want to validate" approved="yes">
@@ -10640,7 +10640,7 @@
       </trans-unit>
       <trans-unit id="cb3538f301e1e8305f42fb862ad9a17481406870" resname="expose:: None">
         <source>expose:: None</source>
-        <target state="new">expose:: None</target>
+        <target state="translated">expose:: None</target>
         <jms:reference-file line="23">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
         <jms:reference-file line="46">prod/WorkZone/ExposeSubdefList.html.twig</jms:reference-file>
       </trans-unit>
@@ -10720,7 +10720,7 @@
       </trans-unit>
       <trans-unit id="67c618b3545eed0caac4352a96df0ccc17d877dd" resname="expose::setting duplicate mapping!">
         <source>expose::setting duplicate mapping!</source>
-        <target state="needs-translation">Mapping error! At least two sub-definitions have identical names</target>
+        <target state="translated">Mapping error! At least two sub-definitions have identical names</target>
         <jms:reference-file line="182">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a0f24c4767ae8e6091b0600be99f54669a4d5bfb" resname="expose::setting send geolocalisation">
@@ -11237,7 +11237,7 @@
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
         <source>notification:: mark all notification as read</source>
-        <target state="new">notification:: mark all notification as read</target>
+        <target state="needs-translation">Mark all notifications as "Read"</target>
         <jms:reference-file line="4">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
@@ -11835,7 +11835,7 @@
         <jms:reference-file line="564">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12171,7 +12171,7 @@
       </trans-unit>
       <trans-unit id="ed8bd782df1ab7fd098439e5832a0744cad5d051" resname="print:: choose filename">
         <source>print:: choose filename</source>
-        <target state="needs-translation">Definition of the name of downloaded files</target>
+        <target state="translated">Definition of the name of downloaded files</target>
         <jms:reference-file line="106">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="50176955761a18d473255055c57e8653cc1be124" resname="print:: choose model">
@@ -12191,7 +12191,7 @@
       </trans-unit>
       <trans-unit id="8e7fd7ad380fbbffb814c1bf6dcc60fbbc57ec39" resname="print:: download">
         <source>print:: download</source>
-        <target state="needs-translation">Download link</target>
+        <target state="translated">Download link</target>
         <jms:reference-file line="432">Out/Module/PDFRecords.php</jms:reference-file>
         <jms:reference-file line="509">Out/Module/PDFRecords.php</jms:reference-file>
         <jms:reference-file line="785">Out/Module/PDFRecords.php</jms:reference-file>
@@ -12203,12 +12203,12 @@
       </trans-unit>
       <trans-unit id="732e978726502a9af6249fecfbe0aa53c3c8cf25" resname="print:: element printable on preview model">
         <source>print:: element printable on preview model</source>
-        <target state="needs-translation">Available for print "Preview"</target>
+        <target state="translated">Available for print "Preview"</target>
         <jms:reference-file line="138">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2c2b50d9e4af36a43e41cb3f95fd578c869d57cd" resname="print:: element printable on thumbnail model">
         <source>print:: element printable on thumbnail model</source>
-        <target state="needs-translation">Available for print "Thumbnail"</target>
+        <target state="translated">Available for print "Thumbnail"</target>
         <jms:reference-file line="154">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="03dcea0e67ff75a7d366e7abd21c7124ed67dc92" resname="print:: hour">
@@ -12248,7 +12248,7 @@
       </trans-unit>
       <trans-unit id="ad790dd900033c4e8547f115ae71efce8809bf88" resname="print:: original media name">
         <source>print:: original media name</source>
-        <target state="needs-translation">Original file name</target>
+        <target state="translated">Original file name</target>
         <jms:reference-file line="113">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="49bc88aef571df633eac0a80173eb1c76a9d06d7" resname="print:: pdf description">
@@ -12278,22 +12278,22 @@
       </trans-unit>
       <trans-unit id="64522de5f98e57af6d90d10707181ef4fecdafdd" resname="print:: subdef url ttl">
         <source>print:: subdef url ttl</source>
-        <target state="needs-translation">Validity period of the download link</target>
+        <target state="translated">Validity period of the download link</target>
         <jms:reference-file line="96">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="501f2f6dd77b371a4408b96b29d4045a8e8d15ba" resname="print:: title">
         <source>print:: title</source>
-        <target state="needs-translation">Document title</target>
+        <target state="translated">Document title</target>
         <jms:reference-file line="109">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="698d678afe4394e810eda66c18abb93d7c5b8a00" resname="print:: warning! Only available image for chosen subdef is printed">
         <source>print:: warning! Only available image for chosen subdef is printed</source>
-        <target state="needs-translation">If the selected sub-definition is missing, it will be replaced by a substitute image</target>
+        <target state="translated">If the selected sub-definition is missing, it will be replaced by a substitute image</target>
         <jms:reference-file line="123">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d16a375bd489fa9232346a1c6e48570bbf53a479" resname="print:: warning! Only available media for chosen subdef is downloadable">
         <source>print:: warning! Only available media for chosen subdef is downloadable</source>
-        <target state="needs-translation">Leave the duration empty or set to 0 for a permanent validity</target>
+        <target state="needs-translation">Leave the duration empty for a permanent validity</target>
         <jms:reference-file line="93">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="52acc8afb73e42ebb15886d76b723d8e8907d8eb" resname="print:: week">
@@ -12447,7 +12447,7 @@
       </trans-unit>
       <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
         <source>prod::download: delete-marking-stamp</source>
-        <target state="new">prod::download: delete-marking-stamp</target>
+        <target state="translated">prod::download: delete-marking-stamp</target>
         <jms:reference-file line="163">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ffe867917118d6e90dc4430f499ebd75370c51f1" resname="prod::edit cannot edit multiple stories">
@@ -13442,17 +13442,17 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="a85c5b39743bad12b07c179a912cf5dbc47860f8" resname="publication:: %count% users to notify">
         <source>publication:: %count% users to notify</source>
-        <target state="new">publication:: %count% users to notify</target>
+        <target state="needs-translation">%count% users will be notified</target>
         <jms:reference-file line="149">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c4664885fa2a9f300cc01beed066cfcfafe4dd39" resname="publication:: no feed selected">
         <source>publication:: no feed selected</source>
-        <target state="new">publication:: no feed selected</target>
+        <target state="needs-translation">No feed selected</target>
         <jms:reference-file line="143">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ca39344d1a31b5ef8ebb4f9104fd83a5d70a3d46" resname="publication:: notification done on">
         <source>publication:: notification done on</source>
-        <target state="new">publication:: notification done on</target>
+        <target state="needs-translation">Notification sent on</target>
         <jms:reference-file line="54">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="02387557776e7e3b2a78b21c54e9fb019a9a6fc3" resname="publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications." approved="yes">
@@ -14601,7 +14601,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -14973,7 +14973,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="27b11cf3daaac2d61e7909bffc3f0bd715d72b72" resname="thesaurus::edit add %selected_value% to the field  %field_name%">
         <source>thesaurus::edit add %selected_value% to the field %field_name%</source>
-        <target state="needs-translation">Add term %selected_value% to the field %field_name%</target>
+        <target state="translated">Add term %selected_value% to the field %field_name%</target>
         <jms:reference-file line="43">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ca22ac6da238dca073cb83b175497d53c9db1ad" resname="thesaurus::edit advanced mode">
@@ -14988,37 +14988,37 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="d0667dac38f2673134efb588468b259910245c8f" resname="thesaurus::edit editing %count% record(s)">
         <source>thesaurus::edit editing %count% record(s)</source>
-        <target state="needs-translation">Editing %count% record(s)</target>
+        <target state="translated">Editing %count% record(s)</target>
         <jms:reference-file line="180">Controller/Prod/ThesaurusController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e69e92a4ad2d11f9eb060e4c1210bd3b2c7db08c" resname="thesaurus::edit remove">
         <source>thesaurus::edit remove</source>
-        <target state="needs-translation">Remove</target>
+        <target state="translated">Remove</target>
         <jms:reference-file line="76">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="280a8eb09e6215e067f7851759ede2c4610cce1e" resname="thesaurus::edit replace all with">
         <source>thesaurus::edit replace all with</source>
-        <target state="needs-translation">Replace all values by</target>
+        <target state="translated">Replace all values by</target>
         <jms:reference-file line="75">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b51ac2a92fc234c9147ef77fe0cdd7a68c1c44f0" resname="thesaurus::edit set  %field_name%  to  %selected_value%">
         <source>thesaurus::edit set %field_name% to %selected_value%</source>
-        <target state="needs-translation">Set field %field_name% to %selected_value%</target>
+        <target state="translated">Set field %field_name% to %selected_value%</target>
         <jms:reference-file line="45">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2775ff21e6c238255219119c457b6f75f0eae0d9" resname="thesaurus::edit set to">
         <source>thesaurus::edit set to</source>
-        <target state="needs-translation">Set to</target>
+        <target state="translated">Set to</target>
         <jms:reference-file line="78">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc24c56b4d5b8d5e4d41a2f565da3f7f8bb8626d" resname="thesaurus::edit simple mode">
         <source>thesaurus::edit simple mode</source>
-        <target state="needs-translation">Simple mode</target>
+        <target state="translated">Simple mode</target>
         <jms:reference-file line="27">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2c5f2b28d83092ce72002a1b384b4a28ce66dad" resname="thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)">
         <source>thesaurus::edit you don't have rights to edit %rejected_cnt% record(s)</source>
-        <target state="needs-translation">You don't have the rights to edit %rejected_cnt% record(s)</target>
+        <target state="translated">You don't have the rights to edit %rejected_cnt% record(s)</target>
         <jms:reference-file line="10">prod/Thesaurus/droppedrecords.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1c9e7274902f1bddc9bd0abb8b9c1113685a9c2e" resname="thesaurus::menu:  Mettre dans le stock" approved="yes">
