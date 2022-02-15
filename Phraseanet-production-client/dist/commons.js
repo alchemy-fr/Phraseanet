@@ -91,7 +91,7 @@
 /******/ 		if (__webpack_require__.nc) {
 /******/ 			script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 		}
-/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=39";
+/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=50";
 /******/ 		var timeout = setTimeout(onScriptComplete, 120000);
 /******/ 		script.onerror = script.onload = onScriptComplete;
 /******/ 		function onScriptComplete() {
@@ -17390,9 +17390,6 @@ var pym = __webpack_require__(17);
     // timeout id for delayed tooltips
     tID = void 0,
 
-    // IE 5.5 or 6
-    IE = navigator.userAgent.match(/msie/i) && /MSIE\s(5\.5|6\.)/.test(navigator.userAgent),
-
     // flag for mouse tracking
     track = false;
 
@@ -17407,7 +17404,7 @@ var pym = __webpack_require__(17);
             delay: 700,
             fixable: false,
             fixableIndex: 100,
-            fade: true,
+            fade: false, // DO NOT SET TO TRUE ! (makes some random blinks/loops)
             showURL: true,
             outside: true,
             isBrowsable: false,
@@ -17430,7 +17427,9 @@ var pym = __webpack_require__(17);
                     title = data;
                     positioning($.tooltip.ajaxEvent);
                 },
-                error: function error() {}
+                error: function error() {
+                    return;
+                }
             });
         }
     };
@@ -17446,6 +17445,7 @@ var pym = __webpack_require__(17);
                 this.tooltipSrc = $(this).attr('tooltipsrc');
 
                 this.ajaxLoad = $.trim(this.tooltipText) === '' && this.tooltipSrc !== '';
+
                 this.ajaxTimeout;
 
                 this.orEl = $(this);
@@ -17463,35 +17463,6 @@ var pym = __webpack_require__(17);
                     }, 500);
                 }
             }).mousedown(fix);
-        },
-        fixPNG: IE ? function () {
-            return this.each(function () {
-                var image = $(this).css('backgroundImage');
-                if (image.match(/^url\(["']?(.*\.png)["']?\)$/i)) {
-                    image = RegExp.$1;
-                    $(this).css({
-                        backgroundImage: 'none',
-                        filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='" + image + "')"
-                    }).each(function () {
-                        var position = $(this).css('position');
-                        if (position !== 'absolute' && position !== 'relative') {
-                            $(this).css('position', 'relative');
-                        }
-                    });
-                }
-            });
-        } : function () {
-            return this;
-        },
-        unfixPNG: IE ? function () {
-            return this.each(function () {
-                $(this).css({
-                    filter: '',
-                    backgroundImage: ''
-                });
-            });
-        } : function () {
-            return this;
         },
         hideWhenEmpty: function hideWhenEmpty() {
             return this.each(function () {
@@ -17514,9 +17485,7 @@ var pym = __webpack_require__(17);
         .hide();
 
         // apply bgiframe if available
-        if ($.fn.bgiframe) {
-            helper.parent.bgiframe();
-        }
+        if ($.fn.bgiframe) helper.parent.bgiframe();
 
         // save references to title and url elements
         helper.title = $('h3', helper.parent);
@@ -17534,12 +17503,14 @@ var pym = __webpack_require__(17);
             return;
         }
 
+        // DONT UN-COMMENT ; fix blinking
         // show helper, either with timeout or on instant
-        if (settings(this).delay) {
-            tID = setTimeout(visible, settings(this).delay);
-        } else {
-            visible();
-        }
+        // if (settings(this).delay) {
+        //     tID = setTimeout(visible, settings(this).delay);
+        // }
+        // else {
+        visible();
+        // }
         show();
 
         // if selected, update the helper position when the mouse moves
@@ -17553,9 +17524,7 @@ var pym = __webpack_require__(17);
     // save elements title before the tooltip is displayed
     function save(event) {
         // if this is the current source, or it has no title (occurs with click event), stop
-        if (event.stopPropagation) {
-            event.stopPropagation();
-        }
+        if (event.stopPropagation) event.stopPropagation();
 
         event.cancelBubble = true;
 
@@ -17586,6 +17555,7 @@ var pym = __webpack_require__(17);
 
             positioning.apply(this, arguments);
         }
+        return;
     }
 
     function positioning(event) {
@@ -17594,10 +17564,6 @@ var pym = __webpack_require__(17);
         var $this = $.tooltip.current;
         var tooltipSettings = settings($this) ? settings($this) : {};
         var fixedPosition = $.tooltip.blocked;
-        // fix PNG background for IE
-        if (tooltipSettings.fixPNG) {
-            helper.parent.fixPNG();
-        }
         if (tooltipSettings.outside) {
             var width = 'auto';
             var height = 'auto';
@@ -17610,7 +17576,7 @@ var pym = __webpack_require__(17);
             var $imgTips = $('#' + tooltipId + ' .imgTips');
             var $videoTips = $('#' + tooltipId + ' .videoTips');
             var $documentTips = $('#' + tooltipId + ' .documentTips');
-            var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0;
+            var shouldResize = $('#' + tooltipId + ' .noToolTipResize').length === 0 ? true : false;
 
             // get image or video original dimensions
             var recordWidth = 400;
@@ -17744,17 +17710,12 @@ var pym = __webpack_require__(17);
                     bottomOffset = -15;
                 } else {
                     // tooltip from workzone (basket)
-                    // console.log("=== tooltip on $origEventTarget = ", $origEventTarget);
-                    $eventTarget = $origEventTarget.closest('*[tooltipSrc]');
-                    if ($eventTarget.length > 0) {
-                        // console.log("=== tooltip changed on $eventTarget = ", $eventTarget);
-                        tooltipVerticalOffset = 0;
-                        tooltipHorizontalOffset = 0;
-                        // offsets are relative to the target object (basket "bloc" in wz)
-                        topOffset = 50;
-                        rightOffset = 10; // because the popup is always located on th right of the basket "bloc"
-                    } else {
-                        // console.log("=== tooltip revert $origEventTarget");
+                    tooltipVerticalOffset = 0;
+                    tooltipHorizontalOffset = 0;
+                    topOffset = 50;
+                    // the origEventTarget is only the title, locate the container block
+                    $eventTarget = $origEventTarget.closest('.SSTT');
+                    if ($eventTarget.length === 0) {
                         // fallback on original target if nothing found:
                         $eventTarget = $origEventTarget;
                     }
@@ -17901,6 +17862,7 @@ var pym = __webpack_require__(17);
             }
         }
         handle.apply($this, arguments);
+        return;
     }
 
     // delete timeout and show helper
@@ -17911,8 +17873,12 @@ var pym = __webpack_require__(17);
             isBrowsable = settings($.tooltip.current).isBrowsable;
         }
 
-        if ((!IE || !$.fn.bgiframe) && settings($.tooltip.current).fade) {
-            if (helper.parent.is(':animated')) helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);else helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
+        if (settings($.tooltip.current).fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);
+            } else {
+                helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
+            }
         } else {
             helper.parent.show();
         }
@@ -18037,6 +18003,7 @@ var pym = __webpack_require__(17);
 
     // hide helper and restore added classes and the title
     function hide(event) {
+
         var isBrowsable = false;
         if ($.tooltip.current !== null) {
             isBrowsable = settings($.tooltip.current).isBrowsable;
@@ -18065,11 +18032,15 @@ var pym = __webpack_require__(17);
             helper.parent.removeClass(tsettings.extraClass).hide().css('opacity', '');
         }
 
-        if ((!IE || !$.fn.bgiframe) && tsettings.fade) {
-            if (helper.parent.is(':animated')) helper.parent.stop().fadeTo(tsettings.fade, 0, complete);else helper.parent.stop().fadeOut(tsettings.fade, complete);
-        } else complete();
-
-        if (tsettings.fixPNG) helper.parent.unfixPNG();
+        if (tsettings.fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().fadeTo(tsettings.fade, 0, complete);
+            } else {
+                helper.parent.stop().fadeOut(tsettings.fade, complete);
+            }
+        } else {
+            complete();
+        }
     }
 
     function unfixTooltip() {
@@ -18100,13 +18071,9 @@ var pym = __webpack_require__(17);
             left: 0
         };
 
-        if (parseInt(zIndex, 10) > 0) {
-            css['zIndex'] = parseInt(zIndex, 10);
-        }
+        if (parseInt(zIndex, 10) > 0) css['zIndex'] = parseInt(zIndex, 10);
 
-        if (typeof callback !== 'function') {
-            callback = function callback() {};
-        }
+        if (typeof callback !== 'function') callback = function callback() {};
         $('#' + div).css(css).addClass('overlay').fadeTo(500, 0.7).bind('click', function () {
             callback();
         });
@@ -18124,9 +18091,7 @@ var pym = __webpack_require__(17);
             });
         }
         var div = 'OVERLAY';
-        if (typeof n !== 'undefined') {
-            div += n;
-        }
+        if (typeof n !== 'undefined') div += n;
         $('#' + div).hide().remove();
     };
 
@@ -37594,8 +37559,7 @@ exports.default = utilsModule;
 /* 77 */,
 /* 78 */,
 /* 79 */,
-/* 80 */,
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

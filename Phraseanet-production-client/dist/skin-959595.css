@@ -1961,7 +1961,7 @@ legend {
 body {
   color: #333333;
   background-color: #d9d9d9;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Roboto, sans-serif;
   font-size: 13px;
   position: absolute;
   top: 0;
@@ -1969,8 +1969,6 @@ body {
   bottom: 0;
   right: 0;
   overflow: hidden;
-  overflow-x: hidden;
-  overflow-y: hidden;
 }
 
 html {
@@ -3568,7 +3566,6 @@ Menu contextuel
 .context-menu-theme-vista .context-menu-item .context-menu-item-inner {
   padding: 4px 12px;
   margin-left: 0;
-  font-family: Helvetica;
   font-size: 12px;
   font-weight: bold;
   font-spacing: 0;
@@ -3652,7 +3649,6 @@ Menu contextuel
 }
 
 .context-menu-item a {
-  font-family: Helvetica;
   font-size: 12px;
   font-weight: bold;
   font-spacing: 0;
@@ -3690,7 +3686,6 @@ textarea {
   margin: 2px;
   padding: 2px;
   *border: 1px solid #b1b1b1;
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 input[type="radio"],
@@ -3710,7 +3705,6 @@ input.btn-mini {
 
 .input-small {
   height: 25px;
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 12px;
 }
 
@@ -4308,7 +4302,6 @@ form.phrasea_query input.query {
   text-align: left;
   border: none;
   outline: none;
-  font-family: Roboto;
   font-size: 12px;
   font-weight: 700;
 }
@@ -4356,7 +4349,6 @@ form.phrasea_query input.query {
 }
 
 #idFrameC .tools-panel span {
-  font-family: Roboto;
   font-size: 11px;
   font-weight: normal;
   font-style: normal;
@@ -4381,7 +4373,6 @@ form.phrasea_query input.query {
   margin-left: 6px;
   font-size: 11px;
   color: #ececec;
-  font-family: Roboto;
 }
 
 #idFrameC .tools-panel button:hover span {
@@ -4442,7 +4433,6 @@ form.phrasea_query input.query {
 #idFrameT .tools .classicButton button.btn,
 #idFrameT .tools .dropdownButton button.btn {
   height: 30px;
-  font-family: verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -5025,7 +5015,6 @@ form.phrasea_query input.query {
   right: 0;
   top: 30px;
   text-align: center;
-  font-family: Roboto, sans-serif;
   font-size: 13px;
   font-weight: 500;
   font-style: normal;
@@ -5110,7 +5099,6 @@ form.phrasea_query input.query {
   background: transparent;
   border: 1px solid #fff;
   color: #fff;
-  font-family: Roboto, sans-serif;
   font-size: 12px;
   font-weight: 500;
   font-style: normal;
@@ -5199,7 +5187,6 @@ form.phrasea_query input.query {
 #thumbExtractor .video-data-container .dl-horizontal dt {
   width: 100%;
   padding-bottom: 0;
-  font-family: Roboto, sans-serif;
   font-size: 12px;
   font-weight: 500;
   font-style: normal;
@@ -5209,7 +5196,6 @@ form.phrasea_query input.query {
 #thumbExtractor .video-data-container .dl-horizontal dd {
   margin: 0;
   padding-top: 0;
-  font-family: Roboto, sans-serif;
   font-size: 12px;
   font-weight: 500;
   font-style: normal;
@@ -5289,7 +5275,6 @@ form.phrasea_query input.query {
 }
 
 #thumb_confirm span {
-  font-family: Roboto, sans-serif;
   font-size: 12px;
   font-weight: 500;
   color: #ffffff;
@@ -5360,7 +5345,6 @@ form.phrasea_query input.query {
   text-shadow: none;
   box-shadow: none;
   color: #ffffff;
-  font-family: 'Roboto', sans-serif;
 }
 
 #paginate #tool_navigate input,
@@ -6101,7 +6085,6 @@ form.phrasea_query input.query {
 }
 
 .basketCount {
-  font-family: Roboto;
   font-size: 10px;
   color: #4d4d4d;
 }
@@ -9164,28 +9147,29 @@ TABLE.explain3 TR TD {
 
 /** PUSH BOX */
 
-.whole_dialog_container {
-  /******************************
-     * override default ui styles
-     ******************************/
-  font-family: Roboto, sans-serif;
+.ui-dialog {
   font-size: 12px;
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
-  letter-spacing: 0px;
+  letter-spacing: 0;
+}
+
+.whole_dialog_container {
+  /******************************
+     * override default ui styles
+     ******************************/
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0;
   color: #282828;
   /*********************
      * global styles
      ********************/
-  /* prefered fa-clone fou
-    // fix the fa-send icon (paper-plane) for a better centering
-    .main-icon.fa-send {
-        padding-left: 5px;
-        padding-right:11px;
-    }
-    */
   /***********************
      * specific styles
      **********************/
@@ -9212,7 +9196,6 @@ TABLE.explain3 TR TD {
 .whole_dialog_container .ui-dialog-title {
   font-size: 21px;
   font-weight: bold;
-  color: #ffffff;
 }
 
 .whole_dialog_container .ui-widget-content {
@@ -9245,8 +9228,6 @@ TABLE.explain3 TR TD {
 
 .whole_dialog_container BUTTON,
 .whole_dialog_container A.btn {
-  padding-right: 10px;
-  padding-left: 10px;
   background-color: white;
   border-radius: 13.5px;
   border: solid 1px transparent;
@@ -9279,26 +9260,6 @@ TABLE.explain3 TR TD {
 .whole_dialog_container A.inverse:hover {
   color: #282828;
   background-color: white;
-}
-
-.whole_dialog_container BUTTON.with_icon,
-.whole_dialog_container A.with_icon {
-  position: relative;
-  padding-left: 30px;
-}
-
-.whole_dialog_container BUTTON.with_icon::before,
-.whole_dialog_container A.with_icon::before {
-  content: "|";
-  color: transparent;
-}
-
-.whole_dialog_container BUTTON.with_icon > I.fa,
-.whole_dialog_container A.with_icon > I.fa {
-  font-size: 160%;
-  vertical-align: middle;
-  position: absolute;
-  left: 10px;
 }
 
 .whole_dialog_container BUTTON.toggle,
@@ -9368,6 +9329,19 @@ TABLE.explain3 TR TD {
   padding-left: 33px;
 }
 
+.whole_dialog_container #PushBox .general_togglers {
+  text-align: right;
+}
+
+.whole_dialog_container #PushBox .general_togglers ul {
+  margin: 0;
+  list-style: none;
+}
+
+.whole_dialog_container #PushBox .general_togglers ul li {
+  display: inline-block;
+}
+
 .whole_dialog_container #PushBox .list_manager {
   position: fixed;
   bottom: 31px;
@@ -9377,10 +9351,6 @@ TABLE.explain3 TR TD {
 
 .whole_dialog_container #PushBox .list_manager:hover {
   background-color: #ff9400;
-}
-
-.whole_dialog_container .PushBox .delete-selection {
-  margin-left: 18px;
 }
 
 .whole_dialog_container BUTTON.FeedbackSend {
@@ -9410,18 +9380,149 @@ TABLE.explain3 TR TD {
   border-radius: 8px;
   background-color: #ededed;
   padding: 6px;
-  font-family: Roboto;
   font-size: 10px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.4;
-  letter-spacing: 0px;
   color: #000000;
 }
 
 .whole_dialog_container #info-box p {
   margin: 0;
+}
+
+.dialog_container {
+  border: 0 none !important;
+  border-radius: 6px !important;
+  background-color: #ffffff !important;
+}
+
+.dialog_container .ui-dialog-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.dialog_container .ui-dialog-titlebar-close {
+  border: none;
+  margin-right: 5px;
+}
+
+.dialog_container .ui-icon.ui-icon-closethick {
+  background-image: url("/assets/common/images/icons/cross-white.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.dialog_container .ui-dialog-buttonpane {
+  margin-top: 0;
+  padding-top: 0;
+  border: 0 none;
+}
+
+.dialog_container .ui-dialog-buttonpane .ui-button {
+  border-radius: 15px;
+  background-color: #ffffff;
+  border: solid 1px #2196f3;
+  font-size: 14px;
+  color: #2196f3;
+  height: 30px;
+  min-width: 135px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.dialog_container .ui-dialog-buttonpane .ui-button:hover {
+  background-color: #2196f3;
+  color: #FFFFFF;
+}
+
+.dialog_container .ui-dialog-buttonpane .ui-button:nth-child(2) {
+  background-color: #2196f3;
+  color: #FFFFFF;
+}
+
+.dialog_container .ui-button-icon-only {
+  text-indent: -9999px;
+  background: transparent;
+}
+
+.dialog_container .ui-dialog-buttonpane .ui-dialog-buttonset {
+  float: none;
+  text-align: center;
+}
+
+.dialog_container .ui-widget-content {
+  color: #4a4a4a;
+}
+
+.dialog_container .ui-widget-content label,
+.dialog_container .ui-widget-content p {
+  font-size: 14px;
+  color: #4a4a4a;
+}
+
+.dialog_container .ui-widget-content input {
+  font-size: 14px;
+  background-color: #e7e7e7;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.dialog_container .ui-widget-content input[type=text]::-webkit-input-placeholder,
+.dialog_container .ui-widget-content textarea::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  font-size: 14px;
+  color: #484848;
+}
+
+.dialog_container .ui-widget-content input[type=text]::-moz-placeholder,
+.dialog_container .ui-widget-content textarea::-moz-placeholder {
+  /* Firefox 19+ */
+  font-size: 14px;
+  color: #484848;
+}
+
+.dialog_container .ui-widget-content input[type=text]:-ms-input-placeholder,
+.dialog_container .ui-widget-content textarea:-ms-input-placeholder {
+  /* IE 10+ */
+  font-size: 14px;
+  color: #484848;
+}
+
+.dialog_container .ui-widget-content input[type=text]:-ms-input-placeholder,
+.dialog_container .ui-widget-content textarea:-ms-input-placeholder {
+  /* Firefox 18- */
+  font-size: 14px;
+  color: #484848;
+}
+
+.dialog_container .ui-widget-content textarea {
+  font-size: 14px;
+  background-color: #e7e7e7;
+  border-radius: 0;
+  border: none;
+  resize: none;
+  box-shadow: none;
+  padding: 4px 6px;
+  min-height: 150px;
+}
+
+.dialog_container .ui-autocomplete.ui-widget-content {
+  max-height: 250px;
+}
+
+.PushBox .user_content {
+  border-radius: 5px;
+}
+
+.PushBox .user_content .header {
+  font-size: 13px;
+}
+
+.PushBox .user_content .header .options {
+  text-align: right;
 }
 
 /*****************************
@@ -9552,7 +9653,7 @@ TABLE.explain3 TR TD {
   width: 140px;
   display: inline-block;
   margin: 10px;
-  border: 3px solid #868686;
+  outline: 3px solid transparent;
   background-color: #f7f7f7;
   border-radius: 10px;
 }
@@ -9575,10 +9676,8 @@ TABLE.explain3 TR TD {
 }
 
 .PushBox .user_content .badges {
-  top: 50px;
   overflow: auto;
   height: auto;
-  bottom: 50px;
 }
 
 .PushBox .user_content .badges .badge {
@@ -9586,7 +9685,7 @@ TABLE.explain3 TR TD {
   height: 79px;
   margin: 10px;
   display: inline-block;
-  border: 3px solid #868686;
+  outline: 3px solid transparent;
   color: #282828;
   background-color: #f7f7f7;
   text-shadow: none;
@@ -9596,7 +9695,7 @@ TABLE.explain3 TR TD {
 }
 
 .PushBox .user_content .badges .badge.selected {
-  border: 3px solid #000000;
+  outline: 3px solid #000000;
 }
 
 .PushBox .user_content .badges .badge.name {
@@ -9676,7 +9775,7 @@ TABLE.explain3 TR TD {
 
 .PushBox .content {
   border-radius: 5px;
-  background-color: #c8c8c8;
+  background-color: #AAA;
 }
 
 .PushBox .content .list-container {
@@ -9699,11 +9798,6 @@ TABLE.explain3 TR TD {
   font-weight: 500;
   line-height: 2px;
   margin-top: 10px;
-}
-
-.PushBox .user_content {
-  border-radius: 5px;
-  background-color: #868686;
 }
 
 .PushBox .LeftColumn h1 {
@@ -9733,29 +9827,6 @@ TABLE.explain3 TR TD {
 
 .PushBox .header table {
   overflow: visible;
-}
-
-.PushBox .user_content .header {
-  height: 35px;
-  padding: 0 10px;
-  bottom: auto;
-}
-
-.PushBox .user_content .header .text {
-  font-size: 13px;
-  color: #ffffff;
-}
-
-.PushBox .user_content .footer {
-  height: 35px;
-  top: auto;
-  right: 20px;
-  bottom: 10px;
-  left: 20px;
-}
-
-.PushBox .user_content .header .options {
-  text-align: right;
 }
 
 .PushBox .all-lists .lists {
@@ -9788,7 +9859,6 @@ TABLE.explain3 TR TD {
 }
 
 .PushBox .LeftColumn .content ul.lists li {
-  font-family: Roboto;
   font-size: 13px;
   font-weight: normal;
   font-style: normal;
@@ -9835,7 +9905,6 @@ TABLE.explain3 TR TD {
   font-weight: bold;
   margin: 60px 0 20px;
   font-size: 31px;
-  font-family: Roboto;
 }
 
 .PushBox .welcome p {
@@ -10060,15 +10129,13 @@ TABLE.explain3 TR TD {
   background: #ff9400;
 }
 
-#PushBox .general_togglers li {
-  margin-top: 12px;
-}
-
+/*
 .general_togglers button {
-  position: relative;
-  width: 100%;
-  height: 27px;
+    position: relative;
+    width: 100%;
+    height: 27px;
 }
+*/
 
 #PushBox .list_loader {
   font-size: 13px;
@@ -10454,7 +10521,6 @@ TABLE.explain3 TR TD {
 
 #look_box .input-small {
   height: 22px;
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 12px;
 }
 
@@ -10464,7 +10530,6 @@ TABLE.explain3 TR TD {
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 #look_box .radio.inline,
@@ -10495,7 +10560,6 @@ TABLE.explain3 TR TD {
 
 .hiddenFiltersListContainer .hiddenFacetFilter {
   font-weight: bold;
-  font-family: "Roboto";
   height: 40px;
   line-height: 38px;
   vertical-align: middle;
@@ -10565,7 +10629,6 @@ TABLE.explain3 TR TD {
 #prod-tool-box.video-edit #tool-tabs.ui-tabs .ui-tabs-nav li a {
   padding: 5px 8px;
   font-weight: 500;
-  font-family: Roboto, sans-serif;
   color: #000000;
   background-color: transparent;
 }
@@ -10575,7 +10638,6 @@ TABLE.explain3 TR TD {
 }
 
 .videoEditor_dialog .ui-dialog-title {
-  font-family: Roboto, sans-serif;
   font-size: 17px;
   font-weight: 500;
   color: #000000;
@@ -10601,7 +10663,6 @@ TABLE.explain3 TR TD {
 }
 
 .screenCapture_validate_dialog .ui-dialog-title {
-  font-family: Roboto, sans-serif;
   font-size: 17px;
   font-weight: 500;
   color: #000000;
@@ -10632,7 +10693,6 @@ TABLE.explain3 TR TD {
   background: #404040;
   border: 1px solid #fff;
   color: #fff;
-  font-family: Roboto, sans-serif;
   font-size: 12px;
   font-weight: 500;
   font-style: normal;

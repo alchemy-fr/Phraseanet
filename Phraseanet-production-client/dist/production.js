@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.userModule = exports.utilsModule = exports.commonModule = exports.dialogModule = undefined;
 
-var _common = __webpack_require__(95);
+var _common = __webpack_require__(97);
 
 var _common2 = _interopRequireDefault(_common);
 
@@ -48,7 +48,7 @@ var _user = __webpack_require__(48);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _utils = __webpack_require__(58);
+var _utils = __webpack_require__(57);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -873,7 +873,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(184);
+var	fixUrls = __webpack_require__(191);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1640,7 +1640,7 @@ exports.default = { setPref: setPref };
 "use strict";
 
 
-var implementation = __webpack_require__(128);
+var implementation = __webpack_require__(135);
 
 module.exports = Function.prototype.bind || implementation;
 
@@ -1712,21 +1712,21 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _markerCollection = __webpack_require__(149);
+var _markerCollection = __webpack_require__(156);
 
 var _markerCollection2 = _interopRequireDefault(_markerCollection);
 
-var _markerGLCollection = __webpack_require__(150);
+var _markerGLCollection = __webpack_require__(157);
 
 var _markerGLCollection2 = _interopRequireDefault(_markerGLCollection);
 
 var _utils = __webpack_require__(42);
 
-var _provider = __webpack_require__(151);
+var _provider = __webpack_require__(158);
 
 var _provider2 = _interopRequireDefault(_provider);
 
-var _fr = __webpack_require__(152);
+var _fr = __webpack_require__(159);
 
 var _fr2 = _interopRequireDefault(_fr);
 
@@ -1734,19 +1734,19 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _mapboxGlGeocoder = __webpack_require__(153);
+var _mapboxGlGeocoder = __webpack_require__(160);
 
 var _mapboxGlGeocoder2 = _interopRequireDefault(_mapboxGlGeocoder);
 
-__webpack_require__(182);
+__webpack_require__(189);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(185);
-__webpack_require__(189);
-__webpack_require__(191);
-__webpack_require__(193);
-__webpack_require__(197);
+__webpack_require__(192);
+__webpack_require__(196);
+__webpack_require__(198);
+__webpack_require__(200);
+__webpack_require__(204);
 
 var leafletMap = function leafletMap(services) {
     var configService = services.configService,
@@ -1881,14 +1881,14 @@ var leafletMap = function leafletMap(services) {
         }
         __webpack_require__.e/* require.ensure */(3).then((function () {
             // select geocoding provider:
-            mapbox = __webpack_require__(295);
-            leafletDraw = __webpack_require__(296);
-            __webpack_require__(297);
-            mapboxgl = __webpack_require__(68);
-            var MapboxClient = __webpack_require__(298);
-            var MapboxLanguage = __webpack_require__(299);
-            MapboxCircle = __webpack_require__(300);
-            turf = __webpack_require__(301);
+            mapbox = __webpack_require__(298);
+            leafletDraw = __webpack_require__(299);
+            __webpack_require__(300);
+            mapboxgl = __webpack_require__(72);
+            var MapboxClient = __webpack_require__(301);
+            var MapboxLanguage = __webpack_require__(302);
+            MapboxCircle = __webpack_require__(303);
+            turf = __webpack_require__(304);
 
             $container.empty().append('<div id="' + mapUID + '" class="phrasea-popup" style="width: 100%;height:100%; position: absolute;top:0;left:0"></div>');
 
@@ -2590,7 +2590,7 @@ var leafletMap = function leafletMap(services) {
                         // To draw a circle overlay with a radius in meters, use L.circle()
                         return L.circleMarker(latlng, { radius: feature.properties.radius || 10 });
                     } else {
-                        var marker = __webpack_require__(84); //L.marker(feature);
+                        var marker = __webpack_require__(86); //L.marker(feature);
                         return marker.style(feature, latlng, { accessToken: activeProvider.accessToken });
                     }
                 }
@@ -3016,141 +3016,12 @@ var FieldCollection = function () {
 exports.default = FieldCollection;
 
 /***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _feedback = __webpack_require__(206);
-
-var _feedback2 = _interopRequireDefault(_feedback);
-
-var _listManager = __webpack_require__(207);
-
-var _listManager2 = _interopRequireDefault(_listManager);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var pushRecord = function pushRecord(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var feedbackInstance = null;
-    var listManagerInstance = null;
-
-    var initialize = function initialize(options) {
-        var feedback = options.feedback,
-            listManager = options.listManager;
-
-        var $container = (0, _jquery2.default)('#PushBox');
-        if ($container.length > 0) {
-            feedbackInstance = new _feedback2.default(services, feedback);
-            listManagerInstance = new _listManager2.default(services, listManager);
-        } else {
-            (0, _jquery2.default)('.close-dialog-action').on('click', function () {
-                return _dialog2.default.close('1');
-            });
-        }
-    };
-
-    function reloadBridge(url) {
-        var options = (0, _jquery2.default)('#dialog_publicator form[name="current_datas"]').serializeArray();
-        var dialog = dialog.get(1);
-        dialog.load(url, 'POST', options);
-    }
-
-    function createList(listOptions) {
-        listManagerInstance.createList(listOptions);
-    }
-
-    function addUser(userOptions) {
-        feedbackInstance.addUser(userOptions);
-    }
-
-    function setActiveList() {}
-
-    function removeList(listObj) {
-        var makeDialog = function makeDialog(box) {
-
-            var buttons = {};
-
-            buttons[localeService.t('valider')] = function () {
-
-                var callbackOK = function callbackOK() {
-                    (0, _jquery2.default)('.list-container ul.list').children().each(function () {
-                        if ((0, _jquery2.default)(this).data('list-id') == listObj.list_id) {
-                            (0, _jquery2.default)(this).remove();
-                        }
-                    });
-                    _dialog2.default.get(2).close();
-                };
-
-                listManagerInstance.removeList(listObj.list_id, callbackOK);
-            };
-
-            var options = {
-                title: localeService.t('Delete the list'),
-                cancelButton: true,
-                buttons: buttons,
-                size: 'Alert'
-            };
-
-            var $dialog = _dialog2.default.create(services, options, 2);
-            if (listObj.container === '#ListManager') {
-                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
-            }
-            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
-                var self = (0, _jquery2.default)(this).children();
-                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
-            });
-            $dialog.setContent(box);
-        };
-
-        var html = _.template((0, _jquery2.default)('#list_editor_dialog_delete_tpl').html());
-
-        makeDialog(html);
-    }
-
-    appEvents.listenAll({
-        // 'push.doInitialize': initialize,
-        'push.addUser': addUser,
-        'push.setActiveList': setActiveList,
-        'push.createList': createList,
-        'push.reload': reloadBridge,
-        'push.removeList': removeList
-    });
-
-    return {
-        initialize: initialize,
-        // Feedback: Feedback,
-        // ListManager: ListManager,
-        reloadBridge: reloadBridge
-    };
-};
-
-exports.default = pushRecord;
-
-/***/ }),
+/* 53 */,
 /* 54 */,
 /* 55 */,
 /* 56 */,
 /* 57 */,
-/* 58 */,
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3170,7 +3041,7 @@ var _dialog2 = _interopRequireDefault(_dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var lazyload = __webpack_require__(60);
+var lazyload = __webpack_require__(59);
 
 
 var publication = function publication(services) {
@@ -3656,7 +3527,7 @@ var publication = function publication(services) {
 exports.default = publication;
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*** IMPORTS FROM imports-loader ***/
@@ -3909,7 +3780,7 @@ exports.default = publication;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3931,10 +3802,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(102);
+__webpack_require__(104);
 
 __webpack_require__(38);
-__webpack_require__(103);
+__webpack_require__(105);
 
 
 var workzoneFacets = function workzoneFacets(services) {
@@ -4483,7 +4354,1225 @@ var workzoneFacets = function workzoneFacets(services) {
 exports.default = workzoneFacets;
 
 /***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _index = __webpack_require__(62);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var sharebasketModal = function sharebasketModal(services, datas) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+
+    var openModal = function openModal(datas) {
+
+        var $dialog = _dialog2.default.create(services, {
+            size: 'Full',
+            title: localeService.t('sharebasket')
+        });
+
+        // add classes to the whoe dialog (including title)
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container')
+        // .addClass('dialog_container')
+        .addClass('Sharebasket');
+
+        _jquery2.default.post(url + 'prod/push/sharebasketform/', datas, function (data) {
+            // data content's javascript can't be fully refactored
+            $dialog.setContent(data);
+            _onDialogReady();
+            return;
+        });
+
+        return true;
+    };
+
+    var _onDialogReady = function _onDialogReady() {
+        (0, _index2.default)(services).initialize({
+            container: {
+                containerId: '#PushBox',
+                context: 'Sharebasket'
+            },
+            listManager: {
+                containerId: '#ListManager'
+            }
+        });
+    };
+
+    return { openModal: openModal };
+};
+
+exports.default = sharebasketModal;
+
+/***/ }),
 /* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _pushOrShare = __webpack_require__(110);
+
+var _pushOrShare2 = _interopRequireDefault(_pushOrShare);
+
+var _listManager = __webpack_require__(65);
+
+var _listManager2 = _interopRequireDefault(_listManager);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var pushOrShareIndex = function pushOrShareIndex(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var pushOrShareInstance = null;
+    var listManagerInstance = null;
+
+    var initialize = function initialize(options) {
+        console.log("==== pushOrShareIndex::initialize ====");
+        var container = options.container,
+            listManager = options.listManager;
+
+        var $container = (0, _jquery2.default)('#PushBox');
+        if ($container.length > 0) {
+            pushOrShareInstance = new _pushOrShare2.default(services, container);
+            listManagerInstance = new _listManager2.default(services, listManager);
+        } else {
+            (0, _jquery2.default)('.close-dialog-action').on('click', function () {
+                return _dialog2.default.close('1');
+            });
+        }
+    };
+
+    function reloadBridge(url) {
+        var options = (0, _jquery2.default)('#dialog_publicator form[name="current_datas"]').serializeArray();
+        var dialog = dialog.get(1);
+        dialog.load(url, 'POST', options);
+    }
+
+    function createList(listOptions) {
+        listManagerInstance.createList(listOptions);
+    }
+
+    function addUser(userOptions) {
+        pushOrShareInstance.addUser(userOptions);
+    }
+
+    function setActiveList() {}
+
+    function removeList(listObj) {
+        var makeDialog = function makeDialog(box) {
+
+            var buttons = {};
+
+            buttons[localeService.t('valider')] = function () {
+
+                var callbackOK = function callbackOK() {
+                    (0, _jquery2.default)('.list-container ul.list').children().each(function () {
+                        if ((0, _jquery2.default)(this).data('list-id') == listObj.list_id) {
+                            (0, _jquery2.default)(this).remove();
+                        }
+                    });
+                    _dialog2.default.get(2).close();
+                };
+
+                listManagerInstance.removeList(listObj.list_id, callbackOK);
+            };
+
+            var options = {
+                title: localeService.t('Delete the list'),
+                cancelButton: true,
+                buttons: buttons,
+                size: 'Alert'
+            };
+
+            var $dialog = _dialog2.default.create(services, options, 2);
+            if (listObj.container === '#ListManager') {
+                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
+            }
+            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
+                var self = (0, _jquery2.default)(this).children();
+                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
+            });
+            $dialog.setContent(box);
+        };
+
+        var html = _.template((0, _jquery2.default)('#list_editor_dialog_delete_tpl').html());
+
+        makeDialog(html);
+    }
+
+    appEvents.listenAll({
+        // 'push.doInitialize': initialize,
+        'push.addUser': addUser,
+        'push.setActiveList': setActiveList,
+        'push.createList': createList,
+        'push.reload': reloadBridge,
+        'push.removeList': removeList
+    });
+
+    return {
+        initialize: initialize,
+        // Feedback: Feedback,
+        // ListManager: ListManager,
+        reloadBridge: reloadBridge
+    };
+};
+
+exports.default = pushOrShareIndex;
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.List = exports.Lists = undefined;
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var humane = __webpack_require__(9);
+
+var Lists = function Lists() {};
+
+var List = function List(id) {
+
+    if (parseInt(id, 10) <= 0) {
+        throw 'Invalid list id';
+    }
+
+    this.id = id;
+};
+
+Lists.prototype = {
+    create: function create(name, callback) {
+
+        _jquery2.default.ajax({
+            type: 'POST',
+            // @TODO - load baseUrl from configService
+            url: '/prod/lists/list/',
+            dataType: 'json',
+            data: { name: name },
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+
+                    if (typeof callback === 'function') {
+                        var list = new List(data.list_id);
+                        callback(list);
+                    }
+                } else {
+                    humane.error(data.message);
+                }
+            }
+        });
+    },
+    get: function get(callback, type, selectedList) {
+
+        type = typeof type === 'undefined' ? 'json' : type;
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            // @TODO - load baseUrl from configService
+            url: '/prod/lists/all/',
+            dataType: type,
+            data: {},
+            success: function success(data) {
+                if (type === 'json') {
+                    if (data.success) {
+                        humane.info(data.message);
+
+                        if (typeof callback === 'function') {
+                            callback(data.result);
+                        }
+                    } else {
+                        humane.error(data.message);
+                    }
+                } else {
+                    if (typeof callback === 'function') {
+                        callback(data, selectedList);
+                    }
+                }
+            }
+        });
+    }
+
+};
+
+List.prototype = {
+    addUsers: function addUsers(arrayUsers, callback) {
+
+        if (!arrayUsers instanceof Array) {
+            throw 'addUsers takes array as argument';
+        }
+
+        var $this = this;
+        var data = { usr_ids: (0, _jquery2.default)(arrayUsers).toArray() };
+
+        _jquery2.default.ajax({
+            type: 'POST',
+            // @TODO - load baseUrl from configService
+            url: '/prod/lists/list/' + $this.id + '/add/',
+            dataType: 'json',
+            data: data,
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+
+                    if (typeof callback === 'function') {
+                        callback($this, data);
+                    }
+                } else {
+                    humane.error(data.message);
+                }
+            }
+        });
+    },
+    addUser: function addUser(usr_id, callback) {
+        this.addUsers([usr_id], callback);
+    },
+    remove: function remove(callback) {
+
+        var $this = this;
+
+        _jquery2.default.ajax({
+            type: 'POST',
+            // @TODO - load baseUrl from configService
+            url: '/prod/lists/list/' + this.id + '/delete/',
+            dataType: 'json',
+            data: {},
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+
+                    if (typeof callback === 'function') {
+                        callback($this);
+                    }
+                } else {
+                    humane.error(data.message);
+                }
+            }
+        });
+    },
+    update: function update(name, callback) {
+
+        var $this = this;
+
+        _jquery2.default.ajax({
+            type: 'POST',
+            // @TODO - load baseUrl from configService
+            url: '/prod/lists/list/' + this.id + '/update/',
+            dataType: 'json',
+            data: { name: name },
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+
+                    if (typeof callback === 'function') {
+                        callback($this);
+                    }
+                } else {
+                    humane.error(data.message);
+                }
+            }
+        });
+    },
+    removeUser: function removeUser(usr_id, callback) {
+
+        var $this = this;
+
+        _jquery2.default.ajax({
+            type: 'POST',
+            // @TODO - load baseUrl from configService
+            url: '/prod/lists/list/' + this.id + '/remove/' + usr_id + '/',
+            dataType: 'json',
+            data: {},
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+
+                    if (typeof callback === 'function') {
+                        callback($this, data);
+                    }
+                } else {
+                    humane.error(data.message);
+                }
+            }
+        });
+    },
+    get: function get(callback) {
+
+        var $this = this;
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            // @TODO - load baseUrl from configService
+            url: '/prod/lists/list/' + this.id + '/',
+            dataType: 'json',
+            data: {},
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+
+                    if (typeof callback === 'function') {
+                        callback($this, data);
+                    }
+                } else {
+                    humane.error(data.message);
+                }
+            }
+        });
+    }
+};
+
+exports.Lists = Lists;
+exports.List = List;
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _lodash = __webpack_require__(4);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+__webpack_require__(39); /**
+                                                              * triggered via workzone > Basket > context menu
+                                                              */
+
+
+var pushOrShareAddUser = function pushOrShareAddUser(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+    var searchSelectionSerialized = '';
+    appEvents.listenAll({
+        'broadcast.searchResultSelection': function broadcastSearchResultSelection(selection) {
+            searchSelectionSerialized = selection.serialized;
+        }
+    });
+
+    var initialize = function initialize(options) {
+        var $container = options.$container;
+
+
+        $container.on('click', '.push-add-user', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var dialogOptions = {
+                // 'context': null,                // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ? will become a class to apply theme
+                'dialog_classes': ['dialog_container', 'whole_dialog_container' // to use css from _modal-push-scss
+                ]
+            };
+
+            // a "context" (=theme) can be passed by the button/link to apply theme css
+            // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ?
+            if ($el.attr('data-context') !== undefined) {
+                dialogOptions.dialog_classes.push($el.attr('data-context'));
+                // dialogOptions.context = $el.attr('data-context');
+            }
+
+            if ($el.attr('title') !== undefined) {
+                dialogOptions.title = $el.html;
+            }
+
+            // !!!!!!!!!!!!!!!!!!!!!! never passed ? better use data-context !!!!!!!!!!!!!!!!!!!!
+            if ($el.hasClass('validation')) {
+                dialogOptions.dialog_classes.push('validation');
+            }
+
+            // !!!!!!!!!!!!!!!!!!!!!! better use data-context !!!!!!!!!!!!!!!!!!!!
+            /*
+                        if($el.hasClass('listmanager-add-user')) {
+                            dialogOptions.dialog_classes.push('push-add-user-listmanager');
+                        }
+            */
+
+            openModal(dialogOptions);
+        });
+    };
+
+    var openModal = function openModal() {
+        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+        var url = configService.get('baseUrl');
+        var dialogOptions = (0, _lodash2.default)({
+            size: '558x305',
+            loading: false,
+            title: localeService.t('create new user')
+        }, options);
+        var $dialog = _dialog2.default.create(services, dialogOptions, 2);
+
+        // add classes to the whole dialog
+        var d = $dialog.getDomElement().closest('.ui-dialog'); // the whole dlg, including title
+        for (var i in options.dialog_classes) {
+            d.addClass(options.dialog_classes[i]); // 'dialog_container', 'whole_dialog_container', ...
+        }
+
+        // // if there is a context (=theme), add a css
+        // if(options.context) {
+        //     d.addClass(options.context);
+        // }
+
+        return _jquery2.default.get(url + 'prod/push/add-user/', function (data) {
+            $dialog.setContent(data);
+            _onDialogReady(window.addUserConfig);
+            return;
+        });
+    };
+
+    var _onDialogReady = function _onDialogReady(config) {
+        var $addUserForm = (0, _jquery2.default)('#quickAddUser');
+        var $addUserFormMessages = $addUserForm.find('.messages');
+
+        var closeModal = function closeModal() {
+            var $dialog = $addUserForm.closest('.ui-dialog-content');
+            if ($dialog.data('ui-dialog')) {
+                $dialog.dialog('destroy').remove();
+            }
+        };
+
+        var submitAddUser = function submitAddUser() {
+            $addUserFormMessages.empty();
+            var method = $addUserForm.attr('method');
+
+            method = _jquery2.default.inArray(method.toLowerCase(), ['post', 'get']) ? method : 'POST';
+            _jquery2.default.ajax({
+                type: method,
+                url: $addUserForm.attr('action'),
+                data: $addUserForm.serializeArray(),
+                beforeSend: function beforeSend() {
+                    $addUserForm.addClass('loading');
+                },
+                success: function success(datas) {
+                    if (datas.success === true) {
+                        appEvents.emit('push.addUser', {
+                            $userForm: $addUserForm,
+                            callback: closeModal()
+                        });
+                        //p4.Feedback.addUser($addUserForm, closeModal);
+                    } else {
+                        if (datas.message !== undefined) {
+                            $addUserFormMessages.empty().append('<div class="alert alert-error">' + datas.message + '</div>');
+                        }
+                    }
+                    $addUserForm.removeClass('loading');
+                },
+                error: function error() {
+                    $addUserForm.removeClass('loading');
+                },
+                timeout: function timeout() {
+                    $addUserForm.removeClass('loading');
+                }
+            });
+        };
+        if (config.geonameServerUrl.length > 0) {
+            $addUserForm.find('.geoname_field').geocompleter({
+                server: config.geonameServerUrl,
+                limit: 40
+            });
+        }
+        $addUserForm.on('submit', function (event) {
+            event.preventDefault();
+            submitAddUser();
+        });
+
+        $addUserForm.on('click', '.valid', function (event) {
+            event.preventDefault();
+            submitAddUser();
+        });
+
+        $addUserForm.on('click', '.cancel', function (event) {
+            event.preventDefault();
+            closeModal();
+            return false;
+        });
+    };
+
+    return { initialize: initialize };
+};
+
+exports.default = pushOrShareAddUser;
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _index = __webpack_require__(63);
+
+var _listEditor = __webpack_require__(111);
+
+var _listEditor2 = _interopRequireDefault(_listEditor);
+
+var _listShare = __webpack_require__(112);
+
+var _listShare2 = _interopRequireDefault(_listShare);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _selectable = __webpack_require__(22);
+
+var _selectable2 = _interopRequireDefault(_selectable);
+
+var _addUser = __webpack_require__(64);
+
+var _addUser2 = _interopRequireDefault(_addUser);
+
+var _underscore = __webpack_require__(2);
+
+var _ = _interopRequireWildcard(_underscore);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var humane = __webpack_require__(9);
+
+var ListManager = function ListManager(services, options) {
+    var _this2 = this;
+
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+    var containerId = options.containerId;
+
+    var url = configService.get('baseUrl');
+    var $container = void 0;
+    var _this = this;
+
+    this.list = null;
+    this.container = $container = (0, _jquery2.default)(containerId);
+    this.userList = new _index.Lists();
+
+    this.removeUserItemsArray = [];
+    this.addUserItemsArray = [];
+    this.removeUserMethod = '';
+    this.addUserMethod = '';
+
+    (0, _addUser2.default)(services).initialize({ $container: this.container });
+
+    $container.on('click', '.back_link', function () {
+        (0, _jquery2.default)('#PushBox').show();
+        (0, _jquery2.default)('#ListManager').hide();
+        return false;
+    }).on('click', '.push-list-share-action', function (event) {
+        event.preventDefault();
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        var listId = $el.data('list-id');
+
+        (0, _listShare2.default)(services).openModal({
+            listId: listId, modalOptions: {
+                size: '288x500',
+                closeButton: true,
+                title: $el.attr('title')
+            }, modalLevel: 2
+        });
+        return false;
+    }).on('click', 'a.user_adder', function () {
+
+        var $this = (0, _jquery2.default)(this);
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: $this.attr('href'),
+            dataType: 'html',
+            beforeSend: function beforeSend() {
+                var options = {
+                    size: 'Medium',
+                    title: $this.html()
+                };
+                _dialog2.default.create(services, options, 2).getDomElement().addClass('loading');
+            },
+            success: function success(data) {
+                _dialog2.default.get(2).getDomElement().removeClass('loading').empty().append(data);
+                return;
+            },
+            error: function error() {
+                _dialog2.default.get(2).close();
+                return;
+            },
+            timeout: function timeout() {
+                _dialog2.default.get(2).close();
+                return;
+            }
+        });
+
+        return false;
+    }).on('mouseenter', '.list-trash-btn', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        $el.find('.image-normal').hide();
+        $el.find('.image-hover').show();
+    }).on('mouseleave', '.list-trash-btn', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        $el.find('.image-normal').show();
+        $el.find('.image-hover').hide();
+    }).on('click', '.list-trash-btn', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        var list_id = $el.parent().data('list-id');
+        appEvents.emit('push.removeList', {
+            list_id: list_id,
+            container: containerId
+        });
+    });
+
+    var initLeft = function initLeft() {
+        $container.on('click', '.push-refresh-list-action', function (event) {
+            event.preventDefault();
+            //$('a.list_refresh', $container).bind('click', (event) => {
+            // /prod/lists/all/
+
+            var selectedList = (0, _jquery2.default)('.lists_manager_list.selected').data('list-id');
+
+            var callback = function callback(datas, selected) {
+                (0, _jquery2.default)('.all-lists', $container).removeClass('loading').append(datas);
+
+                if (typeof selected === 'number') {
+                    (0, _jquery2.default)('.all-lists').find('.lists_manager_list[data-list-id="' + selected + '"]').addClass('selected');
+                }
+                // initLeft();
+            };
+
+            (0, _jquery2.default)('.all-lists', $container).empty().addClass('loading');
+
+            _this2.userList.get(callback, 'html', selectedList);
+        });
+
+        $container.on('click', '.push-add-list-action', function (event) {
+            event.preventDefault();
+            var makeDialog = function makeDialog(box) {
+
+                var buttons = {};
+
+                buttons[localeService.t('valider')] = function () {
+
+                    var callbackOK = function callbackOK() {
+                        (0, _jquery2.default)('a.list_refresh', $container).trigger('click');
+                        _dialog2.default.get(2).close();
+                    };
+
+                    var name = (0, _jquery2.default)('input[name="name"]', _dialog2.default.get(2).getDomElement()).val();
+
+                    if (_jquery2.default.trim(name) === '') {
+                        alert((0, _jquery2.default)('#push-list-name-empty').val());
+                        return;
+                    }
+
+                    _this2.userList.create(name, callbackOK);
+                };
+                // /prod/lists/list/
+                var options = {
+                    cancelButton: true,
+                    buttons: buttons,
+                    title: (0, _jquery2.default)('#push-new-list-title').val(),
+                    size: '450x170'
+                };
+
+                var $dialog = _dialog2.default.create(services, options, 2);
+                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_add_list').find('.ui-dialog-buttonset button:first-child .ui-button-text').text((0, _jquery2.default)('#btn-add').val());
+                $dialog.setContent(box);
+            };
+
+            var html = _.template((0, _jquery2.default)('#list_editor_dialog_add_tpl').html());
+            makeDialog(html);
+
+            return false;
+        });
+
+        /*$('li.list a.list_link', $container).bind('click', function (event) {
+          var $this = $(this);
+          $this.closest('.lists').find('.list.selected').removeClass('selected');
+         $this.parent('li.list').addClass('selected');
+         return false;
+         });*/
+        $container.on('click', '.list-edit-action', function (event) {
+            console.log("==== list-edit-action");
+            event.preventDefault();
+            _this.removeUserItemsArray = [];
+            _this.addUserItemsArray = [];
+            _this.removeUserMethod = '';
+            _this.addUserMethod = '';
+
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var listId = $el.data('list-id');
+            var el_url = $el.attr('href');
+
+            var callbackList = function callbackList(list) {
+                for (var i in list.entries) {
+                    this.selectUser(list.entries[i].User);
+                }
+            };
+
+            $el.closest('.lists').find('.list').removeClass('selected');
+            $el.parent().addClass('selected');
+
+            _jquery2.default.ajax({
+                type: 'GET',
+                url: url + 'prod/push/edit-list/' + listId + '/',
+                dataType: 'html',
+                success: function success(data) {
+                    _this2.workOn(listId);
+                    (0, _jquery2.default)('.editor', $container).removeClass('loading').append(data);
+                    _this2.loadList(el_url, callbackList);
+                    initRight();
+                    (0, _listEditor2.default)(services, {
+                        $container: $container, listManagerInstance: _this
+                    });
+                },
+                beforeSend: function beforeSend() {
+                    (0, _jquery2.default)('.editor', $container).empty().addClass('loading');
+                }
+            });
+        });
+        $container.on('click', '.listmanager-delete-list-user-action', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var listId = $el.data('list-id');
+            var userId = $el.data('user-id');
+
+            var badge = (0, _jquery2.default)(_this2).closest('.badge');
+            // var usr_id = badge.find('input[name="id"]').val();
+            _this2.getList().removeUser(userId, function (list, data) {
+                badge.remove();
+            });
+        });
+    };
+
+    var initRight = function initRight() {
+        var $container = (0, _jquery2.default)('#ListManager .editor');
+        var selection = new _selectable2.default(services, (0, _jquery2.default)('.user_content .badges', _this.container), {
+            selector: '.badge'
+        });
+
+        (0, _jquery2.default)('form[name="list-editor-search"]', $container).bind('submit', function (event) {
+            event.preventDefault();
+            var $this = (0, _jquery2.default)(this);
+            var dest = (0, _jquery2.default)('.list-editor-results', $container);
+
+            _jquery2.default.ajax({
+                url: $this.attr('action'),
+                type: $this.attr('method'),
+                dataType: 'html',
+                data: $this.serializeArray(),
+                beforeSend: function beforeSend() {
+                    dest.empty().addClass('loading');
+                },
+                success: function success(datas) {
+                    dest.empty().removeClass('loading').append(datas);
+                    (0, _listEditor2.default)(services, {
+                        $container: $container, listManagerInstance: _this
+                    });
+                }
+            });
+        });
+
+        (0, _jquery2.default)('form[name="list-editor-search"] select, form[name="list-editor-search"] input[name="ListUser"]', $container).bind('change', function () {
+            (0, _jquery2.default)(this).closest('form').trigger('submit');
+        });
+
+        (0, _jquery2.default)('.EditToggle', $container).bind('click', function (event) {
+            event.preventDefault();
+            (0, _jquery2.default)('.content.readselect, .content.readwrite, .editor_header', (0, _jquery2.default)('#ListManager')).toggle();
+        });
+        (0, _jquery2.default)('.Refresher', $container).bind('click', function (event) {
+            event.preventDefault();
+            (0, _jquery2.default)('#ListManager ul.lists .list.selected a').trigger('click');
+        });
+
+        (0, _jquery2.default)('form[name="SaveName"]', $container).bind('submit', function () {
+            var $this = (0, _jquery2.default)(this);
+
+            _jquery2.default.ajax({
+                type: $this.attr('method'),
+                url: $this.attr('action'),
+                dataType: 'json',
+                data: $this.serializeArray(),
+                beforeSend: function beforeSend() {},
+                success: function success(data) {
+                    if (data.success) {
+                        humane.info(data.message);
+                        (0, _jquery2.default)('#ListManager .lists .list_refresh').trigger('click');
+                    } else {
+                        humane.error(data.message);
+                    }
+                    return;
+                },
+                error: function error() {
+
+                    return;
+                },
+                timeout: function timeout() {
+
+                    return;
+                }
+            });
+
+            return false;
+        });
+
+        // //button.deleter
+        // $('.listmanager-delete-list-action', $container).bind('click', function (event) {
+
+        //     var list_id = $(this).data('list-id');
+
+        //     var makeDialog = function (box) {
+
+        //         var buttons = {};
+
+        //         buttons[localeService.t('valider')] = function () {
+
+        //             var callbackOK = function () {
+        //                 $('#ListManager .all-lists a.list_refresh').trigger('click');
+        //                 dialog.get(2).close();
+        //             };
+
+        //             var List = new List(list_id);
+        //             List.remove(callbackOK);
+        //         };
+
+        //         var options = {
+        //             cancelButton: true,
+        //             buttons: buttons,
+        //             size: 'Alert'
+        //         };
+
+        //         dialog.create(services, options, 2).setContent(box);
+        //     };
+
+        //     var html = _.template($('#list_editor_dialog_delete_tpl').html());
+
+        //     makeDialog(html);
+
+        //     return false;
+        // });
+
+        (0, _jquery2.default)('input[name="users-search"]', $container).autocomplete({
+            minLength: 2,
+            source: function source(request, response) {
+                _jquery2.default.ajax({
+                    url: url + 'prod/push/search-user/',
+                    dataType: 'json',
+                    data: {
+                        query: request.term
+                    },
+                    success: function success(data) {
+                        response(data);
+                    }
+                });
+            },
+            focus: function focus(event, ui) {
+                // $('input[name="users-search"]').val(ui.item.label);
+            },
+            select: function select(event, ui) {
+                if (ui.item.type === 'USER') {
+                    _this.selectUser(ui.item);
+                    _this.updateUsersHandler('add', ui.item.usr_id);
+                } else if (ui.item.type === 'LIST') {
+                    for (var e in ui.item.entries) {
+                        _this.selectUser(ui.item.entries[e].User);
+                        _this.updateUsersHandler('add', ui.item.entries[e].User.usr_id);
+                    }
+                }
+                (0, _jquery2.default)('#saveListFooter').show();
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function (ul, item) {
+            var html = '';
+
+            if (item.type === 'USER') {
+                html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
+
+                    item: item
+                });
+            } else if (item.type === 'LIST') {
+                html = _.template((0, _jquery2.default)('#list_list_tpl').html())({
+                    item: item
+                });
+            }
+
+            return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
+        };
+
+        (0, _jquery2.default)('.user_content .badges', _this.container).disableSelection();
+
+        $container.on('click', '.content .options .select-all', function () {
+            selection.selectAll();
+        });
+
+        $container.on('click', '.content .options .unselect-all', function () {
+            selection.empty();
+        });
+
+        $container.on('click', '.content .options .delete-selection', function () {
+            var $elems = (0, _jquery2.default)('#ListManager .badges.selectionnable .badge.selected');
+            _.each($elems, function (item) {
+                var $elem = (0, _jquery2.default)(item);
+                var $elemID = $elem.find('input[name=id]').val();
+                if ($elem.hasClass('selected') && _this.removeUserItemsArray.indexOf($elemID) === -1) {
+                    _this.updateUsersHandler('remove', $elemID);
+                }
+            });
+
+            $elems.fadeOut(300, 'swing', function () {
+                (0, _jquery2.default)(this).remove();
+                (0, _jquery2.default)('#saveListFooter').show();
+            });
+        });
+        $container.on('submit', 'form.list_saver', function (event) {
+            event.preventDefault();
+            var $form = (0, _jquery2.default)(event.currentTarget);
+            var name = (0, _jquery2.default)('.header h2', $container).text();
+            var users = _this.getUsers();
+
+            if (users.length === 0) {
+                humane.error('No users');
+                return false;
+            } else {
+                if (_this.removeUserMethod === 'remove' && _this.removeUserItemsArray.length > 0) {
+                    var $editor = (0, _jquery2.default)('#list-editor-search-results');
+
+                    _.each(_this.removeUserItemsArray, function (item) {
+
+                        (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
+                            var $el = (0, _jquery2.default)(el);
+                            var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
+                            if (item == $elID) $el.removeClass('selected');
+                        });
+
+                        _this.getList().removeUser(item);
+                    });
+
+                    var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
+
+                    ListCounter.each(function (i, el) {
+                        var n = parseInt((0, _jquery2.default)(el).text(), 10);
+                        if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n - _this.removeUserItemsArray.length + ' people');else (0, _jquery2.default)(el).text(n - _this.removeUserItemsArray.length);
+                    });
+
+                    (0, _jquery2.default)('#saveListFooter').hide();
+                    _this.removeUserItemsArray = [];
+                    _this.removeUserMethod = '';
+                } else if (_this.addUserMethod === 'add' && _this.addUserItemsArray.length > 0) {
+                    var $editor = (0, _jquery2.default)('#list-editor-search-results');
+
+                    _.each(_this.addUserItemsArray, function (item) {
+
+                        (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
+
+                            var $el = (0, _jquery2.default)(el);
+                            var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
+
+                            if (item == $elID) $el.addClass('selected');
+                        });
+
+                        _this.getList().addUser(item);
+                    });
+
+                    var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
+
+                    ListCounter.each(function (i, el) {
+                        var n = parseInt((0, _jquery2.default)(el).text(), 10);
+
+                        if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n + _this.addUserItemsArray.length + ' people');else (0, _jquery2.default)(el).text(n + _this.addUserItemsArray.length);
+                    });
+
+                    (0, _jquery2.default)('#saveListFooter').hide();
+                    _this.addUserItemsArray = [];
+                    _this.addUserMethod = '';
+                }
+            }
+        });
+
+        $container.on('click', '.badges a.deleter', function (event) {
+            var badge = (0, _jquery2.default)(event.currentTarget).closest('.badge');
+            var usr_id = badge.find('input[name="id"]').val();
+            var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
+            var $editor = (0, _jquery2.default)('#list-editor-search-results');
+
+            var callback = function callback(list, datas) {
+                ListCounter.each(function (i, el) {
+                    var n = parseInt((0, _jquery2.default)(el).text(), 10);
+
+                    if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n - 1 + ' people');else (0, _jquery2.default)(el).text(n - 1);
+                });
+                badge.fadeOut('300', 'swing', function () {
+                    badge.remove();
+                });
+            };
+
+            _this.getList().removeUser(usr_id, callback);
+
+            (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
+                var $el = (0, _jquery2.default)(el);
+                var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
+
+                if (usr_id === $elID) $el.removeClass('selected');
+            });
+
+            return false;
+        });
+    };
+
+    initLeft();
+
+    return this;
+};
+
+ListManager.prototype = {
+    selectUser: function selectUser(user) {
+        if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
+            if (window.console) {
+                console.log('trying to select a user with wrong datas');
+            }
+        }
+        if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
+            humane.info('User already selected');
+            return;
+        } else {
+            var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
+                user: user,
+                context: 'ListManager'
+            });
+
+            // p4.Feedback.appendBadge(html);
+            // this.getList().addUser(user.usr_id);
+            this.appendBadge(html);
+        }
+    },
+    workOn: function workOn(list_id) {
+        this.list = new _index.List(list_id);
+    },
+    getList: function getList() {
+        return this.list;
+    },
+    appendBadge: function appendBadge(datas) {
+        (0, _jquery2.default)('#ListManager .badges').append(datas);
+    },
+    createList: function createList(options) {
+        var name = options.name,
+            collection = options.collection;
+
+
+        this.userList.create(name, function (list) {
+            list.addUsers(collection);
+        });
+    },
+    removeList: function removeList(list_id, callback) {
+        this.list = new _index.List(list_id);
+        this.list.remove(callback);
+    },
+    loadList: function loadList(url, callback) {
+        var $this = this;
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function success(data) {
+                if (typeof callback === 'function') {
+                    callback.call($this, data);
+                }
+            }
+        });
+    },
+    updateUsers: function updateUsers(action) {
+        if (action === 'remove') {}
+        return removedItems;
+    },
+    getUsers: function getUsers() {
+        return (0, _jquery2.default)('.user_content .badge', this.container).map(function () {
+            return (0, _jquery2.default)('input[name="id"]', (0, _jquery2.default)(this)).val();
+        });
+    },
+    updateUsersHandler: function updateUsersHandler(method, item) {
+        if (method === 'remove') {
+            this.removeUserItemsArray.push(item);
+            this.removeUserMethod = method;
+        } else if (method === 'add') {
+            this.addUserItemsArray.push(item);
+            this.addUserMethod = method;
+        }
+    }
+};
+
+exports.default = ListManager;
+
+/***/ }),
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4501,59 +5590,59 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _toolbar = __webpack_require__(115);
+var _toolbar = __webpack_require__(122);
 
 var _toolbar2 = _interopRequireDefault(_toolbar);
 
-var _mainMenu = __webpack_require__(78);
+var _mainMenu = __webpack_require__(80);
 
 var _mainMenu2 = _interopRequireDefault(_mainMenu);
 
-var _keyboard = __webpack_require__(223);
+var _keyboard = __webpack_require__(226);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
-var _cgu = __webpack_require__(224);
+var _cgu = __webpack_require__(227);
 
 var _cgu2 = _interopRequireDefault(_cgu);
 
-var _edit = __webpack_require__(63);
+var _edit = __webpack_require__(67);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _export = __webpack_require__(73);
+var _export = __webpack_require__(77);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _share = __webpack_require__(225);
+var _share = __webpack_require__(228);
 
 var _share2 = _interopRequireDefault(_share);
 
-var _index = __webpack_require__(77);
+var _index = __webpack_require__(79);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _addToBasket = __webpack_require__(226);
+var _addToBasket = __webpack_require__(229);
 
 var _addToBasket2 = _interopRequireDefault(_addToBasket);
 
-var _removeFromBasket = __webpack_require__(227);
+var _removeFromBasket = __webpack_require__(230);
 
 var _removeFromBasket2 = _interopRequireDefault(_removeFromBasket);
 
-var _print = __webpack_require__(76);
+var _print = __webpack_require__(78);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _preferences = __webpack_require__(228);
+var _preferences = __webpack_require__(231);
 
 var _preferences2 = _interopRequireDefault(_preferences);
 
-var _order = __webpack_require__(79);
+var _order = __webpack_require__(81);
 
 var _order2 = _interopRequireDefault(_order);
 
-var _recordPreview = __webpack_require__(232);
+var _recordPreview = __webpack_require__(235);
 
 var _recordPreview2 = _interopRequireDefault(_recordPreview);
 
@@ -4561,7 +5650,7 @@ var _alert = __webpack_require__(47);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _uploader = __webpack_require__(236);
+var _uploader = __webpack_require__(239);
 
 var _uploader2 = _interopRequireDefault(_uploader);
 
@@ -4987,7 +6076,7 @@ var ui = function ui(services) {
 exports.default = ui;
 
 /***/ }),
-/* 63 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5001,7 +6090,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(117);
+var _index = __webpack_require__(124);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -5167,14 +6256,14 @@ var editRecord = function editRecord(services) {
 exports.default = editRecord;
 
 /***/ }),
-/* 64 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js__ = __webpack_require__(130);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_video_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_video_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__ = __webpack_require__(146);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__ = __webpack_require__(153);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_videojs_swf_package_json__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_global_window__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_global_window___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_global_window__);
@@ -6626,13 +7715,13 @@ Flash.VERSION = version$1;
 
 
 /***/ }),
-/* 65 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var keys = __webpack_require__(129);
+var keys = __webpack_require__(136);
 var hasSymbols = typeof Symbol === 'function' && typeof Symbol('foo') === 'symbol';
 
 var toStr = Object.prototype.toString;
@@ -6691,14 +7780,14 @@ module.exports = defineProperties;
 
 
 /***/ }),
-/* 66 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var bind = __webpack_require__(49);
-var ES = __webpack_require__(131);
+var ES = __webpack_require__(138);
 var replace = bind.call(Function.call, String.prototype.replace);
 
 var leftWhitespace = /^[\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF]+/;
@@ -6711,13 +7800,13 @@ module.exports = function trim() {
 
 
 /***/ }),
-/* 67 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var implementation = __webpack_require__(66);
+var implementation = __webpack_require__(70);
 
 var zeroWidthSpace = '\u200b';
 
@@ -6730,7 +7819,7 @@ module.exports = function getPolyfill() {
 
 
 /***/ }),
-/* 68 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.11.0/LICENSE.txt */
@@ -6778,14 +7867,14 @@ return mapboxgl;
 
 
 /***/ }),
-/* 69 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var browser = __webpack_require__(161);
-var MapiClient = __webpack_require__(70);
+var browser = __webpack_require__(168);
+var MapiClient = __webpack_require__(74);
 
 function BrowserClient(options) {
   MapiClient.call(this, options);
@@ -6812,14 +7901,14 @@ module.exports = createBrowserClient;
 
 
 /***/ }),
-/* 70 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseToken = __webpack_require__(71);
-var MapiRequest = __webpack_require__(167);
+var parseToken = __webpack_require__(75);
+var MapiRequest = __webpack_require__(174);
 var constants = __webpack_require__(46);
 
 /**
@@ -6857,13 +7946,13 @@ module.exports = MapiClient;
 
 
 /***/ }),
-/* 71 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var base64 = __webpack_require__(166);
+var base64 = __webpack_require__(173);
 
 var tokenCache = {};
 
@@ -6913,7 +8002,7 @@ module.exports = parseToken;
 
 
 /***/ }),
-/* 72 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = function escape(url) {
@@ -6935,7 +8024,7 @@ module.exports = function escape(url) {
 
 
 /***/ }),
-/* 73 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7353,407 +8442,7 @@ var exportRecord = function exportRecord(services) {
 exports.default = exportRecord;
 
 /***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.List = exports.Lists = undefined;
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var humane = __webpack_require__(9);
-
-var Lists = function Lists() {};
-
-var List = function List(id) {
-
-    if (parseInt(id, 10) <= 0) {
-        throw 'Invalid list id';
-    }
-
-    this.id = id;
-};
-
-Lists.prototype = {
-    create: function create(name, callback) {
-
-        _jquery2.default.ajax({
-            type: 'POST',
-            // @TODO - load baseUrl from configService
-            url: '/prod/lists/list/',
-            dataType: 'json',
-            data: { name: name },
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-
-                    if (typeof callback === 'function') {
-                        var list = new List(data.list_id);
-                        callback(list);
-                    }
-                } else {
-                    humane.error(data.message);
-                }
-            }
-        });
-    },
-    get: function get(callback, type, selectedList) {
-
-        type = typeof type === 'undefined' ? 'json' : type;
-
-        _jquery2.default.ajax({
-            type: 'GET',
-            // @TODO - load baseUrl from configService
-            url: '/prod/lists/all/',
-            dataType: type,
-            data: {},
-            success: function success(data) {
-                if (type === 'json') {
-                    if (data.success) {
-                        humane.info(data.message);
-
-                        if (typeof callback === 'function') {
-                            callback(data.result);
-                        }
-                    } else {
-                        humane.error(data.message);
-                    }
-                } else {
-                    if (typeof callback === 'function') {
-                        callback(data, selectedList);
-                    }
-                }
-            }
-        });
-    }
-
-};
-
-List.prototype = {
-    addUsers: function addUsers(arrayUsers, callback) {
-
-        if (!arrayUsers instanceof Array) {
-            throw 'addUsers takes array as argument';
-        }
-
-        var $this = this;
-        var data = { usr_ids: (0, _jquery2.default)(arrayUsers).toArray() };
-
-        _jquery2.default.ajax({
-            type: 'POST',
-            // @TODO - load baseUrl from configService
-            url: '/prod/lists/list/' + $this.id + '/add/',
-            dataType: 'json',
-            data: data,
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-
-                    if (typeof callback === 'function') {
-                        callback($this, data);
-                    }
-                } else {
-                    humane.error(data.message);
-                }
-            }
-        });
-    },
-    addUser: function addUser(usr_id, callback) {
-        this.addUsers([usr_id], callback);
-    },
-    remove: function remove(callback) {
-
-        var $this = this;
-
-        _jquery2.default.ajax({
-            type: 'POST',
-            // @TODO - load baseUrl from configService
-            url: '/prod/lists/list/' + this.id + '/delete/',
-            dataType: 'json',
-            data: {},
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-
-                    if (typeof callback === 'function') {
-                        callback($this);
-                    }
-                } else {
-                    humane.error(data.message);
-                }
-            }
-        });
-    },
-    update: function update(name, callback) {
-
-        var $this = this;
-
-        _jquery2.default.ajax({
-            type: 'POST',
-            // @TODO - load baseUrl from configService
-            url: '/prod/lists/list/' + this.id + '/update/',
-            dataType: 'json',
-            data: { name: name },
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-
-                    if (typeof callback === 'function') {
-                        callback($this);
-                    }
-                } else {
-                    humane.error(data.message);
-                }
-            }
-        });
-    },
-    removeUser: function removeUser(usr_id, callback) {
-
-        var $this = this;
-
-        _jquery2.default.ajax({
-            type: 'POST',
-            // @TODO - load baseUrl from configService
-            url: '/prod/lists/list/' + this.id + '/remove/' + usr_id + '/',
-            dataType: 'json',
-            data: {},
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-
-                    if (typeof callback === 'function') {
-                        callback($this, data);
-                    }
-                } else {
-                    humane.error(data.message);
-                }
-            }
-        });
-    },
-    get: function get(callback) {
-
-        var $this = this;
-
-        _jquery2.default.ajax({
-            type: 'GET',
-            // @TODO - load baseUrl from configService
-            url: '/prod/lists/list/' + this.id + '/',
-            dataType: 'json',
-            data: {},
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-
-                    if (typeof callback === 'function') {
-                        callback($this, data);
-                    }
-                } else {
-                    humane.error(data.message);
-                }
-            }
-        });
-    }
-};
-
-exports.Lists = Lists;
-exports.List = List;
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-var _lodash = __webpack_require__(4);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-__webpack_require__(39); /**
-                                                              * triggered via workzone > Basket > context menu
-                                                              */
-
-
-var pushAddUser = function pushAddUser(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var url = configService.get('baseUrl');
-    var searchSelectionSerialized = '';
-    appEvents.listenAll({
-        'broadcast.searchResultSelection': function broadcastSearchResultSelection(selection) {
-            searchSelectionSerialized = selection.serialized;
-        }
-    });
-
-    var initialize = function initialize(options) {
-        var $container = options.$container;
-
-
-        $container.on('click', '.push-add-user', function (event) {
-            event.preventDefault();
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var dialogOptions = {
-                // 'context': null,                // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ? will become a class to apply theme
-                'dialog_classes': ['dialog_container', 'whole_dialog_container' // to use css from _modal-push-scss
-                ]
-            };
-
-            // a "context" (=theme) can be passed by the button/link to apply theme css
-            // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ?
-            if ($el.attr('data-context') !== undefined) {
-                dialogOptions.dialog_classes.push($el.attr('data-context'));
-                // dialogOptions.context = $el.attr('data-context');
-            }
-
-            if ($el.attr('title') !== undefined) {
-                dialogOptions.title = $el.html;
-            }
-
-            // !!!!!!!!!!!!!!!!!!!!!! never passed ? better use data-context !!!!!!!!!!!!!!!!!!!!
-            if ($el.hasClass('validation')) {
-                dialogOptions.dialog_classes.push('validation');
-            }
-
-            // !!!!!!!!!!!!!!!!!!!!!! better use data-context !!!!!!!!!!!!!!!!!!!!
-            /*
-                        if($el.hasClass('listmanager-add-user')) {
-                            dialogOptions.dialog_classes.push('push-add-user-listmanager');
-                        }
-            */
-
-            openModal(dialogOptions);
-        });
-    };
-
-    var openModal = function openModal() {
-        var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-        var url = configService.get('baseUrl');
-        var dialogOptions = (0, _lodash2.default)({
-            size: '558x305',
-            loading: false,
-            title: localeService.t('create new user')
-        }, options);
-        var $dialog = _dialog2.default.create(services, dialogOptions, 2);
-
-        // add classes to the whole dialog
-        var d = $dialog.getDomElement().closest('.ui-dialog'); // the whole dlg, including title
-        for (var i in options.dialog_classes) {
-            d.addClass(options.dialog_classes[i]); // 'dialog_container', 'whole_dialog_container', ...
-        }
-
-        // // if there is a context (=theme), add a css
-        // if(options.context) {
-        //     d.addClass(options.context);
-        // }
-
-        return _jquery2.default.get(url + 'prod/push/add-user/', function (data) {
-            $dialog.setContent(data);
-            _onDialogReady(window.addUserConfig);
-            return;
-        });
-    };
-
-    var _onDialogReady = function _onDialogReady(config) {
-        var $addUserForm = (0, _jquery2.default)('#quickAddUser');
-        var $addUserFormMessages = $addUserForm.find('.messages');
-
-        var closeModal = function closeModal() {
-            var $dialog = $addUserForm.closest('.ui-dialog-content');
-            if ($dialog.data('ui-dialog')) {
-                $dialog.dialog('destroy').remove();
-            }
-        };
-
-        var submitAddUser = function submitAddUser() {
-            $addUserFormMessages.empty();
-            var method = $addUserForm.attr('method');
-
-            method = _jquery2.default.inArray(method.toLowerCase(), ['post', 'get']) ? method : 'POST';
-            _jquery2.default.ajax({
-                type: method,
-                url: $addUserForm.attr('action'),
-                data: $addUserForm.serializeArray(),
-                beforeSend: function beforeSend() {
-                    $addUserForm.addClass('loading');
-                },
-                success: function success(datas) {
-                    if (datas.success === true) {
-                        appEvents.emit('push.addUser', {
-                            $userForm: $addUserForm,
-                            callback: closeModal()
-                        });
-                        //p4.Feedback.addUser($addUserForm, closeModal);
-                    } else {
-                        if (datas.message !== undefined) {
-                            $addUserFormMessages.empty().append('<div class="alert alert-error">' + datas.message + '</div>');
-                        }
-                    }
-                    $addUserForm.removeClass('loading');
-                },
-                error: function error() {
-                    $addUserForm.removeClass('loading');
-                },
-                timeout: function timeout() {
-                    $addUserForm.removeClass('loading');
-                }
-            });
-        };
-        if (config.geonameServerUrl.length > 0) {
-            $addUserForm.find('.geoname_field').geocompleter({
-                server: config.geonameServerUrl,
-                limit: 40
-            });
-        }
-        $addUserForm.on('submit', function (event) {
-            event.preventDefault();
-            submitAddUser();
-        });
-
-        $addUserForm.on('click', '.valid', function (event) {
-            event.preventDefault();
-            submitAddUser();
-        });
-
-        $addUserForm.on('click', '.cancel', function (event) {
-            event.preventDefault();
-            closeModal();
-            return false;
-        });
-    };
-
-    return { initialize: initialize };
-};
-
-exports.default = pushAddUser;
-
-/***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7846,7 +8535,7 @@ var printRecord = function printRecord(services) {
 exports.default = printRecord;
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7864,15 +8553,15 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _videoScreenCapture = __webpack_require__(217);
+var _videoScreenCapture = __webpack_require__(220);
 
 var _videoScreenCapture2 = _interopRequireDefault(_videoScreenCapture);
 
-var _videoRangeCapture = __webpack_require__(220);
+var _videoRangeCapture = __webpack_require__(223);
 
 var _videoRangeCapture2 = _interopRequireDefault(_videoRangeCapture);
 
-var _videoSubtitleCapture = __webpack_require__(221);
+var _videoSubtitleCapture = __webpack_require__(224);
 
 var _videoSubtitleCapture2 = _interopRequireDefault(_videoSubtitleCapture);
 
@@ -7884,7 +8573,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(222);
+__webpack_require__(225);
 
 
 var humane = __webpack_require__(9);
@@ -7975,8 +8664,8 @@ var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
 exports.default = recordVideoEditorModal;
 
 /***/ }),
-/* 78 */,
-/* 79 */
+/* 80 */,
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7990,7 +8679,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _orderItem = __webpack_require__(231);
+var _orderItem = __webpack_require__(234);
 
 var _orderItem2 = _interopRequireDefault(_orderItem);
 
@@ -8235,7 +8924,7 @@ var order = function order(services) {
 exports.default = order;
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8344,7 +9033,7 @@ var resultInfos = function resultInfos(services) {
 exports.default = resultInfos;
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8396,10 +9085,10 @@ module.exports = {
 
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var html_sanitize = __webpack_require__(199);
+var html_sanitize = __webpack_require__(206);
 
 module.exports = function(_) {
     if (!_) return '';
@@ -8420,14 +9109,14 @@ function cleanId(id) { return id; }
 
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var config = __webpack_require__(85),
-    version = __webpack_require__(86).version;
+var config = __webpack_require__(87),
+    version = __webpack_require__(88).version;
 
 module.exports = function(path, accessToken) {
     accessToken = accessToken || L.mapbox.accessToken;
@@ -8487,15 +9176,15 @@ module.exports.style = function(styleURL, accessToken) {
 
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var format_url = __webpack_require__(83),
-    util = __webpack_require__(81),
-    sanitize = __webpack_require__(82);
+var format_url = __webpack_require__(85),
+    util = __webpack_require__(83),
+    sanitize = __webpack_require__(84);
 
 // mapbox-related markers functionality
 // provide an icon from mapbox's simple-style spec and hosted markers
@@ -8559,7 +9248,7 @@ module.exports = {
 
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8574,18 +9263,18 @@ module.exports = {
 
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, exports) {
 
 module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
-/* 87 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var topLevel = typeof global !== 'undefined' ? global :
     typeof window !== 'undefined' ? window : {}
-var minDoc = __webpack_require__(124);
+var minDoc = __webpack_require__(131);
 
 var doccy;
 
@@ -8604,7 +9293,7 @@ module.exports = doccy;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 88 */
+/* 90 */
 /***/ (function(module, exports) {
 
 function clean (s) {
@@ -8623,7 +9312,7 @@ module.exports = function tsml (sa) {
 }
 
 /***/ }),
-/* 89 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports = SafeParseTuple
@@ -8643,14 +9332,14 @@ function SafeParseTuple(obj, reviver) {
 
 
 /***/ }),
-/* 90 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var window = __webpack_require__(44)
-var isFunction = __webpack_require__(125)
-var parseHeaders = __webpack_require__(126)
+var isFunction = __webpack_require__(132)
+var parseHeaders = __webpack_require__(133)
 var xtend = __webpack_require__(37)
 
 module.exports = createXHR
@@ -8891,8 +9580,8 @@ function noop() {}
 
 
 /***/ }),
-/* 91 */,
-/* 92 */
+/* 93 */,
+/* 94 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -9200,8 +9889,8 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 93 */,
-/* 94 */
+/* 95 */,
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9215,7 +9904,7 @@ var _utils = __webpack_require__(42);
 
 var utils = _interopRequireWildcard(_utils);
 
-var _bootstrap = __webpack_require__(97);
+var _bootstrap = __webpack_require__(99);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -9223,14 +9912,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(245);
-
-__webpack_require__(246);
-__webpack_require__(247);
 __webpack_require__(248);
+
 __webpack_require__(249);
 __webpack_require__(250);
 __webpack_require__(251);
+__webpack_require__(252);
+__webpack_require__(253);
+__webpack_require__(254);
 
 _jquery2.default.widget.bridge('uitooltip', _jquery2.default.fn.tooltip);
 //window.btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
@@ -9247,7 +9936,7 @@ if (typeof window !== 'undefined') {
 module.exports = ProductionApplication;
 
 /***/ }),
-/* 95 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9263,7 +9952,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var cookie = __webpack_require__(96); // @TODO enable lints
+var cookie = __webpack_require__(98); // @TODO enable lints
 /* eslint-disable max-len*/
 /* eslint-disable object-shorthand*/
 /* eslint-disable dot-notation*/
@@ -9408,7 +10097,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 96 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -9581,7 +10270,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 97 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9601,15 +10290,15 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var AppCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _publication = __webpack_require__(59);
+var _publication = __webpack_require__(58);
 
 var _publication2 = _interopRequireDefault(_publication);
 
-var _workzone = __webpack_require__(98);
+var _workzone = __webpack_require__(100);
 
 var _workzone2 = _interopRequireDefault(_workzone);
 
-var _notifyLayout = __webpack_require__(114);
+var _notifyLayout = __webpack_require__(121);
 
 var _notifyLayout2 = _interopRequireDefault(_notifyLayout);
 
@@ -9617,7 +10306,7 @@ var _locale = __webpack_require__(20);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _ui = __webpack_require__(62);
+var _ui = __webpack_require__(66);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -9625,7 +10314,7 @@ var _configService = __webpack_require__(16);
 
 var _configService2 = _interopRequireDefault(_configService);
 
-var _config = __webpack_require__(237);
+var _config = __webpack_require__(240);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -9633,15 +10322,15 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _user = __webpack_require__(238);
+var _user = __webpack_require__(241);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _basket = __webpack_require__(239);
+var _basket = __webpack_require__(242);
 
 var _basket2 = _interopRequireDefault(_basket);
 
-var _search = __webpack_require__(240);
+var _search = __webpack_require__(243);
 
 var _search2 = _interopRequireDefault(_search);
 
@@ -9664,7 +10353,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var humane = __webpack_require__(9);
-__webpack_require__(244);
+__webpack_require__(247);
 
 var Bootstrap = function () {
     function Bootstrap(userConfig) {
@@ -9942,7 +10631,7 @@ var bootstrap = function bootstrap(userConfig) {
 exports.default = bootstrap;
 
 /***/ }),
-/* 98 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9962,15 +10651,15 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(99);
+var _index = __webpack_require__(101);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(61);
+var _index3 = __webpack_require__(60);
 
 var _index4 = _interopRequireDefault(_index3);
 
-var _index5 = __webpack_require__(104);
+var _index5 = __webpack_require__(106);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -9986,7 +10675,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _reminder = __webpack_require__(113);
+var _reminder = __webpack_require__(120);
 
 var _reminder2 = _interopRequireDefault(_reminder);
 
@@ -11494,7 +12183,7 @@ var workzone = function workzone(services) {
 exports.default = workzone;
 
 /***/ }),
-/* 99 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11508,13 +12197,13 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(100);
+var _index = __webpack_require__(102);
 
 var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(101);
+__webpack_require__(103);
 
 var workzoneThesaurus = function workzoneThesaurus(services) {
     var configService = services.configService,
@@ -11561,7 +12250,7 @@ var workzoneThesaurus = function workzoneThesaurus(services) {
 exports.default = workzoneThesaurus;
 
 /***/ }),
-/* 100 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13145,19 +13834,19 @@ var thesaurusService = function thesaurusService(services) {
 exports.default = thesaurusService;
 
 /***/ }),
-/* 101 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 102 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 103 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*!
@@ -17504,7 +18193,7 @@ $.extend($.ui.fancytree,
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 104 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17518,35 +18207,43 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _delete = __webpack_require__(105);
+var _delete = __webpack_require__(107);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _archive = __webpack_require__(106);
+var _quitshare = __webpack_require__(108);
+
+var _quitshare2 = _interopRequireDefault(_quitshare);
+
+var _actions = __webpack_require__(109);
+
+var _actions2 = _interopRequireDefault(_actions);
+
+var _archive = __webpack_require__(113);
 
 var _archive2 = _interopRequireDefault(_archive);
 
-var _create = __webpack_require__(107);
+var _create = __webpack_require__(114);
 
 var _create2 = _interopRequireDefault(_create);
 
-var _create3 = __webpack_require__(108);
+var _create3 = __webpack_require__(115);
 
 var _create4 = _interopRequireDefault(_create3);
 
-var _update = __webpack_require__(109);
+var _update = __webpack_require__(116);
 
 var _update2 = _interopRequireDefault(_update);
 
-var _browse = __webpack_require__(110);
+var _browse = __webpack_require__(117);
 
 var _browse2 = _interopRequireDefault(_browse);
 
-var _reorderContent = __webpack_require__(111);
+var _reorderContent = __webpack_require__(118);
 
 var _reorderContent2 = _interopRequireDefault(_reorderContent);
 
-var _reorderContent3 = __webpack_require__(112);
+var _reorderContent3 = __webpack_require__(119);
 
 var _reorderContent4 = _interopRequireDefault(_reorderContent3);
 
@@ -17566,6 +18263,8 @@ var workzoneBaskets = function workzoneBaskets(services) {
 
     var initialize = function initialize() {
         (0, _delete2.default)(services).initialize();
+        (0, _quitshare2.default)(services).initialize();
+        (0, _actions2.default)(services).initialize();
         (0, _archive2.default)(services).initialize();
         (0, _create2.default)(services).initialize();
         (0, _create4.default)(services).initialize();
@@ -17620,14 +18319,13 @@ var workzoneBaskets = function workzoneBaskets(services) {
     return {
         initialize: initialize,
         openBasketPreferences: openBasketPreferences
-
     };
 };
 
 exports.default = workzoneBaskets;
 
 /***/ }),
-/* 105 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17816,7 +18514,1223 @@ var deleteBasket = function deleteBasket(services) {
 exports.default = deleteBasket;
 
 /***/ }),
-/* 106 */
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var quitshareBasket = function quitshareBasket(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+    var $container = null;
+    var initialize = function initialize() {
+        $container = (0, _jquery2.default)('body');
+        $container.on('click', '.basket-quitshare-action', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            quitshareConfirmation($el, $el.data('context'));
+        });
+    };
+
+    var quitshareConfirmation = function quitshareConfirmation($el, type) {
+        switch (type) {
+            case 'SSTT':
+
+                var buttons = {};
+
+                buttons[localeService.t('quitshareTitle')] = function (e) {
+                    _quitshareBasket($el);
+                };
+
+                var dialogWindow = _dialog2.default.create(services, {
+                    size: 'Medium',
+                    title: localeService.t('attention'),
+                    closeButton: true
+                });
+
+                //Add custom class to dialog wrapper
+                dialogWindow.getDomElement().closest('.ui-dialog').addClass('black-dialog-wrap');
+
+                var content = '<div class="well-small">' + localeService.t('confirmQuitshare') + '</div>';
+                dialogWindow.setContent(content);
+
+                dialogWindow.setOption('buttons', buttons);
+
+                (0, _jquery2.default)('#tooltip').hide();
+                break;
+            default:
+        }
+    };
+
+    var _quitshareBasket = function _quitshareBasket(item) {
+        var dialogWindow = _dialog2.default.get(1);
+        dialogWindow.close();
+
+        // id de chutier
+        var k = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: url + 'prod/baskets/' + k + '/quitshare/',
+            dataType: 'json',
+            success: function success(data) {
+                if (data.success) {
+                    var basket = (0, _jquery2.default)('#SSTT_' + k);
+                    var next = basket.next();
+
+                    if (next.data('ui-droppable')) {
+                        next.droppable('destroy');
+                    }
+
+                    next.slideUp().remove();
+
+                    if (basket.data('ui-droppable')) {
+                        basket.droppable('destroy');
+                    }
+
+                    basket.slideUp().remove();
+
+                    if ((0, _jquery2.default)('#baskets .SSTT').length === 0) {
+                        appEvents.emit('workzone.refresh');
+                    }
+                } else {
+                    alert(data.message);
+                }
+                return;
+            }
+        });
+    };
+
+    return { initialize: initialize, quitshareConfirmation: quitshareConfirmation };
+};
+
+exports.default = quitshareBasket;
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _sharebasketModal = __webpack_require__(61);
+
+var _sharebasketModal2 = _interopRequireDefault(_sharebasketModal);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var shareBasket = function shareBasket(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+    var $container = null;
+
+    var initialize = function initialize() {
+        $container = (0, _jquery2.default)('body');
+
+        // basket general menu : click on "share"
+        $container.on('click', '.basket-share-action', function (event) {
+            event.preventDefault();
+            _triggerModal(event, (0, _sharebasketModal2.default)(services).openModal);
+        });
+        /*
+                // basket general menu : click on "feedback"
+                $container.on('click', '.basket-feedback-action', function (event) {
+                    event.preventDefault();
+                    _triggerModal(event, recordFeedbackModal(services).openModal);
+                });
+        
+        */
+    };
+
+    var _triggerModal = function _triggerModal(event, actionFn) {
+        event.preventDefault();
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        var basket_id = $el.attr('data-id');
+        // console.log("=== clicked with basket_id = ", basket_id);
+        var params = {
+            ssel: basket_id,
+            feedbackaction: 'adduser'
+        };
+        // console.log("==== ready to open dlg with params: ", params);
+        return actionFn.apply(null, [params]);
+    };
+
+    return { initialize: initialize };
+};
+
+exports.default = shareBasket;
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _index = __webpack_require__(63);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _selectable = __webpack_require__(22);
+
+var _selectable2 = _interopRequireDefault(_selectable);
+
+var _addUser = __webpack_require__(64);
+
+var _addUser2 = _interopRequireDefault(_addUser);
+
+var _underscore = __webpack_require__(2);
+
+var _ = _interopRequireWildcard(_underscore);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var humane = __webpack_require__(9);
+__webpack_require__(14);
+
+var pushOrShare = function pushOrShare(services, container) {
+    var _this2 = this;
+
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+    var $container = void 0;
+    var containerId = container.containerId,
+        context = container.context;
+
+
+    this.appEvents = appEvents;
+    this.url = url;
+    this.container = $container = (0, _jquery2.default)(containerId);
+    this.userList = new _index.Lists();
+
+    this.Context = context;
+
+    //    let $badges = $('.user_content .badges .badge', this.container);
+
+    //    var $this = this;
+    var pushOrShare = this;
+
+    this.selection = new _selectable2.default(services, (0, _jquery2.default)('.user_content .badges', this.container), {
+        selector: '.badge',
+        selectStop: function selectStop(event, ui) {
+            appEvents.emit('sharebasket.participantsSelectionChanged', { container: $container });
+        }
+    });
+
+    (0, _addUser2.default)(services).initialize({ $container: this.container });
+
+    this.container.on('mouseenter', '.list-trash-btn', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        $el.find('.image-normal').hide();
+        $el.find('.image-hover').show();
+    });
+
+    this.container.on('mouseleave', '.list-trash-btn', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        $el.find('.image-normal').show();
+        $el.find('.image-hover').hide();
+    });
+
+    this.container.on('click', '.list-trash-btn', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        var list_id = $el.parent().data('list-id');
+
+        appEvents.emit('push.removeList', {
+            list_id: list_id,
+            container: containerId
+        });
+    });
+
+    this.container.on('click', '.push-refresh-list-action', function (event) {
+        event.preventDefault();
+
+        var callback = function callback(datas) {
+            var context = (0, _jquery2.default)(datas);
+            var dataList = (0, _jquery2.default)(context).find('.lists').prop('outerHTML');
+
+            var refreshContent = (0, _jquery2.default)('.LeftColumn .content .lists', $container);
+            refreshContent.removeClass('loading').append(dataList);
+
+            appEvents.emit('sharebasket.usersListsChanged', { container: pushOrShare.container, context: 'reload' });
+        };
+
+        (0, _jquery2.default)('.LeftColumn .content .lists', $container).empty().addClass('loading');
+
+        pushOrShare.userList.get(callback, 'html');
+    });
+
+    this.container.on('click', '.content .options .select-all', function (event) {
+        pushOrShare.selection.selectAll();
+    });
+
+    this.container.on('click', '.content .options .unselect-all', function (event) {
+        pushOrShare.selection.empty();
+    });
+
+    this.container.on('click', '.content .general_togglers .delete-selection', function (event) {
+        _.each((0, _jquery2.default)('.badges.selectionnable').children(), function (item) {
+            var $elem = (0, _jquery2.default)(item);
+            if ($elem.hasClass('selected')) {
+                var userEmail = $elem.find('.user-email').val();
+
+                var action = (0, _jquery2.default)('input[name="feedbackAction"]').val();
+
+                if (action == 'adduser') {
+                    var value = (0, _jquery2.default)('#newParticipantsUser').val();
+                    var actualParticipantsName = value.split('; ');
+                    // remove the user in the list of new participant if yet exist
+                    var key = _jquery2.default.inArray(userEmail, actualParticipantsName);
+                    if (key > -1) {
+                        actualParticipantsName.splice(key, 1);
+                        if (actualParticipantsName.length != 0) {
+                            value = actualParticipantsName.join('; ');
+                            (0, _jquery2.default)('#newParticipantsUser').val(value);
+                        } else {
+                            (0, _jquery2.default)('#newParticipantsUser').val('');
+                        }
+                    }
+                }
+
+                $elem.fadeOut(function () {
+                    $elem.remove();
+
+                    appEvents.emit('sharebasket.participantsChanged', { container: container, context: 'user-added' });
+                });
+            }
+        });
+
+        return false;
+    });
+
+    (0, _jquery2.default)('.UserTips', this.container).tooltip();
+
+    /*this.container.on('click', '.user_adder', function (event) {
+        event.preventDefault();
+        const url = configService.get('baseUrl');
+        var $this = $(this);
+         $.ajax({
+            type: 'GET',
+            url: `${url}prod/push/add-user/`,
+            dataType: 'html',
+            beforeSend: function () {
+                var options = {
+                    size: 'Medium',
+                    title: $this.html()
+                };
+                dialog.create(services, options, 2).getDomElement().addClass('loading');
+            },
+            success: function (data) {
+                dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
+                return;
+            },
+            error: function () {
+                dialog.get(2).close();
+                return;
+            },
+            timeout: function () {
+                dialog.get(2).close();
+                return;
+            }
+        });
+         return false;
+    });*/
+
+    this.container.on('click', '.recommended_users', function (event) {
+        var usr_id = (0, _jquery2.default)('input[name="usr_id"]', (0, _jquery2.default)(this)).val();
+        console.log("====== click on .recommended_users ; usr_id=" + usr_id);
+        pushOrShare.loadUser(usr_id, pushOrShare.selectUser);
+
+        return false;
+    });
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!! this is never called because the link is not shown ??? ( see templates/web/prod/actions/Push.html.twig
+    this.container.on('click', '.recommended_users_list', function (event) {
+        console.log("====== click on .recommended_users_list");
+
+        var content = (0, _jquery2.default)('#push_user_recommendations').html();
+
+        var options = {
+            size: 'Small',
+            title: (0, _jquery2.default)(this).attr('title')
+        };
+
+        var $dialog = _dialog2.default.create(services, options, 2);
+        $dialog.setContent(content);
+
+        $dialog.getDomElement().find('a.adder').bind('click', function () {
+
+            (0, _jquery2.default)(this).addClass('added');
+
+            var usr_id = (0, _jquery2.default)(this).closest('tr').find('input[name="usr_id"]').val();
+
+            pushOrShare.loadUser(usr_id, pushOrShare.selectUser);
+
+            return false;
+        });
+
+        $dialog.getDomElement().find('a.adder').each(function (i, el) {
+
+            var usr_id = (0, _jquery2.default)(this).closest('tr').find('input[name="usr_id"]').val();
+
+            if ((0, _jquery2.default)('.badge_' + usr_id, pushOrShare.container).length > 0) {
+                (0, _jquery2.default)(this).addClass('added');
+            }
+        });
+
+        return false;
+    });
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    //this.container.on('submit', '#PushBox form[name="FeedBackForm"]', function (event) {
+    (0, _jquery2.default)('#PushBox form[name="FeedBackForm"]').bind('submit', function () {
+
+        var $this = (0, _jquery2.default)(this);
+
+        _jquery2.default.ajax({
+            type: $this.attr('method'),
+            url: $this.attr('action'),
+            dataType: 'json',
+            data: $this.serializeArray(),
+            beforeSend: function beforeSend() {},
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+                    _dialog2.default.close(1);
+                    appEvents.emit('workzone.refresh');
+                } else {
+                    humane.error(data.message);
+                }
+                return;
+            },
+            error: function error() {
+
+                return;
+            },
+            timeout: function timeout() {
+
+                return;
+            }
+        });
+
+        return false;
+    });
+
+    /**
+     * click on the main dlg send (or save) button
+     */
+    (0, _jquery2.default)('.FeedbackSend', this.container).bind('click', function (event) {
+        var $el = (0, _jquery2.default)(event.currentTarget);
+
+        console.log("==== clicked main dlg save button with feedbackaction=" + $el.data('feedback-action') + "====");
+
+        if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
+            alert(localeService.t('FeedBackNoUsersSelected'));
+            return;
+        }
+
+        var buttons = {};
+
+        // if we edit an existing basket, add a "save" button to send without email notification
+        //
+        if ($el.data('feedback-action') === 'adduser') {
+            console.log("==== feedback-action === adduser");
+            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
+                console.log("==== clicked popup dlg save button ====");
+                $dialog.close();
+
+                (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+                (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
+
+                $FeedBackForm.trigger('submit');
+            };
+        }
+
+        // normal "send button"
+        //
+        buttons[localeService.t('send')] = function () {
+            console.log("==== clicked popup dlg send button ====");
+
+            // if we must create a new basket, we must get a name for it
+            if ($el.data('feedback-action') !== 'adduser') {
+                if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
+                    var options = {
+                        size: 'Alert',
+                        closeButton: true,
+                        title: localeService.t('warning')
+                    };
+                    var $dialogAlert = _dialog2.default.create(services, options, 3);
+                    $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
+
+                    return false;
+                }
+            }
+
+            // complete the main dlg (ux) form with infos from save dlg
+            if ($el.data('feedback-action') !== 'adduser') {
+                (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
+            }
+
+            (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+            (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
+            (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
+            (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
+
+            // close the popup save dlg
+            $dialog.close();
+
+            // submit the main form
+            $FeedBackForm.trigger('submit');
+        };
+
+        buttons[localeService.t('annuler')] = function () {
+            $dialog.close();
+        };
+
+        var options = {
+            size: '558x352',
+            buttons: buttons,
+            loading: true,
+            title: localeService.t('send'),
+            closeOnEscape: true
+        };
+
+        if ($el.hasClass('validation')) {
+            options.isValidation = true;
+            options.size = '558x415';
+        }
+
+        var $dialog = _dialog2.default.create(services, options, 2);
+
+        $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container');
+        if (options.isValidation) {
+            $dialog.getDomElement().closest('.ui-dialog').addClass('validation');
+        }
+
+        var $FeedBackForm = (0, _jquery2.default)('form[name="FeedBackForm"]', $container);
+
+        var html = '';
+        // if the window is just for adding/removing user
+        if ($el.data('feedback-action') === 'adduser') {
+            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html());
+        } else {
+            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+        }
+
+        $dialog.setContent(html);
+
+        var feedbackTitle = (0, _jquery2.default)('#feedbackTitle').val();
+        var pushTitle = (0, _jquery2.default)('#pushTitle').val();
+
+        if (options.isValidation) {
+            (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
+        } else {
+            (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
+        }
+
+        if ($el.data('feedback-action') !== 'adduser') {
+            (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
+        } else {
+            // display the list of new user in the dialog window when add user
+            var lisNewUser = (0, _jquery2.default)('#newParticipantsUser').val();
+            if (lisNewUser == '') {
+                (0, _jquery2.default)('.email-to-notify').hide();
+            } else {
+                (0, _jquery2.default)('.email-to-notify').show();
+                (0, _jquery2.default)('#email-to-notify').empty().append((0, _jquery2.default)('#newParticipantsUser').val());
+            }
+        }
+
+        (0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val((0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val());
+        (0, _jquery2.default)('.' + pushOrShare.Context, $dialog.getDomElement()).show();
+
+        (0, _jquery2.default)('form', $dialog.getDomElement()).submit(function () {
+            return false;
+        });
+    });
+
+    (0, _jquery2.default)('.user_content .badges', this.container).disableSelection();
+
+    this.container.on('mouseenter', '#info-box-trigger', function (event) {
+        (0, _jquery2.default)('#info-box').show();
+    });
+
+    this.container.on('mouseleave', '#info-box-trigger', function (event) {
+        (0, _jquery2.default)('#info-box').hide();
+    });
+
+    // toggle feature state of selected users
+    this.container.on('click', '.general_togglers .general_toggler', function (event) {
+        var feature = (0, _jquery2.default)(this).attr('feature');
+
+        var $badges = (0, _jquery2.default)('.user_content .badge.selected', $container.container);
+
+        var toggles = (0, _jquery2.default)('.status_off.toggle_' + feature, $badges);
+
+        if (toggles.length === 0) {
+            toggles = (0, _jquery2.default)('.status_on.toggle_' + feature, $badges);
+        }
+        if (toggles.length === 0) {
+            humane.info('No user selected');
+        }
+
+        toggles.trigger('click');
+        return false;
+    });
+
+    this.container.on('click', '.list_manager', function (event) {
+        (0, _jquery2.default)('#PushBox').hide();
+        (0, _jquery2.default)('#ListManager').show();
+        return false;
+    });
+
+    (0, _jquery2.default)('form.list_saver', this.container).bind('submit', function () {
+        console.log("==== save ====");
+        var $form = (0, _jquery2.default)(event.currentTarget);
+        var $input = (0, _jquery2.default)('input[name="list_name"]', $form);
+
+        var users = _this2.getUsers();
+
+        if (users.length === 0) {
+            humane.error('No users');
+            return false;
+        }
+
+        // appEvents.emit('push.createList', {name: $input.val(), collection: users});
+        pushOrShare.createList({ name: $input.val(), collection: users });
+        $input.val('');
+        /*
+         p4.Lists.create($input.val(), function (list) {
+         $input.val('');
+         list.addUsers(users);
+         });*/
+
+        return false;
+    });
+
+    (0, _jquery2.default)('input[name="users-search"]', this.container).autocomplete({
+        minLength: 2,
+        source: function source(request, response) {
+            _jquery2.default.ajax({
+                url: url + 'prod/push/search-user/',
+                dataType: 'json',
+                data: {
+                    query: request.term
+                },
+                success: function success(data) {
+                    response(data);
+                }
+            });
+        },
+        focus: function focus(event, ui) {
+            // $('input[name="users-search"]').val(ui.item.label);
+        },
+        select: function select(event, ui) {
+            if (ui.item.type === 'USER') {
+                pushOrShare.selectUser(ui.item);
+            } else if (ui.item.type === 'LIST') {
+                for (var e in ui.item.entries) {
+                    pushOrShare.selectUser(ui.item.entries[e].User);
+                }
+            }
+            return false;
+        }
+    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+        var html = '';
+
+        if (item.type === 'USER') {
+            html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
+                item: item
+            });
+
+            if (pushOrShare.Context === 'Push') {
+                setTimeout(function () {
+                    (0, _jquery2.default)('.ui-menu .ui-menu-item a').css('box-shadow', 'inset 0 -1px #2196f3');
+                    (0, _jquery2.default)('img[src="/assets/common/images/icons/user-orange.png"]').attr('src', '/assets/common/images/icons/user-blue.png');
+                }, 100);
+            } else if (pushOrShare.Context === 'Feedback') {
+                setTimeout(function () {
+                    (0, _jquery2.default)('.ui-menu .ui-menu-item a').css('box-shadow', 'inset 0 -1px #8bc34a');
+                    (0, _jquery2.default)('img[src="/assets/common/images/icons/user-orange.png"]').attr('src', '/assets/common/images/icons/user-green.png');
+                }, 100);
+            }
+        } else if (item.type === 'LIST') {
+            html = _.template((0, _jquery2.default)('#list_list_tpl').html())({
+                item: item
+            });
+        }
+
+        return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
+    };
+
+    appEvents.listenAll({
+        // users lists (left) are async loaded
+        'sharebasket.usersListsChanged': function sharebasketUsersListsChanged(o) {
+            console.log("==== catch usersListsChanged");
+            o.container.off('click', '.LeftColumn .content .lists a.list_link').on('click', '.LeftColumn .content .lists a.list_link', function (event) {
+                var url = (0, _jquery2.default)(this).attr('href');
+
+                var callbackList = function callbackList(list) {
+                    for (var i in list.entries) {
+                        this.selectUser(list.entries[i].User);
+                    }
+                };
+
+                pushOrShare.loadList(url, callbackList);
+
+                return false;
+            });
+        },
+        'sharebasket.participantsChanged': function sharebasketParticipantsChanged(o) {
+            console.log("==== user list changed with context " + o.context + "====");
+
+            // the list on participants (badges) have changed : set event handlers on specific elements...
+
+            var $badges = (0, _jquery2.default)('.user_content .badges .badge', o.container);
+            var $toggles = (0, _jquery2.default)('.user_content .toggles .toggle', o.container);
+
+            // ... delete badge handler
+            //
+            $badges.off('click', '.deleter').on('click', '.deleter', function (event) {
+                var $elem = (0, _jquery2.default)(this).closest('.badge');
+                var userEmailEl = $elem.find('.user-email').val();
+                var action = (0, _jquery2.default)('input[name="feedbackAction"]').val();
+
+                if (action === 'adduser') {
+                    var value = (0, _jquery2.default)('#newParticipantsUser').val();
+                    var actualParticipantsName = value.split('; ');
+                    // remove the user in the list of new participant if yet exist
+                    var key = _jquery2.default.inArray(userEmailEl, actualParticipantsName);
+                    if (key > -1) {
+                        actualParticipantsName.splice(key, 1);
+                        if (actualParticipantsName.length != 0) {
+                            value = actualParticipantsName.join('; ');
+                            (0, _jquery2.default)('#newParticipantsUser').val(value);
+                        } else {
+                            (0, _jquery2.default)('#newParticipantsUser').val('');
+                        }
+                    }
+                }
+
+                $elem.fadeOut(function () {
+                    $elem.remove();
+                    appEvents.emit('sharebasket.participantsChanged', { container: $container, context: 'user-deleted' });
+                });
+
+                return false;
+            });
+
+            // ... toggle buttons handlers
+            //
+            $toggles.off('click').on('click', function (event) {
+                console.log("==== toggle clicked ====");
+                event.stopPropagation();
+
+                var $this = (0, _jquery2.default)(this);
+
+                $this.toggleClass('status_off status_on');
+
+                var input_value = $this.hasClass('status_on') ? '1' : '0';
+                $this.parent().find('input').val(input_value);
+
+                if ((0, _jquery2.default)(event.currentTarget).attr('id') === 'toggleFeedback') {
+                    appEvents.emit('sharebasket.toggleFeedbackChanged', { container: $container, context: o.context });
+                    /*
+                                        // special owner toggle to set the share as a feedback
+                                        if(input_value === '0') {
+                                            // simple share
+                                            $('.feedback_only_true', o.container).hide();
+                                            $('.feedback_only_false', o.container).show();
+                                        }
+                                        else {
+                                            // we want feedback from this share
+                                            $('.feedback_only_false', o.container).hide();
+                                            $('.feedback_only_true', o.container).show();
+                                        }
+                    */
+                } else {
+                    // normal toggle
+                    appEvents.emit('sharebasket.toggleChanged', {
+                        container: $container,
+                        context: 'toggle-changed'
+                    });
+                }
+
+                return false;
+            });
+            // if user list changes, selection also ?
+            appEvents.emit('sharebasket.participantsSelectionChanged', { container: $container, context: 'init' });
+            // fake toggleFeedbackChanged to show/hide togglers of (new) participants
+            appEvents.emit('sharebasket.toggleFeedbackChanged', { container: $container, context: 'init' });
+        },
+        'sharebasket.toggleFeedbackChanged': function sharebasketToggleFeedbackChanged(o) {
+
+            if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
+                // simple share
+                (0, _jquery2.default)('.feedback_only_true', o.container).hide();
+                (0, _jquery2.default)('.feedback_only_false', o.container).show();
+            } else {
+                // we want feedback from this share
+                (0, _jquery2.default)('.feedback_only_false', o.container).hide();
+                (0, _jquery2.default)('.feedback_only_true', o.container).show();
+            }
+        },
+        'sharebasket.participantsSelectionChanged': function sharebasketParticipantsSelectionChanged(o) {
+            console.log("==== selection changed");
+            // a toggle on a user badge was changed
+            var $badges = (0, _jquery2.default)('.user_content .badges .badge', o.container);
+            var selectedCount = $badges.filter('.selected').length;
+            if (selectedCount === 0) {
+                // none selected
+                (0, _jquery2.default)('.selected_all').hide();
+                (0, _jquery2.default)('.selected_partial').hide();
+                (0, _jquery2.default)('.selected_none').show();
+            } else if (selectedCount === $badges.length) {
+                // all selected
+                (0, _jquery2.default)('.selected_none').hide();
+                (0, _jquery2.default)('.selected_partial').hide();
+                (0, _jquery2.default)('.selected_all').show();
+            } else {
+                // partial selection
+                (0, _jquery2.default)('.selected_none').hide();
+                (0, _jquery2.default)('.selected_all').hide();
+                (0, _jquery2.default)('.selected_partial').show();
+            }
+        }
+    });
+
+    // load users lists (left zone)
+    (0, _jquery2.default)('.push-refresh-list-action', this.container).click();
+    // appEvents.emit('sharebasket.usersListsChanged', { container:this.container, context:'init' });
+
+    appEvents.emit('sharebasket.participantsChanged', { container: this.container, context: 'init' });
+
+    return this;
+};
+
+pushOrShare.prototype = {
+    selectUser: function selectUser(user) {
+        console.log("===== fct SELECT USER context = " + this.Context.toLowerCase());
+        if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
+            if (window.console) {
+                console.log('trying to select a user with wrong datas');
+            }
+        }
+        if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
+            // humane.info('User already selected');
+            return;
+        }
+
+        if ((0, _jquery2.default)('input[name="feedbackAction"]').val() == 'adduser') {
+            var actualParticipantsUserIds = (0, _jquery2.default)('#participantsUserIds').val();
+            actualParticipantsUserIds = actualParticipantsUserIds.split('_');
+
+            if (!(_jquery2.default.inArray(user.usr_id.toString(), actualParticipantsUserIds) > -1)) {
+                var value = (0, _jquery2.default)('#newParticipantsUser').val();
+                var glue = value == '' ? '' : '; ';
+                value = value + glue + user.email;
+                (0, _jquery2.default)('#newParticipantsUser').val(value);
+            }
+        }
+
+        /*
+        var html = _.template($('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
+            user: user
+        });
+         */
+        var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
+            user: user,
+            context: this.Context
+        });
+        // p4.Feedback.appendBadge(html);
+        this.appendBadge(html);
+
+        this.appEvents.emit('sharebasket.participantsChanged', { container: this.container, context: 'user-added' });
+    },
+    loadUser: function loadUser(usr_id, callback) {
+        var _this = this;
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: this.url + 'prod/push/user/' + usr_id + '/',
+            dataType: 'json',
+            data: {
+                usr_id: usr_id
+            },
+            success: function success(data) {
+                if (typeof callback === 'function') {
+                    callback.call(_this, data);
+                }
+            }
+        });
+    },
+    createList: function createList(options) {
+        var name = options.name,
+            collection = options.collection;
+
+
+        this.userList.create(name, function (list) {
+            list.addUsers(collection);
+        });
+    },
+    loadList: function loadList(url, callback) {
+        var _this = this;
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function success(data) {
+                if (typeof callback === 'function') {
+                    callback.call(_this, data);
+                }
+            }
+        });
+    },
+    appendBadge: function appendBadge(badge) {
+        (0, _jquery2.default)('.user_content .badges', this.container).prepend(badge);
+    },
+    addUser: function addUser(options) {
+        var $userForm = options.$userForm,
+            callback = options.callback;
+
+        var _this = this;
+        _jquery2.default.ajax({
+            type: 'POST',
+            url: this.url + 'prod/push/add-user/',
+            dataType: 'json',
+            data: $userForm.serializeArray(),
+            success: function success(data) {
+                if (data.success) {
+                    humane.info(data.message);
+                    _this.selectUser(data.user);
+                    callback;
+                } else {
+                    humane.error(data.message);
+                }
+            }
+        });
+    },
+    getSelection: function getSelection() {
+        return this.selection;
+    },
+    getUsers: function getUsers() {
+        return (0, _jquery2.default)('.user_content .badge', this.container).map(function () {
+            return (0, _jquery2.default)('input[name="id"]', (0, _jquery2.default)(this)).val();
+        });
+    }
+};
+
+exports.default = pushOrShare;
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var listEditor = function listEditor(services, options) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+    var $container = options.$container,
+        listManagerInstance = options.listManagerInstance;
+
+    var $editor = (0, _jquery2.default)('#list-editor-search-results');
+    var $form = (0, _jquery2.default)('#ListManager .editor').find('form[name="list-editor-search"]');
+
+    (0, _jquery2.default)('a.next, a.prev', $editor).bind('click', function (event) {
+        event.preventDefault();
+        var page = (0, _jquery2.default)(this).attr('value');
+
+        (0, _jquery2.default)('input[name="page"]', $form).val(page);
+        $form.trigger('submit');
+    });
+
+    (0, _jquery2.default)('input[name="page"]', $form).val('');
+
+    (0, _jquery2.default)('th.sortable', $editor).bind('click', function () {
+
+        var $this = (0, _jquery2.default)(this);
+
+        var sort = (0, _jquery2.default)('input', $this).val();
+        var ord = 'asc';
+
+        if (sort === (0, _jquery2.default)('input[name="srt"]', $form).val() && (0, _jquery2.default)('input[name="ord"]', $form).val() === 'asc') {
+            ord = 'desc';
+        }
+
+        (0, _jquery2.default)('input[name="srt"]', $form).val(sort);
+        (0, _jquery2.default)('input[name="ord"]', $form).val(ord);
+
+        $form.trigger('submit');
+    }).bind('mouseover', function () {
+        (0, _jquery2.default)(this).addClass('hover');
+    }).bind('mouseout', function () {
+        (0, _jquery2.default)(this).removeClass('hover');
+    });
+
+    (0, _jquery2.default)('tbody tr', $editor).bind('click', function () {
+
+        var $this = (0, _jquery2.default)(this);
+        var usr_id = (0, _jquery2.default)('input[name="usr_id"]', $this).val();
+
+        var counters = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
+
+        if ($this.hasClass('selected')) {
+            $this.removeClass('selected');
+            listManagerInstance.getList().removeUser(usr_id);
+
+            counters.each(function (i, el) {
+                var n = parseInt((0, _jquery2.default)(el).text().split(' ')[0], 10);
+                if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n - 1 + ' people');else (0, _jquery2.default)(el).text(n - 1);
+            });
+        } else {
+            $this.addClass('selected');
+            listManagerInstance.getList().addUser(usr_id);
+
+            counters.each(function (i, el) {
+                var n = parseInt((0, _jquery2.default)(el).text(), 10);
+
+                if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n + 1 + ' people');else (0, _jquery2.default)(el).text(n + 1);
+            });
+        }
+    });
+};
+
+exports.default = listEditor;
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _underscore = __webpack_require__(2);
+
+var _ = _interopRequireWildcard(_underscore);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var humane = __webpack_require__(9);
+
+var listShare = function listShare(services, options) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+    var $dialog = null;
+
+    var initialize = function initialize() {};
+
+    var openModal = function openModal(options) {
+        var listId = options.listId,
+            modalOptions = options.modalOptions,
+            modalLevel = options.modalLevel;
+
+
+        $dialog = _dialog2.default.create(services, modalOptions, modalLevel);
+        $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_share_list');
+
+        return _jquery2.default.get(url + 'prod/lists/list/' + listId + '/share/', function (data) {
+            $dialog.setContent(data);
+            onModalReady(listId);
+        });
+    };
+
+    var onModalReady = function onModalReady(listId) {
+        var $container = (0, _jquery2.default)('#ListShare');
+        var $completer_form = (0, _jquery2.default)('form[name="list_share_user"]', $container);
+        var $owners_form = (0, _jquery2.default)('form[name="owners"]', $container);
+        var $autocompleter = (0, _jquery2.default)('input[name="user"]', $completer_form);
+        var $dialog = _dialog2.default.get(2);
+
+        $completer_form.bind('submit', function () {
+            return false;
+        });
+
+        (0, _jquery2.default)('select[name="role"]', $owners_form).bind('change', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var userId = $el.data('user-id');
+
+            shareWith(userId, $el.val());
+
+            return false;
+        });
+        $container.on('click', '.listmanager-share-delete-user-action', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var userId = $el.data('user-id');
+
+            var $owner = $el.closest('.owner');
+
+            unShareWith(userId, function (data) {
+                $owner.remove();
+            });
+
+            return false;
+        });
+
+        function shareWith(userId, role) {
+            role = typeof role === 'undefined' ? 1 : role;
+
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: url + 'prod/lists/list/' + listId + '/share/' + userId + '/',
+                dataType: 'json',
+                data: { role: role },
+                beforeSend: function beforeSend() {},
+                success: function success(data) {
+                    if (data.success) {
+                        humane.info(data.message);
+                    } else {
+                        humane.error(data.message);
+                    }
+
+                    (0, _jquery2.default)('.push-list-share-action').trigger('click');
+                    $dialog.refresh();
+
+                    return;
+                }
+            });
+        }
+
+        function unShareWith(userId, callback) {
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: url + 'prod/lists/list/' + listId + '/unshare/' + userId + '/',
+                dataType: 'json',
+                data: {},
+                beforeSend: function beforeSend() {},
+                success: function success(data) {
+                    if (data.success) {
+                        humane.info(data.message);
+                        callback(data);
+                    } else {
+                        humane.error(data.message);
+                    }
+                    $dialog.refresh();
+
+                    return;
+                }
+            });
+        }
+
+        $autocompleter.autocomplete({
+            minLength: 2,
+            source: function source(request, response) {
+                _jquery2.default.ajax({
+                    url: url + 'prod/push/search-user/',
+                    dataType: 'json',
+                    data: {
+                        query: request.term
+                    },
+                    success: function success(data) {
+                        response(data);
+                    }
+                });
+            },
+            select: function select(event, ui) {
+                if (ui.item.type === 'USER') {
+                    shareWith(ui.item.usr_id);
+                }
+
+                return false;
+            }
+        }).data('ui-autocomplete')._renderItem = function (ul, item) {
+            if (item.type === 'USER') {
+                var html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
+                    item: item
+                });
+
+                return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
+            }
+        };
+    };
+
+    return {
+        openModal: openModal
+    };
+};
+
+exports.default = listShare;
+
+/***/ }),
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17888,7 +19802,7 @@ var archiveBasket = function archiveBasket(services) {
 exports.default = archiveBasket;
 
 /***/ }),
-/* 107 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18011,7 +19925,7 @@ var basketCreate = function basketCreate(services) {
 exports.default = basketCreate;
 
 /***/ }),
-/* 108 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18137,7 +20051,7 @@ var storyCreate = function storyCreate(services) {
 exports.default = storyCreate;
 
 /***/ }),
-/* 109 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18254,7 +20168,7 @@ var basketUpdate = function basketUpdate(services) {
 exports.default = basketUpdate;
 
 /***/ }),
-/* 110 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18557,7 +20471,7 @@ var basketBrowse = function basketBrowse(services) {
 exports.default = basketBrowse;
 
 /***/ }),
-/* 111 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18841,7 +20755,7 @@ var basketReorderContent = function basketReorderContent(services) {
 exports.default = basketReorderContent;
 
 /***/ }),
-/* 112 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19125,7 +21039,7 @@ var storyReorderContent = function storyReorderContent(services) {
 exports.default = storyReorderContent;
 
 /***/ }),
-/* 113 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19232,7 +21146,7 @@ var feedbackReminder = function feedbackReminder(services) {
 exports.default = feedbackReminder;
 
 /***/ }),
-/* 114 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19483,7 +21397,7 @@ var notifyLayout = function notifyLayout(services) {
 exports.default = notifyLayout;
 
 /***/ }),
-/* 115 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19497,57 +21411,57 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _move = __webpack_require__(116);
+var _move = __webpack_require__(123);
 
 var _move2 = _interopRequireDefault(_move);
 
-var _edit = __webpack_require__(63);
+var _edit = __webpack_require__(67);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _delete = __webpack_require__(203);
+var _delete = __webpack_require__(210);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _export = __webpack_require__(73);
+var _export = __webpack_require__(77);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _property = __webpack_require__(204);
+var _property = __webpack_require__(211);
 
 var _property2 = _interopRequireDefault(_property);
 
-var _sharebasket = __webpack_require__(205);
+var _sharebasketModal = __webpack_require__(61);
 
-var _sharebasket2 = _interopRequireDefault(_sharebasket);
+var _sharebasketModal2 = _interopRequireDefault(_sharebasketModal);
 
-var _push = __webpack_require__(210);
+var _pushbasketModal = __webpack_require__(212);
 
-var _push2 = _interopRequireDefault(_push);
+var _pushbasketModal2 = _interopRequireDefault(_pushbasketModal);
 
-var _publish = __webpack_require__(211);
-
-var _publish2 = _interopRequireDefault(_publish);
-
-var _index = __webpack_require__(212);
+var _index = __webpack_require__(213);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _print = __webpack_require__(76);
+var _publish = __webpack_require__(215);
+
+var _publish2 = _interopRequireDefault(_publish);
+
+var _index3 = __webpack_require__(216);
+
+var _index4 = _interopRequireDefault(_index3);
+
+var _print = __webpack_require__(78);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _feedback = __webpack_require__(214);
-
-var _feedback2 = _interopRequireDefault(_feedback);
-
-var _bridge = __webpack_require__(215);
+var _bridge = __webpack_require__(218);
 
 var _bridge2 = _interopRequireDefault(_bridge);
 
-var _index3 = __webpack_require__(77);
+var _index5 = __webpack_require__(79);
 
-var _index4 = _interopRequireDefault(_index3);
+var _index6 = _interopRequireDefault(_index5);
 
 var _lodash = __webpack_require__(4);
 
@@ -19668,7 +21582,7 @@ var toolbar = function toolbar(services) {
         }
     };
     var _triggerModal = function _triggerModal(event, actionFn) {
-        var nodocselected = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+        var needSelectedDocs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
         event.preventDefault();
         var $el = (0, _jquery2.default)(event.currentTarget);
@@ -19678,12 +21592,10 @@ var toolbar = function toolbar(services) {
         var params = _prepareParams(selection);
 
         // require a list of records a basket group or a story
-        if (params !== false) {
-            return actionFn.apply(null, [params]);
+        if (needSelectedDocs && params === false) {
+            alert(localeService.t('nodocselected'));
         } else {
-            if (nodocselected != false) {
-                alert(localeService.t('nodocselected'));
-            }
+            return actionFn.apply(null, [params]);
         }
     };
 
@@ -19725,7 +21637,7 @@ var toolbar = function toolbar(services) {
          * tools > Edit > VideoEditor
          */
         $container.on('click', '.video-tools-record-action', function (event) {
-            _triggerModal(event, (0, _index4.default)(services).openModal, false);
+            _triggerModal(event, (0, _index6.default)(services).openModal, false);
         });
 
         /**
@@ -19747,41 +21659,39 @@ var toolbar = function toolbar(services) {
          * tools > Push
          */
         $container.on('click', '.TOOL_pushdoc_btn', function (event) {
-            _triggerModal(event, (0, _push2.default)(services).openModal);
+            _triggerModal(event, (0, _pushbasketModal2.default)(services).openModal);
         });
         /**
          * tools > Push > Share
          */
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
-            console.log("SHARE");
-            _triggerModal(event, (0, _sharebasket2.default)(services).openModal);
+            _triggerModal(event, (0, _sharebasketModal2.default)(services).openModal);
         });
         /**
-         * tools > Push > Feedback
+         * tools > Push > UsersLists
          */
-        $container.on('click', '.TOOL_feedback_btn', function (event) {
-
-            _triggerModal(event, (0, _feedback2.default)(services).openModal);
+        $container.on('click', '.TOOL_userslists_btn', function (event) {
+            _triggerModal(event, (0, _index2.default)(services).openModal, false); // false : allow opening without selection
         });
 
         /**
-         * workzone > feedback
+         * workzone (opened basket) > feedback
          */
         $container.on('click', '.feedback-user', function (event) {
             event.preventDefault();
             var $el = (0, _jquery2.default)(event.currentTarget);
-            var params = {};
-            params.ssel = $el.data('basket-id');
-            params.feedbackaction = 'adduser';
 
-            (0, _feedback2.default)(services).openModal(params);
+            (0, _sharebasketModal2.default)(services).openModal({
+                ssel: $el.data('basket-id'),
+                feedbackaction: 'adduser'
+            });
         });
 
         /**
          * tools > Tools
          */
         $container.on('click', '.TOOL_imgtools_btn', function (event) {
-            _triggerModal(event, (0, _index2.default)(services).openModal);
+            _triggerModal(event, (0, _index4.default)(services).openModal);
         });
         /**
          * tools > Export
@@ -19934,7 +21844,7 @@ var toolbar = function toolbar(services) {
 exports.default = toolbar;
 
 /***/ }),
-/* 116 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20049,7 +21959,7 @@ var moveRecord = function moveRecord(services) {
 exports.default = moveRecord;
 
 /***/ }),
-/* 117 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20081,27 +21991,27 @@ var _utils = __webpack_require__(42);
 
 var _sprintfJs = __webpack_require__(45);
 
-var _layout = __webpack_require__(118);
+var _layout = __webpack_require__(125);
 
 var _layout2 = _interopRequireDefault(_layout);
 
-var _presets = __webpack_require__(119);
+var _presets = __webpack_require__(126);
 
 var _presets2 = _interopRequireDefault(_presets);
 
-var _searchReplace = __webpack_require__(120);
+var _searchReplace = __webpack_require__(127);
 
 var _searchReplace2 = _interopRequireDefault(_searchReplace);
 
-var _preview = __webpack_require__(121);
+var _preview = __webpack_require__(128);
 
 var _preview2 = _interopRequireDefault(_preview);
 
-var _thesaurusDatasource = __webpack_require__(147);
+var _thesaurusDatasource = __webpack_require__(154);
 
 var _thesaurusDatasource2 = _interopRequireDefault(_thesaurusDatasource);
 
-var _geonameDatasource = __webpack_require__(148);
+var _geonameDatasource = __webpack_require__(155);
 
 var _geonameDatasource2 = _interopRequireDefault(_geonameDatasource);
 
@@ -20113,7 +22023,7 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _recordCollection = __webpack_require__(200);
+var _recordCollection = __webpack_require__(207);
 
 var _recordCollection2 = _interopRequireDefault(_recordCollection);
 
@@ -20121,7 +22031,7 @@ var _fieldCollection = __webpack_require__(52);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
-var _statusCollection = __webpack_require__(202);
+var _statusCollection = __webpack_require__(209);
 
 var _statusCollection2 = _interopRequireDefault(_statusCollection);
 
@@ -21817,7 +23727,7 @@ var recordEditorService = function recordEditorService(services) {
 exports.default = recordEditorService;
 
 /***/ }),
-/* 118 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21977,7 +23887,7 @@ var recordEditorLayout = function recordEditorLayout(services) {
 exports.default = recordEditorLayout;
 
 /***/ }),
-/* 119 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22233,7 +24143,7 @@ var presetsModule = function presetsModule(services) {
 exports.default = presetsModule;
 
 /***/ }),
-/* 120 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22358,7 +24268,7 @@ var searchReplace = function searchReplace(services) {
 exports.default = searchReplace;
 
 /***/ }),
-/* 121 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22376,7 +24286,7 @@ var _pym = __webpack_require__(17);
 
 var _pym2 = _interopRequireDefault(_pym);
 
-var _videoEditor = __webpack_require__(122);
+var _videoEditor = __webpack_require__(129);
 
 var _videoEditor2 = _interopRequireDefault(_videoEditor);
 
@@ -22582,7 +24492,7 @@ var preview = function preview(services) {
 exports.default = preview;
 
 /***/ }),
-/* 122 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22596,7 +24506,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _videojsFlash = __webpack_require__(64);
+var _videojsFlash = __webpack_require__(68);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -22643,7 +24553,7 @@ var videoEditor = function videoEditor(services) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
 
             // load videoJs lib
-            rangeCapture = __webpack_require__(91).default;
+            rangeCapture = __webpack_require__(93).default;
             rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
 
@@ -22679,7 +24589,7 @@ var videoEditor = function videoEditor(services) {
 exports.default = videoEditor;
 
 /***/ }),
-/* 123 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -22697,11 +24607,11 @@ exports.default = videoEditor;
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var window = _interopDefault(__webpack_require__(44));
-var document = _interopDefault(__webpack_require__(87));
-var tsml = _interopDefault(__webpack_require__(88));
-var safeParseTuple = _interopDefault(__webpack_require__(89));
-var xhr = _interopDefault(__webpack_require__(90));
-var vtt = _interopDefault(__webpack_require__(142));
+var document = _interopDefault(__webpack_require__(89));
+var tsml = _interopDefault(__webpack_require__(90));
+var safeParseTuple = _interopDefault(__webpack_require__(91));
+var xhr = _interopDefault(__webpack_require__(92));
+var vtt = _interopDefault(__webpack_require__(149));
 
 var version = "6.13.0";
 
@@ -48021,13 +49931,13 @@ module.exports = videojs;
 
 
 /***/ }),
-/* 124 */
+/* 131 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 125 */
+/* 132 */
 /***/ (function(module, exports) {
 
 module.exports = isFunction
@@ -48048,11 +49958,11 @@ function isFunction (fn) {
 
 
 /***/ }),
-/* 126 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var trim = __webpack_require__(127)
-  , forEach = __webpack_require__(141)
+var trim = __webpack_require__(134)
+  , forEach = __webpack_require__(148)
   , isArray = function(arg) {
       return Object.prototype.toString.call(arg) === '[object Array]';
     }
@@ -48085,18 +49995,18 @@ module.exports = function (headers) {
 
 
 /***/ }),
-/* 127 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var bind = __webpack_require__(49);
-var define = __webpack_require__(65);
+var define = __webpack_require__(69);
 
-var implementation = __webpack_require__(66);
-var getPolyfill = __webpack_require__(67);
-var shim = __webpack_require__(140);
+var implementation = __webpack_require__(70);
+var getPolyfill = __webpack_require__(71);
+var shim = __webpack_require__(147);
 
 var boundTrim = bind.call(Function.call, getPolyfill());
 
@@ -48110,7 +50020,7 @@ module.exports = boundTrim;
 
 
 /***/ }),
-/* 128 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48169,7 +50079,7 @@ module.exports = function bind(that) {
 
 
 /***/ }),
-/* 129 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48179,7 +50089,7 @@ module.exports = function bind(that) {
 var has = Object.prototype.hasOwnProperty;
 var toStr = Object.prototype.toString;
 var slice = Array.prototype.slice;
-var isArgs = __webpack_require__(130);
+var isArgs = __webpack_require__(137);
 var isEnumerable = Object.prototype.propertyIsEnumerable;
 var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
 var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
@@ -48317,7 +50227,7 @@ module.exports = keysShim;
 
 
 /***/ }),
-/* 130 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48341,28 +50251,28 @@ module.exports = function isArguments(value) {
 
 
 /***/ }),
-/* 131 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var GetIntrinsic = __webpack_require__(132);
+var GetIntrinsic = __webpack_require__(139);
 
 var $Object = GetIntrinsic('%Object%');
 var $TypeError = GetIntrinsic('%TypeError%');
 var $String = GetIntrinsic('%String%');
 
-var $isNaN = __webpack_require__(133);
-var $isFinite = __webpack_require__(134);
+var $isNaN = __webpack_require__(140);
+var $isFinite = __webpack_require__(141);
 
-var sign = __webpack_require__(135);
-var mod = __webpack_require__(136);
+var sign = __webpack_require__(142);
+var mod = __webpack_require__(143);
 
 var IsCallable = __webpack_require__(50);
-var toPrimitive = __webpack_require__(137);
+var toPrimitive = __webpack_require__(144);
 
-var has = __webpack_require__(139);
+var has = __webpack_require__(146);
 
 // https://es5.github.io/#x9
 var ES5 = {
@@ -48590,7 +50500,7 @@ module.exports = ES5;
 
 
 /***/ }),
-/* 132 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48774,7 +50684,7 @@ module.exports = function GetIntrinsic(name, allowMissing) {
 
 
 /***/ }),
-/* 133 */
+/* 140 */
 /***/ (function(module, exports) {
 
 module.exports = Number.isNaN || function isNaN(a) {
@@ -48783,7 +50693,7 @@ module.exports = Number.isNaN || function isNaN(a) {
 
 
 /***/ }),
-/* 134 */
+/* 141 */
 /***/ (function(module, exports) {
 
 var $isNaN = Number.isNaN || function (a) { return a !== a; };
@@ -48792,7 +50702,7 @@ module.exports = Number.isFinite || function (x) { return typeof x === 'number' 
 
 
 /***/ }),
-/* 135 */
+/* 142 */
 /***/ (function(module, exports) {
 
 module.exports = function sign(number) {
@@ -48801,7 +50711,7 @@ module.exports = function sign(number) {
 
 
 /***/ }),
-/* 136 */
+/* 143 */
 /***/ (function(module, exports) {
 
 module.exports = function mod(number, modulo) {
@@ -48811,7 +50721,7 @@ module.exports = function mod(number, modulo) {
 
 
 /***/ }),
-/* 137 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48819,7 +50729,7 @@ module.exports = function mod(number, modulo) {
 
 var toStr = Object.prototype.toString;
 
-var isPrimitive = __webpack_require__(138);
+var isPrimitive = __webpack_require__(145);
 
 var isCallable = __webpack_require__(50);
 
@@ -48855,7 +50765,7 @@ module.exports = function ToPrimitive(input, PreferredType) {
 
 
 /***/ }),
-/* 138 */
+/* 145 */
 /***/ (function(module, exports) {
 
 module.exports = function isPrimitive(value) {
@@ -48864,7 +50774,7 @@ module.exports = function isPrimitive(value) {
 
 
 /***/ }),
-/* 139 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48876,14 +50786,14 @@ module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 
 
 /***/ }),
-/* 140 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var define = __webpack_require__(65);
-var getPolyfill = __webpack_require__(67);
+var define = __webpack_require__(69);
+var getPolyfill = __webpack_require__(71);
 
 module.exports = function shimStringTrim() {
 	var polyfill = getPolyfill();
@@ -48893,7 +50803,7 @@ module.exports = function shimStringTrim() {
 
 
 /***/ }),
-/* 141 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48962,7 +50872,7 @@ module.exports = forEach;
 
 
 /***/ }),
-/* 142 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48989,9 +50899,9 @@ module.exports = forEach;
 var window = __webpack_require__(44);
 
 var vttjs = module.exports = {
-  WebVTT: __webpack_require__(143),
-  VTTCue: __webpack_require__(144),
-  VTTRegion: __webpack_require__(145)
+  WebVTT: __webpack_require__(150),
+  VTTCue: __webpack_require__(151),
+  VTTRegion: __webpack_require__(152)
 };
 
 window.vttjs = vttjs;
@@ -49018,7 +50928,7 @@ if (!window.VTTCue) {
 
 
 /***/ }),
-/* 143 */
+/* 150 */
 /***/ (function(module, exports) {
 
 /**
@@ -50353,7 +52263,7 @@ module.exports = WebVTT;
 
 
 /***/ }),
-/* 144 */
+/* 151 */
 /***/ (function(module, exports) {
 
 /**
@@ -50664,7 +52574,7 @@ module.exports = VTTCue;
 
 
 /***/ }),
-/* 145 */
+/* 152 */
 /***/ (function(module, exports) {
 
 /**
@@ -50804,13 +52714,13 @@ module.exports = VTTRegion;
 
 
 /***/ }),
-/* 146 */
+/* 153 */
 /***/ (function(module, exports) {
 
 module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
-/* 147 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51031,7 +52941,7 @@ var thesaurusDatasource = function thesaurusDatasource(services) {
 exports.default = thesaurusDatasource;
 
 /***/ }),
-/* 148 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51345,7 +53255,7 @@ var geonameDatasource = function geonameDatasource(services) {
 exports.default = geonameDatasource;
 
 /***/ }),
-/* 149 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51474,7 +53384,7 @@ var markerCollection = function markerCollection(services) {
 exports.default = markerCollection;
 
 /***/ }),
-/* 150 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51490,7 +53400,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapboxgl = __webpack_require__(68);
+var mapboxgl = __webpack_require__(72);
 
 var markerGLCollection = function markerGLCollection(services) {
     var configService = services.configService,
@@ -51655,7 +53565,7 @@ var markerGLCollection = function markerGLCollection(services) {
 exports.default = markerGLCollection;
 
 /***/ }),
-/* 151 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51839,7 +53749,7 @@ exports.default = provider;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 152 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -51947,22 +53857,22 @@ var leafletLocaleFr = {
 exports.default = leafletLocaleFr;
 
 /***/ }),
-/* 153 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Typeahead = __webpack_require__(154);
-var debounce = __webpack_require__(158);
+var Typeahead = __webpack_require__(161);
+var debounce = __webpack_require__(165);
 var extend = __webpack_require__(37);
-var EventEmitter = __webpack_require__(92).EventEmitter;
-var exceptions = __webpack_require__(159);
-var MapboxClient = __webpack_require__(160);
-var mbxGeocoder = __webpack_require__(170);
-var MapboxEventManager = __webpack_require__(178);
-var localization = __webpack_require__(180);
-var subtag = __webpack_require__(181);
+var EventEmitter = __webpack_require__(94).EventEmitter;
+var exceptions = __webpack_require__(166);
+var MapboxClient = __webpack_require__(167);
+var mbxGeocoder = __webpack_require__(177);
+var MapboxEventManager = __webpack_require__(185);
+var localization = __webpack_require__(187);
+var subtag = __webpack_require__(188);
 
 /**
  * A geocoder component using the [Mapbox Geocoding API](https://docs.mapbox.com/api/search/#geocoding)
@@ -52985,7 +54895,7 @@ module.exports = MapboxGeocoder;
 
 
 /***/ }),
-/* 154 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53046,20 +54956,20 @@ module.exports = MapboxGeocoder;
  *
  * new Suggestions(input, data);
  */
-var Suggestions = __webpack_require__(155);
+var Suggestions = __webpack_require__(162);
 window.Suggestions = module.exports = Suggestions;
 
 
 /***/ }),
-/* 155 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var extend = __webpack_require__(37);
-var fuzzy = __webpack_require__(156);
-var List = __webpack_require__(157);
+var fuzzy = __webpack_require__(163);
+var List = __webpack_require__(164);
 
 var Suggestions = function(el, data, options) {
   options = options || {};
@@ -53314,7 +55224,7 @@ module.exports = Suggestions;
 
 
 /***/ }),
-/* 156 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -53464,7 +55374,7 @@ fuzzy.filter = function(pattern, arr, opts) {
 
 
 /***/ }),
-/* 157 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -53582,7 +55492,7 @@ module.exports = List;
 
 
 /***/ }),
-/* 158 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -53966,7 +55876,7 @@ module.exports = debounce;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 159 */
+/* 166 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -53990,28 +55900,28 @@ module.exports = {
 
 
 /***/ }),
-/* 160 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var client = __webpack_require__(69);
+var client = __webpack_require__(73);
 
 module.exports = client;
 
 
 /***/ }),
-/* 161 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var MapiResponse = __webpack_require__(162);
-var MapiError = __webpack_require__(164);
+var MapiResponse = __webpack_require__(169);
+var MapiError = __webpack_require__(171);
 var constants = __webpack_require__(46);
-var parseHeaders = __webpack_require__(165);
+var parseHeaders = __webpack_require__(172);
 
 // Keys are request IDs, values are XHRs.
 var requestsUnderway = {};
@@ -54134,13 +56044,13 @@ module.exports = {
 
 
 /***/ }),
-/* 162 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseLinkHeader = __webpack_require__(163);
+var parseLinkHeader = __webpack_require__(170);
 
 /**
  * A Mapbox API response.
@@ -54201,7 +56111,7 @@ module.exports = MapiResponse;
 
 
 /***/ }),
-/* 163 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54283,7 +56193,7 @@ module.exports = parseLinkHeader;
 
 
 /***/ }),
-/* 164 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54354,7 +56264,7 @@ module.exports = MapiError;
 
 
 /***/ }),
-/* 165 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -54404,7 +56314,7 @@ module.exports = parseHeaders;
 
 
 /***/ }),
-/* 166 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! http://mths.be/base64 v0.1.0 by @mathias | MIT license */
@@ -54575,16 +56485,16 @@ module.exports = parseHeaders;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)(module), __webpack_require__(5)))
 
 /***/ }),
-/* 167 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseToken = __webpack_require__(71);
+var parseToken = __webpack_require__(75);
 var xtend = __webpack_require__(37);
-var EventEmitter = __webpack_require__(168);
-var urlUtils = __webpack_require__(169);
+var EventEmitter = __webpack_require__(175);
+var urlUtils = __webpack_require__(176);
 var constants = __webpack_require__(46);
 
 var requestId = 1;
@@ -54844,7 +56754,7 @@ module.exports = MapiRequest;
 
 
 /***/ }),
-/* 168 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55187,7 +57097,7 @@ if (true) {
 
 
 /***/ }),
-/* 169 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55314,17 +57224,17 @@ module.exports = {
 
 
 /***/ }),
-/* 170 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var xtend = __webpack_require__(37);
-var v = __webpack_require__(171);
-var pick = __webpack_require__(174);
-var stringifyBooleans = __webpack_require__(175);
-var createServiceFactory = __webpack_require__(177);
+var v = __webpack_require__(178);
+var pick = __webpack_require__(181);
+var stringifyBooleans = __webpack_require__(182);
+var createServiceFactory = __webpack_require__(184);
 
 /**
  * Geocoding API service.
@@ -55520,14 +57430,14 @@ module.exports = createServiceFactory(Geocoding);
 
 
 /***/ }),
-/* 171 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
 var xtend = __webpack_require__(37);
-var v = __webpack_require__(172);
+var v = __webpack_require__(179);
 
 function file(value) {
   // If we're in a browser so Blob is available, the file must be that.
@@ -55577,7 +57487,7 @@ module.exports = xtend(v, {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 172 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55588,7 +57498,7 @@ module.exports = xtend(v, {
  * to display a helpful error message.
  * They can also return a function for a custom error message.
  */
-var isPlainObject = __webpack_require__(173);
+var isPlainObject = __webpack_require__(180);
 var xtend = __webpack_require__(37);
 
 var DEFAULT_ERROR_PATH = 'value';
@@ -55964,7 +57874,7 @@ module.exports = v;
 
 
 /***/ }),
-/* 173 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -55978,7 +57888,7 @@ module.exports = function (x) {
 
 
 /***/ }),
-/* 174 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56015,13 +57925,13 @@ module.exports = pick;
 
 
 /***/ }),
-/* 175 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var objectMap = __webpack_require__(176);
+var objectMap = __webpack_require__(183);
 
 /**
  * Stringify all the boolean values in an object, so true becomes "true".
@@ -56039,7 +57949,7 @@ module.exports = stringifyBoolean;
 
 
 /***/ }),
-/* 176 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56056,15 +57966,15 @@ module.exports = objectMap;
 
 
 /***/ }),
-/* 177 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var MapiClient = __webpack_require__(70);
+var MapiClient = __webpack_require__(74);
 // This will create the environment-appropriate client.
-var createClient = __webpack_require__(69);
+var createClient = __webpack_require__(73);
 
 function createServiceFactory(ServicePrototype) {
   return function(clientOrConfig) {
@@ -56084,12 +57994,12 @@ module.exports = createServiceFactory;
 
 
 /***/ }),
-/* 178 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var nanoid = __webpack_require__(179)
+var nanoid = __webpack_require__(186)
 
 /**
  * Construct a new mapbox event client to send interaction events to the mapbox event service
@@ -56402,7 +58312,7 @@ module.exports = MapboxEventManager;
 
 
 /***/ }),
-/* 179 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // This file replaces `index.js` in bundlers like webpack or Rollup,
@@ -56462,7 +58372,7 @@ module.exports = function (size) {
 
 
 /***/ }),
-/* 180 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56505,7 +58415,7 @@ module.exports = {placeholder: placeholder};
 
 
 /***/ }),
-/* 181 */
+/* 188 */
 /***/ (function(module, exports) {
 
 !function(root, name, make) {
@@ -56561,13 +58471,13 @@ module.exports = {placeholder: placeholder};
 
 
 /***/ }),
-/* 182 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(183);
+var content = __webpack_require__(190);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56592,7 +58502,7 @@ if(false) {
 }
 
 /***/ }),
-/* 183 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56606,7 +58516,7 @@ exports.push([module.i, "/* Basics */\n.mapboxgl-ctrl-geocoder,\n.mapboxgl-ctrl-
 
 
 /***/ }),
-/* 184 */
+/* 191 */
 /***/ (function(module, exports) {
 
 
@@ -56701,13 +58611,13 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 185 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(186);
+var content = __webpack_require__(193);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56732,40 +58642,40 @@ if(false) {
 }
 
 /***/ }),
-/* 186 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(72);
+var escape = __webpack_require__(76);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
 
 // module
-exports.push([module.i, "/* general typography */\n.leaflet-container {\n  background:#fff;\n  font:12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  outline:0;\n  overflow:hidden;\n  -ms-touch-action:none;\n  }\n\n.leaflet-container *,\n.leaflet-container *:after,\n.leaflet-container *:before {\n  -webkit-box-sizing:border-box;\n     -moz-box-sizing:border-box;\n          box-sizing:border-box;\n  }\n\n.leaflet-container h1,\n.leaflet-container h2,\n.leaflet-container h3,\n.leaflet-container h4,\n.leaflet-container h5,\n.leaflet-container h6,\n.leaflet-container p {\n  font-size:15px;\n  line-height:20px;\n  margin:0 0 10px;\n  }\n\n.leaflet-container .marker-description img {\n  margin-bottom: 10px;\n  }\n\n.leaflet-container a {\n  color:#3887BE;\n  font-weight:normal;\n  text-decoration:none;\n  }\n  .leaflet-container a:hover      { color:#63b6e5; }\n  .leaflet-container.dark a       { color:#63b6e5; }\n  .leaflet-container.dark a:hover { color:#8fcaec; }\n\n.leaflet-container.dark .mapbox-button,\n.leaflet-container .mapbox-button {\n  background-color:#3887be;\n  display:inline-block;\n  height:40px;\n  line-height:40px;\n  text-decoration:none;\n  color:#fff;\n  font-size:12px;\n  white-space:nowrap;\n  text-overflow:ellipsis;\n  }\n  .leaflet-container.dark .mapbox-button:hover,\n  .leaflet-container .mapbox-button:hover {\n    color:#fff;\n    background-color:#3bb2d0;\n    }\n\n/* Base Leaflet\n------------------------------------------------------- */\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n  position:absolute;\n  left:0;\n  top:0;\n  }\n\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  -webkit-user-drag:none;\n  -webkit-user-select:none;\n     -moz-user-select:none;\n          user-select:none;\n  }\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  display: block;\n  }\n\n.leaflet-tile {\n  filter:inherit;\n  visibility:hidden;\n  }\n.leaflet-tile-loaded {\n  visibility:inherit;\n  }\n.leaflet-zoom-box {\n  width:0;\n  height:0;\n  }\n\n.leaflet-tile-pane    { z-index:2; }\n.leaflet-objects-pane { z-index:3; }\n.leaflet-overlay-pane { z-index:4; }\n.leaflet-shadow-pane  { z-index:5; }\n.leaflet-marker-pane  { z-index:6; }\n.leaflet-popup-pane   { z-index:7; }\n\n.leaflet-control {\n  position:relative;\n  z-index:7;\n  pointer-events:auto;\n  float:left;\n  clear:both;\n  }\n  .leaflet-right .leaflet-control   { float:right; }\n  .leaflet-top .leaflet-control     { margin-top:10px; }\n  .leaflet-bottom .leaflet-control  { margin-bottom:10px; }\n  .leaflet-left .leaflet-control    { margin-left:10px; }\n  .leaflet-right .leaflet-control   { margin-right:10px; }\n\n.leaflet-top,\n.leaflet-bottom {\n  position:absolute;\n  z-index:1000;\n  pointer-events:none;\n  }\n  .leaflet-top    { top:0; }\n  .leaflet-right  { right:0; }\n  .leaflet-bottom { bottom:0; }\n  .leaflet-left   { left:0; }\n\n/* zoom and fade animations */\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n  opacity:0;\n  -webkit-transition:opacity 0.2s linear;\n     -moz-transition:opacity 0.2s linear;\n       -o-transition:opacity 0.2s linear;\n          transition:opacity 0.2s linear;\n  }\n  .leaflet-fade-anim .leaflet-tile-loaded,\n  .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n    opacity:1;\n    }\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n  -webkit-transition:-webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n     -moz-transition:   -moz-transform 0.25s cubic-bezier(0,0,0.25,1);\n       -o-transition:     -o-transform 0.25s cubic-bezier(0,0,0.25,1);\n          transition:        transform 0.25s cubic-bezier(0,0,0.25,1);\n  }\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n  -webkit-transition:none;\n     -moz-transition:none;\n       -o-transition:none;\n          transition:none;\n  }\n.leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; }\n\n/* cursors */\n.leaflet-container {\n  cursor:-webkit-grab;\n  cursor:   -moz-grab;\n  }\n.leaflet-overlay-pane path,\n.leaflet-marker-icon,\n.leaflet-container.map-clickable,\n.leaflet-container.leaflet-clickable {\n  cursor:pointer;\n  }\n.leaflet-popup-pane,\n.leaflet-control {\n  cursor:auto;\n  }\n.leaflet-dragging,\n.leaflet-dragging .map-clickable,\n.leaflet-dragging .leaflet-clickable,\n.leaflet-dragging .leaflet-container {\n  cursor:move;\n  cursor:-webkit-grabbing;\n  cursor:   -moz-grabbing;\n  }\n\n.leaflet-zoom-box {\n  background:#fff;\n  border:2px dotted #202020;\n  opacity:0.5;\n  }\n\n/* general toolbar styles */\n.leaflet-control-layers,\n.leaflet-bar {\n  background-color:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-radius:3px;\n  box-shadow:none;\n  }\n.leaflet-bar a,\n.leaflet-bar a:hover {\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  border-bottom:1px solid #ddd;\n  border-bottom-color:rgba(0,0,0,0.10);\n  }\n  .leaflet-bar a:hover,\n  .leaflet-bar a:active {\n    background-color:#f8f8f8;\n    cursor:pointer;\n    }\n  .leaflet-bar a:hover:first-child {\n    border-radius:3px 3px 0 0;\n    }\n  .leaflet-bar a:hover:last-child {\n    border-bottom:none;\n    border-radius:0 0 3px 3px;\n    }\n  .leaflet-bar a:hover:only-of-type {\n    border-radius:3px;\n    }\n\n.leaflet-bar .leaflet-disabled {\n  cursor:default;\n  opacity:0.75;\n  }\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n  display:block;\n  content:'';\n  text-indent:-999em;\n  }\n\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n  display:none;\n  }\n  .leaflet-control-layers-expanded .leaflet-control-layers-list {\n    display:block;\n    position:relative;\n    }\n\n.leaflet-control-layers-expanded {\n  background:#fff;\n  padding:6px 10px 6px 6px;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  }\n.leaflet-control-layers-selector {\n  margin-top:2px;\n  position:relative;\n  top:1px;\n  }\n.leaflet-control-layers label {\n  display: block;\n  }\n.leaflet-control-layers-separator {\n  height:0;\n  border-top:1px solid #ddd;\n  border-top-color:rgba(0,0,0,0.10);\n  margin:5px -10px 5px -6px;\n  }\n\n.leaflet-container .leaflet-control-attribution {\n  background-color:rgba(255,255,255,0.5);\n  margin:0;\n  box-shadow:none;\n  }\n  .leaflet-container .leaflet-control-attribution a,\n  .leaflet-container .map-info-container a {\n    color:#404040;\n    }\n    .leaflet-control-attribution a:hover,\n    .map-info-container a:hover {\n      color:inherit;\n      text-decoration:underline;\n      }\n\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n  padding:0 5px;\n  }\n  .leaflet-left .leaflet-control-scale    { margin-left:5px; }\n  .leaflet-bottom .leaflet-control-scale  { margin-bottom:5px; }\n\n/* Used for smaller map containers & triggered by container size */\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution { margin:10px; }\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution {\n  background:#fff;\n  border-radius:3px 13px 13px 3px;\n  padding:3px 31px 3px 3px;\n  visibility:hidden;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover {\n    visibility:visible;\n    }\n\n.leaflet-control-attribution.leaflet-compact-attribution:after {\n  content:'';\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  background-position:0 -78px;\n  border-radius:50%;\n  position:absolute;\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  bottom:0;\n  z-index:1;\n  visibility:visible;\n  cursor:pointer;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover:after { background-color:#fff; }\n\n.leaflet-right .leaflet-control-attribution.leaflet-compact-attribution:after { right:0; }\n.leaflet-left .leaflet-control-attribution.leaflet-compact-attribution:after { left:0; }\n\n.leaflet-control-scale-line {\n  background-color:rgba(255,255,255,0.5);\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-top:none;\n  padding:2px 5px 1px;\n  white-space:nowrap;\n  overflow:hidden;\n  }\n  .leaflet-control-scale-line:not(:first-child) {\n    border-top:2px solid #ddd;\n    border-top-color:rgba(0,0,0,0.10);\n    border-bottom:none;\n    margin-top:-2px;\n    }\n  .leaflet-control-scale-line:not(:first-child):not(:last-child) {\n    border-bottom:2px solid #777;\n    }\n\n/* popup */\n.leaflet-popup {\n  position:absolute;\n  text-align:center;\n  pointer-events:none;\n  }\n.leaflet-popup-content-wrapper {\n  padding:1px;\n  text-align:left;\n  pointer-events:all;\n  }\n.leaflet-popup-content {\n  padding:10px 10px 15px;\n  margin:0;\n  line-height:inherit;\n  }\n  .leaflet-popup-close-button + .leaflet-popup-content-wrapper .leaflet-popup-content {\n    padding-top:15px;\n    }\n\n.leaflet-popup-tip-container {\n  width:20px;\n  height:20px;\n  margin:0 auto;\n  position:relative;\n  }\n.leaflet-popup-tip {\n  width:0;\n\theight:0;\n  margin:0;\n\tborder-left:10px solid transparent;\n\tborder-right:10px solid transparent;\n\tborder-top:10px solid #fff;\n  box-shadow:none;\n  }\n.leaflet-popup-close-button {\n  text-indent:-999em;\n  position:absolute;\n  top:0;right:0;\n  pointer-events:all;\n  }\n  .leaflet-popup-close-button:hover {\n    background-color:#f8f8f8;\n    }\n\n.leaflet-popup-scrolled {\n  overflow:auto;\n  border-bottom:1px solid #ddd;\n  border-top:1px solid #ddd;\n  }\n\n/* div icon */\n.leaflet-div-icon {\n  background:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  }\n.leaflet-editing-icon {\n  border-radius:3px;\n  }\n\n/* Leaflet + Mapbox\n------------------------------------------------------- */\n.leaflet-bar a,\n.mapbox-icon,\n.map-tooltip.closable .close,\n.leaflet-control-layers-toggle,\n.leaflet-popup-close-button,\n.mapbox-button-icon:before {\n  content:'';\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  background-repeat:no-repeat;\n  }\n.leaflet-bar a {\n  display:block;\n  }\n\n.leaflet-control-attribution:after,\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out,\n.leaflet-popup-close-button,\n.leaflet-control-layers-toggle,\n.leaflet-container.dark .map-tooltip .close,\n.map-tooltip .close,\n.mapbox-icon {\n  opacity: .75;\n  background-image:url(" + escape(__webpack_require__(187)) + ");\n  background-repeat:no-repeat;\n  background-size:26px 260px;\n  }\n  .leaflet-container.dark .leaflet-control-attribution:after,\n  .mapbox-button-icon:before,\n  .leaflet-container.dark .leaflet-control-zoom-in,\n  .leaflet-container.dark .leaflet-control-zoom-out,\n  .leaflet-container.dark .leaflet-control-layers-toggle,\n  .leaflet-container.dark .mapbox-icon {\n    opacity: 1;\n    background-image:url(" + escape(__webpack_require__(188)) + ");\n    background-size:26px 260px;\n    }\n  .leaflet-bar .leaflet-control-zoom-in                 { background-position:0 0; }\n  .leaflet-bar .leaflet-control-zoom-out                { background-position:0 -26px; }\n  .map-tooltip.closable .close,\n  .leaflet-popup-close-button {\n    background-position:-3px -55px;\n    width:20px;\n    height:20px;\n    border-radius:0 3px 0 0;\n    }\n  .mapbox-icon-info                                     { background-position:0 -78px; }\n  .leaflet-control-layers-toggle                        { background-position:0 -104px; }\n  .mapbox-icon.mapbox-icon-share:before, .mapbox-icon.mapbox-icon-share         { background-position:0 -130px; }\n  .mapbox-icon.mapbox-icon-geocoder:before, .mapbox-icon.mapbox-icon-geocoder   { background-position:0 -156px; }\n  .mapbox-icon-facebook:before, .mapbox-icon-facebook   { background-position:0 -182px; }\n  .mapbox-icon-twitter:before, .mapbox-icon-twitter     { background-position:0 -208px; }\n  .mapbox-icon-pinterest:before, .mapbox-icon-pinterest { background-position:0 -234px; }\n\n.leaflet-popup-content-wrapper,\n.map-legends,\n.map-tooltip {\n  background:#fff;\n  border-radius:3px;\n  box-shadow:0 1px 2px rgba(0,0,0,0.10);\n  }\n.map-legends,\n.map-tooltip {\n  max-width:300px;\n  }\n.map-legends .map-legend {\n  padding:10px;\n  }\n.map-tooltip {\n  z-index:999999;\n  padding:10px;\n  min-width:180px;\n  max-height:400px;\n  overflow:auto;\n  opacity:1;\n  -webkit-transition:opacity 150ms;\n     -moz-transition:opacity 150ms;\n       -o-transition:opacity 150ms;\n          transition:opacity 150ms;\n  }\n\n.map-tooltip .close {\n  text-indent:-999em;\n  overflow:hidden;\n  display:none;\n  }\n  .map-tooltip.closable .close {\n    position:absolute;\n    top:0;right:0;\n    border-radius:3px;\n    }\n    .map-tooltip.closable .close:active  {\n      background-color:#f8f8f8;\n      }\n\n.leaflet-control-interaction {\n  position:absolute;\n  top:10px;\n  right:10px;\n  width:300px;\n  }\n.leaflet-popup-content .marker-title {\n  font-weight:bold;\n  }\n.leaflet-control .mapbox-button {\n  background-color:#fff;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  padding:5px 10px;\n  border-radius:3px;\n  }\n\n/* Share modal\n------------------------------------------------------- */\n.mapbox-modal > div {\n  position:absolute;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  z-index:-1;\n  overflow-y:auto;\n  }\n  .mapbox-modal.active > div {\n    z-index:99999;\n    transition:all .2s, z-index 0 0;\n    }\n\n.mapbox-modal .mapbox-modal-mask {\n  background:rgba(0,0,0,0.5);\n  opacity:0;\n  }\n  .mapbox-modal.active .mapbox-modal-mask { opacity:1; }\n\n.mapbox-modal .mapbox-modal-content {\n  -webkit-transform:translateY(-100%);\n     -moz-transform:translateY(-100%);\n      -ms-transform:translateY(-100%);\n          transform:translateY(-100%);\n  }\n  .mapbox-modal.active .mapbox-modal-content {\n    -webkit-transform:translateY(0);\n       -moz-transform:translateY(0);\n        -ms-transform:translateY(0);\n            transform:translateY(0);\n    }\n\n.mapbox-modal-body {\n  position:relative;\n  background:#fff;\n  padding:20px;\n  z-index:1000;\n  width:50%;\n  margin:20px 0 20px 25%;\n  }\n.mapbox-share-buttons {\n  margin:0 0 20px;\n  }\n.mapbox-share-buttons a {\n  width:33.3333%;\n  border-left:1px solid #fff;\n  text-align:center;\n  border-radius:0;\n  }\n  .mapbox-share-buttons a:last-child  { border-radius:0 3px 3px 0; }\n  .mapbox-share-buttons a:first-child { border:none; border-radius:3px 0 0 3px; }\n\n.mapbox-modal input {\n  width:100%;\n  height:40px;\n  padding:10px;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  color:rgba(0,0,0,0.5);\n  }\n\n/* Info Control\n------------------------------------------------------- */\n.leaflet-control.mapbox-control-info {\n  margin:5px 30px 10px 10px;\n  min-height:26px;\n  }\n  .leaflet-right .leaflet-control.mapbox-control-info {\n    margin:5px 10px 10px 30px;\n    }\n\n.mapbox-info-toggle {\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  border-radius:50%;\n  position:absolute;\n  bottom:0;left:0;\n  z-index:1;\n  }\n  .leaflet-right .mapbox-control-info .mapbox-info-toggle  { left:auto; right:0; }\n  .mapbox-info-toggle:hover { background-color:#fff; }\n\n.map-info-container {\n  background:#fff;\n  padding:3px 5px 3px 27px;\n  display:none;\n  position:relative;\n  bottom:0;left:0;\n  border-radius:13px 3px 3px 13px;\n  }\n  .leaflet-right .map-info-container {\n    left:auto;\n    right:0;\n    padding:3px 27px 3px 5px;\n    border-radius:3px 13px 13px 3px;\n    }\n\n.mapbox-control-info.active .map-info-container { display:inline-block; }\n.leaflet-container .mapbox-improve-map { font-weight:bold; }\n\n/* Geocoder\n------------------------------------------------------- */\n.leaflet-control-mapbox-geocoder {\n  position:relative;\n  }\n.leaflet-control-mapbox-geocoder.searching {\n  opacity:0.75;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-wrap {\n  background:#fff;\n  position:absolute;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  overflow:hidden;\n  left:26px;\n  height:28px;\n  width:0;\n  top:-1px;\n  border-radius:0 3px 3px 0;\n  opacity:0;\n  -webkit-transition:opacity 100ms;\n     -moz-transition:opacity 100ms;\n       -o-transition:opacity 100ms;\n          transition:opacity 100ms;\n  }\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-wrap {\n  width:180px;\n  opacity:1;\n  }\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle,\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle:hover {\n  border-bottom:none;\n  }\n.leaflet-control-mapbox-geocoder-toggle {\n  border-radius:3px;\n  }\n.leaflet-control-mapbox-geocoder.active,\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-top-right-radius:0;\n  border-bottom-right-radius:0;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n  background:transparent;\n  border:0;\n  width:180px;\n  padding:0 0 0 10px;\n  height:26px;\n  outline:none;\n  }\n.leaflet-control-mapbox-geocoder-results {\n  width:180px;\n  position:absolute;\n  left:26px;\n  top:25px;\n  border-radius:0 0 3px 3px;\n  }\n  .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-results {\n    background:#fff;\n    border:1px solid #999;\n    border-color:rgba(0,0,0,0.4);\n    }\n.leaflet-control-mapbox-geocoder-results a,\n.leaflet-control-mapbox-geocoder-results span {\n  padding:0 10px;\n  text-overflow:ellipsis;\n  white-space:nowrap;\n  display:block;\n  width:100%;\n  font-size:12px;\n  line-height:26px;\n  text-align:left;\n  overflow:hidden;\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a:hover,\n  .leaflet-control-mapbox-geocoder-results a:hover {\n    background:#f8f8f8;\n    opacity:1;\n    }\n\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap,\n.leaflet-right .leaflet-control-mapbox-geocoder-results {\n  left:auto;\n  right:26px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap {\n  border-radius:3px 0 0 3px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder.active,\n.leaflet-right .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-radius:0 3px 3px 0;\n  }\n\n.leaflet-bottom .leaflet-control-mapbox-geocoder-results {\n  top:auto;\n  bottom:25px;\n  border-radius:3px 3px 0 0;\n  }\n\n/* Mapbox Logo\n------------------------------------------------------- */\n.mapbox-logo-true:before {\n  content:'';\n  display:inline-block;\n  width:61px;\n  height:19px;\n  vertical-align:middle;\n}\n.mapbox-logo-true {\n  background-repeat:no-repeat;\n  background-size:61px 19px;\n  background-image:url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI2NSIgaGVpZ2h0PSIyMCI+PGRlZnMvPjxtZXRhZGF0YT48cmRmOlJERj48Y2M6V29yayByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIvPjxkYzp0aXRsZS8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNjEuODQ4MywtOTguNTAzOTUpIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0ib3BhY2l0eTowLjI1O2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLW9wYWNpdHk6MTtzdHJva2UtZGFzaGFycmF5Om5vbmUiPjxwYXRoIGQ9Ik0gNS4yOCAxLjUgQyA0LjU0IDEuNTYgMy45IDIuMjUgMy45MSAzIGwgMCAxMS44OCBjIDAuMDIgMC43NyAwLjcyIDEuNDcgMS41IDEuNDcgbCAxLjc1IDAgYyAwLjc4IDAgMS40OCAtMC42OSAxLjUgLTEuNDcgbCAwIC00LjI4IDAuNzIgMS4xOSBjIDAuNTMgMC44NyAyLjAzIDAuODcgMi41NiAwIGwgMC43MiAtMS4xOSAwIDQuMjggYyAwLjAyIDAuNzYgMC43IDEuNDUgMS40NyAxLjQ3IGwgMS43NSAwIGMgMC43OCAwIDEuNDggLTAuNjkgMS41IC0xLjQ3IGwgMCAtMC4xNiBjIDEuMDIgMS4xMiAyLjQ2IDEuODEgNC4wOSAxLjgxIGwgNC4wOSAwIDAgMS40NyBjIC0wIDAuNzggMC42OSAxLjQ4IDEuNDcgMS41IGwgMS43NSAwIGMgMC43OSAtMCAxLjUgLTAuNzEgMS41IC0xLjUgbCAwLjAyIC0xLjQ3IGMgMS43MiAwIDMuMDggLTAuNjQgNC4xNCAtMS42OSBsIDAgMC4xOSBjIDAgMC4zOSAwLjE2IDAuNzkgMC40NCAxLjA2IDAuMjggMC4yOCAwLjY3IDAuNDQgMS4wNiAwLjQ0IGwgMy4zMSAwIGMgMi4wMyAwIDMuODUgLTEuMDYgNC45MSAtMi42OSAxLjA1IDEuNjEgMi44NCAyLjY5IDQuODggMi42OSAxLjAzIDAgMS45OCAtMC4yNyAyLjgxIC0wLjc1IDAuMjggMC4zNSAwLjczIDAuNTcgMS4xOSAwLjU2IGwgMi4xMiAwIGMgMC40OCAwLjAxIDAuOTcgLTAuMjMgMS4yNSAtMC42MiBsIDAuOTEgLTEuMjggMC45MSAxLjI4IGMgMC4yOCAwLjM5IDAuNzQgMC42MyAxLjIyIDAuNjIgbCAyLjE2IDAgQyA2Mi42NyAxNi4zMyA2My40MiAxNC44OSA2Mi44MSAxNCBMIDYwLjIyIDEwLjM4IDYyLjYyIDcgQyA2My4yNiA2LjExIDYyLjUgNC42MiA2MS40MSA0LjYyIGwgLTIuMTYgMCBDIDU4Ljc4IDQuNjIgNTguMzEgNC44NiA1OC4wMyA1LjI1IEwgNTcuMzEgNi4yOCA1Ni41NiA1LjI1IEMgNTYuMjkgNC44NiA1NS44MiA0LjYyIDU1LjM0IDQuNjIgbCAtMi4xNiAwIGMgLTAuNDkgLTAgLTAuOTcgMC4yNSAtMS4yNSAwLjY2IC0wLjg2IC0wLjUxIC0xLjg0IC0wLjgxIC0yLjkxIC0wLjgxIC0yLjAzIDAgLTMuODMgMS4wOCAtNC44OCAyLjY5IEMgNDMuMSA1LjUzIDQxLjI3IDQuNDcgMzkuMTkgNC40NyBMIDM5LjE5IDMgQyAzOS4xOSAyLjYxIDM5LjAzIDIuMjEgMzguNzUgMS45NCAzOC40NyAxLjY2IDM4LjA4IDEuNSAzNy42OSAxLjUgbCAtMS43NSAwIGMgLTAuNzEgMCAtMS41IDAuODMgLTEuNSAxLjUgbCAwIDMuMTYgQyAzMy4zOCA1LjEgMzEuOTYgNC40NyAzMC4zOCA0LjQ3IGwgLTMuMzQgMCBjIC0wLjc3IDAuMDIgLTEuNDcgMC43MiAtMS40NyAxLjUgbCAwIDAuMzEgYyAtMS4wMiAtMS4xMiAtMi40NiAtMS44MSAtNC4wOSAtMS44MSAtMS42MyAwIC0zLjA3IDAuNyAtNC4wOSAxLjgxIEwgMTcuMzggMyBjIC0wIC0wLjc5IC0wLjcxIC0xLjUgLTEuNSAtMS41IEwgMTQuNSAxLjUgQyAxMy41NSAxLjUgMTIuMjggMS44NyAxMS42NiAyLjk0IGwgLTEgMS42OSAtMSAtMS42OSBDIDkuMDMgMS44NyA3Ljc3IDEuNSA2LjgxIDEuNSBsIC0xLjQxIDAgQyA1LjM2IDEuNSA1LjMyIDEuNSA1LjI4IDEuNSB6IG0gMTYuMTkgNy43MiBjIDAuNTMgMCAwLjk0IDAuMzUgMC45NCAxLjI4IGwgMCAxLjI4IC0wLjk0IDAgYyAtMC41MiAwIC0wLjk0IC0wLjM4IC0wLjk0IC0xLjI4IC0wIC0wLjkgMC40MiAtMS4yOCAwLjk0IC0xLjI4IHogbSA4LjgxIDAgYyAwLjgzIDAgMS4xOCAwLjY4IDEuMTkgMS4yOCAwLjAxIDAuOTQgLTAuNjIgMS4yOCAtMS4xOSAxLjI4IHogbSA4LjcyIDAgYyAwLjcyIDAgMS4zNyAwLjYgMS4zNyAxLjI4IDAgMC43NyAtMC41MSAxLjI4IC0xLjM3IDEuMjggeiBtIDEwLjAzIDAgYyAwLjU4IDAgMS4wOSAwLjUgMS4wOSAxLjI4IDAgMC43OCAtMC41MSAxLjI4IC0xLjA5IDEuMjggLTAuNTggMCAtMS4xMiAtMC41IC0xLjEyIC0xLjI4IDAgLTAuNzggMC41NCAtMS4yOCAxLjEyIC0xLjI4IHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZm9udC1zaXplOm1lZGl1bTtmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTtsaW5lLWhlaWdodDpub3JtYWw7bGV0dGVyLXNwYWNpbmc6bm9ybWFsO3dvcmQtc3BhY2luZzpub3JtYWw7dGV4dC10cmFuc2Zvcm06bm9uZTtkaXJlY3Rpb246bHRyO2Jsb2NrLXByb2dyZXNzaW9uOnRiO3dyaXRpbmctbW9kZTpsci10Yjt0ZXh0LWFuY2hvcjpzdGFydDtiYXNlbGluZS1zaGlmdDpiYXNlbGluZTtjb2xvcjojMDAwMDAwO2ZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZTtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7bWFya2VyOm5vbmU7dmlzaWJpbGl0eTp2aXNpYmxlO2Rpc3BsYXk6aW5saW5lO292ZXJmbG93OnZpc2libGU7ZW5hYmxlLWJhY2tncm91bmQ6YWNjdW11bGF0ZTtmb250LWZhbWlseTpTYW5zOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246U2FucyIvPjwvZz48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0iZmlsbDojZmZmZmZmIj48cGF0aCBkPSJtIDUuNDEgMyAwIDEyIDEuNzUgMCAwIC05LjkxIDMuNSA1Ljk0IDMuNDcgLTUuOTQgMCA5LjkxIDEuNzUgMCAwIC0xMiBMIDE0LjUgMyBDIDEzLjggMyAxMy4yNSAzLjE2IDEyLjk0IDMuNjkgTCAxMC42NiA3LjU5IDguMzggMy42OSBDIDguMDcgMy4xNiA3LjUxIDMgNi44MSAzIHogTSAzNiAzIGwgMCAxMi4wMyAzLjI1IDAgYyAyLjQ0IDAgNC4zOCAtMS45MSA0LjM4IC00LjUzIDAgLTIuNjIgLTEuOTMgLTQuNDcgLTQuMzggLTQuNDcgQyAzOC43IDYuMDMgMzguMzIgNiAzNy43NSA2IGwgMCAtMyB6IE0gMjEuNDcgNS45NyBjIC0yLjQ0IDAgLTQuMTkgMS45MSAtNC4xOSA0LjUzIDAgMi42MiAxLjc1IDQuNTMgNC4xOSA0LjUzIGwgNC4xOSAwIDAgLTQuNTMgYyAwIC0yLjYyIC0xLjc1IC00LjUzIC00LjE5IC00LjUzIHogbSAyNy41NiAwIGMgLTIuNDEgMCAtNC4zOCAyLjAzIC00LjM4IDQuNTMgMCAyLjUgMS45NyA0LjUzIDQuMzggNC41MyAyLjQxIDAgNC4zNCAtMi4wMyA0LjM0IC00LjUzIDAgLTIuNSAtMS45NCAtNC41MyAtNC4zNCAtNC41MyB6IG0gLTIyIDAuMDMgMCAxMiAxLjc1IDAgMCAtMi45NyBjIDAuNTcgMCAxLjA0IC0wIDEuNTkgMCAyLjQ0IDAgNC4zNCAtMS45MSA0LjM0IC00LjUzIDAgLTIuNjIgLTEuOSAtNC41IC00LjM0IC00LjUgeiBtIDI2LjE2IDAgMy4wMyA0LjM4IC0zLjE5IDQuNjIgMi4xMiAwIEwgNTcuMzEgMTEuOTEgNTkuNDQgMTUgNjEuNTkgMTUgNTguMzggMTAuMzggNjEuNDEgNiA1OS4yNSA2IDU3LjMxIDguODEgNTUuMzQgNiB6IE0gMjEuNDcgNy43MiBjIDEuNCAwIDIuNDQgMS4xOSAyLjQ0IDIuNzggbCAwIDIuNzggLTIuNDQgMCBjIC0xLjQgMCAtMi40NCAtMS4yMSAtMi40NCAtMi43OCAtMCAtMS41NyAxLjA0IC0yLjc4IDIuNDQgLTIuNzggeiBtIDI3LjU2IDAgYyAxLjQ0IDAgMi41OSAxLjI0IDIuNTkgMi43OCAwIDEuNTQgLTEuMTUgMi43OCAtMi41OSAyLjc4IC0xLjQ0IDAgLTIuNjIgLTEuMjQgLTIuNjIgLTIuNzggMCAtMS41NCAxLjE4IC0yLjc4IDIuNjIgLTIuNzggeiBtIC0yMC4yNSAwLjAzIDEuNTkgMCBjIDEuNTkgMCAyLjU5IDEuMjggMi41OSAyLjc1IDAgMS40NyAtMS4xMyAyLjc4IC0yLjU5IDIuNzggbCAtMS41OSAwIHogbSA4Ljk3IDAgMS41IDAgYyAxLjQ3IDAgMi42MiAxLjI4IDIuNjIgMi43NSAwIDEuNDcgLTEuMDQgMi43OCAtMi42MiAyLjc4IGwgLTEuNSAwIHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIi8+PC9nPjwvZz48L3N2Zz4=');\n}\n\n/* Dark Theme\n------------------------------------------------------- */\n.leaflet-container.dark .leaflet-bar {\n  background-color:#404040;\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-bar a {\n    color:#404040;\n    border-color:rgba(0,0,0,0.5);\n    }\n  .leaflet-container.dark .leaflet-bar a:active,\n  .leaflet-container.dark .leaflet-bar a:hover {\n    background-color:#505050;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:after,\n.leaflet-container.dark .mapbox-info-toggle,\n.leaflet-container.dark .map-info-container,\n.leaflet-container.dark .leaflet-control-attribution {\n  background-color:rgba(0,0,0,0.5);\n  color:#f8f8f8;\n  }\n  .leaflet-container.dark .leaflet-control-attribution a,\n  .leaflet-container.dark .leaflet-control-attribution a:hover,\n  .leaflet-container.dark .map-info-container a,\n  .leaflet-container.dark .map-info-container a:hover {\n    color:#fff;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:hover:after {\n  background-color:#000;\n  }\n.leaflet-container.dark .leaflet-control-layers-list span {\n  color:#f8f8f8;\n  }\n.leaflet-container.dark .leaflet-control-layers-separator {\n  border-top-color:rgba(255,255,255,0.10);\n  }\n.leaflet-container.dark .leaflet-bar a.leaflet-disabled,\n.leaflet-container.dark .leaflet-control .mapbox-button.disabled {\n  background-color:#252525;\n  color:#404040;\n  }\n.leaflet-container.dark .leaflet-control-mapbox-geocoder > div {\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a {\n    border-color:#ddd #202020;\n    border-color:rgba(0,0,0,0.10) rgba(0,0,0,0.75);\n    }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results span {\n    border-color:#202020;\n    border-color:rgba(0,0,0,0.75);\n    }\n\n/* Larger Screens\n------------------------------------------------------- */\n@media only screen and (max-width:800px) {\n.mapbox-modal-body {\n  width:83.3333%;\n  margin-left:8.3333%;\n  }\n}\n\n/* Smaller Screens\n------------------------------------------------------- */\n@media only screen and (max-width:640px) {\n.mapbox-modal-body {\n  width:100%;\n  height:100%;\n  margin:0;\n  }\n}\n\n/* Print\n------------------------------------------------------- */\n@media print { .mapbox-improve-map { display:none; } }\n\n/* Browser Fixes\n------------------------------------------------------- */\n/* VML support for IE8 */\n.leaflet-vml-shape { width:1px; height:1px; }\n.lvml { behavior:url(#default#VML); display:inline-block; position:absolute; }\n/* Map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img.leaflet-tile { max-width:none !important; }\n/* Markers are broken in FF/IE if you have max-width: 100% on marker images */\n.leaflet-container img.leaflet-marker-icon { max-width:none; }\n/* Stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer { max-width:15000px !important; }\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg { -moz-user-select:none; }\n/* Older IEs don't support the translateY property for display animation */\n.leaflet-oldie .mapbox-modal .mapbox-modal-content        { display:none; }\n.leaflet-oldie .mapbox-modal.active .mapbox-modal-content { display:block; }\n.map-tooltip { width:280px\\8; /* < IE9 */ }\n\n/* < IE8 */\n.leaflet-oldie .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-popup-close-button,\n.leaflet-oldie .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .map-tooltip .close,\n.leaflet-oldie .map-tooltip .close,\n.leaflet-oldie .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXnSURBVHic7ZxfiFVFGMB/33pRUQsKto002DY3McJ6yBYkESQxpYTypaB66KEXYRWLYOlhr9RTRGWRUkk9RyEU+Y9ClECJVTKlPybWBilqkYuWrqBOD/NdPV7PmTPn3NPtat/AcO6ZP9/vfN/Mmfl2Zs6Kc452hK62UAxkIANdEURkVERGC9crOjKIiANwzkmRep1lOjWXa2ijaU7jaGWgKsL110a1EnV+LQMqbLqyobO6t4EMZCADGchABrqmQUlPNSWOVgaqIpi7ZSADGchABjKQga49kIjURaQem14apGE4KVR/D0fXds5FRaAOOL1e+h1dP7ZgE6wQxDnXvs7QWaZLE1wUVmRNdY1zrp6wRF0kfqHYnHwDGchABjJQIETNRyIyFVgBzAPmavIIsAt4xzn3d66QiNl1PnCYy05JczwMzG9pKlfIhQCkES/kwUKQqRma9GpM02xqGXdrBdCXZm2NzaFP66SGUGeYl5E+WqJO0HRHSG+PXtJN54AjVbhbjQcbBSjiakH4hR0p+hChOiHQrhKg7Drt6t7//Qtb9RAU5XtXMaiak28gAxnIQO0Gicg0EXlMRDaIyFGNGzRtWhQpMA/1A6uAL4BzZM9H57TMKqC/8HyUPFhZJLiMI4sh0/UDK4FtwHig3LiWWal1UkPsDDsFWAgsBZZo8hZgM7DdOXcmV0igjQ4Ba4HFwORAuclaZi1wqNU2OgNsVw22aNoS1XAhMCXx4OkubOBJZwKDwFbgLNm97qyWGQRmtuoFWRsV0ujabCPzVA1kIAMZqBNAIjIgImPNRxUzK+SsmtRJn4Pqmj8AjCXzsmTlaTSck/8zcDRX/QiNMp8S6Ab2a5nvG5plyioDaoLs1/sBYKwyUBokkTdQJeiVZgi6UR+UVQI0QWHdoXKFvKDYz7RiynXctk7LPlmeRmsKyAqWNQfSQAYykIGuS5CI1ERkSET2ishpvQ6JSLE93ByfoQbsRHeNgfe4vOO8E6iF6hdxToZU6OqGUIWv1vShqkB7VYNaU3pN0/fGgvLa6C5gk3PufJO5zwObgDuraqM8jbZWpdEnwG3AYKOX6XVQ07+sSqNQr3P4QxS9LXeGBGxIzTiGXwR8QSHRsCj7ZjxAbxFYaVAKbMe/BkrAduRpZJ6qgQxkoP8DKDRY1sk/s5W6YFhoUG3nFnZeOIJfxLgXWB7zBFmmyzPT44my9zXSC098OZCTwCQttzOZVzVoX1a5LHmdtYyWDM29yjknItKF3xSelFWvKo1mhCClQLo1sC95T8T/ebr+xrqOABVZT82tY56qgQxkIAN1CkhEulsGiUi3iCzKyJsjIpuBYyLyo4isFpHXReTuTFLAr1sOnAeeT8nbzNW+3rfAM2UcyAcSQj4FngR68Ot0F1NA24CuMqBu4PMUgYdS0hzwYqlFJ+AeNV3s30aLSoEUtjEScoHE3nkZ0Ay1fR7o3ZCcGNAEYHcO5A/g5pZACpsMPEf6UexTwCN5MvI6w2zgaeBt4HQK5BsC57ubY+jPll/wHzn1Ayc07QD+u6MR4GPn3LlA/SuCOZAGMpCBDFRhiF50EpFl+PP49wOzgIPAHmCLc+6zXAERE18P+b7DRqAnJCfvfF0P/mTgLZr0l97vB27CL3HO0rwTwBzn3PHCGiU0uQisA6bhzT0T/T4ZeAr4s6FZmal8WcI0LwETgdfwHzY1XKz3teyjibLLioLWa8UDeG/oZbxD+QHwdULwg1r+K71fXxQ0ohXfAgS/Mvyh5i1MgNZp2qt6P5ImL/QezdbrSeAG4EbVJJkH8LteJ+p1FikhBPpNr3Odc6fUNHdo2oJEucbX8Y2zDQeLgr7T62IReRb4AX9mGGC6Xo8Bu0VkOvCQpu1JlRZoo6Vc/WL2ad4C4A28CWvAR5TtdU0dwqH/ewHvHi8HbgUexh+euDRCFH6PVOh0/FKzw3um4M8zpA1DxwkMQzFjXR9+d/9N1WI8BZI71kU56Aq8HXgC+Ak/5o3gX+rUNmmO5nsbqP2gfwCyvJzPNoKXiAAAAABJRU5ErkJggg==');\n}\n.leaflet-oldie .mapbox-button-icon:before,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXYSURBVHic7ZxfiFVFHMc/a4uKWtDDtqJGZprYgwX5ByTdkkLbSgghCiKih14EBYtg6aEr9RRREKRUUs9hGEVtChKaYMkq2VqWmnUX2tKiNDNZY/Xbw/wue7x7zsw559626zY/GM6df7/P+c3MPfO7M3NumyTGQiaMCSWCIiiC6qVqoZC0lXgy1Cq0FanUck1XxVmSNL8WrzYT1LCMvz5qL1FnoAyoTNOVkpYb3hEUQREUQREUQRF0RYOqjHim9aHaTFDDEt2tCIqgCIqgCIqgCLoiQRULedNLgwCeq1NasbR8IilvqMhJpe5zrvpFQElYIYiksRsMLdd0aYoLwYqsqW5i9KjLLdHJj6AIiqAIiiCP5J2PpgLrgGXAYkvrA/YBrwF/BTXkmB2XSzqhbDlhZRqaypdLuuiB1ORiCOaDTM2wZLaFNMumZunzDYZ1wJy01ubyPfOazLE6qeIbDMsy0qsl6ngtWpyRfqOFInVKbWFXS9TxWtRXQl9mHR9oXwlQdp2xGt4t8YVt6iMor+/d8EM1OvkRFEERFEH/AWga8CCwFfjJwlZLm5ZHge/pPQ+4z8IKYGJGub+BT4GPLBwvCio7f6QeWfQ13TxgA7ATGPKUG7IyG6xOOj3nxDcFWAl0A/da2sdAL/AJcD6kwAc6bop6gT1kWzUZ6LKb6CbDqrx9dB535704S8BZ1o2zdEpSZ1HQ3MRddtmdp8kQzuKa9d8VBSUl9lEh0Pjro6ZKy00TERRBERRBLQZaCpxh9FHFUqBKiiJZ+n5gFfBHnrsKgUKb7t/j/PCwBNZwapKW1yGp3/KPSDrjKVsalIT0W3ypwZoGSoPU8pY2E/RCCqSiwJ55GdBVBusIlCu0Xpf3Na1guZbb1mnYJwtZtKmALm/Z6EBGUARFUASNV1A70AMcBP60aw9F93ADPkO7pD3mDwxKesOusvT2QP3czkmPKd2YUNpucVl+LlBo4jsITAduAIbrmnMAOAncnqflQn10M26JebgufdjSb8oDyQM6hlv3ru/4dkv/vFmgd4EZwPoErN3iM4BdeUGNjDpJqsrtmzc86mqwHkkH5X4t7JD0tEFyw3INzYwwuwisEVA9bPe/CarBdocsip5qBEVQBP3fQRWyX4jOCpUsZS2xhR2SQdwixq3A2lDhMkcTa7Ie2G6fwzfsmax8clrSJCu3py4vVV/ZphsALtjnFXkqtNwyWlLqR1Ub7obPA5OyKjXLolk+SFmQgEN18eD/PLXEI2j8gYqspwbrRE81giIogiKohUAdzQB1APdk5C3Ends6CXwLbAReBm7J1OZxINdKGpb0VEpeb4pT+aWkx8os0SxJKHlf0iOSOiXNkHQpBbRT0oQyoA5JH6YoPJ6SJknPeHR5+6gTWJ2SPjej/BceXV7QV8AHvsoJucTlvt5o8ZkraZa1fUheD+gJfo9+Bq4JlPkNt4Xgl9CdSJos6UlJF1IsOSvp/hw6vL8mFgCLgCXA44w+730IeIiM89314gP9ACzHHXD9xdIO49476gO2MfJjLCjRgYygCIqgCGqiFFl0WoM7j78ImA8cBQ7gzuaHp/wck1anpO2BqXy7lSu9I9YJ9APXWfycxfuBa4HbzDpwc9ZC4FQZi2qWXJK0WdI0ue3SuRp5P/lRSb8nLCvsQK5JNM2zkiZKeknSkKVdlPSmlX0gUXZNUdAWq3hY7tzj83K++FuS9icU32Hl91p8S1FQn1V8VVKb3Mrw25a3MgHabGkvWrwvTZ/ve7TArqeBq3H+3f66PIBf7VrzkuaTIj7Qj3ZdDJwF9jLy5wJdiXK1t+NrZxuOFgV9bddVwBPAN8ARS5tp15PAZxa/29IOpGrz9FG3Rsscy+uS9IqkBXLD/Z1GRl1yQEjuHANy7vFaSdMlrZa0K1Gm1PcISTMlDZiSbZa2I8VSSTolz2Mo9PQeBO7CvTE1iDtRc2dKuffwPX4CfVQfrpf0sKRjks5Zs27J6pP6EH3vCBp70D8db2VXFPfIagAAAABJRU5ErkJggg==');\n}\n\n.leaflet-oldie .mapbox-logo-true {\n  background-image: none;\n}\n", ""]);
+exports.push([module.i, "/* general typography */\n.leaflet-container {\n  background:#fff;\n  font:12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  outline:0;\n  overflow:hidden;\n  -ms-touch-action:none;\n  }\n\n.leaflet-container *,\n.leaflet-container *:after,\n.leaflet-container *:before {\n  -webkit-box-sizing:border-box;\n     -moz-box-sizing:border-box;\n          box-sizing:border-box;\n  }\n\n.leaflet-container h1,\n.leaflet-container h2,\n.leaflet-container h3,\n.leaflet-container h4,\n.leaflet-container h5,\n.leaflet-container h6,\n.leaflet-container p {\n  font-size:15px;\n  line-height:20px;\n  margin:0 0 10px;\n  }\n\n.leaflet-container .marker-description img {\n  margin-bottom: 10px;\n  }\n\n.leaflet-container a {\n  color:#3887BE;\n  font-weight:normal;\n  text-decoration:none;\n  }\n  .leaflet-container a:hover      { color:#63b6e5; }\n  .leaflet-container.dark a       { color:#63b6e5; }\n  .leaflet-container.dark a:hover { color:#8fcaec; }\n\n.leaflet-container.dark .mapbox-button,\n.leaflet-container .mapbox-button {\n  background-color:#3887be;\n  display:inline-block;\n  height:40px;\n  line-height:40px;\n  text-decoration:none;\n  color:#fff;\n  font-size:12px;\n  white-space:nowrap;\n  text-overflow:ellipsis;\n  }\n  .leaflet-container.dark .mapbox-button:hover,\n  .leaflet-container .mapbox-button:hover {\n    color:#fff;\n    background-color:#3bb2d0;\n    }\n\n/* Base Leaflet\n------------------------------------------------------- */\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n  position:absolute;\n  left:0;\n  top:0;\n  }\n\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  -webkit-user-drag:none;\n  -webkit-user-select:none;\n     -moz-user-select:none;\n          user-select:none;\n  }\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n  display: block;\n  }\n\n.leaflet-tile {\n  filter:inherit;\n  visibility:hidden;\n  }\n.leaflet-tile-loaded {\n  visibility:inherit;\n  }\n.leaflet-zoom-box {\n  width:0;\n  height:0;\n  }\n\n.leaflet-tile-pane    { z-index:2; }\n.leaflet-objects-pane { z-index:3; }\n.leaflet-overlay-pane { z-index:4; }\n.leaflet-shadow-pane  { z-index:5; }\n.leaflet-marker-pane  { z-index:6; }\n.leaflet-popup-pane   { z-index:7; }\n\n.leaflet-control {\n  position:relative;\n  z-index:7;\n  pointer-events:auto;\n  float:left;\n  clear:both;\n  }\n  .leaflet-right .leaflet-control   { float:right; }\n  .leaflet-top .leaflet-control     { margin-top:10px; }\n  .leaflet-bottom .leaflet-control  { margin-bottom:10px; }\n  .leaflet-left .leaflet-control    { margin-left:10px; }\n  .leaflet-right .leaflet-control   { margin-right:10px; }\n\n.leaflet-top,\n.leaflet-bottom {\n  position:absolute;\n  z-index:1000;\n  pointer-events:none;\n  }\n  .leaflet-top    { top:0; }\n  .leaflet-right  { right:0; }\n  .leaflet-bottom { bottom:0; }\n  .leaflet-left   { left:0; }\n\n/* zoom and fade animations */\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n  opacity:0;\n  -webkit-transition:opacity 0.2s linear;\n     -moz-transition:opacity 0.2s linear;\n       -o-transition:opacity 0.2s linear;\n          transition:opacity 0.2s linear;\n  }\n  .leaflet-fade-anim .leaflet-tile-loaded,\n  .leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n    opacity:1;\n    }\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n  -webkit-transition:-webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n     -moz-transition:   -moz-transform 0.25s cubic-bezier(0,0,0.25,1);\n       -o-transition:     -o-transform 0.25s cubic-bezier(0,0,0.25,1);\n          transition:        transform 0.25s cubic-bezier(0,0,0.25,1);\n  }\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n  -webkit-transition:none;\n     -moz-transition:none;\n       -o-transition:none;\n          transition:none;\n  }\n.leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; }\n\n/* cursors */\n.leaflet-container {\n  cursor:-webkit-grab;\n  cursor:   -moz-grab;\n  }\n.leaflet-overlay-pane path,\n.leaflet-marker-icon,\n.leaflet-container.map-clickable,\n.leaflet-container.leaflet-clickable {\n  cursor:pointer;\n  }\n.leaflet-popup-pane,\n.leaflet-control {\n  cursor:auto;\n  }\n.leaflet-dragging,\n.leaflet-dragging .map-clickable,\n.leaflet-dragging .leaflet-clickable,\n.leaflet-dragging .leaflet-container {\n  cursor:move;\n  cursor:-webkit-grabbing;\n  cursor:   -moz-grabbing;\n  }\n\n.leaflet-zoom-box {\n  background:#fff;\n  border:2px dotted #202020;\n  opacity:0.5;\n  }\n\n/* general toolbar styles */\n.leaflet-control-layers,\n.leaflet-bar {\n  background-color:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-radius:3px;\n  box-shadow:none;\n  }\n.leaflet-bar a,\n.leaflet-bar a:hover {\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  border-bottom:1px solid #ddd;\n  border-bottom-color:rgba(0,0,0,0.10);\n  }\n  .leaflet-bar a:hover,\n  .leaflet-bar a:active {\n    background-color:#f8f8f8;\n    cursor:pointer;\n    }\n  .leaflet-bar a:hover:first-child {\n    border-radius:3px 3px 0 0;\n    }\n  .leaflet-bar a:hover:last-child {\n    border-bottom:none;\n    border-radius:0 0 3px 3px;\n    }\n  .leaflet-bar a:hover:only-of-type {\n    border-radius:3px;\n    }\n\n.leaflet-bar .leaflet-disabled {\n  cursor:default;\n  opacity:0.75;\n  }\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n  display:block;\n  content:'';\n  text-indent:-999em;\n  }\n\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n  display:none;\n  }\n  .leaflet-control-layers-expanded .leaflet-control-layers-list {\n    display:block;\n    position:relative;\n    }\n\n.leaflet-control-layers-expanded {\n  background:#fff;\n  padding:6px 10px 6px 6px;\n  color:#404040;\n  color:rgba(0,0,0,0.75);\n  }\n.leaflet-control-layers-selector {\n  margin-top:2px;\n  position:relative;\n  top:1px;\n  }\n.leaflet-control-layers label {\n  display: block;\n  }\n.leaflet-control-layers-separator {\n  height:0;\n  border-top:1px solid #ddd;\n  border-top-color:rgba(0,0,0,0.10);\n  margin:5px -10px 5px -6px;\n  }\n\n.leaflet-container .leaflet-control-attribution {\n  background-color:rgba(255,255,255,0.5);\n  margin:0;\n  box-shadow:none;\n  }\n  .leaflet-container .leaflet-control-attribution a,\n  .leaflet-container .map-info-container a {\n    color:#404040;\n    }\n    .leaflet-control-attribution a:hover,\n    .map-info-container a:hover {\n      color:inherit;\n      text-decoration:underline;\n      }\n\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n  padding:0 5px;\n  }\n  .leaflet-left .leaflet-control-scale    { margin-left:5px; }\n  .leaflet-bottom .leaflet-control-scale  { margin-bottom:5px; }\n\n/* Used for smaller map containers & triggered by container size */\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution { margin:10px; }\n.leaflet-container .leaflet-control-attribution.leaflet-compact-attribution {\n  background:#fff;\n  border-radius:3px 13px 13px 3px;\n  padding:3px 31px 3px 3px;\n  visibility:hidden;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover {\n    visibility:visible;\n    }\n\n.leaflet-control-attribution.leaflet-compact-attribution:after {\n  content:'';\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  background-position:0 -78px;\n  border-radius:50%;\n  position:absolute;\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  bottom:0;\n  z-index:1;\n  visibility:visible;\n  cursor:pointer;\n  }\n  .leaflet-control-attribution.leaflet-compact-attribution:hover:after { background-color:#fff; }\n\n.leaflet-right .leaflet-control-attribution.leaflet-compact-attribution:after { right:0; }\n.leaflet-left .leaflet-control-attribution.leaflet-compact-attribution:after { left:0; }\n\n.leaflet-control-scale-line {\n  background-color:rgba(255,255,255,0.5);\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  border-top:none;\n  padding:2px 5px 1px;\n  white-space:nowrap;\n  overflow:hidden;\n  }\n  .leaflet-control-scale-line:not(:first-child) {\n    border-top:2px solid #ddd;\n    border-top-color:rgba(0,0,0,0.10);\n    border-bottom:none;\n    margin-top:-2px;\n    }\n  .leaflet-control-scale-line:not(:first-child):not(:last-child) {\n    border-bottom:2px solid #777;\n    }\n\n/* popup */\n.leaflet-popup {\n  position:absolute;\n  text-align:center;\n  pointer-events:none;\n  }\n.leaflet-popup-content-wrapper {\n  padding:1px;\n  text-align:left;\n  pointer-events:all;\n  }\n.leaflet-popup-content {\n  padding:10px 10px 15px;\n  margin:0;\n  line-height:inherit;\n  }\n  .leaflet-popup-close-button + .leaflet-popup-content-wrapper .leaflet-popup-content {\n    padding-top:15px;\n    }\n\n.leaflet-popup-tip-container {\n  width:20px;\n  height:20px;\n  margin:0 auto;\n  position:relative;\n  }\n.leaflet-popup-tip {\n  width:0;\n\theight:0;\n  margin:0;\n\tborder-left:10px solid transparent;\n\tborder-right:10px solid transparent;\n\tborder-top:10px solid #fff;\n  box-shadow:none;\n  }\n.leaflet-popup-close-button {\n  text-indent:-999em;\n  position:absolute;\n  top:0;right:0;\n  pointer-events:all;\n  }\n  .leaflet-popup-close-button:hover {\n    background-color:#f8f8f8;\n    }\n\n.leaflet-popup-scrolled {\n  overflow:auto;\n  border-bottom:1px solid #ddd;\n  border-top:1px solid #ddd;\n  }\n\n/* div icon */\n.leaflet-div-icon {\n  background:#fff;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  }\n.leaflet-editing-icon {\n  border-radius:3px;\n  }\n\n/* Leaflet + Mapbox\n------------------------------------------------------- */\n.leaflet-bar a,\n.mapbox-icon,\n.map-tooltip.closable .close,\n.leaflet-control-layers-toggle,\n.leaflet-popup-close-button,\n.mapbox-button-icon:before {\n  content:'';\n  display:inline-block;\n  width:26px;\n  height:26px;\n  vertical-align:middle;\n  background-repeat:no-repeat;\n  }\n.leaflet-bar a {\n  display:block;\n  }\n\n.leaflet-control-attribution:after,\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out,\n.leaflet-popup-close-button,\n.leaflet-control-layers-toggle,\n.leaflet-container.dark .map-tooltip .close,\n.map-tooltip .close,\n.mapbox-icon {\n  opacity: .75;\n  background-image:url(" + escape(__webpack_require__(194)) + ");\n  background-repeat:no-repeat;\n  background-size:26px 260px;\n  }\n  .leaflet-container.dark .leaflet-control-attribution:after,\n  .mapbox-button-icon:before,\n  .leaflet-container.dark .leaflet-control-zoom-in,\n  .leaflet-container.dark .leaflet-control-zoom-out,\n  .leaflet-container.dark .leaflet-control-layers-toggle,\n  .leaflet-container.dark .mapbox-icon {\n    opacity: 1;\n    background-image:url(" + escape(__webpack_require__(195)) + ");\n    background-size:26px 260px;\n    }\n  .leaflet-bar .leaflet-control-zoom-in                 { background-position:0 0; }\n  .leaflet-bar .leaflet-control-zoom-out                { background-position:0 -26px; }\n  .map-tooltip.closable .close,\n  .leaflet-popup-close-button {\n    background-position:-3px -55px;\n    width:20px;\n    height:20px;\n    border-radius:0 3px 0 0;\n    }\n  .mapbox-icon-info                                     { background-position:0 -78px; }\n  .leaflet-control-layers-toggle                        { background-position:0 -104px; }\n  .mapbox-icon.mapbox-icon-share:before, .mapbox-icon.mapbox-icon-share         { background-position:0 -130px; }\n  .mapbox-icon.mapbox-icon-geocoder:before, .mapbox-icon.mapbox-icon-geocoder   { background-position:0 -156px; }\n  .mapbox-icon-facebook:before, .mapbox-icon-facebook   { background-position:0 -182px; }\n  .mapbox-icon-twitter:before, .mapbox-icon-twitter     { background-position:0 -208px; }\n  .mapbox-icon-pinterest:before, .mapbox-icon-pinterest { background-position:0 -234px; }\n\n.leaflet-popup-content-wrapper,\n.map-legends,\n.map-tooltip {\n  background:#fff;\n  border-radius:3px;\n  box-shadow:0 1px 2px rgba(0,0,0,0.10);\n  }\n.map-legends,\n.map-tooltip {\n  max-width:300px;\n  }\n.map-legends .map-legend {\n  padding:10px;\n  }\n.map-tooltip {\n  z-index:999999;\n  padding:10px;\n  min-width:180px;\n  max-height:400px;\n  overflow:auto;\n  opacity:1;\n  -webkit-transition:opacity 150ms;\n     -moz-transition:opacity 150ms;\n       -o-transition:opacity 150ms;\n          transition:opacity 150ms;\n  }\n\n.map-tooltip .close {\n  text-indent:-999em;\n  overflow:hidden;\n  display:none;\n  }\n  .map-tooltip.closable .close {\n    position:absolute;\n    top:0;right:0;\n    border-radius:3px;\n    }\n    .map-tooltip.closable .close:active  {\n      background-color:#f8f8f8;\n      }\n\n.leaflet-control-interaction {\n  position:absolute;\n  top:10px;\n  right:10px;\n  width:300px;\n  }\n.leaflet-popup-content .marker-title {\n  font-weight:bold;\n  }\n.leaflet-control .mapbox-button {\n  background-color:#fff;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  padding:5px 10px;\n  border-radius:3px;\n  }\n\n/* Share modal\n------------------------------------------------------- */\n.mapbox-modal > div {\n  position:absolute;\n  top:0;\n  left:0;\n  width:100%;\n  height:100%;\n  z-index:-1;\n  overflow-y:auto;\n  }\n  .mapbox-modal.active > div {\n    z-index:99999;\n    transition:all .2s, z-index 0 0;\n    }\n\n.mapbox-modal .mapbox-modal-mask {\n  background:rgba(0,0,0,0.5);\n  opacity:0;\n  }\n  .mapbox-modal.active .mapbox-modal-mask { opacity:1; }\n\n.mapbox-modal .mapbox-modal-content {\n  -webkit-transform:translateY(-100%);\n     -moz-transform:translateY(-100%);\n      -ms-transform:translateY(-100%);\n          transform:translateY(-100%);\n  }\n  .mapbox-modal.active .mapbox-modal-content {\n    -webkit-transform:translateY(0);\n       -moz-transform:translateY(0);\n        -ms-transform:translateY(0);\n            transform:translateY(0);\n    }\n\n.mapbox-modal-body {\n  position:relative;\n  background:#fff;\n  padding:20px;\n  z-index:1000;\n  width:50%;\n  margin:20px 0 20px 25%;\n  }\n.mapbox-share-buttons {\n  margin:0 0 20px;\n  }\n.mapbox-share-buttons a {\n  width:33.3333%;\n  border-left:1px solid #fff;\n  text-align:center;\n  border-radius:0;\n  }\n  .mapbox-share-buttons a:last-child  { border-radius:0 3px 3px 0; }\n  .mapbox-share-buttons a:first-child { border:none; border-radius:3px 0 0 3px; }\n\n.mapbox-modal input {\n  width:100%;\n  height:40px;\n  padding:10px;\n  border:1px solid #ddd;\n  border-color:rgba(0,0,0,0.10);\n  color:rgba(0,0,0,0.5);\n  }\n\n/* Info Control\n------------------------------------------------------- */\n.leaflet-control.mapbox-control-info {\n  margin:5px 30px 10px 10px;\n  min-height:26px;\n  }\n  .leaflet-right .leaflet-control.mapbox-control-info {\n    margin:5px 10px 10px 30px;\n    }\n\n.mapbox-info-toggle {\n  background-color:#fff;\n  background-color:rgba(255,255,255,0.5);\n  border-radius:50%;\n  position:absolute;\n  bottom:0;left:0;\n  z-index:1;\n  }\n  .leaflet-right .mapbox-control-info .mapbox-info-toggle  { left:auto; right:0; }\n  .mapbox-info-toggle:hover { background-color:#fff; }\n\n.map-info-container {\n  background:#fff;\n  padding:3px 5px 3px 27px;\n  display:none;\n  position:relative;\n  bottom:0;left:0;\n  border-radius:13px 3px 3px 13px;\n  }\n  .leaflet-right .map-info-container {\n    left:auto;\n    right:0;\n    padding:3px 27px 3px 5px;\n    border-radius:3px 13px 13px 3px;\n    }\n\n.mapbox-control-info.active .map-info-container { display:inline-block; }\n.leaflet-container .mapbox-improve-map { font-weight:bold; }\n\n/* Geocoder\n------------------------------------------------------- */\n.leaflet-control-mapbox-geocoder {\n  position:relative;\n  }\n.leaflet-control-mapbox-geocoder.searching {\n  opacity:0.75;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-wrap {\n  background:#fff;\n  position:absolute;\n  border:1px solid #999;\n  border-color:rgba(0,0,0,0.4);\n  overflow:hidden;\n  left:26px;\n  height:28px;\n  width:0;\n  top:-1px;\n  border-radius:0 3px 3px 0;\n  opacity:0;\n  -webkit-transition:opacity 100ms;\n     -moz-transition:opacity 100ms;\n       -o-transition:opacity 100ms;\n          transition:opacity 100ms;\n  }\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-wrap {\n  width:180px;\n  opacity:1;\n  }\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle,\n.leaflet-bar .leaflet-control-mapbox-geocoder-toggle:hover {\n  border-bottom:none;\n  }\n.leaflet-control-mapbox-geocoder-toggle {\n  border-radius:3px;\n  }\n.leaflet-control-mapbox-geocoder.active,\n.leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-top-right-radius:0;\n  border-bottom-right-radius:0;\n  }\n.leaflet-control-mapbox-geocoder .leaflet-control-mapbox-geocoder-form input {\n  background:transparent;\n  border:0;\n  width:180px;\n  padding:0 0 0 10px;\n  height:26px;\n  outline:none;\n  }\n.leaflet-control-mapbox-geocoder-results {\n  width:180px;\n  position:absolute;\n  left:26px;\n  top:25px;\n  border-radius:0 0 3px 3px;\n  }\n  .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-results {\n    background:#fff;\n    border:1px solid #999;\n    border-color:rgba(0,0,0,0.4);\n    }\n.leaflet-control-mapbox-geocoder-results a,\n.leaflet-control-mapbox-geocoder-results span {\n  padding:0 10px;\n  text-overflow:ellipsis;\n  white-space:nowrap;\n  display:block;\n  width:100%;\n  font-size:12px;\n  line-height:26px;\n  text-align:left;\n  overflow:hidden;\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a:hover,\n  .leaflet-control-mapbox-geocoder-results a:hover {\n    background:#f8f8f8;\n    opacity:1;\n    }\n\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap,\n.leaflet-right .leaflet-control-mapbox-geocoder-results {\n  left:auto;\n  right:26px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder-wrap {\n  border-radius:3px 0 0 3px;\n  }\n.leaflet-right .leaflet-control-mapbox-geocoder.active,\n.leaflet-right .leaflet-control-mapbox-geocoder.active .leaflet-control-mapbox-geocoder-toggle {\n  border-radius:0 3px 3px 0;\n  }\n\n.leaflet-bottom .leaflet-control-mapbox-geocoder-results {\n  top:auto;\n  bottom:25px;\n  border-radius:3px 3px 0 0;\n  }\n\n/* Mapbox Logo\n------------------------------------------------------- */\n.mapbox-logo-true:before {\n  content:'';\n  display:inline-block;\n  width:61px;\n  height:19px;\n  vertical-align:middle;\n}\n.mapbox-logo-true {\n  background-repeat:no-repeat;\n  background-size:61px 19px;\n  background-image:url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI2NSIgaGVpZ2h0PSIyMCI+PGRlZnMvPjxtZXRhZGF0YT48cmRmOlJERj48Y2M6V29yayByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIvPjxkYzp0aXRsZS8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNjEuODQ4MywtOTguNTAzOTUpIj48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0ib3BhY2l0eTowLjI1O2ZpbGw6I2ZmZmZmZjtzdHJva2U6IzAwMDAwMDtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjQ7c3Ryb2tlLW9wYWNpdHk6MTtzdHJva2UtZGFzaGFycmF5Om5vbmUiPjxwYXRoIGQ9Ik0gNS4yOCAxLjUgQyA0LjU0IDEuNTYgMy45IDIuMjUgMy45MSAzIGwgMCAxMS44OCBjIDAuMDIgMC43NyAwLjcyIDEuNDcgMS41IDEuNDcgbCAxLjc1IDAgYyAwLjc4IDAgMS40OCAtMC42OSAxLjUgLTEuNDcgbCAwIC00LjI4IDAuNzIgMS4xOSBjIDAuNTMgMC44NyAyLjAzIDAuODcgMi41NiAwIGwgMC43MiAtMS4xOSAwIDQuMjggYyAwLjAyIDAuNzYgMC43IDEuNDUgMS40NyAxLjQ3IGwgMS43NSAwIGMgMC43OCAwIDEuNDggLTAuNjkgMS41IC0xLjQ3IGwgMCAtMC4xNiBjIDEuMDIgMS4xMiAyLjQ2IDEuODEgNC4wOSAxLjgxIGwgNC4wOSAwIDAgMS40NyBjIC0wIDAuNzggMC42OSAxLjQ4IDEuNDcgMS41IGwgMS43NSAwIGMgMC43OSAtMCAxLjUgLTAuNzEgMS41IC0xLjUgbCAwLjAyIC0xLjQ3IGMgMS43MiAwIDMuMDggLTAuNjQgNC4xNCAtMS42OSBsIDAgMC4xOSBjIDAgMC4zOSAwLjE2IDAuNzkgMC40NCAxLjA2IDAuMjggMC4yOCAwLjY3IDAuNDQgMS4wNiAwLjQ0IGwgMy4zMSAwIGMgMi4wMyAwIDMuODUgLTEuMDYgNC45MSAtMi42OSAxLjA1IDEuNjEgMi44NCAyLjY5IDQuODggMi42OSAxLjAzIDAgMS45OCAtMC4yNyAyLjgxIC0wLjc1IDAuMjggMC4zNSAwLjczIDAuNTcgMS4xOSAwLjU2IGwgMi4xMiAwIGMgMC40OCAwLjAxIDAuOTcgLTAuMjMgMS4yNSAtMC42MiBsIDAuOTEgLTEuMjggMC45MSAxLjI4IGMgMC4yOCAwLjM5IDAuNzQgMC42MyAxLjIyIDAuNjIgbCAyLjE2IDAgQyA2Mi42NyAxNi4zMyA2My40MiAxNC44OSA2Mi44MSAxNCBMIDYwLjIyIDEwLjM4IDYyLjYyIDcgQyA2My4yNiA2LjExIDYyLjUgNC42MiA2MS40MSA0LjYyIGwgLTIuMTYgMCBDIDU4Ljc4IDQuNjIgNTguMzEgNC44NiA1OC4wMyA1LjI1IEwgNTcuMzEgNi4yOCA1Ni41NiA1LjI1IEMgNTYuMjkgNC44NiA1NS44MiA0LjYyIDU1LjM0IDQuNjIgbCAtMi4xNiAwIGMgLTAuNDkgLTAgLTAuOTcgMC4yNSAtMS4yNSAwLjY2IC0wLjg2IC0wLjUxIC0xLjg0IC0wLjgxIC0yLjkxIC0wLjgxIC0yLjAzIDAgLTMuODMgMS4wOCAtNC44OCAyLjY5IEMgNDMuMSA1LjUzIDQxLjI3IDQuNDcgMzkuMTkgNC40NyBMIDM5LjE5IDMgQyAzOS4xOSAyLjYxIDM5LjAzIDIuMjEgMzguNzUgMS45NCAzOC40NyAxLjY2IDM4LjA4IDEuNSAzNy42OSAxLjUgbCAtMS43NSAwIGMgLTAuNzEgMCAtMS41IDAuODMgLTEuNSAxLjUgbCAwIDMuMTYgQyAzMy4zOCA1LjEgMzEuOTYgNC40NyAzMC4zOCA0LjQ3IGwgLTMuMzQgMCBjIC0wLjc3IDAuMDIgLTEuNDcgMC43MiAtMS40NyAxLjUgbCAwIDAuMzEgYyAtMS4wMiAtMS4xMiAtMi40NiAtMS44MSAtNC4wOSAtMS44MSAtMS42MyAwIC0zLjA3IDAuNyAtNC4wOSAxLjgxIEwgMTcuMzggMyBjIC0wIC0wLjc5IC0wLjcxIC0xLjUgLTEuNSAtMS41IEwgMTQuNSAxLjUgQyAxMy41NSAxLjUgMTIuMjggMS44NyAxMS42NiAyLjk0IGwgLTEgMS42OSAtMSAtMS42OSBDIDkuMDMgMS44NyA3Ljc3IDEuNSA2LjgxIDEuNSBsIC0xLjQxIDAgQyA1LjM2IDEuNSA1LjMyIDEuNSA1LjI4IDEuNSB6IG0gMTYuMTkgNy43MiBjIDAuNTMgMCAwLjk0IDAuMzUgMC45NCAxLjI4IGwgMCAxLjI4IC0wLjk0IDAgYyAtMC41MiAwIC0wLjk0IC0wLjM4IC0wLjk0IC0xLjI4IC0wIC0wLjkgMC40MiAtMS4yOCAwLjk0IC0xLjI4IHogbSA4LjgxIDAgYyAwLjgzIDAgMS4xOCAwLjY4IDEuMTkgMS4yOCAwLjAxIDAuOTQgLTAuNjIgMS4yOCAtMS4xOSAxLjI4IHogbSA4LjcyIDAgYyAwLjcyIDAgMS4zNyAwLjYgMS4zNyAxLjI4IDAgMC43NyAtMC41MSAxLjI4IC0xLjM3IDEuMjggeiBtIDEwLjAzIDAgYyAwLjU4IDAgMS4wOSAwLjUgMS4wOSAxLjI4IDAgMC43OCAtMC41MSAxLjI4IC0xLjA5IDEuMjggLTAuNTggMCAtMS4xMiAtMC41IC0xLjEyIC0xLjI4IDAgLTAuNzggMC41NCAtMS4yOCAxLjEyIC0xLjI4IHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZm9udC1zaXplOm1lZGl1bTtmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0Om5vcm1hbDtmb250LXN0cmV0Y2g6bm9ybWFsO3RleHQtaW5kZW50OjA7dGV4dC1hbGlnbjpzdGFydDt0ZXh0LWRlY29yYXRpb246bm9uZTtsaW5lLWhlaWdodDpub3JtYWw7bGV0dGVyLXNwYWNpbmc6bm9ybWFsO3dvcmQtc3BhY2luZzpub3JtYWw7dGV4dC10cmFuc2Zvcm06bm9uZTtkaXJlY3Rpb246bHRyO2Jsb2NrLXByb2dyZXNzaW9uOnRiO3dyaXRpbmctbW9kZTpsci10Yjt0ZXh0LWFuY2hvcjpzdGFydDtiYXNlbGluZS1zaGlmdDpiYXNlbGluZTtjb2xvcjojMDAwMDAwO2ZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6bm9uemVybztzdHJva2U6bm9uZTtzdHJva2Utd2lkdGg6MTcuMjAwMDIzNjU7bWFya2VyOm5vbmU7dmlzaWJpbGl0eTp2aXNpYmxlO2Rpc3BsYXk6aW5saW5lO292ZXJmbG93OnZpc2libGU7ZW5hYmxlLWJhY2tncm91bmQ6YWNjdW11bGF0ZTtmb250LWZhbWlseTpTYW5zOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246U2FucyIvPjwvZz48ZyB0cmFuc2Zvcm09Im1hdHJpeCgwLjE3NDQxODM2LDAsMCwwLjE3NDQxODM2LDIyMC41MjI4MiwyOS4yMjkzNDIpIiBzdHlsZT0iZmlsbDojZmZmZmZmIj48cGF0aCBkPSJtIDUuNDEgMyAwIDEyIDEuNzUgMCAwIC05LjkxIDMuNSA1Ljk0IDMuNDcgLTUuOTQgMCA5LjkxIDEuNzUgMCAwIC0xMiBMIDE0LjUgMyBDIDEzLjggMyAxMy4yNSAzLjE2IDEyLjk0IDMuNjkgTCAxMC42NiA3LjU5IDguMzggMy42OSBDIDguMDcgMy4xNiA3LjUxIDMgNi44MSAzIHogTSAzNiAzIGwgMCAxMi4wMyAzLjI1IDAgYyAyLjQ0IDAgNC4zOCAtMS45MSA0LjM4IC00LjUzIDAgLTIuNjIgLTEuOTMgLTQuNDcgLTQuMzggLTQuNDcgQyAzOC43IDYuMDMgMzguMzIgNiAzNy43NSA2IGwgMCAtMyB6IE0gMjEuNDcgNS45NyBjIC0yLjQ0IDAgLTQuMTkgMS45MSAtNC4xOSA0LjUzIDAgMi42MiAxLjc1IDQuNTMgNC4xOSA0LjUzIGwgNC4xOSAwIDAgLTQuNTMgYyAwIC0yLjYyIC0xLjc1IC00LjUzIC00LjE5IC00LjUzIHogbSAyNy41NiAwIGMgLTIuNDEgMCAtNC4zOCAyLjAzIC00LjM4IDQuNTMgMCAyLjUgMS45NyA0LjUzIDQuMzggNC41MyAyLjQxIDAgNC4zNCAtMi4wMyA0LjM0IC00LjUzIDAgLTIuNSAtMS45NCAtNC41MyAtNC4zNCAtNC41MyB6IG0gLTIyIDAuMDMgMCAxMiAxLjc1IDAgMCAtMi45NyBjIDAuNTcgMCAxLjA0IC0wIDEuNTkgMCAyLjQ0IDAgNC4zNCAtMS45MSA0LjM0IC00LjUzIDAgLTIuNjIgLTEuOSAtNC41IC00LjM0IC00LjUgeiBtIDI2LjE2IDAgMy4wMyA0LjM4IC0zLjE5IDQuNjIgMi4xMiAwIEwgNTcuMzEgMTEuOTEgNTkuNDQgMTUgNjEuNTkgMTUgNTguMzggMTAuMzggNjEuNDEgNiA1OS4yNSA2IDU3LjMxIDguODEgNTUuMzQgNiB6IE0gMjEuNDcgNy43MiBjIDEuNCAwIDIuNDQgMS4xOSAyLjQ0IDIuNzggbCAwIDIuNzggLTIuNDQgMCBjIC0xLjQgMCAtMi40NCAtMS4yMSAtMi40NCAtMi43OCAtMCAtMS41NyAxLjA0IC0yLjc4IDIuNDQgLTIuNzggeiBtIDI3LjU2IDAgYyAxLjQ0IDAgMi41OSAxLjI0IDIuNTkgMi43OCAwIDEuNTQgLTEuMTUgMi43OCAtMi41OSAyLjc4IC0xLjQ0IDAgLTIuNjIgLTEuMjQgLTIuNjIgLTIuNzggMCAtMS41NCAxLjE4IC0yLjc4IDIuNjIgLTIuNzggeiBtIC0yMC4yNSAwLjAzIDEuNTkgMCBjIDEuNTkgMCAyLjU5IDEuMjggMi41OSAyLjc1IDAgMS40NyAtMS4xMyAyLjc4IC0yLjU5IDIuNzggbCAtMS41OSAwIHogbSA4Ljk3IDAgMS41IDAgYyAxLjQ3IDAgMi42MiAxLjI4IDIuNjIgMi43NSAwIDEuNDcgLTEuMDQgMi43OCAtMi42MiAyLjc4IGwgLTEuNSAwIHoiIHRyYW5zZm9ybT0ibWF0cml4KDUuNzMzMzQxNCwwLDAsNS43MzMzNDE0LDIzNi45MzMwOCwzOTcuMTc0OTgpIiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpub256ZXJvO3N0cm9rZTpub25lIi8+PC9nPjwvZz48L3N2Zz4=');\n}\n\n/* Dark Theme\n------------------------------------------------------- */\n.leaflet-container.dark .leaflet-bar {\n  background-color:#404040;\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-bar a {\n    color:#404040;\n    border-color:rgba(0,0,0,0.5);\n    }\n  .leaflet-container.dark .leaflet-bar a:active,\n  .leaflet-container.dark .leaflet-bar a:hover {\n    background-color:#505050;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:after,\n.leaflet-container.dark .mapbox-info-toggle,\n.leaflet-container.dark .map-info-container,\n.leaflet-container.dark .leaflet-control-attribution {\n  background-color:rgba(0,0,0,0.5);\n  color:#f8f8f8;\n  }\n  .leaflet-container.dark .leaflet-control-attribution a,\n  .leaflet-container.dark .leaflet-control-attribution a:hover,\n  .leaflet-container.dark .map-info-container a,\n  .leaflet-container.dark .map-info-container a:hover {\n    color:#fff;\n    }\n\n.leaflet-container.dark .leaflet-control-attribution:hover:after {\n  background-color:#000;\n  }\n.leaflet-container.dark .leaflet-control-layers-list span {\n  color:#f8f8f8;\n  }\n.leaflet-container.dark .leaflet-control-layers-separator {\n  border-top-color:rgba(255,255,255,0.10);\n  }\n.leaflet-container.dark .leaflet-bar a.leaflet-disabled,\n.leaflet-container.dark .leaflet-control .mapbox-button.disabled {\n  background-color:#252525;\n  color:#404040;\n  }\n.leaflet-container.dark .leaflet-control-mapbox-geocoder > div {\n  border-color:#202020;\n  border-color:rgba(0,0,0,0.75);\n  }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results a {\n    border-color:#ddd #202020;\n    border-color:rgba(0,0,0,0.10) rgba(0,0,0,0.75);\n    }\n  .leaflet-container.dark .leaflet-control .leaflet-control-mapbox-geocoder-results span {\n    border-color:#202020;\n    border-color:rgba(0,0,0,0.75);\n    }\n\n/* Larger Screens\n------------------------------------------------------- */\n@media only screen and (max-width:800px) {\n.mapbox-modal-body {\n  width:83.3333%;\n  margin-left:8.3333%;\n  }\n}\n\n/* Smaller Screens\n------------------------------------------------------- */\n@media only screen and (max-width:640px) {\n.mapbox-modal-body {\n  width:100%;\n  height:100%;\n  margin:0;\n  }\n}\n\n/* Print\n------------------------------------------------------- */\n@media print { .mapbox-improve-map { display:none; } }\n\n/* Browser Fixes\n------------------------------------------------------- */\n/* VML support for IE8 */\n.leaflet-vml-shape { width:1px; height:1px; }\n.lvml { behavior:url(#default#VML); display:inline-block; position:absolute; }\n/* Map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img.leaflet-tile { max-width:none !important; }\n/* Markers are broken in FF/IE if you have max-width: 100% on marker images */\n.leaflet-container img.leaflet-marker-icon { max-width:none; }\n/* Stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer { max-width:15000px !important; }\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg { -moz-user-select:none; }\n/* Older IEs don't support the translateY property for display animation */\n.leaflet-oldie .mapbox-modal .mapbox-modal-content        { display:none; }\n.leaflet-oldie .mapbox-modal.active .mapbox-modal-content { display:block; }\n.map-tooltip { width:280px\\8; /* < IE9 */ }\n\n/* < IE8 */\n.leaflet-oldie .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-popup-close-button,\n.leaflet-oldie .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .map-tooltip .close,\n.leaflet-oldie .map-tooltip .close,\n.leaflet-oldie .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXnSURBVHic7ZxfiFVFGMB/33pRUQsKto002DY3McJ6yBYkESQxpYTypaB66KEXYRWLYOlhr9RTRGWRUkk9RyEU+Y9ClECJVTKlPybWBilqkYuWrqBOD/NdPV7PmTPn3NPtat/AcO6ZP9/vfN/Mmfl2Zs6Kc452hK62UAxkIANdEURkVERGC9crOjKIiANwzkmRep1lOjWXa2ijaU7jaGWgKsL110a1EnV+LQMqbLqyobO6t4EMZCADGchABrqmQUlPNSWOVgaqIpi7ZSADGchABjKQga49kIjURaQem14apGE4KVR/D0fXds5FRaAOOL1e+h1dP7ZgE6wQxDnXvs7QWaZLE1wUVmRNdY1zrp6wRF0kfqHYnHwDGchABjJQIETNRyIyFVgBzAPmavIIsAt4xzn3d66QiNl1PnCYy05JczwMzG9pKlfIhQCkES/kwUKQqRma9GpM02xqGXdrBdCXZm2NzaFP66SGUGeYl5E+WqJO0HRHSG+PXtJN54AjVbhbjQcbBSjiakH4hR0p+hChOiHQrhKg7Drt6t7//Qtb9RAU5XtXMaiak28gAxnIQO0Gicg0EXlMRDaIyFGNGzRtWhQpMA/1A6uAL4BzZM9H57TMKqC/8HyUPFhZJLiMI4sh0/UDK4FtwHig3LiWWal1UkPsDDsFWAgsBZZo8hZgM7DdOXcmV0igjQ4Ba4HFwORAuclaZi1wqNU2OgNsVw22aNoS1XAhMCXx4OkubOBJZwKDwFbgLNm97qyWGQRmtuoFWRsV0ujabCPzVA1kIAMZqBNAIjIgImPNRxUzK+SsmtRJn4Pqmj8AjCXzsmTlaTSck/8zcDRX/QiNMp8S6Ab2a5nvG5plyioDaoLs1/sBYKwyUBokkTdQJeiVZgi6UR+UVQI0QWHdoXKFvKDYz7RiynXctk7LPlmeRmsKyAqWNQfSQAYykIGuS5CI1ERkSET2ishpvQ6JSLE93ByfoQbsRHeNgfe4vOO8E6iF6hdxToZU6OqGUIWv1vShqkB7VYNaU3pN0/fGgvLa6C5gk3PufJO5zwObgDuraqM8jbZWpdEnwG3AYKOX6XVQ07+sSqNQr3P4QxS9LXeGBGxIzTiGXwR8QSHRsCj7ZjxAbxFYaVAKbMe/BkrAduRpZJ6qgQxkoP8DKDRY1sk/s5W6YFhoUG3nFnZeOIJfxLgXWB7zBFmmyzPT44my9zXSC098OZCTwCQttzOZVzVoX1a5LHmdtYyWDM29yjknItKF3xSelFWvKo1mhCClQLo1sC95T8T/ebr+xrqOABVZT82tY56qgQxkIAN1CkhEulsGiUi3iCzKyJsjIpuBYyLyo4isFpHXReTuTFLAr1sOnAeeT8nbzNW+3rfAM2UcyAcSQj4FngR68Ot0F1NA24CuMqBu4PMUgYdS0hzwYqlFJ+AeNV3s30aLSoEUtjEScoHE3nkZ0Ay1fR7o3ZCcGNAEYHcO5A/g5pZACpsMPEf6UexTwCN5MvI6w2zgaeBt4HQK5BsC57ubY+jPll/wHzn1Ayc07QD+u6MR4GPn3LlA/SuCOZAGMpCBDFRhiF50EpFl+PP49wOzgIPAHmCLc+6zXAERE18P+b7DRqAnJCfvfF0P/mTgLZr0l97vB27CL3HO0rwTwBzn3PHCGiU0uQisA6bhzT0T/T4ZeAr4s6FZmal8WcI0LwETgdfwHzY1XKz3teyjibLLioLWa8UDeG/oZbxD+QHwdULwg1r+K71fXxQ0ohXfAgS/Mvyh5i1MgNZp2qt6P5ImL/QezdbrSeAG4EbVJJkH8LteJ+p1FikhBPpNr3Odc6fUNHdo2oJEucbX8Y2zDQeLgr7T62IReRb4AX9mGGC6Xo8Bu0VkOvCQpu1JlRZoo6Vc/WL2ad4C4A28CWvAR5TtdU0dwqH/ewHvHi8HbgUexh+euDRCFH6PVOh0/FKzw3um4M8zpA1DxwkMQzFjXR9+d/9N1WI8BZI71kU56Aq8HXgC+Ak/5o3gX+rUNmmO5nsbqP2gfwCyvJzPNoKXiAAAAABJRU5ErkJggg==');\n}\n.leaflet-oldie .mapbox-button-icon:before,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-in,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-zoom-out,\n.leaflet-oldie .leaflet-container.dark .leaflet-control-layers-toggle,\n.leaflet-oldie .leaflet-container.dark .mapbox-icon {\n  background-image:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAEECAYAAAA24SSRAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAXYSURBVHic7ZxfiFVFHMc/a4uKWtDDtqJGZprYgwX5ByTdkkLbSgghCiKih14EBYtg6aEr9RRREKRUUs9hGEVtChKaYMkq2VqWmnUX2tKiNDNZY/Xbw/wue7x7zsw559626zY/GM6df7/P+c3MPfO7M3NumyTGQiaMCSWCIiiC6qVqoZC0lXgy1Cq0FanUck1XxVmSNL8WrzYT1LCMvz5qL1FnoAyoTNOVkpYb3hEUQREUQREUQRF0RYOqjHim9aHaTFDDEt2tCIqgCIqgCIqgCLoiQRULedNLgwCeq1NasbR8IilvqMhJpe5zrvpFQElYIYiksRsMLdd0aYoLwYqsqW5i9KjLLdHJj6AIiqAIiiCP5J2PpgLrgGXAYkvrA/YBrwF/BTXkmB2XSzqhbDlhZRqaypdLuuiB1ORiCOaDTM2wZLaFNMumZunzDYZ1wJy01ubyPfOazLE6qeIbDMsy0qsl6ngtWpyRfqOFInVKbWFXS9TxWtRXQl9mHR9oXwlQdp2xGt4t8YVt6iMor+/d8EM1OvkRFEERFEH/AWga8CCwFfjJwlZLm5ZHge/pPQ+4z8IKYGJGub+BT4GPLBwvCio7f6QeWfQ13TxgA7ATGPKUG7IyG6xOOj3nxDcFWAl0A/da2sdAL/AJcD6kwAc6bop6gT1kWzUZ6LKb6CbDqrx9dB535704S8BZ1o2zdEpSZ1HQ3MRddtmdp8kQzuKa9d8VBSUl9lEh0Pjro6ZKy00TERRBERRBLQZaCpxh9FHFUqBKiiJZ+n5gFfBHnrsKgUKb7t/j/PCwBNZwapKW1yGp3/KPSDrjKVsalIT0W3ypwZoGSoPU8pY2E/RCCqSiwJ55GdBVBusIlCu0Xpf3Na1guZbb1mnYJwtZtKmALm/Z6EBGUARFUASNV1A70AMcBP60aw9F93ADPkO7pD3mDwxKesOusvT2QP3czkmPKd2YUNpucVl+LlBo4jsITAduAIbrmnMAOAncnqflQn10M26JebgufdjSb8oDyQM6hlv3ru/4dkv/vFmgd4EZwPoErN3iM4BdeUGNjDpJqsrtmzc86mqwHkkH5X4t7JD0tEFyw3INzYwwuwisEVA9bPe/CarBdocsip5qBEVQBP3fQRWyX4jOCpUsZS2xhR2SQdwixq3A2lDhMkcTa7Ie2G6fwzfsmax8clrSJCu3py4vVV/ZphsALtjnFXkqtNwyWlLqR1Ub7obPA5OyKjXLolk+SFmQgEN18eD/PLXEI2j8gYqspwbrRE81giIogiKohUAdzQB1APdk5C3Ends6CXwLbAReBm7J1OZxINdKGpb0VEpeb4pT+aWkx8os0SxJKHlf0iOSOiXNkHQpBbRT0oQyoA5JH6YoPJ6SJknPeHR5+6gTWJ2SPjej/BceXV7QV8AHvsoJucTlvt5o8ZkraZa1fUheD+gJfo9+Bq4JlPkNt4Xgl9CdSJos6UlJF1IsOSvp/hw6vL8mFgCLgCXA44w+730IeIiM89314gP9ACzHHXD9xdIO49476gO2MfJjLCjRgYygCIqgCGqiFFl0WoM7j78ImA8cBQ7gzuaHp/wck1anpO2BqXy7lSu9I9YJ9APXWfycxfuBa4HbzDpwc9ZC4FQZi2qWXJK0WdI0ue3SuRp5P/lRSb8nLCvsQK5JNM2zkiZKeknSkKVdlPSmlX0gUXZNUdAWq3hY7tzj83K++FuS9icU32Hl91p8S1FQn1V8VVKb3Mrw25a3MgHabGkvWrwvTZ/ve7TArqeBq3H+3f66PIBf7VrzkuaTIj7Qj3ZdDJwF9jLy5wJdiXK1t+NrZxuOFgV9bddVwBPAN8ARS5tp15PAZxa/29IOpGrz9FG3Rsscy+uS9IqkBXLD/Z1GRl1yQEjuHANy7vFaSdMlrZa0K1Gm1PcISTMlDZiSbZa2I8VSSTolz2Mo9PQeBO7CvTE1iDtRc2dKuffwPX4CfVQfrpf0sKRjks5Zs27J6pP6EH3vCBp70D8db2VXFPfIagAAAABJRU5ErkJggg==');\n}\n\n.leaflet-oldie .mapbox-logo-true {\n  background-image: none;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 187 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "icons-000000@2x.4c2a02.png";
 
 /***/ }),
-/* 188 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "icons-ffffff@2x.f9d13b.png";
 
 /***/ }),
-/* 189 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(190);
+var content = __webpack_require__(197);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56790,7 +58700,7 @@ if(false) {
 }
 
 /***/ }),
-/* 190 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56804,13 +58714,13 @@ exports.push([module.i, ".mapboxgl-map{font:12px/20px Helvetica Neue,Arial,Helve
 
 
 /***/ }),
-/* 191 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(192);
+var content = __webpack_require__(199);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56835,7 +58745,7 @@ if(false) {
 }
 
 /***/ }),
-/* 192 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56849,13 +58759,13 @@ exports.push([module.i, ".ui-widget-content .leaflet-popup-content {\n    color:
 
 
 /***/ }),
-/* 193 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(194);
+var content = __webpack_require__(201);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56880,40 +58790,40 @@ if(false) {
 }
 
 /***/ }),
-/* 194 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(72);
+var escape = __webpack_require__(76);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
 
 // module
-exports.push([module.i, "/* ================================================================== */\n/* Toolbars\n/* ================================================================== */\n\n.leaflet-draw-section {\n\tposition: relative;\n}\n\n.leaflet-draw-toolbar {\n\tmargin-top: 12px;\n}\n\n.leaflet-draw-toolbar-top {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-toolbar-notop a:first-child {\n\tborder-top-right-radius: 0;\n}\n\n.leaflet-draw-toolbar-nobottom a:last-child {\n\tborder-bottom-right-radius: 0;\n}\n\n.leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(195)) + ");\n\tbackground-repeat: no-repeat;\n}\n\n.leaflet-retina .leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(196)) + ");\n\tbackground-size: 270px 30px;\n}\n\n.leaflet-draw a {\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n}\n\n/* ================================================================== */\n/* Toolbar actions menu\n/* ================================================================== */\n\n.leaflet-draw-actions {\n\tdisplay: none;\n\tlist-style: none;\n\tmargin: 0;\n\tpadding: 0;\n\tposition: absolute;\n\tleft: 26px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */\n\ttop: 0;\n\twhite-space: nowrap;\n}\n\n.leaflet-touch .leaflet-draw-actions {\n\tleft: 32px;\n}\n\n.leaflet-right .leaflet-draw-actions {\n\tright:26px;\n\tleft:auto;\n}\n\n.leaflet-touch .leaflet-right .leaflet-draw-actions {\n\tright:32px;\n\tleft:auto;\n}\n\n.leaflet-draw-actions li {\n\tdisplay: inline-block;\n}\n\n.leaflet-draw-actions li:first-child a {\n\tborder-left: none;\n}\n\n.leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0 4px 4px 0;\n\t        border-radius: 0 4px 4px 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0;\n\t        border-radius: 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:first-child a {\n\t-webkit-border-radius: 4px 0 0 4px;\n\t        border-radius: 4px 0 0 4px;\n}\n\n.leaflet-draw-actions a {\n\tbackground-color: #919187;\n\tborder-left: 1px solid #AAA;\n\tcolor: #FFF;\n\tfont: 11px/19px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tline-height: 28px;\n\ttext-decoration: none;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\theight: 28px;\n}\n\n.leaflet-touch .leaflet-draw-actions a {\n\tfont-size: 12px;\n\tline-height: 30px;\n\theight: 30px;\n}\n\n.leaflet-draw-actions-bottom {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-actions-top {\n\tmargin-top: 1px;\n}\n\n.leaflet-draw-actions-top a,\n.leaflet-draw-actions-bottom a {\n\theight: 27px;\n\tline-height: 27px;\n}\n\n.leaflet-draw-actions a:hover {\n\tbackground-color: #A0A098;\n}\n\n.leaflet-draw-actions-top.leaflet-draw-actions-bottom a {\n\theight: 26px;\n\tline-height: 26px;\n}\n\n/* ================================================================== */\n/* Draw toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: -2px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: 0 -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -31px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -29px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -62px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -60px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -92px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -90px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -122px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -120px -1px;\n}\n\n/* ================================================================== */\n/* Edit toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -152px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -150px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -182px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -180px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -212px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -210px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -242px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -240px -2px;\n}\n\n/* ================================================================== */\n/* Drawing styles\n/* ================================================================== */\n\n.leaflet-mouse-marker {\n\tbackground-color: #fff;\n\tcursor: crosshair;\n}\n\n.leaflet-draw-tooltip {\n\tbackground: rgb(54, 54, 54);\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder: 1px solid transparent;\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tcolor: #fff;\n\tfont: 12px/18px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tmargin-left: 20px;\n\tmargin-top: -21px;\n\tpadding: 4px 8px;\n\tposition: absolute;\n\tvisibility: hidden;\n\twhite-space: nowrap;\n\tz-index: 6;\n}\n\n.leaflet-draw-tooltip:before {\n\tborder-right: 6px solid black;\n\tborder-right-color: rgba(0, 0, 0, 0.5);\n\tborder-top: 6px solid transparent;\n\tborder-bottom: 6px solid transparent;\n\tcontent: \"\";\n\tposition: absolute;\n\ttop: 7px;\n\tleft: -7px;\n}\n\n.leaflet-error-draw-tooltip {\n\tbackground-color: #F2DEDE;\n\tborder: 1px solid #E6B6BD;\n\tcolor: #B94A48;\n}\n\n.leaflet-error-draw-tooltip:before {\n\tborder-right-color: #E6B6BD;\n}\n\n.leaflet-draw-tooltip-single {\n\tmargin-top: -12px\n}\n\n.leaflet-draw-tooltip-subtext {\n\tcolor: #f8d5e4;\n}\n\n.leaflet-draw-guide-dash {\n\tfont-size: 1%;\n\topacity: 0.6;\n\tposition: absolute;\n\twidth: 5px;\n\theight: 5px;\n}\n\n/* ================================================================== */\n/* Edit styles\n/* ================================================================== */\n\n.leaflet-edit-marker-selected {\n\tbackground: rgba(254, 87, 161, 0.1);\n\tborder: 4px dashed rgba(254, 87, 161, 0.6);\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tbox-sizing: content-box;\n}\n\n.leaflet-edit-move {\n\tcursor: move;\n}\n\n.leaflet-edit-resize {\n\tcursor: pointer;\n}\n\n/* ================================================================== */\n/* Old IE styles\n/* ================================================================== */\n\n.leaflet-oldie .leaflet-draw-toolbar {\n\tborder: 1px solid #999;\n}", ""]);
+exports.push([module.i, "/* ================================================================== */\n/* Toolbars\n/* ================================================================== */\n\n.leaflet-draw-section {\n\tposition: relative;\n}\n\n.leaflet-draw-toolbar {\n\tmargin-top: 12px;\n}\n\n.leaflet-draw-toolbar-top {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-toolbar-notop a:first-child {\n\tborder-top-right-radius: 0;\n}\n\n.leaflet-draw-toolbar-nobottom a:last-child {\n\tborder-bottom-right-radius: 0;\n}\n\n.leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(202)) + ");\n\tbackground-repeat: no-repeat;\n}\n\n.leaflet-retina .leaflet-draw-toolbar a {\n\tbackground-image: url(" + escape(__webpack_require__(203)) + ");\n\tbackground-size: 270px 30px;\n}\n\n.leaflet-draw a {\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n}\n\n/* ================================================================== */\n/* Toolbar actions menu\n/* ================================================================== */\n\n.leaflet-draw-actions {\n\tdisplay: none;\n\tlist-style: none;\n\tmargin: 0;\n\tpadding: 0;\n\tposition: absolute;\n\tleft: 26px; /* leaflet-draw-toolbar.left + leaflet-draw-toolbar.width */\n\ttop: 0;\n\twhite-space: nowrap;\n}\n\n.leaflet-touch .leaflet-draw-actions {\n\tleft: 32px;\n}\n\n.leaflet-right .leaflet-draw-actions {\n\tright:26px;\n\tleft:auto;\n}\n\n.leaflet-touch .leaflet-right .leaflet-draw-actions {\n\tright:32px;\n\tleft:auto;\n}\n\n.leaflet-draw-actions li {\n\tdisplay: inline-block;\n}\n\n.leaflet-draw-actions li:first-child a {\n\tborder-left: none;\n}\n\n.leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0 4px 4px 0;\n\t        border-radius: 0 4px 4px 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:last-child a {\n\t-webkit-border-radius: 0;\n\t        border-radius: 0;\n}\n\n.leaflet-right .leaflet-draw-actions li:first-child a {\n\t-webkit-border-radius: 4px 0 0 4px;\n\t        border-radius: 4px 0 0 4px;\n}\n\n.leaflet-draw-actions a {\n\tbackground-color: #919187;\n\tborder-left: 1px solid #AAA;\n\tcolor: #FFF;\n\tfont: 11px/19px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tline-height: 28px;\n\ttext-decoration: none;\n\tpadding-left: 10px;\n\tpadding-right: 10px;\n\theight: 28px;\n}\n\n.leaflet-touch .leaflet-draw-actions a {\n\tfont-size: 12px;\n\tline-height: 30px;\n\theight: 30px;\n}\n\n.leaflet-draw-actions-bottom {\n\tmargin-top: 0;\n}\n\n.leaflet-draw-actions-top {\n\tmargin-top: 1px;\n}\n\n.leaflet-draw-actions-top a,\n.leaflet-draw-actions-bottom a {\n\theight: 27px;\n\tline-height: 27px;\n}\n\n.leaflet-draw-actions a:hover {\n\tbackground-color: #A0A098;\n}\n\n.leaflet-draw-actions-top.leaflet-draw-actions-bottom a {\n\theight: 26px;\n\tline-height: 26px;\n}\n\n/* ================================================================== */\n/* Draw toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: -2px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {\n\tbackground-position: 0 -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -31px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {\n\tbackground-position: -29px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -62px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {\n\tbackground-position: -60px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -92px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {\n\tbackground-position: -90px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -122px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-marker {\n\tbackground-position: -120px -1px;\n}\n\n/* ================================================================== */\n/* Edit toolbar\n/* ================================================================== */\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -152px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit {\n\tbackground-position: -150px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -182px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove {\n\tbackground-position: -180px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -212px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {\n\tbackground-position: -210px -1px;\n}\n\n.leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -242px -2px;\n}\n\n.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {\n\tbackground-position: -240px -2px;\n}\n\n/* ================================================================== */\n/* Drawing styles\n/* ================================================================== */\n\n.leaflet-mouse-marker {\n\tbackground-color: #fff;\n\tcursor: crosshair;\n}\n\n.leaflet-draw-tooltip {\n\tbackground: rgb(54, 54, 54);\n\tbackground: rgba(0, 0, 0, 0.5);\n\tborder: 1px solid transparent;\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tcolor: #fff;\n\tfont: 12px/18px \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\tmargin-left: 20px;\n\tmargin-top: -21px;\n\tpadding: 4px 8px;\n\tposition: absolute;\n\tvisibility: hidden;\n\twhite-space: nowrap;\n\tz-index: 6;\n}\n\n.leaflet-draw-tooltip:before {\n\tborder-right: 6px solid black;\n\tborder-right-color: rgba(0, 0, 0, 0.5);\n\tborder-top: 6px solid transparent;\n\tborder-bottom: 6px solid transparent;\n\tcontent: \"\";\n\tposition: absolute;\n\ttop: 7px;\n\tleft: -7px;\n}\n\n.leaflet-error-draw-tooltip {\n\tbackground-color: #F2DEDE;\n\tborder: 1px solid #E6B6BD;\n\tcolor: #B94A48;\n}\n\n.leaflet-error-draw-tooltip:before {\n\tborder-right-color: #E6B6BD;\n}\n\n.leaflet-draw-tooltip-single {\n\tmargin-top: -12px\n}\n\n.leaflet-draw-tooltip-subtext {\n\tcolor: #f8d5e4;\n}\n\n.leaflet-draw-guide-dash {\n\tfont-size: 1%;\n\topacity: 0.6;\n\tposition: absolute;\n\twidth: 5px;\n\theight: 5px;\n}\n\n/* ================================================================== */\n/* Edit styles\n/* ================================================================== */\n\n.leaflet-edit-marker-selected {\n\tbackground: rgba(254, 87, 161, 0.1);\n\tborder: 4px dashed rgba(254, 87, 161, 0.6);\n\t-webkit-border-radius: 4px;\n\t        border-radius: 4px;\n\tbox-sizing: content-box;\n}\n\n.leaflet-edit-move {\n\tcursor: move;\n}\n\n.leaflet-edit-resize {\n\tcursor: pointer;\n}\n\n/* ================================================================== */\n/* Old IE styles\n/* ================================================================== */\n\n.leaflet-oldie .leaflet-draw-toolbar {\n\tborder: 1px solid #999;\n}", ""]);
 
 // exports
 
 
 /***/ }),
-/* 195 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "spritesheet.429614.png";
 
 /***/ }),
-/* 196 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__.p + "spritesheet-2x.2f19f5.png";
 
 /***/ }),
-/* 197 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(198);
+var content = __webpack_require__(205);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -56938,7 +58848,7 @@ if(false) {
 }
 
 /***/ }),
-/* 198 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(40)(false);
@@ -56952,7 +58862,7 @@ exports.push([module.i, ".leaflet-contextmenu {\n    display: none;\n\tbox-shado
 
 
 /***/ }),
-/* 199 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -59405,7 +61315,7 @@ if (true) {
 
 
 /***/ }),
-/* 200 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59421,7 +61331,7 @@ var _fieldCollection = __webpack_require__(52);
 
 var _fieldCollection2 = _interopRequireDefault(_fieldCollection);
 
-var _model = __webpack_require__(201);
+var _model = __webpack_require__(208);
 
 var recordModel = _interopRequireWildcard(_model);
 
@@ -59647,7 +61557,7 @@ var RecordCollection = function () {
 exports.default = RecordCollection;
 
 /***/ }),
-/* 201 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60113,7 +62023,7 @@ exports.recordFieldValue = recordFieldValue;
 exports.recordField = recordField;
 
 /***/ }),
-/* 202 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60178,7 +62088,7 @@ var StatusCollection = function () {
 exports.default = StatusCollection;
 
 /***/ }),
-/* 203 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60377,7 +62287,7 @@ var deleteRecord = function deleteRecord(services) {
 exports.default = deleteRecord;
 
 /***/ }),
-/* 204 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60534,7 +62444,7 @@ var propertyRecord = function propertyRecord(services) {
 exports.default = propertyRecord;
 
 /***/ }),
-/* 205 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60552,1622 +62462,13 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(53);
+var _index = __webpack_require__(62);
 
 var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var sharebasketRecord = function sharebasketRecord(services, datas) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var url = configService.get('baseUrl');
-
-    var openModal = function openModal(datas) {
-
-        var $dialog = _dialog2.default.create(services, {
-            size: 'Full',
-            title: localeService.t('sharebasket')
-        });
-
-        // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('Sharebasket');
-
-        _jquery2.default.post(url + 'prod/push/sharebasketform/', datas, function (data) {
-            $dialog.setContent(data);
-            _onDialogReady();
-            return;
-        });
-
-        return true;
-    };
-
-    var _onDialogReady = function _onDialogReady() {
-        (0, _index2.default)(services).initialize({
-            feedback: {
-                containerId: '#PushBox',
-                context: 'Sharebasket'
-            },
-            listManager: {
-                containerId: '#ListManager'
-            }
-        });
-    };
-
-    return { openModal: openModal };
-};
-
-exports.default = sharebasketRecord;
-
-/***/ }),
-/* 206 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _index = __webpack_require__(74);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-var _selectable = __webpack_require__(22);
-
-var _selectable2 = _interopRequireDefault(_selectable);
-
-var _addUser = __webpack_require__(75);
-
-var _addUser2 = _interopRequireDefault(_addUser);
-
-var _underscore = __webpack_require__(2);
-
-var _ = _interopRequireWildcard(_underscore);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var humane = __webpack_require__(9);
-__webpack_require__(14);
-
-var Feedback = function Feedback(services, options) {
-    var _this = this;
-
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var url = configService.get('baseUrl');
-    var $container = void 0;
-    var containerId = options.containerId,
-        context = options.context;
-
-
-    this.url = url;
-    this.container = $container = (0, _jquery2.default)(containerId);
-    this.userList = new _index.Lists();
-
-    this.Context = context;
-
-    this.selection = new _selectable2.default(services, (0, _jquery2.default)('.user_content .badges', this.container), {
-        selector: '.badge'
-    });
-
-    (0, _addUser2.default)(services).initialize({ $container: this.container });
-
-    var $this = this;
-
-    this.container.on('mouseenter', '.list-trash-btn', function (event) {
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        $el.find('.image-normal').hide();
-        $el.find('.image-hover').show();
-    });
-
-    this.container.on('mouseleave', '.list-trash-btn', function (event) {
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        $el.find('.image-normal').show();
-        $el.find('.image-hover').hide();
-    });
-
-    this.container.on('click', '.list-trash-btn', function (event) {
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        var list_id = $el.parent().data('list-id');
-
-        appEvents.emit('push.removeList', {
-            list_id: list_id,
-            container: containerId
-        });
-    });
-
-    this.container.on('click', '.push-refresh-list-action', function (event) {
-        event.preventDefault();
-
-        var callback = function callback(datas) {
-            var context = (0, _jquery2.default)(datas);
-            var dataList = (0, _jquery2.default)(context).find('.lists').prop('outerHTML');
-
-            var refreshContent = (0, _jquery2.default)('.LeftColumn .content .lists', $container);
-            refreshContent.removeClass('loading').append(dataList);
-        };
-
-        (0, _jquery2.default)('.LeftColumn .content .lists', $container).empty().addClass('loading');
-
-        $this.userList.get(callback, 'html');
-    });
-
-    this.container.on('click', '.content .options .select-all', function (event) {
-        $this.selection.selectAll();
-    });
-
-    this.container.on('click', '.content .options .unselect-all', function (event) {
-        $this.selection.empty();
-    });
-
-    this.container.on('click', '.content .options .delete-selection', function (event) {
-        _.each((0, _jquery2.default)('.badges.selectionnable').children(), function (item) {
-            var $elem = (0, _jquery2.default)(item);
-            if ($elem.hasClass('selected')) {
-                var userEmail = $elem.find('.user-email').val();
-
-                var action = (0, _jquery2.default)('input[name="feedbackAction"]').val();
-
-                if (action == 'adduser') {
-                    var value = (0, _jquery2.default)('#newParticipantsUser').val();
-                    var actualParticipantsName = value.split('; ');
-                    // remove the user in the list of new participant if yet exist
-                    var key = _jquery2.default.inArray(userEmail, actualParticipantsName);
-                    if (key > -1) {
-                        actualParticipantsName.splice(key, 1);
-                        if (actualParticipantsName.length != 0) {
-                            value = actualParticipantsName.join('; ');
-                            (0, _jquery2.default)('#newParticipantsUser').val(value);
-                        } else {
-                            (0, _jquery2.default)('#newParticipantsUser').val('');
-                        }
-                    }
-                }
-
-                $elem.fadeOut(function () {
-                    $elem.remove();
-                });
-            }
-        });
-        return false;
-    });
-
-    (0, _jquery2.default)('.UserTips', this.container).tooltip();
-
-    /*this.container.on('click', '.user_adder', function (event) {
-        event.preventDefault();
-        const url = configService.get('baseUrl');
-        var $this = $(this);
-         $.ajax({
-            type: 'GET',
-            url: `${url}prod/push/add-user/`,
-            dataType: 'html',
-            beforeSend: function () {
-                var options = {
-                    size: 'Medium',
-                    title: $this.html()
-                };
-                dialog.create(services, options, 2).getDomElement().addClass('loading');
-            },
-            success: function (data) {
-                dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
-                return;
-            },
-            error: function () {
-                dialog.get(2).close();
-                return;
-            },
-            timeout: function () {
-                dialog.get(2).close();
-                return;
-            }
-        });
-         return false;
-    });*/
-
-    this.container.on('click', '.recommended_users', function (event) {
-        var usr_id = (0, _jquery2.default)('input[name="usr_id"]', (0, _jquery2.default)(this)).val();
-        console.log("====== click on .recommended_users ; usr_id=" + usr_id);
-        $this.loadUser(usr_id, $this.selectUser);
-
-        return false;
-    });
-
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!! this is never called because the link is not shown ??? ( see templates/web/prod/actions/Push.html.twig
-    this.container.on('click', '.recommended_users_list', function (event) {
-        console.log("====== click on .recommended_users_list");
-
-        var content = (0, _jquery2.default)('#push_user_recommendations').html();
-
-        var options = {
-            size: 'Small',
-            title: (0, _jquery2.default)(this).attr('title')
-        };
-
-        var $dialog = _dialog2.default.create(services, options, 2);
-        $dialog.setContent(content);
-
-        $dialog.getDomElement().find('a.adder').bind('click', function () {
-
-            (0, _jquery2.default)(this).addClass('added');
-
-            var usr_id = (0, _jquery2.default)(this).closest('tr').find('input[name="usr_id"]').val();
-
-            $this.loadUser(usr_id, $this.selectUser);
-
-            return false;
-        });
-
-        $dialog.getDomElement().find('a.adder').each(function (i, el) {
-
-            var usr_id = (0, _jquery2.default)(this).closest('tr').find('input[name="usr_id"]').val();
-
-            if ((0, _jquery2.default)('.badge_' + usr_id, $this.container).length > 0) {
-                (0, _jquery2.default)(this).addClass('added');
-            }
-        });
-
-        return false;
-    });
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    //this.container.on('submit', '#PushBox form[name="FeedBackForm"]', function (event) {
-    (0, _jquery2.default)('#PushBox form[name="FeedBackForm"]').bind('submit', function () {
-
-        var $this = (0, _jquery2.default)(this);
-
-        _jquery2.default.ajax({
-            type: $this.attr('method'),
-            url: $this.attr('action'),
-            dataType: 'json',
-            data: $this.serializeArray(),
-            beforeSend: function beforeSend() {},
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-                    _dialog2.default.close(1);
-                    appEvents.emit('workzone.refresh');
-                } else {
-                    humane.error(data.message);
-                }
-                return;
-            },
-            error: function error() {
-
-                return;
-            },
-            timeout: function timeout() {
-
-                return;
-            }
-        });
-
-        return false;
-    });
-
-    (0, _jquery2.default)('.FeedbackSend', this.container).bind('click', function (event) {
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
-            alert(localeService.t('FeedBackNoUsersSelected'));
-            return;
-        }
-
-        var buttons = {};
-
-        if ($el.data('feedback-action') === 'adduser') {
-            buttons[localeService.t('feedbackSaveNotNotify')] = function () {
-                $dialog.close();
-
-                (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
-                (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
-                (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
-                (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
-
-                $FeedBackForm.trigger('submit');
-            };
-        }
-
-        buttons[localeService.t('send')] = function () {
-            if ($el.data('feedback-action') !== 'adduser') {
-                if (_jquery2.default.trim((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val()) === '') {
-                    var options = {
-                        size: 'Alert',
-                        closeButton: true,
-                        title: localeService.t('warning')
-                    };
-                    var $dialogAlert = _dialog2.default.create(services, options, 3);
-                    $dialogAlert.setContent(localeService.t('FeedBackNameMandatory'));
-
-                    return false;
-                }
-            }
-
-            $dialog.close();
-
-            if ($el.data('feedback-action') !== 'adduser') {
-                (0, _jquery2.default)('input[name="name"]', $FeedBackForm).val((0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val());
-                (0, _jquery2.default)('input[name="duration"]', $FeedBackForm).val((0, _jquery2.default)('select[name="duration"]', $dialog.getDomElement()).val());
-            }
-
-            (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
-            (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
-            (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
-            (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
-
-            $FeedBackForm.trigger('submit');
-        };
-
-        buttons[localeService.t('annuler')] = function () {
-            $dialog.close();
-        };
-
-        var options = {
-            size: '558x352',
-            buttons: buttons,
-            loading: true,
-            title: localeService.t('send'),
-            closeOnEscape: true
-        };
-
-        if ($el.hasClass('validation')) {
-            options.isValidation = true;
-            options.size = '558x415';
-        }
-
-        var $dialog = _dialog2.default.create(services, options, 2);
-
-        $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container');
-        if (options.isValidation) {
-            $dialog.getDomElement().closest('.ui-dialog').addClass('validation');
-        }
-
-        var $FeedBackForm = (0, _jquery2.default)('form[name="FeedBackForm"]', $container);
-
-        var html = '';
-        // if the window is just for adding/removing user
-        if ($el.data('feedback-action') === 'adduser') {
-            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html());
-        } else {
-            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
-        }
-
-        $dialog.setContent(html);
-
-        var feedbackTitle = (0, _jquery2.default)('#feedbackTitle').val();
-        var pushTitle = (0, _jquery2.default)('#pushTitle').val();
-
-        if (options.isValidation) {
-            (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
-        } else {
-            (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
-        }
-
-        if ($el.data('feedback-action') !== 'adduser') {
-            (0, _jquery2.default)('input[name="name"]', $dialog.getDomElement()).val((0, _jquery2.default)('input[name="name"]', $FeedBackForm).val());
-        } else {
-            // display the list of new user in the dialog window when add user
-            var lisNewUser = (0, _jquery2.default)('#newParticipantsUser').val();
-            if (lisNewUser == '') {
-                (0, _jquery2.default)('.email-to-notify').hide();
-            } else {
-                (0, _jquery2.default)('.email-to-notify').show();
-                (0, _jquery2.default)('#email-to-notify').empty().append((0, _jquery2.default)('#newParticipantsUser').val());
-            }
-        }
-
-        (0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val((0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val());
-        (0, _jquery2.default)('.' + $this.Context, $dialog.getDomElement()).show();
-
-        (0, _jquery2.default)('form', $dialog.getDomElement()).submit(function () {
-            return false;
-        });
-    });
-
-    (0, _jquery2.default)('.user_content .badges', this.container).disableSelection();
-
-    // toggle feature for user
-    var $badges = (0, _jquery2.default)('.user_content .badges .badge', this.container);
-    $badges.on('click', '.toggle', function (event) {
-        console.log("==== toggle clicked ====");
-        event.stopPropagation();
-        // event.stopImmediatePropagation();
-        // event.preventDefault();
-        // event.cancelBubble = true;
-
-        var $this = (0, _jquery2.default)(this);
-
-        $this.toggleClass('status_off status_on');
-
-        $this.parent().find('input').val($this.hasClass('status_on') ? '1' : '0');
-
-        return false;
-    });
-
-    this.container.on('mouseenter', '#info-box-trigger', function (event) {
-        (0, _jquery2.default)('#info-box').show();
-    });
-
-    this.container.on('mouseleave', '#info-box-trigger', function (event) {
-        (0, _jquery2.default)('#info-box').hide();
-    });
-
-    // toggle feature state of selected users
-    this.container.on('click', '.general_togglers .general_toggler', function (event) {
-        var feature = (0, _jquery2.default)(this).attr('feature');
-
-        var $badges = (0, _jquery2.default)('.user_content .badge.selected', this.container);
-
-        var toggles = (0, _jquery2.default)('.status_off.toggle_' + feature, $badges);
-
-        if (toggles.length === 0) {
-            toggles = (0, _jquery2.default)('.status_on.toggle_' + feature, $badges);
-        }
-        if (toggles.length === 0) {
-            humane.info('No user selected');
-        }
-
-        toggles.trigger('click');
-        return false;
-    });
-
-    this.container.on('click', '.user_content .badges .badge .deleter', function (event) {
-        var $elem = (0, _jquery2.default)(this).closest('.badge');
-        var userEmailEl = $elem.find('.user-email').val();
-        var action = (0, _jquery2.default)('input[name="feedbackAction"]').val();
-
-        if (action == 'adduser') {
-            var value = (0, _jquery2.default)('#newParticipantsUser').val();
-            var actualParticipantsName = value.split('; ');
-            // remove the user in the list of new participant if yet exist
-            var key = _jquery2.default.inArray(userEmailEl, actualParticipantsName);
-            if (key > -1) {
-                actualParticipantsName.splice(key, 1);
-                if (actualParticipantsName.length != 0) {
-                    value = actualParticipantsName.join('; ');
-                    (0, _jquery2.default)('#newParticipantsUser').val(value);
-                } else {
-                    (0, _jquery2.default)('#newParticipantsUser').val('');
-                }
-            }
-        }
-
-        $elem.fadeOut(function () {
-            $elem.remove();
-        });
-        return false;
-    });
-
-    this.container.on('click', '.list_manager', function (event) {
-        (0, _jquery2.default)('#PushBox').hide();
-        (0, _jquery2.default)('#ListManager').show();
-        return false;
-    });
-
-    this.container.on('click', 'a.list_push_loader', function (event) {
-        var url = (0, _jquery2.default)(this).attr('href');
-
-        var callbackList = function callbackList(list) {
-            for (var i in list.entries) {
-                this.selectUser(list.entries[i].User);
-            }
-        };
-
-        $this.loadList(url, callbackList);
-
-        return false;
-    });
-
-    (0, _jquery2.default)('form.list_saver', this.container).bind('submit', function () {
-        var $form = (0, _jquery2.default)(event.currentTarget);
-        var $input = (0, _jquery2.default)('input[name="list_name"]', $form);
-
-        var users = _this.getUsers();
-
-        if (users.length === 0) {
-            humane.error('No users');
-            return false;
-        }
-
-        // appEvents.emit('push.createList', {name: $input.val(), collection: users});
-        $this.createList({ name: $input.val(), collection: users });
-        $input.val('');
-        /*
-         p4.Lists.create($input.val(), function (list) {
-         $input.val('');
-         list.addUsers(users);
-         });*/
-
-        return false;
-    });
-
-    (0, _jquery2.default)('input[name="users-search"]', this.container).autocomplete({
-        minLength: 2,
-        source: function source(request, response) {
-            _jquery2.default.ajax({
-                url: url + 'prod/push/search-user/',
-                dataType: 'json',
-                data: {
-                    query: request.term
-                },
-                success: function success(data) {
-                    response(data);
-                }
-            });
-        },
-        focus: function focus(event, ui) {
-            // $('input[name="users-search"]').val(ui.item.label);
-        },
-        select: function select(event, ui) {
-            if (ui.item.type === 'USER') {
-                $this.selectUser(ui.item);
-            } else if (ui.item.type === 'LIST') {
-                for (var e in ui.item.entries) {
-                    $this.selectUser(ui.item.entries[e].User);
-                }
-            }
-            return false;
-        }
-    }).data('ui-autocomplete')._renderItem = function (ul, item) {
-        var html = '';
-
-        if (item.type === 'USER') {
-            html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
-                item: item
-            });
-
-            if ($this.Context === 'Push') {
-                setTimeout(function () {
-                    (0, _jquery2.default)('.ui-menu .ui-menu-item a').css('box-shadow', 'inset 0 -1px #2196f3');
-                    (0, _jquery2.default)('img[src="/assets/common/images/icons/user-orange.png"]').attr('src', '/assets/common/images/icons/user-blue.png');
-                }, 100);
-            } else if ($this.Context === 'Feedback') {
-                setTimeout(function () {
-                    (0, _jquery2.default)('.ui-menu .ui-menu-item a').css('box-shadow', 'inset 0 -1px #8bc34a');
-                    (0, _jquery2.default)('img[src="/assets/common/images/icons/user-orange.png"]').attr('src', '/assets/common/images/icons/user-green.png');
-                }, 100);
-            }
-        } else if (item.type === 'LIST') {
-            html = _.template((0, _jquery2.default)('#list_list_tpl').html())({
-                item: item
-            });
-        }
-
-        return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
-    };
-
-    return this;
-};
-
-Feedback.prototype = {
-    selectUser: function selectUser(user) {
-        console.log("===== fct SELECT USER context = " + this.Context.toLowerCase());
-        if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
-            if (window.console) {
-                console.log('trying to select a user with wrong datas');
-            }
-        }
-        if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
-            humane.info('User already selected');
-            return;
-        }
-
-        if ((0, _jquery2.default)('input[name="feedbackAction"]').val() == 'adduser') {
-            var actualParticipantsUserIds = (0, _jquery2.default)('#participantsUserIds').val();
-            actualParticipantsUserIds = actualParticipantsUserIds.split('_');
-
-            if (!(_jquery2.default.inArray(user.usr_id.toString(), actualParticipantsUserIds) > -1)) {
-                var value = (0, _jquery2.default)('#newParticipantsUser').val();
-                var glue = value == '' ? '' : '; ';
-                value = value + glue + user.email;
-                (0, _jquery2.default)('#newParticipantsUser').val(value);
-            }
-        }
-
-        /*
-        var html = _.template($('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
-            user: user
-        });
-         */
-        var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
-            user: user,
-            context: this.Context
-        });
-        // p4.Feedback.appendBadge(html);
-        this.appendBadge(html);
-    },
-    loadUser: function loadUser(usr_id, callback) {
-        var $this = this;
-        _jquery2.default.ajax({
-            type: 'GET',
-            url: this.url + 'prod/push/user/' + usr_id + '/',
-            dataType: 'json',
-            data: {
-                usr_id: usr_id
-            },
-            success: function success(data) {
-                if (typeof callback === 'function') {
-                    callback.call($this, data);
-                }
-            }
-        });
-    },
-    createList: function createList(options) {
-        var name = options.name,
-            collection = options.collection;
-
-
-        this.userList.create(name, function (list) {
-            list.addUsers(collection);
-        });
-    },
-    loadList: function loadList(url, callback) {
-        var $this = this;
-
-        _jquery2.default.ajax({
-            type: 'GET',
-            url: url,
-            dataType: 'json',
-            success: function success(data) {
-                if (typeof callback === 'function') {
-                    callback.call($this, data);
-                }
-            }
-        });
-    },
-    appendBadge: function appendBadge(badge) {
-        (0, _jquery2.default)('.user_content .badges', this.container).prepend(badge);
-    },
-    addUser: function addUser(options) {
-        var $userForm = options.$userForm,
-            callback = options.callback;
-
-        var $this = this;
-        _jquery2.default.ajax({
-            type: 'POST',
-            url: this.url + 'prod/push/add-user/',
-            dataType: 'json',
-            data: $userForm.serializeArray(),
-            success: function success(data) {
-                if (data.success) {
-                    humane.info(data.message);
-                    $this.selectUser(data.user);
-                    callback;
-                } else {
-                    humane.error(data.message);
-                }
-            }
-        });
-    },
-    getSelection: function getSelection() {
-        return this.selection;
-    },
-    getUsers: function getUsers() {
-        return (0, _jquery2.default)('.user_content .badge', this.container).map(function () {
-            return (0, _jquery2.default)('input[name="id"]', (0, _jquery2.default)(this)).val();
-        });
-    }
-};
-
-exports.default = Feedback;
-
-/***/ }),
-/* 207 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _index = __webpack_require__(74);
-
-var _listEditor = __webpack_require__(208);
-
-var _listEditor2 = _interopRequireDefault(_listEditor);
-
-var _listShare = __webpack_require__(209);
-
-var _listShare2 = _interopRequireDefault(_listShare);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-var _selectable = __webpack_require__(22);
-
-var _selectable2 = _interopRequireDefault(_selectable);
-
-var _addUser = __webpack_require__(75);
-
-var _addUser2 = _interopRequireDefault(_addUser);
-
-var _underscore = __webpack_require__(2);
-
-var _ = _interopRequireWildcard(_underscore);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var humane = __webpack_require__(9);
-
-var ListManager = function ListManager(services, options) {
-    var _this2 = this;
-
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-    var containerId = options.containerId;
-
-    var url = configService.get('baseUrl');
-    var $container = void 0;
-    var _this = this;
-
-    this.list = null;
-    this.container = $container = (0, _jquery2.default)(containerId);
-    this.userList = new _index.Lists();
-
-    this.removeUserItemsArray = [];
-    this.addUserItemsArray = [];
-    this.removeUserMethod = '';
-    this.addUserMethod = '';
-
-    (0, _addUser2.default)(services).initialize({ $container: this.container });
-
-    $container.on('click', '.back_link', function () {
-        (0, _jquery2.default)('#PushBox').show();
-        (0, _jquery2.default)('#ListManager').hide();
-        return false;
-    }).on('click', '.push-list-share-action', function (event) {
-        event.preventDefault();
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        var listId = $el.data('list-id');
-
-        (0, _listShare2.default)(services).openModal({
-            listId: listId, modalOptions: {
-                size: '288x500',
-                closeButton: true,
-                title: $el.attr('title')
-            }, modalLevel: 2
-        });
-        return false;
-    }).on('click', 'a.user_adder', function () {
-
-        var $this = (0, _jquery2.default)(this);
-
-        _jquery2.default.ajax({
-            type: 'GET',
-            url: $this.attr('href'),
-            dataType: 'html',
-            beforeSend: function beforeSend() {
-                var options = {
-                    size: 'Medium',
-                    title: $this.html()
-                };
-                _dialog2.default.create(services, options, 2).getDomElement().addClass('loading');
-            },
-            success: function success(data) {
-                _dialog2.default.get(2).getDomElement().removeClass('loading').empty().append(data);
-                return;
-            },
-            error: function error() {
-                _dialog2.default.get(2).close();
-                return;
-            },
-            timeout: function timeout() {
-                _dialog2.default.get(2).close();
-                return;
-            }
-        });
-
-        return false;
-    }).on('mouseenter', '.list-trash-btn', function (event) {
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        $el.find('.image-normal').hide();
-        $el.find('.image-hover').show();
-    }).on('mouseleave', '.list-trash-btn', function (event) {
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        $el.find('.image-normal').show();
-        $el.find('.image-hover').hide();
-    }).on('click', '.list-trash-btn', function (event) {
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        var list_id = $el.parent().data('list-id');
-        appEvents.emit('push.removeList', {
-            list_id: list_id,
-            container: containerId
-        });
-    });
-
-    var initLeft = function initLeft() {
-        $container.on('click', '.push-refresh-list-action', function (event) {
-            event.preventDefault();
-            //$('a.list_refresh', $container).bind('click', (event) => {
-            // /prod/lists/all/
-
-            var selectedList = (0, _jquery2.default)('.lists_manager_list.selected').data('list-id');
-
-            var callback = function callback(datas, selected) {
-                (0, _jquery2.default)('.all-lists', $container).removeClass('loading').append(datas);
-
-                if (typeof selected === 'number') {
-                    (0, _jquery2.default)('.all-lists').find('.lists_manager_list[data-list-id="' + selected + '"]').addClass('selected');
-                }
-                // initLeft();
-            };
-
-            (0, _jquery2.default)('.all-lists', $container).empty().addClass('loading');
-
-            _this2.userList.get(callback, 'html', selectedList);
-        });
-
-        $container.on('click', '.push-add-list-action', function (event) {
-            event.preventDefault();
-            var makeDialog = function makeDialog(box) {
-
-                var buttons = {};
-
-                buttons[localeService.t('valider')] = function () {
-
-                    var callbackOK = function callbackOK() {
-                        (0, _jquery2.default)('a.list_refresh', $container).trigger('click');
-                        _dialog2.default.get(2).close();
-                    };
-
-                    var name = (0, _jquery2.default)('input[name="name"]', _dialog2.default.get(2).getDomElement()).val();
-
-                    if (_jquery2.default.trim(name) === '') {
-                        alert((0, _jquery2.default)('#push-list-name-empty').val());
-                        return;
-                    }
-
-                    _this2.userList.create(name, callbackOK);
-                };
-                // /prod/lists/list/
-                var options = {
-                    cancelButton: true,
-                    buttons: buttons,
-                    title: (0, _jquery2.default)('#push-new-list-title').val(),
-                    size: '450x170'
-                };
-
-                var $dialog = _dialog2.default.create(services, options, 2);
-                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_add_list').find('.ui-dialog-buttonset button:first-child .ui-button-text').text((0, _jquery2.default)('#btn-add').val());
-                $dialog.setContent(box);
-            };
-
-            var html = _.template((0, _jquery2.default)('#list_editor_dialog_add_tpl').html());
-            makeDialog(html);
-
-            return false;
-        });
-
-        /*$('li.list a.list_link', $container).bind('click', function (event) {
-          var $this = $(this);
-          $this.closest('.lists').find('.list.selected').removeClass('selected');
-         $this.parent('li.list').addClass('selected');
-         return false;
-         });*/
-        $container.on('click', '.list-edit-action', function (event) {
-            event.preventDefault();
-            _this.removeUserItemsArray = [];
-            _this.addUserItemsArray = [];
-            _this.removeUserMethod = '';
-            _this.addUserMethod = '';
-
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var listId = $el.data('list-id');
-            var el_url = $el.attr('href');
-
-            var callbackList = function callbackList(list) {
-                for (var i in list.entries) {
-                    this.selectUser(list.entries[i].User);
-                }
-            };
-
-            $el.closest('.lists').find('.list').removeClass('selected');
-            $el.parent().addClass('selected');
-
-            _jquery2.default.ajax({
-                type: 'GET',
-                url: url + 'prod/push/edit-list/' + listId + '/',
-                dataType: 'html',
-                success: function success(data) {
-                    _this2.workOn(listId);
-                    (0, _jquery2.default)('.editor', $container).removeClass('loading').append(data);
-                    _this2.loadList(el_url, callbackList);
-                    initRight();
-                    (0, _listEditor2.default)(services, {
-                        $container: $container, listManagerInstance: _this
-                    });
-                },
-                beforeSend: function beforeSend() {
-                    (0, _jquery2.default)('.editor', $container).empty().addClass('loading');
-                }
-            });
-        });
-        $container.on('click', '.listmanager-delete-list-user-action', function (event) {
-            event.preventDefault();
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var listId = $el.data('list-id');
-            var userId = $el.data('user-id');
-
-            var badge = (0, _jquery2.default)(_this2).closest('.badge');
-            // var usr_id = badge.find('input[name="id"]').val();
-            _this2.getList().removeUser(userId, function (list, data) {
-                badge.remove();
-            });
-        });
-    };
-
-    var initRight = function initRight() {
-        var $container = (0, _jquery2.default)('#ListManager .editor');
-        var selection = new _selectable2.default(services, (0, _jquery2.default)('.user_content .badges', _this.container), {
-            selector: '.badge'
-        });
-
-        (0, _jquery2.default)('form[name="list-editor-search"]', $container).bind('submit', function (event) {
-            event.preventDefault();
-            var $this = (0, _jquery2.default)(this);
-            var dest = (0, _jquery2.default)('.list-editor-results', $container);
-
-            _jquery2.default.ajax({
-                url: $this.attr('action'),
-                type: $this.attr('method'),
-                dataType: 'html',
-                data: $this.serializeArray(),
-                beforeSend: function beforeSend() {
-                    dest.empty().addClass('loading');
-                },
-                success: function success(datas) {
-                    dest.empty().removeClass('loading').append(datas);
-                    (0, _listEditor2.default)(services, {
-                        $container: $container, listManagerInstance: _this
-                    });
-                }
-            });
-        });
-
-        (0, _jquery2.default)('form[name="list-editor-search"] select, form[name="list-editor-search"] input[name="ListUser"]', $container).bind('change', function () {
-            (0, _jquery2.default)(this).closest('form').trigger('submit');
-        });
-
-        (0, _jquery2.default)('.EditToggle', $container).bind('click', function (event) {
-            event.preventDefault();
-            (0, _jquery2.default)('.content.readselect, .content.readwrite, .editor_header', (0, _jquery2.default)('#ListManager')).toggle();
-        });
-        (0, _jquery2.default)('.Refresher', $container).bind('click', function (event) {
-            event.preventDefault();
-            (0, _jquery2.default)('#ListManager ul.lists .list.selected a').trigger('click');
-        });
-
-        (0, _jquery2.default)('form[name="SaveName"]', $container).bind('submit', function () {
-            var $this = (0, _jquery2.default)(this);
-
-            _jquery2.default.ajax({
-                type: $this.attr('method'),
-                url: $this.attr('action'),
-                dataType: 'json',
-                data: $this.serializeArray(),
-                beforeSend: function beforeSend() {},
-                success: function success(data) {
-                    if (data.success) {
-                        humane.info(data.message);
-                        (0, _jquery2.default)('#ListManager .lists .list_refresh').trigger('click');
-                    } else {
-                        humane.error(data.message);
-                    }
-                    return;
-                },
-                error: function error() {
-
-                    return;
-                },
-                timeout: function timeout() {
-
-                    return;
-                }
-            });
-
-            return false;
-        });
-
-        // //button.deleter
-        // $('.listmanager-delete-list-action', $container).bind('click', function (event) {
-
-        //     var list_id = $(this).data('list-id');
-
-        //     var makeDialog = function (box) {
-
-        //         var buttons = {};
-
-        //         buttons[localeService.t('valider')] = function () {
-
-        //             var callbackOK = function () {
-        //                 $('#ListManager .all-lists a.list_refresh').trigger('click');
-        //                 dialog.get(2).close();
-        //             };
-
-        //             var List = new List(list_id);
-        //             List.remove(callbackOK);
-        //         };
-
-        //         var options = {
-        //             cancelButton: true,
-        //             buttons: buttons,
-        //             size: 'Alert'
-        //         };
-
-        //         dialog.create(services, options, 2).setContent(box);
-        //     };
-
-        //     var html = _.template($('#list_editor_dialog_delete_tpl').html());
-
-        //     makeDialog(html);
-
-        //     return false;
-        // });
-
-        (0, _jquery2.default)('input[name="users-search"]', $container).autocomplete({
-            minLength: 2,
-            source: function source(request, response) {
-                _jquery2.default.ajax({
-                    url: url + 'prod/push/search-user/',
-                    dataType: 'json',
-                    data: {
-                        query: request.term
-                    },
-                    success: function success(data) {
-                        response(data);
-                    }
-                });
-            },
-            focus: function focus(event, ui) {
-                // $('input[name="users-search"]').val(ui.item.label);
-            },
-            select: function select(event, ui) {
-                if (ui.item.type === 'USER') {
-                    _this.selectUser(ui.item);
-                    _this.updateUsersHandler('add', ui.item.usr_id);
-                } else if (ui.item.type === 'LIST') {
-                    for (var e in ui.item.entries) {
-                        _this.selectUser(ui.item.entries[e].User);
-                        _this.updateUsersHandler('add', ui.item.entries[e].User.usr_id);
-                    }
-                }
-                (0, _jquery2.default)('#saveListFooter').show();
-
-                return false;
-            }
-        }).data('ui-autocomplete')._renderItem = function (ul, item) {
-            var html = '';
-
-            if (item.type === 'USER') {
-                html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
-
-                    item: item
-                });
-            } else if (item.type === 'LIST') {
-                html = _.template((0, _jquery2.default)('#list_list_tpl').html())({
-                    item: item
-                });
-            }
-
-            return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
-        };
-
-        (0, _jquery2.default)('.user_content .badges', _this.container).disableSelection();
-
-        $container.on('click', '.content .options .select-all', function () {
-            selection.selectAll();
-        });
-
-        $container.on('click', '.content .options .unselect-all', function () {
-            selection.empty();
-        });
-
-        $container.on('click', '.content .options .delete-selection', function () {
-            var $elems = (0, _jquery2.default)('#ListManager .badges.selectionnable .badge.selected');
-            _.each($elems, function (item) {
-                var $elem = (0, _jquery2.default)(item);
-                var $elemID = $elem.find('input[name=id]').val();
-                if ($elem.hasClass('selected') && _this.removeUserItemsArray.indexOf($elemID) === -1) {
-                    _this.updateUsersHandler('remove', $elemID);
-                }
-            });
-
-            $elems.fadeOut(300, 'swing', function () {
-                (0, _jquery2.default)(this).remove();
-                (0, _jquery2.default)('#saveListFooter').show();
-            });
-        });
-        $container.on('submit', 'form.list_saver', function (event) {
-            event.preventDefault();
-            var $form = (0, _jquery2.default)(event.currentTarget);
-            var name = (0, _jquery2.default)('.header h2', $container).text();
-            var users = _this.getUsers();
-
-            if (users.length === 0) {
-                humane.error('No users');
-                return false;
-            } else {
-                if (_this.removeUserMethod === 'remove' && _this.removeUserItemsArray.length > 0) {
-                    var $editor = (0, _jquery2.default)('#list-editor-search-results');
-
-                    _.each(_this.removeUserItemsArray, function (item) {
-
-                        (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
-                            var $el = (0, _jquery2.default)(el);
-                            var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
-                            if (item == $elID) $el.removeClass('selected');
-                        });
-
-                        _this.getList().removeUser(item);
-                    });
-
-                    var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-
-                    ListCounter.each(function (i, el) {
-                        var n = parseInt((0, _jquery2.default)(el).text(), 10);
-                        if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n - _this.removeUserItemsArray.length + ' people');else (0, _jquery2.default)(el).text(n - _this.removeUserItemsArray.length);
-                    });
-
-                    (0, _jquery2.default)('#saveListFooter').hide();
-                    _this.removeUserItemsArray = [];
-                    _this.removeUserMethod = '';
-                } else if (_this.addUserMethod === 'add' && _this.addUserItemsArray.length > 0) {
-                    var $editor = (0, _jquery2.default)('#list-editor-search-results');
-
-                    _.each(_this.addUserItemsArray, function (item) {
-
-                        (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
-
-                            var $el = (0, _jquery2.default)(el);
-                            var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
-
-                            if (item == $elID) $el.addClass('selected');
-                        });
-
-                        _this.getList().addUser(item);
-                    });
-
-                    var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-
-                    ListCounter.each(function (i, el) {
-                        var n = parseInt((0, _jquery2.default)(el).text(), 10);
-
-                        if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n + _this.addUserItemsArray.length + ' people');else (0, _jquery2.default)(el).text(n + _this.addUserItemsArray.length);
-                    });
-
-                    (0, _jquery2.default)('#saveListFooter').hide();
-                    _this.addUserItemsArray = [];
-                    _this.addUserMethod = '';
-                }
-            }
-        });
-
-        $container.on('click', '.badges a.deleter', function (event) {
-            var badge = (0, _jquery2.default)(event.currentTarget).closest('.badge');
-            var usr_id = badge.find('input[name="id"]').val();
-            var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-            var $editor = (0, _jquery2.default)('#list-editor-search-results');
-
-            var callback = function callback(list, datas) {
-                ListCounter.each(function (i, el) {
-                    var n = parseInt((0, _jquery2.default)(el).text(), 10);
-
-                    if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n - 1 + ' people');else (0, _jquery2.default)(el).text(n - 1);
-                });
-                badge.fadeOut('300', 'swing', function () {
-                    badge.remove();
-                });
-            };
-
-            _this.getList().removeUser(usr_id, callback);
-
-            (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
-                var $el = (0, _jquery2.default)(el);
-                var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
-
-                if (usr_id === $elID) $el.removeClass('selected');
-            });
-
-            return false;
-        });
-    };
-
-    initLeft();
-
-    return this;
-};
-
-ListManager.prototype = {
-    selectUser: function selectUser(user) {
-        if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
-            if (window.console) {
-                console.log('trying to select a user with wrong datas');
-            }
-        }
-        if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
-            humane.info('User already selected');
-            return;
-        } else {
-            var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
-                user: user,
-                context: 'ListManager'
-            });
-
-            // p4.Feedback.appendBadge(html);
-            // this.getList().addUser(user.usr_id);
-            this.appendBadge(html);
-        }
-    },
-    workOn: function workOn(list_id) {
-        this.list = new _index.List(list_id);
-    },
-    getList: function getList() {
-        return this.list;
-    },
-    appendBadge: function appendBadge(datas) {
-        (0, _jquery2.default)('#ListManager .badges').append(datas);
-    },
-    createList: function createList(options) {
-        var name = options.name,
-            collection = options.collection;
-
-
-        this.userList.create(name, function (list) {
-            list.addUsers(collection);
-        });
-    },
-    removeList: function removeList(list_id, callback) {
-        this.list = new _index.List(list_id);
-        this.list.remove(callback);
-    },
-    loadList: function loadList(url, callback) {
-        var $this = this;
-        _jquery2.default.ajax({
-            type: 'GET',
-            url: url,
-            dataType: 'json',
-            success: function success(data) {
-                if (typeof callback === 'function') {
-                    callback.call($this, data);
-                }
-            }
-        });
-    },
-    updateUsers: function updateUsers(action) {
-        if (action === 'remove') {}
-        return removedItems;
-    },
-    getUsers: function getUsers() {
-        return (0, _jquery2.default)('.user_content .badge', this.container).map(function () {
-            return (0, _jquery2.default)('input[name="id"]', (0, _jquery2.default)(this)).val();
-        });
-    },
-    updateUsersHandler: function updateUsersHandler(method, item) {
-        if (method === 'remove') {
-            this.removeUserItemsArray.push(item);
-            this.removeUserMethod = method;
-        } else if (method === 'add') {
-            this.addUserItemsArray.push(item);
-            this.addUserMethod = method;
-        }
-    }
-};
-
-exports.default = ListManager;
-
-/***/ }),
-/* 208 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var listEditor = function listEditor(services, options) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-    var $container = options.$container,
-        listManagerInstance = options.listManagerInstance;
-
-    var $editor = (0, _jquery2.default)('#list-editor-search-results');
-    var $form = (0, _jquery2.default)('#ListManager .editor').find('form[name="list-editor-search"]');
-
-    (0, _jquery2.default)('a.next, a.prev', $editor).bind('click', function (event) {
-        event.preventDefault();
-        var page = (0, _jquery2.default)(this).attr('value');
-
-        (0, _jquery2.default)('input[name="page"]', $form).val(page);
-        $form.trigger('submit');
-    });
-
-    (0, _jquery2.default)('input[name="page"]', $form).val('');
-
-    (0, _jquery2.default)('th.sortable', $editor).bind('click', function () {
-
-        var $this = (0, _jquery2.default)(this);
-
-        var sort = (0, _jquery2.default)('input', $this).val();
-        var ord = 'asc';
-
-        if (sort === (0, _jquery2.default)('input[name="srt"]', $form).val() && (0, _jquery2.default)('input[name="ord"]', $form).val() === 'asc') {
-            ord = 'desc';
-        }
-
-        (0, _jquery2.default)('input[name="srt"]', $form).val(sort);
-        (0, _jquery2.default)('input[name="ord"]', $form).val(ord);
-
-        $form.trigger('submit');
-    }).bind('mouseover', function () {
-        (0, _jquery2.default)(this).addClass('hover');
-    }).bind('mouseout', function () {
-        (0, _jquery2.default)(this).removeClass('hover');
-    });
-
-    (0, _jquery2.default)('tbody tr', $editor).bind('click', function () {
-
-        var $this = (0, _jquery2.default)(this);
-        var usr_id = (0, _jquery2.default)('input[name="usr_id"]', $this).val();
-
-        var counters = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-
-        if ($this.hasClass('selected')) {
-            $this.removeClass('selected');
-            listManagerInstance.getList().removeUser(usr_id);
-
-            counters.each(function (i, el) {
-                var n = parseInt((0, _jquery2.default)(el).text().split(' ')[0], 10);
-                if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n - 1 + ' people');else (0, _jquery2.default)(el).text(n - 1);
-            });
-        } else {
-            $this.addClass('selected');
-            listManagerInstance.getList().addUser(usr_id);
-
-            counters.each(function (i, el) {
-                var n = parseInt((0, _jquery2.default)(el).text(), 10);
-
-                if ((0, _jquery2.default)(el).hasClass('current')) (0, _jquery2.default)(el).text(n + 1 + ' people');else (0, _jquery2.default)(el).text(n + 1);
-            });
-        }
-    });
-};
-
-exports.default = listEditor;
-
-/***/ }),
-/* 209 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-var _underscore = __webpack_require__(2);
-
-var _ = _interopRequireWildcard(_underscore);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var humane = __webpack_require__(9);
-
-var listShare = function listShare(services, options) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var url = configService.get('baseUrl');
-    var $dialog = null;
-
-    var initialize = function initialize() {};
-
-    var openModal = function openModal(options) {
-        var listId = options.listId,
-            modalOptions = options.modalOptions,
-            modalLevel = options.modalLevel;
-
-
-        $dialog = _dialog2.default.create(services, modalOptions, modalLevel);
-        $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_share_list');
-
-        return _jquery2.default.get(url + 'prod/lists/list/' + listId + '/share/', function (data) {
-            $dialog.setContent(data);
-            onModalReady(listId);
-        });
-    };
-
-    var onModalReady = function onModalReady(listId) {
-        var $container = (0, _jquery2.default)('#ListShare');
-        var $completer_form = (0, _jquery2.default)('form[name="list_share_user"]', $container);
-        var $owners_form = (0, _jquery2.default)('form[name="owners"]', $container);
-        var $autocompleter = (0, _jquery2.default)('input[name="user"]', $completer_form);
-        var $dialog = _dialog2.default.get(2);
-
-        $completer_form.bind('submit', function () {
-            return false;
-        });
-
-        (0, _jquery2.default)('select[name="role"]', $owners_form).bind('change', function (event) {
-            event.preventDefault();
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var userId = $el.data('user-id');
-
-            shareWith(userId, $el.val());
-
-            return false;
-        });
-        $container.on('click', '.listmanager-share-delete-user-action', function (event) {
-            event.preventDefault();
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var userId = $el.data('user-id');
-
-            var $owner = $el.closest('.owner');
-
-            unShareWith(userId, function (data) {
-                $owner.remove();
-            });
-
-            return false;
-        });
-
-        function shareWith(userId, role) {
-            role = typeof role === 'undefined' ? 1 : role;
-
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: url + 'prod/lists/list/' + listId + '/share/' + userId + '/',
-                dataType: 'json',
-                data: { role: role },
-                beforeSend: function beforeSend() {},
-                success: function success(data) {
-                    if (data.success) {
-                        humane.info(data.message);
-                    } else {
-                        humane.error(data.message);
-                    }
-
-                    (0, _jquery2.default)('.push-list-share-action').trigger('click');
-                    $dialog.refresh();
-
-                    return;
-                }
-            });
-        }
-
-        function unShareWith(userId, callback) {
-            _jquery2.default.ajax({
-                type: 'POST',
-                url: url + 'prod/lists/list/' + listId + '/unshare/' + userId + '/',
-                dataType: 'json',
-                data: {},
-                beforeSend: function beforeSend() {},
-                success: function success(data) {
-                    if (data.success) {
-                        humane.info(data.message);
-                        callback(data);
-                    } else {
-                        humane.error(data.message);
-                    }
-                    $dialog.refresh();
-
-                    return;
-                }
-            });
-        }
-
-        $autocompleter.autocomplete({
-            minLength: 2,
-            source: function source(request, response) {
-                _jquery2.default.ajax({
-                    url: url + 'prod/push/search-user/',
-                    dataType: 'json',
-                    data: {
-                        query: request.term
-                    },
-                    success: function success(data) {
-                        response(data);
-                    }
-                });
-            },
-            select: function select(event, ui) {
-                if (ui.item.type === 'USER') {
-                    shareWith(ui.item.usr_id);
-                }
-
-                return false;
-            }
-        }).data('ui-autocomplete')._renderItem = function (ul, item) {
-            if (item.type === 'USER') {
-                var html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
-                    item: item
-                });
-
-                return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
-            }
-        };
-    };
-
-    return {
-        openModal: openModal
-    };
-};
-
-exports.default = listShare;
-
-/***/ }),
-/* 210 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-var _index = __webpack_require__(53);
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var pushRecord = function pushRecord(services, datas) {
+var pushbasketModal = function pushbasketModal(services, datas) {
     var configService = services.configService,
         localeService = services.localeService,
         appEvents = services.appEvents;
@@ -62182,7 +62483,9 @@ var pushRecord = function pushRecord(services, datas) {
         });
 
         // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('Push');
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container')
+        // .addClass('dialog_container')
+        .addClass('Push');
 
         _jquery2.default.post(url + 'prod/push/sendform/', datas, function (data) {
             $dialog.setContent(data);
@@ -62195,7 +62498,7 @@ var pushRecord = function pushRecord(services, datas) {
 
     var _onDialogReady = function _onDialogReady() {
         (0, _index2.default)(services).initialize({
-            feedback: {
+            container: {
                 containerId: '#PushBox',
                 context: 'Push'
             },
@@ -62208,10 +62511,10 @@ var pushRecord = function pushRecord(services, datas) {
     return { openModal: openModal };
 };
 
-exports.default = pushRecord;
+exports.default = pushbasketModal;
 
 /***/ }),
-/* 211 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62229,7 +62532,185 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _publication = __webpack_require__(59);
+var _userslistswindow = __webpack_require__(214);
+
+var _userslistswindow2 = _interopRequireDefault(_userslistswindow);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var userslists = function userslists(services, datas) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var url = configService.get('baseUrl');
+
+    var openModal = function openModal(datas) {
+        var $dialog = _dialog2.default.create(services, {
+            size: 'Full',
+            title: localeService.t('Users lists')
+        });
+
+        // add classes to the whoe dialog (including title)
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container')
+        //.addClass('dialog_container')
+        .addClass('userslists');
+
+        _jquery2.default.post(url + 'prod/push/sendform/', datas, function (data) {
+            $dialog.setContent(data);
+            _onDialogReady();
+            return;
+        });
+
+        return true;
+    };
+
+    var _onDialogReady = function _onDialogReady() {
+        (0, _userslistswindow2.default)(services).initialize({
+            context: '???',
+            containerId: '#ListManager'
+        });
+    };
+
+    return { openModal: openModal };
+};
+
+exports.default = userslists;
+
+/***/ }),
+/* 214 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _listManager = __webpack_require__(65);
+
+var _listManager2 = _interopRequireDefault(_listManager);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var recordslists = function recordslists(services) {
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+
+    var listManagerInstance = null;
+
+    var initialize = function initialize(options) {
+        if ((0, _jquery2.default)('#userslistsBox').length > 0) {
+            listManagerInstance = new _listManager2.default(services, options);
+        } else {
+            (0, _jquery2.default)('.close-dialog-action').on('click', function () {
+                return _dialog2.default.close('1');
+            });
+        }
+    };
+
+    function reloadBridge(url) {
+        var options = (0, _jquery2.default)('#dialog_publicator form[name="current_datas"]').serializeArray();
+        var dialog = dialog.get(1);
+        dialog.load(url, 'POST', options);
+    }
+
+    function createList(listOptions) {
+        listManagerInstance.createList(listOptions);
+    }
+
+    function setActiveList() {}
+
+    function removeList(listObj) {
+        var makeDialog = function makeDialog(box) {
+
+            var buttons = {};
+
+            buttons[localeService.t('valider')] = function () {
+
+                var callbackOK = function callbackOK() {
+                    (0, _jquery2.default)('.list-container ul.list').children().each(function () {
+                        if ((0, _jquery2.default)(this).data('list-id') == listObj.list_id) {
+                            (0, _jquery2.default)(this).remove();
+                        }
+                    });
+                    _dialog2.default.get(2).close();
+                };
+
+                listManagerInstance.removeList(listObj.list_id, callbackOK);
+            };
+
+            var options = {
+                title: localeService.t('Delete the list'),
+                cancelButton: true,
+                buttons: buttons,
+                size: 'Alert'
+            };
+
+            var $dialog = _dialog2.default.create(services, options, 2);
+            if (listObj.container === '#ListManager') {
+                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
+            }
+            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
+                var self = (0, _jquery2.default)(this).children();
+                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
+            });
+            $dialog.setContent(box);
+        };
+
+        var html = _.template((0, _jquery2.default)('#list_editor_dialog_delete_tpl').html());
+
+        makeDialog(html);
+    }
+
+    appEvents.listenAll({
+        // 'push.doInitialize': initialize,
+        'push.setActiveList': setActiveList,
+        'push.createList': createList,
+        'push.reload': reloadBridge,
+        'push.removeList': removeList
+    });
+
+    return {
+        initialize: initialize,
+        // Feedback: Feedback,
+        // ListManager: ListManager,
+        reloadBridge: reloadBridge
+    };
+};
+
+exports.default = recordslists;
+
+/***/ }),
+/* 215 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _publication = __webpack_require__(58);
 
 var _publication2 = _interopRequireDefault(_publication);
 
@@ -62258,7 +62739,7 @@ var recordPublishModal = function recordPublishModal(services, datas) {
 exports.default = recordPublishModal;
 
 /***/ }),
-/* 212 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62276,7 +62757,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _sharingManager = __webpack_require__(213);
+var _sharingManager = __webpack_require__(217);
 
 var _sharingManager2 = _interopRequireDefault(_sharingManager);
 
@@ -62396,7 +62877,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
 exports.default = recordToolsModal;
 
 /***/ }),
-/* 213 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62468,7 +62949,7 @@ var sharingManager = function sharingManager(services, datas) {
 exports.default = sharingManager;
 
 /***/ }),
-/* 214 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62486,76 +62967,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(53);
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var recordFeedbackModal = function recordFeedbackModal(services, datas) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var url = configService.get('baseUrl');
-
-    var openModal = function openModal(datas) {
-        /* disable push closeonescape as an over dialog may exist (add user) */
-        var $dialog = _dialog2.default.create(services, {
-            size: 'Full',
-            title: localeService.t('feedback')
-        });
-
-        // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('Feedback');
-
-        _jquery2.default.post(url + 'prod/push/validateform/', datas, function (data) {
-            // data content's javascript can't be fully refactored
-            $dialog.setContent(data);
-            _onDialogReady();
-            return;
-        });
-
-        return true;
-    };
-
-    var _onDialogReady = function _onDialogReady() {
-        (0, _index2.default)(services).initialize({
-            feedback: {
-                containerId: '#PushBox',
-                context: 'Feedback'
-            },
-            listManager: {
-                containerId: '#ListManager'
-            }
-        });
-    };
-
-    return { openModal: openModal };
-};
-
-exports.default = recordFeedbackModal;
-
-/***/ }),
-/* 215 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-var _index = __webpack_require__(216);
+var _index = __webpack_require__(219);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -62593,7 +63005,7 @@ var bridgeRecord = function bridgeRecord(services) {
 exports.default = bridgeRecord;
 
 /***/ }),
-/* 216 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62932,7 +63344,7 @@ var recordBridge = function recordBridge(services) {
 exports.default = recordBridge;
 
 /***/ }),
-/* 217 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62950,7 +63362,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _screenCapture = __webpack_require__(218);
+var _screenCapture = __webpack_require__(221);
 
 var _screenCapture2 = _interopRequireDefault(_screenCapture);
 
@@ -63272,7 +63684,7 @@ var videoScreenCapture = function videoScreenCapture(services, datas) {
 exports.default = videoScreenCapture;
 
 /***/ }),
-/* 218 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63282,7 +63694,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _canvaImage = __webpack_require__(219);
+var _canvaImage = __webpack_require__(222);
 
 var _canvaImage2 = _interopRequireDefault(_canvaImage);
 
@@ -63509,7 +63921,7 @@ var ScreenCapture = function ScreenCapture(videoId, canvaId, outputOptions) {
 exports.default = ScreenCapture;
 
 /***/ }),
-/* 219 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63608,7 +64020,7 @@ Canva.prototype = {
 exports.default = Canva;
 
 /***/ }),
-/* 220 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63618,7 +64030,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _videojsFlash = __webpack_require__(64);
+var _videojsFlash = __webpack_require__(68);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -63687,7 +64099,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
             // load videoJs lib
             //require('../../videoEditor/style/main.scss');
-            rangeCapture = __webpack_require__(91).default;
+            rangeCapture = __webpack_require__(93).default;
             var rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
             //render(initData);
@@ -63700,7 +64112,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
 exports.default = videoRangeCapture;
 
 /***/ }),
-/* 221 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64141,13 +64553,13 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
 exports.default = videoSubtitleCapture;
 
 /***/ }),
-/* 222 */
+/* 225 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 223 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64225,7 +64637,7 @@ var keyboard = function keyboard(services) {
 exports.default = keyboard;
 
 /***/ }),
-/* 224 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64313,7 +64725,7 @@ var cgu = function cgu(services) {
 exports.default = cgu;
 
 /***/ }),
-/* 225 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64412,7 +64824,7 @@ var shareRecord = function shareRecord(services) {
 exports.default = shareRecord;
 
 /***/ }),
-/* 226 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64453,7 +64865,7 @@ var addToBasket = function addToBasket(services) {
 exports.default = addToBasket;
 
 /***/ }),
-/* 227 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64492,7 +64904,7 @@ var removeFromBasket = function removeFromBasket(services) {
 exports.default = removeFromBasket;
 
 /***/ }),
-/* 228 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64514,8 +64926,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var highlight = __webpack_require__(229);
-var colorpicker = __webpack_require__(230);
+var highlight = __webpack_require__(232);
+var colorpicker = __webpack_require__(233);
 var preferences = function preferences(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -64824,7 +65236,7 @@ var preferences = function preferences(services) {
 exports.default = preferences;
 
 /***/ }),
-/* 229 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -64861,7 +65273,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 230 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -65347,7 +65759,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 231 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65369,7 +65781,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(79);
+var _index = __webpack_require__(81);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -66134,7 +66546,7 @@ var orderItem = function orderItem(services) {
 exports.default = orderItem;
 
 /***/ }),
-/* 232 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66172,9 +66584,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(233);
+__webpack_require__(236);
 
-var image_enhancer = __webpack_require__(234);
+var image_enhancer = __webpack_require__(237);
 __webpack_require__(14);
 var previewRecordService = function previewRecordService(services) {
     var configService = services.configService,
@@ -66903,13 +67315,13 @@ var previewRecordService = function previewRecordService(services) {
 exports.default = previewRecordService;
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 234 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -66925,7 +67337,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(235);
+__webpack_require__(238);
 
 (function ($) {
 
@@ -67154,13 +67566,13 @@ __webpack_require__(235);
 
 
 /***/ }),
-/* 235 */
+/* 238 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 236 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67207,7 +67619,7 @@ var uploader = function uploader(services) {
 
             __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                 // load uploader manager dep
-                UploaderManager = __webpack_require__(93).default;
+                UploaderManager = __webpack_require__(95).default;
                 openModal($this, []);
             }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
         });
@@ -67222,7 +67634,7 @@ var uploader = function uploader(services) {
 
                     __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                         // load uploader manager dep
-                        UploaderManager = __webpack_require__(93).default;
+                        UploaderManager = __webpack_require__(95).default;
                         openModal((0, _jquery2.default)('.uploader-open-action'), fileList);
                     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 
@@ -67715,7 +68127,7 @@ var uploader = function uploader(services) {
 exports.default = uploader;
 
 /***/ }),
-/* 237 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67743,7 +68155,7 @@ var defaultConfig = {
 exports.default = defaultConfig;
 
 /***/ }),
-/* 238 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67753,7 +68165,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _ui = __webpack_require__(62);
+var _ui = __webpack_require__(66);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -67818,7 +68230,7 @@ var user = function user(services) {
 exports.default = user;
 
 /***/ }),
-/* 239 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67873,7 +68285,7 @@ var basket = function basket() {
 exports.default = basket;
 
 /***/ }),
-/* 240 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67899,11 +68311,11 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _resultInfos = __webpack_require__(80);
+var _resultInfos = __webpack_require__(82);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
-var _index = __webpack_require__(61);
+var _index = __webpack_require__(60);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -67911,7 +68323,7 @@ var _selectable = __webpack_require__(22);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchForm = __webpack_require__(241);
+var _searchForm = __webpack_require__(244);
 
 var _searchForm2 = _interopRequireDefault(_searchForm);
 
@@ -67919,7 +68331,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var lazyload = __webpack_require__(60);
+var lazyload = __webpack_require__(59);
 __webpack_require__(14);
 __webpack_require__(19);
 
@@ -68588,7 +69000,7 @@ var search = function search(services) {
 exports.default = search;
 
 /***/ }),
-/* 241 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68610,7 +69022,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _resultInfos = __webpack_require__(80);
+var _resultInfos = __webpack_require__(82);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
@@ -68626,11 +69038,11 @@ var _selectable = __webpack_require__(22);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchAdvancedForm = __webpack_require__(242);
+var _searchAdvancedForm = __webpack_require__(245);
 
 var _searchAdvancedForm2 = _interopRequireDefault(_searchAdvancedForm);
 
-var _searchGeoForm = __webpack_require__(243);
+var _searchGeoForm = __webpack_require__(246);
 
 var _searchGeoForm2 = _interopRequireDefault(_searchGeoForm);
 
@@ -68795,7 +69207,7 @@ var searchForm = function searchForm(services) {
 exports.default = searchForm;
 
 /***/ }),
-/* 242 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69448,7 +69860,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
 exports.default = searchAdvancedForm;
 
 /***/ }),
-/* 243 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69673,7 +70085,7 @@ var searchGeoForm = function searchGeoForm(services) {
 exports.default = searchGeoForm;
 
 /***/ }),
-/* 244 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -69815,13 +70227,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 245 */
+/* 248 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 246 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Arabic Translation for jQuery UI date picker plugin. */
@@ -69851,7 +70263,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 247 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* German initialisation for the jQuery UI date picker plugin. */
@@ -69881,7 +70293,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 248 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Inicialización en español para la extensión 'UI date picker' para jQuery. */
@@ -69911,7 +70323,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 249 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* French initialisation for the jQuery UI date picker plugin. */
@@ -69943,7 +70355,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 250 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Dutch (UTF-8) initialisation for the jQuery UI date picker plugin. */
@@ -69973,7 +70385,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 251 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* English/UK initialisation for the jQuery UI date picker plugin. */
@@ -70003,5 +70415,5 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
-],[94]);
+],[96]);
 });
