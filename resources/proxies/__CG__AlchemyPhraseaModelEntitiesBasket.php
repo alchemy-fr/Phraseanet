@@ -378,7 +378,7 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setVoteInitiator(\Alchemy\Phrasea\Model\Entities\User $user)
+    public function setVoteInitiator($user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVoteInitiator', [$user]);
