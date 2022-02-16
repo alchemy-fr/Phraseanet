@@ -233,6 +233,35 @@ class Basket
     }
 
     /**
+     * return true  if the user is participant and is aware
+     *        false if the user is participant and is not aware
+     *        null  if the user is not particiapant
+     *
+     * used to display an "unread" flag near basket (use along with isRead() method)
+     *
+     * @param User $user
+     * @return bool|null
+     */
+    public function isAwareByUserParticipant(User $user)
+    {
+        if($this->isParticipant($user)) {
+            $now = new DateTime();
+            if(!$this->getParticipant($user)->getIsAware()) {
+                if (is_null($this->share_expires)
+                    || $now < $this->share_expires
+                    || (!is_null($this->vote_expires) && $now < $this->vote_expires)
+                ) {
+                    // unread
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
+        return null;
+    }
+
+    /**
      * @param User $user
      *
      * @return $this

@@ -3361,13 +3361,21 @@ h3.metadatas-title:after {
   background-color: #474747;
 }
 
-.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
-  font-style: italic;
-  font-weight: bold;
+.ui-accordion .ui-accordion-header .unread_flag {
+  color: transparent;
 }
 
 .ui-accordion .ui-accordion-header.unread {
   background-color: #076882;
+}
+
+.ui-accordion .ui-accordion-header.unread .unread_flag {
+  color: revert;
+}
+
+.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
+  font-style: italic;
+  font-weight: bold;
 }
 
 .ui-accordion .ui-accordion-header.header {

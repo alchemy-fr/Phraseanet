@@ -165,14 +165,21 @@ $basketBg: $darkBackgroundColor !default;
     }
 }
 
-.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
-    font-style: italic;
-    font-weight: bold;
-}
-
-.ui-accordion .ui-accordion-header.unread {
-    background-color: $basketsColor;
-    //background-image: url('#{$iconsPath}bask_new_back_light.png');
+.ui-accordion .ui-accordion-header {
+    .unread_flag {
+        color: transparent;
+    }
+    &.unread {
+        .unread_flag {
+            color: revert;
+        }
+        background-color: $basketsColor;
+        //background-image: url('#{$iconsPath}bask_new_back_light.png');
+        .workzone-menu-title {
+            font-style: italic;
+            font-weight: bold;
+        }
+    }
 }
 
 .ui-accordion .ui-accordion-header.header {

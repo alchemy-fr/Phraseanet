@@ -295,6 +295,8 @@
 
             <div id="validations-block" class="validations-block">
                 {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
+                    {# ! do not invert formula because isAwareByUserParticipant(...) can return null ! #}
+                    {% set is_read = not(basket.isRead() == false or (basket.isAwareByUserParticipant(app.getAuthenticatedUser()) is same as(false))) %}
 
                     <div
                          id="SSTT_{{ basket.getId() }}"
@@ -305,11 +307,7 @@
                         <a class="workzone-menu-title"
                            href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
 
-                            {% if not basket.isRead() %}
-                                <i class="fa fa-eye"></i>
-                            {% else %}
-                                &nbsp;&nbsp;
-                            {% endif %}
+                            <i class="fa fa-eye unread_flag"></i>
 
                             <span>
                                 <i class="fa fa-shopping-basket"></i>
@@ -345,22 +343,20 @@
 
             <div id="all_baskets-block" class="all_baskets-block">
                 {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
+                    {# ! do not invert formula because isAwareByUserParticipant(...) can return null ! #}
+                    {% set is_read = not(basket.isRead() == false or (basket.isAwareByUserParticipant(app.getAuthenticatedUser()) is same as(false))) %}
 
                     <div
                          id="SSTT_{{ basket.getId() }}"
                          class="ui-accordion-header ui-state-default
-                         ui-corner-all header SSTT basket {% if not basket.isRead() %}unread{% endif %}
+                         ui-corner-all header SSTT basket {% if not is_read %}unread{% endif %}
                          {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
                          {% if basket.isVoteBasket() %} feedbacks-block {% elseif basket.getPusher() %} pushes-block {% else %} baskets-block {% endif %} ">
 
                         <a class="workzone-menu-title"
                            href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
 
-                            {% if not basket.isRead() %}
-                                <i class="fa fa-eye"></i>
-                            {% else %}
-                                &nbsp;&nbsp;
-                            {% endif %}
+                            <i class="fa fa-eye unread_flag"></i>
 
                             <span>
                                 <i class="fa fa-shopping-basket"></i>
