@@ -38,7 +38,7 @@ class BasketController extends Controller
             $this->getEntityManager()->flush();
         }
 
-        if ($basket->isVoteBasket()) {
+        if ($basket->isParticipant($this->getAuthenticatedUser())) {
             if ($basket->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
                 $basket->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
                 $this->getEntityManager()->flush();
