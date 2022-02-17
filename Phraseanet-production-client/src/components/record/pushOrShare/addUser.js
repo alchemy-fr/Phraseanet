@@ -73,11 +73,6 @@ const pushOrShareAddUser = (services) => {
             d.addClass(options.dialog_classes[i]);  // 'dialog_container', 'whole_dialog_container', ...
         }
 
-        // // if there is a context (=theme), add a css
-        // if(options.context) {
-        //     d.addClass(options.context);
-        // }
-
         return $.get(`${url}prod/push/add-user/`, function (data) {
             $dialog.setContent(data);
             _onDialogReady(window.addUserConfig);

@@ -13,6 +13,7 @@
  *   http://www.gnu.org/licenses/gpl.html
  */
 /**
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  * todo : find where this code is used (it's a close copy of Phraseanet-production-client/src/phraseanet-common/components/tooltip.js)
  */
 (function ($) {

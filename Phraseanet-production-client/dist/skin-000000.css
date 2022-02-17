@@ -10122,14 +10122,6 @@ TABLE.explain3 TR TD {
   background: #ff9400;
 }
 
-/*
-.general_togglers button {
-    position: relative;
-    width: 100%;
-    height: 27px;
-}
-*/
-
 #PushBox .list_loader {
   font-size: 13px;
   color: #000000;
@@ -10155,20 +10147,6 @@ TABLE.explain3 TR TD {
 
 #find-user {
   line-height: 15px;
-  /*
-    input[type=text]::-webkit-input-placeholder { !* Chrome/Opera/Safari *!
-        color: #ffffff;
-    }
-    input[type=text]::-moz-placeholder { !* Firefox 19+ *!
-        color: #ffffff;
-    }
-    input[type=text]:-ms-input-placeholder { !* IE 10+ *!
-        color: #ffffff;
-    }
-    input[type=text]:-moz-placeholder { !* Firefox 18- *!
-        color: #ffffff;
-    }
-    */
 }
 
 #find-user input[type=text] {

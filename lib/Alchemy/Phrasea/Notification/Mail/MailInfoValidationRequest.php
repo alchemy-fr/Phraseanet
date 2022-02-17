@@ -104,7 +104,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
      */
     public function getMessage()
     {
-        /*
+        /* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (0 < $this->duration) {
             if (1 < $this->duration) {
                 return $this->message . "\n\n" . $this->app->trans("You have %quantity% days to validate the selection.", ['%quantity%' => $this->duration], 'messages', $this->getLocale());

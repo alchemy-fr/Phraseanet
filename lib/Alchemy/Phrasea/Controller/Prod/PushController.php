@@ -278,19 +278,7 @@ class PushController extends Controller
                     $basket->addElement($basketElement);
                 }
             }
-/*
-            $voteExpiresDate = null;
-            // add an expiration date if a duration was specified
-            $duration = (int)$request->request->get('duration');
-            if ($duration > 0) {
-                $voteExpiresDate = new DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));
-                $basket->setVoteExpires($voteExpiresDate);
-            }
-            else {
-                // go on with existing votes
-                $voteExpiresDate = $basket->getVoteExpires();
-            }
-*/
+
             if(!empty($shareExpiresDate = $request->request->get('shareExpires'))) {
                 $shareExpiresDate = new DateTime($shareExpiresDate);     // d: "Y-m-d"
             }
@@ -322,30 +310,6 @@ class PushController extends Controller
 
             $manager->refresh($basket);
 
-/*
-            // we always add the author of the validation request (current user) to the participants
-            //
-            $found = false;
-            foreach ($participants as $key => $participant) {
-                if ($participant['usr_id'] == $this->getAuthenticatedUser()->getId()) {
-                    // the initiator always can see others
-                    $participants[$key]['see_others'] = 1;
-                    $found = true;
-
-                    break;
-                }
-            }
-
-            if (!$found) {
-                $participants[] = [
-                    'see_others' => 1,
-                    'usr_id'     => $this->getAuthenticatedUser()->getId(),
-                    'agree'      => 0,
-                    'modify'     => 1,
-                    'HD'         => 1,
-                ];
-            }
-*/
             // used to check participant to be removed
             $feedbackAction = $request->request->get('feedbackAction');
             $remainingParticipantsUserId = [];
@@ -499,7 +463,7 @@ class PushController extends Controller
                 }
             }
 
-//            if ($feedbackAction == 'adduser') {
+//   !!!!!!!!!!!!!!!!!!!!!         if ($feedbackAction == 'adduser') {
                 foreach ($remainingParticipantsUserId as $userIdToRemove) {
                     try {
                         /** @var  User $participantUser */

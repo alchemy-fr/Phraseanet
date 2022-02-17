@@ -4462,7 +4462,6 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
     var listManagerInstance = null;
 
     var initialize = function initialize(options) {
-        console.log("==== pushOrShareIndex::initialize ====");
         var container = options.container,
             listManager = options.listManager;
 
@@ -4869,11 +4868,6 @@ var pushOrShareAddUser = function pushOrShareAddUser(services) {
             d.addClass(options.dialog_classes[i]); // 'dialog_container', 'whole_dialog_container', ...
         }
 
-        // // if there is a context (=theme), add a css
-        // if(options.context) {
-        //     d.addClass(options.context);
-        // }
-
         return _jquery2.default.get(url + 'prod/push/add-user/', function (data) {
             $dialog.setContent(data);
             _onDialogReady(window.addUserConfig);
@@ -5153,14 +5147,7 @@ var ListManager = function ListManager(services, options) {
             return false;
         });
 
-        /*$('li.list a.list_link', $container).bind('click', function (event) {
-          var $this = $(this);
-          $this.closest('.lists').find('.list.selected').removeClass('selected');
-         $this.parent('li.list').addClass('selected');
-         return false;
-         });*/
         $container.on('click', '.list-edit-action', function (event) {
-            console.log("==== list-edit-action");
             event.preventDefault();
             _this.removeUserItemsArray = [];
             _this.addUserItemsArray = [];
@@ -11040,6 +11027,7 @@ var workzone = function workzone(services) {
             extraClass: 'tooltip_flat'
         });
 
+        // !!!!!!!!!!!!!!!!!!! seems useless !!!!!!!!!!!!!!!!!!
         // $('.basket_title').tooltip({
         //     extraClass: 'tooltip_flat'
         // });
@@ -18660,26 +18648,18 @@ var shareBasket = function shareBasket(services) {
             event.preventDefault();
             _triggerModal(event, (0, _sharebasketModal2.default)(services).openModal);
         });
-        /*
-                // basket general menu : click on "feedback"
-                $container.on('click', '.basket-feedback-action', function (event) {
-                    event.preventDefault();
-                    _triggerModal(event, recordFeedbackModal(services).openModal);
-                });
-        
-        */
     };
 
     var _triggerModal = function _triggerModal(event, actionFn) {
         event.preventDefault();
         var $el = (0, _jquery2.default)(event.currentTarget);
         var basket_id = $el.attr('data-id');
-        // console.log("=== clicked with basket_id = ", basket_id);
+
         var params = {
             ssel: basket_id,
             feedbackaction: 'adduser'
         };
-        // console.log("==== ready to open dlg with params: ", params);
+
         return actionFn.apply(null, [params]);
     };
 
@@ -18750,9 +18730,6 @@ var pushOrShare = function pushOrShare(services, container) {
 
     this.Context = context;
 
-    //    let $badges = $('.user_content .badges .badge', this.container);
-
-    //    var $this = this;
     var pushOrShare = this;
 
     this.selection = new _selectable2.default(services, (0, _jquery2.default)('.user_content .badges', this.container), {
@@ -18849,40 +18826,8 @@ var pushOrShare = function pushOrShare(services, container) {
 
     (0, _jquery2.default)('.UserTips', this.container).tooltip();
 
-    /*this.container.on('click', '.user_adder', function (event) {
-        event.preventDefault();
-        const url = configService.get('baseUrl');
-        var $this = $(this);
-         $.ajax({
-            type: 'GET',
-            url: `${url}prod/push/add-user/`,
-            dataType: 'html',
-            beforeSend: function () {
-                var options = {
-                    size: 'Medium',
-                    title: $this.html()
-                };
-                dialog.create(services, options, 2).getDomElement().addClass('loading');
-            },
-            success: function (data) {
-                dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
-                return;
-            },
-            error: function () {
-                dialog.get(2).close();
-                return;
-            },
-            timeout: function () {
-                dialog.get(2).close();
-                return;
-            }
-        });
-         return false;
-    });*/
-
     this.container.on('click', '.recommended_users', function (event) {
         var usr_id = (0, _jquery2.default)('input[name="usr_id"]', (0, _jquery2.default)(this)).val();
-        console.log("====== click on .recommended_users ; usr_id=" + usr_id);
         pushOrShare.loadUser(usr_id, pushOrShare.selectUser);
 
         return false;
@@ -18890,7 +18835,6 @@ var pushOrShare = function pushOrShare(services, container) {
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!! this is never called because the link is not shown ??? ( see templates/web/prod/actions/Push.html.twig
     this.container.on('click', '.recommended_users_list', function (event) {
-        console.log("====== click on .recommended_users_list");
 
         var content = (0, _jquery2.default)('#push_user_recommendations').html();
 
@@ -18966,8 +18910,6 @@ var pushOrShare = function pushOrShare(services, container) {
     (0, _jquery2.default)('.FeedbackSend', this.container).bind('click', function (event) {
         var $el = (0, _jquery2.default)(event.currentTarget);
 
-        console.log("==== clicked main dlg save button with feedbackaction=" + $el.data('feedback-action') + "====");
-
         if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
             return;
@@ -18978,9 +18920,7 @@ var pushOrShare = function pushOrShare(services, container) {
         // if we edit an existing basket, add a "save" button to send without email notification
         //
         if ($el.data('feedback-action') === 'adduser') {
-            console.log("==== feedback-action === adduser");
             buttons[localeService.t('feedbackSaveNotNotify')] = function () {
-                console.log("==== clicked popup dlg save button ====");
                 $dialog.close();
 
                 (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
@@ -18995,7 +18935,6 @@ var pushOrShare = function pushOrShare(services, container) {
         // normal "send button"
         //
         buttons[localeService.t('send')] = function () {
-            console.log("==== clicked popup dlg send button ====");
 
             // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {
@@ -19132,7 +19071,6 @@ var pushOrShare = function pushOrShare(services, container) {
     });
 
     (0, _jquery2.default)('form.list_saver', this.container).bind('submit', function () {
-        console.log("==== save ====");
         var $form = (0, _jquery2.default)(event.currentTarget);
         var $input = (0, _jquery2.default)('input[name="list_name"]', $form);
 
@@ -19213,7 +19151,7 @@ var pushOrShare = function pushOrShare(services, container) {
     appEvents.listenAll({
         // users lists (left) are async loaded
         'sharebasket.usersListsChanged': function sharebasketUsersListsChanged(o) {
-            console.log("==== catch usersListsChanged");
+
             o.container.off('click', '.LeftColumn .content .lists a.list_link').on('click', '.LeftColumn .content .lists a.list_link', function (event) {
                 var url = (0, _jquery2.default)(this).attr('href');
 
@@ -19229,7 +19167,6 @@ var pushOrShare = function pushOrShare(services, container) {
             });
         },
         'sharebasket.participantsChanged': function sharebasketParticipantsChanged(o) {
-            console.log("==== user list changed with context " + o.context + "====");
 
             // the list on participants (badges) have changed : set event handlers on specific elements...
 
@@ -19270,7 +19207,7 @@ var pushOrShare = function pushOrShare(services, container) {
             // ... toggle buttons handlers
             //
             $toggles.off('click').on('click', function (event) {
-                console.log("==== toggle clicked ====");
+
                 event.stopPropagation();
 
                 var $this = (0, _jquery2.default)(this);
@@ -19282,19 +19219,6 @@ var pushOrShare = function pushOrShare(services, container) {
 
                 if ((0, _jquery2.default)(event.currentTarget).attr('id') === 'toggleFeedback') {
                     appEvents.emit('sharebasket.toggleFeedbackChanged', { container: $container, context: o.context });
-                    /*
-                                        // special owner toggle to set the share as a feedback
-                                        if(input_value === '0') {
-                                            // simple share
-                                            $('.feedback_only_true', o.container).hide();
-                                            $('.feedback_only_false', o.container).show();
-                                        }
-                                        else {
-                                            // we want feedback from this share
-                                            $('.feedback_only_false', o.container).hide();
-                                            $('.feedback_only_true', o.container).show();
-                                        }
-                    */
                 } else {
                     // normal toggle
                     appEvents.emit('sharebasket.toggleChanged', {
@@ -19323,7 +19247,6 @@ var pushOrShare = function pushOrShare(services, container) {
             }
         },
         'sharebasket.participantsSelectionChanged': function sharebasketParticipantsSelectionChanged(o) {
-            console.log("==== selection changed");
             // a toggle on a user badge was changed
             var $badges = (0, _jquery2.default)('.user_content .badges .badge', o.container);
             var selectedCount = $badges.filter('.selected').length;
@@ -19348,7 +19271,6 @@ var pushOrShare = function pushOrShare(services, container) {
 
     // load users lists (left zone)
     (0, _jquery2.default)('.push-refresh-list-action', this.container).click();
-    // appEvents.emit('sharebasket.usersListsChanged', { container:this.container, context:'init' });
 
     appEvents.emit('sharebasket.participantsChanged', { container: this.container, context: 'init' });
 
@@ -19357,7 +19279,6 @@ var pushOrShare = function pushOrShare(services, container) {
 
 pushOrShare.prototype = {
     selectUser: function selectUser(user) {
-        console.log("===== fct SELECT USER context = " + this.Context.toLowerCase());
         if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
             if (window.console) {
                 console.log('trying to select a user with wrong datas');
@@ -19380,11 +19301,6 @@ pushOrShare.prototype = {
             }
         }
 
-        /*
-        var html = _.template($('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
-            user: user
-        });
-         */
         var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
             user: user,
             context: this.Context
@@ -62483,9 +62399,7 @@ var pushbasketModal = function pushbasketModal(services, datas) {
         });
 
         // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container')
-        // .addClass('dialog_container')
-        .addClass('Push');
+        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container').addClass('Push');
 
         _jquery2.default.post(url + 'prod/push/sendform/', datas, function (data) {
             $dialog.setContent(data);

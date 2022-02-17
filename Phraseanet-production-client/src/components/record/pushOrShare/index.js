@@ -9,7 +9,6 @@ const pushOrShareIndex = (services) => {
     let listManagerInstance = null;
 
     const initialize = (options) => {
-        console.log("==== pushOrShareIndex::initialize ====");
         let {container, listManager} = options;
         let $container = $('#PushBox');
         if ($container.length > 0) {

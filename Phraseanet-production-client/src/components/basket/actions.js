@@ -14,26 +14,18 @@ const shareBasket = (services) => {
             event.preventDefault();
             _triggerModal(event, sharebasketModal(services).openModal);
         });
-/*
-        // basket general menu : click on "feedback"
-        $container.on('click', '.basket-feedback-action', function (event) {
-            event.preventDefault();
-            _triggerModal(event, recordFeedbackModal(services).openModal);
-        });
-
-*/
     };
 
     const _triggerModal = (event, actionFn) => {
         event.preventDefault();
         const $el = $(event.currentTarget);
         const basket_id = $el.attr('data-id');
-        // console.log("=== clicked with basket_id = ", basket_id);
+
         let params = {
             ssel: basket_id,
             feedbackaction: 'adduser'
         };
-        // console.log("==== ready to open dlg with params: ", params);
+
         return actionFn.apply(null, [params]);
     };
 

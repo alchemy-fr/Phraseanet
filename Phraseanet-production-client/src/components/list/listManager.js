@@ -163,16 +163,7 @@ const ListManager = function (services, options) {
             return false;
         });
 
-        /*$('li.list a.list_link', $container).bind('click', function (event) {
-
-         var $this = $(this);
-
-         $this.closest('.lists').find('.list.selected').removeClass('selected');
-         $this.parent('li.list').addClass('selected');
-         return false;
-         });*/
         $container.on('click', '.list-edit-action', (event) => {
-            console.log("==== list-edit-action");
             event.preventDefault();
             _this.removeUserItemsArray = [];
             _this.addUserItemsArray = [];

@@ -21,9 +21,6 @@ const pushOrShare = function (services, container) {
 
     this.Context = context;
 
-//    let $badges = $('.user_content .badges .badge', this.container);
-
-//    var $this = this;
     var pushOrShare = this;
 
 
@@ -126,42 +123,8 @@ const pushOrShare = function (services, container) {
 
     $('.UserTips', this.container).tooltip();
 
-    /*this.container.on('click', '.user_adder', function (event) {
-        event.preventDefault();
-        const url = configService.get('baseUrl');
-        var $this = $(this);
-
-        $.ajax({
-            type: 'GET',
-            url: `${url}prod/push/add-user/`,
-            dataType: 'html',
-            beforeSend: function () {
-                var options = {
-                    size: 'Medium',
-                    title: $this.html()
-                };
-                dialog.create(services, options, 2).getDomElement().addClass('loading');
-            },
-            success: function (data) {
-                dialog.get(2).getDomElement().removeClass('loading').empty().append(data);
-                return;
-            },
-            error: function () {
-                dialog.get(2).close();
-                return;
-            },
-            timeout: function () {
-                dialog.get(2).close();
-                return;
-            }
-        });
-
-        return false;
-    });*/
-
     this.container.on('click', '.recommended_users', function (event) {
         var usr_id = $('input[name="usr_id"]', $(this)).val();
-console.log("====== click on .recommended_users ; usr_id=" + usr_id);
         pushOrShare.loadUser(usr_id, pushOrShare.selectUser);
 
         return false;
@@ -169,7 +132,6 @@ console.log("====== click on .recommended_users ; usr_id=" + usr_id);
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!! this is never called because the link is not shown ??? ( see templates/web/prod/actions/Push.html.twig
     this.container.on('click', '.recommended_users_list', function (event) {
-console.log("====== click on .recommended_users_list");
 
         var content = $('#push_user_recommendations').html();
 
@@ -249,8 +211,6 @@ console.log("====== click on .recommended_users_list");
     $('.FeedbackSend', this.container).bind('click', function (event) {
         const $el = $(event.currentTarget);
 
-        console.log("==== clicked main dlg save button with feedbackaction=" + $el.data('feedback-action') + "====");
-
         if ($('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
             return;
@@ -261,9 +221,7 @@ console.log("====== click on .recommended_users_list");
         // if we edit an existing basket, add a "save" button to send without email notification
         //
         if ($el.data('feedback-action') === 'adduser') {
-console.log("==== feedback-action === adduser");
             buttons[localeService.t('feedbackSaveNotNotify')] = function () {
-                console.log("==== clicked popup dlg save button ====");
                 $dialog.close();
 
                 $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
@@ -278,7 +236,6 @@ console.log("==== feedback-action === adduser");
         // normal "send button"
         //
         buttons[localeService.t('send')] = function () {
-            console.log("==== clicked popup dlg send button ====");
 
             // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {
@@ -416,7 +373,6 @@ console.log("==== feedback-action === adduser");
     });
 
     $('form.list_saver', this.container).bind('submit', () => {
-        console.log("==== save ====");
         var $form = $(event.currentTarget);
         var $input = $('input[name="list_name"]', $form);
 
@@ -501,7 +457,7 @@ console.log("==== feedback-action === adduser");
     appEvents.listenAll({
         // users lists (left) are async loaded
         'sharebasket.usersListsChanged': function(o) {
-            console.log("==== catch usersListsChanged");
+
             o.container
              .off('click', '.LeftColumn .content .lists a.list_link')
              .on('click', '.LeftColumn .content .lists a.list_link', function (event) {
@@ -519,7 +475,6 @@ console.log("==== feedback-action === adduser");
             });
         },
         'sharebasket.participantsChanged': function(o) {
-            console.log("==== user list changed with context " + o.context + "====");
 
             // the list on participants (badges) have changed : set event handlers on specific elements...
 
@@ -562,7 +517,7 @@ console.log("==== feedback-action === adduser");
             //
             $toggles.off('click')
                    .on('click', function (event) {
-                console.log("==== toggle clicked ====");
+
                 event.stopPropagation();
 
                 const $this = $(this);
@@ -574,19 +529,6 @@ console.log("==== feedback-action === adduser");
 
                 if($(event.currentTarget).attr('id') === 'toggleFeedback') {
                     appEvents.emit('sharebasket.toggleFeedbackChanged', { container:$container, context:o.context });
-/*
-                    // special owner toggle to set the share as a feedback
-                    if(input_value === '0') {
-                        // simple share
-                        $('.feedback_only_true', o.container).hide();
-                        $('.feedback_only_false', o.container).show();
-                    }
-                    else {
-                        // we want feedback from this share
-                        $('.feedback_only_false', o.container).hide();
-                        $('.feedback_only_true', o.container).show();
-                    }
-*/
                 }
                 else {
                     // normal toggle
@@ -617,7 +559,6 @@ console.log("==== feedback-action === adduser");
             }
         },
         'sharebasket.participantsSelectionChanged': function(o) {
-            console.log("==== selection changed");
             // a toggle on a user badge was changed
             const $badges = $('.user_content .badges .badge', o.container);
             const selectedCount = $badges.filter('.selected').length;
@@ -644,7 +585,6 @@ console.log("==== feedback-action === adduser");
 
     // load users lists (left zone)
     $('.push-refresh-list-action', this.container).click();
-    // appEvents.emit('sharebasket.usersListsChanged', { container:this.container, context:'init' });
 
     appEvents.emit('sharebasket.participantsChanged', { container:this.container, context:'init' });
 
@@ -653,7 +593,6 @@ console.log("==== feedback-action === adduser");
 
 pushOrShare.prototype = {
     selectUser: function (user) {
-console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
         if (typeof user !== 'object') {
             if (window.console) {
                 console.log('trying to select a user with wrong datas');
@@ -676,11 +615,6 @@ console.log("===== fct SELECT USER context = "+this.Context.toLowerCase());
             }
         }
 
-        /*
-        var html = _.template($('#' + this.Context.toLowerCase() + '_badge_tpl').html())({
-            user: user
-        });
-         */
         var html = _.template($('#_badge_tpl').html())({
             user: user,
             context: this.Context

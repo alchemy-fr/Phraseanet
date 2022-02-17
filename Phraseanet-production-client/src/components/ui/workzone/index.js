@@ -370,6 +370,7 @@ const workzone = (services) => {
             extraClass: 'tooltip_flat'
         });
 
+        // !!!!!!!!!!!!!!!!!!! seems useless !!!!!!!!!!!!!!!!!!
         // $('.basket_title').tooltip({
         //     extraClass: 'tooltip_flat'
         // });

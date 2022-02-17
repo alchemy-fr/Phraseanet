@@ -1505,6 +1505,7 @@ $(document).ready(function () {
         });
 
     // todo: check if used
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // $('.basketTips').tooltip({
     //     delay: 200
     // });
@@ -2144,10 +2145,6 @@ function activeIcons() {
             alert(language.nodocselected);
         }
     });
-
-    // $container.on('click', '.TOOL_sharebasket_btn', function () {
-    //     console.log("SHARE BASKET");
-    // });
 
     $container.on('click', '.TOOL_feedback_btn', function () {
         var value = "", type = "", sstt_id = "", story = '';

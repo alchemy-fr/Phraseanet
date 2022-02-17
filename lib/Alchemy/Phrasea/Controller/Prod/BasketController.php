@@ -345,24 +345,6 @@ class BasketController extends Controller
             $oldBasket->removeElement($basket_element);
             $basket->addElement($basket_element);
 
-            /* why do we want to create empty validation data ?
-
-            //  configure participant when moving from other type of basket to basket type feedback
-            if ($oldBasket->getValidation() == null &&  ($validationSession = $basket->getValidation()) !== null) {
-
-                $participants = $validationSession->getParticipants();
-
-                foreach ($participants as $participant) {
-                    $validationData = new ValidationData();
-                    $validationData->setParticipant($participant);
-                    $validationData->setBasketElement($basket_element);
-
-                    $this->getEntityManager()->persist($validationData);
-                }
-            }
-
-            */
-
             $n++;
         }
 
