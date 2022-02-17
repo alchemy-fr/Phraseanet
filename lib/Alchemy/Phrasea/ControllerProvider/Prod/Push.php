@@ -48,6 +48,9 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->before(function () use ($firewall) {
             $firewall->requireRight(\ACL::CANPUSH);
         });
+        // tranform 'basket' argument (id) to basket object
+        $controllers->before($app['middleware.basket.converter']);
+
 
         /* click on the toolbar button "push" --> open ux */
         /** @uses \Alchemy\Phrasea\Controller\Prod\PushController::postFormAction */
@@ -67,6 +70,10 @@ class Push implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/sharebasket/', 'controller.prod.push:sharebasketAction')
             ->bind('prod_push_send_sharebasket');
 
+        /** @uses PushController::quitshareAction() */
+        $controllers->post('/quitshare/{basket}/', 'controller.prod.push:quitshareAction')
+            ->assert('basket', '\d+')
+            ->bind('prod_push_quitshare');
 
 
         $controllers->post('/update-expiration/', 'controller.prod.push:updateExpirationAction')

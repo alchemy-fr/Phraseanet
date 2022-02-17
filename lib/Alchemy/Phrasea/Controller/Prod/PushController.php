@@ -547,6 +547,30 @@ class PushController extends Controller
         return $this->app->json($ret);
     }
 
+    public function quitshareAction(Request $request, Basket $basket)
+    {
+        $ret = [
+            'success' => false,
+            'message' => ""
+        ];
+
+        $user = $this->getAuthenticatedUser();
+        if( !is_null($participant = $basket->getParticipant($user))) {
+            $manager = $this->getEntityManager();
+            $manager->beginTransaction();
+
+            $basket->removeParticipant($participant);
+            $manager->remove($participant);
+            $manager->persist($basket);
+            $manager->flush();
+
+            $manager->commit();
+            $ret['success'] = true;
+        }
+
+        return $this->app->json($ret);
+    }
+
     /**
      * @param $usr_id
      * @return JsonResponse
