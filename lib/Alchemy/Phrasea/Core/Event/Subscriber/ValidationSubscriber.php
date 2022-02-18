@@ -51,6 +51,7 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
             }
 
             if ($readyToSend) {
+                // !!!!!!!!!!!!!!!! todo ? maybe implement 2 different emails for share and validation
                 $mail = MailInfoValidationRequest::create($this->app, $receiver, $emitter, $params['message']);
                 $mail->setButtonUrl($event->getUrl());
                 $mail->setDuration($event->getDuration());

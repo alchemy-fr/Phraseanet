@@ -89,6 +89,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
         if (!$this->title) {
             throw new LogicException('You must set a title before calling getSubject');
         }
+        // !!!!!!!!!!!!!!!! todo ? maybe implement 2 different emails for share and validation
         if($this->isVote && $this->participant->getCanAgree()) {
             // the particiapnt can vote
             return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());

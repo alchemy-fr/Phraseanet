@@ -3382,10 +3382,6 @@ h3.metadatas-title:after {
   color: transparent;
 }
 
-.ui-accordion .ui-accordion-header.unread {
-  background-color: #076882;
-}
-
 .ui-accordion .ui-accordion-header.unread .unread_flag {
   color: revert;
 }
