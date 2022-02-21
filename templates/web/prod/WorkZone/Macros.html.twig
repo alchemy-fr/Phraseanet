@@ -310,7 +310,8 @@
                             <i class="fa fa-eye unread_flag"></i>
 
                             <span>
-                                <i class="fa fa-shopping-basket"></i>
+                                {# <i class="fa fa-shopping-basket"></i> #}
+                                <i class="icomoon icon-stackoverflow"></i>
                                 &nbsp;
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
                                 {{ basket.getName()|e }}
@@ -359,7 +360,8 @@
                             <i class="fa fa-eye unread_flag"></i>
 
                             <span>
-                                <i class="fa fa-shopping-basket"></i>
+                                {# <i class="fa fa-shopping-basket"></i> #}
+                                <i class="icomoon icon-stackoverflow"></i>
                                 &nbsp;
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
                                 {{ basket.getName()|e }}
@@ -408,7 +410,8 @@
                             &nbsp;&nbsp;
 
                             <span>
-                                <i class="fa fa-folder"></i>
+                                {# <i class="fa fa-shopping-basket"></i> #}
+                                <i class="icomoon icon-stack"></i>
                                 &nbsp;
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}">
                                 {{ story.getRecord(app).get_title() }}
