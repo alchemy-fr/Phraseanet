@@ -503,7 +503,8 @@ class PushController extends Controller
             ];
 
             $manager->commit();
-        } catch (ControllerException $e) {
+        }
+        catch (ControllerException $e) {
             $ret['message'] = $e->getMessage();
             $manager->rollback();
         }
