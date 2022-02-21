@@ -3,23 +3,47 @@
 namespace Alchemy\Tests\Phrasea\Notification\Mail;
 
 use Alchemy\Phrasea\Exception\LogicException;
-use Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest;
+use Alchemy\Phrasea\Notification\Mail\MailInfoBasketShared;
 
 /**
  * @group functional
  * @group legacy
  * @covers Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest
  */
-class MailInfoValidationRequestTest extends MailWithLinkTestCase
+class MailInfoBasketSharedTest extends MailWithLinkTestCase
 {
     public function testSetTitle()
     {
-        $this->assertEquals('Validation request from %user% for \'%title%\'', $this->getMail()->getSubject());
+        $this->assertEquals('Basket \'%title%\' shared from %user%', $this->getMail()->getSubject());
+    }
+
+    public function getMail()
+    {
+        $mail = MailInfoBasketShared::create(
+            $this->getApplication(),
+            $this->getReceiverMock(),
+            $this->getEmitterMock(),
+            $this->getMessage(),
+            $this->getUrl(),
+            $this->getExpiration()
+        );
+
+        $user = $this->createUserMock();
+
+        $user->expects($this->any())
+            ->method('getDisplayName')
+            ->will($this->returnValue('JeanPhil'));
+
+        $mail->setUser($user);
+
+        $mail->setTitle('Hello world');
+
+        return $mail;
     }
 
     public function testShouldThrowALogicExceptionIfNoUserProvided()
     {
-        $mail = MailInfoValidationRequest::create(
+        $mail = MailInfoBasketShared::create(
             $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
@@ -41,7 +65,7 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
 
     public function testShouldThrowALogicExceptionIfNoTitleProvided()
     {
-        $mail = MailInfoValidationRequest::create(
+        $mail = MailInfoBasketShared::create(
             $this->getApplication(),
             $this->getReceiverMock(),
             $this->getEmitterMock(),
@@ -69,30 +93,6 @@ class MailInfoValidationRequestTest extends MailWithLinkTestCase
 
     public function testSetUser()
     {
-        $this->assertEquals('Validation request from %user% for \'%title%\'', $this->getMail()->getSubject());
-    }
-
-    public function getMail()
-    {
-        $mail = MailInfoValidationRequest::create(
-            $this->getApplication(),
-            $this->getReceiverMock(),
-            $this->getEmitterMock(),
-            $this->getMessage(),
-            $this->getUrl(),
-            $this->getExpiration()
-        );
-
-        $user = $this->createUserMock();
-
-        $user->expects($this->any())
-            ->method('getDisplayName')
-            ->will($this->returnValue('JeanPhil'));
-
-        $mail->setUser($user);
-
-        $mail->setTitle('Hello world');
-
-        return $mail;
+        $this->assertEquals('Basket \'%title%\' shared from %user%', $this->getMail()->getSubject());
     }
 }

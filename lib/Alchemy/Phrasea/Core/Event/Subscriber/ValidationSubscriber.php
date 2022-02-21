@@ -14,6 +14,7 @@ namespace Alchemy\Phrasea\Core\Event\Subscriber;
 use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Notification\Emitter;
+use Alchemy\Phrasea\Notification\Mail\MailInfoBasketShared;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationDone;
 use Alchemy\Phrasea\Notification\Mail\MailInfoValidationRequest;
 use Alchemy\Phrasea\Notification\Receiver;
@@ -51,10 +52,15 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
             }
 
             if ($readyToSend) {
-                // !!!!!!!!!!!!!!!! todo ? maybe implement 2 different emails for share and validation
-                $mail = MailInfoValidationRequest::create($this->app, $receiver, $emitter, $params['message']);
+                if($event->getIsVote() && $event->getParticipant()->getCanAgree()) {
+                    // vote request
+                    $mail = MailInfoValidationRequest::create($this->app, $receiver, $emitter, $params['message']);
+                }
+                else {
+                    // simple share information
+                    $mail = MailInfoBasketShared::create($this->app, $receiver, $emitter, $params['message']);
+                }
                 $mail->setButtonUrl($event->getUrl());
-                $mail->setDuration($event->getDuration());
                 $mail->setIsVote($event->getIsVote());
                 $mail->setShareExpires($event->getShareExpires());
                 $mail->setVoteExpires($event->getVoteExpires());

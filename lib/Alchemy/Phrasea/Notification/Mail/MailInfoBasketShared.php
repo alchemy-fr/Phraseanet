@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\User;
 use DateTime;
 
-class MailInfoValidationRequest extends AbstractMailWithLink
+class MailInfoBasketShared extends AbstractMailWithLink
 {
     /** @var string */
     private $title;
@@ -83,7 +83,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
             throw new LogicException('You must set a title before calling getSubject');
         }
 
-        return $this->app->trans("Validation request from %user% for '%title%'", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
+        return $this->app->trans("Basket '%title%' shared from %user%", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
     }
 
     /**
@@ -104,9 +104,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
         if(!is_null($this->shareExpiresDate)) {
             $this->message .= "\n\n" . $this->app->trans("Share will expire on %expire%", ['%expire%' => $this->shareExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
         }
-        if(!is_null($this->voteExpiresDate)) {
-            $this->message .= "\n\n" . $this->app->trans("Vote will expire on %expire%", ['%expire%' => $this->voteExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
-        }
+
         return $this->message;
     }
 
@@ -115,7 +113,7 @@ class MailInfoValidationRequest extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Start validation', [], 'messages', $this->getLocale());
+        return $this->app->trans('Open with Lightbox', [], 'messages', $this->getLocale());
     }
 
     /**
