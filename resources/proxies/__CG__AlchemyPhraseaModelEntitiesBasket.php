@@ -290,6 +290,17 @@ class Basket extends \Alchemy\Phrasea\Model\Entities\Basket implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function isAwareByUserParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAwareByUserParticipant', [$user]);
+
+        return parent::isAwareByUserParticipant($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setPusher(\Alchemy\Phrasea\Model\Entities\User $user = NULL)
     {
 
