@@ -3361,19 +3361,6 @@ h3.metadatas-title:after {
   background-color: #474747;
 }
 
-.ui-accordion .ui-accordion-header .unread_flag {
-  color: transparent;
-}
-
-.ui-accordion .ui-accordion-header.unread .unread_flag {
-  color: revert;
-}
-
-.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
-  font-style: italic;
-  font-weight: bold;
-}
-
 .ui-accordion .ui-accordion-header.header {
   padding-bottom: 0;
   padding-right: 0;
@@ -4372,6 +4359,51 @@ form.phrasea_query input.query {
 .alert_datas_changed a {
   color: #404040;
   text-decoration: underline;
+}
+
+.ui-accordion .ui-accordion-header I {
+  font-size: 20px;
+}
+
+.ui-accordion .ui-accordion-header I.vote_rec {
+  color: #E0215D;
+}
+
+.ui-accordion .ui-accordion-header I.vote_sent {
+  color: #E0215D;
+}
+
+.ui-accordion .ui-accordion-header I.share_rec {
+  color: forestgreen;
+}
+
+.ui-accordion .ui-accordion-header I.share_sent {
+  color: forestgreen;
+}
+
+.ui-accordion .ui-accordion-header I.push_rec {
+  color: dodgerblue;
+}
+
+.ui-accordion .ui-accordion-header I.basket {
+  color: dodgerblue;
+}
+
+.ui-accordion .ui-accordion-header I.story {
+  color: darkorange;
+}
+
+.ui-accordion .ui-accordion-header .unread_flag {
+  color: transparent;
+}
+
+.ui-accordion .ui-accordion-header.unread I.unread_flag {
+  color: red;
+}
+
+.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
+  font-style: italic;
+  font-weight: bold;
 }
 
 /******* idFrameT CSS *********************************************************/

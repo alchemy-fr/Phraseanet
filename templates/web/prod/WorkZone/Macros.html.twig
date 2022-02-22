@@ -307,21 +307,19 @@
                         <a class="workzone-menu-title"
                            href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
 
-                            <i class="fa fa-eye unread_flag"></i>
-
                             <span>
-                                {# <i class="fa fa-shopping-basket"></i> #}
-                                <i class="icomoon icon-stackoverflow"></i>
+                                <i class="fa fa-circle unread_flag"></i>
+                                &nbsp;
+                                {% if basket.isVoteBasket() %}
+                                    <i class="fa fa-comment vote_rec" title="please comment"></i>
+                                {% else %}
+                                    <i class="fa fa-users share_rec" title="shared with you"></i>
+                                {% endif %}
                                 &nbsp;
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
                                 {{ basket.getName()|e }}
                                 </span>
 
-                                {% if basket.isVoteBasket() %}
-                                    <i class="fa fa-comment" title="please comment"></i>
-                                {% else %}
-                                    <i class="fa fa-users" title="shared with you"></i>
-                                {% endif %}
 {#
                                 <i class="fa fa-search basketTips"
                                    tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
@@ -357,33 +355,39 @@
                         <a class="workzone-menu-title"
                            href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
 
-                            <i class="fa fa-eye unread_flag"></i>
-
                             <span>
-                                {# <i class="fa fa-shopping-basket"></i> #}
-                                <i class="icomoon icon-stackoverflow"></i>
+                                <i class="fa fa-circle unread_flag"></i>
                                 &nbsp;
-                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
-                                {{ basket.getName()|e }}
-                                </span>
-
+                                {% set iconset = false %}
                                 {% if basket.getPusher() %}
                                     {# i own this basket but it was pushed to me #}
                                     {% set pusher = basket.getPusher().getDisplayName() | e %}
-                                    <i class="fa fa-gift" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    {% set iconset = true %}
                                 {% endif %}
-
                                 {% set nparticipants = basket.getParticipants | length %}
                                 {% if nparticipants > 0 %}
                                     {# i own this basket and there are participants (maybe me) #}
                                     {% if basket.isVoteBasket() %}
                                         {# i am the owner / sender(?) of this "vote" (=feedback) basket #}
-                                        <i class="fa fa-bullhorn" title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"></i>
+                                        <i class="fa fa-bullhorn vote_sent" title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"></i>
+                                        {% set iconset = true %}
                                     {% else %}
                                         {# simple share #}
-                                        <i class="fa fa-share" title="{% trans with {'%n%' : nparticipants} %}paniers:: you shared this basket with %n%{% endtrans %}"></i>
+                                        <i class="fa fa-share share_sent" title="{% trans with {'%n%' : nparticipants} %}paniers:: you shared this basket with %n%{% endtrans %}"></i>
+                                        {% set iconset = true %}
                                     {% endif %}
                                 {% endif %}
+                                {% if not iconset %}
+                                    {# simple basket #}
+                                    <i class="icomoon icon-stackoverflow basket"></i>
+                                {% endif %}
+                                &nbsp;
+                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
+                                {{ basket.getName()|e }}
+                                </span>
+
+
                             </span>
                         </a>
 
@@ -411,7 +415,7 @@
 
                             <span>
                                 {# <i class="fa fa-shopping-basket"></i> #}
-                                <i class="icomoon icon-stack"></i>
+                                <i class="icomoon icon-stack story"></i>
                                 &nbsp;
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}">
                                 {{ story.getRecord(app).get_title() }}

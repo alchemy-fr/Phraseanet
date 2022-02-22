@@ -165,22 +165,6 @@ $basketBg: $darkBackgroundColor !default;
     }
 }
 
-.ui-accordion .ui-accordion-header {
-    .unread_flag {
-        color: transparent;
-    }
-    &.unread {
-        .unread_flag {
-            color: revert;
-        }
-//        background-color: $basketsColor;
-        .workzone-menu-title {
-            font-style: italic;
-            font-weight: bold;
-        }
-    }
-}
-
 .ui-accordion .ui-accordion-header.header {
     padding-bottom: 0;
     padding-right: 0;
