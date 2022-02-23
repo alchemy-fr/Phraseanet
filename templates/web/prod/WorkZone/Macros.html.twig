@@ -309,13 +309,15 @@
 
                             <span>
                                 <i class="fa fa-circle unread_flag"></i>
-                                &nbsp;
+
                                 {% if basket.isVoteBasket() %}
                                     <i class="fa fa-comment vote_rec" title="please comment"></i>
                                 {% else %}
                                     <i class="fa fa-users share_rec" title="shared with you"></i>
                                 {% endif %}
+
                                 &nbsp;
+
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
                                 {{ basket.getName()|e }}
                                 </span>
@@ -357,7 +359,7 @@
 
                             <span>
                                 <i class="fa fa-circle unread_flag"></i>
-                                &nbsp;
+
                                 {% set iconset = false %}
                                 {% if basket.getPusher() %}
                                     {# i own this basket but it was pushed to me #}
@@ -382,7 +384,9 @@
                                     {# simple basket #}
                                     <i class="icomoon icon-stackoverflow basket"></i>
                                 {% endif %}
+
                                 &nbsp;
+
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
                                 {{ basket.getName()|e }}
                                 </span>
@@ -405,18 +409,19 @@
                     <div
                          id="SSWZ_{{ story.getId() }}" sbas="{{ story.getSbasId() }}"
                          class="STORY_{{ story.getRecord(app).get_serialize_key() }} ui-accordion-header ui-state-default
-                         ui-corner-all header SSTT grouping
+                         ui-corner-all header SSTT grouping unread
                          {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
 
                         <a class="workzone-menu-title"
                            href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
 
-                            &nbsp;&nbsp;
-
                             <span>
-                                {# <i class="fa fa-shopping-basket"></i> #}
+                                {# insert an invisible "unread" disc to align other icons with basket ones #}
+                                <i class="fa fa-circle unread_flag" style="color: transparent"></i>
                                 <i class="icomoon icon-stack story"></i>
+
                                 &nbsp;
+
                                 <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}">
                                 {{ story.getRecord(app).get_title() }}
                                 </span>

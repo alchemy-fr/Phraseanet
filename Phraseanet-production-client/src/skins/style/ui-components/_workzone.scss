@@ -274,41 +274,63 @@ $dividerBg: #6c6c6c !default;
 }
 
 .ui-accordion .ui-accordion-header {
-    I {
-        font-size: 20px;
-        &.vote_rec {
-            color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+    .workzone-menu-title {
+        I {
+            font-size: 16px;
+            display: inline-block;
+            background-color: #222;
+            padding: 5px 0 0 5px;
+            border-radius: 14px;
+            line-height: normal;
+            vertical-align: middle;
+            width: 22px;
+            height: 22px;
+            margin: 0;
+            &.vote_rec {
+                color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+            }
+
+            &.vote_sent {
+                color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+            }
+
+            &.share_rec {
+                color: forestgreen;
+            }
+
+            &.share_sent {
+                color: forestgreen;
+            }
+
+            &.push_rec {
+                color: dodgerblue;
+            }
+
+            &.basket {
+                color: dodgerblue
+            }
+
+            &.story {
+                color: darkorange;
+            }
         }
-        &.vote_sent {
-            color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+        // the "unread" is a small disc
+        .unread_flag {
+            color: transparent;
+            font-size: 8px;
+            background-color: transparent;
+            padding: 0;
+            width: 8px;
         }
-        &.share_rec {
-            color: forestgreen;
-        }
-        &.share_sent {
-            color: forestgreen;
-        }
-        &.push_rec {
-            color: dodgerblue;
-        }
-        &.basket {
-            color: dodgerblue
-        }
-        &.story {
-            color: darkorange;
-        }
-    }
-    .unread_flag {
-        color: transparent;
     }
     &.unread {
         I.unread_flag {
             // indicate basket as not read (fa-circle)
             color: red;
         }
-        .workzone-menu-title {
-            font-style: italic;
-            font-weight: bold;
-        }
+        //.workzone-menu-title {
+        //    font-style: italic;
+        //    font-weight: bold;
+        //}
     }
 }
