@@ -283,35 +283,40 @@ $dividerBg: #6c6c6c !default;
             border-radius: 14px;
             line-height: normal;
             vertical-align: middle;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             margin: 0;
+            color: white;
             &.vote_rec {
-                color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+                background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
             }
 
             &.vote_sent {
-                color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+                background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
             }
 
             &.share_rec {
-                color: forestgreen;
+                background-color: forestgreen;
             }
 
             &.share_sent {
-                color: forestgreen;
+                background-color: forestgreen;
             }
 
             &.push_rec {
-                color: dodgerblue;
+                background-color: #2092ED;
+                // fa-gift must be fixed
+                font-size: 17px;
+                padding: 4px 0px 3px 6px;
             }
 
             &.basket {
-                color: dodgerblue
+                background-color: #1EADD6;
+                font-size:14px;     // icomoon stsck-overflow looks too big
             }
 
             &.story {
-                color: darkorange;
+                background-color: #6471BC;
             }
         }
         // the "unread" is a small disc
@@ -334,3 +339,5 @@ $dividerBg: #6c6c6c !default;
         //}
     }
 }
+
+// #basket-fiter INPUT;checked[value=feedback] ~

@@ -259,29 +259,35 @@
         <div id="basket-filter" class="basket-filter">
             <span class="filter-title">{{ 'See' | trans }} : </span>
             <span class="filter-item">
-              <label id="basket-list" class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="basketFilter" value="basket" checked>
-                  {{ 'Basket' | trans }}
-              </label>
-          </span>
+                <label id="basket-list" class="checkbox inline" for="basketFilter_basket">
+                    <input type="checkbox" class="checkbox " id="basketFilter_basket" value=".basket-block" checked>
+                    {{ 'Basket' | trans }}
+                </label>
+            </span>
             <span class="filter-item">
-              <label id="feedback-list" class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="basketFilter" value="feedback" checked>
-                  {{ 'Feedback' | trans }}
-              </label>
-          </span>
+                <label id="share-list" class="checkbox inline" for="basketFilter_share">
+                    <input type="checkbox" class="checkbox " id="basketFilter_share" value=".share-block" checked>
+                    {{ 'Share' | trans }}
+                </label>
+            </span>
             <span class="filter-item">
-              <label id="push-list" class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="basketFilter" value="push" checked>
-                  {{ 'Push' | trans }}
-              </label>
-          </span>
+                <label id="feedback-list" class="checkbox inline" for="basketFilter_feedback">
+                    <input type="checkbox" class="checkbox " id="basketFilter_feedback" value=".feedback-block" checked>
+                    {{ 'Feedback' | trans }}
+                </label>
+            </span>
             <span class="filter-item">
-              <label id="story-list" class="checkbox inline" for="basketFilter">
-                  <input type="checkbox" class="checkbox " name="basketFilter" value="story" checked>
-                  {{ 'Stories' | trans }}
-              </label>
-          </span>
+                <label id="push-list" class="checkbox inline" for="basketFilter_push">
+                    <input type="checkbox" class="checkbox " id="basketFilter_push" value=".push-block" checked>
+                    {{ 'Push' | trans }}
+                </label>
+            </span>
+            <span class="filter-item">
+                <label id="story-list" class="checkbox inline" for="basketFilter_story">
+                    <input type="checkbox" class="checkbox " id="basketFilter_story" value=".story-block" checked>
+                    {{ 'Stories' | trans }}
+                </label>
+            </span>
         </div>
 
         <div class="insidebloc">
@@ -298,11 +304,17 @@
                     {# ! do not invert formula because isAwareByUserParticipant(...) can return null ! #}
                     {% set is_read = not(basket.isRead() == false or (basket.isAwareByUserParticipant(app.getAuthenticatedUser()) is same as(false))) %}
 
+                    {% if basket.isVoteBasket() %}
+                        {% set classes = "feedback-block" %}
+                    {% else %}
+                        {% set classes = "share-block" %}
+                    {% endif %}
                     <div
                          id="SSTT_{{ basket.getId() }}"
                          class="ui-accordion-header ui-state-default
                          ui-corner-all header SSTT basket {% if not basket.getId() %}unread{% endif %}
-                         {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
+                         {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}
+                         {{ classes }}">
 
                         <a class="workzone-menu-title"
                            href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
@@ -347,12 +359,32 @@
                     {# ! do not invert formula because isAwareByUserParticipant(...) can return null ! #}
                     {% set is_read = not(basket.isRead() == false or (basket.isAwareByUserParticipant(app.getAuthenticatedUser()) is same as(false))) %}
 
+                    {% set classes = "" %}
+                    {% if basket.getPusher() %}
+                        {# i own this basket but it was pushed to me #}
+                        {% set classes = classes ~ " push-block" %} {# fa-gift #}
+                    {% endif %}
+                    {% set nparticipants = basket.getParticipants | length %}
+                    {% if nparticipants > 0 %}
+                        {# i own this basket and there are participants (maybe me) #}
+                        {% if basket.isVoteBasket() %}
+                            {# i am the owner / sender(?) of this "vote" (=feedback) basket #}
+                            {% set classes = classes ~ " feedback-block" %} {# fa-bullhorn #}
+                        {% else %}
+                            {# simple share #}
+                            {% set classes = classes ~ " share-block" %} {# fa-share #}
+                        {% endif %}
+                    {% endif %}
+                    {% if classes == "" %}
+                        {# simple basket #}
+                        {% set classes = "basket-block " %} {# icon-stackoverflow #}
+                    {% endif %}
                     <div
                          id="SSTT_{{ basket.getId() }}"
                          class="ui-accordion-header ui-state-default
                          ui-corner-all header SSTT basket {% if not is_read %}unread{% endif %}
                          {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
-                         {% if basket.isVoteBasket() %} feedbacks-block {% elseif basket.getPusher() %} pushes-block {% else %} baskets-block {% endif %} ">
+                         {{ classes }} ">
 
                         <a class="workzone-menu-title"
                            href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
@@ -409,7 +441,7 @@
                     <div
                          id="SSWZ_{{ story.getId() }}" sbas="{{ story.getSbasId() }}"
                          class="STORY_{{ story.getRecord(app).get_serialize_key() }} ui-accordion-header ui-state-default
-                         ui-corner-all header SSTT grouping unread
+                         ui-corner-all header SSTT grouping unread story-block
                          {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
 
                         <a class="workzone-menu-title"

@@ -4384,37 +4384,41 @@ form.phrasea_query input.query {
   border-radius: 14px;
   line-height: normal;
   vertical-align: middle;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   margin: 0;
+  color: white;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.vote_rec {
-  color: #E0215D;
+  background-color: #E0215D;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.vote_sent {
-  color: #E0215D;
+  background-color: #E0215D;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.share_rec {
-  color: forestgreen;
+  background-color: forestgreen;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.share_sent {
-  color: forestgreen;
+  background-color: forestgreen;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.push_rec {
-  color: dodgerblue;
+  background-color: #2092ED;
+  font-size: 17px;
+  padding: 4px 0px 3px 6px;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.basket {
-  color: dodgerblue;
+  background-color: #1EADD6;
+  font-size: 14px;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.story {
-  color: darkorange;
+  background-color: #6471BC;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title .unread_flag {

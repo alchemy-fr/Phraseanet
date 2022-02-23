@@ -11132,17 +11132,9 @@ var workzone = function workzone(services) {
 
     /*left filter basket*/
     function filterBaskets() {
-        (0, _jquery2.default)('#feedback-list input').click(function () {
-            (0, _jquery2.default)('.feedbacks-block').toggleClass('hidden');
-        });
-        (0, _jquery2.default)('#push-list input').click(function () {
-            (0, _jquery2.default)('.pushes-block').toggleClass('hidden');
-        });
-        (0, _jquery2.default)('#basket-list input').click(function () {
-            (0, _jquery2.default)('.baskets-block').toggleClass('hidden');
-        });
-        (0, _jquery2.default)('#story-list input').click(function () {
-            (0, _jquery2.default)('.stories-block').toggleClass('hidden');
+        (0, _jquery2.default)('#basket-filter INPUT').change(function () {
+            var sel = (0, _jquery2.default)(this).val();
+            (0, _jquery2.default)(sel).toggleClass('hidden', !(0, _jquery2.default)(this).is(':checked'));
         });
     }
 

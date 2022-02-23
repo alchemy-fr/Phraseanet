@@ -474,17 +474,9 @@ const workzone = (services) => {
 
     /*left filter basket*/
     function filterBaskets() {
-        $('#feedback-list input').click(function () {
-            $('.feedbacks-block').toggleClass('hidden');
-        });
-        $('#push-list input').click(function () {
-            $('.pushes-block').toggleClass('hidden');
-        });
-        $('#basket-list input').click(function () {
-            $('.baskets-block').toggleClass('hidden');
-        });
-        $('#story-list input').click(function () {
-            $('.stories-block').toggleClass('hidden');
+        $('#basket-filter INPUT').change(function () {
+            const sel = $(this).val();
+            $(sel).toggleClass('hidden', !$(this).is(':checked'));
         });
     }
 
