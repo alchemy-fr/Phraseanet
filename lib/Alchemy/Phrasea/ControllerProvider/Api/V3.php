@@ -4,6 +4,7 @@ namespace Alchemy\Phrasea\ControllerProvider\Api;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Api\V1Controller;
+use Alchemy\Phrasea\Controller\Api\V3\V3Controller;
 use Alchemy\Phrasea\Controller\Api\V3\V3RecordController;
 use Alchemy\Phrasea\Controller\Api\V3\V3ResultHelpers;
 use Alchemy\Phrasea\Controller\Api\V3\V3SearchController;
@@ -52,6 +53,9 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
         });
         $app['controller.api.v3.stories'] = $app->share(function (PhraseaApplication $app) {
             return (new V3StoriesController($app));
+        });
+        $app['controller.api.v3'] = $app->share(function (PhraseaApplication $app) {
+            return (new V3Controller($app));
         });
     }
 
@@ -149,6 +153,16 @@ class V3 extends Api implements ControllerProviderInterface, ServiceProviderInte
              */
             $controllers->post('/subdefs_service/', 'controller.api.v3.subdefs_service:indexAction_POST');
         }
+
+        /**
+         * @uses V3Controller::getDataboxSubdefsAction()
+         */
+        $controllers->get('/databoxes/{databox_id}/subdefs/', 'controller.api.v3:getDataboxSubdefsAction')
+            ->before('controller.api.v1:ensureAccessToDatabox')
+            ->before('controller.api.v1:ensureCanSeeDataboxStructure')
+            ->assert('databox_id', '\d+');
+
+        $controllers->get('/databoxes/subdefs/', 'controller.api.v3:getDataboxSubdefsAction');
 
         return $controllers;
     }
