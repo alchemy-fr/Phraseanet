@@ -2813,7 +2813,7 @@ class V1Controller extends Controller
     {
         $ret = [
           "meta_fields" => $this->listUserAuthorizedMetadataFields($this->getAuthenticatedUser()),
-          "aggregable_fields" => $this->buildUserFieldList(ElasticsearchOptions::getAggregableTechnicalFields($this->app['translator']), ['choices']),
+          "aggregable_fields" => $this->buildUserFieldList(ElasticsearchOptions::getAggregableTechnicalFields(), ['choices']),
           "technical_fields" => $this->buildUserFieldList(media_subdef::getTechnicalFieldsList()),
         ];
 

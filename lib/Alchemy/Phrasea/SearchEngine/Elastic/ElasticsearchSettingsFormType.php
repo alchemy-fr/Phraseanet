@@ -137,7 +137,7 @@ class ElasticsearchSettingsFormType extends AbstractType
         }
 
         // add or replace hardcoded tech fields
-        foreach(ElasticsearchOptions::getAggregableTechnicalFields($this->translator) as $k => $f) {
+        foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
             $choices = array_key_exists('choices', $f) ? $f['choices'] : null;   // a tech-field can publish it's own choices
             $help = null;
             $label = '#' . $k;

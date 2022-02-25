@@ -24,7 +24,7 @@ class FacetsResponse
             return;
         }
 
-        $atf = ElasticsearchOptions::getAggregableTechnicalFields($this->translator);
+        $atf = ElasticsearchOptions::getAggregableTechnicalFields();
 
         // sort facets respecting the order defined in options
         foreach($options->getAggregableFields() as $name=>$foptions) {
@@ -35,11 +35,9 @@ class FacetsResponse
 
             $tf = null;
             $valueFormatter = function($v){ return $v; };    // default equality formatter
-            $label = $name;
 
             if(array_key_exists($name, $atf)) {
                 $tf = $atf[$name];
-                $label = $tf['label'];
                 if(array_key_exists('output_formatter', $tf)) {
                     $valueFormatter = $tf['output_formatter'];
                 }
@@ -58,8 +56,7 @@ class FacetsResponse
                     if($response['aggregations'][$name . '#empty']['doc_count'] > 0) {  // don't add a facet for 0 results
                         $aggregation['buckets'][] = [
                             'key'       => '_unset_',
-                            'value'     => $this->translator->trans('prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)', ['%fieldname%' =>$label]),   // special homemade prop to display a human value instead of the key
- //                           'value'     => 'unset '.$name,   // special homemade prop to display a human value instead of the key
+                            'value'     => $this->translator->trans('prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)', ['%fieldname%' =>$name]),   // special homemade prop to display a human value instead of the key
                             'doc_count' => $response['aggregations'][$name . '#empty']['doc_count']
                         ];
                     }
@@ -73,15 +70,8 @@ class FacetsResponse
                 $key = array_key_exists('key_as_string', $bucket) ? $bucket['key_as_string'] : $bucket['key'];
                 if($tf) {
                     // the field is one of the hardcoded tech fields
-                    if($key == '_unset_' && array_key_exists('value', $bucket)) {
-                        // don't use the valueformatter since 'value' if already translated
-                        $v = $bucket['value'];
-                    }
-                    else {
-                        $v = $valueFormatter($key);
-                    }
                     $value = [
-                        'value'     => $v,
+                        'value'     => $valueFormatter($key),
                         'raw_value' => $key,
                         'count'     => $bucket['doc_count'],
                         'query'     => sprintf($tf['query'], $this->escaper->escapeWord($key))
