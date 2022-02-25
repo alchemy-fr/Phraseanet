@@ -13,9 +13,9 @@ namespace Alchemy\Phrasea\Command;
 use Alchemy\Phrasea\Core\PhraseaTokens;
 use Alchemy\Phrasea\Databox\SubdefGroup;
 use Alchemy\Phrasea\Media\SubdefGenerator;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use databox_subdef;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -77,6 +77,8 @@ class BuildSubdefs extends Command
     /** @var bool */
     private $dry;
     /** @var bool */
+    private $publish;
+    /** @var bool */
     private $show_sql;
 
     /** @var  array */
@@ -130,6 +132,7 @@ class BuildSubdefs extends Command
         $this->addOption('maxduration',        null, InputOption::VALUE_REQUIRED,                             'Maximum duration (seconds) of job. (job will do at least one record)');
         $this->addOption('ttl',                null, InputOption::VALUE_REQUIRED,                             'Wait time (seconds) before quit if no records were changed');
         $this->addOption('dry',                null, InputOption::VALUE_NONE,                                 'dry run, list but don\'t act');
+        $this->addOption('publish',            null, InputOption::VALUE_NONE,                                 'publish message in Q for build subdef');
         $this->addOption('show_sql',           null, InputOption::VALUE_NONE,                                 'show sql pre-selecting records');
 
         $this->setHelp(""
@@ -258,6 +261,7 @@ class BuildSubdefs extends Command
 
         $this->show_sql           = $input->getOption('show_sql') ? true : false;
         $this->dry                = $input->getOption('dry') ? true : false;
+        $this->publish            = $input->getOption('publish') ? true : false;
         $this->min_record_id      = $input->getOption('min_record_id');
         $this->max_record_id      = $input->getOption('max_record_id');
         $this->substituted_only   = $input->getOption('substituted_only') ? true : false;
@@ -443,11 +447,28 @@ class BuildSubdefs extends Command
 
                 $subdefNamesToDo = array_keys($subdefNamesToDo);
                 if(!empty($subdefNamesToDo)) {
-                    if(!$this->dry) {
+                    if (!$this->dry && !$this->publish) {
                         /** @var SubdefGenerator $subdefGenerator */
                         $subdefGenerator = $this->container['subdef.generator'];
                         $subdefGenerator->generateSubdefs($record, $subdefNamesToDo);
                     }
+
+                    if (!$this->dry && $this->publish) {
+                        foreach ($subdefNamesToDo as $subdefName) {
+                            $payload = [
+                                'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
+                                'payload' => [
+                                    'recordId'      => $record->getRecordId(),
+                                    'databoxId'     => $this->databox->get_sbas_id(),
+                                    'subdefName'    => $subdefName,
+                                    'status'        => ''
+                                ]
+                            ];
+
+                            $this->getPublisher()->publishMessage($payload, MessagePublisher::SUBDEF_CREATION_TYPE);
+                        }
+                    }
+
                     $recordChanged = true;
                     $msg[] = sprintf(" [\"%s\"] built", implode('","', $subdefNamesToDo));
                 }
@@ -577,4 +598,13 @@ class BuildSubdefs extends Command
 
         return $sql;
     }
+
+    /**
+     * @return MessagePublisher
+     */
+    private function getPublisher()
+    {
+        return $this->container['alchemy_worker.message.publisher'];
+    }
+
 }
