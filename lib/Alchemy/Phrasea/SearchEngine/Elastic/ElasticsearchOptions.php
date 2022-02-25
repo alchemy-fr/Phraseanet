@@ -11,7 +11,6 @@ namespace Alchemy\Phrasea\SearchEngine\Elastic;
 
 use databox_field;
 use igorw;
-use Symfony\Component\Translation\TranslatorInterface;
 
 
 class ElasticsearchOptions
@@ -313,7 +312,7 @@ class ElasticsearchOptions
         $this->_customValues = igorw\assoc_in($this->_customValues, $keys, $value);
     }
 
-    public static function getAggregableTechnicalFields(TranslatorInterface $translator)
+    public static function getAggregableTechnicalFields()
     {
         return [
             '_base' => [
@@ -339,21 +338,21 @@ class ElasticsearchOptions
             ],
             '_camera_model' => [
                 'type'    => 'string',
-                'label'   => 'prod::facet:CameraModel_label',
+                'label'   => 'Camera Model',
                 'field'   => "meta.CameraModel",
                 'esfield' => 'metadata_tags.CameraModel',
-                'query'   => 'meta.CameraModel=%s',
+                'query'   => 'meta.CameraModel:%s',
             ],
             '_iso' => [
                 'type'    => 'number',
-                'label'   => 'prod::facet:ISO_label',
+                'label'   => 'ISO',
                 'field'   => "meta.ISO",
                 'esfield' => 'metadata_tags.ISO',
                 'query'   => 'meta.ISO=%s',
             ],
             '_aperture' => [
                 'type'    => 'number',
-                'label'   => 'prod::facet:Aperture_label',
+                'label'   => 'Aperture',
                 'field'   => "meta.Aperture",
                 'esfield' => 'metadata_tags.Aperture',
                 'query'   => 'meta.Aperture=%s',
@@ -363,7 +362,7 @@ class ElasticsearchOptions
             ],
             '_shutterspeed' => [
                 'type'    => 'number',
-                'label'   => 'prod::facet:ShutterSpeed_label',
+                'label'   => 'Shutter speed',
                 'field'   => "meta.ShutterSpeed",
                 'esfield' => 'metadata_tags.ShutterSpeed',
                 'query'   => 'meta.ShutterSpeed=%s',
@@ -376,86 +375,63 @@ class ElasticsearchOptions
             ],
             '_flashfired' => [
                 'type'    => 'boolean',
-                'label'   => 'prod::facet:FlashFired_label',
+                'label'   => 'FlashFired',
                 'field'   => "meta.FlashFired",
                 'esfield' => 'metadata_tags.FlashFired',
                 'query'   => 'meta.FlashFired=%s',
                 'choices' => [
                     "aggregated (2 values: fired = 0 or 1)" => -1,
                 ],
-                'output_formatter' => function($value) use($translator) {
-                    $map = [
-                        "false" => $translator->trans("facet.flashfired:no"),
-                        "true" => $translator->trans("facet.flashfired:yes"),
-                        '0' => $translator->trans("facet.flashfired:no"),
-                        '1' => $translator->trans("facet.flashfired:yes")
-                    ];
+                'output_formatter' => function($value) {
+                    static $map = ["false"=>"No flash", "true"=>"Flash", '0'=>"No flash", '1'=>"Flash"];
                     return array_key_exists($value, $map) ? $map[$value] : $value;
                 },
             ],
             '_framerate' => [
                 'type'    => 'number',
-                'label'   => 'prod::facet:FrameRate_label',
+                'label'   => 'FrameRate',
                 'field'   => "meta.FrameRate",
                 'esfield' => 'metadata_tags.FrameRate',
                 'query'   => 'meta.FrameRate=%s',
             ],
             '_audiosamplerate' => [
                 'type'    => 'number',
-                'label'   => 'prod::facet:AudioSamplerate_label',
+                'label'   => 'Audio Samplerate',
                 'field'   => "meta.AudioSamplerate",
                 'esfield' => 'metadata_tags.AudioSamplerate',
                 'query'   => 'meta.AudioSamplerate=%s',
             ],
             '_videocodec' => [
                 'type'    => 'string',
-                'label'   => 'prod::facet:VideoCodec_label',
+                'label'   => 'Video codec',
                 'field'   => "meta.VideoCodec",
                 'esfield' => 'metadata_tags.VideoCodec',
                 'query'   => 'meta.VideoCodec:%s',
             ],
             '_audiocodec' => [
                 'type'    => 'string',
-                'label'   => 'prod::facet:AudioCodec_label',
+                'label'   => 'Audio codec',
                 'field'   => "meta.AudioCodec",
                 'esfield' => 'metadata_tags.AudioCodec',
                 'query'   => 'meta.AudioCodec:%s',
             ],
             '_orientation' => [
                 'type'    => 'string',
-                'label'   => 'prod::facet.Orientation_label',
+                'label'   => 'Orientation',
                 'field'   => "meta.Orientation",
                 'esfield' => 'metadata_tags.Orientation',
                 'query'   => 'meta.Orientation=%s',
             ],
-            '_thumbnail_orientation' => [
-                'type'    => 'string',
-                'label'   => 'prod::facet.ThumbnailOrientation_label',
-                'field'   => "meta.ThumbnailOrientation",
-                'esfield' => 'metadata_tags.ThumbnailOrientation',
-                'query'   => 'meta.ThumbnailOrientation=%s',
-                'choices' => [
-                    "aggregated (4 values: '', 'S', 'L', 'P')" => -1,
-                ],
-                'output_formatter' => function($value) use($translator) {
-                    $map = [
-                        "L" => $translator->trans("facet.ThumbnailOrientation:Landscape"),
-                        "P" => $translator->trans("facet.ThumbnailOrientation:Portrait"),
-                        'S' => $translator->trans("facet.ThumbnailOrientation:Square")
-                    ];
-                    return array_key_exists($value, $map) ? $map[$value] : $value;
-                },
-            ],
             '_colorspace' => [
                 'type'    => 'string',
-                'label'   => 'prod::facet:Colorspace_label',
+                'label'   => 'Colorspace',
                 'field'   => "meta.ColorSpace",
                 'esfield' => 'metadata_tags.ColorSpace',
                 'query'   => 'meta.ColorSpace:%s',
             ],
             '_mimetype' => [
                 'type'    => 'string',
-                'label'   => 'prod::facet:MimeType_label',
+                'label'   => 'MimeType',
                 'field'   => "meta.MimeType",
                 'esfield' => 'metadata_tags.MimeType',
                 'query'   => 'meta.MimeType:%s',

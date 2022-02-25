@@ -76,8 +76,7 @@ class QueryController extends Controller
             $this->app['elasticsearch.client'],
             $query_context_factory,
             $this->app['elasticsearch.facets_response.factory'],
-            $this->app['elasticsearch.options'],
-            $this->app['translator']
+            $this->app['elasticsearch.options']
         );
 
         $autocomplete = $engine->autocomplete($word, $options);
@@ -352,7 +351,7 @@ class QueryController extends Controller
 
             // add technical fields
             $fieldsInfosByName = [];
-            foreach(ElasticsearchOptions::getAggregableTechnicalFields($this->app['translator']) as $k => $f) {
+            foreach(ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
                 $fieldsInfosByName[$k] = $f;
                 $fieldsInfosByName[$k]['trans_label'] = $this->app->trans( /** @ignore */ $f['label']);
                 $fieldsInfosByName[$k]['labels'] = [];
