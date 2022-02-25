@@ -109,6 +109,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     const TC_DATA_COLORSPACE = 'ColorSpace';
     const TC_DATA_CHANNELS = 'Channels';
     const TC_DATA_ORIENTATION = 'Orientation';
+    const TC_DATA_THUMBNAILORIENTATION = 'ThumbnailOrientation';
     const TC_DATA_COLORDEPTH = 'ColorDepth';
     const TC_DATA_DURATION = 'Duration';
     const TC_DATA_AUDIOCODEC = 'AudioCodec';
@@ -864,6 +865,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
               self::TC_DATA_VIDEOCODEC         => ['method' => 'getVideoCodec', 'type' => 'string', 'analyzable' => false],
               self::TC_DATA_AUDIOCODEC         => ['method' => 'getAudioCodec', 'type' => 'string', 'analyzable' => false],
               self::TC_DATA_ORIENTATION        => ['method' => 'getOrientation', 'type' => 'integer', 'analyzable' => false],
+              self::TC_DATA_THUMBNAILORIENTATION => ['type' => 'string', 'analyzable' => false],
               self::TC_DATA_LONGITUDE          => ['method' => 'getLongitude', 'type' => 'float', 'analyzable' => false],
               self::TC_DATA_LONGITUDE_REF      => ['method' => 'getLongitudeRef'],
               self::TC_DATA_LATITUDE           => ['method' => 'getLatitude', 'type' => 'float', 'analyzable' => false],
