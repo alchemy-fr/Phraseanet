@@ -39,11 +39,13 @@
 
         <div class="header">
             <div class="pull-left">
-                <h2 style="font-size:25px;margin:0;line-height:30px;">{{ list.getName() }}</h2>
                 {% set length = list.getEntries().count() %}
+                <h2 style="font-size:25px;margin:0;line-height:30px;">{{ list.getName() }}</h2> (<span class="counter current">{{ length }})</span>)
+                {#
                 <span class="counter current">
                     {% trans with {'%length%' : length} %}%length% peoples{% endtrans %}
                 </span>
+                #}
             </div>
             <div class="pull-right">
                 <div class="pull-left" style="margin-right:45px;">
@@ -84,7 +86,7 @@
             {% endfor %} #}
             </div>
         </div>
-
+{#
         <div class="footer">
             <form class="list_saver" style="margin: 0">
                 <button id="saveListFooter" class="colored inverse saveList">
@@ -93,7 +95,7 @@
                 </button>
             </form>
         </div>
-
+#}
     </div>
     {% if list.getOwner(app.getAuthenticatedUser()).getRole() >= constant('Alchemy\\Phrasea\\Model\\Entities\\UsrListOwner::ROLE_EDITOR') %}
         <div class="PNB content readwrite user_content" style="display:none;">
