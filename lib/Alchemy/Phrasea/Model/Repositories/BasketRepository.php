@@ -231,13 +231,28 @@ class BasketRepository extends EntityRepository
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
             JOIN b.elements e
+            JOIN b.participants p
             WHERE e.record_id = :record_id AND e.sbas_id = :databox_id
-              AND b.user = :usr_id';
+                AND (
+                    b.user = :usr_id1
+                    OR (
+                        p.user = :usr_id2
+                        AND (
+                            b.share_expires IS NULL
+                            OR 
+                            CURRENT_TIMESTAMP() < b.share_expires 
+                            OR
+                            (b.vote_expires IS NOT NULL AND CURRENT_TIMESTAMP() < b.vote_expires)
+                        )
+                    )
+                )
+            ';
 
         $params = [
             'record_id' => $record->getRecordId(),
             'databox_id'=> $record->getDataboxId(),
-            'usr_id'    => $user->getId()
+            'usr_id1'    => $user->getId(),
+            'usr_id2'    => $user->getId(),
         ];
 
         $query = $this->_em->createQuery($dql);

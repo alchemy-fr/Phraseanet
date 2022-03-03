@@ -2127,9 +2127,17 @@ class V1Controller extends Controller
         /** @var BasketRepository $repo */
         $repo = $this->app['repo.baskets'];
 
-        return array_map(function (Basket $basket) {
-            return $this->listBasket($basket);
-        }, $repo->findActiveByUser($this->getAuthenticatedUser()));
+        $b = array_merge(
+            $repo->findActiveByUser($this->getAuthenticatedUser()),
+            $repo->findActiveValidationByUser($this->getAuthenticatedUser())
+        );
+
+        return array_map(
+            function (Basket $basket) {
+                return $this->listBasket($basket);
+            },
+            $b
+        );
     }
 
     /**
