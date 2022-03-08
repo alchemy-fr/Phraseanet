@@ -12600,7 +12600,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="f7cd3df416fef9859c9765557d93e3edae4d970f" resname="prod::facet:AudioSamplerate_label">
         <source>prod::facet:AudioSamplerate_label</source>
-        <target state="needs-translation">Fréquence d'échantillonnage (audio)</target>
+        <target state="needs-translation">Fréquence d'échantillonnage</target>
         <jms:reference-file line="405">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="291bf75117d490adf3ef33c7f755c60cae734c9f" resname="prod::facet:CameraModel_label">
