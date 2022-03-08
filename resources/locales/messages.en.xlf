@@ -12135,7 +12135,7 @@
       </trans-unit>
       <trans-unit id="803a88bdcb07cb8055e10ca28aee9b3c74992da6" resname="print:: add and remember password to protect the pdf">
         <source>print:: add and remember password to protect the pdf</source>
-        <target state="needs-translation">Define a password to protect the PDF (optional)</target>
+        <target state="translated">Define a password to protect the PDF (optional)</target>
         <jms:reference-file line="69">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="yes">
@@ -12247,7 +12247,7 @@
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
         <source>print:: some options</source>
-        <target state="needs-translation">Additional settings</target>
+        <target state="translated">Additional settings</target>
         <jms:reference-file line="67">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="be0543f570963b35cd3c119d878d45410b363316" resname="print:: subdef mapping">
@@ -12272,7 +12272,7 @@
       </trans-unit>
       <trans-unit id="d16a375bd489fa9232346a1c6e48570bbf53a479" resname="print:: warning! Only available media for chosen subdef is downloadable">
         <source>print:: warning! Only available media for chosen subdef is downloadable</source>
-        <target state="needs-translation">Leave the duration empty for a permanent validity</target>
+        <target state="translated">Leave the duration empty for a permanent validity</target>
         <jms:reference-file line="93">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="52acc8afb73e42ebb15886d76b723d8e8907d8eb" resname="print:: week">
@@ -12585,7 +12585,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="ec7cc75bc2bb550f2e07350712f5a440b3bb2d60" resname="prod::facet.ThumbnailOrientation_label">
         <source>prod::facet.ThumbnailOrientation_label</source>
-        <target state="needs-translation">Thumbnail Orientation</target>
+        <target state="needs-translation">Orientation</target>
         <jms:reference-file line="433">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8f44aec5909904ecf96c1f66a8f619fe3b8d17d" resname="prod::facet:Aperture_label">
@@ -13486,7 +13486,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="a85c5b39743bad12b07c179a912cf5dbc47860f8" resname="publication:: %count% users to notify">
         <source>publication:: %count% users to notify</source>
-        <target state="needs-translation">%count% users will be notified</target>
+        <target state="translated">%count% users will be notified</target>
         <jms:reference-file line="149">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c4664885fa2a9f300cc01beed066cfcfafe4dd39" resname="publication:: no feed selected">
