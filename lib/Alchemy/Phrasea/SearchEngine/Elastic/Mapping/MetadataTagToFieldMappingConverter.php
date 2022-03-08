@@ -20,6 +20,25 @@ class MetadataTagToFieldMappingConverter
     public function convertTag(Tag $tag)
     {
         if ($tag->getType() === FieldMapping::TYPE_STRING) {
+
+            $fieldMapping = new StringFieldMapping($tag->getName());
+            $fieldMapping->addChild((new StringFieldMapping('raw'))->enableRawIndexing());
+            if ($tag->isAnalyzable()) {
+                $fieldMapping->enableAnalysis();
+            }
+            else {
+                $fieldMapping->disableAnalysis();
+            }
+
+            return $fieldMapping;
+        }
+
+        return new FieldMapping($tag->getName(), $tag->getType());
+    }
+
+    public function dead_convertTag(Tag $tag)
+    {
+        if ($tag->getType() === FieldMapping::TYPE_STRING) {
             $fieldMapping = new StringFieldMapping($tag->getName());
 
             $fieldMapping->disableAnalysis();
