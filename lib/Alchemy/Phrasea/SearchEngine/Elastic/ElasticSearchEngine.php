@@ -33,6 +33,7 @@ use Closure;
 use databox_field;
 use Doctrine\Common\Collections\ArrayCollection;
 use Elasticsearch\Client;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ElasticSearchEngine implements SearchEngineInterface
 {
@@ -59,6 +60,8 @@ class ElasticSearchEngine implements SearchEngineInterface
      */
     private $context_factory;
 
+    private $translator;
+
     /**
      * @param Application $app
      * @param GlobalStructure $structure
@@ -66,8 +69,9 @@ class ElasticSearchEngine implements SearchEngineInterface
      * @param QueryContextFactory $context_factory
      * @param Closure $facetsResponseFactory
      * @param ElasticsearchOptions $options
+     * @param TranslatorInterface $translator
      */
-    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options)
+    public function __construct(Application $app, GlobalStructure $structure, Client $client, QueryContextFactory $context_factory, Closure $facetsResponseFactory, ElasticsearchOptions $options, TranslatorInterface $translator)
     {
         $this->app = $app;
         $this->structure = $structure;
@@ -75,6 +79,7 @@ class ElasticSearchEngine implements SearchEngineInterface
         $this->context_factory = $context_factory;
         $this->facetsResponseFactory = $facetsResponseFactory;
         $this->options = $options;
+        $this->translator = $translator;
 
         $this->indexName = $options->getIndexName();
     }
@@ -780,7 +785,7 @@ class ElasticSearchEngine implements SearchEngineInterface
     {
         $aggs = [];
         // technical aggregates (enable + optional limit)
-        foreach (ElasticsearchOptions::getAggregableTechnicalFields() as $k => $f) {
+        foreach (ElasticsearchOptions::getAggregableTechnicalFields($this->translator) as $k => $f) {
             $size = $this->options->getAggregableFieldLimit($k);
             if ($size !== databox_field::FACET_DISABLED) {
                 if ($size === databox_field::FACET_NO_LIMIT) {
@@ -793,6 +798,13 @@ class ElasticSearchEngine implements SearchEngineInterface
                     ]
                 ];
                 $aggs[$k] = $agg;
+                if($options->getIncludeUnsetFieldFacet() === true) {
+                    $aggs[$k . '#empty'] = [
+                        'missing' => [
+                            'field' => $f['esfield'],
+                        ]
+                    ];
+                }
             }
         }
         // fields aggregates
