@@ -22,6 +22,7 @@ use Alchemy\Phrasea\Command\Collection\PublishCollectionCommand;
 use Alchemy\Phrasea\Command\Collection\UnPublishCollectionCommand;
 use Alchemy\Phrasea\Command\Compile\Configuration;
 use Alchemy\Phrasea\Command\CreateCollection;
+use Alchemy\Phrasea\WorkerManager\Command\WorkerCronCommand;
 use Alchemy\Phrasea\Command\Databox\CreateDataboxCommand;
 use Alchemy\Phrasea\Command\Databox\ListDataboxCommand;
 use Alchemy\Phrasea\Command\Databox\MountDataboxCommand;
@@ -173,6 +174,7 @@ $cli->command(new WorkerExecuteCommand());
 $cli->command(new WorkerHeartbeatCommand());
 $cli->command(new WorkerRunServiceCommand());
 $cli->command(new WorkerShowConfigCommand());
+$cli->command(new WorkerCronCommand());
 
 $cli->command(new SendValidationRemindersCommand());
 

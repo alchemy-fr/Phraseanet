@@ -25,6 +25,7 @@ class MessagePublisher
     const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const WRITE_METADATAS_TYPE = 'writeMetadatas';
     const WEBHOOK_TYPE         = 'webhook';
+    const CRON_TYPE            = 'cron';
 
     // *** by main queue *** \\
     const SUBTITLE_TYPE        = 'subtitle';
@@ -101,6 +102,17 @@ class MessagePublisher
         $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $FailedQ);
 
         $this->_publishMessage($payload, $FailedQ, $headers);
+    }
+
+    public function getMessageFromQ($queueName)
+    {
+        if (is_null( ($channel = $this->AMQPConnection->setQueue($queueName)) )) {
+            $this->pushLog("Can't connect to rabbit, check configuration!", "error");
+
+            return null;
+        }
+
+        return $channel->basic_get($queueName);
     }
 
     private function _publishMessage(array $payload, $queueName, $headers = null)

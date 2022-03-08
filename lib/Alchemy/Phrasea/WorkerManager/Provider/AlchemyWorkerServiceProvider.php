@@ -8,6 +8,7 @@ use Alchemy\Phrasea\Plugin\PluginProviderInterface;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\AssetsIngestWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\CreateRecordWorker;
+use Alchemy\Phrasea\WorkerManager\Worker\CronWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\DeleteRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExportMailWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ExposeUploadWorker;
@@ -168,6 +169,10 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
             return (new EditRecordWorker($app['repo.worker-running-job'], $app['dispatcher'], $app['alchemy_worker.message.publisher']))
                    ->setApplicationBox($app['phraseanet.appbox'])
                 ;
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::CRON_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new CronWorker($app);
         }));
     }
 
