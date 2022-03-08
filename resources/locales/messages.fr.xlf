@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-03-08T15:00:57Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2517,7 +2517,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -10687,28 +10687,28 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="dd6825faca66dd1d879174587320166f59151212" resname="facet.ThumbnailOrientation:Landscape">
         <source>facet.ThumbnailOrientation:Landscape</source>
-        <target state="new">facet.ThumbnailOrientation:Landscape</target>
+        <target state="needs-translation">Paysage</target>
         <jms:reference-file line="442">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3af69c73dc63a16eebdd0915c168c177d5e6bf" resname="facet.ThumbnailOrientation:Portrait">
         <source>facet.ThumbnailOrientation:Portrait</source>
-        <target state="new">facet.ThumbnailOrientation:Portrait</target>
+        <target state="needs-translation">Portrait</target>
         <jms:reference-file line="443">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="367be8ef167f874f5b7c675f14e7902d33b39b76" resname="facet.ThumbnailOrientation:Square">
         <source>facet.ThumbnailOrientation:Square</source>
-        <target state="new">facet.ThumbnailOrientation:Square</target>
+        <target state="needs-translation">Carré</target>
         <jms:reference-file line="444">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0026e83292bbf5f7d41456ad566e4bf48cfc6873" resname="facet.flashfired:no">
         <source>facet.flashfired:no</source>
-        <target state="new">facet.flashfired:no</target>
+        <target state="needs-translation">Flash non déclenché</target>
         <jms:reference-file line="388">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="390">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4aecf920978685efafb134164cc934c4e1acb845" resname="facet.flashfired:yes">
         <source>facet.flashfired:yes</source>
-        <target state="new">facet.flashfired:yes</target>
+        <target state="needs-translation">Flash déclenché</target>
         <jms:reference-file line="389">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="391">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
@@ -11814,7 +11814,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="564">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12580,67 +12580,67 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="c7d4ddab714f52fc0dc7a811909a985a270fcdf9" resname="prod::facet.Orientation_label">
         <source>prod::facet.Orientation_label</source>
-        <target state="new">prod::facet.Orientation_label</target>
+        <target state="needs-translation">Orientation exif</target>
         <jms:reference-file line="426">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ec7cc75bc2bb550f2e07350712f5a440b3bb2d60" resname="prod::facet.ThumbnailOrientation_label">
         <source>prod::facet.ThumbnailOrientation_label</source>
-        <target state="new">prod::facet.ThumbnailOrientation_label</target>
+        <target state="needs-translation">Orientation</target>
         <jms:reference-file line="433">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8f44aec5909904ecf96c1f66a8f619fe3b8d17d" resname="prod::facet:Aperture_label">
         <source>prod::facet:Aperture_label</source>
-        <target state="new">prod::facet:Aperture_label</target>
+        <target state="needs-translation">Ouverture</target>
         <jms:reference-file line="356">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ad9a5152bd51893746bf36455487a01183ebec95" resname="prod::facet:AudioCodec_label">
         <source>prod::facet:AudioCodec_label</source>
-        <target state="new">prod::facet:AudioCodec_label</target>
+        <target state="needs-translation">Codec audio</target>
         <jms:reference-file line="419">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f7cd3df416fef9859c9765557d93e3edae4d970f" resname="prod::facet:AudioSamplerate_label">
         <source>prod::facet:AudioSamplerate_label</source>
-        <target state="new">prod::facet:AudioSamplerate_label</target>
+        <target state="needs-translation">Fréquence d'échantillonnage</target>
         <jms:reference-file line="405">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="291bf75117d490adf3ef33c7f755c60cae734c9f" resname="prod::facet:CameraModel_label">
         <source>prod::facet:CameraModel_label</source>
-        <target state="new">prod::facet:CameraModel_label</target>
+        <target state="needs-translation">Appareil Photographique</target>
         <jms:reference-file line="342">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4181004be269c01d0f28a2a3afdd5a66ac9ab88" resname="prod::facet:Colorspace_label">
         <source>prod::facet:Colorspace_label</source>
-        <target state="new">prod::facet:Colorspace_label</target>
+        <target state="needs-translation">Espace colorimétrique</target>
         <jms:reference-file line="451">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2fde4df5b7371e2f1f2bf7b5451a663cbdc0b43" resname="prod::facet:FlashFired_label">
         <source>prod::facet:FlashFired_label</source>
-        <target state="new">prod::facet:FlashFired_label</target>
+        <target state="needs-translation">Flash</target>
         <jms:reference-file line="379">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="93e4d2943a67d73ab2bf3d47e5e0414d98a71b9c" resname="prod::facet:FrameRate_label">
         <source>prod::facet:FrameRate_label</source>
-        <target state="new">prod::facet:FrameRate_label</target>
+        <target state="needs-translation">Cadence</target>
         <jms:reference-file line="398">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecc03975a89f5de1fb3112f1e3d8fdf7681cf4a0" resname="prod::facet:ISO_label">
         <source>prod::facet:ISO_label</source>
-        <target state="new">prod::facet:ISO_label</target>
+        <target state="needs-translation">ISO</target>
         <jms:reference-file line="349">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b37c1f93d999bc3c0be1283247a50d66b3266810" resname="prod::facet:MimeType_label">
         <source>prod::facet:MimeType_label</source>
-        <target state="new">prod::facet:MimeType_label</target>
+        <target state="needs-translation">Type Mime</target>
         <jms:reference-file line="458">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3be65bac65219afaa6f34f579ea7e506269a4a8d" resname="prod::facet:ShutterSpeed_label">
         <source>prod::facet:ShutterSpeed_label</source>
-        <target state="new">prod::facet:ShutterSpeed_label</target>
+        <target state="needs-translation">Vitesse d'obturateur</target>
         <jms:reference-file line="366">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f7c968c419f90c6c733190b0d75db89aa0a6d8b" resname="prod::facet:VideoCodec_label">
         <source>prod::facet:VideoCodec_label</source>
-        <target state="new">prod::facet:VideoCodec_label</target>
+        <target state="needs-translation">Codec Video</target>
         <jms:reference-file line="412">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -14648,7 +14648,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
