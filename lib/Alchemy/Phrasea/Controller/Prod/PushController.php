@@ -329,7 +329,7 @@ class PushController extends Controller
                         $basketElement->getSbasId(),
                         $basketElement->getRecordId()
                     ),
-//                    'record' => $basketElement->getRecord($this->app)
+                    'record' => $basketElement->getRecord($this->app)
                 ];
             }
 
