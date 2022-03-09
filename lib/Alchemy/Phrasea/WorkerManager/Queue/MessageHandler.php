@@ -89,7 +89,7 @@ class MessageHandler
             }
             else {
                 try {
-                    $workerInvoker->invokeWorker($msgType, json_encode($data['payload']));
+                    $workerInvoker->invokeWorker($msgType, json_encode($data['payload']), $channel);
 
                     if ($AMQPConnection->hasLoopQueue($msgType)) {
                         // make a loop for the loop type
