@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-02-15T09:10:09Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2022-03-08T15:00:40Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -198,7 +198,7 @@
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
         <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
-        <jms:reference-file line="263">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ac5c6fe2979cfa2496c95dcb218f135fd916040d" resname="%quantity% Stories attached to the WorkZone" approved="yes">
         <source>%quantity% Stories attached to the WorkZone</source>
@@ -279,7 +279,7 @@
       <trans-unit id="f9b19aa0c7cf7aab245692450b473acff6a077e4" resname="%total% reponses" approved="yes">
         <source>%total% reponses</source>
         <target state="translated">%total% responses</target>
-        <jms:reference-file line="311">Controller/Prod/QueryController.php</jms:reference-file>
+        <jms:reference-file line="312">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="99d2e1a7e8d0ba4a7132282b53b15e503b91c2cb" resname="%user% a envoye son rapport de validation de %title%" approved="yes">
         <source>%user% a envoye son rapport de validation de %title%</source>
@@ -1081,7 +1081,6 @@
       <trans-unit id="aae1263383b96270870516a4097020921912df74" resname="Aperture" approved="yes">
         <source>Aperture</source>
         <target state="translated">Aperture</target>
-        <jms:reference-file line="355">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="104">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers" approved="yes">
@@ -1292,20 +1291,10 @@
         <jms:reference-file line="36">Media/Subdef/Video.php</jms:reference-file>
         <jms:reference-file line="37">Media/Subdef/Audio.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a80232c45008d73666e95544f7c9c8c0896536af" resname="Audio Samplerate" approved="yes">
-        <source>Audio Samplerate</source>
-        <target state="translated">Audio Samplerate</target>
-        <jms:reference-file line="399">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="31afcc88a7f552bfd4d330c2c70d8fafd7b8e0f9" resname="Audio channel" approved="yes">
         <source>Audio channel</source>
         <target state="translated">Audio channel</target>
         <jms:reference-file line="38">Media/Subdef/Audio.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="bdeea21f6257f434dcfcffb4f0470a042a1b5c17" resname="Audio codec" approved="yes">
-        <source>Audio codec</source>
-        <target state="translated">Audio codec</target>
-        <jms:reference-file line="413">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="27be4ad944410219f1a8dd01cc5e216a09c16646" resname="AudioSamplerate" approved="yes">
         <source>AudioSamplerate</source>
@@ -1578,7 +1567,6 @@
       <trans-unit id="07d75a5073e3247c7ac54d3a797d3f777b421863" resname="Camera Model" approved="yes">
         <source>Camera Model</source>
         <target state="translated">Camera model</target>
-        <jms:reference-file line="341">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="56">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="77dfd2135f4db726c47299bb55be26f7f4525a46" resname="Cancel" approved="yes">
@@ -1864,11 +1852,6 @@
         <source>Color space</source>
         <target state="translated">Color space</target>
         <jms:reference-file line="62">web/common/technical_datas.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="0b8cb446bc8277d5fd8242aa11ecb0054f9bbaa6" resname="Colorspace" approved="yes">
-        <source>Colorspace</source>
-        <target state="translated">Colorspace</target>
-        <jms:reference-file line="427">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="478443411674f0df06db3b28230d37625383f8c2" resname="Commande" approved="yes">
         <source>Commande</source>
@@ -3355,11 +3338,6 @@
         <jms:reference-file line="87">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="436">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="2869d115faa9aa305076269dfbaf57c28cbd9fb6" resname="FlashFired" approved="yes">
-        <source>FlashFired</source>
-        <target state="translated">FlashFired</target>
-        <jms:reference-file line="378">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="02893456d53323f0fdbbe9447fe5b3401f2102f7" resname="Flatten layers" approved="yes">
         <source>Flatten layers</source>
         <target state="translated">Flatten layers</target>
@@ -3420,11 +3398,6 @@
         <source>Frame Rate</source>
         <target state="translated">Frame rate</target>
         <jms:reference-file line="33">Media/Subdef/Video.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="629fe48e7fcf628a108551add706c29832b214df" resname="FrameRate" approved="yes">
-        <source>FrameRate</source>
-        <target state="translated">FrameRate</target>
-        <jms:reference-file line="392">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4947df23a237794a9ff63353bd60ebe679c830c" resname="Frequence d'echantillonage" approved="yes">
         <source>Frequence d'echantillonage</source>
@@ -3670,11 +3643,6 @@
         <source>IP</source>
         <target state="translated">IP address</target>
         <jms:reference-file line="31">web/account/sessions.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="4f325d995b6d028ccc75771b1679537b623521c4" resname="ISO" approved="yes">
-        <source>ISO</source>
-        <target state="translated">ISO</target>
-        <jms:reference-file line="348">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="16a5173a6d384d155354f429d72834cd0bd6bc54" resname="ISO sensibility" approved="yes">
         <source>ISO sensibility</source>
@@ -4378,11 +4346,6 @@
         <target state="translated">Mime type</target>
         <jms:reference-file line="14">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1bd7ccbde8d3077fec1f549017e747393223a900" resname="MimeType" approved="yes">
-        <source>MimeType</source>
-        <target state="translated">MimeType</target>
-        <jms:reference-file line="434">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
-      </trans-unit>
       <trans-unit id="cb4f425374af2741715669ed8b541a666078b729" resname="Minimum number of letters before truncation" approved="yes">
         <source>Minimum number of letters before truncation</source>
         <target state="translated">Minimum number of characters before truncation</target>
@@ -4913,11 +4876,6 @@
         <source>Ordinary</source>
         <target state="translated">Ordinary</target>
         <jms:reference-file line="152">Controller/Root/LoginController.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="86e4e3875420cdee95d08d4472073493729a7aee" resname="Orientation" approved="yes">
-        <source>Orientation</source>
-        <target state="translated">Orientation</target>
-        <jms:reference-file line="420">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="77561f3d48cb738cc40f376dec4616a77da54ee1" resname="Original name" approved="yes">
         <source>Original name</source>
@@ -6237,7 +6195,6 @@
       <trans-unit id="32e50dd99f3b67dc93272aa6c904b83d37f4f48d" resname="Shutter speed" approved="yes">
         <source>Shutter speed</source>
         <target state="translated">Shutter speed</target>
-        <jms:reference-file line="365">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="98">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e4538baf30d4eb324ec64e4b48c1ca424dd3b773" resname="Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur." approved="yes">
@@ -7460,11 +7417,6 @@
         <source>Video Codec</source>
         <target state="translated">Video codec</target>
         <jms:reference-file line="34">Media/Subdef/Video.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="534048d6c768f47f83f67c0498e6d4ecf5cff4bb" resname="Video codec" approved="yes">
-        <source>Video codec</source>
-        <target state="translated">Video codec</target>
-        <jms:reference-file line="406">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56b71e89fb1079caaadefd0889e9a22e8b0560e3" resname="Videos" approved="yes">
         <source>Videos</source>
@@ -9729,7 +9681,7 @@
       <trans-unit id="bc977e6f2634272519d99c369e27b6c0f4f2b542" resname="ascendant" approved="yes">
         <source>ascendant</source>
         <target state="translated">ascending</target>
-        <jms:reference-file line="185">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="190">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a06a492959ce12b3f0292406ec84177d07ae19b1" resname="audio" approved="yes">
         <source>audio</source>
@@ -10333,12 +10285,12 @@
       <trans-unit id="aab7fdd9c18941cbc8d78fa0c690361ffd8c50bf" resname="date dajout" approved="yes">
         <source>date dajout</source>
         <target state="translated">Add date</target>
-        <jms:reference-file line="149">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="154">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9422f3c3d1d722ee14182539cce3e00c003efd63" resname="date de modification" approved="yes">
         <source>date de modification</source>
         <target state="translated">Modification date</target>
-        <jms:reference-file line="150">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="155">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="41c882ad92672dcb86f0ede3f789f7542bcc82fc" resname="decembre" approved="yes">
         <source>decembre</source>
@@ -10353,7 +10305,7 @@
       <trans-unit id="1051f820052d19c0fff9afec561c3d02607fc90d" resname="descendant" approved="yes">
         <source>descendant</source>
         <target state="translated">descending</target>
-        <jms:reference-file line="184">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="189">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e82b164f61602c25d57b485ed09c7a59a8e0919" resname="developers:: Events name">
         <source>developers:: Events name</source>
@@ -10732,6 +10684,33 @@
         <source>expose::setting send vtt field</source>
         <target state="translated">Send video text track files</target>
         <jms:reference-file line="23">prod/WorkZone/ExposeFieldList.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="dd6825faca66dd1d879174587320166f59151212" resname="facet.ThumbnailOrientation:Landscape">
+        <source>facet.ThumbnailOrientation:Landscape</source>
+        <target state="needs-translation">Landscape</target>
+        <jms:reference-file line="442">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8f3af69c73dc63a16eebdd0915c168c177d5e6bf" resname="facet.ThumbnailOrientation:Portrait">
+        <source>facet.ThumbnailOrientation:Portrait</source>
+        <target state="needs-translation">Portrait</target>
+        <jms:reference-file line="443">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="367be8ef167f874f5b7c675f14e7902d33b39b76" resname="facet.ThumbnailOrientation:Square">
+        <source>facet.ThumbnailOrientation:Square</source>
+        <target state="needs-translation">Square</target>
+        <jms:reference-file line="444">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0026e83292bbf5f7d41456ad566e4bf48cfc6873" resname="facet.flashfired:no">
+        <source>facet.flashfired:no</source>
+        <target state="needs-translation">Flash Not fired</target>
+        <jms:reference-file line="388">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="390">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="4aecf920978685efafb134164cc934c4e1acb845" resname="facet.flashfired:yes">
+        <source>facet.flashfired:yes</source>
+        <target state="needs-translation">Flash Fired</target>
+        <jms:reference-file line="389">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="391">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c01ba8aa5fa44fe8ec9f761edd3a48763e122fa9" resname="failed to send mail" approved="yes">
         <source>failed to send mail</source>
@@ -11237,7 +11216,7 @@
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
         <source>notification:: mark all notification as read</source>
-        <target state="needs-translation">Mark all notifications as "Read"</target>
+        <target state="translated">Mark all notifications as "Read"</target>
         <jms:reference-file line="4">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
@@ -11622,7 +11601,7 @@
       <trans-unit id="f16110620b1971f58336063cbdb64df7e0e0c7ac" resname="pertinence" approved="yes">
         <source>pertinence</source>
         <target state="translated">Relevance</target>
-        <jms:reference-file line="148">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
+        <jms:reference-file line="153">SearchEngine/Elastic/ElasticSearchEngine.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="da819bd8e531681e8cc8b0c5f30da694b7ffe03c" resname="php.ini path" approved="yes">
         <source>php.ini path</source>
@@ -12156,7 +12135,7 @@
       </trans-unit>
       <trans-unit id="803a88bdcb07cb8055e10ca28aee9b3c74992da6" resname="print:: add and remember password to protect the pdf">
         <source>print:: add and remember password to protect the pdf</source>
-        <target state="needs-translation">Define a password to protect the PDF (optional)</target>
+        <target state="translated">Define a password to protect the PDF (optional)</target>
         <jms:reference-file line="69">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="yes">
@@ -12268,7 +12247,7 @@
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
         <source>print:: some options</source>
-        <target state="needs-translation">Additional settings</target>
+        <target state="translated">Additional settings</target>
         <jms:reference-file line="67">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="be0543f570963b35cd3c119d878d45410b363316" resname="print:: subdef mapping">
@@ -12293,7 +12272,7 @@
       </trans-unit>
       <trans-unit id="d16a375bd489fa9232346a1c6e48570bbf53a479" resname="print:: warning! Only available media for chosen subdef is downloadable">
         <source>print:: warning! Only available media for chosen subdef is downloadable</source>
-        <target state="needs-translation">Leave the duration empty for a permanent validity</target>
+        <target state="translated">Leave the duration empty for a permanent validity</target>
         <jms:reference-file line="93">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="52acc8afb73e42ebb15886d76b723d8e8907d8eb" resname="print:: week">
@@ -12599,20 +12578,85 @@ Warning: The current values will be overwritten by these new values</target>
         <jms:reference-file line="18">web/lightbox/validate.html.twig</jms:reference-file>
         <jms:reference-file line="1097">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="c7d4ddab714f52fc0dc7a811909a985a270fcdf9" resname="prod::facet.Orientation_label">
+        <source>prod::facet.Orientation_label</source>
+        <target state="needs-translation">Exif Orientation</target>
+        <jms:reference-file line="426">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ec7cc75bc2bb550f2e07350712f5a440b3bb2d60" resname="prod::facet.ThumbnailOrientation_label">
+        <source>prod::facet.ThumbnailOrientation_label</source>
+        <target state="needs-translation">Orientation</target>
+        <jms:reference-file line="433">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d8f44aec5909904ecf96c1f66a8f619fe3b8d17d" resname="prod::facet:Aperture_label">
+        <source>prod::facet:Aperture_label</source>
+        <target state="needs-translation">Aperture</target>
+        <jms:reference-file line="356">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ad9a5152bd51893746bf36455487a01183ebec95" resname="prod::facet:AudioCodec_label">
+        <source>prod::facet:AudioCodec_label</source>
+        <target state="needs-translation">Audio Codec</target>
+        <jms:reference-file line="419">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f7cd3df416fef9859c9765557d93e3edae4d970f" resname="prod::facet:AudioSamplerate_label">
+        <source>prod::facet:AudioSamplerate_label</source>
+        <target state="needs-translation">Audio Samplerate</target>
+        <jms:reference-file line="405">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="291bf75117d490adf3ef33c7f755c60cae734c9f" resname="prod::facet:CameraModel_label">
+        <source>prod::facet:CameraModel_label</source>
+        <target state="needs-translation">Camera Model</target>
+        <jms:reference-file line="342">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d4181004be269c01d0f28a2a3afdd5a66ac9ab88" resname="prod::facet:Colorspace_label">
+        <source>prod::facet:Colorspace_label</source>
+        <target state="needs-translation">Colorspace</target>
+        <jms:reference-file line="451">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f2fde4df5b7371e2f1f2bf7b5451a663cbdc0b43" resname="prod::facet:FlashFired_label">
+        <source>prod::facet:FlashFired_label</source>
+        <target state="needs-translation">Flash</target>
+        <jms:reference-file line="379">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="93e4d2943a67d73ab2bf3d47e5e0414d98a71b9c" resname="prod::facet:FrameRate_label">
+        <source>prod::facet:FrameRate_label</source>
+        <target state="needs-translation">Video frame rate</target>
+        <jms:reference-file line="398">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="ecc03975a89f5de1fb3112f1e3d8fdf7681cf4a0" resname="prod::facet:ISO_label">
+        <source>prod::facet:ISO_label</source>
+        <target state="needs-translation">ISO</target>
+        <jms:reference-file line="349">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b37c1f93d999bc3c0be1283247a50d66b3266810" resname="prod::facet:MimeType_label">
+        <source>prod::facet:MimeType_label</source>
+        <target state="needs-translation">Mime Type</target>
+        <jms:reference-file line="458">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="3be65bac65219afaa6f34f579ea7e506269a4a8d" resname="prod::facet:ShutterSpeed_label">
+        <source>prod::facet:ShutterSpeed_label</source>
+        <target state="needs-translation">Shutter Speed</target>
+        <jms:reference-file line="366">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6f7c968c419f90c6c733190b0d75db89aa0a6d8b" resname="prod::facet:VideoCodec_label">
+        <source>prod::facet:VideoCodec_label</source>
+        <target state="needs-translation">Video Codec</target>
+        <jms:reference-file line="412">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
         <source>prod::facet:base_label</source>
         <target state="translated">Base</target>
-        <jms:reference-file line="320">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="321">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="36fa870bac03b1a7c83f2b7030bf93ed4718e0a7" resname="prod::facet:collection_label" approved="yes">
         <source>prod::facet:collection_label</source>
         <target state="translated">Collection</target>
-        <jms:reference-file line="327">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="328">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label" approved="yes">
         <source>prod::facet:doctype_label</source>
         <target state="translated">Document type</target>
-        <jms:reference-file line="334">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
+        <jms:reference-file line="335">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a146a90e6a97ac82ffa4ab5d4dc7cf4955a1e305" resname="prod::feedback:feedback_set_title" approved="yes">
         <source>prod::feedback:feedback_set_title</source>
@@ -13382,7 +13426,7 @@ It is possible to place several search areas</target>
       <trans-unit id="9fb38743f0e67ac389f4d31a55eff4ec5acac703" resname="prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)">
         <source>prod:workzone:facetstab:unset_field_facet_label_(%fieldname%)</source>
         <target state="translated">Unset value for %fieldname%</target>
-        <jms:reference-file line="59">Elastic/Search/FacetsResponse.php</jms:reference-file>
+        <jms:reference-file line="61">Elastic/Search/FacetsResponse.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61c9b2b17db77a27841bbeeabff923448b0f6388" resname="public" approved="yes">
         <source>public</source>
@@ -13442,7 +13486,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="a85c5b39743bad12b07c179a912cf5dbc47860f8" resname="publication:: %count% users to notify">
         <source>publication:: %count% users to notify</source>
-        <target state="needs-translation">%count% users will be notified</target>
+        <target state="translated">%count% users will be notified</target>
         <jms:reference-file line="149">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c4664885fa2a9f300cc01beed066cfcfafe4dd39" resname="publication:: no feed selected">
