@@ -31,6 +31,7 @@ use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrListRepository;
+use Alchemy\Phrasea\Record\RecordReference;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
@@ -212,6 +213,8 @@ class PushController extends Controller
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
+     *
+     * @TODO This is too slow even for 100 records + 100 participants --> move this to a worker
      */
     public function sharebasketAction(Request $request)
     {
@@ -317,9 +320,23 @@ class PushController extends Controller
                 $remainingParticipantsUserId = $basket->getListParticipantsUserId();
             }
 
-            // add participants to the vote
-            //
+            // build an array of basket elements now to avoid longer calls on participants loop
+            $basketElements = [];
+            foreach ($basket->getElements() as $basketElement) {
+                $basketElements[] = [
+                    'element' => $basketElement,
+                    'ref' => RecordReference::createFromDataboxIdAndRecordId(
+                        $basketElement->getSbasId(),
+                        $basketElement->getRecordId()
+                    ),
+//                    'record' => $basketElement->getRecord($this->app)
+                ];
+            }
 
+            $authenticatedUser = $this->getAuthenticatedUser();
+
+            // add participants to the share / vote
+            //
             foreach ($participants as $key => $participant) {
 
                 if(!$isFeedback && $participant['usr_id'] == $basket->getUser()->getId()) {
@@ -379,20 +396,32 @@ class PushController extends Controller
 
                 $manager->persist($basketParticipant);
 
-                foreach ($basket->getElements() as $basketElement) {
+                $acl = $this->getAclForUser($participantUser);
+                foreach ($basketElements as $be) {
+                    /** @var BasketElement $basketElement */
+                    $basketElement = &$be['element'];
+                    /** @var record_adapter $basketElementRecord */
+                    $basketElementRecord = &$be['record'];
+                    /** @var RecordReference $basketElementReference */
+                    $basketElementReference = &$be['ref'];
+
+                    // this is slow... why ?
                     $basketParticipantVote = $basketElement->createVote($basketParticipant);
+                    //
 
                     if ($participant['HD']) {
-                        $this->getAclForUser($participantUser)->grant_hd_on(
-                            $basketElement->getRecord($this->app),
-                            $this->getAuthenticatedUser(),
+                        $acl->grant_hd_on(
+                            // $basketElement->getRecord($this->app),
+                            $basketElementReference,
+                            $authenticatedUser,
                             ACL::GRANT_ACTION_VALIDATE
                         );
                     }
                     else {
-                        $this->getAclForUser($participantUser)->grant_preview_on(
-                            $basketElement->getRecord($this->app),
-                            $this->getAuthenticatedUser(),
+                        $acl->grant_preview_on(
+                            // $basketElement->getRecord($this->app),
+                            $basketElementReference,
+                            $authenticatedUser,
                             ACL::GRANT_ACTION_VALIDATE
                         );
                     }
@@ -400,8 +429,8 @@ class PushController extends Controller
                     $manager->merge($basketElement);
                     $manager->persist($basketParticipantVote);
 
-                    $this->getDataboxLogger($basketElement->getRecord($this->app)->getDatabox())->log(
-                        $basketElement->getRecord($this->app),
+                    $this->getDataboxLogger($basketElementRecord->getDatabox())->log(
+                        $basketElementRecord,
                         Session_Logger::EVENT_VALIDATE,
                         $participantUser->getId(),
                         ''
@@ -424,6 +453,7 @@ class PushController extends Controller
                 //
                 // - the 'validate' token has same expiration as validation-session (except for initiator)
                 //
+
                 if (!$this->getConf()->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication') ) {
                     if($participantUser->getId() === $this->getAuthenticatedUser()->getId()) {
                         // the initiator of the validation gets a no-expire token (so he can see result after validation expiration)
@@ -464,26 +494,26 @@ class PushController extends Controller
             }
 
 //   !!!!!!!!!!!!!!!!!!!!!         if ($feedbackAction == 'adduser') {
-                foreach ($remainingParticipantsUserId as $userIdToRemove) {
-                    try {
-                        /** @var  User $participantUser */
-                        $participantUser = $this->getUserRepository()->find($userIdToRemove);
-                    }
-                    catch (Exception $e) {
-                        throw new ControllerException(
-                            $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
-                        );
-                    }
-                    try {
-                        // nb: for a vote, the owner IS participant and can't be removed
-                        $basketParticipant = $basket->getParticipant($participantUser);
-                        $basket->removeParticipant($basketParticipant);
-                        $manager->remove($basketParticipant);
-                    }
-                    catch (Exception $e) {
-                        // no-op
-                    }
+            foreach ($remainingParticipantsUserId as $userIdToRemove) {
+                try {
+                    /** @var  User $participantUser */
+                    $participantUser = $this->getUserRepository()->find($userIdToRemove);
                 }
+                catch (Exception $e) {
+                    throw new ControllerException(
+                        $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
+                    );
+                }
+                try {
+                    // nb: for a vote, the owner IS participant and can't be removed
+                    $basketParticipant = $basket->getParticipant($participantUser);
+                    $basket->removeParticipant($basketParticipant);
+                    $manager->remove($basketParticipant);
+                }
+                catch (Exception $e) {
+                    // no-op
+                }
+            }
 //            }
 
             $manager->merge($basket);

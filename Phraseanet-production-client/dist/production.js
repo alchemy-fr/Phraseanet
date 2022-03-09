@@ -18852,7 +18852,7 @@ var pushOrShare = function pushOrShare(services, container) {
                 $elem.fadeOut(function () {
                     $elem.remove();
 
-                    appEvents.emit('sharebasket.participantsChanged', { container: container, context: 'user-added' });
+                    appEvents.emit('sharebasket.participantsChanged', { container: $container, context: 'user-added' });
                 });
             }
         });
@@ -19195,6 +19195,7 @@ var pushOrShare = function pushOrShare(services, container) {
                     for (var i in list.entries) {
                         this.selectUser(list.entries[i].User);
                     }
+                    appEvents.emit('sharebasket.participantsChanged', { container: container, context: 'user-added' });
                 };
 
                 pushOrShare.loadList(url, callbackList);
@@ -19206,12 +19207,11 @@ var pushOrShare = function pushOrShare(services, container) {
 
             // the list on participants (badges) have changed : set event handlers on specific elements...
 
-            var $badges = (0, _jquery2.default)('.user_content .badges .badge', o.container);
-            var $toggles = (0, _jquery2.default)('.user_content .toggles .toggle', o.container);
+            var $toggles = (0, _jquery2.default)('.user_content .toggles .toggle', $container);
 
             // ... delete badge handler
             //
-            $badges.off('click', '.deleter').on('click', '.deleter', function (event) {
+            $container.off('click', '.user_content .badges .badge .deleter').on('click', '.user_content .badges .badge .deleter', function (event) {
                 var $elem = (0, _jquery2.default)(this).closest('.badge');
                 var userEmailEl = $elem.find('.user-email').val();
                 var action = (0, _jquery2.default)('input[name="feedbackAction"]').val();
@@ -19234,7 +19234,10 @@ var pushOrShare = function pushOrShare(services, container) {
 
                 $elem.fadeOut(function () {
                     $elem.remove();
-                    appEvents.emit('sharebasket.participantsChanged', { container: $container, context: 'user-deleted' });
+                    appEvents.emit('sharebasket.participantsChanged', {
+                        container: $container,
+                        context: 'user-deleted'
+                    });
                 });
 
                 return false;
@@ -19344,7 +19347,7 @@ pushOrShare.prototype = {
         // p4.Feedback.appendBadge(html);
         this.appendBadge(html);
 
-        this.appEvents.emit('sharebasket.participantsChanged', { container: this.container, context: 'user-added' });
+        //        this.appEvents.emit('sharebasket.participantsChanged', {container:this.container, context:'user-added'});
     },
     loadUser: function loadUser(usr_id, callback) {
         var _this = this;

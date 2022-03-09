@@ -113,7 +113,7 @@ const pushOrShare = function (services, container) {
                 $elem.fadeOut(function () {
                     $elem.remove();
 
-                    appEvents.emit('sharebasket.participantsChanged', {container:container, context:'user-added'});
+                    appEvents.emit('sharebasket.participantsChanged', {container:$container, context:'user-added'});
                 });
             }
         });
@@ -467,6 +467,7 @@ const pushOrShare = function (services, container) {
                     for (let i in list.entries) {
                         this.selectUser(list.entries[i].User);
                     }
+                    appEvents.emit('sharebasket.participantsChanged', {container:container, context:'user-added'});
                 };
 
                 pushOrShare.loadList(url, callbackList);
@@ -478,40 +479,43 @@ const pushOrShare = function (services, container) {
 
             // the list on participants (badges) have changed : set event handlers on specific elements...
 
-            const $badges = $('.user_content .badges .badge', o.container);
-            const $toggles = $('.user_content .toggles .toggle', o.container);
+            const $toggles = $('.user_content .toggles .toggle', $container);
 
             // ... delete badge handler
             //
-            $badges.off('click', '.deleter')
-                   .on('click', '.deleter', function (event) {
-                var $elem = $(this).closest('.badge');
-                let userEmailEl = $elem.find('.user-email').val();
-                let action = $('input[name="feedbackAction"]').val();
+            $container.off('click', '.user_content .badges .badge .deleter')
+             .on('click', '.user_content .badges .badge .deleter', function (event) {
+                 var $elem       = $(this).closest('.badge');
+                 let userEmailEl = $elem.find('.user-email').val();
+                 let action      = $('input[name="feedbackAction"]').val();
 
-                if (action === 'adduser') {
-                    let value = $('#newParticipantsUser').val();
-                    let actualParticipantsName = value.split('; ');
-                    // remove the user in the list of new participant if yet exist
-                    let key = $.inArray(userEmailEl, actualParticipantsName);
-                    if (key > -1) {
-                        actualParticipantsName.splice(key, 1);
-                        if (actualParticipantsName.length != 0) {
-                            value = actualParticipantsName.join('; ');
-                            $('#newParticipantsUser').val(value);
-                        } else {
-                            $('#newParticipantsUser').val('');
-                        }
-                    }
-                }
+                 if (action === 'adduser') {
+                     let value = $('#newParticipantsUser').val();
+                     let actualParticipantsName = value.split('; ');
+                     // remove the user in the list of new participant if yet exist
+                     let key                    = $.inArray(userEmailEl, actualParticipantsName);
+                     if (key > -1) {
+                         actualParticipantsName.splice(key, 1);
+                         if (actualParticipantsName.length != 0) {
+                             value = actualParticipantsName.join('; ');
+                             $('#newParticipantsUser').val(value);
+                         }
+                         else {
+                             $('#newParticipantsUser').val('');
+                         }
+                     }
+                 }
 
-                $elem.fadeOut(function () {
-                    $elem.remove();
-                    appEvents.emit('sharebasket.participantsChanged', {container:$container, context:'user-deleted'});
-                });
+                 $elem.fadeOut(function () {
+                     $elem.remove();
+                     appEvents.emit('sharebasket.participantsChanged', {
+                         container: $container,
+                         context:   'user-deleted'
+                     });
+                 });
 
-                return false;
-            });
+                 return false;
+             });
 
             // ... toggle buttons handlers
             //
@@ -560,7 +564,7 @@ const pushOrShare = function (services, container) {
         },
         'sharebasket.participantsSelectionChanged': function(o) {
             // a toggle on a user badge was changed
-            const $badges = $('.user_content .badges .badge', o.container);
+            const $badges = $('.user_content .badges .badge', $container);
             const selectedCount = $badges.filter('.selected').length;
             if(selectedCount === 0) {
                 // none selected
@@ -622,7 +626,7 @@ pushOrShare.prototype = {
         // p4.Feedback.appendBadge(html);
         this.appendBadge(html);
 
-        this.appEvents.emit('sharebasket.participantsChanged', {container:this.container, context:'user-added'});
+//        this.appEvents.emit('sharebasket.participantsChanged', {container:this.container, context:'user-added'});
 
     },
     loadUser: function (usr_id, callback) {
