@@ -67,18 +67,28 @@ class WorkerCronCommand extends Command
 
             $config = Yaml::parse(file_get_contents($this->container['root.path'] . '/config/crontab.yml'));
 
-            $this->container['conf']->set(['workers', 'queues', MessagePublisher::CRON_TYPE, 'ttl_retry'], $config['period'] * 1000);
-            $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::CRON_TYPE]);
+//            $this->container['conf']->set(['workers', 'queues', MessagePublisher::CRON_TYPE, 'ttl_retry'], $config['period'] * 1000);
+//            $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::CRON_TYPE]);
+//
+//            $payload = [
+//                'message_type' => MessagePublisher::CRON_TYPE,
+//                'payload' => [
+//                    'config' => $config
+//                ]
+//            ];
+//
+//            $this->getPublisher()->publishRetryMessage($payload, MessagePublisher::CRON_TYPE, 0, 'Loop for cron');
+//            $output->writeln(sprintf('The worker cron is successfully launch at %s', date('Y-m-d\TH:i:s')));
 
-            $payload = [
-                'message_type' => MessagePublisher::CRON_TYPE,
-                'payload' => [
-                    'config' => $config
-                ]
-            ];
+            foreach ($config['tasks'] as $task) {
+                $task['worker_period'] = $config['period'];
+                $payload = [
+                    'message_type' => MessagePublisher::CRON_TYPE,
+                    'payload' => $task
+                ];
 
-            $this->getPublisher()->publishRetryMessage($payload, MessagePublisher::CRON_TYPE, 0, 'Loop for cron');
-            $output->writeln(sprintf('The worker cron is successfully launch at %s', date('Y-m-d\TH:i:s')));
+                $this->getPublisher()->publishRetryMessage($payload, MessagePublisher::CRON_TYPE, 0, 'Loop for cron');
+            }
         }
     }
 
