@@ -19287,7 +19287,7 @@ var pushOrShare = function pushOrShare(services, container) {
         },
         'sharebasket.participantsSelectionChanged': function sharebasketParticipantsSelectionChanged(o) {
             // a toggle on a user badge was changed
-            var $badges = (0, _jquery2.default)('.user_content .badges .badge', o.container);
+            var $badges = (0, _jquery2.default)('.user_content .badges .badge', $container);
             var selectedCount = $badges.filter('.selected').length;
             if (selectedCount === 0) {
                 // none selected

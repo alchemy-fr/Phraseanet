@@ -345,7 +345,7 @@
                         {{ _self.basket_menu(app, basket, constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS'), false) }}
 
                     </div>
-                    <div id="SSTT_content_{{ basket.getId() }}" class="content basket" style="overflow:hidden;"></div>
+                    <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
                 {% endfor %}
             </div>
 
@@ -430,7 +430,7 @@
                         {{ _self.basket_menu(app, basket, constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS'), true) }}
 
                     </div>
-                    <div id="SSTT_content_{{ basket.getId() }}" class="content basket" style="overflow:hidden;"></div>
+                    <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
                 {% endfor %}
             </div>
 
@@ -463,7 +463,7 @@
                         {{ _self.basket_menu(app, story, constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES'), true) }}
 
                     </div>
-                    <div sbas="{{ story.getSbasId() }}" id="SSTT_content_{{ story.getId() }}" class="content grouping"
+                    <div sbas="{{ story.getSbasId() }}" id="SSTT_content_{{ story.getId() }}" class="content grouping story-block"
                          style="overflow:hidden;"></div>
                 {% endfor %}
             </div>
