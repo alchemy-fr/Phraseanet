@@ -1,5 +1,48 @@
 # CHANGELOG
 
+## 4.1.6-rc1
+
+### Update instructions
+
+ - Migration patch: no patch to play, just run upgrade for bump version 
+ - Elasticsearch action : none 
+
+### Version summary :
+ 
+  - Big improvement of generated PDF,
+    - Password protection
+    - Download link 
+  - Prod - Publications editing, user experience improvements
+
+### New Features
+
+```
+PHRAS-3642 API - Return databox subdefs on new endpoint /api/v3/databoxes/\{databox\_id\}/subdefs/ and  /api/v3/databoxes/subdefs/
+PHRAS-3636 docker - docker-compose - Add container for execute primary datastore \(mysql\) backup
+```
+
+### Improvement
+
+```
+PHRAS-3633 Prod - Printed PDF  Improvement - add a Title , Password, download link to the PDF
+PHRAS-3595 Prod - New publication - features and UX improvement
+PHRAS-3631 Prod : Notifications : Add a fonction to mark all notification as read
+PHRAS-3229 Thesaurus GUI improvement - import - refresh  candidat terms
+```
+
+
+### Bug fix
+
+```
+PHRAS-3637 API - Upload Url | Prod GUI - Let's Encrypt ssl certificate verification fail. use the correct guzzle version
+PHRAS-3635 user list : general toggles change selection
+PHRAS-3626 Prod - detailed view -  Print, Export windows appear behind the detailed view \(z-index\)
+PHRAS-3620 Admin - subviews : a bad path can lead to creating file at the roots of the Phraseanet sources.
+PHRAS-3619 After record removal, we have an HTTP status 200 on the /records route of the API on the deleted record
+PHRAS-3285 Thesaurus - candidat panel - The Stock is not available
+PHRAS-3628 API - create record - 500 error if No file
+ ```
+
 ## 4.1.5 
 
 ### Version summary :
