@@ -321,21 +321,21 @@ class ElasticsearchOptions
                 'label'   => $translator->trans('prod::facet:base_label'),
                 'field'   => "database",
                 'esfield' => 'databox_name',
-                'query'   => 'database:%s',
+                'query'   => 'database=%s',
             ],
             '_collection' => [
                 'type'    => 'string',
                 'label'   => $translator->trans('prod::facet:collection_label'),
                 'field'   => "collection",
                 'esfield' => 'collection_name',
-                'query'   => 'collection:%s',
+                'query'   => 'collection=%s',
             ],
             '_doctype' => [
                 'type'    => 'string',
                 'label'   => $translator->trans('prod::facet:doctype_label'),
                 'field'   => "type",
                 'esfield' => 'type',
-                'query'   => 'type:%s',
+                'query'   => 'type=%s',
             ],
             '_camera_model' => [
                 'type'    => 'string',
@@ -412,14 +412,14 @@ class ElasticsearchOptions
                 'label'   => $translator->trans('prod::facet:VideoCodec_label'),
                 'field'   => "meta.VideoCodec",
                 'esfield' => 'metadata_tags.VideoCodec',
-                'query'   => 'meta.VideoCodec:%s',
+                'query'   => 'meta.VideoCodec=%s',
             ],
             '_audiocodec' => [
                 'type'    => 'string',
                 'label'   => $translator->trans('prod::facet:AudioCodec_label'),
                 'field'   => "meta.AudioCodec",
                 'esfield' => 'metadata_tags.AudioCodec',
-                'query'   => 'meta.AudioCodec:%s',
+                'query'   => 'meta.AudioCodec=%s',
             ],
             '_orientation' => [
                 'type'    => 'string',
@@ -451,14 +451,14 @@ class ElasticsearchOptions
                 'label'   => $translator->trans('prod::facet:Colorspace_label'),
                 'field'   => "meta.ColorSpace",
                 'esfield' => 'metadata_tags.ColorSpace',
-                'query'   => 'meta.ColorSpace:%s',
+                'query'   => 'meta.ColorSpace=%s',
             ],
             '_mimetype' => [
                 'type'    => 'string',
                 'label'   => $translator->trans('prod::facet:MimeType_label'),
                 'field'   => "meta.MimeType",
                 'esfield' => 'metadata_tags.MimeType',
-                'query'   => 'meta.MimeType:%s',
+                'query'   => 'meta.MimeType=%s',
             ],
         ];
     }
