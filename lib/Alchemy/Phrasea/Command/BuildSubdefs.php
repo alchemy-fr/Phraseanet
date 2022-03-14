@@ -437,11 +437,9 @@ class BuildSubdefs extends Command
                     // here an existing subdef must be (re)done
                     if(isset($subdefNamesToDo[$name])) {
                         if (!$this->dry) {
-                            $subdef->remove_file();
                             $subdef->set_substituted(false);
                         }
                         $recordChanged = true;
-                        $msg[] = sprintf(" [\"%s\"] deleted", $name);
                     }
                 }
 
