@@ -15,7 +15,7 @@ services:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
-    profiles: ["app"]
+    profiles: ["gateway-classic"]
     restart: on-failure
     volumes:
     - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
@@ -33,6 +33,36 @@ services:
       - ${PHRASEANET_APP_PORT}:80
     networks:
       - internal
+
+  gateway-treafik:
+    build:
+      context: .
+      target: phraseanet-nginx
+      args:
+        - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
+        - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-nginx:$PHRASEANET_DOCKER_TAG
+    profiles: ["gateway-traefik"]
+    restart: on-failure
+    volumes:
+    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
+    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
+    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
+    - ${PHRASEANET_PLUGINS_DIR}:/var/alchemy/Phraseanet/www/plugins:rw
+    depends_on:
+    - phraseanet
+    environment:
+    - MAX_BODY_SIZE
+    - GATEWAY_SEND_TIMEOUT
+    - GATEWAY_PROXY_TIMEOUT
+    - GATEWAY_FASTCGI_TIMEOUT
+    networks:
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${PS_NETWORK_NAME}"
+      - "traefik.http.routers.phraseanet.rule=Host(`${PHRASEANET_HOSTNAME}`)"
+      - "traefik.http.routers.phraseanet.tls=true"
 
   phraseanet:
     build:
