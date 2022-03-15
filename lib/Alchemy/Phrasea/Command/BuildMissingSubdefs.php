@@ -24,7 +24,7 @@ class BuildMissingSubdefs extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('<fg=yellow;>(Deprecated)</> Builds subviews that previously failed to be generated / did not exist when records were added');
+        $this->setDescription('<fg=yellow;>(Deprecated please use ‘records:build-subdefs’ instead)</> Builds subviews that previously failed to be generated / did not exist when records were added');
     }
 
     /**
