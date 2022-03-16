@@ -169,7 +169,8 @@ class UserController extends Controller
                 'Fax',
                 'Job',
                 'Company',
-                'Position'
+                'Position',
+                'Last Connection'
             ]
         ];
 
@@ -190,7 +191,8 @@ class UserController extends Controller
                 $user->getFax(),
                 $user->getJob(),
                 $user->getCompany(),
-                $user->getActivity()
+                $user->getActivity(),
+                $this->getUserLastConnection($user)
             ];
         }
 
@@ -941,6 +943,10 @@ class UserController extends Controller
         ];
     }
 
+    private function getUserLastConnection(User $user)
+    {
+       return ($user->getLastConnection() != null) ? $user->getLastConnection()->format(DATE_ATOM): '';
+    }
     /**
      * @param Request $request
      * @return UserHelper\Edit
