@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-03-17T16:10:45Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2517,7 +2517,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -9082,12 +9082,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="9c65d4dd606badb72de40f53bb447a6c56999244" resname="admin::userlist delete">
         <source>admin::userlist delete</source>
-        <target state="new">admin::userlist delete</target>
+        <target state="needs-translation">Supprimer les utilisateurs</target>
         <jms:reference-file line="72">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67786d36ac94e1da1b893a91f0390215856f0d13" resname="admin::userlist modify">
         <source>admin::userlist modify</source>
-        <target state="new">admin::userlist modify</target>
+        <target state="needs-translation">Modifier la selection</target>
         <jms:reference-file line="71">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser" approved="yes">
@@ -9097,7 +9097,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="bd3b85a7535e1a5e824820bbf7feb6a9ce0a3676" resname="admin::userlist: phantoms only">
         <source>admin::userlist: phantoms only</source>
-        <target state="new">admin::userlist: phantoms only</target>
+        <target state="needs-translation">N'afficher que les utilisateurs Fantôme</target>
         <jms:reference-file line="41">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="yes">
@@ -9122,12 +9122,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="7f305b8f1e67c4d159d51b5909c2e23c004be87c" resname="admin::users:filter: empty">
         <source>admin::users:filter: empty</source>
-        <target state="new">admin::users:filter: empty</target>
+        <target state="needs-translation">Non renseigné</target>
         <jms:reference-file line="57">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f15a566698f098c52e01e7ce4b8abef7c937667" resname="admin::users:filter: finishing by">
         <source>admin::users:filter: finishing by</source>
-        <target state="new">admin::users:filter: finishing by</target>
+        <target state="needs-translation">Finissant par</target>
         <jms:reference-file line="56">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="58f333882ef2f6c718c5b5b0c2660e81da62f08d" resname="admin::users:filter: start with" approved="yes">
@@ -10706,28 +10706,28 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="dd6825faca66dd1d879174587320166f59151212" resname="facet.ThumbnailOrientation:Landscape">
         <source>facet.ThumbnailOrientation:Landscape</source>
-        <target state="needs-translation">Paysage</target>
+        <target state="translated">Paysage</target>
         <jms:reference-file line="442">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3af69c73dc63a16eebdd0915c168c177d5e6bf" resname="facet.ThumbnailOrientation:Portrait">
         <source>facet.ThumbnailOrientation:Portrait</source>
-        <target state="needs-translation">Portrait</target>
+        <target state="translated">Portrait</target>
         <jms:reference-file line="443">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="367be8ef167f874f5b7c675f14e7902d33b39b76" resname="facet.ThumbnailOrientation:Square">
         <source>facet.ThumbnailOrientation:Square</source>
-        <target state="needs-translation">Carré</target>
+        <target state="translated">Carré</target>
         <jms:reference-file line="444">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0026e83292bbf5f7d41456ad566e4bf48cfc6873" resname="facet.flashfired:no">
         <source>facet.flashfired:no</source>
-        <target state="needs-translation">Flash non déclenché</target>
+        <target state="translated">Flash non déclenché</target>
         <jms:reference-file line="388">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="390">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4aecf920978685efafb134164cc934c4e1acb845" resname="facet.flashfired:yes">
         <source>facet.flashfired:yes</source>
-        <target state="needs-translation">Flash déclenché</target>
+        <target state="translated">Flash déclenché</target>
         <jms:reference-file line="389">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="391">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
@@ -11833,7 +11833,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="564">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -14667,7 +14667,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
