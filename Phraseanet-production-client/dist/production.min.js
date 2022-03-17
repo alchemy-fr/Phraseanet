@@ -11478,11 +11478,8 @@ var workzone = function workzone(services) {
 
         // attach menus to baskets/stories triggers
         _jquery2.default.each((0, _jquery2.default)('.SSTT', cache), function () {
-            var el = (0, _jquery2.default)(this);
 
             var m = (0, _jquery2.default)(this).find('.contextMenuTrigger');
-
-            var cmenu = void 0;
 
             m.contextMenu('#' + (0, _jquery2.default)(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
@@ -11492,12 +11489,9 @@ var workzone = function workzone(services) {
                 showTransition: 'slideDown',
                 hideTransition: 'hide',
                 shadow: false,
-                offsetX: -20,
-                offsetY: -20,
                 _wz_row_id: (0, _jquery2.default)(this).attr('id'),
                 _basket_id: (0, _jquery2.default)(this).data('basket_id'),
                 onCreated: function onCreated(cm) {
-                    cmenu = cm;
                     m.click(function (e) {
                         e.preventDefault();
                         var $that = (0, _jquery2.default)(this);
@@ -11508,25 +11502,28 @@ var workzone = function workzone(services) {
                             _jquery2.default.getJSON(url, { 'u': Date.now().toString() }).then(function (data) {
                                 // let menu = m.contextMenu();
                                 if (data["wip"]) {
-                                    cmenu.menuFunction = function () {
+                                    cm.menuFunction = function () {
                                         return (0, _jquery2.default)('#basket_wip_menu');
                                     };
                                 } else {
-                                    cmenu.menuFunction = function () {
+                                    cm.menuFunction = function () {
                                         return (0, _jquery2.default)('#' + ref_id + '_menu');
                                     };
                                 }
                                 $that.trigger("my_click", e);
                             });
                         } else {
-                            cmenu.menuFunction = function () {
+                            cm.menuFunction = function () {
                                 return (0, _jquery2.default)('#' + ref_id + '_menu');
                             };
                             $that.trigger("my_click", e);
                         }
 
                         return false;
-                    });
+                    }
+                    //,
+                    // function() {}
+                    );
                 }
             });
         });

@@ -19603,6 +19603,20 @@ exports.default = ApplicationConfigService;
         useIframe: /*@cc_on @*/ /*@if (@_win32) true, @else @*/false, /*@end @*/ // This is a better check than looking at userAgent!
 
         _originalPlace: null,
+        _hovered: false,
+
+        _hover_in: function _hover_in(cm) {
+            if (cm.closeTimer) {
+                clearTimeout(cm.closeTimer);
+                cm.closeTimer = null;
+            }
+        },
+
+        _hover_out: function _hover_out(cm, tms) {
+            cm.closeTimer = setTimeout(function () {
+                cm.hide();
+            }, tms);
+        },
 
         // Create the menu instance
         create: function create(menu, opts) {
@@ -19612,6 +19626,11 @@ exports.default = ApplicationConfigService;
             if (typeof menu === "string") {
                 cmenu.menu = $(menu);
                 cmenu._originalPlace = cmenu.menu.parent();
+                cmenu.menu.hover(function () {
+                    cmenu._hover_in(cmenu);
+                }, function () {
+                    cmenu._hover_out(cmenu, 500);
+                });
             }
             // If a function has been passed in, call it each time the menu is shown to create the menu
             else if (typeof menu === "function") {
@@ -19643,7 +19662,7 @@ exports.default = ApplicationConfigService;
 
         // Create an iframe object to go behind the menu
         createIframe: function createIframe() {
-            return $('<iframe frameborder="0" tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
+            return $('<iframe tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
         },
 
         // Accept an Array representing a menu structure and turn it into HTML
@@ -19652,8 +19671,7 @@ exports.default = ApplicationConfigService;
             $.each(cmenu.theme.split(","), function (i, n) {
                 className += ' ' + cmenu.themePrefix + n;
             });
-            //			var $t = $('<div style="background-color:#ffff00; xwidth:200px; height:200px"><table style="" cellspacing=0 cellpadding=0></table></div>').click(function(){cmenu.hide(); return false;}); // We wrap a table around it so width can be flexible
-            var $t = $('<table style="" cellspacing="0" cellpadding="0"></table>').click(function () {
+            var $t = $('<table style=""></table>').click(function () {
                 cmenu.hide();
                 return false;
             }); // We wrap a table around it so width can be flexible
@@ -19662,18 +19680,9 @@ exports.default = ApplicationConfigService;
             var $div = cmenu._div = $('<div class="' + className + '"></div>');
 
             cmenu._div.hover(function () {
-                if (cmenu.closeTimer) {
-                    clearTimeout(cmenu.closeTimer);
-                    cmenu.closeTimer = null;
-                }
+                cmenu._hover_in(cmenu);
             }, function () {
-                var myClass = cmenu;
-
-                function timerRelay() {
-                    myClass.hide();
-                }
-
-                myClass.closeTimer = setTimeout(timerRelay, 500);
+                cmenu._hover_out(cmenu, 500);
             });
 
             // Each menu item is specified as either:
@@ -19704,6 +19713,7 @@ exports.default = ApplicationConfigService;
                 $td.append(cmenu.createIframe());
             }
             $t.append($tr.append($td.append($div)));
+
             return $t;
         },
 
@@ -19744,6 +19754,7 @@ exports.default = ApplicationConfigService;
             });
             var $idiv = $('<div class="' + cmenu.innerDivClassName + '" style="' + iconStyle + '">' + label + '</div>');
             $div.append($idiv);
+
             return $div;
         },
 
@@ -19800,8 +19811,8 @@ exports.default = ApplicationConfigService;
 
         // Show the context menu
         show: function show(t, e) {
-            var cmenu = this,
-                x = e.pageX,
+            var cmenu = this;
+            var x = e.pageX,
                 y = e.pageY;
 
             if (cmenu._div) {
@@ -19811,6 +19822,11 @@ exports.default = ApplicationConfigService;
             cmenu.target = t; // Preserve the object that triggered this context menu so menu item click methods can see it
             cmenu._showEvent = e; // Preserve the event that triggered this context menu so menu item click methods can see it
             if (cmenu.beforeShow() !== false) {
+                var $t = $(t);
+                $t.off("mouseleave").on("mouseleave", function () {
+                    cmenu._hover_out(cmenu, 100);
+                });
+
                 // If the menu content is a function, call it to populate the menu each time it is displayed
                 if (cmenu.menuFunction) {
                     if (cmenu.menu) {
@@ -19846,17 +19862,17 @@ exports.default = ApplicationConfigService;
 
                     var bodySize = { x: $(window).width(), y: $(window).height() };
 
-                    if ($(t).offset().top + $(t).outerHeight() + $c.height() > bodySize.y) {
-                        if ($(t).offset().left + $(t).outerWidth() + $c.width() > bodySize.x) $c.css({
-                            top: $(t).offset().top - $c.outerHeight() + "px",
-                            left: $(t).offset().left - $c.outerWidth() + "px",
+                    if ($t.offset().top + $t.outerHeight() + $c.height() > bodySize.y) {
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
+                            top: $t.offset().top - $c.outerHeight() + "px",
+                            left: $t.offset().left - $c.outerWidth() + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
                             cmenu.showCallback.call(cmenu);
                         } : null);else $c.css({
-                            top: $(t).offset().top - $c.outerHeight() + "px",
-                            left: $(t).offset().left + "px",
+                            top: $t.offset().top - $c.outerHeight() + "px",
+                            left: $t.offset().left + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
@@ -19864,16 +19880,16 @@ exports.default = ApplicationConfigService;
                         } : null);
                     } else {
 
-                        if ($(t).offset().left + $(t).outerWidth() + $c.width() > bodySize.x) $c.css({
-                            top: $(t).offset().top + $(t).outerHeight() + "px",
-                            left: $(t).offset().left - $c.outerWidth() + "px",
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
+                            top: $t.offset().top + $t.outerHeight() + "px",
+                            left: $t.offset().left - $c.outerWidth() + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
                             cmenu.showCallback.call(cmenu);
                         } : null);else $c.css({
-                            top: $(t).offset().top + $(t).outerHeight() + "px",
-                            left: $(t).offset().left + "px",
+                            top: $t.offset().top + $t.outerHeight() + "px",
+                            left: $t.offset().left + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
@@ -19881,14 +19897,16 @@ exports.default = ApplicationConfigService;
                         } : null);
                     }
                     $c.css('visibility', 'visible');
-                } else $c.css({
-                    top: pos.y + "px",
-                    left: pos.x + "px",
-                    position: "absolute",
-                    zIndex: 9999
-                })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
-                    cmenu.showCallback.call(cmenu);
-                } : null);
+                } else {
+                    $c.css({
+                        top: pos.y + "px",
+                        left: pos.x + "px",
+                        position: "absolute",
+                        zIndex: 9999
+                    })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
+                        cmenu.showCallback.call(cmenu);
+                    } : null);
+                }
                 cmenu.shown = true;
                 $(document).one('click', null, function () {
                     cmenu.hide();

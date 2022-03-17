@@ -776,11 +776,8 @@ const workzone = (services) => {
 
         // attach menus to baskets/stories triggers
         $.each($('.SSTT', cache), function () {
-            let el = $(this);
 
             const m = $(this).find('.contextMenuTrigger');
-
-            let cmenu;
 
             m.contextMenu('#' + $(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
@@ -793,40 +790,43 @@ const workzone = (services) => {
                 _wz_row_id:  $(this).attr('id'),
                 _basket_id:  $(this).data('basket_id'),
                 onCreated: function (cm) {
-                    cmenu = cm;
-                    m.click(function(e) {
-                        e.preventDefault();
-                        const $that = $(this);
-                        const url = $that.attr('href');
-                        const ref_id = $that.data('ref_id');
-                        if(url) {
-                            // add rnd to query to prevent cache
-                            $.getJSON(url, {'u': Date.now().toString()}).then(
-                                data => {
-                                    // let menu = m.contextMenu();
-                                    if (data["wip"]) {
-                                        cmenu.menuFunction = function () {
-                                            return ($('#basket_wip_menu'));
-                                        };
+                    m.click(
+                        function(e) {
+                            e.preventDefault();
+                            const $that = $(this);
+                            const url = $that.attr('href');
+                            const ref_id = $that.data('ref_id');
+                            if(url) {
+                                // add rnd to query to prevent cache
+                                $.getJSON(url, {'u': Date.now().toString()}).then(
+                                    data => {
+                                        // let menu = m.contextMenu();
+                                        if (data["wip"]) {
+                                            cm.menuFunction = function () {
+                                                return ($('#basket_wip_menu'));
+                                            };
+                                        }
+                                        else {
+                                            cm.menuFunction = function () {
+                                                return ($('#' + ref_id + '_menu'));
+                                            };
+                                        }
+                                        $that.trigger("my_click", e);
                                     }
-                                    else {
-                                        cmenu.menuFunction = function () {
-                                            return ($('#' + ref_id + '_menu'));
-                                        };
-                                    }
-                                    $that.trigger("my_click", e);
-                                }
-                            );
-                        }
-                        else {
-                            cmenu.menuFunction = function () {
-                                return ($('#' + ref_id + '_menu'));
-                            };
-                            $that.trigger("my_click", e);
-                        }
+                                );
+                            }
+                            else {
+                                cm.menuFunction = function () {
+                                    return ($('#' + ref_id + '_menu'));
+                                };
+                                $that.trigger("my_click", e);
+                            }
 
-                        return false;
-                    });
+                            return false;
+                        }
+                        //,
+                        // function() {}
+                    );
                 }
             });
 
