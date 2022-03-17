@@ -18,7 +18,8 @@ Phraseanet 4.1 - Digital Asset Management application
  - Collaborative editing and approval process
  - Video tools
  - Rich ecosystem: Plugins for Wordpress, Drupal and Adobe Creative Suite.
-   and much more 
+   
+ and much more 
 
 ![Phraseanet Prod](doc/assets/PhraseanetProd.png)
 
@@ -80,6 +81,15 @@ https://docs.phraseanet.com/4.1/en/Admin/Install.html
 
 
 We do not recommend using this method anymore.
+
+
+## Need help implementing Phraseanet? 
+
+
+Ask the community: https://groups.google.com/g/phrasea-install-en
+
+Get official support : https://www.alchemy.fr/en/rubrique/services/
+
 
 
 # Phraseanet with Docker:
