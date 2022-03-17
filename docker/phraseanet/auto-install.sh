@@ -42,6 +42,7 @@ bin/setup system:config set workers.queue.worker-queue.vhost /
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._base.limit 10
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._collection.limit 10
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._doctype.limit 10
+/var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._thumbnail_orientation.limit 10
 
 ## Redis
 /var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.host redis
