@@ -66,6 +66,7 @@ class User_Query
     protected $last_model = null;
     protected $results_quantity = null;
     protected $include_phantoms = true;
+    protected $phantoms_only = false;
     protected $include_special_users = false;
     protected $include_invite = false;
     protected $emailDomains = null;
@@ -138,6 +139,19 @@ class User_Query
     public function include_phantoms($boolean = true)
     {
         $this->include_phantoms = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Users with no rights in any base only
+     *
+     * @param bool $boolean
+     * @return $this
+     */
+    public function phantoms_only($boolean = false)
+    {
+        $this->phantoms_only = !!$boolean;
 
         return $this;
     }
@@ -935,14 +949,18 @@ class User_Query
                 throw new Exception('No base available for you, not enough rights');
             }
         } else {
-            $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
-
-            $not_base_id = array_diff($this->active_bases, $this->base_ids);
-
-            if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
-                $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+            if ($this->phantoms_only) {
+                $sql .= ' AND base_id IS NULL ';
             } else {
-                $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
+
+                $not_base_id = array_diff($this->active_bases, $this->base_ids);
+
+                if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids)) {
+                    $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')', implode(' AND base_id != ', $not_base_id));
+                } else {
+                    $sql .= sprintf(' AND (base_id = %s  ' . $extra . ') ', implode(' OR base_id = ', $this->base_ids));
+                }
             }
         }
 
@@ -951,18 +969,22 @@ class User_Query
                 throw new Exception('No base available for you, not enough rights');
             }
         } else {
-            $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
-
-            $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
-
-            if (count($not_sbas_id) > 0 && count($not_sbas_id) < count($this->sbas_ids)) {
-                $sql .= sprintf('  AND ((sbas_id != %s ) ' . $extra . ')'
-                    , implode(' AND sbas_id != ', $not_sbas_id)
-                );
+            if ($this->phantoms_only) {
+                $sql .= ' AND sbas_id IS NULL ';
             } else {
-                $sql .= sprintf(' AND (sbas_id = %s  ' . $extra . ') '
-                    , implode(' OR sbas_id = ', $this->sbas_ids)
-                );
+                $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
+
+                $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
+
+                if (count($not_sbas_id) > 0 && count($not_sbas_id) < count($this->sbas_ids)) {
+                    $sql .= sprintf('  AND ((sbas_id != %s ) ' . $extra . ')'
+                        , implode(' AND sbas_id != ', $not_sbas_id)
+                    );
+                } else {
+                    $sql .= sprintf(' AND (sbas_id = %s  ' . $extra . ') '
+                        , implode(' OR sbas_id = ', $this->sbas_ids)
+                    );
+                }
             }
         }
 

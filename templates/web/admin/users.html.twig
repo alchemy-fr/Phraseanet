@@ -33,10 +33,14 @@
 
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
             <fieldset class="admin_head_opts">
-                <span class="checkbox">
+                <label class="checkbox">
                     {{ 'admin::userlist: filterguestuser' | trans }}
-                    <input type="checkbox"  name="filter_guest_user" {% if parm['filter_guest_user'] %} checked="checked" {% endif %} style="margin-left:10px" />
-                </span>
+                    <input type="checkbox"  name="filter_guest_user" {% if parm['filter_guest_user'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                </label>
+                <label class="checkbox">
+                    {{ 'admin::userlist: phantoms only' | trans }}
+                    <input type="checkbox"  name="filter_phantoms_only" {% if parm['filter_phantoms_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                </label>
                 <br/><br/>
                 <span>{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
@@ -199,6 +203,8 @@
             <input name="like_field" value="{{parm.like_field}}" type="hidden" />
             <input name="like_type" value="{{parm.like_type}}" type="hidden" />
             <input name="last_model" value="{{parm.last_model}}" type="hidden" />
+            <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
+            <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
             <input name="inactives" value="{{parm.inactives}}" type="hidden" />
         </form>
 
@@ -252,6 +258,8 @@
                 <input name="like_field" value="{{parm.like_field}}" type="hidden" />
                 <input name="like_type" value="{{parm.like_type}}" type="hidden" />
                 <input name="last_model" value="{{parm.last_model}}" type="hidden" />
+                <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
+                <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
                 <input name="inactives" value="{{parm.inactives}}" type="hidden" />
                 <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
             </fieldset>
