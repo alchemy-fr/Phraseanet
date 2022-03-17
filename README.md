@@ -11,7 +11,14 @@ Phraseanet 4.1 - Digital Asset Management application
  - Elasticsearch search engine
  - Multiple resolution assets generation
  - Advanced Rights Management
- - Rich ecosystem: Plugins for Wordpress, Drupal and Adobe Creative Suite. 
+ - Duplicates management
+ - SSO
+ - Thesaurus
+ - Publications
+ - Collaborative editing and approval process
+ - Video tools
+ - Rich ecosystem: Plugins for Wordpress, Drupal and Adobe Creative Suite.
+   and much more 
 
 ![Phraseanet Prod](doc/assets/PhraseanetProd.png)
 
