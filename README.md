@@ -5,13 +5,15 @@ Phraseanet 4.1 - Digital Asset Management application
 
 # Main Features :
 
- - Several GUI : Prod, Admin, Thesaurus, Lightbox ,Report,    
- - Metadata Management (include Thesaurus and DublinCore Mapping)
+ - Several GUI : Prod, Admin, Thesaurus, Lightbox, Report,    
+ - Metadata Management (includes Thesaurus and DublinCore Mapping)
  - RestFull APIS
  - Elasticsearch search engine
  - Multiple resolution assets generation
  - Advanced Rights Management
- - Rich ecosystem: Plugin for Wordpress, Drupal and Adobe Creative Suite. 
+ - Rich ecosystem: Plugins for Wordpress, Drupal and Adobe Creative Suite. 
+
+![Phraseanet Prod](doc/assets/PhraseanetProd.png)
 
 # License :
 
@@ -21,7 +23,7 @@ Phraseanet is licensed under GPL-v3 license.
 
 https://docs.phraseanet.com/
 
-For development with Phraseanet API see https://docs.phraseanet.com/4.1/en/Devel/index.html
+For development with Phraseanet API, see https://docs.phraseanet.com/4.1/en/Devel/index.html
 
 
 # Installation and Quick Launch:
@@ -41,9 +43,9 @@ In each case, Phraseanet includes Dockerfile for building images and Docker-comp
 See below for more information about Prerequisites and how to personalize the stack deployed. 
 
 
-But in fact if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
+But in fact, if you have Docker Prerequisites, Phraseanet can be deployed and installed with these 2 simple commands.
 
-In a terminal from the Phraseanet repositorie launch 
+In a terminal from the Phraseanet repository launch 
 
 
     
@@ -51,8 +53,8 @@ In a terminal from the Phraseanet repositorie launch
     docker-compose up -d 
      
 
-After installation processus, The default parameters allow you to reach the app on : `http://localhost:8082`
-Default see phraseanet credential define in .env file.
+After installation process, the default parameters allow you to reach the app on : `http://localhost:8082`
+Default see Phraseanet credentials defined in .env file.
 
     PHRASEANET_ADMIN_ACCOUNT_EMAIL
 
@@ -60,7 +62,7 @@ Default see phraseanet credential define in .env file.
 
 
 > Note : This install will be made with default password for all services.
-> Except for a test, This is VERY important to customise .env file and define your own password.   
+> Except for a test, This is VERY important to customize .env file and define your own password.   
 
 
 
@@ -77,8 +79,37 @@ We do not recommend using this method anymore.
 
 ## Prerequisites
 
-- docker-compose >=v1.27.4
+- docker-compose >=v1.28
 - docker >=v19.03.13
+
+In the stack Docker, Docker-Compose included in this repo starts by default in test mode. 
+All services are launched in a separate container and except "Phraseanet app" and "workers" containers, 
+it can be replaced by an external service.
+This is especially recommended to use your SGBD (Mariadb or MySql) service for a production use. 
+The SGBD is one of primary Datastore, running the container included in this stack in "Production"
+required some tuning regarding the volumes of your datas.
+
+Filer service is provided by the hosts.
+
+All port numbers are the default service given by the vendor and can be changed with ENV Variables except for the NFS.
+
+For dev and testing, the stack include also some Tools containers and can be launched by compositing the stack.
+
+eg :
+
+ - Builder
+
+ - Mailhog
+
+ - Pma etc...
+
+Refer to .env file and docker-compose files or on documentation for stack compositing.
+
+https://docs.phraseanet.com/4.1/en/Admin/EnvironnementVariables.html
+
+
+![Phraseanet architectur](doc/assets/Phraseanet_architectur_V.1.1.png)
+
 
 Note about elasticsearch container, check this link
 
@@ -130,7 +161,7 @@ default configuration is
 
 ````
 COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml
-COMPOSE_PROFILES=app,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog
+COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog
 ````
 
 
@@ -244,7 +275,7 @@ The development mode uses the `docker-compose-override.yml` file, so you need to
 
 ````
 COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml:docker-compose.override.yml
-COMPOSE_PROFILES=app,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog,builder
+COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog,builder
 ````
 
 
