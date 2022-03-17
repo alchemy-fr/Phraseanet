@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\Core\Event;
 use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use DateTime;
 
-class BasketParticipantVoteEvent extends ShareEvent
+class BasketParticipantVoteEvent extends PushEvent
 {
     private $participant;
     private $duration;
