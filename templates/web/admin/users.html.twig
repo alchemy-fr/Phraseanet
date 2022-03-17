@@ -68,8 +68,8 @@
             </fieldset>
         </form>
 
-        <button class="user_modifier btn">{{ 'boutton::modifier' | trans }}</button>
-        <button class="user_deleter btn btn-danger">{{ 'Supprimer' | trans }}</button>
+        <button class="user_modifier btn" style =>{{ 'admin::userlist modify' | trans }}</button>
+        <button class="user_deleter btn btn-danger">{{ 'admin::userlist delete' | trans }}</button>
 
         <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left no-ajax" style="margin:0">
             <fieldset class="admin_head_opts">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-03-17T14:41:58Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2022-03-17T16:10:45Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -6518,11 +6518,6 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="6">Bridge/Youtube/video_deleteelement.html.twig</jms:reference-file>
         <jms:reference-file line="6">Bridge/Dailymotion/video_deleteelement.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="1acfc1c7d761310db2e5e876c0cade4d522cfed2" resname="Supprimer" approved="yes">
-        <source>Supprimer</source>
-        <target state="translated">Supprimer</target>
-        <jms:reference-file line="72">web/admin/users.html.twig</jms:reference-file>
-      </trans-unit>
       <trans-unit id="1808de8bbb03d09a3cf77be3497fbb271b3bbb10" resname="Supprimer egalement les documents rattaches a ces regroupements" approved="yes">
         <source>Supprimer egalement les documents rattaches a ces regroupements</source>
         <target state="translated">Egalement supprimer les documents rattachés à ces reportages ?</target>
@@ -9085,6 +9080,16 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Nouvel utilisateur</target>
         <jms:reference-file line="24">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="9c65d4dd606badb72de40f53bb447a6c56999244" resname="admin::userlist delete">
+        <source>admin::userlist delete</source>
+        <target state="new">admin::userlist delete</target>
+        <jms:reference-file line="72">web/admin/users.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="67786d36ac94e1da1b893a91f0390215856f0d13" resname="admin::userlist modify">
+        <source>admin::userlist modify</source>
+        <target state="new">admin::userlist modify</target>
+        <jms:reference-file line="71">web/admin/users.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser" approved="yes">
         <source>admin::userlist: filterguestuser</source>
         <target state="translated">Filtrer les utilisateurs invités</target>
@@ -9909,7 +9914,6 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="1">Bridge/Flickr/actionelement.html.twig</jms:reference-file>
         <jms:reference-file line="1">Bridge/Youtube/actionelement.html.twig</jms:reference-file>
         <jms:reference-file line="1">Bridge/Dailymotion/actionelement.html.twig</jms:reference-file>
-        <jms:reference-file line="71">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef6ccc2669466ac98a3d580bd7bab8f33d0e4bcc" resname="boutton::monter" approved="yes">
         <source>boutton::monter</source>
