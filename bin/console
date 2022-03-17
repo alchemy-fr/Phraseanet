@@ -149,7 +149,6 @@ $cli->command(new UserListCommand('user:list'));
 
 $cli->command(new RecordAdd('records:add'));
 $cli->command(new RescanTechnicalDatas('records:rescan-technical-datas'));
-$cli->command(new BuildMissingSubdefs('records:build-missing-subdefs'));
 $cli->command(new BuildSubdefs('records:build-subdefs'));
 
 $cli->command(new AddPlugin());
