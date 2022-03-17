@@ -108,7 +108,7 @@ Refer to .env file and docker-compose files or on documentation for stack compos
 https://docs.phraseanet.com/4.1/en/Admin/EnvironnementVariables.html
 
 
-![Phraseanet architectur](doc/assets/Phraseanet_architectur_V.1.1.png)
+![Phraseanet architectur](doc/assets/Phraseanet_architecture_V.1.1.png)
 
 
 Note about elasticsearch container, check this link
