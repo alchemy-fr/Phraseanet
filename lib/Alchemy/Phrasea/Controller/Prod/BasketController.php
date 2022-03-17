@@ -31,8 +31,22 @@ class BasketController extends Controller
 {
     use NotifierAware;
 
+    public function getWip(Request $request, Basket $basket)
+    {
+        return $this->app->json([
+            'basket_id' => $basket->getId(),
+            'wip' => $basket->getWip()
+        ]);
+    }
+
     public function displayBasket(Request $request, Basket $basket)
     {
+        if($basket->getWip() !== NULL) {
+            return $this->render('prod/WorkZone/BasketWip.html.twig', [
+                'basket' => $basket,
+            ]);
+        }
+
         if ($basket->isRead() === false) {
             $basket->markRead();
             $this->getEntityManager()->flush();

@@ -387,7 +387,7 @@ const workzone = (services) => {
                         appEvents.emit('thesaurus.show');
                     }
                     workzoneOptions.open();
-                    console.log("tab is " + $('#idFrameC .tabs').data("hash"));
+                    // console.log("tab is " + $('#idFrameC .tabs').data("hash"));
                 }
             });
 
@@ -761,19 +761,76 @@ const workzone = (services) => {
         }, function () {
             $(this).removeClass('context-menu-item-hover');
         });
+
+
+        // create the "this basket is wip" menu
+        // just create: no need a trigger element
+        $.contextMenu.create('#basket_wip_menu', {
+            theme: 'vista',
+            dropDown: true,
+            showTransition: 'slideDown',
+            hideTransition: 'hide',
+            shadow: false,
+        });
+
+
+        // attach menus to baskets/stories triggers
         $.each($('.SSTT', cache), function () {
-            var el = $(this);
-            $(this).find('.contextMenuTrigger').contextMenu('#' + $(this).attr('id') + ' .contextMenu', {
+            let el = $(this);
+
+            const m = $(this).find('.contextMenuTrigger');
+
+            let cmenu;
+
+            m.contextMenu('#' + $(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
-                openEvt: 'click',
+                openEvt: 'my_click',
                 theme: 'vista',
                 dropDown: true,
                 showTransition: 'slideDown',
                 hideTransition: 'hide',
-                shadow: false
-            });
-        });
+                shadow: false,
+                _wz_row_id:  $(this).attr('id'),
+                _basket_id:  $(this).data('basket_id'),
+                onCreated: function (cm) {
+                    cmenu = cm;
+                    m.click(function(e) {
+                        e.preventDefault();
+                        const $that = $(this);
+                        const url = $that.attr('href');
+                        const ref_id = $that.data('ref_id');
+                        if(url) {
+                            // add rnd to query to prevent cache
+                            $.getJSON(url, {'u': Date.now().toString()}).then(
+                                data => {
+                                    // let menu = m.contextMenu();
+                                    if (data["wip"]) {
+                                        cmenu.menuFunction = function () {
+                                            return ($('#basket_wip_menu'));
+                                        };
+                                    }
+                                    else {
+                                        cmenu.menuFunction = function () {
+                                            return ($('#' + ref_id + '_menu'));
+                                        };
+                                    }
+                                    $that.trigger("my_click", e);
+                                }
+                            );
+                        }
+                        else {
+                            cmenu.menuFunction = function () {
+                                return ($('#' + ref_id + '_menu'));
+                            };
+                            $that.trigger("my_click", e);
+                        }
 
+                        return false;
+                    });
+                }
+            });
+
+        });
     }
 
     function activeExpose() {
@@ -834,9 +891,10 @@ const workzone = (services) => {
                         if (data.success === true) {
                             $dialog.close();
                             getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                        } else {
+                        }
+                        else {
                             $dialog.setContent(data.message);
-                            console.log(data);
+                            // console.log(data);
                         }
                     }
                 });
@@ -876,7 +934,8 @@ const workzone = (services) => {
                         if (data.success === true) {
                             $dialog.close();
                             updatePublicationList(exposeName);
-                        } else {
+                        }
+                        else {
                             $dialog.setContent(data.message);
                             console.log(data);
                         }
@@ -926,7 +985,8 @@ const workzone = (services) => {
                     if (data.success === true) {
                         assetsContainer.addClass('loading');
                         getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
-                    } else {
+                    }
+                    else {
                         console.log(data);
                     }
                 }
@@ -951,7 +1011,8 @@ const workzone = (services) => {
                 success: function (data) {
                     if (data.success) {
                         updatePublicationList(exposeName);
-                    } else {
+                    }
+                    else {
                         console.log(data.message);
                     }
                 }
@@ -968,7 +1029,6 @@ const workzone = (services) => {
             $(this).find('.loading_more').removeClass('hidden');
             getPublicationAssetsList(publicationId, exposeName, assetsContainer, parseInt(page) + 1);
         });
-
 
     }
 
@@ -1032,12 +1092,14 @@ const workzone = (services) => {
                             }
                         }).disableSelection();
 
-                    } else {
+                    }
+                    else {
                         assetsContainer.find('.assets_list').append(data);
                         assetsContainer.parents('.expose_item_bottom').find('.loading_more').addClass('hidden');
                         assetsContainer.find('#list_assets_page').val(page);
                     }
-                } else {
+                }
+                else {
                     console.log(data);
                 }
             }
@@ -1427,7 +1489,8 @@ const workzone = (services) => {
                 }
             });
 
-        } else {
+        }
+        else {
             console.log(data.lst);
 
             let publicationId = destKey.attr('data-publication-id');

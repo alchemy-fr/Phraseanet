@@ -11087,7 +11087,7 @@ var workzone = function workzone(services) {
                     appEvents.emit('thesaurus.show');
                 }
                 workzoneOptions.open();
-                console.log("tab is " + (0, _jquery2.default)('#idFrameC .tabs').data("hash"));
+                // console.log("tab is " + $('#idFrameC .tabs').data("hash"));
             }
         });
 
@@ -11465,16 +11465,69 @@ var workzone = function workzone(services) {
         }, function () {
             (0, _jquery2.default)(this).removeClass('context-menu-item-hover');
         });
+
+        // create the "this basket is wip" menu
+        // just create: no need a trigger element
+        _jquery2.default.contextMenu.create('#basket_wip_menu', {
+            theme: 'vista',
+            dropDown: true,
+            showTransition: 'slideDown',
+            hideTransition: 'hide',
+            shadow: false
+        });
+
+        // attach menus to baskets/stories triggers
         _jquery2.default.each((0, _jquery2.default)('.SSTT', cache), function () {
             var el = (0, _jquery2.default)(this);
-            (0, _jquery2.default)(this).find('.contextMenuTrigger').contextMenu('#' + (0, _jquery2.default)(this).attr('id') + ' .contextMenu', {
+
+            var m = (0, _jquery2.default)(this).find('.contextMenuTrigger');
+
+            var cmenu = void 0;
+
+            m.contextMenu('#' + (0, _jquery2.default)(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
-                openEvt: 'click',
+                openEvt: 'my_click',
                 theme: 'vista',
                 dropDown: true,
                 showTransition: 'slideDown',
                 hideTransition: 'hide',
-                shadow: false
+                shadow: false,
+                offsetX: -20,
+                offsetY: -20,
+                _wz_row_id: (0, _jquery2.default)(this).attr('id'),
+                _basket_id: (0, _jquery2.default)(this).data('basket_id'),
+                onCreated: function onCreated(cm) {
+                    cmenu = cm;
+                    m.click(function (e) {
+                        e.preventDefault();
+                        var $that = (0, _jquery2.default)(this);
+                        var url = $that.attr('href');
+                        var ref_id = $that.data('ref_id');
+                        if (url) {
+                            // add rnd to query to prevent cache
+                            _jquery2.default.getJSON(url, { 'u': Date.now().toString() }).then(function (data) {
+                                // let menu = m.contextMenu();
+                                if (data["wip"]) {
+                                    cmenu.menuFunction = function () {
+                                        return (0, _jquery2.default)('#basket_wip_menu');
+                                    };
+                                } else {
+                                    cmenu.menuFunction = function () {
+                                        return (0, _jquery2.default)('#' + ref_id + '_menu');
+                                    };
+                                }
+                                $that.trigger("my_click", e);
+                            });
+                        } else {
+                            cmenu.menuFunction = function () {
+                                return (0, _jquery2.default)('#' + ref_id + '_menu');
+                            };
+                            $that.trigger("my_click", e);
+                        }
+
+                        return false;
+                    });
+                }
             });
         });
     }
@@ -11538,7 +11591,7 @@ var workzone = function workzone(services) {
                             getPublicationAssetsList(publicationId, exposeName, assetsContainer, 1);
                         } else {
                             $dialog.setContent(data.message);
-                            console.log(data);
+                            // console.log(data);
                         }
                     }
                 });

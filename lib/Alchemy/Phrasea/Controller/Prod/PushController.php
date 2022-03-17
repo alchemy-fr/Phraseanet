@@ -16,8 +16,8 @@ use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
-use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\Event\PushEvent;
+use Alchemy\Phrasea\Core\Event\ShareEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 use Alchemy\Phrasea\Model\Entities\Basket;
@@ -31,7 +31,6 @@ use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\TokenRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Model\Repositories\UsrListRepository;
-use Alchemy\Phrasea\Record\RecordReference;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
@@ -42,7 +41,6 @@ use Swift_Validate;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use User_Query;
 
 class PushController extends Controller
@@ -179,7 +177,6 @@ class PushController extends Controller
                 );
             }
 
-
             $manager->flush();
 
             $message = $this->app->trans(
@@ -313,212 +310,6 @@ class PushController extends Controller
 
             $manager->refresh($basket);
 
-            // used to check participant to be removed
-            $feedbackAction = $request->request->get('feedbackAction');
-            $remainingParticipantsUserId = [];
-            if ($feedbackAction == 'adduser') {
-                $remainingParticipantsUserId = $basket->getListParticipantsUserId();
-            }
-
-            // build an array of basket elements now to avoid longer calls on participants loop
-            $basketElements = [];
-            foreach ($basket->getElements() as $basketElement) {
-                $basketElements[] = [
-                    'element' => $basketElement,
-                    'ref' => RecordReference::createFromDataboxIdAndRecordId(
-                        $basketElement->getSbasId(),
-                        $basketElement->getRecordId()
-                    ),
-                    'record' => $basketElement->getRecord($this->app)
-                ];
-            }
-
-            $authenticatedUser = $this->getAuthenticatedUser();
-
-            // add participants to the share / vote
-            //
-            foreach ($participants as $key => $participant) {
-
-                if(!$isFeedback && $participant['usr_id'] == $basket->getUser()->getId()) {
-                    // For simple "share" basket, the owner does not have to be in participants.
-                    // The front may prevent this, but we fiter here anyway
-
-                    // ignored here, so user will still be present in remainingParticipantsUserId, and removed
-                    continue;
-                }
-
-                // sanity check
-                foreach (['see_others', 'usr_id', 'agree', 'modify', 'HD'] as $mandatoryParam) {
-                    if (!array_key_exists($mandatoryParam, $participant)) {
-                        throw new ControllerException(
-                            $this->app->trans('Missing mandatory parameter %parameter%', ['%parameter%' => $mandatoryParam])
-                        );
-                    }
-                }
-
-                try {
-                    /** @var User $participantUser */
-                    $participantUser = $this->getUserRepository()->find($participant['usr_id']);
-                    if ($feedbackAction == 'adduser') {
-                        $remainingParticipantsUserId = array_diff($remainingParticipantsUserId, [$participant['usr_id']]);
-                    }
-
-                }
-                catch (Exception $e) {
-                    throw new ControllerException(
-                        $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $participant['usr_id']])
-                    );
-                }
-                // end of sanity check
-
-                // if participant already exists, just update right AND CONTINUE WITH NEXT USER
-                try {
-                    $basketParticipant = $basket->getParticipant($participantUser);
-                    $basketParticipant->setCanAgree($participant['agree']);
-                    $basketParticipant->setCanModify($participant['modify']);
-                    $basketParticipant->setCanSeeOthers($participant['see_others']);
-                    $manager->persist($basketParticipant);
-                    $manager->flush();
-
-                    continue; // !!!
-                }
-                catch (NotFoundHttpException $e) {
-                    // no-op
-                }
-
-                // here the participant did not exist, create
-                $basketParticipant = $basket->addParticipant($participantUser);
-                // set rights (nb: hd right is managed by acl on record for the user)
-                $basketParticipant
-                    ->setCanAgree($participant['agree'])
-                    ->setCanModify($participant['modify'])
-                    ->setCanSeeOthers($participant['see_others']);
-
-                $manager->persist($basketParticipant);
-
-                $acl = $this->getAclForUser($participantUser);
-                foreach ($basketElements as $be) {
-                    /** @var BasketElement $basketElement */
-                    $basketElement = &$be['element'];
-                    /** @var record_adapter $basketElementRecord */
-                    $basketElementRecord = &$be['record'];
-                    /** @var RecordReference $basketElementReference */
-                    $basketElementReference = &$be['ref'];
-
-                    // this is slow... why ?
-                    $basketParticipantVote = $basketElement->createVote($basketParticipant);
-                    //
-
-                    if ($participant['HD']) {
-                        $acl->grant_hd_on(
-                            // $basketElement->getRecord($this->app),
-                            $basketElementReference,
-                            $authenticatedUser,
-                            ACL::GRANT_ACTION_VALIDATE
-                        );
-                    }
-                    else {
-                        $acl->grant_preview_on(
-                            // $basketElement->getRecord($this->app),
-                            $basketElementReference,
-                            $authenticatedUser,
-                            ACL::GRANT_ACTION_VALIDATE
-                        );
-                    }
-
-                    $manager->merge($basketElement);
-                    $manager->persist($basketParticipantVote);
-
-                    $this->getDataboxLogger($basketElementRecord->getDatabox())->log(
-                        $basketElementRecord,
-                        Session_Logger::EVENT_VALIDATE,
-                        $participantUser->getId(),
-                        ''
-                    );
-                }
-
-                /** @var BasketParticipant $basketParticipant */
-                $basketParticipant = $manager->merge($basketParticipant);
-
-                $manager->flush();
-
-                $arguments = [
-                    'basket' => $basket->getId(),
-                ];
-
-                // here we email to each participant
-                //
-                // if we don't request the user to auth (=type his login/pwd),
-                //  we generate a !!!! 'validate' !!!! token to be included as 'LOG' parameter in url
-                //
-                // - the 'validate' token has same expiration as validation-session (except for initiator)
-                //
-
-                if (!$this->getConf()->get(['registry', 'actions', 'enable-push-authentication']) || !$request->get('force_authentication') ) {
-                    if($participantUser->getId() === $this->getAuthenticatedUser()->getId()) {
-                        // the initiator of the validation gets a no-expire token (so he can see result after validation expiration)
-                        $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, null)->getValue();
-                    }
-                    else {
-                        // a "normal" participant/user gets an expiring token, expirationdate CAN be null
-                        $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, $voteExpiresDate)->getValue();
-                    }
-                }
-
-                $url = $this->app->url('lightbox_validation', $arguments);
-
-
-                $receipt = $request->get('recept') ? $this->getAuthenticatedUser()->getEmail() : '';
-
-
-                // send only mail if notify is needed
-
-                // if basket is a vote and the user can vote -> "vote request email"
-                // else -> "shared with you" email
-                //     done during email build, from event data
-                if ($request->request->get('notify') == 1) {
-                    $this->dispatch(
-                        PhraseaEvents::VALIDATION_CREATE,
-                        new BasketParticipantVoteEvent(
-                            $basketParticipant,
-                            $url,
-                            $request->request->get('message'),
-                            $receipt,
-                            (int)$request->request->get('duration'),
-                            $basket->isVoteBasket(),
-                            $shareExpiresDate,
-                            $voteExpiresDate
-                        )
-                    );
-                }
-            }
-
-//   !!!!!!!!!!!!!!!!!!!!!         if ($feedbackAction == 'adduser') {
-            foreach ($remainingParticipantsUserId as $userIdToRemove) {
-                try {
-                    /** @var  User $participantUser */
-                    $participantUser = $this->getUserRepository()->find($userIdToRemove);
-                }
-                catch (Exception $e) {
-                    throw new ControllerException(
-                        $this->app->trans('Unknown user %usr_id%', ['%usr_id%' => $userIdToRemove])
-                    );
-                }
-                try {
-                    // nb: for a vote, the owner IS participant and can't be removed
-                    $basketParticipant = $basket->getParticipant($participantUser);
-                    $basket->removeParticipant($basketParticipant);
-                    $manager->remove($basketParticipant);
-                }
-                catch (Exception $e) {
-                    // no-op
-                }
-            }
-//            }
-
-            $manager->merge($basket);
-            $manager->flush();
-
             $message = $this->app->trans(
                 '%quantity_records% records have been sent for validation to %quantity_users% users',
                 [
@@ -533,6 +324,16 @@ class PushController extends Controller
             ];
 
             $manager->commit();
+
+            $this->dispatch(
+                PhraseaEvents::BASKET_SHARE,
+                new ShareEvent(
+                    $request,
+                    $basket,
+                    $manager,
+                    $this->getAuthenticatedUser()
+                )
+            );
         }
         catch (ControllerException $e) {
             $ret['message'] = $e->getMessage();

@@ -114,6 +114,11 @@ class Basket
     private $share_expires;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $wip;
+
+    /**
      * @ORM\OneToMany(targetEntity="BasketElement", mappedBy="basket", cascade={"ALL"})
      * @ORM\OrderBy({"ord" = "ASC"})
      */
@@ -466,6 +471,24 @@ class Basket
     {
         return $this->share_expires;
     }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getWip()
+    {
+        return $this->wip;
+    }
+
+    /**
+     * @param DateTime|null $wip
+     */
+    public function setWip($wip)
+    {
+        $this->wip = $wip;
+    }
+
+
 
     /**
      * for every method that touch a "vote" data : maintain created/updated
@@ -834,4 +857,5 @@ class Basket
 
         return $totSize;
     }
+
 }

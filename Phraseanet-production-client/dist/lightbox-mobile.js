@@ -2667,6 +2667,8 @@ exports.default = ApplicationConfigService;
         shown: false, // Currently being shown?
         useIframe: /*@cc_on @*/ /*@if (@_win32) true, @else @*/false, /*@end @*/ // This is a better check than looking at userAgent!
 
+        _originalPlace: null,
+
         // Create the menu instance
         create: function create(menu, opts) {
             var cmenu = $.extend({}, this, opts); // Clone all default properties to created object
@@ -2674,6 +2676,7 @@ exports.default = ApplicationConfigService;
             // If a selector has been passed in, then use that as the menu
             if (typeof menu === "string") {
                 cmenu.menu = $(menu);
+                cmenu._originalPlace = cmenu.menu.parent();
             }
             // If a function has been passed in, call it each time the menu is shown to create the menu
             else if (typeof menu === "function") {
@@ -2698,6 +2701,8 @@ exports.default = ApplicationConfigService;
             $('body').bind(cmenu.openEvt, function () {
                 cmenu.hide();
             }); // If right-clicked somewhere else in the document, hide this menu
+
+            cmenu.onCreated(cmenu);
             return cmenu;
         },
 
@@ -2856,13 +2861,17 @@ exports.default = ApplicationConfigService;
             return true;
         },
 
+        onCreated: function onCreated(cmenu) {},
+
         // Show the context menu
         show: function show(t, e) {
             var cmenu = this,
                 x = e.pageX,
                 y = e.pageY;
 
-            if (cmenu._div) cmenu._div.css('height', 'auto').css('overflow-y', 'auto');
+            if (cmenu._div) {
+                cmenu._div.css('height', 'auto').css('overflow-y', 'auto');
+            }
 
             cmenu.target = t; // Preserve the object that triggered this context menu so menu item click methods can see it
             cmenu._showEvent = e; // Preserve the event that triggered this context menu so menu item click methods can see it
@@ -2870,9 +2879,18 @@ exports.default = ApplicationConfigService;
                 // If the menu content is a function, call it to populate the menu each time it is displayed
                 if (cmenu.menuFunction) {
                     if (cmenu.menu) {
-                        $(cmenu.menu).remove();
+                        if (cmenu._originalPlace) {
+                            cmenu._originalPlace.append(cmenu.menu);
+                        } else {
+                            $(cmenu.menu).remove();
+                        }
                     }
-                    cmenu.menu = cmenu.createMenu(cmenu.menuFunction(cmenu, t), cmenu);
+                    var r = cmenu.menuFunction(cmenu, t);
+                    if (Array.isArray(r)) {
+                        cmenu.menu = cmenu.createMenu(r, cmenu);
+                    } else {
+                        cmenu.menu = r;
+                    }
                     cmenu.menu.css({ display: 'none' });
                     $(cmenu.appendTo).append(cmenu.menu);
                 }

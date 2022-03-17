@@ -1,9 +1,9 @@
 {# ============== global basket actions as menu ============= #}
-{% macro basket_menu(app, basket, context, iamowner) %}
+{% macro basket_menu(app, basket, context, iamowner, href, ref_id) %}
     <div class="menu">
         <table>
             <tr>
-            <!--
+            {#
                        {% if basket.isVoteBasket() %}
                             <td>
                                 <img
@@ -23,7 +23,7 @@
                                     src="/assets/common/images/icons/push16.png"/>
                             </td>
                         {% endif %}
-                      -->
+            #}
             </tr>
             <tr>
                 {# no need a icon to display description since it's included on basket popup
@@ -35,7 +35,7 @@
                 </td>
                 #}
                 <td class="contextMenuWrapper">
-                    <a class="contextMenuTrigger" href="#">
+                    <a class="contextMenuTrigger" href="{{ href }}" data-ref_id="{{ ref_id }}">
                         <i class="icomoon icon-circle  fa-stack-2x fa-inverse-bg"
                            aria-hidden="true"></i>
                         <i class="icomoon icon-round-more_horiz-24px white fa-stack-1x fa-inverse"
@@ -45,7 +45,7 @@
             </tr>
         </table>
 
-        <table style="display:none;" class="contextMenu basketcontextmenu">
+        <table style="display:none;" class="contextMenu basketcontextmenu" id="{{ ref_id }}_menu">
             <tbody>
             <tr>
                 <td>
@@ -310,7 +310,7 @@
                         {% set classes = "share-block" %}
                     {% endif %}
                     <div
-                         id="SSTT_{{ basket.getId() }}"
+                         id="SSTT_{{ basket.getId() }}" data-basket_id="{{ basket.getId() }}"
                          class="ui-accordion-header ui-state-default
                          ui-corner-all header SSTT basket {% if not basket.getId() %}unread{% endif %}
                          {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}
@@ -342,7 +342,14 @@
                             </span>
                         </a>
 
-                        {{ _self.basket_menu(app, basket, constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS'), false) }}
+                        {{ _self.basket_menu(
+                            app,
+                            basket,
+                            constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS'),
+                            false,
+                            path('prod_baskets_getwip',{ 'basket' : basket.getId() }),
+                            "SSTT_" ~ basket.getId()
+                        ) }}
 
                     </div>
                     <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
@@ -380,7 +387,7 @@
                         {% set classes = "basket-block " %} {# icon-stackoverflow #}
                     {% endif %}
                     <div
-                         id="SSTT_{{ basket.getId() }}"
+                         id="SSTT_{{ basket.getId() }}" data-basket_id="{{ basket.getId() }}"
                          class="ui-accordion-header ui-state-default
                          ui-corner-all header SSTT basket {% if not is_read %}unread{% endif %}
                          {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
@@ -427,7 +434,14 @@
                             </span>
                         </a>
 
-                        {{ _self.basket_menu(app, basket, constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS'), true) }}
+                        {{ _self.basket_menu(
+                            app,
+                            basket,
+                            constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS'),
+                            true,
+                            path('prod_baskets_getwip', { 'basket' : basket.getId() }),
+                            "SSTT_" ~ basket.getId()
+                        ) }}
 
                     </div>
                     <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
@@ -460,7 +474,15 @@
                             </span>
                         </a>
 
-                        {{ _self.basket_menu(app, story, constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES'), true) }}
+                        {# no need for a path or id because stories are not checked as "wip" #}
+                        {{ _self.basket_menu(
+                            app,
+                            story,
+                            constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES'),
+                            true,
+                            "",
+                            ""
+                        ) }}
 
                     </div>
                     <div sbas="{{ story.getSbasId() }}" id="SSTT_content_{{ story.getId() }}" class="content grouping story-block"

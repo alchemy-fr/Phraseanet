@@ -44,8 +44,14 @@ class BasketProvider implements ControllerProviderInterface, ServiceProviderInte
             ->before($app['middleware.basket.converter'])
             ->before($app['middleware.basket.user-access']);
 
+        /** @uses   \Alchemy\Phrasea\Controller\Prod\BasketController::displayBasket() */
         $controllers->get('/{basket}/', 'controller.prod.basket:displayBasket')
             ->bind('prod_baskets_basket')
+            ->assert('basket', '\d+');
+
+        /** @uses   \Alchemy\Phrasea\Controller\Prod\BasketController::getWip() */
+        $controllers->get('/{basket}/wip/', 'controller.prod.basket:getWip')
+            ->bind('prod_baskets_getwip')
             ->assert('basket', '\d+');
 
         $controllers->get('/{basket}/reminder/', 'controller.prod.basket:displayReminder')
