@@ -96,7 +96,7 @@ Get official support : https://www.alchemy.fr/en/rubrique/services/
 
 ## Prerequisites
 
-- docker-compose >=v1.28
+- docker-compose >=v1.29
 - docker >=v19.03.13
 
 In the stack Docker, Docker-Compose included in this repo starts by default in test mode. 
