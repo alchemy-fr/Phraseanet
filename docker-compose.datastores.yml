@@ -27,6 +27,8 @@ services:
     environment:
     - RABBITMQ_DEFAULT_USER
     - RABBITMQ_DEFAULT_PASS
+    volumes:
+      - rabbitmq_vol:/var/lib/rabbitmq
     networks:
       - internal
   

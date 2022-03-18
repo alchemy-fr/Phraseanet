@@ -50,15 +50,19 @@ class Manage extends Helper
         $this->query_parms = [
             'inactives' => $request->get('inactives'),
             'like_field' => $request->get('like_field'),
+            'like_type' => $this->request->get('like_type'),
             'like_value' => $request->get('like_value'),
             'sbas_id' => $request->get('sbas_id'),
             'base_id' => $request->get('base_id'),
             'last_model' => $this->request->get('last_model'),
+            'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
+            'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
             'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $request->get("ord", \User_Query::ORD_DESC),
             'offset_start' => $offset_start,
         ];
 
+        /** @var \User_Query $query */
         $query = $this->app['phraseanet.user-query'];
 
         if (is_array($this->query_parms['base_id']))
@@ -67,10 +71,12 @@ class Manage extends Helper
             $query->on_sbas_ids($this->query_parms['sbas_id']);
 
         $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
-            ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
+            ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
+            ->include_invite($this->query_parms['filter_guest_user'])
+            ->phantoms_only($this->query_parms['filter_phantoms_only'])
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), [\ACL::CANADMIN])
             ->execute();
 
@@ -93,6 +99,7 @@ class Manage extends Helper
             'base_id' => $this->request->get('base_id'),
             'last_model' => $this->request->get('last_model'),
             'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
+            'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
             'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
             'per_page' => $results_quantity,
@@ -113,6 +120,7 @@ class Manage extends Helper
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
             ->include_invite($this->query_parms['filter_guest_user'])
+            ->phantoms_only($this->query_parms['filter_phantoms_only'])
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), [\ACL::CANADMIN])
             ->limit($offset_start, $results_quantity)
             ->execute();
