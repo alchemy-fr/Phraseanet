@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-03-17T16:10:13Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -196,7 +196,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2517,7 +2517,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -9079,22 +9079,22 @@
       </trans-unit>
       <trans-unit id="9c65d4dd606badb72de40f53bb447a6c56999244" resname="admin::userlist delete">
         <source>admin::userlist delete</source>
-        <target state="new">admin::userlist delete</target>
+        <target state="needs-translation">Ausgewählte Benutzer löschen</target>
         <jms:reference-file line="72">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67786d36ac94e1da1b893a91f0390215856f0d13" resname="admin::userlist modify">
         <source>admin::userlist modify</source>
-        <target state="new">admin::userlist modify</target>
+        <target state="needs-translation">Ausgewählte Benutzer ändern</target>
         <jms:reference-file line="71">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser" approved="yes">
+      <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser" approved="no">
         <source>admin::userlist: filterguestuser</source>
-        <target state="translated">Gastbenutzer filtern</target>
+        <target state="needs-translation">Gastbenutzer anzeigen</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd3b85a7535e1a5e824820bbf7feb6a9ce0a3676" resname="admin::userlist: phantoms only">
         <source>admin::userlist: phantoms only</source>
-        <target state="new">admin::userlist: phantoms only</target>
+        <target state="needs-translation">Geister-Benutzer anzeigen</target>
         <jms:reference-file line="41">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="yes">
@@ -9119,12 +9119,12 @@
       </trans-unit>
       <trans-unit id="7f305b8f1e67c4d159d51b5909c2e23c004be87c" resname="admin::users:filter: empty">
         <source>admin::users:filter: empty</source>
-        <target state="new">admin::users:filter: empty</target>
+        <target state="needs-translation">Nicht ausgefüllt</target>
         <jms:reference-file line="57">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f15a566698f098c52e01e7ce4b8abef7c937667" resname="admin::users:filter: finishing by">
         <source>admin::users:filter: finishing by</source>
-        <target state="new">admin::users:filter: finishing by</target>
+        <target state="needs-translation">Endet mit</target>
         <jms:reference-file line="56">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="58f333882ef2f6c718c5b5b0c2660e81da62f08d" resname="admin::users:filter: start with" approved="yes">
@@ -10703,28 +10703,28 @@
       </trans-unit>
       <trans-unit id="dd6825faca66dd1d879174587320166f59151212" resname="facet.ThumbnailOrientation:Landscape">
         <source>facet.ThumbnailOrientation:Landscape</source>
-        <target state="needs-translation">Landschaft</target>
+        <target state="translated">Landschaft</target>
         <jms:reference-file line="442">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8f3af69c73dc63a16eebdd0915c168c177d5e6bf" resname="facet.ThumbnailOrientation:Portrait">
         <source>facet.ThumbnailOrientation:Portrait</source>
-        <target state="needs-translation">Porträt</target>
+        <target state="translated">Porträt</target>
         <jms:reference-file line="443">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="367be8ef167f874f5b7c675f14e7902d33b39b76" resname="facet.ThumbnailOrientation:Square">
         <source>facet.ThumbnailOrientation:Square</source>
-        <target state="needs-translation">Quadrat</target>
+        <target state="translated">Quadrat</target>
         <jms:reference-file line="444">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0026e83292bbf5f7d41456ad566e4bf48cfc6873" resname="facet.flashfired:no">
         <source>facet.flashfired:no</source>
-        <target state="needs-translation">Blitz nicht benutzt</target>
+        <target state="translated">Blitz nicht benutzt</target>
         <jms:reference-file line="388">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="390">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4aecf920978685efafb134164cc934c4e1acb845" resname="facet.flashfired:yes">
         <source>facet.flashfired:yes</source>
-        <target state="needs-translation">Blitz benutzt</target>
+        <target state="translated">Blitz benutzt</target>
         <jms:reference-file line="389">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
         <jms:reference-file line="391">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
@@ -11232,7 +11232,7 @@
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
         <source>notification:: mark all notification as read</source>
-        <target state="needs-translation">Alle Benachrichtigungen als "Gelesen" markieren</target>
+        <target state="translated">Alle Benachrichtigungen als "Gelesen" markieren</target>
         <jms:reference-file line="4">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ef8ffaf5527518b39ca6500ef0e9a47a4b7cceec" resname="notification::read:tooltip">
@@ -11830,7 +11830,7 @@
         <jms:reference-file line="564">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12151,7 +12151,7 @@
       </trans-unit>
       <trans-unit id="803a88bdcb07cb8055e10ca28aee9b3c74992da6" resname="print:: add and remember password to protect the pdf">
         <source>print:: add and remember password to protect the pdf</source>
-        <target state="needs-translation">Ein Passwort für das Öffnen der PDF festlegen (optional)</target>
+        <target state="translated">Ein Passwort für das Öffnen der PDF festlegen (optional)</target>
         <jms:reference-file line="69">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab6e7dd76557336eb64bba71b09faadb822dd91f" resname="print:: basket feedback" approved="yes">
@@ -12263,7 +12263,7 @@
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
         <source>print:: some options</source>
-        <target state="needs-translation">Weitere Einstellungen</target>
+        <target state="translated">Weitere Einstellungen</target>
         <jms:reference-file line="67">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="be0543f570963b35cd3c119d878d45410b363316" resname="print:: subdef mapping">
@@ -12288,7 +12288,7 @@
       </trans-unit>
       <trans-unit id="d16a375bd489fa9232346a1c6e48570bbf53a479" resname="print:: warning! Only available media for chosen subdef is downloadable">
         <source>print:: warning! Only available media for chosen subdef is downloadable</source>
-        <target state="needs-translation">Lassen Sie das Feld für eine dauerhafte Gültigkeit leer</target>
+        <target state="translated">Lassen Sie das Feld für eine dauerhafte Gültigkeit leer</target>
         <jms:reference-file line="93">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="52acc8afb73e42ebb15886d76b723d8e8907d8eb" resname="print:: week">
@@ -12594,67 +12594,67 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="c7d4ddab714f52fc0dc7a811909a985a270fcdf9" resname="prod::facet.Orientation_label">
         <source>prod::facet.Orientation_label</source>
-        <target state="needs-translation">Exif Ausrichtung</target>
+        <target state="translated">Exif Ausrichtung</target>
         <jms:reference-file line="426">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ec7cc75bc2bb550f2e07350712f5a440b3bb2d60" resname="prod::facet.ThumbnailOrientation_label">
         <source>prod::facet.ThumbnailOrientation_label</source>
-        <target state="needs-translation">Ausrichtung</target>
+        <target state="translated">Ausrichtung</target>
         <jms:reference-file line="433">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d8f44aec5909904ecf96c1f66a8f619fe3b8d17d" resname="prod::facet:Aperture_label">
         <source>prod::facet:Aperture_label</source>
-        <target state="needs-translation">Blendeöffnung</target>
+        <target state="translated">Blendeöffnung</target>
         <jms:reference-file line="356">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ad9a5152bd51893746bf36455487a01183ebec95" resname="prod::facet:AudioCodec_label">
         <source>prod::facet:AudioCodec_label</source>
-        <target state="needs-translation">Audio Codec</target>
+        <target state="translated">Audio Codec</target>
         <jms:reference-file line="419">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f7cd3df416fef9859c9765557d93e3edae4d970f" resname="prod::facet:AudioSamplerate_label">
         <source>prod::facet:AudioSamplerate_label</source>
-        <target state="needs-translation">Audio Sample Rate</target>
+        <target state="translated">Audio Sample Rate</target>
         <jms:reference-file line="405">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="291bf75117d490adf3ef33c7f755c60cae734c9f" resname="prod::facet:CameraModel_label">
         <source>prod::facet:CameraModel_label</source>
-        <target state="needs-translation">Kamera Modell</target>
+        <target state="translated">Kamera Modell</target>
         <jms:reference-file line="342">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d4181004be269c01d0f28a2a3afdd5a66ac9ab88" resname="prod::facet:Colorspace_label">
         <source>prod::facet:Colorspace_label</source>
-        <target state="needs-translation">Farbraum</target>
+        <target state="translated">Farbraum</target>
         <jms:reference-file line="451">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2fde4df5b7371e2f1f2bf7b5451a663cbdc0b43" resname="prod::facet:FlashFired_label">
         <source>prod::facet:FlashFired_label</source>
-        <target state="needs-translation">Blitzlicht</target>
+        <target state="translated">Blitzlicht</target>
         <jms:reference-file line="379">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="93e4d2943a67d73ab2bf3d47e5e0414d98a71b9c" resname="prod::facet:FrameRate_label">
         <source>prod::facet:FrameRate_label</source>
-        <target state="needs-translation">Video Frame Rate</target>
+        <target state="translated">Video Frame Rate</target>
         <jms:reference-file line="398">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecc03975a89f5de1fb3112f1e3d8fdf7681cf4a0" resname="prod::facet:ISO_label">
         <source>prod::facet:ISO_label</source>
-        <target state="needs-translation">ISO</target>
+        <target state="translated">ISO</target>
         <jms:reference-file line="349">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b37c1f93d999bc3c0be1283247a50d66b3266810" resname="prod::facet:MimeType_label">
         <source>prod::facet:MimeType_label</source>
-        <target state="needs-translation">Mime Type</target>
+        <target state="translated">Mime Type</target>
         <jms:reference-file line="458">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3be65bac65219afaa6f34f579ea7e506269a4a8d" resname="prod::facet:ShutterSpeed_label">
         <source>prod::facet:ShutterSpeed_label</source>
-        <target state="needs-translation">Belichtungszeit</target>
+        <target state="translated">Belichtungszeit</target>
         <jms:reference-file line="366">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f7c968c419f90c6c733190b0d75db89aa0a6d8b" resname="prod::facet:VideoCodec_label">
         <source>prod::facet:VideoCodec_label</source>
-        <target state="needs-translation">Video Codec</target>
+        <target state="translated">Video Codec</target>
         <jms:reference-file line="412">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb08c63b1c016e31a255a38795c8e4cb66b0e66e" resname="prod::facet:base_label" approved="yes">
@@ -13497,17 +13497,17 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="a85c5b39743bad12b07c179a912cf5dbc47860f8" resname="publication:: %count% users to notify">
         <source>publication:: %count% users to notify</source>
-        <target state="needs-translation">%count% Nutzer werden benachrichtigt</target>
+        <target state="translated">%count% Nutzer werden benachrichtigt</target>
         <jms:reference-file line="149">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c4664885fa2a9f300cc01beed066cfcfafe4dd39" resname="publication:: no feed selected">
         <source>publication:: no feed selected</source>
-        <target state="needs-translation">Kein Publikationsfaden ausgewählt</target>
+        <target state="translated">Kein Publikationsfaden ausgewählt</target>
         <jms:reference-file line="143">Controller/Prod/FeedController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ca39344d1a31b5ef8ebb4f9104fd83a5d70a3d46" resname="publication:: notification done on">
         <source>publication:: notification done on</source>
-        <target state="needs-translation">Benachrichtigung gesendet am</target>
+        <target state="translated">Benachrichtigung gesendet am</target>
         <jms:reference-file line="54">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="02387557776e7e3b2a78b21c54e9fb019a9a6fc3" resname="publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications." approved="yes">
@@ -14656,7 +14656,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
