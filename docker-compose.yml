@@ -1188,6 +1188,7 @@ volumes:
     driver: local
   cache_vol:
     driver: local
+  rabbitmq_vol:
   # to be replacer by stdout/stderr
   logs_vol:
     driver: local
