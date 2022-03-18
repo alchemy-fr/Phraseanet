@@ -13518,7 +13518,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="ca39344d1a31b5ef8ebb4f9104fd83a5d70a3d46" resname="publication:: notification done on">
         <source>publication:: notification done on</source>
-        <target state="needs-translation">Notification envoyée le</target>
+        <target state="translated">Notification envoyée le</target>
         <jms:reference-file line="54">actions/publish/publish_edit.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="02387557776e7e3b2a78b21c54e9fb019a9a6fc3" resname="publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications." approved="yes">
