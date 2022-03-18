@@ -98,7 +98,7 @@ class MessagePublisher
             return ;
         }
 
-        $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $FailedQ);
+//        $channel->basic_publish($msg, AMQPConnection::RETRY_ALCHEMY_EXCHANGE, $FailedQ);
 
         $this->_publishMessage($payload, $FailedQ, $headers);
     }
@@ -107,7 +107,11 @@ class MessagePublisher
     {
         // add published timestamp to all message payload
         $payload['payload']['published'] = time();
-        $msg = new AMQPMessage(json_encode($payload));
+
+        $msg = new AMQPMessage(json_encode($payload), [
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+            'content_type'  => 'application/json'
+        ]);
 
         if (!is_null($headers)) {
             // add a message header information
