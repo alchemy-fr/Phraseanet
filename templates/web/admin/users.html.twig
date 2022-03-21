@@ -33,11 +33,15 @@
 
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
             <fieldset class="admin_head_opts">
-                <span class="checkbox">
+                <label class="checkbox">
                     {{ 'admin::userlist: filterguestuser' | trans }}
-                    <input type="checkbox"  name="filter_guest_user" {% if parm['filter_guest_user'] %} checked="checked" {% endif %} style="margin-left:10px" />
-                </span>
-                <br/>
+                    <input type="checkbox"  name="filter_guest_user" {% if parm['filter_guest_user'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                </label>
+                <label class="checkbox">
+                    {{ 'admin::userlist: phantoms only' | trans }}
+                    <input type="checkbox"  name="filter_phantoms_only" {% if parm['filter_phantoms_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                </label>
+                <br/><br/>
                 <span>{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "login" %}selected="selected"{% endif %} value="login">{{ 'Push::filter on login' | trans }}</option>
@@ -47,8 +51,10 @@
                     <option {% if parm['like_field'] == "email" %}selected="selected"{% endif %} value="email">{{ 'Push::filter on emails' | trans }}</option>
                 </select>
                 <select name="like_type" class="input-medium without-border">
-                    <option selected="selected" value="like_contains">{{ 'admin::users:filter: content' | trans }}</option>
-                    <option value="like_start">{{ 'admin::users:filter: start with' | trans }}</option>
+                    <option {% if parm['like_type'] is not defined or (parm['like_type'] == "like_finish") %} selected="selected" {% endif %}  value="like_contains">{{ 'admin::users:filter: content' | trans }}</option>
+                    <option {% if parm['like_type'] == "like_start" %} selected="selected" {% endif %} value="like_start">{{ 'admin::users:filter: start with' | trans }}</option>
+                    <option {% if parm['like_type'] == "like_finish" %} selected="selected" {% endif %} value="like_finish">{{ 'admin::users:filter: finishing by' | trans }}</option>
+                    <option {% if parm['like_type'] == "like_empty" %} selected="selected" {% endif %} value="like_empty">{{ 'admin::users:filter: empty' | trans }}</option>
                 </select>
                 <input type="text" value="{{parm['like_value']}}" name="like_value" class="input-medium">
                 <span>{{ 'Last applied template' | trans }}</span>
@@ -62,8 +68,8 @@
             </fieldset>
         </form>
 
-        <button class="user_modifier btn">{{ 'boutton::modifier' | trans }}</button>
-        <button class="user_deleter btn">{{ 'Supprimer' | trans }}</button>
+        <button class="user_modifier btn" style =>{{ 'admin::userlist modify' | trans }}</button>
+        <button class="user_deleter btn btn-danger">{{ 'admin::userlist delete' | trans }}</button>
 
         <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left no-ajax" style="margin:0">
             <fieldset class="admin_head_opts">
@@ -195,7 +201,10 @@
             {% endif %}
             <input name="like_value" value="{{parm.like_value}}" type="hidden" />
             <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+            <input name="like_type" value="{{parm.like_type}}" type="hidden" />
             <input name="last_model" value="{{parm.last_model}}" type="hidden" />
+            <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
+            <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
             <input name="inactives" value="{{parm.inactives}}" type="hidden" />
         </form>
 
@@ -247,7 +256,10 @@
                 {% endif %}
                 <input name="like_value" value="{{parm.like_value}}" type="hidden" />
                 <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+                <input name="like_type" value="{{parm.like_type}}" type="hidden" />
                 <input name="last_model" value="{{parm.last_model}}" type="hidden" />
+                <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
+                <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
                 <input name="inactives" value="{{parm.inactives}}" type="hidden" />
                 <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
             </fieldset>
@@ -266,7 +278,7 @@
             {% endif %}
             <input name="like_value" value="{{parm.like_value}}" type="hidden" />
             <input name="like_field" value="{{parm.like_field}}" type="hidden" />
-            <button class="btn btn-primary">{{ 'boutton::exporter' | trans }}</button>
+{#            <button class="btn btn-primary">{{ 'boutton::exporter' | trans }}</button>#}
         </form>
 
     <script type="text/javascript">
