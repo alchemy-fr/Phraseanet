@@ -330,7 +330,6 @@ class PushController extends Controller
                 new ShareEvent(
                     $request,
                     $basket,
-                    $manager,
                     $this->getAuthenticatedUser()
                 )
             );

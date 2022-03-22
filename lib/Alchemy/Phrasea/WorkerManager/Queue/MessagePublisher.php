@@ -25,6 +25,7 @@ class MessagePublisher
     const VALIDATION_REMINDER_TYPE  = 'validationReminder';
     const WRITE_METADATAS_TYPE = 'writeMetadatas';
     const WEBHOOK_TYPE         = 'webhook';
+    const SHARE_BASKET_TYPE    = 'shareBasket';
 
     // *** by main queue *** \\
     const SUBTITLE_TYPE        = 'subtitle';

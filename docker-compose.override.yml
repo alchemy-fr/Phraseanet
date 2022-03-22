@@ -171,6 +171,13 @@ services:
     networks:
       - internal
 
+  w-shareBasket:
+    volumes:
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
   scheduler:
     volumes:
     - ../:/var/alchemy

@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Core\Event;
 
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\User;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\Event as SfEvent;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,19 +22,14 @@ class ShareEvent extends SfEvent
     private $basket;
 
     /**
-     * @var EntityManager
-     */
-    private $em;
-    /**
      * @var User
      */
     private $authenticatedUser;
 
-    public function __construct(Request $request, Basket $basket, EntityManager $em, User $authenticatedUser)
+    public function __construct(Request $request, Basket $basket, User $authenticatedUser)
     {
         $this->request = $request;
         $this->basket = $basket;
-        $this->em = $em;
         $this->authenticatedUser = $authenticatedUser;
     }
 
@@ -53,14 +47,6 @@ class ShareEvent extends SfEvent
     public function getRequest()
     {
         return $this->request;
-    }
-
-    /**
-     * @return EntityManager
-     */
-    public function getEntityManager()
-    {
-        return $this->em;
     }
 
     /**
