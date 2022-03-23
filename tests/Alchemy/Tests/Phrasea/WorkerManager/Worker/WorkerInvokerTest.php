@@ -37,7 +37,9 @@ class WorkerInvokerTest extends \PhraseanetTestCase
 
         $processPool->method('getWorkerProcess')->will($this->returnValue($process));
 
-        $channel = $this->prophesize(AMQPChannel::class);
+        $channel = $this->getMockBuilder(AMQPChannel::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $sut = new WorkerInvoker($processPool);
 
@@ -62,7 +64,9 @@ class WorkerInvokerTest extends \PhraseanetTestCase
 
         $processPool->method('getWorkerProcess')->will($this->returnValue($process));
 
-        $channel = $this->prophesize(AMQPChannel::class);
+        $channel = $this->getMockBuilder(AMQPChannel::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $sut = new WorkerInvoker($processPool);
 
