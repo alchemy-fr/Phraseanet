@@ -32,7 +32,7 @@
         </p>
 
         <form id="users_page_search" method="post" action="{{ path('admin_users_search') }}" target="_self" class="form-inline">
-            <fieldset class="admin_head_opts">
+            <fieldset class="admin_head_opts" style="margin-bottom: 35px;margin-top: 35px;">
                 <label class="checkbox">
                     {{ 'admin::userlist: filterguestuser' | trans }}
                     <input type="checkbox"  name="filter_guest_user" {% if parm['filter_guest_user'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
@@ -42,7 +42,7 @@
                     <input type="checkbox"  name="filter_phantoms_only" {% if parm['filter_phantoms_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
                 </label>
                 <br/><br/>
-                <span>{{ 'Filter' | trans }}</span>
+                <span style="width:125px;display:inline-block;">{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "login" %}selected="selected"{% endif %} value="login">{{ 'Push::filter on login' | trans }}</option>
                     <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{{ 'First/Last Name' | trans }}</option>
@@ -65,6 +65,20 @@
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn">{{ 'boutton::chercher' | trans }}</button>
+                <br/><br/>
+                <span style="width:125px;display:inline-block;">{{ 'admin::users:filter: Date filter' | trans }}</span>
+                <select name="date_field" class="input-medium">
+                    <option value=""></option>
+                    <option {% if parm['date_field'] == "created" %}selected="selected"{% endif %} value="created">{{ 'admin::users:filter: created' | trans }}</option>
+                    <option {% if parm['date_field'] == "updated" %}selected="selected"{% endif %} value="updated">{{ 'admin::users:filter: updated' | trans }}</option>
+                    <option {% if parm['date_field'] == "last_connection" %}selected="selected"{% endif %} value="last_connection">{{ 'admin::users:filter: last_connection' | trans }}</option>
+                </select>
+                <select name="date_operator" class="input-medium without-border">
+                    <option {% if parm['date_operator'] is not defined or (parm['date_operator'] == "date_less_than") %} selected="selected" {% endif %} value="date_less_than">{{ 'admin::users:filter: less than' | trans }}</option>
+                    <option {% if parm['date_operator'] == "date_greater_than" %} selected="selected" {% endif %} value="date_greater_than">{{ 'admin::users:filter: greater than' | trans }}</option>
+                    <option {% if parm['date_operator'] == "date_null" %} selected="selected" {% endif %} value="date_null">{{ 'admin::users:filter: is null' | trans }}</option>
+                </select>
+                <input type="text" value="{{parm['date_value']}}" name="date_value" class="date_value input-medium">
             </fieldset>
         </form>
 
@@ -202,6 +216,9 @@
             <input name="like_value" value="{{parm.like_value}}" type="hidden" />
             <input name="like_field" value="{{parm.like_field}}" type="hidden" />
             <input name="like_type" value="{{parm.like_type}}" type="hidden" />
+            <input name="date_field" value="{{parm.date_field}}" type="hidden" />
+            <input name="date_operator" value="{{parm.date_operator}}" type="hidden" />
+            <input name="date_value" value="{{parm.date_value}}" type="hidden" />
             <input name="last_model" value="{{parm.last_model}}" type="hidden" />
             <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
             <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
@@ -257,6 +274,9 @@
                 <input name="like_value" value="{{parm.like_value}}" type="hidden" />
                 <input name="like_field" value="{{parm.like_field}}" type="hidden" />
                 <input name="like_type" value="{{parm.like_type}}" type="hidden" />
+                <input name="date_field" value="{{parm.date_field}}" type="hidden" />
+                <input name="date_operator" value="{{parm.date_operator}}" type="hidden" />
+                <input name="date_value" value="{{parm.date_value}}" type="hidden" />
                 <input name="last_model" value="{{parm.last_model}}" type="hidden" />
                 <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
                 <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
@@ -283,6 +303,12 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $('.date_value').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat:'yy-mm-dd'
+            });
+
             function users_select_this(n, k) {
                 if (p4.users.sel.length >= 800) {
                     alert(language.max_record_selected);

@@ -47,6 +47,9 @@ class User_Query
     protected $sort = [];
     protected $like_field = [];
     protected $like_type = 'like_start';
+    protected $date_field;
+    protected $date_operator;
+    protected $date_value;
     protected $have_rights = null;
     protected $have_not_rights = null;
     protected $like_match = 'OR';
@@ -430,6 +433,47 @@ class User_Query
         $this->like_type = $like_type;
         $this->total = $this->page = $this->total_page = null;
 
+        return $this;
+    }
+
+    /**
+     * Restrict on date
+     *
+     * @param $dateField
+     * @param $dateValue
+     * @param $dateOperator
+     *
+     * @return $this
+     */
+    public function date_filter($dateField, $dateValue, $dateOperator)
+    {
+        try {
+            $dValue = new \DateTime($dateValue);
+            $dateValue = $dValue->format('Y-m-d');
+        } catch (Exception $e) {
+            $dateValue = null;
+        }
+
+        switch ($dateOperator) {
+            case 'date_less_than':
+                $op = '<';
+
+                break;
+            case 'date_greater_than':
+                $op = '>=';
+
+                break;
+            default:
+                $op = $dateOperator;
+
+                break;
+        }
+
+        $this->date_field = $dateField;
+        $this->date_value = $dateValue;
+        $this->date_operator = $op;
+
+        $this->total = $this->page = $this->total_page = null;
         return $this;
     }
 
@@ -1012,6 +1056,16 @@ class User_Query
 
         if ($this->last_model) {
             $sql .= ' AND Users.last_model = ' . $this->app->getApplicationBox()->get_connection()->quote($this->last_model) . ' ';
+        }
+
+        if (!empty($this->date_field)) {
+            if ($this->date_operator == 'date_null') {
+                $sql .= sprintf(' AND  Users.`%s` is NULL', $this->date_field);
+            } else {
+                if (!empty($this->date_value)) {
+                    $sql .= sprintf(' AND DATE(Users.`%s`) %s  "%s" ', $this->date_field, $this->date_operator, $this->date_value);
+                }
+            }
         }
 
         $sql_like = [];

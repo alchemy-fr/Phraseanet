@@ -95,6 +95,9 @@ class Manage extends Helper
             'like_field' => $this->request->get('like_field'),
             'like_type' => $this->request->get('like_type'),
             'like_value' => $this->request->get('like_value'),
+            'date_field' => $this->request->get('date_field'),
+            'date_operator' => $this->request->get('date_operator'),
+            'date_value' => $this->request->get('date_value'),
             'sbas_id' => $this->request->get('sbas_id'),
             'base_id' => $this->request->get('base_id'),
             'last_model' => $this->request->get('last_model'),
@@ -116,6 +119,7 @@ class Manage extends Helper
 
         $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
+            ->date_filter($this->query_parms['date_field'], $this->query_parms['date_value'], $this->query_parms['date_operator'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
