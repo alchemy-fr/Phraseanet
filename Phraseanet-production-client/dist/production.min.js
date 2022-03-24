@@ -19196,7 +19196,7 @@ var pushOrShare = function pushOrShare(services, container) {
         focus: function focus(event, ui) {
             // $('input[name="users-search"]').val(ui.item.label);
         },
-        select: function select(event, ui) {
+        select: function (event, ui) {
             if (ui.item.type === 'USER') {
                 pushOrShare.selectUser(ui.item);
             } else if (ui.item.type === 'LIST') {
@@ -19204,8 +19204,9 @@ var pushOrShare = function pushOrShare(services, container) {
                     pushOrShare.selectUser(ui.item.entries[e].User);
                 }
             }
+            (0, _jquery2.default)('input[name="users-search"]', this).val('');
             return false;
-        }
+        }.bind(this.container)
     }).data('ui-autocomplete')._renderItem = function (ul, item) {
         var html = '';
 
@@ -19243,7 +19244,7 @@ var pushOrShare = function pushOrShare(services, container) {
 
                 var callbackList = function callbackList(list) {
                     for (var i in list.entries) {
-                        this.selectUser(list.entries[i].User);
+                        this.selectUser(list.entries[i].User, false); // false: do not send participantsChanged event
                     }
                     appEvents.emit('sharebasket.participantsChanged', { container: container, context: 'user-added' });
                 };
@@ -19367,7 +19368,13 @@ var pushOrShare = function pushOrShare(services, container) {
 };
 
 pushOrShare.prototype = {
-    selectUser: function selectUser(user) {
+    /**
+     * - a user is selected from the search result list, OR
+     * - a user is added from a user list.
+     * @param user
+     * @param participantsChanged avoid refresh for each user when a user list is loaded : list loader will do
+     */
+    selectUser: function selectUser(user, participantsChanged) {
         if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
             if (window.console) {
                 console.log('trying to select a user with wrong datas');
@@ -19397,7 +19404,12 @@ pushOrShare.prototype = {
         // p4.Feedback.appendBadge(html);
         this.appendBadge(html);
 
-        //        this.appEvents.emit('sharebasket.participantsChanged', {container:this.container, context:'user-added'});
+        if (typeof participantsChanged === 'undefined' || participantsChanged === true) {
+            this.appEvents.emit('sharebasket.participantsChanged', {
+                container: this.container,
+                context: 'user-added'
+            });
+        }
     },
     loadUser: function loadUser(usr_id, callback) {
         var _this = this;
