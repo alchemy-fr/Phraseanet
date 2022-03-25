@@ -42,7 +42,7 @@
                     <input type="checkbox"  name="filter_phantoms_only" {% if parm['filter_phantoms_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
                 </label>
                 <br/><br/>
-                <span style="width:125px;display:inline-block;">{{ 'Filter' | trans }}</span>
+                <span style="width:130px;display:inline-block;">{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
                     <option {% if parm['like_field'] == "login" %}selected="selected"{% endif %} value="login">{{ 'Push::filter on login' | trans }}</option>
                     <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{{ 'First/Last Name' | trans }}</option>
@@ -57,7 +57,8 @@
                     <option {% if parm['like_type'] == "like_empty" %} selected="selected" {% endif %} value="like_empty">{{ 'admin::users:filter: empty' | trans }}</option>
                 </select>
                 <input type="text" value="{{parm['like_value']}}" name="like_value" class="input-medium">
-                <span>{{ 'Last applied template' | trans }}</span>
+                <br/><br/>
+                <span style="width:130px;display:inline-block;">{{ 'Last applied template' | trans }}</span>
                 <select name="last_model" class="input-medium">
                     <option value="">{{ 'None' | trans }}</option>
                     {% for template in templates %}
@@ -66,7 +67,7 @@
                 </select>
 
                 <br/><br/>
-                <span style="width:125px;display:inline-block;">{{ 'admin::users:filter: Date filter' | trans }}</span>
+                <span style="width:130px;display:inline-block;">{{ 'admin::users:filter: Date filter' | trans }}</span>
                 <select name="date_field" class="input-medium">
                     <option value=""></option>
                     <option {% if parm['date_field'] == "created" %}selected="selected"{% endif %} value="created">{{ 'admin::users:filter: created' | trans }}</option>
@@ -79,12 +80,20 @@
                     <option {% if parm['date_operator'] == "date_null" %} selected="selected" {% endif %} value="date_null">{{ 'admin::users:filter: is null' | trans }}</option>
                 </select>
                 <input type="text" value="{{parm['date_value']}}" name="date_value" class="date_value input-medium">
-                <button type="submit" class="btn btn-success" style="min-width: 152px; margin-left: 150px; margin-top: 5px; margin-bottom: 5px;">{{ 'boutton::chercher' | trans }}</button>
+                <button type="submit" class="btn btn-success" style="min-width: 200px; margin-left: 20px; margin-top: 5px; margin-bottom: 5px;">{{ 'boutton::chercher' | trans }}</button>
             </fieldset>
         </form>
 
         <button class="user_modifier btn" style =>{{ 'admin::userlist modify' | trans }}</button>
-        <button class="user_deleter btn btn-danger">{{ 'admin::userlist delete' | trans }}</button>
+
+        <button class="user_deleter btn btn-danger pull-right">{{ 'admin::userlist delete' | trans }}</button>
+
+        <form id="users_reset_rights" method="post" action="{{ path('admin_users_rights_reset') }}" target="_self" class="form-inline pull-right" style="margin:0">
+        <fieldset class="admin_head_opts">
+            <input type="hidden" value="" name="users">
+            <button type='button' class="btn btn-primary">{{ 'Delete all users rights' | trans }}</button>
+        </fieldset>
+    </form>
 
         <form id="users_apply_template" method="post" action="{{ path('admin_users_apply_template') }}" target="_self" class="form-inline pull-left no-ajax" style="margin:0">
             <fieldset class="admin_head_opts">
@@ -96,13 +105,6 @@
                     {% endfor %}
                 </select>
                 <button type="submit" class="btn">{{ 'boutton::appliquer' | trans }}</button>
-            </fieldset>
-        </form>
-
-        <form id="users_reset_rights" method="post" action="{{ path('admin_users_rights_reset') }}" target="_self" class="form-inline pull-right" style="margin:0">
-            <fieldset class="admin_head_opts">
-                <input type="hidden" value="" name="users">
-                <button type='button' class="btn btn-primary">{{ 'Delete all users rights' | trans }}</button>
             </fieldset>
         </form>
 
@@ -632,7 +634,7 @@
                     return false;
                 }
 
-                if (confirm("{{ 'Are you sure you want delete users? Maybe linked with api account.' | trans }}")) {
+                if (confirm("{{ 'Please confirme the users deletion!' | trans }}")) {
                     $('#right-ajax').empty().addClass('loading');
                     p4.users.sel = [];
                     $.ajax({
