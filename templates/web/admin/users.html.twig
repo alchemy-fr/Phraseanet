@@ -64,7 +64,7 @@
                         <option {% if parm['last_model'] == template.getId() %}selected="selected"{% endif %} value="{{ template.getId() }}">{{ template.getLogin() }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit" class="btn">{{ 'boutton::chercher' | trans }}</button>
+
                 <br/><br/>
                 <span style="width:125px;display:inline-block;">{{ 'admin::users:filter: Date filter' | trans }}</span>
                 <select name="date_field" class="input-medium">
@@ -79,6 +79,7 @@
                     <option {% if parm['date_operator'] == "date_null" %} selected="selected" {% endif %} value="date_null">{{ 'admin::users:filter: is null' | trans }}</option>
                 </select>
                 <input type="text" value="{{parm['date_value']}}" name="date_value" class="date_value input-medium">
+                <button type="submit" class="btn btn-success" style="min-width: 152px; margin-left: 150px; margin-top: 5px; margin-bottom: 5px;">{{ 'boutton::chercher' | trans }}</button>
             </fieldset>
         </form>
 
@@ -631,18 +632,21 @@
                     return false;
                 }
 
-                $('#right-ajax').empty().addClass('loading');
-                p4.users.sel = [];
-                $.ajax({
-                    type: 'POST',
-                    url: '../admin/users/delete/',
-                    data: {
-                        users: users
-                    },
-                    success: function (data) {
-                        $('#right-ajax').removeClass('loading').html(data);
-                    }
-                });
+                if (confirm("{{ 'Are you sure you want delete users? Maybe linked with api account.' | trans }}")) {
+                    $('#right-ajax').empty().addClass('loading');
+                    p4.users.sel = [];
+                    $.ajax({
+                        type: 'POST',
+                        url: '../admin/users/delete/',
+                        data: {
+                            users: users
+                        },
+                        success: function (data) {
+                            $('#right-ajax').removeClass('loading').html(data);
+                        }
+                    });
+                }
+
                 return false;
             });
             $('#users_page .invite_modifier, #users_page .autoregister_modifier').on('click', function () {
