@@ -41,6 +41,10 @@
                     {{ 'admin::userlist: phantoms only' | trans }}
                     <input type="checkbox"  name="filter_phantoms_only" {% if parm['filter_phantoms_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
                 </label>
+                <label class="checkbox">
+                    {{ 'admin::userlist: display model' | trans }}
+                    <input type="checkbox"  name="filter_model_user" {% if parm['filter_model_user'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                </label>
                 <br/><br/>
                 <span style="width:130px;display:inline-block;">{{ 'Filter' | trans }}</span>
                 <select name="like_field" class="input-medium">
