@@ -3,7 +3,10 @@
 {% for basket_element in feedbackElementDatas %}
     {% set basket = basket_element.getBasket() %}
     {% set validationSession = basket.getValidation() %}
-    {% if validationSession.isParticipant(app.getAuthenticatedUser()) and (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationSession.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() )%}
+    {% if (validationSession.isParticipant(app.getAuthenticatedUser())
+        and (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or validationSession.getParticipant(app.getAuthenticatedUser()).getUser() == app.getAuthenticatedUser() ))
+        or granted_on_collection(basket_element.getRecord(app).getBaseId(), [constant('\\ACL::CANMODIFRECORD'), constant('\\ACL::CANPUSH')])
+    %}
         {% set basketName = basket.getName() %}
         <dl class="feedback-data-list" style="margin-bottom:15px;margin-top:0px;padding-bottom:15px;position:relative;">
             <dt data-kind="BASK"
@@ -34,37 +37,25 @@
             </dd>
 
             {% for choice in basket_element.getValidationDatas() %}
-                {% if validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() %}
-                    {% if choice.getParticipant().getCanAgree() %}
-                        <dd style="margin-bottom: 5px;position:relative;">
-                            <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
-                            <span style="position: absolute;width:calc(100% - 60px);border-bottom:1px solid #484848;height: 43%;right:30px;left:30px;top:0;"></span>
-                            {% if choice.getAgreement() == true %}
-                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
-                            {% elseif choice.getAgreement() is null %}
-                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
-                            {% else %}
-                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
-                            {% endif %}
-                        </dd>
-                    {% endif %}
-                {% else %}
-                    {% if choice.getParticipant().getCanAgree() and choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
-                        <dd style="margin-bottom: 5px;position:relative;">
-                            <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
-                            <span style="position: absolute;width:calc(100% - 60px);border-bottom:1px solid #484848;height: 43%;right:30px;left:30px;top:0;"></span>
-                            {% if choice.getAgreement() == true %}
-                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
-                            {% elseif choice.getAgreement() is null %}
-                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
-                            {% else %}
-                                <img style="cursor:help;float:right;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
-                            {% endif %}
-                        </dd>
-                    {% endif %}
-
+                {% if granted_on_collection(basket_element.getRecord(app).getBaseId(), [constant('\\ACL::CANMODIFRECORD'), constant('\\ACL::CANPUSH')])
+                    or (
+                        (validationSession.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() and choice.getParticipant().getCanAgree())
+                        or
+                        (choice.getParticipant().getCanAgree() and choice.getParticipant().getUser() == app.getAuthenticatedUser())
+                    )
+                %}
+                    <dd style="margin-bottom: 5px;position:relative;">
+                        <span style="position:relative;background: #3b3b3b;z-index:1;padding-right:10px">{{ choice.getParticipant().getUser().getDisplayName() }}</span>
+                        <span style="position: absolute;width:calc(100% - 60px);border-bottom:1px solid #484848;height: 43%;right:30px;left:30px;top:0;"></span>
+                        {% if choice.getAgreement() == true %}
+                            <img style="cursor:help;float:right;" src='/assets/common/images/icons/green-check.png' title="{{ "L'utilisateur approuve ce document" | trans }}" />
+                        {% elseif choice.getAgreement() is null %}
+                            <img style="cursor:help;float:right;" src='/assets/common/images/icons/no-response.png' title="{{ "L'utilisateur n'a pas encore donne son avis sur ce document" | trans }}" />
+                        {% else %}
+                            <img style="cursor:help;float:right;" src='/assets/common/images/icons/red-cross.png' title="{{ "L'utilisateur desapprouve ce document" | trans }}" />
+                        {% endif %}
+                    </dd>
                 {% endif %}
-
             {% endfor %}
         </dl>
     {% endif %}
