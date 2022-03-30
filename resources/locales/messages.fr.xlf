@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-03-28T09:58:17Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2022-03-30T16:54:30Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -155,9 +155,9 @@
       <trans-unit id="119baf9d92ab28f3e93234a0f98daeb2a987cf7a" resname="%n_par_page% par page" approved="yes">
         <source>%n_par_page% par page</source>
         <target state="translated">%n_par_page% par page</target>
-        <jms:reference-file line="258">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="260">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="262">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="259">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="261">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="263">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e765775cd8948a580cd58bde704d5e797b1a165c" resname="%name% est momentanement indisponible a cause d'un trop grand nombre de requetes" approved="yes">
         <source>%name% est momentanement indisponible a cause d'un trop grand nombre de requetes</source>
@@ -542,7 +542,7 @@
         <source>Access</source>
         <target state="translated">Accès</target>
         <jms:reference-file line="49">actions/Feedback/List-Share.html.twig</jms:reference-file>
-        <jms:reference-file line="315">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="318">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dea26a0d5384d4428f75e1fe2a8b026a76987821" resname="Access code" approved="yes">
         <source>Access code</source>
@@ -562,17 +562,17 @@
       <trans-unit id="92c61069b8621dbab46a1a311801ae8661bdb2d5" resname="Access to HD" approved="yes">
         <source>Access to HD</source>
         <target state="translated">Autoriser à télécharger les Documents</target>
-        <jms:reference-file line="330">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="333">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8aae5e41a4f1da0bccde0ae0a0979f5a814c105f" resname="Access to image tools" approved="yes">
         <source>Access to image tools</source>
         <target state="translated">Autoriser à accéder aux outils images</target>
-        <jms:reference-file line="381">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="384">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="44f245a68ae10417d3e969773314d68407263772" resname="Access to preview" approved="yes">
         <source>Access to preview</source>
         <target state="translated">Accès aux sous résolutions</target>
-        <jms:reference-file line="324">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="327">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="322d1ea01506ec9e0344d8cd25dd10808d427343" resname="Access to the above bases constitutes acceptance of the following Terms of Use (TOU)." approved="yes">
         <source>Access to the above bases constitutes acceptance of the following Terms of Use (TOU).</source>
@@ -641,7 +641,7 @@
       <trans-unit id="a733b809d2f1233496ab516eed0f3ef75cf3791a" resname="Active" approved="yes">
         <source>Active</source>
         <target state="translated">Actif</target>
-        <jms:reference-file line="318">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="321">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b96fa78d63e470aece8873de8f36bc6d07d0ce1e" resname="Activer" approved="yes">
         <source>Activer</source>
@@ -906,47 +906,47 @@
       <trans-unit id="c264a7efdbe0e0af2a6fe69e2bc9a89b90c5ec0e" resname="Allowed to access report" approved="yes">
         <source>Allowed to access report</source>
         <target state="translated">Autoriser à consulter Phraseanet Report</target>
-        <jms:reference-file line="387">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="390">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a79a26fd0d867d56e440db7970bedeb81120db5e" resname="Allowed to add" approved="yes">
         <source>Allowed to add</source>
         <target state="translated">Autoriser à ajouter des documents</target>
-        <jms:reference-file line="369">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="372">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c29c0bc79b37717cee74db0f693cd90d3f81060" resname="Allowed to add in basket" approved="yes">
         <source>Allowed to add in basket</source>
         <target state="translated">Autoriser à créer des paniers</target>
-        <jms:reference-file line="321">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="324">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="418e86bd967ee69e5da8a8033c2fc5627c3e644a" resname="Allowed to change statuses" approved="yes">
         <source>Allowed to change statuses</source>
         <target state="translated">Autoriser à changer les status</target>
-        <jms:reference-file line="375">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="378">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1573d8c96b794cfc975385adc9db72008682b945" resname="Allowed to delete" approved="yes">
         <source>Allowed to delete</source>
         <target state="translated">Autoriser à supprimer des documents</target>
-        <jms:reference-file line="378">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="381">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="22237a60b40519589c2b155280d4f59326b72288" resname="Allowed to edit" approved="yes">
         <source>Allowed to edit</source>
         <target state="translated">Autoriser à éditer les notices</target>
-        <jms:reference-file line="372">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="375">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4db44028c6ca28953498237f726ffc2f586f62bc" resname="Allowed to order" approved="yes">
         <source>Allowed to order</source>
         <target state="translated">Autoriser à commander</target>
-        <jms:reference-file line="333">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="336">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="05bf467a6bb91f88a09b79234003a50ffc07b36b" resname="Allowed to publish" approved="yes">
         <source>Allowed to publish</source>
         <target state="translated">Autoriser à publier</target>
-        <jms:reference-file line="286">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="289">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bedb589d10ba56ca45a58733b8dc89b1100adeaa" resname="Allowed to push" approved="yes">
         <source>Allowed to push</source>
         <target state="translated">Autoriser à faire des diffusions</target>
-        <jms:reference-file line="390">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="393">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2daa38baf15cf880ed52b7ce074c1d24f9fd58a" resname="Alphabetic asc" approved="yes">
         <source>Alphabetic asc</source>
@@ -999,7 +999,7 @@
         <jms:reference-file line="808">Controller/Admin/CollectionController.php</jms:reference-file>
         <jms:reference-file line="25">admin/collection/suggested_value.html.twig</jms:reference-file>
         <jms:reference-file line="23">admin/collection/collection.html.twig</jms:reference-file>
-        <jms:reference-file line="714">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="716">web/admin/users.html.twig</jms:reference-file>
         <jms:reference-file line="194">task-manager/task-editor/task.html.twig</jms:reference-file>
         <jms:reference-file line="15">web/admin/databases.html.twig</jms:reference-file>
         <jms:reference-file line="19">admin/databox/databox.html.twig</jms:reference-file>
@@ -1141,7 +1141,7 @@
         <source>Apply a template</source>
         <target state="translated">Appliquer un modèle</target>
         <jms:reference-file line="104">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="111">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="114">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b8fb717785e899f8e3bacfd74a395da7a434af9e" resname="Apply changes" approved="yes">
         <source>Apply changes</source>
@@ -1174,7 +1174,7 @@
       <trans-unit id="6e8fd96e9e2759d3e405608bfb1a064d3338b4dd" resname="Are you sure you want delete users rights ?" approved="yes">
         <source>Are you sure you want delete users rights ?</source>
         <target state="translated">Etes-vous sûr de vouloir initialiser les droits des utilisateurs ?</target>
-        <jms:reference-file line="702">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="704">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="afed8e1a2177fcba614eb90ea671435db9fee8bb" resname="Are you sure you want to delete this application?" approved="yes">
         <source>Are you sure you want to delete this application?</source>
@@ -1195,7 +1195,7 @@
       <trans-unit id="927aacfc684a0654a9fc301f52ed3f2441adb363" resname="Are you sure you want to reset rights?" approved="yes">
         <source>Are you sure you want to reset rights?</source>
         <target state="translated">Etes-vous sûr de vouloir réinitialiser les droits ?</target>
-        <jms:reference-file line="1038">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="1053">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="74e0b9c80dca267a78a89ad68a2f6c73241b5973" resname="Attention" approved="yes">
         <source>Attention</source>
@@ -2378,7 +2378,7 @@
         <source>Delete all users rights</source>
         <target state="translated">Supprimer tous les droits de l'utilisateur</target>
         <jms:reference-file line="98">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="118">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="121">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ddd0876d47dc58418b245cf6a3d73a97d8b09400" resname="Delete basket" approved="yes">
         <source>Delete basket</source>
@@ -2711,12 +2711,12 @@
       <trans-unit id="99ead0eb32b2089a9933db5ccc262e2fc35fd0a6" resname="Edition des droits de %display_name%" approved="yes">
         <source>Edition des droits de %display_name%</source>
         <target state="translated">Edition des droits de %display_name%</target>
-        <jms:reference-file line="103">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="106">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2cc04e67d9d65551a4769b965ef101059a144894" resname="Edition des droits de %number% utilisateurs" approved="yes">
         <source>Edition des droits de %number% utilisateurs</source>
         <target state="translated">Edition des droits de %number% utilisateurs</target>
-        <jms:reference-file line="107">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="110">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="92376275a970f44a04fcce0319075ec61bbac9ca" resname="Edition impossible" approved="yes">
         <source>Edition impossible</source>
@@ -4248,32 +4248,32 @@
       <trans-unit id="172f07c1e08cc9e732f89e63587e4921257d45ff" resname="Manage DB fields" approved="yes">
         <source>Manage DB fields</source>
         <target state="translated">Gérer les champs documentaires</target>
-        <jms:reference-file line="295">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="298">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8c31ba60feb0cdce5d6612ff50484e32104a1b8" resname="Manage Database" approved="yes">
         <source>Manage Database</source>
         <target state="translated">Gérer la Base de Données</target>
-        <jms:reference-file line="292">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="295">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="64651a66cb70040370f7be780c88e54391395d91" resname="Manage Thesaurus" approved="yes">
         <source>Manage Thesaurus</source>
         <target state="translated">Gérer le thesaurus</target>
-        <jms:reference-file line="289">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="292">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f846b4bd423107e5593efb647a04d208aee278d" resname="Manage collection" approved="yes">
         <source>Manage collection</source>
         <target state="translated">Autoriser à gérer les paramètres de collection</target>
-        <jms:reference-file line="393">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="396">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7ee3c4dd0a46c8618da4ec41c685dff32c86d6e" resname="Manage users" approved="yes">
         <source>Manage users</source>
         <target state="translated">Autoriser à gérer les utilisateurs</target>
-        <jms:reference-file line="384">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="387">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="10dc32039831f3c642dcfda43d7279576dc02867" resname="Manage values lists" approved="yes">
         <source>Manage values lists</source>
         <target state="translated">Gérer les valeurs suggérées</target>
-        <jms:reference-file line="396">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="399">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4c2ea2d10dc0ede0423eff4ee1aac7300cd7cc28" resname="Mandatory" approved="yes">
         <source>Mandatory</source>
@@ -5056,7 +5056,7 @@
       <trans-unit id="c2f5cf13e60299c982211b3c168ac42b7cf0bd7e" resname="Please confirme the users deletion!">
         <source>Please confirme the users deletion!</source>
         <target state="new">Please confirme the users deletion!</target>
-        <jms:reference-file line="641">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="643">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d971fb22555bf3deb2da6d7820d2379b6f37d12" resname="Please consider send this push to the following users : %recommendation%" approved="yes">
         <source>Please consider send this push to the following users : %recommendation%</source>
@@ -5635,13 +5635,13 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>Reglages:: reglages d acces guest</source>
         <target state="translated">Réglages d'accès invité</target>
         <jms:reference-file line="28">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="97">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="100">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e073f141cf5c23359bdbc1e49a7d928461f8f77" resname="Reglages:: reglages d inscitpition automatisee" approved="yes">
         <source>Reglages:: reglages d inscitpition automatisee</source>
         <target state="translated">Réglages d'auto-inscription</target>
         <jms:reference-file line="30">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="99">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="102">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="dcb70f5244f8883ac49c5eceb7d1e1cdeaf82711" resname="Relevance" approved="yes">
         <source>Relevance</source>
@@ -5677,7 +5677,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="558bfac913eae0dc760e8cd1528261bfe4d504c6" resname="Remove watermark" approved="yes">
         <source>Remove watermark</source>
         <target state="translated">Sans filigrane</target>
-        <jms:reference-file line="327">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="330">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d3f4cb898fbe0c7a7ac4f721438c4c26ad1a2513" resname="Rename" approved="yes">
         <source>Rename</source>
@@ -6141,7 +6141,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="b88b2446d76118376d99d321707ed9cf74f28768" resname="Set download quotas" approved="yes">
         <source>Set download quotas</source>
         <target state="translated">Régler les quotas de téléchargement</target>
-        <jms:reference-file line="336">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="339">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4b1933037822e34594e624b3f814726a137a71fd" resname="Set labels" approved="yes">
         <source>Set labels</source>
@@ -6152,12 +6152,12 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
       <trans-unit id="9137bba9319a52102294ab278c3a7aca79d67e29" resname="Set statuses restrictions" approved="yes">
         <source>Set statuses restrictions</source>
         <target state="translated">Régler les droits d'accès selon les status</target>
-        <jms:reference-file line="356">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="359">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b133963df51542cbedcc0d38f73a5b69d44971e2" resname="Set time restrictions" approved="yes">
         <source>Set time restrictions</source>
         <target state="translated">Régler les restrictions temporelles</target>
-        <jms:reference-file line="346">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="349">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cdd7bb2816b7a8f88bce0e47be39943bc369516b" resname="Setup" approved="yes">
         <source>Setup</source>
@@ -8524,7 +8524,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <target state="translated">Activité</target>
         <jms:reference-file line="104">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="314">Controller/Admin/UserController.php</jms:reference-file>
-        <jms:reference-file line="501">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="504">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="221">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="122">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8534,7 +8534,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="69">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="306">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="371">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="460">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="463">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="225">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="87">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8549,7 +8549,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="76">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="308">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="378">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="468">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="471">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="94">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc2f858e3323d3baa8be27661724b11ce9c0a57b" resname="admin::compte-utilisateur confirmer la nouvelle adresse email" approved="yes">
@@ -8580,7 +8580,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="343">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="139">web/admin/users.html.twig</jms:reference-file>
         <jms:reference-file line="22">web/admin/connected-users.html.twig</jms:reference-file>
-        <jms:reference-file line="452">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="455">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="215">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="74">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8590,7 +8590,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="118">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="311">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="392">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="518">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="521">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="136">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d6e2b9ddcaf97ba5258571cb54935f1ff6b581a2" resname="admin::compte-utilisateur id utilisateur" approved="yes">
@@ -8605,7 +8605,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="19">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="49">api/auth/end_user_authorization.html.twig</jms:reference-file>
         <jms:reference-file line="124">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="416">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="419">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="211">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="21">web/account/reset-email.html.twig</jms:reference-file>
         <jms:reference-file line="35">web/account/account.html.twig</jms:reference-file>
@@ -8628,7 +8628,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="301">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="329">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="13">web/admin/connected-users.html.twig</jms:reference-file>
-        <jms:reference-file line="444">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="447">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="213">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="60">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8649,7 +8649,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="90">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="312">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="364">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="485">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="488">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="219">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="108">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8660,7 +8660,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="116">Event/Subscriber/RegistrationSubscriber.php</jms:reference-file>
         <jms:reference-file line="302">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="336">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="436">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="439">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="213">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="67">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8668,7 +8668,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <source>admin::compte-utilisateur sexe</source>
         <target state="translated">Civilité</target>
         <jms:reference-file line="44">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
-        <jms:reference-file line="424">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="427">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="42">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="78b65792aca82024d5f1ff60dec83a501c01e15e" resname="admin::compte-utilisateur societe" approved="yes">
@@ -8679,7 +8679,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="357">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="134">web/admin/users.html.twig</jms:reference-file>
         <jms:reference-file line="16">web/admin/connected-users.html.twig</jms:reference-file>
-        <jms:reference-file line="493">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="496">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="217">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="115">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8694,7 +8694,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="310">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="350">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="19">web/admin/connected-users.html.twig</jms:reference-file>
-        <jms:reference-file line="510">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="513">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="223">admin/user/registrations.html.twig</jms:reference-file>
         <jms:reference-file line="129">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -8709,7 +8709,7 @@ Pour les utilisateurs authentifiés, la demande de validation est également dis
         <jms:reference-file line="83">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="307">Controller/Admin/UserController.php</jms:reference-file>
         <jms:reference-file line="385">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="476">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="479">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="101">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f752312fcd370b6547b296ca173da51487a2c5d" resname="admin::compte-utilisateur: L'email a correctement ete mis a jour" approved="yes">
@@ -8800,7 +8800,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Mme</target>
         <jms:reference-file line="50">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="322">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="429">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="432">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="50">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7af00728508b30971b5cd3eb769433546ad9abfa" resname="admin::compte-utilisateur:sexe: mademoiselle" approved="yes">
@@ -8808,7 +8808,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">Mlle</target>
         <jms:reference-file line="49">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="321">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="428">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="431">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="47">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="db663dadd7bd9b045a68cafcfe2ca4e0c832e50a" resname="admin::compte-utilisateur:sexe: monsieur" approved="yes">
@@ -8816,7 +8816,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="translated">M.</target>
         <jms:reference-file line="51">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="323">web/common/dialog_export.html.twig</jms:reference-file>
-        <jms:reference-file line="430">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="433">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="53">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cfc904c9a87afe2d3986041a6bdb542298607880" resname="admin::monitor: bases sur lesquelles l'utilisateur est connecte :" approved="yes">
@@ -9095,9 +9095,9 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Modifier les utilisateurs sélectionnés</target>
         <jms:reference-file line="91">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="83c69c25cb60f00fc1ca56e7edc53fd711fdd1c2" resname="admin::userlist: display model">
-        <source>admin::userlist: display model</source>
-        <target state="new">admin::userlist: display model</target>
+      <trans-unit id="6aba93e09a328c7c93b0c47d7eacaba0c0dd8c3e" resname="admin::userlist: display model only">
+        <source>admin::userlist: display model only</source>
+        <target state="new">admin::userlist: display model only</target>
         <jms:reference-file line="45">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
@@ -9110,20 +9110,35 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <target state="needs-translation">Afficher les utilisateurs fantômes</target>
         <jms:reference-file line="41">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="e12b10eeccf3c4f722e66750eaa2886573a6b803" resname="admin::users: api list">
+        <source>admin::users: api list</source>
+        <target state="new">admin::users: api list</target>
+        <jms:reference-file line="86">web/admin/editusers.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b334c6f1e8ef850c8b78d860550e66bbd5a299e9" resname="admin::users: list user api application">
+        <source>admin::users: list user api application</source>
+        <target state="new">admin::users: list user api application</target>
+        <jms:reference-file line="532">web/admin/editusers.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0a71173381c1c8b659c9f7ac05cd5dfed8d3b97e" resname="admin::users: no api defined for this user">
+        <source>admin::users: no api defined for this user</source>
+        <target state="new">admin::users: no api defined for this user</target>
+        <jms:reference-file line="539">web/admin/editusers.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="68a6b3e4f84d0b990bb8da26132116dc6185d5ce" resname="admin::users:edit: Manage inline selection" approved="yes">
         <source>admin::users:edit: Manage inline selection</source>
         <target state="translated">Sélectionner une option</target>
-        <jms:reference-file line="306">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="309">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f8a4bda1e1d4d7b773e5411bc6f836ae2060bfb0" resname="admin::users:edit: check all right" approved="yes">
         <source>admin::users:edit: check all right</source>
         <target state="translated">Tous les droits sur la collection</target>
-        <jms:reference-file line="312">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="315">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="622a6320218ce751b33cf90a1def6bfb5ac837e0" resname="admin::users:edit: check read right" approved="yes">
         <source>admin::users:edit: check read right</source>
         <target state="translated">Droits de lecture sur la collection</target>
-        <jms:reference-file line="311">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="314">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37d89dc904c56dfef4c2e9eaad6a3acf25538471" resname="admin::users:filter: Date filter">
         <source>admin::users:filter: Date filter</source>
@@ -9881,7 +9896,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <source>boutton::choisir</source>
         <target state="translated">Choisir</target>
         <jms:reference-file line="106">web/admin/users.html.twig</jms:reference-file>
-        <jms:reference-file line="113">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="116">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17a9219fec93feeffdf8c320e3be79a9f0daf9b1" resname="boutton::commander" approved="yes">
         <source>boutton::commander</source>
@@ -10025,7 +10040,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="25">Bridge/Dailymotion/playlist_createcontainer.html.twig</jms:reference-file>
         <jms:reference-file line="44">admin/collection/details.html.twig</jms:reference-file>
         <jms:reference-file line="223">admin/publications/fiche.html.twig</jms:reference-file>
-        <jms:reference-file line="531">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="546">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="50">user/import/file.html.twig</jms:reference-file>
         <jms:reference-file line="69">admin/databox/details.html.twig</jms:reference-file>
         <jms:reference-file line="162">admin/statusbit/edit.html.twig</jms:reference-file>
@@ -10139,7 +10154,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="128">admin/publications/fiche.html.twig</jms:reference-file>
         <jms:reference-file line="45">admin/publications/list.html.twig</jms:reference-file>
         <jms:reference-file line="416">web/admin/subdefs.html.twig</jms:reference-file>
-        <jms:reference-file line="530">web/admin/editusers.html.twig</jms:reference-file>
+        <jms:reference-file line="545">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="83">web/admin/setup.html.twig</jms:reference-file>
         <jms:reference-file line="34">web/admin/structure.html.twig</jms:reference-file>
         <jms:reference-file line="111">web/admin/dashboard.html.twig</jms:reference-file>
@@ -14247,7 +14262,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="fe29f1a35e814c87a21282378424df4866529d1e" resname="select at least one user" approved="yes">
         <source>select at least one user</source>
         <target state="translated">Sélectionner au moins un utilisateur</target>
-        <jms:reference-file line="693">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="695">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7144dfca081702614b81cf8d5b0149066ca1d471" resname="separe par un espace" approved="yes">
         <source>separe par un espace</source>
@@ -15277,7 +15292,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       <trans-unit id="4fea0574cc81b5fd40ab0537b0905cc4c3806039" resname="users rights have been reseted" approved="yes">
         <source>users rights have been reseted</source>
         <target state="translated">Les droits utilisateurs ont été ré-initialisés</target>
-        <jms:reference-file line="717">web/admin/users.html.twig</jms:reference-file>
+        <jms:reference-file line="719">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e204d28a2874f6123747650d3e4003d4357d75eb" resname="validate" approved="yes">
         <source>validate</source>

@@ -60,7 +60,8 @@ class User_Query
     protected $bases_restrictions = false;
     protected $sbas_restrictions = false;
     protected $include_templates = false;
-    protected $only_templates = false;
+    protected $only_user_templates = false;
+    protected $templates_only = false;
     protected $email_not_null = false;
     protected $base_ids = [];
     protected $sbas_ids = [];
@@ -216,15 +217,34 @@ class User_Query
     }
 
     /**
-     * Restrict to templates
+     * Restrict to user templates
      *
      * @param $boolean
      *
      * @return $this
      */
-    public function only_templates($boolean)
+    public function only_user_templates($boolean)
     {
-        $this->only_templates = !!$boolean;
+        $this->only_user_templates = !!$boolean;
+
+        return $this;
+    }
+
+    /**
+     * Restrict only to templates
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function templates_only($boolean)
+    {
+        $this->templates_only = !!$boolean;
+
+        // set include template if not restrict only to the templates
+        if (!$boolean) {
+            $this->include_templates = true;
+        }
 
         return $this;
     }
@@ -951,7 +971,9 @@ class User_Query
             $sql .= ' AND Users.email IS NOT NULL ';
         }
 
-        if ($this->only_templates === true) {
+        if ($this->templates_only) {
+            $sql .= ' AND model_of IS NOT NULL';
+        } elseif ($this->only_user_templates === true) {
             if (!$this->app->getAuthenticatedUser()) {
                 throw new InvalidArgumentException('Unable to load templates while disconnected');
             }
@@ -960,8 +982,6 @@ class User_Query
             $sql .= ' AND model_of IS NULL';
         } elseif ($this->app->getAuthenticatedUser()) {
             $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId() . ' ) ';
-        } else {
-            $sql .= ' AND model_of IS NULL';
         }
 
         if ($this->emailDomains) {

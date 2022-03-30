@@ -42,8 +42,8 @@
                     <input type="checkbox"  name="filter_phantoms_only" {% if parm['filter_phantoms_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
                 </label>
                 <label class="checkbox">
-                    {{ 'admin::userlist: display model' | trans }}
-                    <input type="checkbox"  name="filter_model_user" {% if parm['filter_model_user'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                    {{ 'admin::userlist: display model only' | trans }}
+                    <input type="checkbox"  name="filter_model_only" {% if parm['filter_model_only'] %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
                 </label>
                 <br/><br/>
                 <span style="width:130px;display:inline-block;">{{ 'Filter' | trans }}</span>
@@ -229,7 +229,7 @@
             <input name="last_model" value="{{parm.last_model}}" type="hidden" />
             <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
             <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
-            <input name="filter_model_user" value="{{parm.filter_model_user}}" type="hidden" />
+            <input name="filter_model_only" value="{{parm.filter_model_only}}" type="hidden" />
             <input name="inactives" value="{{parm.inactives}}" type="hidden" />
         </form>
 
@@ -288,7 +288,7 @@
                 <input name="last_model" value="{{parm.last_model}}" type="hidden" />
                 <input name="filter_guest_user" value="{{parm.filter_guest_user}}" type="hidden" />
                 <input name="filter_phantoms_only" value="{{parm.filter_phantoms_only}}" type="hidden" />
-                <input name="filter_model_user" value="{{parm.filter_model_user}}" type="hidden" />
+                <input name="filter_model_only" value="{{parm.filter_model_only}}" type="hidden" />
                 <input name="inactives" value="{{parm.inactives}}" type="hidden" />
                 <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
             </fieldset>
