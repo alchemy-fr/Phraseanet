@@ -245,6 +245,12 @@ class UserManager
         $accounts = $this->objectManager->getRepository('Phraseanet:ApiAccount')->findByUser($user);
 
         foreach ($accounts as $account) {
+            // remove ApiOauthCodes before ApiAccount
+            $oauthCodes = $this->objectManager->getRepository('Phraseanet:ApiOauthCode')->findByAccount($account);
+            foreach ($oauthCodes as $oauthCode) {
+                $this->objectManager->remove($oauthCode);
+            }
+
             $this->objectManager->remove($account);
         }
 

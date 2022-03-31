@@ -57,6 +57,7 @@ class Manage extends Helper
             'last_model' => $this->request->get('last_model'),
             'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
             'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
+            'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
             'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $request->get("ord", \User_Query::ORD_DESC),
             'offset_start' => $offset_start,
@@ -73,6 +74,7 @@ class Manage extends Helper
         $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
             ->last_model_is($this->query_parms['last_model'])
+            ->templates_only($this->query_parms['filter_model_only'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
             ->include_invite($this->query_parms['filter_guest_user'])
@@ -95,11 +97,15 @@ class Manage extends Helper
             'like_field' => $this->request->get('like_field'),
             'like_type' => $this->request->get('like_type'),
             'like_value' => $this->request->get('like_value'),
+            'date_field' => $this->request->get('date_field'),
+            'date_operator' => $this->request->get('date_operator'),
+            'date_value' => $this->request->get('date_value'),
             'sbas_id' => $this->request->get('sbas_id'),
             'base_id' => $this->request->get('base_id'),
             'last_model' => $this->request->get('last_model'),
             'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
             'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
+            'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
             'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
             'per_page' => $results_quantity,
@@ -116,9 +122,10 @@ class Manage extends Helper
 
         $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
+            ->date_filter($this->query_parms['date_field'], $this->query_parms['date_value'], $this->query_parms['date_operator'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
-            ->include_templates(true)
+            ->templates_only($this->query_parms['filter_model_only'])
             ->include_invite($this->query_parms['filter_guest_user'])
             ->phantoms_only($this->query_parms['filter_phantoms_only'])
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), [\ACL::CANADMIN])
@@ -140,7 +147,7 @@ class Manage extends Helper
 
         $query = $this->app['phraseanet.user-query'];
         $templates = $query
-                ->only_templates(true)
+                ->only_user_templates(true)
                 ->execute()->get_results();
 
         return [
