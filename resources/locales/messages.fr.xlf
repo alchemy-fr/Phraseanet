@@ -9092,12 +9092,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="67786d36ac94e1da1b893a91f0390215856f0d13" resname="admin::userlist modify">
         <source>admin::userlist modify</source>
-        <target state="needs-translation">Modifier les utilisateurs sélectionnés</target>
+        <target state="needs-translation">Editer les utilisateurs sélectionnés</target>
         <jms:reference-file line="91">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6aba93e09a328c7c93b0c47d7eacaba0c0dd8c3e" resname="admin::userlist: display model only">
         <source>admin::userlist: display model only</source>
-        <target state="needs-translation">Afficher le modèle</target>
+        <target state="needs-translation">Afficher les modèles</target>
         <jms:reference-file line="45">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
@@ -9127,7 +9127,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
         <source>admin::users: grant password info</source>
-        <target state="needs-translation">Grant password info</target>
+        <target state="needs-translation">Grant password</target>
         <jms:reference-file line="546">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b334c6f1e8ef850c8b78d860550e66bbd5a299e9" resname="admin::users: list user api application">
@@ -9157,7 +9157,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="e6ca0a61942f216df1672e612b4e27fdbf498ca2" resname="admin::users: type info">
         <source>admin::users: type info</source>
-        <target state="needs-translation">Type</target>
+        <target state="needs-translation">Type de l'application</target>
         <jms:reference-file line="549">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6677c212551cdee298546dbe82fa8bdfa6c2e51c" resname="admin::users: webhook activation">
@@ -9197,7 +9197,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="5f9ebdc4e54e55fc85e1a4ff3a0435cb07b00af4" resname="admin::users:filter: created">
         <source>admin::users:filter: created</source>
-        <target state="needs-translation">Date de création</target>
+        <target state="needs-translation">de création</target>
         <jms:reference-file line="77">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f305b8f1e67c4d159d51b5909c2e23c004be87c" resname="admin::users:filter: empty">
@@ -9222,7 +9222,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="74e3393c80663fe7dfa042ba456b5cd96e2cb6bf" resname="admin::users:filter: last_connection">
         <source>admin::users:filter: last_connection</source>
-        <target state="needs-translation">Date de dernière connexion</target>
+        <target state="needs-translation">de dernière connexion</target>
         <jms:reference-file line="79">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f85c80eefe33be1a8e00e6046928c001e48212b7" resname="admin::users:filter: less than">
@@ -9237,7 +9237,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="ce39ed36c46eb7d399b8e75ee7cc1674785e158c" resname="admin::users:filter: updated">
         <source>admin::users:filter: updated</source>
-        <target state="needs-translation">mis à jour</target>
+        <target state="needs-translation">de mise à jour</target>
         <jms:reference-file line="78">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
