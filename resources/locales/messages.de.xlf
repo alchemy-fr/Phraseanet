@@ -9124,7 +9124,7 @@
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
         <source>admin::users: grant password info</source>
-        <target state="needs-translation">Grant password info</target>
+        <target state="needs-translation">Grant password</target>
         <jms:reference-file line="546">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b334c6f1e8ef850c8b78d860550e66bbd5a299e9" resname="admin::users: list user api application">
