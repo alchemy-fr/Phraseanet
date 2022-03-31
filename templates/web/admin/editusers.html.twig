@@ -70,6 +70,10 @@
   .ui-datepicker{
     z-index:1500;
   }
+  #api_tab .info-label {
+    width: 250px;
+    display: inline-block;
+  }
 </style>
 
 <div>
@@ -79,9 +83,12 @@
         <a href="#rights_tab">{{ 'Rights' | trans }}</a>
       </li>
       {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
-      <li>
-        <a href="#user_infos_tab">{{ 'Infos' | trans }}</a>
-      </li>
+        <li>
+          <a href="#user_infos_tab">{{ 'Infos' | trans }}</a>
+        </li>
+        <li>
+          <a href="#api_tab">{{ 'admin::users: api list' | trans }}</a>
+        </li>
       {% endif %}
     </ul>
     <div id="rights_tab" class="" style="top:40px;">
@@ -408,7 +415,7 @@
     </div>
 
     {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
-    <div id="user_infos_tab" class="" style="top:40px;overflow:auto;">
+      <div id="user_infos_tab" class="" style="top:40px;overflow:auto;">
       <form id="user_infos_form">
         <table>
           <tr>
@@ -524,6 +531,34 @@
         </table>
       </form>
     </div>
+
+      <div id="api_tab" class="" style="top:40px;">
+        <h1>{{ 'admin::users: list user api application' | trans }}</h1>
+        {% set apiApplications = app['repo.api-applications'].findByUser(main_user) %}
+        {% if apiApplications|length > 0 %}
+          {% for apiApplication in app['repo.api-applications'].findByUser(main_user) %}
+            <div style="margin-top: 30px;">
+              <h2>- {{ apiApplication.getName() }}</h2>
+              <div><span class="info-label"><strong> {{ 'admin::users: api ID' | trans }} : </strong></span> <span> {{ apiApplication.getId() }} </span></div>
+              <div><span class="info-label"><strong> {{ 'admin::users: creation date' | trans }} : </strong></span> <span> {{ apiApplication.getCreated() | date('Y-m-d H:i:s') }} </span></div>
+              <div><span class="info-label"><strong> {{ 'admin::users: modification date' | trans }} : </strong></span> <span> {{ apiApplication.getUpdated() | date('Y-m-d H:i:s') }} </span></div>
+              <div>
+                <span class="info-label"><strong> {{ 'admin::users: grant password info' | trans }} : </strong></span>
+                <span> {% if apiApplication.isPasswordGranted() %} {{ 'admin::users: password granted' | trans }} {% else %} {{ 'admin::users: password not granted' | trans }} {% endif %}</span>
+              </div>
+              <div><span class="info-label"><strong> {{ 'admin::users: type info' | trans }} : </strong></span> <span> {{ apiApplication.getType() }} </span></div>
+              <div><span class="info-label"><strong> {{ 'admin::users: webhook url' | trans }} : </strong></span> <span> {{ apiApplication.getWebhookUrl() }} </span></div>
+
+              <label class="checkbox" style="padding-left: 0px; margin-top:10px">
+                {{ 'admin::users: webhook activation' | trans }}
+                <input data-path="{{ path('developers_application_active_webhook', { "application" : apiApplication.getId() }) }}" type="checkbox"  id="webhook_activation" {% if apiApplication.isWebhookActive() %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+              </label>
+            </div>
+          {% endfor %}
+        {% else %}
+          <h5>{{ 'admin::users: no api defined for this user' | trans }}</h5>
+        {% endif %}
+      </div>
     {% endif %}
   </div>
   <div class="form-actions" style="">
@@ -1095,6 +1130,21 @@
       $(this).closest('.right-items').find('div').show().removeClass('unchecked').addClass('checked');
       $(this).closest('.right-items').find('input').val(1);
       $('.users_check_line_wrap').addClass('hide');
+    });
+
+    $('#webhook_activation').on('click', function() {
+      let $this = $(this);
+      $.ajax({
+        type: 'POST',
+        url: $this.attr('data-path'),
+        dataType: 'json',
+        data: {
+          action: $this.is(':checked') ? 'activate' : 'deactivate'
+        },
+        success: function (data) {
+          console.log(data.success);
+        }
+      });
     });
 
   });
