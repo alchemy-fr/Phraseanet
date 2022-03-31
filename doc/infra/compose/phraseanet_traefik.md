@@ -2,7 +2,7 @@
 
 Doc status : Beta
 
-Traefik documentation 
+Take a look to Traefik documentation 
 
 https://doc.traefik.io/traefik/providers/docker/
 
