@@ -1,11 +1,47 @@
 # CHANGELOG
 
+## 4.1.6-rc2
+
+### Update instructions
+
+ - docker docker-compose : add profile "gateway-classic" to your ```COMPOSE_PROFILES```
+ - Migration patch: no patch to play, just run upgrade for bump version 
+ - Elasticsearch index action : Requires a drop, create, populate
+
+### Version summary :
+ 
+  - A new facet named "Thumbnail_orientation" is available in replacement/addition of "_orientation" (based on exif orientation)
+    This facet is based on orientation of generated subdef named "thumbnail". 
+    see section searchengine setting/ aggregate in Admin to activate it.
+    the features require an Elasticsearch index drop, create, populate  
+  - Adding a separate docker-compose profile to nginx container for a better stack compositing
+
+### New Features
+
+```
+PHRAS-3215 Prod - facets -  use image orientation from subdefinition and make a facet of it
+```
+
+### Improvements
+
+```
+PHRAS-3643 Bin/console records:build-subdef add option --publish to emit build message to Rabbitmq
+PHRAS-3653 Worker queue message : publish messages as persistent into rabbitmq queues
+PHRAS-3560 Admin - Users list and search improvement and export users as .csv, add "last connection"
+```
+
+### Bug fix
+
+```
+PHRAS-3651 prod-facets : tech facets "no value" wrongly translated, some always return 0 answers
+ ```
+
 ## 4.1.6-rc1
 
 ### Update instructions
 
  - Migration patch: no patch to play, just run upgrade for bump version 
- - Elasticsearch action : none 
+ - Elasticsearch index action : none 
 
 ### Version summary :
  
