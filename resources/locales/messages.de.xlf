@@ -9114,7 +9114,7 @@
       </trans-unit>
       <trans-unit id="e12b10eeccf3c4f722e66750eaa2886573a6b803" resname="admin::users: api list">
         <source>admin::users: api list</source>
-        <target state="needs-translation">Liste</target>
+        <target state="needs-translation">API</target>
         <jms:reference-file line="90">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="333dc596de24529211ed2966582e8aae28b72238" resname="admin::users: creation date">
