@@ -5058,7 +5058,7 @@
       </trans-unit>
       <trans-unit id="c2f5cf13e60299c982211b3c168ac42b7cf0bd7e" resname="Please confirme the users deletion!">
         <source>Please confirme the users deletion!</source>
-        <target state="needs-translation">Please confirm the users deletion</target>
+        <target state="needs-translation">Please confirm the users deletion !</target>
         <jms:reference-file line="643">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d971fb22555bf3deb2da6d7820d2379b6f37d12" resname="Please consider send this push to the following users : %recommendation%" approved="yes">
@@ -9097,12 +9097,12 @@
       </trans-unit>
       <trans-unit id="6aba93e09a328c7c93b0c47d7eacaba0c0dd8c3e" resname="admin::userlist: display model only">
         <source>admin::userlist: display model only</source>
-        <target state="needs-translation">Display model</target>
+        <target state="needs-translation">Display models</target>
         <jms:reference-file line="45">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
         <source>admin::userlist: filterguestuser</source>
-        <target state="needs-translation">Show guest users</target>
+        <target state="needs-translation">Display guest users</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd3b85a7535e1a5e824820bbf7feb6a9ce0a3676" resname="admin::userlist: phantoms only">
@@ -9127,7 +9127,7 @@
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
         <source>admin::users: grant password info</source>
-        <target state="needs-translation">Grant password info</target>
+        <target state="needs-translation">Grant password</target>
         <jms:reference-file line="546">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b334c6f1e8ef850c8b78d860550e66bbd5a299e9" resname="admin::users: list user api application">
@@ -9157,7 +9157,7 @@
       </trans-unit>
       <trans-unit id="e6ca0a61942f216df1672e612b4e27fdbf498ca2" resname="admin::users: type info">
         <source>admin::users: type info</source>
-        <target state="needs-translation">Type</target>
+        <target state="needs-translation">Application Type</target>
         <jms:reference-file line="549">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6677c212551cdee298546dbe82fa8bdfa6c2e51c" resname="admin::users: webhook activation">
@@ -9237,7 +9237,7 @@
       </trans-unit>
       <trans-unit id="ce39ed36c46eb7d399b8e75ee7cc1674785e158c" resname="admin::users:filter: updated">
         <source>admin::users:filter: updated</source>
-        <target state="needs-translation">updated</target>
+        <target state="needs-translation">Modification date</target>
         <jms:reference-file line="78">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
