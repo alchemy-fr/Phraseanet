@@ -8800,17 +8800,17 @@
         <jms:reference-file line="436">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="50">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7af00728508b30971b5cd3eb769433546ad9abfa" resname="admin::compte-utilisateur:sexe: mademoiselle" approved="yes">
+      <trans-unit id="7af00728508b30971b5cd3eb769433546ad9abfa" resname="admin::compte-utilisateur:sexe: mademoiselle" approved="no">
         <source>admin::compte-utilisateur:sexe: mademoiselle</source>
-        <target state="translated">Fräulein</target>
+        <target state="needs-translation">Fräulein</target>
         <jms:reference-file line="49">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="321">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="435">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="47">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="db663dadd7bd9b045a68cafcfe2ca4e0c832e50a" resname="admin::compte-utilisateur:sexe: monsieur" approved="yes">
+      <trans-unit id="db663dadd7bd9b045a68cafcfe2ca4e0c832e50a" resname="admin::compte-utilisateur:sexe: monsieur" approved="no">
         <source>admin::compte-utilisateur:sexe: monsieur</source>
-        <target state="translated">Herr</target>
+        <target state="needs-translation">Herr</target>
         <jms:reference-file line="51">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="323">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="437">web/admin/editusers.html.twig</jms:reference-file>
