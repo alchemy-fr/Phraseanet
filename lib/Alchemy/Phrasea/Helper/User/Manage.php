@@ -14,10 +14,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Helper\Helper;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class Manage extends Helper
@@ -235,5 +237,24 @@ class Manage extends Helper
         }
 
         $this->deliver($mail);
+    }
+
+    public function setMailLocked()
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        $user = $userRepository->find($this->request->request->get('user_id'));
+        $status = $this->request->request->get('action') == 'locked' ? true : false;
+        $user->setMailLocked($status);
+        $this->getObjectManager()->persist($user);
+        $this->getObjectManager()->flush();
+    }
+
+    /**
+     * @return ObjectManager
+     */
+    private function getObjectManager()
+    {
+        return $this->app['orm.em'];
     }
 }

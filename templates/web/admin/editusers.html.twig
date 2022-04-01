@@ -74,6 +74,19 @@
     width: 250px;
     display: inline-block;
   }
+
+  #auth_failure_tab table,
+  #user_infos_tab table {
+    width: 70%;
+  }
+
+  #auth_failure_tab th,
+  #auth_failure_tab td,
+  #user_infos_tab th,
+  #user_infos_tab td {
+    text-align: left;
+  }
+
 </style>
 
 <div>
@@ -533,6 +546,37 @@
           </tr>
         </table>
       </form>
+
+      <label class="checkbox" style="padding-left: 0px; margin-top:10px">
+        <span class="mail-locked-label {% if not apiApplication.isMailLocked() %} hidden {% endif %}">{{ 'admin::users: mail is locked' | trans }}</span>
+        <span class="mail-unlocked-label {% if apiApplication.isMailLocked() %} hidden {% endif %}">{{ 'admin::users: mail is unlocked' | trans }}</span>
+        <input type="checkbox"  id="mail_locked_activation" {% if apiApplication.isMailLocked() %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+      </label>
+
+        <div style="margin-top: 20px;">
+          {% set usrProviders = app['repo.usr-auth-providers'].findByUser(main_user) %}
+          {% if usrProviders|length > 0 %}
+            <h3>{{ 'admin::users: list user providers' | trans }}</h3>
+            <table>
+              <thead>
+                <th>{{ 'admin::users: provider' | trans }}</th>
+                <th>{{ 'admin::users: distance_id' | trans }}</th>
+                <th>{{ 'admin::users: creation date' | trans }}</th>
+                <th>{{ 'admin::users: modification date' | trans }}</th>
+              </thead>
+              <tbody>
+              {% for usrProvider in usrProviders %}
+                <tr>
+                  <td>{{ usrProvider.getProvider() }}</td>
+                  <td>{{ usrProvider.getDistantId() }}</td>
+                  <td>{{ usrProvider.getUpdated() | date('Y-m-d H:i:s') }}</td>
+                  <td>{{ usrProvider.getCreated() | date('Y-m-d H:i:s')}}</td>
+                </tr>
+              {% endfor %}
+                </tbody>
+            </table>
+          {% endif %}
+        </div>
     </div>
 
       <div id="api_tab" class="" style="top:40px;">
@@ -554,7 +598,11 @@
 
               <label class="checkbox" style="padding-left: 0px; margin-top:10px">
                 {{ 'admin::users: webhook activation' | trans }}
-                <input data-path="{{ path('developers_application_active_webhook', { "application" : apiApplication.getId() }) }}" type="checkbox"  id="webhook_activation" {% if apiApplication.isWebhookActive() %} checked="checked" {% endif %} style="margin-left:10px; margin-right:10px;" />
+                <input data-path="{{ path('developers_application_active_webhook', { "application" : apiApplication.getId() }) }}"
+                       type="checkbox"  id="webhook_activation"
+                        {% if apiApplication.isWebhookActive() %} checked="checked" {% endif %}
+                        {% if apiApplication.getWebhookUrl() is empty%} disabled {% endif %}
+                       style="margin-left:10px; margin-right:10px;" />
               </label>
             </div>
           {% endfor %}
@@ -564,29 +612,57 @@
       </div>
 
       <div id="auth_failure_tab">
-        {% set failures = app['repo.auth-failures'].findBy({'username':main_user.getLogin(), 'locked': true}) %}
-          {% if failures | length > 0 %}
+        <div id="auth_failure_locked">
+          {% set failuresLocked = app['repo.auth-failures'].findBy({'username':main_user.getLogin(), 'locked': true}, {'created': 'desc'}) %}
+          {% if failuresLocked | length > 0 %}
+            <h3>{{ 'admin::users: auth failure locked list' | trans }}</h3>
             <table style="border-spacing: 20px;">
               <thead>
-                <tr>
-                  <th>{{ 'admin::users: username' | trans }}</th>
-                  <th>{{ 'admin::users: ip' | trans }}</th>
-                  <th>{{ 'admin::users: creation date' | trans }}</th>
-                </tr>
+              <tr>
+                <th>{{ 'admin::users: username' | trans }}</th>
+                <th>{{ 'admin::users: ip' | trans }}</th>
+                <th>{{ 'admin::users: creation date' | trans }}</th>
+              </tr>
               </thead>
-              <tbody id="auth-failure-list">
-              {% for failure in failures %}
-                 <tr>
-                   <td>{{ failure.getUsername() }}</td>
-                   <td>{{ failure.getIp }}</td>
-                   <td>{{ failure.getCreated() | date('Y-m-d H:i:s') }}</td>
-                 </tr>
+              <tbody >
+              {% for failure in failuresLocked %}
+                <tr>
+                  <td>{{ failure.getUsername() }}</td>
+                  <td>{{ failure.getIp }}</td>
+                  <td>{{ failure.getCreated() | date('Y-m-d H:i:s') }}</td>
+                </tr>
               {% endfor %}
               </tbody>
             </table>
 
-          <button data-username="{{ main_user.getLogin() }}" style="margin-top: 20px;" class="btn btn-warning" id="reset-auth-failure">{{ 'admin::users: reset auth failure' | trans }}</button>
-        {% endif %}
+            <button data-username="{{ main_user.getLogin() }}" style="margin-top: 20px; margin-bottom: 20px" class="btn btn-warning" id="reset-auth-failure">{{ 'admin::users: reset auth failure' | trans }}</button>
+          {% endif %}
+        </div>
+
+        <div id="auth_failure_unlocked">
+          {% set failuresUnlocked = app['repo.auth-failures'].findBy({'username':main_user.getLogin(), 'locked': false}, {'created': 'desc'}) %}
+          {% if failuresUnlocked | length > 0 %}
+            <h3>{{ 'admin::users: auth failure unlocked list' | trans }}</h3>
+            <table style="border-spacing: 20px;">
+              <thead>
+              <tr>
+                <th>{{ 'admin::users: username' | trans }}</th>
+                <th>{{ 'admin::users: ip' | trans }}</th>
+                <th>{{ 'admin::users: creation date' | trans }}</th>
+              </tr>
+              </thead>
+              <tbody id="auth_failure_unlocked_list">
+              {% for failure in failuresUnlocked %}
+                <tr>
+                  <td>{{ failure.getUsername() }}</td>
+                  <td>{{ failure.getIp() }}</td>
+                  <td>{{ failure.getCreated() | date('Y-m-d H:i:s') }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+        </div>
       </div>
     {% endif %}
   </div>
@@ -1187,7 +1263,40 @@
         },
         success: function (data) {
           if (data.success == true) {
-            $('#auth-failure-list').empty();
+            var list =  '';
+            $('#auth_failure_locked').empty();
+            for (var i=0; i < data.authFailureUnlocked.length; i++ ) {
+               list += '<tr><td>' +
+                       data.authFailureUnlocked[i]['username'] + '</td><td>' +
+                       data.authFailureUnlocked[i]['ip'] + '</td><td>' +
+                       data.authFailureUnlocked[i]['created'] + '</td></tr>';
+            }
+
+              $('#auth_failure_unlocked_list').empty().append(list);
+          }
+        }
+      });
+    });
+
+    $('#mail_locked_activation').on('click', function() {
+      let $this = $(this);
+      $.ajax({
+        type: 'POST',
+        url: '/admin/users/mail-locked/change/',
+        dataType: 'json',
+        data: {
+          user_id: {{ main_user.getId() }},
+          action: $this.is(':checked') ? 'locked' : 'unlocked'
+        },
+        success: function (data) {
+          if (data.success == true) {
+            if ($this.is(':checked')) {
+              $('.mail-locked-label').removeClass('hidden');
+              $('.mail-unlocked-label').addClass('hidden');
+            } else {
+              $('.mail-locked-label').addClass('hidden');
+              $('.mail-unlocked-label').removeClass('hidden');
+            }
           }
         }
       });

@@ -87,7 +87,7 @@ class FailureManager
 
     public function resetLockedFailureByUsername($username)
     {
-        $failures = $this->repository->findBy(['username' => $username]);
+        $failures = $this->repository->findBy(['username' => $username, 'locked' => true]);
         foreach ($failures as $failure) {
             $failure->setLocked(false);
             $this->em->persist($failure);
