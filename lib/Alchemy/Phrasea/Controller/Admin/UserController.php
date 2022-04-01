@@ -64,6 +64,13 @@ class UserController extends Controller
         return $this->app->redirectPath('admin_users_search');
     }
 
+    public function resetAuthFailureAction(Request $request)
+    {
+        $this->app['auth.native.failure-manager']->resetLockedFailureByUsername($request->request->get('username'));
+
+        return $this->app->json(['success' => true]);
+    }
+
     public function applyRightsAction(Request $request)
     {
         $data = ['error' => true];

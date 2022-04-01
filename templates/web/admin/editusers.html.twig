@@ -89,6 +89,9 @@
         <li>
           <a href="#api_tab">{{ 'admin::users: api list' | trans }}</a>
         </li>
+        <li>
+          <a href="#auth_failure_tab">{{ 'admin::users: Auth failure' | trans }}</a>
+        </li>
       {% endif %}
     </ul>
     <div id="rights_tab" class="" style="top:40px;">
@@ -557,6 +560,32 @@
           {% endfor %}
         {% else %}
           <h5>{{ 'admin::users: no api defined for this user' | trans }}</h5>
+        {% endif %}
+      </div>
+
+      <div id="auth_failure_tab">
+        {% set failures = app['repo.auth-failures'].findBy({'username':main_user.getLogin(), 'locked': true}) %}
+          {% if failures | length > 0 %}
+            <table style="border-spacing: 20px;">
+              <thead>
+                <tr>
+                  <th>{{ 'admin::users: username' | trans }}</th>
+                  <th>{{ 'admin::users: ip' | trans }}</th>
+                  <th>{{ 'admin::users: creation date' | trans }}</th>
+                </tr>
+              </thead>
+              <tbody id="auth-failure-list">
+              {% for failure in failures %}
+                 <tr>
+                   <td>{{ failure.getUsername() }}</td>
+                   <td>{{ failure.getIp }}</td>
+                   <td>{{ failure.getCreated() | date('Y-m-d H:i:s') }}</td>
+                 </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+          <button data-username="{{ main_user.getLogin() }}" style="margin-top: 20px;" class="btn btn-warning" id="reset-auth-failure">{{ 'admin::users: reset auth failure' | trans }}</button>
         {% endif %}
       </div>
     {% endif %}
@@ -1147,6 +1176,22 @@
       });
     });
 
+    $('#reset-auth-failure').on('click', function() {
+      let $this = $(this);
+      $.ajax({
+        type: 'POST',
+        url: '/admin/users/auth-failure/reset/',
+        dataType: 'json',
+        data: {
+          username: $this.attr('data-username')
+        },
+        success: function (data) {
+          if (data.success == true) {
+            $('#auth-failure-list').empty();
+          }
+        }
+      });
+    });
   });
 
   require([
