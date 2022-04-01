@@ -9127,7 +9127,7 @@
       </trans-unit>
       <trans-unit id="8e47404e0029c675581606660cbe525ff1f9c749" resname="admin::users: grant password info">
         <source>admin::users: grant password info</source>
-        <target state="needs-translation">Grant password</target>
+        <target state="needs-translation">Password Granted</target>
         <jms:reference-file line="546">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b334c6f1e8ef850c8b78d860550e66bbd5a299e9" resname="admin::users: list user api application">
@@ -9147,12 +9147,12 @@
       </trans-unit>
       <trans-unit id="85d760f5a5e3b7c29f17485512d9225ccdd40811" resname="admin::users: password granted">
         <source>admin::users: password granted</source>
-        <target state="needs-translation">Password granted</target>
+        <target state="needs-translation">Yes</target>
         <jms:reference-file line="547">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="74411bbacf01ba76709c7cf0135e7c4aeed0c180" resname="admin::users: password not granted">
         <source>admin::users: password not granted</source>
-        <target state="needs-translation">Password not granted</target>
+        <target state="needs-translation">No</target>
         <jms:reference-file line="547">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e6ca0a61942f216df1672e612b4e27fdbf498ca2" resname="admin::users: type info">
@@ -9237,7 +9237,7 @@
       </trans-unit>
       <trans-unit id="ce39ed36c46eb7d399b8e75ee7cc1674785e158c" resname="admin::users:filter: updated">
         <source>admin::users:filter: updated</source>
-        <target state="needs-translation">Modification date</target>
+        <target state="needs-translation">Update date</target>
         <jms:reference-file line="78">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
@@ -11048,7 +11048,7 @@
       </trans-unit>
       <trans-unit id="ea214aed2c346724c9b874431706654f560585b6" resname="index::advance_search: show-unset-field-facet">
         <source>index::advance_search: show-unset-field-facet</source>
-        <target state="translated">Show "unset" field facet</target>
+        <target state="translated">Display "unset" field facet</target>
         <jms:reference-file line="286">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1039a002699408da4c4fe74638a6b44f60499069" resname="index:advanced-preferences:: use truncation" approved="yes">
