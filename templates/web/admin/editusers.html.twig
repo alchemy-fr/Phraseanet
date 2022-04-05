@@ -623,7 +623,6 @@
             <th>{{ 'admin::users: redirect uri' | trans }}</th>
             <th>{{ 'admin::users: scope' | trans }}</th>
             <th>{{ 'admin::users: creation date' | trans }}</th>
-            <th>{{ 'admin::users: modification date' | trans }}</th>
           </tr>
           </thead>
           <tbody >
@@ -634,7 +633,6 @@
               <td>{{ apiCode.redirectUri }}</td>
               <td>{{ apiCode.scope }}</td>
               <td>{{ apiCode.created | date('Y-m-d H:i:s') }}</td>
-              <td>{{ apiCode.updated | date('Y-m-d H:i:s') }}</td>
             </tr>
           {% endfor %}
           </tbody>
