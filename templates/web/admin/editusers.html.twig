@@ -583,11 +583,18 @@
 
       <div id="api_tab" class="" style="top:40px;">
         <h1>{{ 'admin::users: list user api application' | trans }}</h1>
-        {% set apiApplications = app['repo.api-applications'].findByUser(main_user) %}
+        {% set apiApplications = app['repo.api-applications'].findByUser(main_user, true) %}
         {% if apiApplications|length > 0 %}
-          {% for apiApplication in app['repo.api-applications'].findByUser(main_user) %}
+          {% for apiApplication in apiApplications %}
             <div style="margin-top: 30px;">
-              <h2>- {{ apiApplication.getName() }}</h2>
+              <h2>
+                - {{ apiApplication.getName() }}
+                {% if apiApplication.getCreator() is not empty and apiApplication.getCreator().getId() == main_user.getId() %}
+                  <span style="margin-left: 30px;" class="badge badge-success">{{ 'admin :users: user owned api' | trans }}</span>
+                {% else %}
+                  <span style="margin-left: 30px;" class="badge badge-inverse">{{ 'admin::users: user api use' | trans }}</span>
+                {% endif %}
+              </h2>
               <div><span class="info-label"><strong> {{ 'admin::users: api ID' | trans }} : </strong></span> <span> {{ apiApplication.getId() }} </span></div>
               <div><span class="info-label"><strong> {{ 'admin::users: creation date' | trans }} : </strong></span> <span> {{ apiApplication.getCreated() | date('Y-m-d H:i:s') }} </span></div>
               <div><span class="info-label"><strong> {{ 'admin::users: modification date' | trans }} : </strong></span> <span> {{ apiApplication.getUpdated() | date('Y-m-d H:i:s') }} </span></div>

@@ -40,12 +40,19 @@ class ApiApplicationRepository extends EntityRepository
 
     /**
      * @param User $user
+     * @param boolean $sorted
      * @return ApiApplication[]
      */
-    public function findByUser(User $user)
+    public function findByUser(User $user, $sorted = false)
     {
         $qb = $this->createQueryBuilder('app');
         $qb->innerJoin('app.accounts', 'acc', Expr\Join::WITH, $qb->expr()->eq('acc.user', ':user'));
+        if ($sorted) {
+            $qb
+                ->orderBy('app.creator', 'ASC')
+                ->addOrderBy('app.id', 'DESC')
+            ;
+        }
         $qb->setParameter(':user', $user);
 
         return $qb->getQuery()->getResult();
