@@ -618,10 +618,9 @@
           <table style="border-spacing: 20px;width: 80%;">
           <thead>
           <tr>
-            <th>{{ 'admin::users: code' | trans }}</th>
+            <th>{{ 'admin::users: Api id' | trans }}</th>
             <th>{{ 'admin::users: Api name' | trans }}</th>
             <th>{{ 'admin::users: redirect uri' | trans }}</th>
-            <th>{{ 'admin::users: expires' | trans }}</th>
             <th>{{ 'admin::users: scope' | trans }}</th>
             <th>{{ 'admin::users: creation date' | trans }}</th>
             <th>{{ 'admin::users: modification date' | trans }}</th>
@@ -630,10 +629,9 @@
           <tbody >
           {% for apiCode in apiCodes %}
             <tr>
-              <td>{{ apiCode.code }}</td>
+              <td>{{ apiCode.account.application.id }}</td>
               <td>{{ apiCode.account.application.name }}</td>
               <td>{{ apiCode.redirectUri }}</td>
-              <td>{{ apiCode.expires }}</td>
               <td>{{ apiCode.scope }}</td>
               <td>{{ apiCode.created | date('Y-m-d H:i:s') }}</td>
               <td>{{ apiCode.updated | date('Y-m-d H:i:s') }}</td>

@@ -24,10 +24,12 @@ class ApiOauthCodeRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findByUserAccount(User $user)
+    public function findByUserAccount(User $user, $limit = 50)
     {
         $qb = $this->createQueryBuilder('c');
         $qb->innerJoin('c.account', 'acc', Expr\Join::WITH, $qb->expr()->eq('acc.user', ':user'));
+        $qb->setMaxResults($limit)
+            ->orderBy('c.created', 'DESC');
         $qb->setParameter(':user', $user);
 
         return $qb->getQuery()->getResult();
