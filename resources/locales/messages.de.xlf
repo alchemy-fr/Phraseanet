@@ -9119,12 +9119,12 @@
       </trans-unit>
       <trans-unit id="382c04ad6bd750ac249b38f17889d00baed79984" resname="admin::users: Api id">
         <source>admin::users: Api id</source>
-        <target state="needs-translation">Api id</target>
+        <target state="needs-translation">Id</target>
         <jms:reference-file line="628">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2cfa8b40f83359062cca1806e40e189c001b404" resname="admin::users: Api name">
         <source>admin::users: Api name</source>
-        <target state="needs-translation">Api name</target>
+        <target state="needs-translation">Name</target>
         <jms:reference-file line="629">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7c39510d9e25cf5af8c360cce029ffa1dc2ef88" resname="admin::users: Auth failure">
@@ -9189,7 +9189,7 @@
       </trans-unit>
       <trans-unit id="496a4f6a90f31903c0220ff8cee21bf75a473c4f" resname="admin::users: list user providers">
         <source>admin::users: list user providers</source>
-        <target state="needs-translation">Auth Provider list</target>
+        <target state="needs-translation">Auth Provider</target>
         <jms:reference-file line="561">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0c4ddf670cb0b90a2fb0e79c6cd6ccd9e86e863b" resname="admin::users: mail is locked">
@@ -9255,7 +9255,7 @@
       </trans-unit>
       <trans-unit id="54592d34674af3046462e72065524cdc0c7352a1" resname="admin::users: username">
         <source>admin::users: username</source>
-        <target state="new">admin::users: username</target>
+        <target state="needs-translation">Username</target>
         <jms:reference-file line="659">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="686">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
