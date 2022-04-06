@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2013-12-03T15:16:28Z" source-language="en" target-language="ar" datatype="plaintext" original="not.available">
     <header>
@@ -843,12 +843,12 @@
       </trans-unit>
       <trans-unit id="a518072a2c5c91cdd2591c1b8d79777664df1ea4" resname="An error occured while denying, please retry  or contact an admin if problem persists">
         <jms:reference-file line="364">Controller/Prod/Order.php</jms:reference-file>
-        <source>An error occured while denying, please retry  or contact an admin if problem persists</source>
+        <source>An error occured while denying, please retry or contact an admin if problem persists</source>
         <target state="new">An error occured while denying, please retry  or contact an admin if problem persists</target>
       </trans-unit>
       <trans-unit id="bf18928e3af1fd3fb410e5f60df0d76ac958b8b1" resname="An error occured while sending, please retry  or contact an admin if problem persists">
         <jms:reference-file line="304">Controller/Prod/Order.php</jms:reference-file>
-        <source>An error occured while sending, please retry  or contact an admin if problem persists</source>
+        <source>An error occured while sending, please retry or contact an admin if problem persists</source>
         <target state="new">An error occured while sending, please retry  or contact an admin if problem persists</target>
       </trans-unit>
       <trans-unit id="4d81e28f8834de808caf1715db1a81e278afe839" resname="An error occured while upload the file. Please retry">
@@ -2281,7 +2281,7 @@
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings">
         <jms:reference-file line="184">admin/fields/templates.html.twig</jms:reference-file>
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="new"><![CDATA[Display & action settings]]></target>
       </trans-unit>
       <trans-unit id="c1f8ab89d08385ae3b004bcbce4a44d4c7224d67" resname="Display proposals tab">
@@ -3324,7 +3324,7 @@
       </trans-unit>
       <trans-unit id="6e730f5633a67f2c86d20b9263e271582684558b" resname="Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes">
         <jms:reference-file line="53">prod/orders/order_item.html.twig</jms:reference-file>
-        <source>Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes</source>
+        <source>Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les elements correspondants aux collections sur lesquelles vous gerez les commandes</source>
         <target>Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes</target>
       </trans-unit>
       <trans-unit id="a2c87aeb3962b1b2e8128d68a932c229bf435edf" resname="Il y a des erreurs, merci de les corriger avant de continuer">
@@ -4778,7 +4778,7 @@
       </trans-unit>
       <trans-unit id="d9a94bb485444d80dd16f27259fd9b50bfea5a80" resname="Probl&amp;egrave;mes de connexion ?">
         <jms:reference-file line="53">api/auth/end_user_authorization.html.twig</jms:reference-file>
-        <source><![CDATA[Probl&egrave;mes de connexion ?]]></source>
+        <source>Probl&amp;egrave;mes de connexion ?</source>
         <target><![CDATA[Probl&egrave;mes de connexion ?]]></target>
       </trans-unit>
       <trans-unit id="376483bbeebdab912944e9b41d8d31510132abde" resname="Process the registration">
@@ -7433,7 +7433,7 @@
       </trans-unit>
       <trans-unit id="f1bfdfda64425d6fcad1ad70cf83b889b0505f24" resname="You can  download an example by clicking here">
         <jms:reference-file line="36">user/import/file.html.twig</jms:reference-file>
-        <source>You can  download an example by clicking here</source>
+        <source>You can download an example by clicking here</source>
         <target state="new">You can  download an example by clicking here</target>
       </trans-unit>
       <trans-unit id="5ca606c9861d49af002f858e28c278f45d0f54bd" resname="You can alternatively receive an email when the download is ready.">
@@ -8434,7 +8434,7 @@
       <trans-unit id="6d985c39243c51b967903e290ce6c33583b17c8a" resname="admin::compte-utilisateur:ftp:  repertoire de destination ftp" approved="yes">
         <jms:reference-file line="203">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="42">web/common/dialog_export.html.twig</jms:reference-file>
-        <source>admin::compte-utilisateur:ftp:  repertoire de destination ftp</source>
+        <source>admin::compte-utilisateur:ftp: repertoire de destination ftp</source>
         <target state="translated">ملف الوصول</target>
       </trans-unit>
       <trans-unit id="d6084018a101b645f6a3a136be17cb1b8c2a499c" resname="admin::compte-utilisateur:ftp: Activer le compte FTP" approved="yes">
@@ -8482,13 +8482,13 @@
         <source>admin::compte-utilisateur:sexe: madame</source>
         <target state="translated">سيدة</target>
       </trans-unit>
-      <trans-unit id="7af00728508b30971b5cd3eb769433546ad9abfa" resname="admin::compte-utilisateur:sexe: mademoiselle" approved="yes">
+      <trans-unit id="7af00728508b30971b5cd3eb769433546ad9abfa" resname="admin::compte-utilisateur:sexe: mademoiselle" approved="no">
         <jms:reference-file line="59">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
         <jms:reference-file line="51">web/account/account.html.twig</jms:reference-file>
         <jms:reference-file line="456">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="305">web/common/dialog_export.html.twig</jms:reference-file>
         <source>admin::compte-utilisateur:sexe: mademoiselle</source>
-        <target state="translated">آنسة</target>
+        <target state="needs-translation">آنسة</target>
       </trans-unit>
       <trans-unit id="db663dadd7bd9b045a68cafcfe2ca4e0c832e50a" resname="admin::compte-utilisateur:sexe: monsieur" approved="yes">
         <jms:reference-file line="61">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
@@ -11286,7 +11286,7 @@
       </trans-unit>
       <trans-unit id="70a2e2ecaac5729f9c103110e2f37f915c722526" resname="report:: Cumul telechargements &amp; connexions">
         <jms:reference-file line="30">web/report/ajax_dashboard_content_child.html.twig</jms:reference-file>
-        <source><![CDATA[report:: Cumul telechargements & connexions]]></source>
+        <source>report:: Cumul telechargements &amp; connexions</source>
         <target><![CDATA[report:: Cumul telechargements & connexions]]></target>
       </trans-unit>
       <trans-unit id="6543d1226df7dd63e1df3071abb9e42be332413a" resname="report:: Dashboard">
@@ -12435,7 +12435,7 @@
       </trans-unit>
       <trans-unit id="c2dbd1369203c4ce454a33694eb6766e06aed9ed" resname="thesaurus:: Des reponses sont retournees par cette branche. &amp;#10;Supprimer quand meme ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
         <jms:reference-file line="408">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <source><![CDATA[thesaurus:: Des reponses sont retournees par cette branche. &#10;Supprimer quand meme ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Des reponses sont retournees par cette branche. &amp;#10;Supprimer quand meme ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated">هذا الفرع يقدم أجوبة.nحذف على أي حال؟ الكلمات المعنية تصبح مرشحة للفهرسة</target>
       </trans-unit>
       <trans-unit id="22b52544b33ebf481042a6147316265f60e1344a" resname="thesaurus:: Des termes de cette branche ne renvoient pas de hits. Les supprimer ?" approved="yes">
@@ -12492,7 +12492,7 @@
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
         <jms:reference-file line="406">web/thesaurus/thesaurus.html.twig</jms:reference-file>
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated">حذف هذا الفرع؟ الكلمات المعنية ترشح للفهرسة في المرة القادمة</target>
       </trans-unit>
       <trans-unit id="84016e2246b134b4149a0e4e0179b8ad333dd897" resname="thesaurus:: Tous les termes ont des hits" approved="yes">
@@ -13070,7 +13070,7 @@
       </trans-unit>
       <trans-unit id="646b0ebbe9829e44e9e99e9ab991a526f758001d" resname="you are about to change the  representation thumbnail of your video">
         <jms:reference-file line="14">actions/Tools/confirm.html.twig</jms:reference-file>
-        <source>you are about to change the  representation thumbnail of your video</source>
+        <source>you are about to change the representation thumbnail of your video</source>
         <target>you are about to change the  representation thumbnail of your video</target>
       </trans-unit>
       <trans-unit id="1699a031168043698a8b36ca94bd3ef9207725a9" resname="your configuration">
