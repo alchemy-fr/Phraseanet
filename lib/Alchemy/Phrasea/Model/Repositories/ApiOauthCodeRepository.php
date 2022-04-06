@@ -3,7 +3,9 @@
 namespace Alchemy\Phrasea\Model\Repositories;
 
 use Alchemy\Phrasea\Model\Entities\ApiAccount;
+use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * ApiOauthCodeRepository
@@ -18,6 +20,17 @@ class ApiOauthCodeRepository extends EntityRepository
         $qb = $this->createQueryBuilder('c');
         $qb->where($qb->expr()->eq('c.account', ':account'));
         $qb->setParameter(':account', $account);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByUserAccount(User $user, $limit = 50)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $qb->innerJoin('c.account', 'acc', Expr\Join::WITH, $qb->expr()->eq('acc.user', ':user'));
+        $qb->setMaxResults($limit)
+            ->orderBy('c.created', 'DESC');
+        $qb->setParameter(':user', $user);
 
         return $qb->getQuery()->getResult();
     }

@@ -14,10 +14,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Helper\Helper;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class Manage extends Helper
@@ -57,6 +59,8 @@ class Manage extends Helper
             'last_model' => $this->request->get('last_model'),
             'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
             'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
+            'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
+            'filter_mail_locked_only' => $this->request->get('filter_mail_locked_only') ? true : false,
             'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $request->get("ord", \User_Query::ORD_DESC),
             'offset_start' => $offset_start,
@@ -73,6 +77,8 @@ class Manage extends Helper
         $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
             ->last_model_is($this->query_parms['last_model'])
+            ->templates_only($this->query_parms['filter_model_only'])
+            ->mail_locked_only($this->query_parms['filter_mail_locked_only'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
             ->include_invite($this->query_parms['filter_guest_user'])
@@ -95,11 +101,16 @@ class Manage extends Helper
             'like_field' => $this->request->get('like_field'),
             'like_type' => $this->request->get('like_type'),
             'like_value' => $this->request->get('like_value'),
+            'date_field' => $this->request->get('date_field'),
+            'date_operator' => $this->request->get('date_operator'),
+            'date_value' => $this->request->get('date_value'),
             'sbas_id' => $this->request->get('sbas_id'),
             'base_id' => $this->request->get('base_id'),
             'last_model' => $this->request->get('last_model'),
             'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
             'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
+            'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
+            'filter_mail_locked_only' => $this->request->get('filter_mail_locked_only') ? true : false,
             'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
             'per_page' => $results_quantity,
@@ -116,9 +127,11 @@ class Manage extends Helper
 
         $results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
+            ->date_filter($this->query_parms['date_field'], $this->query_parms['date_value'], $this->query_parms['date_operator'])
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
-            ->include_templates(true)
+            ->templates_only($this->query_parms['filter_model_only'])
+            ->mail_locked_only($this->query_parms['filter_mail_locked_only'])
             ->include_invite($this->query_parms['filter_guest_user'])
             ->phantoms_only($this->query_parms['filter_phantoms_only'])
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), [\ACL::CANADMIN])
@@ -140,7 +153,7 @@ class Manage extends Helper
 
         $query = $this->app['phraseanet.user-query'];
         $templates = $query
-                ->only_templates(true)
+                ->only_user_templates(true)
                 ->execute()->get_results();
 
         return [
@@ -228,5 +241,24 @@ class Manage extends Helper
         }
 
         $this->deliver($mail);
+    }
+
+    public function setMailLocked()
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        $user = $userRepository->find($this->request->request->get('user_id'));
+        $status = $this->request->request->get('action') == 'locked' ? true : false;
+        $user->setMailLocked($status);
+        $this->getObjectManager()->persist($user);
+        $this->getObjectManager()->flush();
+    }
+
+    /**
+     * @return ObjectManager
+     */
+    private function getObjectManager()
+    {
+        return $this->app['orm.em'];
     }
 }

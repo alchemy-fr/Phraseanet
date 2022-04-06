@@ -5,6 +5,7 @@ namespace Alchemy\Tests\Phrasea\WorkerManager\Worker;
 use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use Alchemy\Phrasea\WorkerManager\Worker\ProcessPool;
 use Alchemy\Phrasea\WorkerManager\Worker\WorkerInvoker;
+use PhpAmqpLib\Channel\AMQPChannel;
 use Symfony\Component\Process\Exception\RuntimeException as ProcessRuntimeException;
 use Symfony\Component\Process\Process;
 
@@ -36,10 +37,13 @@ class WorkerInvokerTest extends \PhraseanetTestCase
 
         $processPool->method('getWorkerProcess')->will($this->returnValue($process));
 
+        $channel = $this->getMockBuilder(AMQPChannel::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $sut = new WorkerInvoker($processPool);
 
-        $sut->invokeWorker(MessagePublisher::SUBDEF_CREATION_TYPE, json_encode(['mock-payload']));
+        $sut->invokeWorker(MessagePublisher::SUBDEF_CREATION_TYPE, json_encode(['mock-payload']), $channel);
     }
 
     public function testInvokeWorkerWhenThrowException()
@@ -60,11 +64,14 @@ class WorkerInvokerTest extends \PhraseanetTestCase
 
         $processPool->method('getWorkerProcess')->will($this->returnValue($process));
 
+        $channel = $this->getMockBuilder(AMQPChannel::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $sut = new WorkerInvoker($processPool);
 
         try {
-            $sut->invokeWorker(MessagePublisher::SUBDEF_CREATION_TYPE, json_encode(['mock-payload']));
+            $sut->invokeWorker(MessagePublisher::SUBDEF_CREATION_TYPE, json_encode(['mock-payload']), $channel);
             $this->fail('Should have raised an exception');
         } catch (\Exception $e) {
 
