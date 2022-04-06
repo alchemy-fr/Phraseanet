@@ -62,6 +62,7 @@ class User_Query
     protected $include_templates = false;
     protected $only_user_templates = false;
     protected $templates_only = false;
+    protected $mail_locked_only = false;
     protected $email_not_null = false;
     protected $base_ids = [];
     protected $sbas_ids = [];
@@ -245,6 +246,20 @@ class User_Query
         if (!$boolean) {
             $this->include_templates = true;
         }
+
+        return $this;
+    }
+
+    /**
+     * Restrict only on mail locked
+     *
+     * @param $boolean
+     *
+     * @return $this
+     */
+    public function mail_locked_only($boolean)
+    {
+        $this->mail_locked_only = !!$boolean;
 
         return $this;
     }
@@ -982,6 +997,10 @@ class User_Query
             $sql .= ' AND model_of IS NULL';
         } elseif ($this->app->getAuthenticatedUser()) {
             $sql .= ' AND (model_of IS NULL OR model_of = ' . $this->app->getAuthenticatedUser()->getId() . ' ) ';
+        }
+
+        if ($this->mail_locked_only) {
+            $sql .= ' AND mail_locked = 1';
         }
 
         if ($this->emailDomains) {

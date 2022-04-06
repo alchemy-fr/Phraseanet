@@ -15,6 +15,7 @@ use Alchemy\Phrasea\Application\Helper\UserQueryAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Core\Response\CSVFileResponse;
 use Alchemy\Phrasea\Helper\User as UserHelper;
+use Alchemy\Phrasea\Model\Entities\AuthFailure;
 use Alchemy\Phrasea\Model\Entities\FtpCredential;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Entities\WebhookEvent;
@@ -62,6 +63,35 @@ class UserController extends Controller
         $module->delete_users();
 
         return $this->app->redirectPath('admin_users_search');
+    }
+
+    public function resetAuthFailureAction(Request $request)
+    {
+        $this->app['auth.native.failure-manager']->resetLockedFailureByUsername($request->request->get('username'));
+
+        $failures = $this->app['repo.auth-failures']->findBy(['username' => $request->request->get('username'), 'locked' => false], ['created' => 'desc']);
+
+        $failuresTable = [];
+
+        foreach ($failures as $key => $failure) {
+            /** @var AuthFailure $failure */
+            $failuresTable[$key]['username'] = $failure->getUsername();
+            $failuresTable[$key]['ip'] = $failure->getIp();
+            $failuresTable[$key]['created'] = $failure->getCreated()->format('Y-m-d H:i:s');
+        }
+
+        return $this->app->json([
+            'success' => true,
+            'authFailureUnlocked' => $failuresTable
+        ]);
+    }
+
+    public function changeMailLockedAction(Request $request)
+    {
+        $helper = $this->getUserManageHelper($request);
+        $helper->setMailLocked();
+
+        return $this->app->json(['success' => true]);
     }
 
     public function applyRightsAction(Request $request)

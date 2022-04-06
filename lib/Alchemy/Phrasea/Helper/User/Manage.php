@@ -14,10 +14,12 @@ use Alchemy\Phrasea\Application;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Helper\Helper;
+use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Receiver;
 use Alchemy\Phrasea\Notification\Mail\MailRequestPasswordSetup;
 use Alchemy\Phrasea\Notification\Mail\MailRequestEmailConfirmation;
 use Alchemy\Phrasea\Model\Entities\User;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class Manage extends Helper
@@ -58,6 +60,7 @@ class Manage extends Helper
             'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
             'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
             'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
+            'filter_mail_locked_only' => $this->request->get('filter_mail_locked_only') ? true : false,
             'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $request->get("ord", \User_Query::ORD_DESC),
             'offset_start' => $offset_start,
@@ -75,6 +78,7 @@ class Manage extends Helper
             ->like($this->query_parms['like_field'], $this->query_parms['like_value'], $this->query_parms['like_type'])
             ->last_model_is($this->query_parms['last_model'])
             ->templates_only($this->query_parms['filter_model_only'])
+            ->mail_locked_only($this->query_parms['filter_mail_locked_only'])
             ->get_inactives($this->query_parms['inactives'])
             ->include_templates(false)
             ->include_invite($this->query_parms['filter_guest_user'])
@@ -106,6 +110,7 @@ class Manage extends Helper
             'filter_guest_user' => $this->request->get('filter_guest_user') ? true : false,
             'filter_phantoms_only' => $this->request->get('filter_phantoms_only') ? true : false,
             'filter_model_only'  => $this->request->get('filter_model_only') ? true : false,
+            'filter_mail_locked_only' => $this->request->get('filter_mail_locked_only') ? true : false,
             'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE),
             'ord' => $this->request->get("ord", \User_Query::ORD_DESC),
             'per_page' => $results_quantity,
@@ -126,6 +131,7 @@ class Manage extends Helper
             ->last_model_is($this->query_parms['last_model'])
             ->get_inactives($this->query_parms['inactives'])
             ->templates_only($this->query_parms['filter_model_only'])
+            ->mail_locked_only($this->query_parms['filter_mail_locked_only'])
             ->include_invite($this->query_parms['filter_guest_user'])
             ->phantoms_only($this->query_parms['filter_phantoms_only'])
             ->on_bases_where_i_am($this->app->getAclForUser($this->app->getAuthenticatedUser()), [\ACL::CANADMIN])
@@ -235,5 +241,24 @@ class Manage extends Helper
         }
 
         $this->deliver($mail);
+    }
+
+    public function setMailLocked()
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->app['repo.users'];
+        $user = $userRepository->find($this->request->request->get('user_id'));
+        $status = $this->request->request->get('action') == 'locked' ? true : false;
+        $user->setMailLocked($status);
+        $this->getObjectManager()->persist($user);
+        $this->getObjectManager()->flush();
+    }
+
+    /**
+     * @return ObjectManager
+     */
+    private function getObjectManager()
+    {
+        return $this->app['orm.em'];
     }
 }
