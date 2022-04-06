@@ -8488,7 +8488,7 @@
         <jms:reference-file line="456">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="305">web/common/dialog_export.html.twig</jms:reference-file>
         <source>admin::compte-utilisateur:sexe: mademoiselle</source>
-        <target state="needs-translation">آنسة</target>
+        <target state="needs-translation"> </target>
       </trans-unit>
       <trans-unit id="db663dadd7bd9b045a68cafcfe2ca4e0c832e50a" resname="admin::compte-utilisateur:sexe: monsieur" approved="yes">
         <jms:reference-file line="61">Core/Provider/RegistrationServiceProvider.php</jms:reference-file>
