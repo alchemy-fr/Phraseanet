@@ -5058,7 +5058,7 @@
       </trans-unit>
       <trans-unit id="c2f5cf13e60299c982211b3c168ac42b7cf0bd7e" resname="Please confirme the users deletion!">
         <source>Please confirme the users deletion!</source>
-        <target state="needs-translation">Please confirm the users deletion !</target>
+        <target state="translated">Please confirm the users deletion !</target>
         <jms:reference-file line="649">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d971fb22555bf3deb2da6d7820d2379b6f37d12" resname="Please consider send this push to the following users : %recommendation%" approved="yes">
@@ -9092,27 +9092,27 @@
       </trans-unit>
       <trans-unit id="9c65d4dd606badb72de40f53bb447a6c56999244" resname="admin::userlist delete">
         <source>admin::userlist delete</source>
-        <target state="needs-translation">Delete selected users</target>
+        <target state="translated">Delete selected users</target>
         <jms:reference-file line="97">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="67786d36ac94e1da1b893a91f0390215856f0d13" resname="admin::userlist modify">
         <source>admin::userlist modify</source>
-        <target state="needs-translation">Modify selected users</target>
+        <target state="translated">Modify selected users</target>
         <jms:reference-file line="95">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6aba93e09a328c7c93b0c47d7eacaba0c0dd8c3e" resname="admin::userlist: display model only">
         <source>admin::userlist: display model only</source>
-        <target state="needs-translation">Display models</target>
+        <target state="translated">Display models</target>
         <jms:reference-file line="45">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="59d12fc723a0831f5f4e19792cf0158b81833b39" resname="admin::userlist: filterguestuser">
         <source>admin::userlist: filterguestuser</source>
-        <target state="needs-translation">Display guest users</target>
+        <target state="translated">Display guest users</target>
         <jms:reference-file line="37">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd3b85a7535e1a5e824820bbf7feb6a9ce0a3676" resname="admin::userlist: phantoms only">
         <source>admin::userlist: phantoms only</source>
-        <target state="needs-translation">Display users without rights</target>
+        <target state="translated">Display users without rights</target>
         <jms:reference-file line="41">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="066e4bf19c914aa7b3dce70cb3ba25be17f9970d" resname="admin::userlist: user mail locked only">
@@ -9127,7 +9127,7 @@
       </trans-unit>
       <trans-unit id="f2cfa8b40f83359062cca1806e40e189c001b404" resname="admin::users: Api name">
         <source>admin::users: Api name</source>
-        <target state="needs-translation">Api name</target>
+        <target state="needs-translation">Name</target>
         <jms:reference-file line="629">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7c39510d9e25cf5af8c360cce029ffa1dc2ef88" resname="admin::users: Auth failure">
@@ -9192,7 +9192,7 @@
       </trans-unit>
       <trans-unit id="496a4f6a90f31903c0220ff8cee21bf75a473c4f" resname="admin::users: list user providers">
         <source>admin::users: list user providers</source>
-        <target state="needs-translation">Auth Provider list</target>
+        <target state="needs-translation">Auth Provider</target>
         <jms:reference-file line="561">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0c4ddf670cb0b90a2fb0e79c6cd6ccd9e86e863b" resname="admin::users: mail is locked">
@@ -9253,7 +9253,7 @@
       </trans-unit>
       <trans-unit id="fe2cdf3da09f988f7531c1a794f9754fdcfaa00e" resname="admin::users: user api use">
         <source>admin::users: user api use</source>
-        <target state="needs-translation">used</target>
+        <target state="needs-translation">Used</target>
         <jms:reference-file line="595">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="54592d34674af3046462e72065524cdc0c7352a1" resname="admin::users: username">
@@ -9289,7 +9289,7 @@
       </trans-unit>
       <trans-unit id="37d89dc904c56dfef4c2e9eaad6a3acf25538471" resname="admin::users:filter: Date filter">
         <source>admin::users:filter: Date filter</source>
-        <target state="needs-translation">Filter by date</target>
+        <target state="translated">Filter by date</target>
         <jms:reference-file line="78">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3633b8b0f40b33b71da34d2b7169b978731dbc5c" resname="admin::users:filter: content" approved="yes">
@@ -9299,37 +9299,37 @@
       </trans-unit>
       <trans-unit id="5f9ebdc4e54e55fc85e1a4ff3a0435cb07b00af4" resname="admin::users:filter: created">
         <source>admin::users:filter: created</source>
-        <target state="needs-translation">Creation date</target>
+        <target state="translated">Creation date</target>
         <jms:reference-file line="81">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f305b8f1e67c4d159d51b5909c2e23c004be87c" resname="admin::users:filter: empty">
         <source>admin::users:filter: empty</source>
-        <target state="needs-translation">not filled</target>
+        <target state="translated">not filled</target>
         <jms:reference-file line="65">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f15a566698f098c52e01e7ce4b8abef7c937667" resname="admin::users:filter: finishing by">
         <source>admin::users:filter: finishing by</source>
-        <target state="needs-translation">ending with</target>
+        <target state="translated">ending with</target>
         <jms:reference-file line="64">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b9ae2b30387ccd436d14d5f9544977473f7678c6" resname="admin::users:filter: greater than">
         <source>admin::users:filter: greater than</source>
-        <target state="needs-translation">after</target>
+        <target state="translated">after</target>
         <jms:reference-file line="87">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c37f513d71eee4a5d1033577b0b92e0b5e07959" resname="admin::users:filter: is null">
         <source>admin::users:filter: is null</source>
-        <target state="needs-translation">empty</target>
+        <target state="translated">empty</target>
         <jms:reference-file line="88">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="74e3393c80663fe7dfa042ba456b5cd96e2cb6bf" resname="admin::users:filter: last_connection">
         <source>admin::users:filter: last_connection</source>
-        <target state="needs-translation">Last connection date</target>
+        <target state="translated">Last connection date</target>
         <jms:reference-file line="83">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f85c80eefe33be1a8e00e6046928c001e48212b7" resname="admin::users:filter: less than">
         <source>admin::users:filter: less than</source>
-        <target state="needs-translation">before</target>
+        <target state="translated">before</target>
         <jms:reference-file line="86">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="58f333882ef2f6c718c5b5b0c2660e81da62f08d" resname="admin::users:filter: start with" approved="yes">
@@ -9339,7 +9339,7 @@
       </trans-unit>
       <trans-unit id="ce39ed36c46eb7d399b8e75ee7cc1674785e158c" resname="admin::users:filter: updated">
         <source>admin::users:filter: updated</source>
-        <target state="needs-translation">Update date</target>
+        <target state="translated">Update date</target>
         <jms:reference-file line="82">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fdec47ae48ab4c4ce33aff0690e796525a883f4f" resname="admin::utilisateurs: bases de donnees" approved="yes">
