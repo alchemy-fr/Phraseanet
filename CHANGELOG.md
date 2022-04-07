@@ -5,7 +5,7 @@
 ### Update instructions
 
  - docker docker-compose : add profile "gateway-classic" to your ```COMPOSE_PROFILES```
- - Migration patch: no patch to play, just run upgrade for bump version 
+ - Migration instructions: just run upgrade for bump version 
  - Elasticsearch index action : Requires a drop, create, populate
 
 ### Version summary :
@@ -15,6 +15,7 @@
     see section searchengine setting/ aggregate in Admin to activate it.
     the features require an Elasticsearch index drop, create, populate  
   - Adding a separate docker-compose profile to nginx container for a better stack compositing
+  - Admin Gui users, more search options for users, improved user export, and more information in user details.
 
 ### New Features
 
@@ -28,12 +29,15 @@ PHRAS-3215 Prod - facets -  use image orientation from subdefinition and make a 
 PHRAS-3643 Bin/console records:build-subdef add option --publish to emit build message to Rabbitmq
 PHRAS-3653 Worker queue message : publish messages as persistent into rabbitmq queues
 PHRAS-3560 Admin - Users list and search improvement and export users as .csv, add "last connection"
+PHRAS-3223 Admin - user details - Display AuthFailure and UsrAuthProvider info
+PHRAS-3653 Worker queue message : publish messages as persitent into rabbitmq queues
 ```
 
 ### Bug fix
 
 ```
 PHRAS-3651 prod-facets : tech facets "no value" wrongly translated, some always return 0 answers
+PHRAS-3655 Integrity constraint violation when deleting a user with an entry inside table ApiOauthCodes
  ```
 
 ## 4.1.6-rc1

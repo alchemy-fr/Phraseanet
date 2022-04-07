@@ -173,6 +173,10 @@ border-manager:
             enabled: false
             options:
                 mediatypes: [Audio, Document, Image, Video]
+
+registry:
+    api-clients:
+        api-subdef_service: false
 user_account:
     deleting_policies:
         email_confirmation: true
