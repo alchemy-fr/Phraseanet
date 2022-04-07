@@ -4070,12 +4070,20 @@ body {
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
 }
 
+* {
+  font-family: inherit;
+}
+
+html {
+  font-family: Roboto, sans-serif;
+}
+
 /** skin/common/main.css */
 
 body {
   margin: 0;
   padding: 0;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Roboto, sans-serif;
   font-size: 13px;
   overflow: hidden;
 }

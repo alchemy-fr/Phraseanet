@@ -171,6 +171,13 @@ services:
     networks:
       - internal
 
+  w-shareBasket:
+    volumes:
+      - ../:/var/alchemy
+      - .:/var/alchemy/Phraseanet
+    networks:
+      - internal
+
   scheduler:
     volumes:
     - ../:/var/alchemy
@@ -187,5 +194,7 @@ services:
   db:
     volumes:
     - ${PHRASEANET_DB_DIR}:/var/lib/mysql:rw
+    ports:
+      - 3306:3306
     networks:
       - internal

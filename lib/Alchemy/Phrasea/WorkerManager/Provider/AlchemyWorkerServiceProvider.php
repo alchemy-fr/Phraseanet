@@ -20,6 +20,7 @@ use Alchemy\Phrasea\WorkerManager\Worker\PullAssetsWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\EditRecordWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\RecordsActionsWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\Resolver\TypeBasedWorkerResolver;
+use Alchemy\Phrasea\WorkerManager\Worker\ShareBasketWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubdefCreationWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\SubtitleWorker;
 use Alchemy\Phrasea\WorkerManager\Worker\ValidationReminderWorker;
@@ -168,6 +169,10 @@ class AlchemyWorkerServiceProvider implements PluginProviderInterface
             return (new EditRecordWorker($app['repo.worker-running-job'], $app['dispatcher'], $app['alchemy_worker.message.publisher']))
                    ->setApplicationBox($app['phraseanet.appbox'])
                 ;
+        }));
+
+        $app['alchemy_worker.type_based_worker_resolver']->addFactory(MessagePublisher::SHARE_BASKET_TYPE, new CallableWorkerFactory(function () use ($app) {
+            return new ShareBasketWorker($app);
         }));
     }
 

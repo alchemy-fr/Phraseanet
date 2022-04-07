@@ -118,13 +118,37 @@
         shown: false, // Currently being shown?
         useIframe: /*@cc_on @*//*@if (@_win32) true, @else @*/false, /*@end @*/ // This is a better check than looking at userAgent!
 
+        _originalPlace: null,
+        _hovered: false,
+
+        _hover_in: function(cm) {
+            if (cm.closeTimer) {
+                clearTimeout(cm.closeTimer);
+                cm.closeTimer = null;
+            }
+        },
+
+        _hover_out: function(cm, tms) {
+            cm.closeTimer = setTimeout(
+                function() {
+                    cm.hide();
+                },
+                tms
+            );
+        },
+
         // Create the menu instance
         create: function (menu, opts) {
-            var cmenu = $.extend({}, this, opts); // Clone all default properties to created object
+            const cmenu = $.extend({}, this, opts); // Clone all default properties to created object
 
             // If a selector has been passed in, then use that as the menu
             if (typeof menu === "string") {
                 cmenu.menu = $(menu);
+                cmenu._originalPlace = cmenu.menu.parent();
+                cmenu.menu.hover(
+                    function() { cmenu._hover_in(cmenu); },
+                    function() { cmenu._hover_out(cmenu, 500); }
+                );
             }
             // If a function has been passed in, call it each time the menu is shown to create the menu
             else if (typeof menu === "function") {
@@ -149,45 +173,33 @@
             $('body').bind(cmenu.openEvt, function () {
                 cmenu.hide();
             }); // If right-clicked somewhere else in the document, hide this menu
+
+            cmenu.onCreated(cmenu);
             return cmenu;
         },
 
         // Create an iframe object to go behind the menu
         createIframe: function () {
-            return $('<iframe frameborder="0" tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
+            return $('<iframe tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
         },
 
         // Accept an Array representing a menu structure and turn it into HTML
         createMenu: function (menu, cmenu) {
-            var className = cmenu.className;
+            let className = cmenu.className;
             $.each(cmenu.theme.split(","), function (i, n) {
                 className += ' ' + cmenu.themePrefix + n;
             });
-//			var $t = $('<div style="background-color:#ffff00; xwidth:200px; height:200px"><table style="" cellspacing=0 cellpadding=0></table></div>').click(function(){cmenu.hide(); return false;}); // We wrap a table around it so width can be flexible
-            var $t = $('<table style="" cellspacing="0" cellpadding="0"></table>').click(function () {
+            const $t = $('<table style=""></table>').click(function () {
                 cmenu.hide();
                 return false;
             }); // We wrap a table around it so width can be flexible
-            var $tr = $('<tr></tr>');
-            var $td = $('<td></td>');
-            var $div = cmenu._div = $('<div class="' + className + '"></div>');
+            const $tr = $('<tr></tr>');
+            const $td = $('<td></td>');
+            const $div = cmenu._div = $('<div class="' + className + '"></div>');
 
             cmenu._div.hover(
-                function () {
-                    if (cmenu.closeTimer) {
-                        clearTimeout(cmenu.closeTimer);
-                        cmenu.closeTimer = null;
-                    }
-                },
-                function () {
-                    var myClass = cmenu;
-
-                    function timerRelay() {
-                        myClass.hide();
-                    }
-
-                    myClass.closeTimer = setTimeout(timerRelay, 500);
-                }
+                function() { cmenu._hover_in(cmenu); },
+                function() { cmenu._hover_out(cmenu, 500); }
             );
 
             // Each menu item is specified as either:
@@ -206,8 +218,8 @@
              }
              }
              */
-            for (var i = 0; i < menu.length; i++) {
-                var m = menu[i];
+            for (let i = 0; i < menu.length; i++) {
+                const m = menu[i];
                 if (m === $.contextMenu.separator) {
                     $div.append(cmenu.createSeparator());
                 }
@@ -219,18 +231,19 @@
                 $td.append(cmenu.createIframe());
             }
             $t.append($tr.append($td.append($div)));
+
             return $t;
         },
 
         // Create an individual menu item
         createMenuItem: function (obj) {
-            var cmenu = this;
-            var label = obj.label;
+            const cmenu = this;
+            const label = obj.label;
             if (typeof obj === "function") {
                 obj = {onclick: obj};
             } // If passed a simple function, turn it into a property of an object
             // Default properties, extended in case properties are passed
-            var o = $.extend({
+            const o = $.extend({
                 onclick: function () {
                 },
                 className: '',
@@ -242,8 +255,8 @@
                 hoverItemOut: cmenu.hoverItemOut
             }, obj);
             // If an icon is specified, hard-code the background-image style. Themes that don't show images should take this into account in their CSS
-            var iconStyle = (o.icon) ? 'background-image:url(' + o.icon + ');' : '';
-            var $div = $('<div class="' + cmenu.itemClassName + ' ' + o.className + ((o.disabled) ? ' ' + cmenu.disabledItemClassName : '') + '" title="' + o.title + '"></div>')
+            const iconStyle = (o.icon) ? 'background-image:url(' + o.icon + ');' : '';
+            const $div = $('<div class="' + cmenu.itemClassName + ' ' + o.className + ((o.disabled) ? ' ' + cmenu.disabledItemClassName : '') + '" title="' + o.title + '"></div>')
             // If the item is disabled, don't do anything when it is clicked
                 .click(
                     function (e) {
@@ -264,8 +277,9 @@
                         o.hoverItemOut.call(this, (cmenu.isItemDisabled(this)) ? cmenu.disabledItemHoverClassName : o.hoverClassName);
                     }
                 );
-            var $idiv = $('<div class="' + cmenu.innerDivClassName + '" style="' + iconStyle + '">' + label + '</div>');
+            const $idiv = $('<div class="' + cmenu.innerDivClassName + '" style="' + iconStyle + '">' + label + '</div>');
             $div.append($idiv);
+
             return $div;
         },
 
@@ -301,7 +315,7 @@
 
         // Display the shadow object, given the position of the menu itself
         showShadow: function (x, y, e) {
-            var cmenu = this;
+            const cmenu = this;
             if (cmenu.shadow) {
                 cmenu.shadowObj.css({
                     width: (cmenu.menu.width() + cmenu.shadowWidthAdjust) + "px",
@@ -318,29 +332,49 @@
             return true;
         },
 
+        onCreated: function (cmenu) {},
+
         // Show the context menu
         show: function (t, e) {
-            var cmenu = this, x = e.pageX, y = e.pageY;
+            const cmenu = this;
+            let x = e.pageX, y = e.pageY;
 
-            if (cmenu._div)
+            if (cmenu._div) {
                 cmenu._div.css('height', 'auto').css('overflow-y', 'auto');
+            }
 
             cmenu.target = t; // Preserve the object that triggered this context menu so menu item click methods can see it
             cmenu._showEvent = e; // Preserve the event that triggered this context menu so menu item click methods can see it
             if (cmenu.beforeShow() !== false) {
+                const $t = $(t);
+                $t.off("mouseleave").on("mouseleave", function () {
+                    cmenu._hover_out(cmenu, 100);
+                });
+
                 // If the menu content is a function, call it to populate the menu each time it is displayed
                 if (cmenu.menuFunction) {
                     if (cmenu.menu) {
-                        $(cmenu.menu).remove();
+                        if(cmenu._originalPlace) {
+                            cmenu._originalPlace.append(cmenu.menu);
+                        }
+                        else {
+                            $(cmenu.menu).remove();
+                        }
                     }
-                    cmenu.menu = cmenu.createMenu(cmenu.menuFunction(cmenu, t), cmenu);
+                    let r = cmenu.menuFunction(cmenu, t);
+                    if(Array.isArray(r)) {
+                        cmenu.menu = cmenu.createMenu(r, cmenu);
+                    }
+                    else {
+                        cmenu.menu = r;
+                    }
                     cmenu.menu.css({display: 'none'});
                     $(cmenu.appendTo).append(cmenu.menu);
                 }
-                var $c = cmenu.menu;
+                const $c = cmenu.menu;
                 x += cmenu.offsetX;
                 y += cmenu.offsetY;
-                var pos = cmenu.getPosition(x, y, cmenu, e); // Extracted to method for extensibility
+                const pos = cmenu.getPosition(x, y, cmenu, e); // Extracted to method for extensibility
                 cmenu.showShadow(pos.x, pos.y, e);
                 // Resize the iframe if needed
                 if (cmenu.useIframe) {
@@ -352,13 +386,13 @@
                 if (cmenu.dropDown) {
                     $c.css('visibility', 'hidden').show();
 
-                    var bodySize = {x: $(window).width(), y: $(window).height()};
+                    let bodySize = {x: $(window).width(), y: $(window).height()};
 
-                    if ($(t).offset().top + $(t).outerHeight() + $c.height() > bodySize.y) {
-                        if ($(t).offset().left + $(t).outerWidth() + $c.width() > bodySize.x)
+                    if ($t.offset().top + $t.outerHeight() + $c.height() > bodySize.y) {
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x)
                             $c.css({
-                                top: ($(t).offset().top - $c.outerHeight()) + "px",
-                                left: ($(t).offset().left - $c.outerWidth()) + "px",
+                                top: ($t.offset().top - $c.outerHeight()) + "px",
+                                left: ($t.offset().left - $c.outerWidth()) + "px",
                                 position: "absolute",
                                 zIndex: 9999
                             })[cmenu.showTransition](cmenu.showSpeed, ((cmenu.showCallback) ? function () {
@@ -366,8 +400,8 @@
                             } : null));
                         else
                             $c.css({
-                                top: ($(t).offset().top - $c.outerHeight()) + "px",
-                                left: ($(t).offset().left) + "px",
+                                top: ($t.offset().top - $c.outerHeight()) + "px",
+                                left: ($t.offset().left) + "px",
                                 position: "absolute",
                                 zIndex: 9999
                             })[cmenu.showTransition](cmenu.showSpeed, ((cmenu.showCallback) ? function () {
@@ -376,10 +410,10 @@
                     }
                     else {
 
-                        if ($(t).offset().left + $(t).outerWidth() + $c.width() > bodySize.x)
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x)
                             $c.css({
-                                top: ($(t).offset().top + $(t).outerHeight()) + "px",
-                                left: ($(t).offset().left - $c.outerWidth()) + "px",
+                                top: ($t.offset().top + $t.outerHeight()) + "px",
+                                left: ($t.offset().left - $c.outerWidth()) + "px",
                                 position: "absolute",
                                 zIndex: 9999
                             })[cmenu.showTransition](cmenu.showSpeed, ((cmenu.showCallback) ? function () {
@@ -387,8 +421,8 @@
                             } : null));
                         else
                             $c.css({
-                                top: ($(t).offset().top + $(t).outerHeight()) + "px",
-                                left: ($(t).offset().left) + "px",
+                                top: ($t.offset().top + $t.outerHeight()) + "px",
+                                left: ($t.offset().left) + "px",
                                 position: "absolute",
                                 zIndex: 9999
                             })[cmenu.showTransition](cmenu.showSpeed, ((cmenu.showCallback) ? function () {
@@ -398,15 +432,16 @@
                     }
                     $c.css('visibility', 'visible');
                 }
-                else
+                else {
                     $c.css({
-                        top: pos.y + "px",
-                        left: pos.x + "px",
+                        top:      pos.y + "px",
+                        left:     pos.x + "px",
                         position: "absolute",
-                        zIndex: 9999
+                        zIndex:   9999
                     })[cmenu.showTransition](cmenu.showSpeed, ((cmenu.showCallback) ? function () {
                         cmenu.showCallback.call(cmenu);
                     } : null));
+                }
                 cmenu.shown = true;
                 $(document).one('click', null, function () {
                     cmenu.hide();
@@ -416,18 +451,18 @@
 
         // Find the position where the menu should appear, given an x,y of the click event
         getPosition: function (clickX, clickY, cmenu, e) {
-            var x = clickX + cmenu.offsetX;
-            var y = clickY + cmenu.offsetY;
-            var h = $(cmenu.menu).height();
-            var w = $(cmenu.menu).width();
-            var dir = cmenu.direction;
+            let x = clickX + cmenu.offsetX;
+            let y = clickY + cmenu.offsetY;
+            let h = $(cmenu.menu).height();
+            let w = $(cmenu.menu).width();
+            const dir = cmenu.direction;
             if (cmenu.constrainToScreen) {
-                var $w = $(window);
-                var wh = $w.height();
-                var ww = $w.width();
-                var st = $w.scrollTop();
-                var maxTop = y - st - 5;
-                var maxBottom = wh + st - y - 5;
+                const $w = $(window);
+                const wh = $w.height();
+                const ww = $w.width();
+                const st = $w.scrollTop();
+                const maxTop = y - st - 5;
+                const maxBottom = wh + st - y - 5;
                 if (h > maxBottom) {
                     if (h > maxTop) {
                         if (maxTop > maxBottom) {
@@ -451,7 +486,7 @@
                     // menu ok en bas
                 }
 
-                var maxRight = x + w - $w.scrollLeft();
+                const maxRight = x + w - $w.scrollLeft();
                 if (maxRight > ww) {
                     x -= (maxRight - ww);
                 }
@@ -461,7 +496,7 @@
 
         // Hide the menu, of course
         hide: function () {
-            var cmenu = this;
+            const cmenu = this;
             if (cmenu.shown) {
                 if (cmenu.iframe) {
                     $(cmenu.iframe).hide();
@@ -481,7 +516,7 @@
 
     // This actually adds the .contextMenu() function to the jQuery namespace
     $.fn.contextMenu = function (menu, options) {
-        var cmenu = $.contextMenu.create(menu, options);
+        const cmenu = $.contextMenu.create(menu, options);
         return this.each(function () {
             $(this).bind(cmenu.openEvt, function (e) {
                 if (cmenu.menu.is(':visible'))

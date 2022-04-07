@@ -55,13 +55,7 @@ class ValidationParticipant
     private $reminded;
 
     /**
-     * @ORM\OneToMany(targetEntity="ValidationData", mappedBy="participant", cascade={"all"})
-     */
-    private $datas;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="ValidationSession", inversedBy="participants", cascade={"persist"})
-     * @ORM\JoinColumn(name="validation_session_id", referencedColumnName="id")
+     * @ORM\Column(type="integer", nullable=true, name="validation_session_id")
      */
     private $session;
 
@@ -84,11 +78,8 @@ class ValidationParticipant
     }
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     *
-     * @return User
-     **/
+     * @ORM\Column(type="integer", nullable=true, name="user_id")
+     */
     private $user;
 
     /**

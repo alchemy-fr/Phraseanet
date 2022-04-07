@@ -1,32 +1,250 @@
 $pushThemeColor: #2196f3;
 $feedbackThemeColor: #8bc34a;
+$sharebasketThemeColor: #E0215D;
 $orangeThemeColor: #ff9400;
+$listManagerThemeColor: #ff9400;
+$textColor: #282828;
+$toggledOff: #666;       // a toggle button IS off
 
-.orange_text {
-    color: $orangeThemeColor !important;
+/** PUSH BOX */
+
+.ui-dialog {
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0;
 }
-.orange-border {
-    box-shadow: 0 0 5px rgba(0,0,0,0.3) !important;
-    border: 1px solid $orangeThemeColor;
-}
-input.text_input_white {
-    border-radius: 6px;
-    border: 0 none;
-    height: 18px;
+
+.whole_dialog_container {      // the whole dialog content (including the title)
+
+    /******************************
+     * override default ui styles
+     ******************************/
+
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0;
+    color: $textColor;
+
+    button, input, label, select, textarea {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        &:focus {
+            text-decoration: none;
+        }
+    }
+
+    .ui-dialog-title {
+        font-size: 21px;
+        font-weight: bold;
+        // color: #ffffff;      // skins ok
+    }
+
+    .ui-widget-content {
+        color: $textColor;
+        background-color: white;
+    }
+
+    .ui-dialog-titlebar-close {
+        border: none;
+        margin-right: 4px;
+    }
+
+    .btn, .btn-inverse {
+        font-weight: normal;
+        background-image: none;         // remove grey (candy) gradient
+    }
+
+    /*********************
+     * global styles
+     ********************/
+
+    .PushBox {
+        background-color: #4F4F4F;
+    }
+
+    .inverse {
+        background-color: white;
+    }
+
+    .colored.inverse {
+        color: white;
+    }
+
+    BUTTON, A.btn {
+        background-color: white;
+        &:hover {
+            color: white;
+            background-color: $textColor;
+        }
+        border-radius: 13.5px;
+        border: solid 1px transparent;  // transparent is changed by context / theme
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
+    }
+
+    BUTTON, A {
+        color: $textColor;
+        &:hover {
+            color: white;
+            background-color: $textColor;
+        }
+        &.inverse {
+            color: white;
+        }
+        &.inverse:hover {
+            color: $textColor;
+            background-color: white;
+        }
+
+        // prevent toggle buttons to change on :hover
+        &.toggle {
+            background-color: transparent !important;   // important because we don't want A:hover to change background
+            &.status_off {
+                color: $toggledOff;
+            }
+        }
+    }
+
+    input[type=text],
+    input[type=text]::-webkit-input-placeholder,    /* Chrome/Opera/Safari */
+    input[type=text]::-moz-placeholder,             /* Firefox 19+ */
+    input[type=text]:-ms-input-placeholder,         /* IE 10+ */
+    input[type=text]:-moz-placeholder {             /* Firefox 18- */
+        &.colored {
+            color: #ffffff;
+        }
+    }
+
+    // glue immediate button to text input
+    .inputWithButton {
+        SPAN {
+            vertical-align: middle
+        }
+        INPUT[type=text] {
+            margin: 0;
+            border-right: 0;
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+        INPUT[type=text] + BUTTON {
+            height: 30px;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+        }
+    }
+
+    // a <i class="fa fa-xxx"> as a big round icon (please add "colored inverse" classes to see the disc!)
+    .main-icon {
+        font-size: 25px;
+        display: inline-block;
+        border-radius: 30px;
+        padding: 8px;
+    }
+
+    /***********************
+     * specific styles
+     **********************/
+
+    // add user button
+    .PushBox .push-add-user {
+        margin-left: 30px;
+    }
+
+    // refresh list button       ( /!\ A.btn )
+    A.list_refresh {
+        width: 20px;
+        height: 20px;
+        padding: 0;
+    }
+
+    // list item
+    .list_link {
+        height: 40px;
+        line-height: 40px;
+        display: block;
+        padding-left: 33px;
+    }
+
+    #PushBox .general_togglers {
+        text-align: right;
+        ul {
+            margin:0;
+            list-style:none;
+            li {
+                display: inline-block;
+            }
+        }
+    }
+
+
+    // list manager button       ( /!\ A.btn )
+    #PushBox .list_manager {
+        position: fixed;
+        bottom: 31px;
+        left: 32px;
+        width: 158px;
+    }
+
+    #PushBox .list_manager:hover {
+        // since the manager has orange theme, recall this with the button
+        background-color: $listManagerThemeColor;
+    }
+
+
+    // "send" button
+    BUTTON.FeedbackSend {
+        width: 180px;
+        height: 30px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 0;
+        margin-left: 20px;
+        margin-bottom: -7px;
+        float: right;
+    }
+
+    // "info" icon
+    #info-box-trigger {
+        float: right;
+        margin-top: 6px;
+        cursor: pointer;
+    }
+    // info box
+    #info-box {
+        z-index: 1;
+        width: 400px;
+        position: absolute;
+        top: 15px;
+        right: 40px;
+        border-radius: 8px;
+        background-color: #ededed;
+        padding: 6px;
+        font-size: 10px;
+        line-height: 1.4;
+        color: #000000;
+        p {
+            margin: 0;
+        }
+    }
+
+
 }
 
 .dialog_container {
     border: 0 none !important;
     border-radius: 6px !important;
     background-color: #ffffff !important;
+
     .ui-dialog-title {
-        font-family: Roboto;
         font-size: 18px;
         font-weight: 500;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: normal;
         color: #4a4a4a;
     }
     .ui-dialog-titlebar-close {
@@ -47,13 +265,7 @@ input.text_input_white {
         border-radius: 15px;
         background-color: #ffffff;
         border: solid 1px $pushThemeColor;
-        font-family: Roboto;
         font-size: 14px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: normal;
         color: $pushThemeColor;
         height: 30px;
         min-width: 135px;
@@ -81,12 +293,10 @@ input.text_input_white {
     .ui-widget-content {
         color: #4a4a4a;
         label, p {
-            font-family: Roboto;
             font-size: 14px;
             color: #4a4a4a;
         }
         input {
-            font-family: Roboto;
             font-size: 14px;
             background-color: #e7e7e7;
             border: none;
@@ -94,27 +304,22 @@ input.text_input_white {
             box-shadow: none;
         }
         input[type=text]::-webkit-input-placeholder, textarea::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-            font-family: Roboto;
             font-size: 14px;
             color: #484848;
         }
         input[type=text]::-moz-placeholder, textarea::-moz-placeholder { /* Firefox 19+ */
-            font-family: Roboto;
             font-size: 14px;
             color: #484848;
         }
         input[type=text]:-ms-input-placeholder, textarea:-ms-input-placeholder { /* IE 10+ */
-            font-family: Roboto;
             font-size: 14px;
             color: #484848;
         }
         input[type=text]:-ms-input-placeholder, textarea:-ms-input-placeholder { /* Firefox 18- */
-            font-family: Roboto;
             font-size: 14px;
             color: #484848;
         }
         textarea {
-            font-family: Roboto;
             font-size: 14px;;
             background-color: #e7e7e7;
             border-radius: 0;
@@ -130,623 +335,228 @@ input.text_input_white {
     }
 }
 
-.dialog_container.validation {
-    .ui-dialog-buttonpane .ui-button {
-        background-color: #ffffff;
-        border: solid 1px $feedbackThemeColor;
-        color: $feedbackThemeColor;
-    }
-    .ui-dialog-buttonpane .ui-button:hover {
-        background-color: $feedbackThemeColor;
-        color: #FFFFFF;
-    }
-    .ui-dialog-buttonpane .ui-button:last-child {
-        background-color: $feedbackThemeColor;
-        color: #FFFFFF;
-    }
-}
-
-.dialog_container.dialog_add_list {
-    border: 0 none;
-    -webkit-box-shadow: 0 0 30px rgba(0,0,0,0.2);
-            box-shadow: 0 0 30px rgba(0,0,0,0.2);
-    .ui-dialog-content form {
-        margin: 0;
-        label {
-            font-size: 12px;
-            color: #4a4a4a;
-        }
-        input {
-            margin: 10px 0 0;
-            width: calc(100% - 10px);
-        }
-    }
-    .ui-dialog-buttonpane {
-        border-top: 0 none;
-        margin-top: 0;
-        button.ui-button {
-            background-color: #ffffff;
-            border: solid 1px $orangeThemeColor;
-            color: $orangeThemeColor;
-            min-width: 115px;
-            float: right;
-        }
-        button.ui-button:hover {
-            background-color: $orangeThemeColor;
-            color: #FFFFFF;
-        }
-        button.ui-button:first-child {
-            float: right;
-            background-color: $orangeThemeColor;
-            color: #FFFFFF;
+.PushBox .user_content {
+    border-radius: 5px;
+    .header {
+        font-size: 13px;
+        .options {
+            text-align: right;
         }
     }
 }
 
- .dialog_container.dialog_delete_list {
-    border: 0 none;
-    -webkit-box-shadow: 0 0 30px rgba(0,0,0,0.2);
-            box-shadow: 0 0 30px rgba(0,0,0,0.2);
-    .ui-dialog-content form {
-        margin: 0;
-        label {
-            font-size: 12px;
-        }
-        input {
-            margin: 10px 0 0;
-            width: calc(100% - 10px);
+
+/*****************************
+ * theme dependant fixes
+ *****************************/
+
+.Push {
+    .colored {
+        color: $pushThemeColor;
+        &.inverse {
+            background-color: $pushThemeColor;
         }
     }
-    .ui-dialog-buttonpane {
-        border-top: 0 none;
-        margin-top: 0;
-        button.ui-button {
-            background-color: #ffffff;
-            border: solid 1px $pushThemeColor;
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $pushThemeColor;  // will not apply on toggles due to !important
+        }
+        &.inverse:hover {
             color: $pushThemeColor;
-            min-width: 115px;
+            background-color: revert;
         }
-        button.ui-button:hover {
-            background-color: $pushThemeColor;
-            color: #FFFFFF;
+        &.status_on {
+            color: $pushThemeColor;
         }
-        button.ui-button:first-child {
-            float: right;
-            background-color: $pushThemeColor;
-            color: #FFFFFF;
-        }
+    }
+    BUTTON, A.btn {
+        border-color: $pushThemeColor;
     }
 }
 
-.dialog_container.dialog_delete_list_listmanager {
-    .ui-dialog-content {
-        margin-top: 7px;
-        margin-bottom: -20px;
+.Feedback {
+    .colored {
+        color: $feedbackThemeColor;
+        &.inverse {
+            background-color: $feedbackThemeColor;
+        }
     }
-    .ui-dialog-buttonpane {
-        button.ui-button {
-            border: solid 1px $orangeThemeColor;
-            color: $orangeThemeColor;
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $feedbackThemeColor;  // will not apply on toggles due to !important
         }
-        button.ui-button:hover {
-            background-color: $orangeThemeColor;
+        &.inverse:hover {
+            color: $feedbackThemeColor;
+            background-color: revert;
         }
-        button.ui-button:first-child {
-            float: right;
-            background-color: $orangeThemeColor;
+        &.status_on {
+            color: $feedbackThemeColor;
         }
+    }
+    BUTTON, A.btn {
+        border-color: $feedbackThemeColor;
     }
 }
- .dialog_container.dialog_share_list {
-    border: 0 none;
-    -webkit-box-shadow: 0 0 30px rgba(0,0,0,0.2);
-            box-shadow: 0 0 30px rgba(0,0,0,0.2);
-    .ui-dialog-content form {
-        label {
-            font-size: 12px;
-            display: inline;
-        }
-        input {
-            margin: 10px 0 0;
-            width: calc(100% - 10px);
-        }
-        select {
-            width: auto;
-            height: 20px;
-            line-height: 20px;
-            font-size: 12px;
+
+.Sharebasket {
+    .colored {
+        color: $sharebasketThemeColor;
+        &.inverse {
+            background-color: $sharebasketThemeColor;
         }
     }
-    .ui-dialog-buttonpane {
-        border-top: 0 none;
-        margin-top: 0;
-        button.ui-button {
-            background-color: #ffffff;
-            border: solid 1px $orangeThemeColor;
-            color: $orangeThemeColor;
-            min-width: 115px;
-            &:hover {
-                background-color: $orangeThemeColor;
-                color: #FFFFFF;
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $sharebasketThemeColor;  // will not apply on toggles due to !important
+        }
+        &.inverse:hover {
+            color: $sharebasketThemeColor;
+            background-color: revert;
+        }
+        &.status_on {
+            color: $sharebasketThemeColor;
+        }
+    }
+    BUTTON, A.btn {
+        border-color: $sharebasketThemeColor;
+    }
+}
+
+.ListManager {
+    .colored {
+        color: $listManagerThemeColor;
+        &.inverse {
+            background-color: $listManagerThemeColor;
+        }
+    }
+    BUTTON.colored, A.colored {
+        &:hover {
+            background-color: $listManagerThemeColor;  // will not apply on toggles due to !important
+        }
+        &.inverse:hover {
+            color: $listManagerThemeColor;
+            background-color: revert;
+        }
+        &.status_on {
+            color: $listManagerThemeColor;
+        }
+    }
+    BUTTON, A.btn {
+        border-color: $listManagerThemeColor;
+    }
+}
+
+
+/****************
+ * badge(s)
+ ****************/
+.PushBox .user_content .owner_badge {
+    width: 140px;
+    display: inline-block;
+    margin: 10px;
+    outline: 3px solid transparent;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+
+    TABLE {
+        width: 100%;
+    }
+    TD {
+        vertical-align: top;
+        text-align: center;
+        font-size:200%;
+    }
+    .icon {
+        background-color: #673AB7;
+        color: white;
+        width: 56px;        // 7+42+7 (same size as badge)
+        border-radius: 7px 0px 0px 7px;
+    }
+}
+
+.PushBox .user_content .badges {
+    overflow: auto;
+    height: auto;
+    .badge {
+        width: 220px;
+        height: 79px;
+        margin: 10px;
+        display: inline-block;
+        outline: 3px solid transparent;
+        color: $textColor;
+        background-color: #f7f7f7;
+        text-shadow: none;
+        padding: 0px;
+        border-radius: 10px;
+        position: relative;
+
+        &.selected {
+            outline: 3px solid #000000;
+        }
+
+        &.name {
+            white-space: pre-line;
+            display: block;
+            margin-top: 5px;
+        }
+
+        &.subtite {
+            display: block;
+        }
+
+        .icon {
+            width: 42px;
+            padding: 0 7px;
+            border-radius: 7px 0px 0px 7px;
+            I {
+                color: white;
+                font-size: 500%;
+                margin-top: 10px;
             }
         }
-        .ui-dialog-buttonset {
-            float: left;
-            width: 278px;
+
+        .infos {
+            padding-top: 3px;
+            padding-left: 5px;
+            TABLE {
+                height: 75px;
+            }
+            TR {
+                height: 15px;
+                .toggles {
+                    height: 25px;
+                    text-align: left;
+                }
+            }
         }
-    }
-    .ui-dialog-content form.list_share_user {
-        input[type=text] {
-            width: 250px;
-            height: 26px;
-            border-radius: 5px;
-            background-color: $orangeThemeColor;
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
-            border: none;
-            font-family: Helvetica;
-            font-size: 12px;
-            color: #ffffff;
-            padding-left: 6px;
-            background-image: url("/assets/common/images/icons/white-search.png");
-            background-repeat: no-repeat;
-            background-size: 20px;
-            background-position: right 8px center;
+
+        .deleter {
+            position: absolute;
+            right: 0;
+            I {
+                color: #4f4f4f;
+                font-size: 20px;
+                padding: 4px;
+            }
         }
-        input[type=text]::-webkit-input-placeholder {
-            /* Chrome/Opera/Safari */
-            color: #ffffff;
-            font-size: 12px;
+
+        TABLE {
+            width: 100%;
         }
-    }
-    .ui-dialog-content td {
-        color: #000000;
-        label {
-            color: #000000;
+        TD {
+            vertical-align: top;
         }
-    }
-    .ui-dialog-content td.listmanager_badge_img {
-        width: 28px;
-        padding: 7px 7px;
-        background-color: $orangeThemeColor;
-    }
-    .ui-dialog-content td.listmanager_badge_img img {
-        width: 28px;
-      }
-}
 
-/** PUSH BOX */
-.push_dialog_container, .feedback_dialog_container {
-    background: #282828;
-}
-.push_dialog_container .ui-dialog-title, .feedback_dialog_container .ui-dialog-title {
-    font-family: Roboto;
-    font-size: 21px;
-    font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: 0px;
-    color: #ffffff;
-}
-
-.push_dialog_container .ui-widget-content, .feedback_dialog_container .ui-widget-content {
-    background-color: #4f4f4f;
-}
-
-.push_dialog_container .ui-dialog-titlebar-close, .feedback_dialog_container .ui-dialog-titlebar-close {
-    border: none;
-    margin-right: 4px;
-}
-
-.push_dialog_container .ui-icon.ui-icon-closethick, .feedback_dialog_container .ui-icon.ui-icon-closethick {
-    background-image: url("/assets/common/images/icons/picto-close-window.png");
-    background-position: center;
-    background-size: cover;
-}
-
-.feedback_dialog_container {
-    #PushBox .content .list_refresh:hover {
-        background: $feedbackThemeColor;
-    }
-    .PushBox .round-blue-border-btn {
-        border: solid 1px $feedbackThemeColor;
-        color: $feedbackThemeColor;
-    }
-    .PushBox .round-blue-border-btn:hover {
-        border: solid 2px $feedbackThemeColor;
-        background-color: $feedbackThemeColor;
-    }
-    .PushBox .FeedbackSend {
-        background-color: $feedbackThemeColor;
-    }
-    .PushBox .FeedbackSend:hover {
-        background-color: #A3DD63;
-    }
-    .PushBox .saveList {
-        background-color: $feedbackThemeColor;
-    }
-    .PushBox .push-add-user {
-        color: $feedbackThemeColor;
-    }
-    .PushBox .push-add-user:hover {
-        background-color: $feedbackThemeColor;
-    }
-    .PushBox .push-back-link {
-        background-color: $feedbackThemeColor;
-    }
-    .PushBox .push-back-link:hover {
-        background-color: #ffffff;
-        color: $feedbackThemeColor;
-    }
-    .PushBox .user_content .badges .badge .icon {
-        background-color: $feedbackThemeColor;
-    }
-    .PushBox .user_content .badges .badge.selected {
-        border-color: #000000;
-    }
-
-    .general_togglers button {
-        color: $feedbackThemeColor;
-        padding-left: 35px;
-    }
-    .general_togglers button:hover {
-        background-color: $feedbackThemeColor;
-    }
-    .general_togglers li:nth-child(2) button img {
-        width: 23px;
-    }
-    .general_togglers li:nth-child(3) button img {
-        width: 19px;
-    }
-    #find-user input[type=text] {
-        background-color: $feedbackThemeColor;
-    }
-    #quickAddUser button {
-        border: solid 1px $feedbackThemeColor;
-        color: $feedbackThemeColor;
-
-    }
-
-    #quickAddUser button:hover {
-        background-color: $feedbackThemeColor;
-    }
-    #quickAddUser button:nth-child(2) {
-        background-color: $feedbackThemeColor;
-    }
-    .btn.btn-push-orange {
-        color: $orangeThemeColor;
-    }
-    .btn.btn-push-orange:hover {
-        background-color: $orangeThemeColor;
-        color: $textInverseColor;
-    }
-    .btn.btn-push-orange.btn-orange-inverse {
-        color: $textInverseColor;
-    }
-    .btn.btn-push-orange.btn-orange-inverse:hover {
-        background-color: $textInverseColor;
-        color: $orangeThemeColor;
-    }
-}
-
-.PushBox .round-blue-border-btn {
-    border-radius: 13.5px;
-    background-color: #ffffff;
-    border: 0 none;
-    font-family: Roboto;
-    font-size: 12px;
-    font-weight: 500;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 12px;
-    letter-spacing: normal;
-    color: $pushThemeColor;
-    padding: 8px 20px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    border: 1px solid $pushThemeColor;
-}
-
-.PushBox .round-blue-border-btn:hover {
-    color: #ffffff;
-    background-color: $pushThemeColor;
-}
-
-.PushBox .delete-selection {
-    margin-left: 18px;
-    height: 27px;
-    border-radius: 13.5px;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.18);
-    border: 0 none;
-    font-family: Roboto;
-    font-size: 12px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #ffffff;
-    padding: 0px 16.5px;
-    background: #676767;
-    border: 1px solid #676767;
-}
-
-.PushBox .delete-selection:hover {
-    background: #333333;
-    color: #fff;
-    border: 1px solid #333333;
-}
-
-.PushBox .FeedbackSend {
-    width: 180px;
-    height: 30px;
-    border-radius: 6px;
-    background-color: $pushThemeColor;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.33);
-    font-family: Roboto;
-    font-size: 14px;
-    font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #ffffff;
-    border: none;
-    padding: 4px 0px;
-    margin-left: 20px;
-    margin-bottom: -7px;
-    float: right;
-}
-
-.PushBox .FeedbackSend:hover {
-    background-color: #53b3fc;
-}
-
-.PushBox .saveList {
-    width: 30px;
-    background-color: $pushThemeColor;
-    font-family: Roboto;
-    font-size: 12px;
-    font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #fff;
-    border: 0 none;
-    height: 30px;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
-    img {
-        width: 16px;
-        height: 16px;
-        margin-right: 10px;
-    }
-    span {
-        vertical-align: middle
-    }
-    &:hover {
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.33);
-    }
-}
-
-.PushBox #info-box-trigger {
-    float: right;
-    margin-top: 6px;
-    cursor: pointer;
-}
-
-.PushBox #info-box {
-    z-index: 1;
-    width: 400px;
-    position: absolute;
-    top: 15px;
-    right: 40px;
-    border-radius: 8px;
-    background-color: #ededed;
-    padding: 6px;
-    font-family: Roboto;
-    font-size: 10px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: 1.4;
-    letter-spacing: 0px;
-    color: #000000;
-    p {
-        margin: 0;
-    }
-}
-
-.PushBox .push-add-user {
-    height: 27px;
-    border: 0 none;
-    border-radius: 17px;
-    background: #f7f7f7;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
-    font-family: Roboto;
-    font-size: 12px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    letter-spacing: normal;
-    color: $pushThemeColor;
-    line-height: 27px;
-    padding: 0px 16px;
-    margin-top: 2px;
-    margin-left: 30px;
-    img {
-        width: 16px;
-        height: 16px;
-    }
-    span {
-        line-height: 28px;
-        vertical-align: middle;
-        margin-left: 10px;
-    }
-    .image-normal {
-        display: inline;
-    }
-    .image-hover {
-        display: none;
-    }
-}
-
-.PushBox .push-add-user:hover {
-   .image-normal {
-        display: none;
-   }
-   .image-hover {
-       display: inline;
-   }
-   transition: none;
-   background-position: 0 30px;
-   color: #f7f7f7;
-   background-color: $pushThemeColor;
-}
-
-.PushBox .push-back-link {
-    background-color: $pushThemeColor;
-    background-image: none;
-    font-family: Roboto;
-    font-size: $xmediumFontSize;
-    font-weight: normal;
-    color: $textInverseColor;
-    border-radius: 7px;
-    height: 16px;
-    line-height: 14px;
-    border: 0 none;
-    img {
-        width: 16px;
-        height: 16px;
-    }
-    span {
-        vertical-align: middle;
-        margin-left: 2px;
-    }
-    .image-normal {
-        display: inline;
-    }
-    .image-hover {
-        display: none;
-    }
-    &:hover {
-        .image-normal {
-             display: none;
-        }
-        .image-hover {
-            display: inline;
-        }
-        transition: none;
-        background-position: 0 30px;
-        color: $pushThemeColor;
-        background-color: #f7f7f7;
-     }
-}
-.PushBox .push-back-link.btn-inverse {
-    background-color: #444444;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.23);
-    &:hover {
-     }
-}
-.btn.btn-push-orange {
-    color: $orangeThemeColor;
-    margin: 0;
-    background: #F6F6F6;
-    height: 27px;
-    line-height: 27px;
-    font-size: 12px;
-    font-weight: normal;
-    img {
-        width: 16px;
-        height: 16px;
-        margin-top: -2px;
-    }
-    .image-normal {
-         display: inline;
-     }
-     .image-hover {
-         display: none;
-     }
-     &:hover {
-        color: $textInverseColor;
-        background-color: $orangeThemeColor;
-       .image-normal {
-            display: none;
-        }
-        .image-hover {
-            display: inline;
-        }
-    }
-}
-.btn.btn-push-orange > img {
-    margin-right: 20px !important;
-    margin-left: -20px;
-}
-.btn.btn-orange-inverse {
-    background-color: $orangeThemeColor;
-    color: $textInverseColor;
-    .image-normal {
-        display: none;
-    }
-    .image-hover {
-        display: inline;
-    }
-    &:hover {
-        color: $orangeThemeColor;
-        background-color: #fff;
-        .image-normal {
-            display: inline;
-        }
-        .image-hover {
-            display: none;
+        TR.toggles TD {
+            text-align: center;
+            .toggle {
+                font-size:200%;
+            }
         }
     }
 }
 
-.select-all, .unselect-all {
-    border-radius: 17px;
-    padding: 0px 16px;
-}
 
-.list_refresh {
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    border-radius: 3px;
-    border: 0 none;
-    background: #F6F6F6;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
-    img {
-        width: 14px;
-        height: 14px;
-    }
-    .image-normal {
-        display: inline;
-    }
-    .image-hover {
-        display: none;
-    }
-}
-.list_refresh:hover {
-     .image-normal {
-          display: none;
-     }
-     .image-hover {
-         display: inline;
-     }
-}
-.list_link {
-    height: 40px;
-    line-height: 40px;
-    display: block;
-    padding-left: 33px;
-    color: #000000 !important;
-}
-
-.list_link:focus {
-    text-decoration: none;
-  }
 
 .lists_manager_list:hover .list_link {
     background-color: #b8b8b8;
@@ -756,13 +566,9 @@ input.text_input_white {
     display: block !important;
 }
 
-.feedback_dialog_container .PushBox .content .list-container {
-    top: 140px;
-}
-
 .PushBox .content {
     border-radius: 5px;
-    background-color: #c8c8c8;
+    background-color: #AAA;
     .list-container {
         position: absolute;
         top: 80px;
@@ -777,26 +583,11 @@ input.text_input_white {
         }
     }
     .main-title {
-        font-family: Roboto;
         font-size: 16px;
         font-weight: 500;
-        font-style: normal;
-        font-stretch: normal;
         line-height: 2px;
-        letter-spacing: 0px;
-        color: #4a4a4a;
         margin-top: 10px;
-        img {
-            width: 16px;
-            margin-right: 5px;
-            margin-bottom: 3px;
-        }
     }
-}
-
-.PushBox .user_content {
-    border-radius: 5px;
-    background-color: #868686;
 }
 
 .PushBox .LeftColumn h1 {
@@ -828,151 +619,8 @@ input.text_input_white {
     overflow: visible;
 }
 
-.PushBox .user_content .header {
-    height: 35px;
-    padding: 0 10px;
-    bottom: auto;
-    .text {
-        font-family: Roboto;
-        font-size: 13px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: 1.08;
-        letter-spacing: 0px;
-        color: #ffffff;
-    }
-}
 
-.PushBox .user_content .footer {
-    height: 35px;
-    top: auto;
-    right: 20px;
-    bottom: 10px;
-    left: 20px;
-    //text-align: right;
-}
 
-.PushBox .user_content .badges {
-    top: 50px;
-    overflow: auto;
-    height: auto;
-    bottom: 50px;
-    // left: 20px;
-    // right: 20px;
-}
-
-.PushBox .user_content .badges .badge .deleter {
-    position: absolute;
-    right: 0;
-    i {
-        color: #4f4f4f;
-        font-size: 20px;
-        padding: 4px;
-    }
-}
-
-.PushBox .user_content .badges .badge {
-    width: 220px;
-    height: 79px;
-    margin: 10px;
-    display: inline-block;
-    border: 3px solid #868686;
-    background-color: #f7f7f7;
-    padding: 0px;
-    border-radius: 10px;
-    position: relative;
-
-}
-
-.PushBox .user_content .badges .badge.selected {
-    border: 3px solid #000000;
-}
-
-.PushBox .user_content .badges .badge .toggles .status_on .toggle_off {
-    display: none;
-}
-
-.PushBox .user_content .badges .badge .toggles .status_off .toggle_on {
-    display: none;
-}
-
-.PushBox .user_content .badges .badge td {
-    vertical-align: top;
-}
-
-.PushBox .user_content .badges .badge td.toggle {
-    img {
-        width: auto;
-        height: 20px;
-    }
-    vertical-align: middle;
-}
-
-.PushBox .user_content .badges .badge .icon {
-    width: 42px;
-    padding: 0 7px;
-    background-color: $pushThemeColor;
-    border-radius: 7px 0px 0px 7px;
-}
-
-.PushBox .user_content .badges .badge .infos {
-    padding-top: 3px;
-    padding-left: 5px;
-}
-
-.PushBox .user_content .badges .badge table {
-    width: 93%;
-}
-
-.PushBox .user_content .badges .badge .infos table {
-    height: 75px;
-}
-
-.PushBox .user_content .badges .badge .infos tr {
-    height: 15px;
-}
-
-.PushBox .user_content .badges .badge .infos tr.toggles {
-    height: 25px;
-    text-align: left;
-}
-
-.PushBox .user_content .badges .badge .icon img {
-    margin-top: 15px;
-}
-
-.PushBox .user_content .badges .badge .name {
-    font-family: Roboto;
-    font-size: 12px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #000000;
-    white-space: pre-line;
-    display: block;
-    margin-top: 5px;
-    text-shadow: none;
-}
-
-.PushBox .user_content .badges .badge .subtite {
-    display: block;
-    font-family: Roboto;
-    font-size: 12px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #000000;
-    text-shadow: none;
-}
-
-.PushBox .user_content .header .options {
-    text-align: right;
-}
 
 .PushBox .all-lists .lists {
     overflow: auto;
@@ -985,10 +633,6 @@ input.text_input_white {
 .PushBox .lists ul li:nth-child(odd) {
     background-color: none;
 }
-
-// .PushBox .lists ul li:nth-child(even) {
-//     background-color: #515150;
-// }
 
 .PushBox .LeftColumn .content ul.lists li.selected {
     background-color: #aaa;
@@ -1007,7 +651,7 @@ input.text_input_white {
 }
 
 .PushBox .LeftColumn .content ul.lists li {
-    font-family: Roboto;
+//    font-family: Roboto;
     font-size: 13px;
     font-weight: normal;
     font-style: normal;
@@ -1037,28 +681,8 @@ input.text_input_white {
 
 .PushBox .LeftColumn .content ul.lists li:hover {
     background-color: #b8b8b8;
-    //.list-trash-btn {
-    //    .image-normal {
-    //        display: none;
-    //    }
-    //    .image-hover {
-    //        display: inline;
-    //    }
-    //}
 }
 
-// .all-lists .list-trash-btn {
-//     padding: 7px 4px 12px !important;
-// }
-.PushBox .all-lists .push-add-user {
-    margin: 0;
-    img {
-        width: 13px;
-        height: 13px;
-        margin-left: -25px;
-        margin-right: 25px;
-    }
-}
 
 .PushBox .welcome {
     text-align: center;
@@ -1069,7 +693,6 @@ input.text_input_white {
         font-weight: bold;
         margin: 60px 0 20px;
         font-size: 31px;
-        font-family: Roboto;
     }
     p {
         font-size: 20px;
@@ -1124,11 +747,6 @@ input.text_input_white {
     cursor: pointer;
 }
 
-// #list-editor-search-results table th.sortable.hover,
-// #list-editor-search-results table th.sortable.sorted {
-//     background-color: #f0ad30;
-// }
-
 #list-editor-search-results table th.sortable span.ord_notifier {
     display: none;
 }
@@ -1173,6 +791,9 @@ input.text_input_white {
     }
 }
 
+/**
+ * content of modal dlg to select users to share a list with
+ */
 #ListShare {
     .info-box-share-holder {
         position: fixed;
@@ -1191,13 +812,8 @@ input.text_input_white {
             padding: 8px 12px;
             p {
                 margin: 0;
-                font-family: Roboto;
                 font-size: 12px;
-                font-weight: normal;
-                font-style: normal;
-                font-stretch: normal;
                 line-height: 1.4;
-                letter-spacing: 0px;
                 color: #000000;
             }
         }
@@ -1208,153 +824,121 @@ input.text_input_white {
     }
 }
 
-#ListManager .content.readselect .badge.selected {
-    border-color: $orangeThemeColor;
-}
 
-#ListManager .content.readselect .badge {
-    width: 250px;
-    display: inline-block;
-    margin: 5px;
-    background-color: #515150;
-    padding: 5px;
-    .deleter {
-        right: 0;
-        display: -webkit-inline-box;
-        display: -ms-inline-flexbox;
-        display: inline-flex;
-    }
-    table {
-        // width: auto;
-        table-layout: fixed;
-    }
-    .infos {
-        padding: 5px 2px 2px 6px;
-        vertical-align: top;
-        span {
+#ListManager {
+    .content {
+        .lists span.action {
             display: block;
-            line-height: 20px;
+            text-align: center;
+            font-weight: bold;
+            width: 100%;
+        }
+        UL.lists li:nth-child(even) {
+            background-color: #c8c8c8;
+        }
+
+        UL.lists li.selected:nth-child(even) {
+            background-color: #aaa;
+        }
+
+    }
+
+    .editor {
+        //.list_editor_search {
+        //    top: 63px;
+        //}
+        .saveList {
+            //width: 120px;
+            //padding: 4px 0;
+            //font-weight: normal;
+            //line-height: 19px;
+            //border-radius: 5px;
+            //background-color: #f7f7f7;
+            //.image-normal {
+            //    display: inline;
+            //}
+            //.image-hover {
+            //    display: none;
+            //}
+            //img {
+            //    margin-right: 20px;
+            //}
+            //&:hover {
+            //    color: #fff !important;
+            //    background-color: $orangeThemeColor !important;
+            //    .image-normal {
+            //        display: none;
+            //    }
+            //    .image-hover {
+            //        display: inline;
+            //    }
+            //}
+        }
+        /* !!!!!!!!!!!!!!!!!! the footer is hidden by list
+        .footer .saveList {
+            width: 150px;
+            padding: 4px 0px 4px 0;
+//            background-color: #f7f7f7;
+            img {
+                margin-right: 15px;
+            }
+        }
+        !!!!!!!!!!!!!!!!!!!!!!!!!!         */
+        #find-user input[type=text] {
+//            background-color: $orangeThemeColor;
+        }
+        .counter {
+            font-size: 12px;
+        }
+        .list_editor_selector td select {
+            margin: 0;
+            border: 0 none;
+            border-radius: 0;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            font-size: 12px;
+            color: #000;
+        }
+        .list_editor_selector td select::-webkit-scrollbar {
+            width: 4px;
+        }
+        .list_editor_selector td select::-webkit-scrollbar-thumb {
+            background-color: #d8d8d8;
+        }
+        .list_editor_selector td select::-webkit-scrollbar-track {
+            background-color: #ffffff;
+        }
+        .list_editor_selector th label {
+            font-size: 12px;
+            text-align: left;
+            padding: 4px 0 4px 6px;
+            width: calc(95% - 6px);
+            background: #676767;
+            margin-bottom: -2px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .list_editor_selector_filter_holder {
+            width: 95%;
+            overflow: hidden;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .listmanager-add-user {
+            width: 120px;
+            margin-left: 30px;
+            margin-top: 2px;
+            border: 0 none;
+        }
+        .list_refresh:hover {
+            background: $listManagerThemeColor;
         }
     }
 }
 
-#ListManager .content.readselect .badge.listmanager_badge {
-    font-weight: normal;
-    font-size: 12px;
-    height: 77px;
-    line-height: 77px;
-    padding: 0;
-    background-color: #f7f7f7;
-    color: #000000;
-    text-shadow: none;
-    overflow: hidden;
-    .listmanager_badge_img {
-        height: 77px;
-        padding: 0 7px;
-        width: 42px;
-        background-color: #515151;
-    }
-}
-
-#ListManager h1 span.title {
-    font-size: 24px;
-    line-height: 24px;
-    font-weight: bold;
-    vertical-align: middle;
-}
-
-#PushBox .general_togglers li {
-    margin-top: 12px;
-}
-
-#PushBox .general_togglers {
-    margin-right: 5px;
-    vertical-align: middle;
-    margin-bottom: 3px;
-    button {
-        padding-left: 35px;
-    }
-}
-
-.general_togglers button {
-    position: relative;
-    margin: 0;
-    width: 100%;
-    height: 27px;
-    border-radius: 17px;
-    background-color: #f7f7f7;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.13);
-    font-family: Roboto;
-    font-size: 12px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    letter-spacing: normal;
-    color: $pushThemeColor;
-    line-height: 28px;
-    padding: 0px 12px;
-    border-width: 0;
-    img {
-        width: 18px;
-        position: absolute;
-        left: 15px;
-        top: 6px;
-    }
-    .image-normal {
-        display: inline;
-    }
-    .image-hover {
-        display: none;
-    }
-}
-
-.general_togglers button:hover {
-    background-color: $pushThemeColor;
-    color: #f7f7f7;
-    .image-normal {
-        display: none;
-    }
-    .image-hover {
-        display: inline;
-    }
-}
-
-
-#PushBox .list_manager {
-    font-family: Roboto;
-    font-size: 13px;
-    font-weight: 500;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: 0px;
-    color: #ffffff;
-    padding: 6px 8px;
-    position: fixed;
-    bottom: 31px;
-    left: 32px;
-    width: 158px;
-    img {
-        width: 16px;
-        height: 16px;
-        margin-right: 5px;
-    }
-}
-
-#PushBox .list_manager:hover {
-    background-color: #FD9326;
-    transition: none;
-    background-position: 0 30px;
-}
 
 #PushBox .list_loader {
-    font-family: Roboto;
     font-size: 13px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: 0px;
     color: #000000;
     width: 100%;
     img {
@@ -1362,11 +946,7 @@ input.text_input_white {
     }
 }
 
-#PushBox .general_togglers button .ui-button-text {
-    font-weight: lighter;
-}
-
-#PushBox .content {
+.PushBox .content {
     .list_saver {
         margin: 0;
         display: inline-block;
@@ -1374,24 +954,8 @@ input.text_input_white {
             margin: 0;
         }
         input {
-            margin: 0;
-            padding: 2px 2px 2px 10px;
             width: 260px;
-            height: 26px;
-            border: 0 none;
-            border-top-left-radius: 5px;
-            border-bottom-left-radius: 5px;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
         }
-        .btn {
-            margin: 0;
-            padding: 0;
-            height: 23px;
-        }
-    }
-    .list_refresh:hover {
-        background: $pushThemeColor;
     }
 }
 
@@ -1401,46 +965,9 @@ input.text_input_white {
     input[type=text] {
         width: 180px;
         border-radius: 5px;
-        background-color: $pushThemeColor;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0);
         border: none;
-        font-family: Helvetica;
-        font-size: 12px;
-        font-weight: normal;
-        font-style: normal;
-        font-stretch: normal;
-        line-height: normal;
-        letter-spacing: 0px;
-        color: #ffffff;
     }
-    input[type=text]::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-        color: #ffffff;
-    }
-    input[type=text]::-moz-placeholder { /* Firefox 19+ */
-        color: #ffffff;
-    }
-    input[type=text]:-ms-input-placeholder { /* IE 10+ */
-        color: #ffffff;
-    }
-    input[type=text]:-moz-placeholder { /* Firefox 18- */
-        color: #ffffff;
-    }
-    //input[type=text]:hover {
-    //    background-color: #f7f7f7;
-    //    color: #2196f3;
-    //}
-    //input[type=text]::-webkit-input-placeholder:hover { /* Chrome/Opera/Safari */
-    //    color: #2196f3;
-    //}
-    //input[type=text]::-moz-placeholder:hover { /* Firefox 19+ */
-    //    color: #2196f3;
-    //}
-    //input[type=text]:-ms-input-placeholder:hover { /* IE 10+ */
-    //    color: #2196f3;
-    //}
-    //input[type=text]:-moz-placeholder:hover { /* Firefox 18- */
-    //    color: #2196f3;
-    //}
     .search {
         padding-right: 25px;
         padding-left: 6px;
@@ -1449,124 +976,8 @@ input.text_input_white {
         background-size: 16px;
         background-position: right 8px center;
     }
-    //.search:hover {
-    //    padding-right: 25px;
-    //    padding-left: 4px;
-    //    background-image: url(/assets/common/images/icons/blue-search.png);
-    //    background-repeat: no-repeat;
-    //    background-size: 16px;
-    //    background-position: right 8px center;
-    //}
 }
 
-#ListManager .content .lists span.action {
-    display: block;
-    text-align: center;
-    font-weight: bold;
-    width: 100%;
-}
-
-#ListManager .content ul.lists li:nth-child(even) {
-    background-color: #c8c8c8;
-}
-
-#ListManager .content ul.lists li.selected:nth-child(even) {
-    background-color: #aaa;
-}
-
-#ListManager .editor {
-    .list_editor_search {
-        top: 63px;
-    }
-    .saveList {
-        width: 120px;
-        padding: 4px 0;
-        font-weight: normal;
-        line-height: 19px;
-        border-radius: 5px;
-        background-color: #f7f7f7;
-        .image-normal {
-            display: inline;
-        }
-        .image-hover {
-            display: none;
-        }
-        img {
-            margin-right: 20px;
-        }
-        &:hover {
-            color: #fff !important;
-            background-color: $orangeThemeColor !important;
-            .image-normal {
-                display: none;
-            }
-            .image-hover {
-                display: inline;
-            }
-        }
-    }
-    .footer .saveList {
-        width: 150px;
-        padding: 4px 0px 4px 0;
-        background-color: #f7f7f7;
-        img {
-            margin-right: 15px;
-        }
-    }
-    #find-user input[type=text] {
-        background-color: $orangeThemeColor;
-    }
-    .counter {
-        font-size: 12px;
-    }
-     .list_editor_selector td select {
-        margin: 0;
-        border: 0 none;
-        border-radius: 0;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-        font-size: 12px;
-        color: #000;
-    }
-    .list_editor_selector td select::-webkit-scrollbar {
-        width: 4px;
-    }
-    .list_editor_selector td select::-webkit-scrollbar-thumb {
-        background-color: #d8d8d8;
-    }
-    .list_editor_selector td select::-webkit-scrollbar-track {
-        background-color: #ffffff;
-    }
-    .list_editor_selector th label {
-        font-size: 12px;
-        text-align: left;
-        padding: 4px 0 4px 6px;
-        width: calc(95% - 6px);
-        background: #676767;
-        margin-bottom: -2px;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-    }
-    .list_editor_selector_filter_holder {
-        width: 95%;
-        overflow: hidden;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
-    .listmanager-add-user {
-        width: 120px;
-        margin-left: 30px;
-        margin-top: 2px;
-        border: 0 none;
-    }
-    .list_refresh:hover {
-        background: $orangeThemeColor;
-    }
-    .push-back-link:hover {
-        color: #444444;
-        background-color: #f7f7f7;
-    }
-}
 
 #recommanded-users {
     margin-top: 25px;
@@ -1604,9 +1015,6 @@ input.text_input_white {
 }
 
 #quickAddUser input {
-    //border: 1px solid #cccccc;
-    //border-radius: $defaultBorderRadius;
-    //box-shadow: 0 1px 1px #eeeeee;
     display: inline-block;
     margin: 0 5px 0 0;
     padding: 4px;
@@ -1621,16 +1029,7 @@ input.text_input_white {
 
 #quickAddUser button {
     border-radius: 15px;
-    background-color: #ffffff;
-    border: solid 1px $pushThemeColor;
-    font-family: Roboto;
     font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: $pushThemeColor;
     height: 30px;
     min-width: 135px;
     padding-left: 20px;
@@ -1639,52 +1038,9 @@ input.text_input_white {
     margin-right: 10px;
 }
 
-#quickAddUser button:hover {
-    background-color: $pushThemeColor;
-    color: #FFFFFF;
-}
-#quickAddUser button:nth-child(2) {
-    background-color: $pushThemeColor;
-    color: #FFFFFF;
-}
 
-.validation {
-    #quickAddUser button {
-        background-color: #ffffff;
-        border: solid 1px $feedbackThemeColor;
-        color: $feedbackThemeColor;
-    }
 
-    #quickAddUser button:hover {
-        background-color: $feedbackThemeColor;
-        color: #FFFFFF;
-    }
-    #quickAddUser button:nth-child(2) {
-        background-color: $feedbackThemeColor;
-        color: #FFFFFF;
-    }
-}
-
-.push-add-user-listmanager {
-    #quickAddUser button {
-        border: solid 1px $orangeThemeColor;
-        color: $orangeThemeColor;
-    }
-    #quickAddUser button:hover {
-        background-color: $orangeThemeColor;
-        color: #FFFFFF;
-    }
-    #quickAddUser button:nth-child(2) {
-        background-color: $orangeThemeColor;
-        color: #FFFFFF;
-    }
-}
-
-.push-add-user-listmanager.ui-dialog.ui-widget-content {
-    border: 0 none;
-    box-shadow: none;
-}
- .ui-autocomplete li.list-item {
+.ui-autocomplete li.list-item {
     width: 222px;
     padding: 0 4px;
 }
@@ -1727,7 +1083,7 @@ input.text_input_white {
 
 @media screen and (max-width: 1200px) {
     .PushBox .user_content .badges {
-        top: 110px !important;
+//        top: 110px !important;
     }
     .PushBox .user_content .header > div:first-child {
         margin-bottom: 15px;

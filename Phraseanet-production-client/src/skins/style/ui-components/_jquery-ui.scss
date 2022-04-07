@@ -121,7 +121,7 @@ $basketBg: $darkBackgroundColor !default;
 
 .ui-accordion .ui-accordion-content {
     padding: 0;
-    min-height: 120px;
+    // min-height: 120px;
     border: none !important;
     border-radius: 0;
 }
@@ -163,16 +163,6 @@ $basketBg: $darkBackgroundColor !default;
     &:hover {
         background-color: $accordionBgHeaderHover;
     }
-}
-
-.ui-accordion .ui-accordion-header.unread .workzone-menu-title {
-    font-style: italic;
-    font-weight: bold;
-}
-
-.ui-accordion .ui-accordion-header.unread {
-    background-color: $basketsColor;
-    //background-image: url('#{$iconsPath}bask_new_back_light.png');
 }
 
 .ui-accordion .ui-accordion-header.header {

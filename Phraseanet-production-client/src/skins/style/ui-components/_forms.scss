@@ -15,7 +15,6 @@ input, select, textarea {
   margin: 2px;
   padding: 2px;
   *border: 1px solid $inputFallbackBorderColor;
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
 input[type="radio"], input[type="checkbox"], .checkbox {
@@ -33,6 +32,5 @@ input.btn-mini {
 
 .input-small {
   height: 25px;
-  font-family: verdana,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 12px;
 }

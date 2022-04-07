@@ -37,6 +37,7 @@ final class PhraseaEvents
     const REGISTRATION_AUTOREGISTER = 'registration.autoregister';
 
     const BASKET_PUSH = 'basket.push';
+    const BASKET_SHARE = 'basket.share';
     const BASKET_ELEMENTS_ADDED = 'basket.elements-added';
     const BASKET_ELEMENTS_REMOVED = 'basket.elements-removed';
 

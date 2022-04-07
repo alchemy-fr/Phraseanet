@@ -91,7 +91,7 @@
 /******/ 		if (__webpack_require__.nc) {
 /******/ 			script.setAttribute("nonce", __webpack_require__.nc);
 /******/ 		}
-/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=39";
+/******/ 		script.src = __webpack_require__.p + "lazy-" + ({}[chunkId]||chunkId) + ".js?v=50";
 /******/ 		var timeout = setTimeout(onScriptComplete, 120000);
 /******/ 		script.onerror = script.onload = onScriptComplete;
 /******/ 		function onScriptComplete() {
@@ -17390,9 +17390,6 @@ var pym = __webpack_require__(17);
     // timeout id for delayed tooltips
     tID = void 0,
 
-    // IE 5.5 or 6
-    IE = navigator.userAgent.match(/msie/i) && /MSIE\s(5\.5|6\.)/.test(navigator.userAgent),
-
     // flag for mouse tracking
     track = false;
 
@@ -17407,7 +17404,7 @@ var pym = __webpack_require__(17);
             delay: 700,
             fixable: false,
             fixableIndex: 100,
-            fade: true,
+            fade: false, // DO NOT SET TO TRUE ! (makes some random blinks/loops)
             showURL: true,
             outside: true,
             isBrowsable: false,
@@ -17448,6 +17445,7 @@ var pym = __webpack_require__(17);
                 this.tooltipSrc = $(this).attr('tooltipsrc');
 
                 this.ajaxLoad = $.trim(this.tooltipText) === '' && this.tooltipSrc !== '';
+
                 this.ajaxTimeout;
 
                 this.orEl = $(this);
@@ -17465,33 +17463,6 @@ var pym = __webpack_require__(17);
                     }, 500);
                 }
             }).mousedown(fix);
-        },
-        fixPNG: IE ? function () {
-            return this.each(function () {
-                var image = $(this).css('backgroundImage');
-                if (image.match(/^url\(["']?(.*\.png)["']?\)$/i)) {
-                    image = RegExp.$1;
-                    $(this).css({
-                        backgroundImage: 'none',
-                        filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='" + image + "')"
-                    }).each(function () {
-                        var position = $(this).css('position');
-                        if (position !== 'absolute' && position !== 'relative') $(this).css('position', 'relative');
-                    });
-                }
-            });
-        } : function () {
-            return this;
-        },
-        unfixPNG: IE ? function () {
-            return this.each(function () {
-                $(this).css({
-                    filter: '',
-                    backgroundImage: ''
-                });
-            });
-        } : function () {
-            return this;
         },
         hideWhenEmpty: function hideWhenEmpty() {
             return this.each(function () {
@@ -17528,10 +17499,18 @@ var pym = __webpack_require__(17);
 
     // main event handler to start showing tooltips
     function handle(event) {
-        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) return;
+        if ($($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) {
+            return;
+        }
 
+        // DONT UN-COMMENT ; fix blinking
         // show helper, either with timeout or on instant
-        if (settings(this).delay) tID = setTimeout(visible, settings(this).delay);else visible();
+        // if (settings(this).delay) {
+        //     tID = setTimeout(visible, settings(this).delay);
+        // }
+        // else {
+        visible();
+        // }
         show();
 
         // if selected, update the helper position when the mouse moves
@@ -17549,14 +17528,20 @@ var pym = __webpack_require__(17);
 
         event.cancelBubble = true;
 
-        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) return;
+        if ($.tooltip.blocked || this === $.tooltip.current || !this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler) {
+            return;
+        }
 
         // save current
         $.tooltip.current = this;
         title = this.tooltipText;
 
         // if element has href or src, add and show it, otherwise hide it
-        if (settings(this).showURL && $(this).url()) helper.url.html($(this).url().replace('http://', '')).show();else helper.url.hide();
+        if (settings(this).showURL && $(this).url()) {
+            helper.url.html($(this).url().replace('http://', '')).show();
+        } else {
+            helper.url.hide();
+        }
         // add an optional class for this tip
         helper.parent.removeClass();
         helper.parent.addClass(settings(this).extraClass);
@@ -17579,8 +17564,6 @@ var pym = __webpack_require__(17);
         var $this = $.tooltip.current;
         var tooltipSettings = settings($this) ? settings($this) : {};
         var fixedPosition = $.tooltip.blocked;
-        // fix PNG background for IE
-        if (tooltipSettings.fixPNG) helper.parent.fixPNG();
         if (tooltipSettings.outside) {
             var width = 'auto';
             var height = 'auto';
@@ -17730,8 +17713,12 @@ var pym = __webpack_require__(17);
                     tooltipVerticalOffset = 0;
                     tooltipHorizontalOffset = 0;
                     topOffset = 50;
-                    // fallback on original target if nothing found:
-                    $eventTarget = $origEventTarget;
+                    // the origEventTarget is only the title, locate the container block
+                    $eventTarget = $origEventTarget.closest('.SSTT');
+                    if ($eventTarget.length === 0) {
+                        // fallback on original target if nothing found:
+                        $eventTarget = $origEventTarget;
+                    }
                 }
 
                 var recordPosition = $eventTarget.offset();
@@ -17886,8 +17873,12 @@ var pym = __webpack_require__(17);
             isBrowsable = settings($.tooltip.current).isBrowsable;
         }
 
-        if ((!IE || !$.fn.bgiframe) && settings($.tooltip.current).fade) {
-            if (helper.parent.is(':animated')) helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);else helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
+        if (settings($.tooltip.current).fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);
+            } else {
+                helper.parent.is(':visible') ? helper.parent.fadeTo(settings($.tooltip.current).fade, 100) : helper.parent.fadeIn(settings($.tooltip.current).fade);
+            }
         } else {
             helper.parent.show();
         }
@@ -18012,6 +18003,7 @@ var pym = __webpack_require__(17);
 
     // hide helper and restore added classes and the title
     function hide(event) {
+
         var isBrowsable = false;
         if ($.tooltip.current !== null) {
             isBrowsable = settings($.tooltip.current).isBrowsable;
@@ -18040,11 +18032,15 @@ var pym = __webpack_require__(17);
             helper.parent.removeClass(tsettings.extraClass).hide().css('opacity', '');
         }
 
-        if ((!IE || !$.fn.bgiframe) && tsettings.fade) {
-            if (helper.parent.is(':animated')) helper.parent.stop().fadeTo(tsettings.fade, 0, complete);else helper.parent.stop().fadeOut(tsettings.fade, complete);
-        } else complete();
-
-        if (tsettings.fixPNG) helper.parent.unfixPNG();
+        if (tsettings.fade) {
+            if (helper.parent.is(':animated')) {
+                helper.parent.stop().fadeTo(tsettings.fade, 0, complete);
+            } else {
+                helper.parent.stop().fadeOut(tsettings.fade, complete);
+            }
+        } else {
+            complete();
+        }
     }
 
     function unfixTooltip() {
@@ -19606,6 +19602,22 @@ exports.default = ApplicationConfigService;
         shown: false, // Currently being shown?
         useIframe: /*@cc_on @*/ /*@if (@_win32) true, @else @*/false, /*@end @*/ // This is a better check than looking at userAgent!
 
+        _originalPlace: null,
+        _hovered: false,
+
+        _hover_in: function _hover_in(cm) {
+            if (cm.closeTimer) {
+                clearTimeout(cm.closeTimer);
+                cm.closeTimer = null;
+            }
+        },
+
+        _hover_out: function _hover_out(cm, tms) {
+            cm.closeTimer = setTimeout(function () {
+                cm.hide();
+            }, tms);
+        },
+
         // Create the menu instance
         create: function create(menu, opts) {
             var cmenu = $.extend({}, this, opts); // Clone all default properties to created object
@@ -19613,6 +19625,12 @@ exports.default = ApplicationConfigService;
             // If a selector has been passed in, then use that as the menu
             if (typeof menu === "string") {
                 cmenu.menu = $(menu);
+                cmenu._originalPlace = cmenu.menu.parent();
+                cmenu.menu.hover(function () {
+                    cmenu._hover_in(cmenu);
+                }, function () {
+                    cmenu._hover_out(cmenu, 500);
+                });
             }
             // If a function has been passed in, call it each time the menu is shown to create the menu
             else if (typeof menu === "function") {
@@ -19637,12 +19655,14 @@ exports.default = ApplicationConfigService;
             $('body').bind(cmenu.openEvt, function () {
                 cmenu.hide();
             }); // If right-clicked somewhere else in the document, hide this menu
+
+            cmenu.onCreated(cmenu);
             return cmenu;
         },
 
         // Create an iframe object to go behind the menu
         createIframe: function createIframe() {
-            return $('<iframe frameborder="0" tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
+            return $('<iframe tabindex="-1" src="javascript:false" style="display:block;position:absolute;z-index:-1;filter:Alpha(Opacity=0);"/>');
         },
 
         // Accept an Array representing a menu structure and turn it into HTML
@@ -19651,8 +19671,7 @@ exports.default = ApplicationConfigService;
             $.each(cmenu.theme.split(","), function (i, n) {
                 className += ' ' + cmenu.themePrefix + n;
             });
-            //			var $t = $('<div style="background-color:#ffff00; xwidth:200px; height:200px"><table style="" cellspacing=0 cellpadding=0></table></div>').click(function(){cmenu.hide(); return false;}); // We wrap a table around it so width can be flexible
-            var $t = $('<table style="" cellspacing="0" cellpadding="0"></table>').click(function () {
+            var $t = $('<table style=""></table>').click(function () {
                 cmenu.hide();
                 return false;
             }); // We wrap a table around it so width can be flexible
@@ -19661,18 +19680,9 @@ exports.default = ApplicationConfigService;
             var $div = cmenu._div = $('<div class="' + className + '"></div>');
 
             cmenu._div.hover(function () {
-                if (cmenu.closeTimer) {
-                    clearTimeout(cmenu.closeTimer);
-                    cmenu.closeTimer = null;
-                }
+                cmenu._hover_in(cmenu);
             }, function () {
-                var myClass = cmenu;
-
-                function timerRelay() {
-                    myClass.hide();
-                }
-
-                myClass.closeTimer = setTimeout(timerRelay, 500);
+                cmenu._hover_out(cmenu, 500);
             });
 
             // Each menu item is specified as either:
@@ -19703,6 +19713,7 @@ exports.default = ApplicationConfigService;
                 $td.append(cmenu.createIframe());
             }
             $t.append($tr.append($td.append($div)));
+
             return $t;
         },
 
@@ -19743,6 +19754,7 @@ exports.default = ApplicationConfigService;
             });
             var $idiv = $('<div class="' + cmenu.innerDivClassName + '" style="' + iconStyle + '">' + label + '</div>');
             $div.append($idiv);
+
             return $div;
         },
 
@@ -19795,23 +19807,41 @@ exports.default = ApplicationConfigService;
             return true;
         },
 
+        onCreated: function onCreated(cmenu) {},
+
         // Show the context menu
         show: function show(t, e) {
-            var cmenu = this,
-                x = e.pageX,
+            var cmenu = this;
+            var x = e.pageX,
                 y = e.pageY;
 
-            if (cmenu._div) cmenu._div.css('height', 'auto').css('overflow-y', 'auto');
+            if (cmenu._div) {
+                cmenu._div.css('height', 'auto').css('overflow-y', 'auto');
+            }
 
             cmenu.target = t; // Preserve the object that triggered this context menu so menu item click methods can see it
             cmenu._showEvent = e; // Preserve the event that triggered this context menu so menu item click methods can see it
             if (cmenu.beforeShow() !== false) {
+                var $t = $(t);
+                $t.off("mouseleave").on("mouseleave", function () {
+                    cmenu._hover_out(cmenu, 100);
+                });
+
                 // If the menu content is a function, call it to populate the menu each time it is displayed
                 if (cmenu.menuFunction) {
                     if (cmenu.menu) {
-                        $(cmenu.menu).remove();
+                        if (cmenu._originalPlace) {
+                            cmenu._originalPlace.append(cmenu.menu);
+                        } else {
+                            $(cmenu.menu).remove();
+                        }
                     }
-                    cmenu.menu = cmenu.createMenu(cmenu.menuFunction(cmenu, t), cmenu);
+                    var r = cmenu.menuFunction(cmenu, t);
+                    if (Array.isArray(r)) {
+                        cmenu.menu = cmenu.createMenu(r, cmenu);
+                    } else {
+                        cmenu.menu = r;
+                    }
                     cmenu.menu.css({ display: 'none' });
                     $(cmenu.appendTo).append(cmenu.menu);
                 }
@@ -19832,17 +19862,17 @@ exports.default = ApplicationConfigService;
 
                     var bodySize = { x: $(window).width(), y: $(window).height() };
 
-                    if ($(t).offset().top + $(t).outerHeight() + $c.height() > bodySize.y) {
-                        if ($(t).offset().left + $(t).outerWidth() + $c.width() > bodySize.x) $c.css({
-                            top: $(t).offset().top - $c.outerHeight() + "px",
-                            left: $(t).offset().left - $c.outerWidth() + "px",
+                    if ($t.offset().top + $t.outerHeight() + $c.height() > bodySize.y) {
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
+                            top: $t.offset().top - $c.outerHeight() + "px",
+                            left: $t.offset().left - $c.outerWidth() + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
                             cmenu.showCallback.call(cmenu);
                         } : null);else $c.css({
-                            top: $(t).offset().top - $c.outerHeight() + "px",
-                            left: $(t).offset().left + "px",
+                            top: $t.offset().top - $c.outerHeight() + "px",
+                            left: $t.offset().left + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
@@ -19850,16 +19880,16 @@ exports.default = ApplicationConfigService;
                         } : null);
                     } else {
 
-                        if ($(t).offset().left + $(t).outerWidth() + $c.width() > bodySize.x) $c.css({
-                            top: $(t).offset().top + $(t).outerHeight() + "px",
-                            left: $(t).offset().left - $c.outerWidth() + "px",
+                        if ($t.offset().left + $t.outerWidth() + $c.width() > bodySize.x) $c.css({
+                            top: $t.offset().top + $t.outerHeight() + "px",
+                            left: $t.offset().left - $c.outerWidth() + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
                             cmenu.showCallback.call(cmenu);
                         } : null);else $c.css({
-                            top: $(t).offset().top + $(t).outerHeight() + "px",
-                            left: $(t).offset().left + "px",
+                            top: $t.offset().top + $t.outerHeight() + "px",
+                            left: $t.offset().left + "px",
                             position: "absolute",
                             zIndex: 9999
                         })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
@@ -19867,14 +19897,16 @@ exports.default = ApplicationConfigService;
                         } : null);
                     }
                     $c.css('visibility', 'visible');
-                } else $c.css({
-                    top: pos.y + "px",
-                    left: pos.x + "px",
-                    position: "absolute",
-                    zIndex: 9999
-                })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
-                    cmenu.showCallback.call(cmenu);
-                } : null);
+                } else {
+                    $c.css({
+                        top: pos.y + "px",
+                        left: pos.x + "px",
+                        position: "absolute",
+                        zIndex: 9999
+                    })[cmenu.showTransition](cmenu.showSpeed, cmenu.showCallback ? function () {
+                        cmenu.showCallback.call(cmenu);
+                    } : null);
+                }
                 cmenu.shown = true;
                 $(document).one('click', null, function () {
                     cmenu.hide();
@@ -37561,7 +37593,9 @@ exports.default = utilsModule;
 /* 75 */,
 /* 76 */,
 /* 77 */,
-/* 78 */
+/* 78 */,
+/* 79 */,
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

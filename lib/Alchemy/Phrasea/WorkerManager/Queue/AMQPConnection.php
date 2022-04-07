@@ -129,6 +129,11 @@ class AMQPConnection
             self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
             self::TTL_DELAYED => self::DEFAULT_DELAYED_DELAY_VALUE
         ],
+        MessagePublisher::SHARE_BASKET_TYPE             => [
+            'with'            => self::WITH_RETRY,
+            self::MAX_RETRY   => self::DEFAULT_MAX_RETRY_VALUE,
+            self::TTL_RETRY   => self::DEFAULT_RETRY_DELAY_VALUE,
+        ],
     ];
 
     private $queues = [];   // filled during construct, from msg list, default values and conf

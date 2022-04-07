@@ -59,10 +59,6 @@ let pym = require('pym.js');
         title,
         // timeout id for delayed tooltips
         tID,
-        // IE 5.5 or 6
-        IE =
-            navigator.userAgent.match(/msie/i) &&
-            /MSIE\s(5\.5|6\.)/.test(navigator.userAgent),
         // flag for mouse tracking
         track = false;
 
@@ -77,7 +73,7 @@ let pym = require('pym.js');
             delay: 700,
             fixable: false,
             fixableIndex: 100,
-            fade: true,
+            fade: false,    // DO NOT SET TO TRUE ! (makes some random blinks/loops)
             showURL: true,
             outside: true,
             isBrowsable: false,
@@ -117,8 +113,8 @@ let pym = require('pym.js');
                 this.tooltipText = $(this).attr('title');
                 this.tooltipSrc = $(this).attr('tooltipsrc');
 
-                this.ajaxLoad =
-                    $.trim(this.tooltipText) === '' && this.tooltipSrc !== '';
+                this.ajaxLoad = $.trim(this.tooltipText) === '' && this.tooltipSrc !== '';
+
                 this.ajaxTimeout;
 
                 this.orEl = $(this);
@@ -141,46 +137,6 @@ let pym = require('pym.js');
                 })
                 .mousedown(fix);
         },
-        fixPNG: IE
-            ? function () {
-                  return this.each(function () {
-                      let image = $(this).css('backgroundImage');
-                      if (image.match(/^url\(["']?(.*\.png)["']?\)$/i)) {
-                          image = RegExp.$1;
-                          $(this)
-                              .css({
-                                  backgroundImage: 'none',
-                                  filter:
-                                      "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=crop, src='" +
-                                      image +
-                                      "')"
-                              })
-                              .each(function () {
-                                  let position = $(this).css('position');
-                                  if (
-                                      position !== 'absolute' &&
-                                      position !== 'relative'
-                                  )
-                                      $(this).css('position', 'relative');
-                              });
-                      }
-                  });
-              }
-            : function () {
-                  return this;
-              },
-        unfixPNG: IE
-            ? function () {
-                  return this.each(function () {
-                      $(this).css({
-                          filter: '',
-                          backgroundImage: ''
-                      });
-                  });
-              }
-            : function () {
-                  return this;
-              },
         hideWhenEmpty: function () {
             return this.each(function () {
                 $(this)[$(this).html() ? 'show' : 'hide']();
@@ -218,16 +174,18 @@ let pym = require('pym.js');
 
     // main event handler to start showing tooltips
     function handle(event) {
-        if (
-            $($.tooltip.current).hasClass('SSTT') &&
-            $($.tooltip.current).hasClass('ui-state-active')
-        )
+        if ( $($.tooltip.current).hasClass('SSTT') && $($.tooltip.current).hasClass('ui-state-active')) {
             return;
+        }
 
+        // DONT UN-COMMENT ; fix blinking
         // show helper, either with timeout or on instant
-        if (settings(this).delay)
-            tID = setTimeout(visible, settings(this).delay);
-        else visible();
+        // if (settings(this).delay) {
+        //     tID = setTimeout(visible, settings(this).delay);
+        // }
+        // else {
+            visible();
+        // }
         show();
 
         // if selected, update the helper position when the mouse moves
@@ -245,23 +203,24 @@ let pym = require('pym.js');
 
         event.cancelBubble = true;
 
-        if (
-            $.tooltip.blocked ||
-            this === $.tooltip.current ||
-            (!this.tooltipText &&
-                !this.tooltipSrc &&
-                !settings(this).bodyHandler)
-        )
+        if ( $.tooltip.blocked
+                || this === $.tooltip.current
+                || (!this.tooltipText && !this.tooltipSrc && !settings(this).bodyHandler)
+        ) {
             return;
+        }
 
         // save current
         $.tooltip.current = this;
         title = this.tooltipText;
 
         // if element has href or src, add and show it, otherwise hide it
-        if (settings(this).showURL && $(this).url())
+        if (settings(this).showURL && $(this).url()) {
             helper.url.html($(this).url().replace('http://', '')).show();
-        else helper.url.hide();
+        }
+        else {
+            helper.url.hide();
+        }
         // add an optional class for this tip
         helper.parent.removeClass();
         helper.parent.addClass(settings(this).extraClass);
@@ -270,7 +229,8 @@ let pym = require('pym.js');
             clearTimeout($.tooltip.ajaxTimeout);
             $.tooltip.ajaxTimeout = setTimeout($.tooltip.delayAjax, 300);
             $.tooltip.ajaxEvent = event;
-        } else {
+        }
+        else {
             title =
                 '<div class="popover" style="display:block;position:relative;">' +
                 '<div class="arrow"></div>' +
@@ -292,8 +252,6 @@ let pym = require('pym.js');
         let $this = $.tooltip.current;
         let tooltipSettings = settings($this) ? settings($this) : {};
         let fixedPosition = $.tooltip.blocked;
-        // fix PNG background for IE
-        if (tooltipSettings.fixPNG) helper.parent.fixPNG();
         if (tooltipSettings.outside) {
             let width = 'auto';
             let height = 'auto';
@@ -336,7 +294,8 @@ let pym = require('pym.js');
                 recordHeight = parseInt($imgTips[0].style.height, 10);
                 $imgTips.css({ display: 'block', margin: '0 auto' });
                 $selector = $imgTips;
-            } else if ($documentTips[0] && shouldResize) {
+            }
+            else if ($documentTips[0] && shouldResize) {
                 let recordUrl = $documentTips.data('src');
                 recordWidth = $documentTips.data('original-width') > 400 ? $documentTips.data('original-width') : 400;
                 recordHeight = $documentTips.data('original-width') > 400 ? $documentTips.data('original-height') : 600;
@@ -344,7 +303,8 @@ let pym = require('pym.js');
                 $selector = $documentTips;
                 activeThumbnailFrame = new pym.Parent(customId, recordUrl);
                 activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
-            } else if ($audioTips[0] && shouldResize) {
+            }
+            else if ($audioTips[0] && shouldResize) {
                 let recordUrl = $audioTips.data('src');
                 recordWidth = 240;
                 recordHeight = 240;
@@ -352,7 +312,8 @@ let pym = require('pym.js');
                 $selector = $audioTips;
                 activeThumbnailFrame = new pym.Parent(customId, recordUrl);
                 activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
-            } else if ($videoTips[0] && shouldResize) {
+            }
+            else if ($videoTips[0] && shouldResize) {
                 let recordUrl = $videoTips.data('src');
                 recordWidth = $videoTips.data('original-width');
                 recordHeight = $videoTips.data('original-height');
@@ -367,7 +328,8 @@ let pym = require('pym.js');
                 activeThumbnailFrame = new pym.Parent(customId, recordUrl);
                 activeThumbnailFrame.iframe.setAttribute('allowfullscreen', '');
                 //activeThumbnailFrame.iframe.setAttribute('height', '100%');
-            } else {
+            }
+            else {
                 // handle captions
                 if ($selector.find('.popover').length > 0) {
                     recordWidth =
@@ -413,7 +375,8 @@ let pym = require('pym.js');
                         resizeW = containerHeight / resourceRatio;
                         resizeH = containerHeight;
                     }
-                } else {
+                }
+                else {
                     if (resizeH > containerHeight) {
                         resizeW = containerHeight / resourceRatio;
                         resizeH = containerHeight;
@@ -467,13 +430,18 @@ let pym = require('pym.js');
                     leftOffset = 1;
                     rightOffset = 2;
                     bottomOffset = -15;
-                } else {
+                }
+                else {
                     // tooltip from workzone (basket)
                     tooltipVerticalOffset = 0;
                     tooltipHorizontalOffset = 0;
                     topOffset = 50;
-                    // fallback on original target if nothing found:
-                    $eventTarget = $origEventTarget;
+                    // the origEventTarget is only the title, locate the container block
+                    $eventTarget = $origEventTarget.closest('.SSTT');
+                    if($eventTarget.length === 0) {
+                        // fallback on original target if nothing found:
+                        $eventTarget = $origEventTarget;
+                    }
                 }
 
                 let recordPosition = $eventTarget.offset();
@@ -513,7 +481,8 @@ let pym = require('pym.js');
 
                 if (leftAvailableSpace > rightAvailableSpace) {
                     position = 'left';
-                } else {
+                }
+                else {
                     position = 'right';
                 }
 
@@ -523,7 +492,8 @@ let pym = require('pym.js');
                     bottomAvailableSpace > rightAvailableSpace
                 ) {
                     position = 'bottom';
-                } else if (
+                }
+                else if (
                     shouldBeOnTop &&
                     availableHeight > leftAvailableSpace &&
                     availableHeight > rightAvailableSpace
@@ -612,7 +582,8 @@ let pym = require('pym.js');
                 if (fixedPosition === true) {
                     left = totalViewportWidth / 2 - tooltipWidth / 2;
                     top = totalViewportHeight / 2 - tooltipHeight / 2;
-                } else {
+                }
+                else {
                     // try to vertical center, relative to source:
                     if (position === 'left' || position === 'right') {
                         let verticalSpace =
@@ -625,7 +596,8 @@ let pym = require('pym.js');
                                 topAvailableSpace +
                                 recordHeightOffset / 2 -
                                 tooltipHeight / 2;
-                        } else {
+                        }
+                        else {
                             top = totalViewportHeight - tooltipHeight;
                         }
                         top = top < 0 ? 0 : top;
@@ -635,23 +607,20 @@ let pym = require('pym.js');
                     if (position === 'top' || position === 'bottom') {
                         // push to left
                         // push to right
-                        let takeLeftSpace =
-                            tooltipWidth / 2 + leftAvailableSpace;
-                        let takeRightSpace =
-                            tooltipWidth / 2 + rightAvailableSpace;
+                        let takeLeftSpace = tooltipWidth / 2 + leftAvailableSpace;
+                        let takeRightSpace = tooltipWidth / 2 + rightAvailableSpace;
                         // if centering on top or bottom and tooltip is offcanvas
-                        if (
-                            takeLeftSpace > totalViewportWidth ||
-                            takeRightSpace > totalViewportWidth
-                        ) {
+                        if ( takeLeftSpace > totalViewportWidth || takeRightSpace > totalViewportWidth ) {
                             if (leftAvailableSpace > totalViewportWidth / 2) {
                                 // push at left
                                 left = 0;
-                            } else {
+                            }
+                            else {
                                 // push at right
                                 left = totalViewportWidth - tooltipWidth;
                             }
-                        } else {
+                        }
+                        else {
                             // center
                             left =
                                 leftAvailableSpace -
@@ -680,7 +649,8 @@ let pym = require('pym.js');
                     // reset non used css properties:
                     resizeProperties['max-width'] = '';
                     resizeProperties['min-width'] = '';
-                } else {
+                }
+                else {
                     // ensure tooltip width match with left position
                     resizeProperties['max-width'] = Math.round(tooltipWidth);
                     resizeProperties['min-width'] = Math.round(tooltipWidth);
@@ -708,20 +678,23 @@ let pym = require('pym.js');
             isBrowsable = settings($.tooltip.current).isBrowsable;
         }
 
-        if ((!IE || !$.fn.bgiframe) && settings($.tooltip.current).fade) {
-            if (helper.parent.is(':animated'))
+        if (settings($.tooltip.current).fade) {
+            if (helper.parent.is(':animated')) {
                 helper.parent
-                    .stop()
-                    .show()
-                    .fadeTo(settings($.tooltip.current).fade, 100);
-            else
+                      .stop()
+                      .show()
+                      .fadeTo(settings($.tooltip.current).fade, 100);
+            }
+            else {
                 helper.parent.is(':visible')
                     ? helper.parent.fadeTo(
-                          settings($.tooltip.current).fade,
-                          100
-                      )
+                        settings($.tooltip.current).fade,
+                        100
+                    )
                     : helper.parent.fadeIn(settings($.tooltip.current).fade);
-        } else {
+            }
+        }
+        else {
             helper.parent.show();
         }
 
@@ -860,6 +833,7 @@ let pym = require('pym.js');
 
     // hide helper and restore added classes and the title
     function hide(event) {
+
         let isBrowsable = false;
         if ($.tooltip.current !== null) {
             isBrowsable = settings($.tooltip.current).isBrowsable;
@@ -891,13 +865,17 @@ let pym = require('pym.js');
                 .css('opacity', '');
         }
 
-        if ((!IE || !$.fn.bgiframe) && tsettings.fade) {
-            if (helper.parent.is(':animated'))
+        if (tsettings.fade) {
+            if (helper.parent.is(':animated')) {
                 helper.parent.stop().fadeTo(tsettings.fade, 0, complete);
-            else helper.parent.stop().fadeOut(tsettings.fade, complete);
-        } else complete();
-
-        if (tsettings.fixPNG) helper.parent.unfixPNG();
+            }
+            else {
+                helper.parent.stop().fadeOut(tsettings.fade, complete);
+            }
+        }
+        else {
+            complete();
+        }
     }
 
     function unfixTooltip() {

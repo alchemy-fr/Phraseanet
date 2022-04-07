@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 259);
+/******/ 	return __webpack_require__(__webpack_require__.s = 263);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -3081,19 +3081,19 @@ exports.default = ApplicationConfigService;
 
 /***/ }),
 
-/***/ 259:
+/***/ 263:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _bootstrap = __webpack_require__(260);
+var _bootstrap = __webpack_require__(264);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(262);
+__webpack_require__(266);
 
 
 var PermaviewApplication = {
@@ -3108,7 +3108,7 @@ module.exports = PermaviewApplication;
 
 /***/ }),
 
-/***/ 260:
+/***/ 264:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3122,7 +3122,7 @@ var _configService = __webpack_require__(16);
 
 var _configService2 = _interopRequireDefault(_configService);
 
-var _config = __webpack_require__(261);
+var _config = __webpack_require__(265);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -3158,7 +3158,7 @@ exports.default = bootstrap;
 
 /***/ }),
 
-/***/ 261:
+/***/ 265:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3187,7 +3187,7 @@ exports.default = defaultConfig;
 
 /***/ }),
 
-/***/ 262:
+/***/ 266:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import dialog from './../../phraseanet-common/components/dialog';
-import pushRecordWindow from './recordPush/index';
+import pushOrShareIndex from './pushOrShare/index';
 
-const pushRecord = (services, datas) => {
+const pushbasketModal = (services, datas) => {
     const {configService, localeService, appEvents} = services;
     const url = configService.get('baseUrl');
 
@@ -14,7 +14,10 @@ const pushRecord = (services, datas) => {
             title: localeService.t('push')
         });
 
-        $dialog.getDomElement().closest('.ui-dialog').addClass('push_dialog_container');
+        // add classes to the whoe dialog (including title)
+        $dialog.getDomElement().closest('.ui-dialog')
+               .addClass('whole_dialog_container')
+               .addClass('Push');
 
         $.post(`${url}prod/push/sendform/`, datas, function (data) {
             $dialog.setContent(data);
@@ -26,8 +29,8 @@ const pushRecord = (services, datas) => {
     };
 
     const _onDialogReady = () => {
-        pushRecordWindow(services).initialize({
-            feedback: {
+        pushOrShareIndex(services).initialize({
+            container: {
                 containerId: '#PushBox',
                 context: 'Push'
             },
@@ -41,4 +44,4 @@ const pushRecord = (services, datas) => {
     return {openModal};
 };
 
-export default pushRecord;
+export default pushbasketModal;

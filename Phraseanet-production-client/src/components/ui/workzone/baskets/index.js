@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import deleteBasket from './../../../basket/delete';
+import quitshareBasket from './../../../basket/quitshare';
+import actionsBasket from './../../../basket/actions';
 import archiveBasket from './../../../basket/archive';
 import basketCreate from './../../../basket/create';
 import storyCreate from './../../../story/create';
@@ -15,6 +17,8 @@ const workzoneBaskets = (services) => {
 
     const initialize = () => {
         deleteBasket(services).initialize();
+        quitshareBasket(services).initialize();
+        actionsBasket(services).initialize();
         archiveBasket(services).initialize();
         basketCreate(services).initialize();
         storyCreate(services).initialize();
@@ -73,7 +77,6 @@ const workzoneBaskets = (services) => {
     return {
         initialize,
         openBasketPreferences
-
     };
 };
 

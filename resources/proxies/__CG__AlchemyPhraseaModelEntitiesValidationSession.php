@@ -64,10 +64,10 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'initiator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'basket', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'participants'];
+            return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'initiator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'basket'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'initiator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'basket', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'participants'];
+        return ['__isInitialized__', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'id', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'initiator', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'created', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'updated', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'expires', '' . "\0" . 'Alchemy\\Phrasea\\Model\\Entities\\ValidationSession' . "\0" . 'basket'];
     }
 
     /**
@@ -373,6 +373,28 @@ class ValidationSession extends \Alchemy\Phrasea\Model\Entities\ValidationSessio
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParticipant', [$user]);
 
         return parent::getParticipant($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isParticipant(\Alchemy\Phrasea\Model\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isParticipant', [$user]);
+
+        return parent::isParticipant($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getListParticipantsUserId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getListParticipantsUserId', []);
+
+        return parent::getListParticipantsUserId();
     }
 
 }

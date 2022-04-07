@@ -194,7 +194,6 @@ $dividerBg: #6c6c6c !default;
         text-align: left;
         border: none;
         outline: none;
-        font-family: Roboto;
         font-size: 12px;
         font-weight: 700;
         &:before {
@@ -237,7 +236,6 @@ $dividerBg: #6c6c6c !default;
             height: 18px;
         }
         span {
-            font-family: Roboto;
             font-size: 11px;
             font-weight: normal;
             font-style: normal;
@@ -259,7 +257,6 @@ $dividerBg: #6c6c6c !default;
                 margin-left: 6px;
                 font-size: 11px;
                 color: $toolTitleColor;
-                font-family: Roboto;
             }
         }
         button:hover {
@@ -275,3 +272,72 @@ $dividerBg: #6c6c6c !default;
     color: #404040;
     text-decoration: underline;
 }
+
+.ui-accordion .ui-accordion-header {
+    .workzone-menu-title {
+        I {
+            font-size: 16px;
+            display: inline-block;
+            background-color: #222;
+            padding: 5px 0 0 5px;
+            border-radius: 14px;
+            line-height: normal;
+            vertical-align: middle;
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            color: white;
+            &.vote_rec {
+                background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+            }
+
+            &.vote_sent {
+                background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+            }
+
+            &.share_rec {
+                background-color: forestgreen;
+            }
+
+            &.share_sent {
+                background-color: forestgreen;
+            }
+
+            &.push_rec {
+                background-color: #2092ED;
+                // fa-gift must be fixed
+                font-size: 17px;
+                padding: 4px 0px 3px 6px;
+            }
+
+            &.basket {
+                background-color: #1EADD6;
+                font-size:14px;     // icomoon stsck-overflow looks too big
+            }
+
+            &.story {
+                background-color: #6471BC;
+            }
+        }
+        // the "unread" is a small disc
+        .unread_flag {
+            color: transparent;
+            font-size: 8px;
+            background-color: transparent;
+            padding: 0;
+            width: 8px;
+        }
+    }
+    &.unread {
+        I.unread_flag {
+            // indicate basket as not read (fa-circle)
+            color: red;
+        }
+        //.workzone-menu-title {
+        //    font-style: italic;
+        //    font-weight: bold;
+        //}
+    }
+}
+
+// #basket-fiter INPUT;checked[value=feedback] ~

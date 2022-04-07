@@ -32,7 +32,7 @@
       class="otherBaskToolTip to-open-preview-action" title="{{basket.getDescription()}}">
     {#<img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 
-    {% if basket.getValidation() %}
+    {% if basket.isVoteBasket() %}
       <img src='/assets/common/images/icons/basket_validation.png' title='' width="24" class="btn-image"/>
     {% elseif basket.getPusher() %}
       {% if not basket.isRead() %}

@@ -219,6 +219,25 @@
                             </div>
                         {% endif %}
 
+                        {# actions menu displayed when a basket is wip
+                           nb: no need for a trigger element ; menu will be created, not attached #}
+                        <table style="display:none;" class="contextMenu basketcontextmenu" id="basket_wip_menu">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="context-menu context-menu-theme-flat">
+                                            <div title="" class="context-menu-item">
+                                                <div class="context-menu-item-inner">
+                                                    {{ 'prod::workzone:Basket is WIP' | trans }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
                         {% if GV_thesaurus %}
                             <div id="proposals" class="PNB thesaurus-from-facets-action">
                                 <input type="hidden" id="facet_except" value="{{ 'prod:workzone:facetstab:tooltips:facet_except_filter' | trans }}" />

@@ -1,18 +1,21 @@
 import $ from 'jquery';
-import Feedback from './feedback';
+import pushOrShare from './pushOrShare';
 import ListManager from './../../list/listManager';
 import dialog from './../../../phraseanet-common/components/dialog';
-const pushRecord = (services) => {
+
+const pushOrShareIndex = (services) => {
     const {configService, localeService, appEvents} = services;
-    let feedbackInstance = null;
+    let pushOrShareInstance = null;
     let listManagerInstance = null;
 
     const initialize = (options) => {
-        let {feedback, listManager} = options;
-        if ($('#PushBox').length > 0) {
-            feedbackInstance = new Feedback(services, feedback);
+        let {container, listManager} = options;
+        let $container = $('#PushBox');
+        if ($container.length > 0) {
+            pushOrShareInstance = new pushOrShare(services, container);
             listManagerInstance = new ListManager(services, listManager);
-        } else {
+        }
+        else {
             $('.close-dialog-action').on('click', () => dialog.close('1'))
         }
     };
@@ -28,7 +31,7 @@ const pushRecord = (services) => {
     }
 
     function addUser(userOptions) {
-        feedbackInstance.addUser(userOptions);
+        pushOrShareInstance.addUser(userOptions);
     }
 
     function setActiveList() {
@@ -98,4 +101,4 @@ const pushRecord = (services) => {
 
 };
 
-export default pushRecord;
+export default pushOrShareIndex;

@@ -20,6 +20,8 @@ class DatabaseMaintenanceService
         'ApiOauthTokens',
         'AuthFailures',
         'BasketElements',
+        'BasketElementVotes',
+        'BasketParticipants',
         'Baskets',
         'FeedEntries',
         'FeedItems',
@@ -49,9 +51,6 @@ class DatabaseMaintenanceService
         'UsrListOwners',
         'UsrLists',
         'UsrListsContent',
-        'ValidationDatas',
-        'ValidationParticipants',
-        'ValidationSessions',
     ];
 
     private $app;

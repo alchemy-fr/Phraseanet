@@ -14,7 +14,6 @@ use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
-use Alchemy\Phrasea\Model\Entities\ValidationData;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketElementRepository;
@@ -32,16 +31,30 @@ class BasketController extends Controller
 {
     use NotifierAware;
 
+    public function getWip(Request $request, Basket $basket)
+    {
+        return $this->app->json([
+            'basket_id' => $basket->getId(),
+            'wip' => $basket->getWip()
+        ]);
+    }
+
     public function displayBasket(Request $request, Basket $basket)
     {
+        if($basket->getWip() !== NULL) {
+            return $this->render('prod/WorkZone/BasketWip.html.twig', [
+                'basket' => $basket,
+            ]);
+        }
+
         if ($basket->isRead() === false) {
             $basket->markRead();
             $this->getEntityManager()->flush();
         }
 
-        if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+        if ($basket->isParticipant($this->getAuthenticatedUser())) {
+            if ($basket->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
+                $basket->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
                 $this->getEntityManager()->flush();
             }
         }
@@ -51,7 +64,8 @@ class BasketController extends Controller
 
         return $this->render('prod/WorkZone/Basket.html.twig', [
             'basket' => $basket,
-            'ordre'  => $request->query->get('order'),
+            // !!!!!!!!!!!!!!!!!!!!!!!! order is null when a "vote" (feedback) is deployed in wz
+            'ordre'  => $request->query->get('order') ?: Basket::ELEMENTSORDER_NAT,
             'plugins' => [
                 'actionbar' => $filter('workzone.basket.actionbar'),
             ],
@@ -60,9 +74,9 @@ class BasketController extends Controller
 
     public function displayReminder(Request $request, Basket $basket)
     {
-        if ($basket->getValidation()) {
-            if ($basket->getValidation()->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getValidation()->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+        if ($basket->isVoteBasket()) {
+            if ($basket->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
+                $basket->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
                 $this->getEntityManager()->flush();
             }
         }
@@ -74,9 +88,9 @@ class BasketController extends Controller
 
     public function doReminder(Request $request, Basket $basket)
     {
-        $userFrom = $basket->getValidation()->getInitiator();
+        $userFrom = $basket->getVoteInitiator();
 
-        $expireDate = $basket->getValidation()->getExpires();
+        $expireDate = $basket->getVoteExpires();
         $emitter = Emitter::fromUser($userFrom);
         $localeFrom = $userFrom->getLocale();
 
@@ -344,20 +358,6 @@ class BasketController extends Controller
 
             $oldBasket->removeElement($basket_element);
             $basket->addElement($basket_element);
-
-            //  configure participant when moving from other type of basket to basket type feedback
-            if ($oldBasket->getValidation() == null &&  ($validationSession = $basket->getValidation()) !== null) {
-
-                $participants = $validationSession->getParticipants();
-
-                foreach ($participants as $participant) {
-                    $validationData = new ValidationData();
-                    $validationData->setParticipant($participant);
-                    $validationData->setBasketElement($basket_element);
-
-                    $this->getEntityManager()->persist($validationData);
-                }
-            }
 
             $n++;
         }

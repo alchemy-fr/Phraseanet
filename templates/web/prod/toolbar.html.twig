@@ -98,9 +98,9 @@
                 'icon':'/assets/common/images/icons/push16.png',
                 'label':'action : push' | trans },
             {
-                'class':'TOOL_feedback_btn',
-                'icon':'/assets/common/images/icons/feedback16.png',
-                'label':'Feedback' | trans }
+                'class':'TOOL_sharebasket_btn',
+                'fa_icon': 'fa-share',
+                'label':'Share' | trans }
         ]) %}
     {% endif %}
     {% if acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}
@@ -159,7 +159,11 @@
                 <div class="btn-group">
             {% set menu_entry = menu_entries[0] %}
                     <button class="results_window btn btn-inverse {{ menu_entry.class }}" data-selection-source="search-result">
-                        <img src="{{ menu_entry.icon }}"  class="btn-image"/>
+                        {% if menu_entry.icon is defined %}
+                            <img src="{{ menu_entry.icon }}"  class="btn-image"/>
+                        {% elseif menu_entry.fa_icon is defined %}
+                            <i class="fa {{ menu_entry.fa_icon|e }}"></i>
+                        {% endif %}
                         {{ menu_entry.label }}
                     </button>
             {% set menu_entries = menu_entries|slice(1) %}
@@ -170,7 +174,11 @@
                         {% for menu_entry in menu_entries %}
                         <li>
                             <a class="results_window {{ menu_entry.class }}" data-selection-source="search-result">
-                                <img src="{{ menu_entry.icon }}" class="btn-image"/>
+                                {% if menu_entry.icon is defined %}
+                                    <img src="{{ menu_entry.icon }}"  class="btn-image"/>
+                                {% elseif menu_entry.fa_icon is defined %}
+                                    <i class="fa {{ menu_entry.fa_icon|e }}"></i>
+                                {% endif %}
                                 {{ menu_entry.label }}
                             </a>
                         </li>

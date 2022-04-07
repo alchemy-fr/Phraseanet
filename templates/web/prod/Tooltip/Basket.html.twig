@@ -9,9 +9,9 @@
 {% block content %}
     <div class="noToolTipResize" style="margin:5px;width:{{ width - 40 }}px;height:auto !important;height:380px;max-height:380px;min-height:220px;position:relative;">
             <span class="expiredDate">
-        {% if basket.getValidation() %}
-            {% set dateExpired = app['date-formatter'].getPrettyString(basket.getValidation().getExpires()) %}
-            {% if basket.getValidation().getExpires() < date() %}
+        {% if basket.isVoteBasket() %}
+            {% set dateExpired = app['date-formatter'].getPrettyString(basket.getVoteExpires()) %}
+            {% if basket.getVoteExpires() < date() %}
                 <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
                 {% else %}
                 <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>

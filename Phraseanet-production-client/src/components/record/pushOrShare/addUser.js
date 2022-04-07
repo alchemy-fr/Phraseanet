@@ -2,12 +2,12 @@
  * triggered via workzone > Basket > context menu
  */
 import $ from 'jquery';
-import * as _ from 'underscore';
 import dialog from './../../../phraseanet-common/components/dialog';
 import merge from 'lodash.merge';
+
 require('geonames-server-jquery-plugin/jquery.geonames.js');
 
-const pushAddUser = (services) => {
+const pushOrShareAddUser = (services) => {
     const { configService, localeService, appEvents } = services;
     const url = configService.get('baseUrl');
     let searchSelectionSerialized = '';
@@ -23,19 +23,36 @@ const pushAddUser = (services) => {
         $container.on('click', '.push-add-user', (event) => {
             event.preventDefault();
             const $el = $(event.currentTarget);
-            let dialogOptions = {};
+            let dialogOptions = {
+                // 'context': null,                // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ? will become a class to apply theme
+                'dialog_classes': [
+                    'dialog_container',
+                    'whole_dialog_container'    // to use css from _modal-push-scss
+                ]
+            };
+
+            // a "context" (=theme) can be passed by the button/link to apply theme css
+            // 'Push' | 'Feedback' | 'Sharebasket' | 'ListManager' | ... ?
+            if ($el.attr('data-context') !== undefined) {
+                dialogOptions.dialog_classes.push($el.attr('data-context'));
+                // dialogOptions.context = $el.attr('data-context');
+            }
 
             if ($el.attr('title') !== undefined) {
                 dialogOptions.title = $el.html;
             }
 
+            // !!!!!!!!!!!!!!!!!!!!!! never passed ? better use data-context !!!!!!!!!!!!!!!!!!!!
             if($el.hasClass('validation')) {
-                dialogOptions.isValidation = true;
+                dialogOptions.dialog_classes.push('validation');
             }
 
+            // !!!!!!!!!!!!!!!!!!!!!! better use data-context !!!!!!!!!!!!!!!!!!!!
+/*
             if($el.hasClass('listmanager-add-user')) {
-                dialogOptions.isListManager = true;
+                dialogOptions.dialog_classes.push('push-add-user-listmanager');
             }
+*/
 
             openModal(dialogOptions);
         });
@@ -49,14 +66,11 @@ const pushAddUser = (services) => {
             title: localeService.t('create new user'),
         }, options);
         const $dialog = dialog.create(services, dialogOptions, 2);
-        $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container');
 
-        if(dialogOptions.isValidation) {
-            $dialog.getDomElement().closest('.ui-dialog').addClass('validation');
-        }
-
-        if(dialogOptions.isListManager) {
-            $dialog.getDomElement().closest('.ui-dialog').addClass('push-add-user-listmanager');
+        // add classes to the whole dialog
+        let d = $dialog.getDomElement().closest('.ui-dialog');   // the whole dlg, including title
+        for(const i in options.dialog_classes) {
+            d.addClass(options.dialog_classes[i]);  // 'dialog_container', 'whole_dialog_container', ...
         }
 
         return $.get(`${url}prod/push/add-user/`, function (data) {
@@ -137,4 +151,4 @@ const pushAddUser = (services) => {
     return {initialize};
 };
 
-export default pushAddUser;
+export default pushOrShareAddUser;
