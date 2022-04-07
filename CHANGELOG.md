@@ -30,7 +30,6 @@ PHRAS-3643 Bin/console records:build-subdef add option --publish to emit build m
 PHRAS-3653 Worker queue message : publish messages as persistent into rabbitmq queues
 PHRAS-3560 Admin - Users list and search improvement and export users as .csv, add "last connection"
 PHRAS-3223 Admin - user details - Display AuthFailure and UsrAuthProvider info
-PHRAS-3653 Worker queue message : publish messages as persitent into rabbitmq queues
 ```
 
 ### Bug fix
