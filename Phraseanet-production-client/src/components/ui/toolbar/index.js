@@ -6,7 +6,7 @@ import exportRecord from '../../record/export';
 import propertyRecord from '../../record/property';
 import sharebasketModal from '../../record/sharebasketModal';
 import pushbasketModal from '../../record/pushbasketModal';
-import usersListsModal from '../../userslists/index';
+// import usersListsModal from '../../userslists/index';
 import recordPublish from '../../record/publish';
 import recordToolsModal from '../../record/tools/index';
 import printRecord from '../../record/print';
@@ -201,12 +201,13 @@ const toolbar = (services) => {
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
             _triggerModal(event, sharebasketModal(services).openModal);
         });
-        /**
-         * tools > Push > UsersLists
-         */
-        $container.on('click', '.TOOL_userslists_btn', function (event) {
-            _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
-        });
+
+        // /**
+        //  * tools > Push > UsersLists
+        //  */
+        // $container.on('click', '.TOOL_userslists_btn', function (event) {
+        //     _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
+        // });
 
         /**
          * workzone (opened basket) > feedback

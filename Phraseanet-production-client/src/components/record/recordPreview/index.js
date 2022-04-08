@@ -385,13 +385,13 @@ const previewRecordService = services => {
                 let basketIcon = '';
                 if (data.containerType !== null ) {
                     if (data.containerType === 'feedback') {
-                        basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                        basketIcon = '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
                     } else if (data.containerType === 'push') {
-                        basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                        basketIcon = '<i class="fa fa-gift push_rec" style="padding-left: 6px; padding-top: 3px; padding-bottom: 2px; margin-right: 5px;"></i>';
                     } else if (data.containerType === 'regroup') {
-                        basketIcon = "<img src='/assets/common/images/icons/story.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                        basketIcon = '<i class="icomoon icon-stack story" style="margin-right: 5px;"></i>';
                     } else {
-                        basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                        basketIcon = '<i class="icomoon icon-stackoverflow basket" style="margin-right: 5px;"></i>';
                     }
                 }
 

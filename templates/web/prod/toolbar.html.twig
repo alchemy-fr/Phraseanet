@@ -95,7 +95,8 @@
         {% set m = m|merge([
             {
                 'class':'TOOL_pushdoc_btn',
-                'icon':'/assets/common/images/icons/push16.png',
+                'fa_icon':'fa-gift',
+                'i_class': 'push_rec',
                 'label':'action : push' | trans },
             {
                 'class':'TOOL_sharebasket_btn',
@@ -162,7 +163,7 @@
                         {% if menu_entry.icon is defined %}
                             <img src="{{ menu_entry.icon }}"  class="btn-image"/>
                         {% elseif menu_entry.fa_icon is defined %}
-                            <i class="fa {{ menu_entry.fa_icon|e }}"></i>
+                            <i class="fa {{ menu_entry.fa_icon|e }} {% if menu_entry.i_class is defined %} {{ menu_entry.i_class|e }} {% endif %}" style="margin: 0px 5px;"></i>
                         {% endif %}
                         {{ menu_entry.label }}
                     </button>
@@ -177,7 +178,7 @@
                                 {% if menu_entry.icon is defined %}
                                     <img src="{{ menu_entry.icon }}"  class="btn-image"/>
                                 {% elseif menu_entry.fa_icon is defined %}
-                                    <i class="fa {{ menu_entry.fa_icon|e }}"></i>
+                                    <i class="fa {{ menu_entry.fa_icon|e }} {% if menu_entry.i_class is defined %} {{ menu_entry.i_class|e }} {% endif %}"></i>
                                 {% endif %}
                                 {{ menu_entry.label }}
                             </a>

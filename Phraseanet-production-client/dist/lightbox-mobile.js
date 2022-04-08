@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/assets/production/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 260);
+/******/ 	return __webpack_require__(__webpack_require__.s = 258);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -5688,6 +5688,402 @@ var ResourceStore = function (_EventEmitter) {
 
 /***/ }),
 
+/***/ 258:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+var _bootstrap = __webpack_require__(259);
+
+var _bootstrap2 = _interopRequireDefault(_bootstrap);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var lightboxMobileApplication = {
+    bootstrap: _bootstrap2.default
+};
+
+if (typeof window !== 'undefined') {
+    window.lightboxMobileApplication = lightboxMobileApplication;
+}
+
+/*resize of PDF */
+$(window).on("load resize ", function (e) {
+    if ($('.pdf-iframe').length > 0) {
+        var pdfHeight = $('.pdf-iframe').width() / 0.707;
+        $('.pdf-iframe').css('height', pdfHeight);
+    }
+});
+/*resize of VIDEO */
+$(window).on("load resize ", function (e) {
+    if ($('.video-iframe').length > 0) {
+
+        var $sel = $('.center-image');
+        var $window = $(window).height();
+
+        // V is for "video" ; K is for "container" ; N is for "new"
+        var VH = $('[name=videoHeight]').val();
+        var VW = $('[name=videoWidth]').val();
+        var KW = $sel.width();
+        var KH = $sel.height();
+
+        if ($window <= 375) {
+            KH = 150;
+        } else {
+            if ($window > 375 && $window <= 480) {
+                KH = 200;
+            }
+            if ($window > 480 && $window <= 640) {
+                KH = 300;
+            }
+
+            if ($window > 640 && $window <= 767) {
+                KH = 400;
+            }
+            if ($window > 767) {
+                KH = 550;
+            }
+        }
+
+        var NW, NH;
+        if ((NH = VH / VW * (NW = KW)) > KH) {
+            // try to fit exact horizontally, adjust vertically
+            // too bad... new height overflows container height
+            NW = VW / VH * (NH = KH); // so fit exact vertically, adjust horizontally
+        }
+        $(".video-iframe", $sel).css('width', NW).css('height', NH);
+    }
+});
+
+module.exports = lightboxMobileApplication;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+
+/***/ 259:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+// import lightbox from './../components/lightbox/index';
+// import mainMenu from './../components/mainMenu';
+
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _configService = __webpack_require__(16);
+
+var _configService2 = _interopRequireDefault(_configService);
+
+var _locale = __webpack_require__(20);
+
+var _locale2 = _interopRequireDefault(_locale);
+
+var _config = __webpack_require__(260);
+
+var _config2 = _interopRequireDefault(_config);
+
+var _emitter = __webpack_require__(15);
+
+var _emitter2 = _interopRequireDefault(_emitter);
+
+var _lodash = __webpack_require__(4);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+__webpack_require__(14);
+__webpack_require__(19);
+
+var Bootstrap = function () {
+    function Bootstrap(userConfig) {
+        var _this = this;
+
+        _classCallCheck(this, Bootstrap);
+
+        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
+
+        this.appEvents = new _emitter2.default();
+        this.configService = new _configService2.default(configuration);
+        this.validatorLoaded = false;
+        this.localeService = new _locale2.default({
+            configService: this.configService
+        });
+
+        this.localeService.fetchTranslations().then(function () {
+            _this.onConfigReady();
+        });
+
+        return this;
+    }
+
+    _createClass(Bootstrap, [{
+        key: 'onConfigReady',
+        value: function onConfigReady() {
+            var _this2 = this;
+
+            this.appServices = {
+                configService: this.configService,
+                localeService: this.localeService,
+                appEvents: this.appEvents
+            };
+
+            window.bodySize = {
+                x: 0,
+                y: 0
+            };
+
+            /**
+             * add components
+             */
+
+            (0, _jquery2.default)(document).ready(function () {
+                // let $body = $('body');
+                // window.bodySize.y = $body.height();
+                // window.bodySize.x = $body.width();
+                //
+                // this.appLightbox = lightbox(this.appServices);
+                // this.appLightbox.initialize({$container: $body});
+                //mainMenu(this.appServices).initialize({$container: $body});
+                _this2.mobileValidator();
+                // this.isReleasable = this.configService.get('releasable');
+                //
+                // if (this.isReleasable !== null) {
+                //     this.appLightbox.setReleasable(this.isReleasable);
+                // }
+            });
+        }
+    }, {
+        key: 'mobileValidator',
+        value: function mobileValidator() {
+            var _this4 = this;
+
+            display_basket();
+
+            /*Get status before send validation*/
+            function _getReseaseStatus(el) {
+                _jquery2.default.ajax({
+                    url: '/lightbox/ajax/GET_ELEMENTS/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
+                    dataType: 'json',
+                    error: function error(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    timeout: function timeout(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    success: function success(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                        if (data.datas) {
+                            if (data.datas) {
+                                if (data.datas.counts.nul == 0) {
+                                    _setRelease((0, _jquery2.default)(this));
+                                } else {
+                                    console.log(data.datas.counts);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_accepted").html(data.datas.counts.yes);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_refused").html(data.datas.counts.no);
+                                    (0, _jquery2.default)("#FeedbackRelease .record_null").html(data.datas.counts.nul);
+                                    (0, _jquery2.default)("#FeedbackRelease").modal("show");
+                                }
+                            }
+                        }
+
+                        return;
+                    }
+                });
+            }
+
+            /*Send validation*/
+            function _setRelease(el) {
+                var _this3 = this;
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_RELEASE/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
+                    dataType: 'json',
+                    error: function error(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    timeout: function timeout(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                    },
+                    success: function success(data) {
+                        (0, _jquery2.default)('.loader', el).css({
+                            visibility: 'hidden'
+                        });
+                        if (data.datas) {
+                            //      alert(data.datas);
+                            window.location.href = "/lightbox";
+                        }
+                        if (!data.error) {
+                            _this3.isReleasable = false;
+                            //this.appLightbox.setReleasable(this.isReleasable);
+                        }
+
+                        return;
+                    }
+                });
+            };
+
+            (0, _jquery2.default)('body').on('touchstart click', '.confirm_report', function (event) {
+                event.preventDefault();
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                _getReseaseStatus($el);
+
+                return false;
+            });
+            (0, _jquery2.default)('body').on('touchstart click', '#validate-release', function (event) {
+                event.preventDefault();
+                (0, _jquery2.default)("#FeedbackRelease").modal("hide");
+                _setRelease((0, _jquery2.default)(_this4));
+                console.log('validation is done');
+
+                return false;
+            });
+
+            (0, _jquery2.default)('body').on('touchstart click', '.agreement_radio', function (event) {
+                event.preventDefault();
+                //$('.agreement_radio').on('mousedown', (event) => {
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                var sselcont_id = $el.attr('for').split('_').pop();
+                var agreement = (0, _jquery2.default)('#' + $el.attr('for')).val() === 'yes' ? '1' : '-1';
+
+                _jquery2.default.mobile.loading();
+
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' + sselcont_id + '/',
+                    dataType: 'json',
+                    data: {
+                        agreement: agreement
+                    },
+                    error: function error(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    timeout: function timeout(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    success: function success(datas) {
+                        if (!datas.error) {
+                            if (agreement === 1) {
+                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('disagree').addClass('agree');
+                            } else {
+                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('agree').addClass('disagree');
+                            }
+                            _jquery2.default.mobile.loading();
+                            if (datas.error) {
+                                alert(datas.datas);
+                                return;
+                            }
+                            _this4.isReleasable = datas.release;
+                            //this.appLightbox.setReleasable(this.isReleasable);
+                            window.location.reload();
+                        } else {
+                            console.log(datas.datas);
+                        }
+                        return;
+                    }
+                });
+                //return false;
+            });
+
+            (0, _jquery2.default)('body').on('touchstart click', '.note_area_validate', function (event) {
+
+                var $el = (0, _jquery2.default)(event.currentTarget);
+                var sselcont_id = $el.closest('form').find('input[name="sselcont_id"]').val();
+
+                _jquery2.default.mobile.loading();
+                _jquery2.default.ajax({
+                    type: 'POST',
+                    url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
+                    dataType: 'json',
+                    data: {
+                        note: (0, _jquery2.default)('#note_form_' + sselcont_id).find('textarea').val()
+                    },
+                    error: function error(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    timeout: function timeout(datas) {
+                        console.log('error');
+                        _jquery2.default.mobile.loading();
+                    },
+                    success: function success(datas) {
+                        _jquery2.default.mobile.loading();
+                        if (datas.error) {
+                            console.log(datas.datas);
+                            return;
+                        }
+
+                        (0, _jquery2.default)('#notes_' + sselcont_id).empty().append(datas.datas);
+                        window.location.reload();
+                        return;
+                    }
+                });
+                return false;
+            });
+
+            function display_basket() {
+                var sc_wrapper = (0, _jquery2.default)('#sc_wrapper');
+
+                (0, _jquery2.default)('.basket_element', sc_wrapper).parent().bind('click', function (event) {
+                    scid_click(event, this);
+                    adjust_visibility(this);
+                    return false;
+                });
+
+                (0, _jquery2.default)('.agree_button, .disagree_button', sc_wrapper).bind('click', function (event) {
+
+                    var sselcont_id = (0, _jquery2.default)(this).closest('.basket_element').attr('id').split('_').pop();
+
+                    var agreement = (0, _jquery2.default)(this).hasClass('agree_button') ? '1' : '-1';
+
+                    set_agreement(event, (0, _jquery2.default)(this), sselcont_id, agreement);
+                    return false;
+                }).addClass('clickable');
+
+                var n = (0, _jquery2.default)('.basket_element', sc_wrapper).length;
+                (0, _jquery2.default)('#sc_container').width(n * (0, _jquery2.default)('.basket_element_wrapper:first', sc_wrapper).outerWidth() + 1);
+            }
+
+            this.validatorLoaded = true;
+        }
+    }]);
+
+    return Bootstrap;
+}();
+
+var bootstrap = function bootstrap(userConfig) {
+    return new Bootstrap(userConfig);
+};
+
+exports.default = bootstrap;
+
+/***/ }),
+
 /***/ 26:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -5995,402 +6391,6 @@ var Translator = function (_EventEmitter) {
 /***/ }),
 
 /***/ 260:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-
-var _bootstrap = __webpack_require__(261);
-
-var _bootstrap2 = _interopRequireDefault(_bootstrap);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var lightboxMobileApplication = {
-    bootstrap: _bootstrap2.default
-};
-
-if (typeof window !== 'undefined') {
-    window.lightboxMobileApplication = lightboxMobileApplication;
-}
-
-/*resize of PDF */
-$(window).on("load resize ", function (e) {
-    if ($('.pdf-iframe').length > 0) {
-        var pdfHeight = $('.pdf-iframe').width() / 0.707;
-        $('.pdf-iframe').css('height', pdfHeight);
-    }
-});
-/*resize of VIDEO */
-$(window).on("load resize ", function (e) {
-    if ($('.video-iframe').length > 0) {
-
-        var $sel = $('.center-image');
-        var $window = $(window).height();
-
-        // V is for "video" ; K is for "container" ; N is for "new"
-        var VH = $('[name=videoHeight]').val();
-        var VW = $('[name=videoWidth]').val();
-        var KW = $sel.width();
-        var KH = $sel.height();
-
-        if ($window <= 375) {
-            KH = 150;
-        } else {
-            if ($window > 375 && $window <= 480) {
-                KH = 200;
-            }
-            if ($window > 480 && $window <= 640) {
-                KH = 300;
-            }
-
-            if ($window > 640 && $window <= 767) {
-                KH = 400;
-            }
-            if ($window > 767) {
-                KH = 550;
-            }
-        }
-
-        var NW, NH;
-        if ((NH = VH / VW * (NW = KW)) > KH) {
-            // try to fit exact horizontally, adjust vertically
-            // too bad... new height overflows container height
-            NW = VW / VH * (NH = KH); // so fit exact vertically, adjust horizontally
-        }
-        $(".video-iframe", $sel).css('width', NW).css('height', NH);
-    }
-});
-
-module.exports = lightboxMobileApplication;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-
-/***/ 261:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-// import lightbox from './../components/lightbox/index';
-// import mainMenu from './../components/mainMenu';
-
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _configService = __webpack_require__(16);
-
-var _configService2 = _interopRequireDefault(_configService);
-
-var _locale = __webpack_require__(20);
-
-var _locale2 = _interopRequireDefault(_locale);
-
-var _config = __webpack_require__(262);
-
-var _config2 = _interopRequireDefault(_config);
-
-var _emitter = __webpack_require__(15);
-
-var _emitter2 = _interopRequireDefault(_emitter);
-
-var _lodash = __webpack_require__(4);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-__webpack_require__(14);
-__webpack_require__(19);
-
-var Bootstrap = function () {
-    function Bootstrap(userConfig) {
-        var _this = this;
-
-        _classCallCheck(this, Bootstrap);
-
-        var configuration = (0, _lodash2.default)({}, _config2.default, userConfig);
-
-        this.appEvents = new _emitter2.default();
-        this.configService = new _configService2.default(configuration);
-        this.validatorLoaded = false;
-        this.localeService = new _locale2.default({
-            configService: this.configService
-        });
-
-        this.localeService.fetchTranslations().then(function () {
-            _this.onConfigReady();
-        });
-
-        return this;
-    }
-
-    _createClass(Bootstrap, [{
-        key: 'onConfigReady',
-        value: function onConfigReady() {
-            var _this2 = this;
-
-            this.appServices = {
-                configService: this.configService,
-                localeService: this.localeService,
-                appEvents: this.appEvents
-            };
-
-            window.bodySize = {
-                x: 0,
-                y: 0
-            };
-
-            /**
-             * add components
-             */
-
-            (0, _jquery2.default)(document).ready(function () {
-                // let $body = $('body');
-                // window.bodySize.y = $body.height();
-                // window.bodySize.x = $body.width();
-                //
-                // this.appLightbox = lightbox(this.appServices);
-                // this.appLightbox.initialize({$container: $body});
-                //mainMenu(this.appServices).initialize({$container: $body});
-                _this2.mobileValidator();
-                // this.isReleasable = this.configService.get('releasable');
-                //
-                // if (this.isReleasable !== null) {
-                //     this.appLightbox.setReleasable(this.isReleasable);
-                // }
-            });
-        }
-    }, {
-        key: 'mobileValidator',
-        value: function mobileValidator() {
-            var _this4 = this;
-
-            display_basket();
-
-            /*Get status before send validation*/
-            function _getReseaseStatus(el) {
-                _jquery2.default.ajax({
-                    url: '/lightbox/ajax/GET_ELEMENTS/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
-                    dataType: 'json',
-                    error: function error(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    timeout: function timeout(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    success: function success(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                        if (data.datas) {
-                            if (data.datas) {
-                                if (data.datas.counts.nul == 0) {
-                                    _setRelease((0, _jquery2.default)(this));
-                                } else {
-                                    console.log(data.datas.counts);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_accepted").html(data.datas.counts.yes);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_refused").html(data.datas.counts.no);
-                                    (0, _jquery2.default)("#FeedbackRelease .record_null").html(data.datas.counts.nul);
-                                    (0, _jquery2.default)("#FeedbackRelease").modal("show");
-                                }
-                            }
-                        }
-
-                        return;
-                    }
-                });
-            }
-
-            /*Send validation*/
-            function _setRelease(el) {
-                var _this3 = this;
-
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_RELEASE/' + (0, _jquery2.default)('#basket_validation_id').val() + '/',
-                    dataType: 'json',
-                    error: function error(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    timeout: function timeout(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                    },
-                    success: function success(data) {
-                        (0, _jquery2.default)('.loader', el).css({
-                            visibility: 'hidden'
-                        });
-                        if (data.datas) {
-                            //      alert(data.datas);
-                            window.location.href = "/lightbox";
-                        }
-                        if (!data.error) {
-                            _this3.isReleasable = false;
-                            //this.appLightbox.setReleasable(this.isReleasable);
-                        }
-
-                        return;
-                    }
-                });
-            };
-
-            (0, _jquery2.default)('body').on('touchstart click', '.confirm_report', function (event) {
-                event.preventDefault();
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                _getReseaseStatus($el);
-
-                return false;
-            });
-            (0, _jquery2.default)('body').on('touchstart click', '#validate-release', function (event) {
-                event.preventDefault();
-                (0, _jquery2.default)("#FeedbackRelease").modal("hide");
-                _setRelease((0, _jquery2.default)(_this4));
-                console.log('validation is done');
-
-                return false;
-            });
-
-            (0, _jquery2.default)('body').on('touchstart click', '.agreement_radio', function (event) {
-                event.preventDefault();
-                //$('.agreement_radio').on('mousedown', (event) => {
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                var sselcont_id = $el.attr('for').split('_').pop();
-                var agreement = (0, _jquery2.default)('#' + $el.attr('for')).val() === 'yes' ? '1' : '-1';
-
-                _jquery2.default.mobile.loading();
-
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_ELEMENT_AGREEMENT/' + sselcont_id + '/',
-                    dataType: 'json',
-                    data: {
-                        agreement: agreement
-                    },
-                    error: function error(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    timeout: function timeout(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    success: function success(datas) {
-                        if (!datas.error) {
-                            if (agreement === 1) {
-                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('disagree').addClass('agree');
-                            } else {
-                                (0, _jquery2.default)('.valid_choice_' + sselcont_id).removeClass('agree').addClass('disagree');
-                            }
-                            _jquery2.default.mobile.loading();
-                            if (datas.error) {
-                                alert(datas.datas);
-                                return;
-                            }
-                            _this4.isReleasable = datas.release;
-                            //this.appLightbox.setReleasable(this.isReleasable);
-                            window.location.reload();
-                        } else {
-                            console.log(datas.datas);
-                        }
-                        return;
-                    }
-                });
-                //return false;
-            });
-
-            (0, _jquery2.default)('body').on('touchstart click', '.note_area_validate', function (event) {
-
-                var $el = (0, _jquery2.default)(event.currentTarget);
-                var sselcont_id = $el.closest('form').find('input[name="sselcont_id"]').val();
-
-                _jquery2.default.mobile.loading();
-                _jquery2.default.ajax({
-                    type: 'POST',
-                    url: '/lightbox/ajax/SET_NOTE/' + sselcont_id + '/',
-                    dataType: 'json',
-                    data: {
-                        note: (0, _jquery2.default)('#note_form_' + sselcont_id).find('textarea').val()
-                    },
-                    error: function error(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    timeout: function timeout(datas) {
-                        console.log('error');
-                        _jquery2.default.mobile.loading();
-                    },
-                    success: function success(datas) {
-                        _jquery2.default.mobile.loading();
-                        if (datas.error) {
-                            console.log(datas.datas);
-                            return;
-                        }
-
-                        (0, _jquery2.default)('#notes_' + sselcont_id).empty().append(datas.datas);
-                        window.location.reload();
-                        return;
-                    }
-                });
-                return false;
-            });
-
-            function display_basket() {
-                var sc_wrapper = (0, _jquery2.default)('#sc_wrapper');
-
-                (0, _jquery2.default)('.basket_element', sc_wrapper).parent().bind('click', function (event) {
-                    scid_click(event, this);
-                    adjust_visibility(this);
-                    return false;
-                });
-
-                (0, _jquery2.default)('.agree_button, .disagree_button', sc_wrapper).bind('click', function (event) {
-
-                    var sselcont_id = (0, _jquery2.default)(this).closest('.basket_element').attr('id').split('_').pop();
-
-                    var agreement = (0, _jquery2.default)(this).hasClass('agree_button') ? '1' : '-1';
-
-                    set_agreement(event, (0, _jquery2.default)(this), sselcont_id, agreement);
-                    return false;
-                }).addClass('clickable');
-
-                var n = (0, _jquery2.default)('.basket_element', sc_wrapper).length;
-                (0, _jquery2.default)('#sc_container').width(n * (0, _jquery2.default)('.basket_element_wrapper:first', sc_wrapper).outerWidth() + 1);
-            }
-
-            this.validatorLoaded = true;
-        }
-    }]);
-
-    return Bootstrap;
-}();
-
-var bootstrap = function bootstrap(userConfig) {
-    return new Bootstrap(userConfig);
-};
-
-exports.default = bootstrap;
-
-/***/ }),
-
-/***/ 262:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

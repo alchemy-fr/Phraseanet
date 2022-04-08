@@ -12,7 +12,7 @@
         {% if par.get_thumbnail().is_physically_present() %}
           <img src="{{par.get_thumbnail().get_url()}}" style="width:25px;height:25px;"/>
         {% else %}
-          <img src="/assets/common/images/icons/story.png" style="width:25px;height:25px;"/>
+            <i class="icomoon icon-stack story"></i>
         {% endif %}
 
       <span class="title" title="{{ par.get_title() }}"> {{ par.get_title() }} </span>
@@ -33,15 +33,15 @@
     {#<img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 
     {% if basket.isVoteBasket() %}
-      <img src='/assets/common/images/icons/basket_validation.png' title='' width="24" class="btn-image"/>
+        <i class="fa fa-bullhorn vote_sent"></i>
     {% elseif basket.getPusher() %}
       {% if not basket.isRead() %}
         <img src='/assets/common/images/icons/basket_push_unread.png' title='' width="24" class="btn-image"/>
       {% else %}
-        <img src='/assets/common/images/icons/basket_push.png' title='' width="24" class="btn-image"/>
+          <i class="fa fa-gift push_rec" style="padding-left: 6px; padding-top: 3px; padding-bottom: 2px; margin-right: 0px;"></i>
       {% endif %}
     {% else %}
-      <img src='/assets/common/images/icons/basket.png' title='' width="24" class="btn-image"/>
+        <i class="icomoon icon-stackoverflow basket"></i>
     {% endif %}
 
     <span class="title">{{basket.getName()}}</span>
