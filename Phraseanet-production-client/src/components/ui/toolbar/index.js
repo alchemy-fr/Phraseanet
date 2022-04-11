@@ -201,13 +201,13 @@ const toolbar = (services) => {
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
             _triggerModal(event, sharebasketModal(services).openModal);
         });
-
-        // /**
-        //  * tools > Push > UsersLists
-        //  */
-        // $container.on('click', '.TOOL_userslists_btn', function (event) {
-        //     _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
-        // });
+        
+//        /**
+//         * tools > Push > UsersLists
+//         */
+//        $container.on('click', '.TOOL_userslists_btn', function (event) {
+//            _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
+//        });
 
         /**
          * workzone (opened basket) > feedback
