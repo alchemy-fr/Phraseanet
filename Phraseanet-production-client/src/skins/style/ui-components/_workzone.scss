@@ -343,7 +343,8 @@ $dividerBg: #6c6c6c !default;
 #SPANTITLE I,
 #PREVIEWOTHERSINNER I,
 .TOOL_feedback_btn I,
-.TOOL_pushdoc_btn I {
+.TOOL_pushdoc_btn I,
+.TOOL_sharebasket_btn I{
     font-size: 16px;
     display: inline-block;
     background-color: #222;
@@ -365,7 +366,16 @@ $dividerBg: #6c6c6c !default;
         background-color: #E0215D;
     }
 
+    &.vote_rec {
+        background-color: #E0215D;
+    }
+
     &.share_rec {
+        background-color: forestgreen;
+        font-size: 14px;
+    }
+
+    &.share_sent {
         background-color: forestgreen;
     }
 
@@ -378,6 +388,12 @@ $dividerBg: #6c6c6c !default;
         background-color: #6471BC;
     }
 
+}
+
+.TOOL_sharebasket_btn .share_sent {
+    padding-left: 2px !important;
+    padding-top: 2px !important;
+    margin-right: 4px !important;
 }
 
 

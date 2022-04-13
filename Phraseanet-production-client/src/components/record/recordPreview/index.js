@@ -383,15 +383,38 @@ const previewRecordService = services => {
                 }
 
                 let basketIcon = '';
+
+
                 if (data.containerType !== null ) {
-                    if (data.containerType === 'feedback') {
-                        basketIcon = '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
-                    } else if (data.containerType === 'push') {
-                        basketIcon = '<i class="fa fa-gift push_rec" style="padding-left: 6px; padding-top: 3px; padding-bottom: 2px; margin-right: 5px;"></i>';
-                    } else if (data.containerType === 'regroup') {
-                        basketIcon = '<i class="icomoon icon-stack story" style="margin-right: 5px;"></i>';
-                    } else {
-                        basketIcon = '<i class="icomoon icon-stackoverflow basket" style="margin-right: 5px;"></i>';
+                    switch (data.containerType) {
+                        case 'feedback_rec' :
+                            basketIcon = '<i class="fa fa-comment vote_rec" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_rec' :
+                            basketIcon = '<i class="fa fa-users share_rec" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'push_rec' :
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+
+                            break;
+                        case 'feedback_sent' :
+                            basketIcon = '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_sent' :
+                            basketIcon = '<i class="fa fa-share share_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'regroup' :
+                            basketIcon = '<i class="icomoon icon-stack story" style="margin-right: 5px;"></i>';
+
+                            break;
+                        default:
+                            basketIcon = '<i class="icomoon icon-stackoverflow basket" style="margin-right: 5px;"></i>';
+
+                            break;
                     }
                 }
 

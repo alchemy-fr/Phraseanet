@@ -178,6 +178,10 @@ $toggledOff: #666;       // a toggle button IS off
             list-style:none;
             li {
                 display: inline-block;
+                margin-right: 10px;
+                i {
+                    font-size: 20px;
+                }
             }
         }
     }

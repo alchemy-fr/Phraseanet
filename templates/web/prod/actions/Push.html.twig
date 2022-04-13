@@ -216,7 +216,7 @@
 
                     {# general togglers act on selection #}
 
-                    <div class="selected_partial selected_all general_togglers">
+                    <div class="selected_partial selected_all general_togglers" style="margin-top:20px;">
                         {#
                         <span class="main-title">
                             <i class="fa fa-hand-stop-o"></i>&nbsp;{{ 'Grant rights' | trans }}
@@ -524,12 +524,12 @@
                             </span>
                         </form>
 
-                        {% if context=='Sharebasket' and basket %}
+                        {% if context == 'Sharebasket' and basket %}
                             {# only Sharebasket manage users and may have a "feedbackaction" #}
-                            <button class="colored inverse FeedbackSend"
+                            <button class="colored inverse FeedbackSend" data-context="{{ context }}"
                                     data-feedback-action={{ feedbackAction }}>{{ "Save" | trans }}</button>
                         {% else %}
-                            <button class="colored inverse FeedbackSend">{{ "Send" | trans }}</button>
+                            <button class="colored inverse FeedbackSend" data-context="{{ context }}">{{ "Send" | trans }}</button>
                         {% endif %}
                     </div>
                 </div>

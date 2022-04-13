@@ -310,7 +310,7 @@ const pushOrShare = function (services, container) {
         var feedbackTitle =  $('#feedbackTitle').val();
         var pushTitle =  $('#pushTitle').val();
 
-        if (options.isValidation) {
+        if ($el.attr('data-context') == 'Sharebasket') {
             $('input[name="name"]').attr("placeholder", feedbackTitle);
         }else {
             $('input[name="name"]').attr("placeholder", pushTitle);
