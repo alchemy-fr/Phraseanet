@@ -18439,9 +18439,14 @@ var pushOrShare = function pushOrShare(services, container) {
 
         var feedbackTitle = (0, _jquery2.default)('#feedbackTitle').val();
         var pushTitle = (0, _jquery2.default)('#pushTitle').val();
+        var sharedTitle = (0, _jquery2.default)('#sharedTitle').val();
 
         if ($el.attr('data-context') == 'Sharebasket') {
-            (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
+            if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() == '0') {
+                (0, _jquery2.default)('input[name="name"]').attr("placeholder", sharedTitle);
+            } else {
+                (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
+            }
         } else {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-04-13T15:10:08Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2022-04-14T14:23:43Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -609,7 +609,7 @@
         <target state="translated">Ontvangstbevestiging</target>
         <jms:reference-file line="103">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="177">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="225">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="226">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="589db073670b88b4b42b9f60b53d87e049fa5e3f" resname="Accuse de reception indisponible, vous n'avez pas declare d'adresse email" approved="yes">
         <source>Accuse de reception indisponible, vous n'avez pas declare d'adresse email</source>
@@ -3350,13 +3350,13 @@
         <source>Force authentication</source>
         <target state="new">Force authentication</target>
         <jms:reference-file line="185">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="233">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="234">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c09681083e459a74f0ee7c581a62a514c7b2c8f" resname="Force authentication : info">
         <source>Force authentication : info</source>
         <target state="new">Force authentication : info</target>
         <jms:reference-file line="191">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="239">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="240">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c7dbc1bf5eabb170eb6a0597a076723db79ec064" resname="Force sending of the document ?" approved="yes">
         <source>Force sending of the document ?</source>
@@ -4313,7 +4313,7 @@
         <jms:reference-file line="99">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="34">prod/WorkZone/Reminder.html.twig</jms:reference-file>
         <jms:reference-file line="171">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="219">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="220">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cbcbdf92e7a47c81ec1719f03f00d8e6c5b5f5ef" resname="Message automatique de Phraseanet" approved="yes">
         <source>Message automatique de Phraseanet</source>
@@ -7269,8 +7269,8 @@
         <jms:reference-file line="115">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="448">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="96">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="273">prod/templates/push.html.twig</jms:reference-file>
-        <jms:reference-file line="275">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="274">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="276">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c73acdd7d75305b3a6039fc8de914c373777ed0a" resname="User can modify the basket">
         <source>User can modify the basket</source>
@@ -12906,6 +12906,11 @@
         <target state="new">prod::feedback:feedback_set_title</target>
         <jms:reference-file line="215">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="f2d4706a43458cdce6ec7569d51beecbe88a05fe" resname="prod::feedback:shared_set_title">
+        <source>prod::feedback:shared_set_title</source>
+        <target state="new">prod::feedback:shared_set_title</target>
+        <jms:reference-file line="216">prod/templates/push.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="47f76b5a8ec06b165c0d83ed447999def6f368e4" resname="prod::notification: notification title">
         <source>prod::notification: notification title</source>
         <target state="new">prod::notification: notification title</target>
@@ -12934,7 +12939,7 @@
       <trans-unit id="dee7c522bf9e0eea45e003fb4d0f736bc251a954" resname="prod::push:push_set_title">
         <source>prod::push:push_set_title</source>
         <target state="new">prod::push:push_set_title</target>
-        <jms:reference-file line="216">prod/templates/push.html.twig</jms:reference-file>
+        <jms:reference-file line="217">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2a4d65f9a1aaeec92617d3d5dc3ef0167a019e82" resname="prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee." approved="yes">
         <source>prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee.</source>
