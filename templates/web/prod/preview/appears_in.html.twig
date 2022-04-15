@@ -32,6 +32,11 @@
       class="otherBaskToolTip to-open-preview-action" title="{{basket.getDescription()}}">
     {#<img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 
+
+    {% if basket.getPusher() %}
+      <i class="fa fa-gift push_rec" style="padding-left: 6px; padding-top: 3px; padding-bottom: 2px; margin-right: 0px;"></i>
+    {% endif %}
+
     {# check if a shared basket#}
     {% if basket.getUser().getId() != app.getAuthenticatedUser().getId() and basket.isParticipant(app.getAuthenticatedUser()) %}
       {% if basket.isVoteBasket() %}
@@ -39,8 +44,6 @@
       {% else %}
           <i class="fa fa-users share_rec" style=""></i>
       {% endif %}
-    {% elseif basket.getPusher() %}
-        <i class="fa fa-gift push_rec" style="padding-left: 6px; padding-top: 3px; padding-bottom: 2px; margin-right: 0px;"></i>
     {% elseif basket.getUser().getId() == app.getAuthenticatedUser().getId() and basket.getParticipants | length > 0 %}
         {% if basket.isVoteBasket() %}
             <i class="fa fa-bullhorn vote_sent"></i>

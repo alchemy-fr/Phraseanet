@@ -407,6 +407,16 @@ const previewRecordService = services => {
                             basketIcon = '<i class="fa fa-share share_sent" style="margin-right: 5px;"></i>';
 
                             break;
+                        case 'feedback_push' :
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+                            basketIcon += '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_push' :
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+                            basketIcon += '<i class="fa fa-share share_sent" style="margin-right: 5px;"></i>';
+
+                            break;
                         case 'regroup' :
                             basketIcon = '<i class="icomoon icon-stack story" style="margin-right: 5px;"></i>';
 
