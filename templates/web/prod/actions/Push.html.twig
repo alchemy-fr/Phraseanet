@@ -224,11 +224,18 @@
                         #}
                         <ul>
                             {% if context == 'Sharebasket' %}
-                                <li>
+                                <li class="feedback_only_true">
                                     {% set msg = "Users contribute to the feedback" | trans %}
                                     <button type="button" class="general_toggler colored" feature="agree"
                                             title="{{ msg }}">
                                         <i class="fa fa-comment"></i>{# &nbsp;{{ 'Contributor' | trans }} #}
+                                    </button>
+                                </li>
+                                <li class="feedback_only_true">
+                                    {% set msg = "Users can see others choices" | trans %}
+                                    <button type="button" class="general_toggler colored " feature="see_others"
+                                            title="{{ msg }}">
+                                        <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
                                     </button>
                                 </li>
                                 <li>
@@ -236,13 +243,6 @@
                                     <button type="button" class="general_toggler colored" feature="modify"
                                             title="{{ msg }}">
                                         <i class="fa fa-pencil"></i>{# &nbsp;{{ 'Modify' | trans }} #}
-                                    </button>
-                                </li>
-                                <li>
-                                    {% set msg = "Users can see others choices" | trans %}
-                                    <button type="button" class="general_toggler colored " feature="see_others"
-                                            title="{{ msg }}">
-                                        <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
                                     </button>
                                 </li>
                             {% endif %}
