@@ -106,10 +106,23 @@ class RecordController extends Controller
         if ($env === 'BASK') {
             /** @var Basket $basket */
             $basket = $record->get_container();
-            if ($basket->isVoteBasket()) {
-                $containerType = 'feedback';
-            } elseif ($basket->getPusher()) {
-                $containerType = 'push';
+
+            if ($basket->getPusher()) {
+                $containerType = 'push_rec';
+            }
+
+            if ($this->getAuthenticatedUser()->getId() != $basket->getUser()->getId() && $basket->isParticipant($this->getAuthenticatedUser())) {
+                if ($basket->isVoteBasket()) {
+                    $containerType = 'feedback_rec';
+                } else {
+                    $containerType = 'share_rec';
+                }
+            } elseif ($this->getAuthenticatedUser()->getId() == $basket->getUser()->getId() && count($basket->getParticipants()) > 0 ) {
+                if ($basket->isVoteBasket()) {
+                    $containerType = empty($containerType) ? 'feedback_sent' : 'feedback_push';
+                } else {
+                    $containerType = empty($containerType) ? 'share_sent' : 'share_push';
+                }
             } else {
                 $containerType = 'basket';
             }

@@ -309,9 +309,14 @@ const pushOrShare = function (services, container) {
 
         var feedbackTitle =  $('#feedbackTitle').val();
         var pushTitle =  $('#pushTitle').val();
+        var sharedTitle = $('#sharedTitle').val();
 
-        if (options.isValidation) {
-            $('input[name="name"]').attr("placeholder", feedbackTitle);
+        if ($el.attr('data-context') == 'Sharebasket') {
+            if ($("INPUT[name=isFeedback]").val() == '0') {
+                $('input[name="name"]').attr("placeholder", sharedTitle);
+            } else {
+                $('input[name="name"]').attr("placeholder", feedbackTitle);
+            }
         }else {
             $('input[name="name"]').attr("placeholder", pushTitle);
         }

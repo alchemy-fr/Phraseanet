@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.userModule = exports.utilsModule = exports.commonModule = exports.dialogModule = undefined;
 
-var _common = __webpack_require__(97);
+var _common = __webpack_require__(96);
 
 var _common2 = _interopRequireDefault(_common);
 
@@ -1881,14 +1881,14 @@ var leafletMap = function leafletMap(services) {
         }
         __webpack_require__.e/* require.ensure */(3).then((function () {
             // select geocoding provider:
-            mapbox = __webpack_require__(298);
-            leafletDraw = __webpack_require__(299);
-            __webpack_require__(300);
-            mapboxgl = __webpack_require__(72);
-            var MapboxClient = __webpack_require__(301);
-            var MapboxLanguage = __webpack_require__(302);
-            MapboxCircle = __webpack_require__(303);
-            turf = __webpack_require__(304);
+            mapbox = __webpack_require__(296);
+            leafletDraw = __webpack_require__(297);
+            __webpack_require__(298);
+            mapboxgl = __webpack_require__(71);
+            var MapboxClient = __webpack_require__(299);
+            var MapboxLanguage = __webpack_require__(300);
+            MapboxCircle = __webpack_require__(301);
+            turf = __webpack_require__(302);
 
             $container.empty().append('<div id="' + mapUID + '" class="phrasea-popup" style="width: 100%;height:100%; position: absolute;top:0;left:0"></div>');
 
@@ -2590,7 +2590,7 @@ var leafletMap = function leafletMap(services) {
                         // To draw a circle overlay with a radius in meters, use L.circle()
                         return L.circleMarker(latlng, { radius: feature.properties.radius || 10 });
                     } else {
-                        var marker = __webpack_require__(86); //L.marker(feature);
+                        var marker = __webpack_require__(85); //L.marker(feature);
                         return marker.style(feature, latlng, { accessToken: activeProvider.accessToken });
                     }
                 }
@@ -3802,10 +3802,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(104);
+__webpack_require__(103);
 
 __webpack_require__(38);
-__webpack_require__(105);
+__webpack_require__(104);
 
 
 var workzoneFacets = function workzoneFacets(services) {
@@ -4439,11 +4439,11 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _pushOrShare = __webpack_require__(110);
+var _pushOrShare = __webpack_require__(109);
 
 var _pushOrShare2 = _interopRequireDefault(_pushOrShare);
 
-var _listManager = __webpack_require__(65);
+var _listManager = __webpack_require__(110);
 
 var _listManager2 = _interopRequireDefault(_listManager);
 
@@ -4959,660 +4959,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _index = __webpack_require__(63);
-
-var _listEditor = __webpack_require__(111);
-
-var _listEditor2 = _interopRequireDefault(_listEditor);
-
-var _listShare = __webpack_require__(112);
-
-var _listShare2 = _interopRequireDefault(_listShare);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-var _selectable = __webpack_require__(22);
-
-var _selectable2 = _interopRequireDefault(_selectable);
-
-var _addUser = __webpack_require__(64);
-
-var _addUser2 = _interopRequireDefault(_addUser);
-
-var _underscore = __webpack_require__(2);
-
-var _ = _interopRequireWildcard(_underscore);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var humane = __webpack_require__(9);
-
-var ListManager = function ListManager(services, options) {
-    var _this2 = this;
-
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-    var containerId = options.containerId;
-
-    var url = configService.get('baseUrl');
-    var $container = void 0;
-    var _this = this;
-
-    this.list = null;
-    this.container = $container = (0, _jquery2.default)(containerId);
-    this.userList = new _index.Lists();
-
-    //    this.removeUserItemsArray = [];
-    //    this.addUserItemsArray = [];
-    //    this.removeUserMethod = '';
-    //    this.addUserMethod = '';
-
-
-    (0, _addUser2.default)(services).initialize({ $container: this.container });
-
-    // console.log("==== declare ListManager");
-    appEvents.listenAll({
-        // users lists (left) are async loaded
-        'usersLists.usersListsChanged': function usersListsUsersListsChanged(o) {
-            var nbadges = (0, _jquery2.default)('.badge', $container).length;
-            var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-
-            ListCounter.each(function (i, el) {
-                (0, _jquery2.default)(el).text(nbadges);
-            });
-        }
-    });
-
-    $container.on('click', '.back_link', function () {
-        (0, _jquery2.default)('#PushBox').show();
-        (0, _jquery2.default)('#ListManager').hide();
-        return false;
-    }).on('click', '.push-list-share-action', function (event) {
-
-        event.preventDefault();
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        var listId = $el.data('list-id');
-
-        (0, _listShare2.default)(services).openModal({
-            listId: listId,
-            modalOptions: {
-                size: '288x500',
-                closeButton: true,
-                title: $el.attr('title')
-            },
-            modalLevel: 2
-        });
-        return false;
-    }).on('click', 'a.user_adder', function () {
-
-        var $this = (0, _jquery2.default)(this);
-
-        _jquery2.default.ajax({
-            type: 'GET',
-            url: $this.attr('href'),
-            dataType: 'html',
-            beforeSend: function beforeSend() {
-                var options = {
-                    size: 'Medium',
-                    title: $this.html()
-                };
-                _dialog2.default.create(services, options, 2).getDomElement().addClass('loading');
-            },
-            success: function success(data) {
-                _dialog2.default.get(2).getDomElement().removeClass('loading').empty().append(data);
-            },
-            error: function error() {
-                _dialog2.default.get(2).close();
-            },
-            timeout: function timeout() {
-                _dialog2.default.get(2).close();
-            }
-        });
-
-        return false;
-    }).on('mouseenter', '.list-trash-btn', function (event) {
-
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        $el.find('.image-normal').hide();
-        $el.find('.image-hover').show();
-    }).on('mouseleave', '.list-trash-btn', function (event) {
-
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        $el.find('.image-normal').show();
-        $el.find('.image-hover').hide();
-    }).on('click', '.list-trash-btn', function (event) {
-
-        var $el = (0, _jquery2.default)(event.currentTarget);
-        var list_id = $el.parent().data('list-id');
-        appEvents.emit('push.removeList', {
-            list_id: list_id,
-            container: containerId
-        });
-    });
-
-    var initLeft = function initLeft() {
-        // console.log("==== declare initLeft");
-
-        $container.on('click', '.push-refresh-list-action', function (event) {
-            event.preventDefault();
-            //$('a.list_refresh', $container).bind('click', (event) => {
-            // /prod/lists/all/
-
-            var selectedList = (0, _jquery2.default)('.lists_manager_list.selected').data('list-id');
-
-            var callback = function callback(datas, selected) {
-                (0, _jquery2.default)('.all-lists', $container).removeClass('loading').append(datas);
-
-                if (typeof selected === 'number') {
-                    (0, _jquery2.default)('.all-lists').find('.lists_manager_list[data-list-id="' + selected + '"]').addClass('selected');
-                }
-                // initLeft();
-            };
-
-            (0, _jquery2.default)('.all-lists', $container).empty().addClass('loading');
-
-            _this2.userList.get(callback, 'html', selectedList);
-        });
-
-        $container.on('click', '.push-add-list-action', function (event) {
-            event.preventDefault();
-            var makeDialog = function makeDialog(box) {
-
-                var buttons = {};
-
-                buttons[localeService.t('valider')] = function () {
-
-                    var callbackOK = function callbackOK() {
-                        (0, _jquery2.default)('a.list_refresh', $container).trigger('click');
-                        _dialog2.default.get(2).close();
-                    };
-
-                    var name = (0, _jquery2.default)('input[name="name"]', _dialog2.default.get(2).getDomElement()).val();
-
-                    if (_jquery2.default.trim(name) === '') {
-                        alert((0, _jquery2.default)('#push-list-name-empty').val());
-                        return;
-                    }
-
-                    _this2.userList.create(name, callbackOK);
-                };
-                // /prod/lists/list/
-                var options = {
-                    cancelButton: true,
-                    buttons: buttons,
-                    title: (0, _jquery2.default)('#push-new-list-title').val(),
-                    size: '450x170'
-                };
-
-                var $dialog = _dialog2.default.create(services, options, 2);
-                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_add_list').find('.ui-dialog-buttonset button:first-child .ui-button-text').text((0, _jquery2.default)('#btn-add').val());
-                $dialog.setContent(box);
-            };
-
-            var html = _.template((0, _jquery2.default)('#list_editor_dialog_add_tpl').html());
-            makeDialog(html);
-
-            return false;
-        });
-
-        /**
-         * load a list by click on one list on the left
-         */
-        $container.on('click', '.list-edit-action', function (event) {
-            event.preventDefault();
-            //            _this.removeUserItemsArray = [];
-            //            _this.addUserItemsArray = [];
-            //            _this.removeUserMethod = '';
-            //            _this.addUserMethod = '';
-
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var listId = $el.data('list-id');
-            var el_url = $el.attr('href');
-
-            var callbackList = function callbackList(list) {
-                for (var i in list.entries) {
-                    this.selectUser(list.entries[i].User);
-                }
-                appEvents.emit('usersLists.usersListsChanged', {
-                    container: $container
-                });
-            };
-
-            $el.closest('.lists').find('.list').removeClass('selected');
-            $el.parent().addClass('selected');
-
-            _jquery2.default.ajax({
-                type: 'GET',
-                url: url + 'prod/push/edit-list/' + listId + '/',
-                dataType: 'html',
-                success: function success(data) {
-                    _this2.workOn(listId);
-                    (0, _jquery2.default)('.editor', $container).removeClass('loading').append(data);
-                    _this2.loadList(el_url, callbackList);
-                    initRight();
-                    (0, _listEditor2.default)(services, {
-                        $container: $container,
-                        listManagerInstance: _this
-                    });
-                },
-                beforeSend: function beforeSend() {
-                    (0, _jquery2.default)('.editor', $container).empty(); // .addClass('loading');
-                }
-            });
-        });
-
-        $container.on('click', '.listmanager-delete-list-user-action', function (event) {
-            event.preventDefault();
-            var $el = (0, _jquery2.default)(event.currentTarget);
-            var listId = $el.data('list-id');
-            var userId = $el.data('user-id');
-
-            var badge = (0, _jquery2.default)(_this2).closest('.badge');
-            // var usr_id = badge.find('input[name="id"]').val();
-            _this2.getList().removeUser(userId, function (list, data) {
-                badge.remove();
-            });
-        });
-    };
-
-    var initRight = function initRight() {
-        // console.log("==== declare initRight");
-
-        var $container = (0, _jquery2.default)('#ListManager .editor');
-        var selection = new _selectable2.default(services, (0, _jquery2.default)('.user_content .badges', _this.container), {
-            selector: '.badge'
-        });
-
-        (0, _jquery2.default)('form[name="list-editor-search"]', $container).bind('submit', function (event) {
-            event.preventDefault();
-            var $this = (0, _jquery2.default)(this);
-            var dest = (0, _jquery2.default)('.list-editor-results', $container);
-
-            _jquery2.default.ajax({
-                url: $this.attr('action'),
-                type: $this.attr('method'),
-                dataType: 'html',
-                data: $this.serializeArray(),
-                beforeSend: function beforeSend() {
-                    dest.empty().addClass('loading');
-                },
-                success: function success(datas) {
-                    dest.empty().removeClass('loading').append(datas);
-                    (0, _listEditor2.default)(services, {
-                        $container: $container,
-                        listManagerInstance: _this
-                    });
-                }
-            });
-        });
-
-        (0, _jquery2.default)('form[name="list-editor-search"] select, form[name="list-editor-search"] input[name="ListUser"]', $container).bind('change', function () {
-            (0, _jquery2.default)(this).closest('form').trigger('submit');
-        });
-
-        (0, _jquery2.default)('.EditToggle', $container).bind('click', function (event) {
-            event.preventDefault();
-            (0, _jquery2.default)('.content.readselect, .content.readwrite, .editor_header', (0, _jquery2.default)('#ListManager')).toggle();
-        });
-        (0, _jquery2.default)('.Refresher', $container).bind('click', function (event) {
-            event.preventDefault();
-            (0, _jquery2.default)('#ListManager ul.lists .list.selected a').trigger('click');
-        });
-
-        $container.off('submit', 'form[name="SaveName"]').on('submit', 'form[name="SaveName"]', function () {
-            // console.log("==== on submit form[name=\"SaveName\"]");
-            var $this = (0, _jquery2.default)(this);
-            _jquery2.default.ajax({
-                type: $this.attr('method'),
-                url: $this.attr('action'),
-                dataType: 'json',
-                data: $this.serializeArray(),
-                beforeSend: function beforeSend() {},
-                success: function success(data) {
-                    if (data.success) {
-                        humane.info(data.message);
-                        (0, _jquery2.default)('#ListManager .lists .list_refresh').trigger('click');
-                    } else {
-                        humane.error(data.message);
-                    }
-                },
-                error: function error() {},
-                timeout: function timeout() {}
-            });
-
-            return false;
-        });
-
-        // //button.deleter
-        // $('.listmanager-delete-list-action', $container).bind('click', function (event) {
-
-        //     var list_id = $(this).data('list-id');
-
-        //     var makeDialog = function (box) {
-
-        //         var buttons = {};
-
-        //         buttons[localeService.t('valider')] = function () {
-
-        //             var callbackOK = function () {
-        //                 $('#ListManager .all-lists a.list_refresh').trigger('click');
-        //                 dialog.get(2).close();
-        //             };
-
-        //             var List = new List(list_id);
-        //             List.remove(callbackOK);
-        //         };
-
-        //         var options = {
-        //             cancelButton: true,
-        //             buttons: buttons,
-        //             size: 'Alert'
-        //         };
-
-        //         dialog.create(services, options, 2).setContent(box);
-        //     };
-
-        //     var html = _.template($('#list_editor_dialog_delete_tpl').html());
-
-        //     makeDialog(html);
-
-        //     return false;
-        // });
-
-
-        // console.log("========== setting deleter");
-        $container.off('click', '.badges a.deleter').on('click', '.badges a.deleter', null, function (event) {
-            var badge = (0, _jquery2.default)(event.currentTarget).closest('.badge');
-            // console.log("======== badge ", badge);
-            var usr_id = badge.find('input[name="id"]').val();
-            var $editor = (0, _jquery2.default)('#list-editor-search-results');
-
-            badge.remove();
-
-            (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
-                var $el = (0, _jquery2.default)(el);
-                var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
-
-                if (usr_id === $elID) {
-                    $el.removeClass('selected');
-                }
-            });
-            _this.getList().removeUser(usr_id);
-
-            appEvents.emit('usersLists.usersListsChanged', {
-                container: $container
-            });
-
-            return false;
-        });
-
-        /**
-         * add a user from the completion of the search input
-         *
-         * @param ul
-         * @param item
-         * @returns {*}
-         * @private
-         */
-        (0, _jquery2.default)('input[name="users-search"]', $container).autocomplete({
-            minLength: 2,
-            source: function source(request, response) {
-                _jquery2.default.ajax({
-                    url: url + 'prod/push/search-user/',
-                    dataType: 'json',
-                    data: {
-                        query: request.term
-                    },
-                    success: function success(data) {
-                        response(data);
-                    }
-                });
-            },
-            focus: function focus(event, ui) {
-                // $('input[name="users-search"]').val(ui.item.label);
-            },
-            select: function select(event, ui) {
-                if (ui.item.type === 'USER') {
-                    _this.selectUser(ui.item);
-                    //_this.updateUsersHandler('add', ui.item.usr_id);
-                    _this.getList().addUser(ui.item.usr_id);
-                } else if (ui.item.type === 'LIST') {
-                    for (var e in ui.item.entries) {
-                        _this.selectUser(ui.item.entries[e].User);
-                        //_this.updateUsersHandler('add', ui.item.entries[e].User.usr_id);
-                        _this.getList().addUser(ui.item.entries[e].User.usr_id);
-                    }
-                }
-                appEvents.emit('usersLists.usersListsChanged', {
-                    container: $container
-                });
-
-                // the list has changed, show the save button
-                //                $('#saveListFooter').show();
-
-                return false;
-            }
-
-        }).data('ui-autocomplete')._renderItem = function (ul, item) {
-
-            var html = '';
-
-            if (item.type === 'USER') {
-                html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
-
-                    item: item
-                });
-            } else if (item.type === 'LIST') {
-                html = _.template((0, _jquery2.default)('#list_list_tpl').html())({
-                    item: item
-                });
-            }
-
-            return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
-        };
-
-        (0, _jquery2.default)('.user_content .badges', _this.container).disableSelection();
-
-        $container.on('click', '.content .options .select-all', function () {
-            selection.selectAll();
-        });
-
-        $container.on('click', '.content .options .unselect-all', function () {
-            selection.empty();
-        });
-
-        $container.on('click', '.content .options .delete-selection', function () {
-            var $elems = (0, _jquery2.default)('#ListManager .badges.selectionnable .badge.selected');
-            _.each($elems, function (item) {
-                var $elem = (0, _jquery2.default)(item);
-                var $elemID = $elem.find('input[name=id]').val();
-                // if($elem.hasClass('selected')
-                //     && _this.removeUserItemsArray.indexOf($elemID) === -1) {
-                //     _this.updateUsersHandler('remove', $elemID);
-                // }
-                if ($elem.hasClass('selected')) {
-                    _this.getList().removeUser($elemID);
-                }
-            });
-
-            $elems.fadeOut(300, 'swing', function () {
-                (0, _jquery2.default)(this).remove();
-                //                $('#saveListFooter').show();
-                appEvents.emit('usersLists.usersListsChanged', {
-                    container: $container
-                });
-            });
-        });
-        /*
-                $container.off('submit', 'form.list_saver')
-                          .on('submit', 'form.list_saver', function (event) {
-                                console.log("==== on submit form.list_saver");
-                                event.preventDefault();
-                                var $form = $(event.currentTarget);
-                                var name = $('.header h2', $container).text();
-                                var users = _this.getUsers();
-                                 if (users.length === 0) {
-                                    humane.error('No users');
-                                    return false;
-                                }
-                                else {
-                                    if (_this.removeUserMethod === 'remove' && _this.removeUserItemsArray.length > 0) {
-                                        var $editor = $('#list-editor-search-results');
-                                         _.each(_this.removeUserItemsArray, function (item) {
-                                             $('tbody tr', $editor).each(function(i, el) {
-                                                var $el = $(el);
-                                                var $elID = $('input[name="usr_id"]', $el).val();
-                                                if(item == $elID)
-                                                    $el.removeClass('selected');
-                                            });
-                                             _this.getList().removeUser(item);
-                                        });
-                                         var ListCounter = $('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-                                         ListCounter.each(function (i, el) {
-                                            var n = parseInt($(el).text(), 10);
-                                            if($(el).hasClass('current'))
-                                                $(el).text(n - _this.removeUserItemsArray.length + ' people');
-                                            else
-                                                $(el).text(n - _this.removeUserItemsArray.length);
-                                        });
-                                         // $('#saveListFooter').hide();
-                                        _this.removeUserItemsArray = [];
-                                        _this.removeUserMethod = '';
-                                    }
-                                    else if (_this.addUserMethod === 'add' && _this.addUserItemsArray.length > 0) {
-                                        var $editor = $('#list-editor-search-results');
-                                         _.each(_this.addUserItemsArray, function (item) {
-                                             $('tbody tr', $editor).each(function(i, el) {
-                                                 var $el = $(el);
-                                                var $elID = $('input[name="usr_id"]', $el).val();
-                                                 if(item == $elID)
-                                                    $el.addClass('selected');
-                                            });
-                                             _this.getList().addUser(item);
-                                        });
-                                         var ListCounter = $('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-                                         ListCounter.each(function (i, el) {
-                                            var n = parseInt($(el).text(), 10);
-                                             if($(el).hasClass('current'))
-                                                $(el).text(n + _this.addUserItemsArray.length + ' people');
-                                            else
-                                                $(el).text(n + _this.addUserItemsArray.length);
-                                        });
-                                         // $('#saveListFooter').hide();
-                                        _this.addUserItemsArray = [];
-                                        _this.addUserMethod = '';
-                                    }
-                                }
-                          });
-        */
-    };
-
-    initLeft();
-
-    return this;
-};
-
-ListManager.prototype = {
-    selectUser: function selectUser(user) {
-        if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
-            if (window.console) {
-                console.log('trying to select a user with wrong datas');
-            }
-        }
-        if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
-            humane.info('User already selected');
-            return;
-        } else {
-            var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
-                user: user,
-                context: 'ListManager'
-            });
-
-            // p4.Feedback.appendBadge(html);
-            // this.getList().addUser(user.usr_id);
-            this.appendBadge(html);
-        }
-    },
-    workOn: function workOn(list_id) {
-        this.list = new _index.List(list_id);
-    },
-    getList: function getList() {
-        return this.list;
-    },
-    appendBadge: function appendBadge(datas) {
-        (0, _jquery2.default)('#ListManager .badges').append(datas);
-    },
-    createList: function createList(options) {
-        var name = options.name,
-            collection = options.collection;
-
-
-        this.userList.create(name, function (list) {
-            list.addUsers(collection);
-        });
-    },
-    removeList: function removeList(list_id, callback) {
-        this.list = new _index.List(list_id);
-        this.list.remove(callback);
-    },
-    loadList: function loadList(url, callback) {
-        var $this = this;
-        _jquery2.default.ajax({
-            type: 'GET',
-            url: url,
-            dataType: 'json',
-            success: function success(data) {
-                if (typeof callback === 'function') {
-                    callback.call($this, data);
-                }
-            }
-        });
-    },
-    updateUsers: function updateUsers(action) {
-        if (action === 'remove') {}
-        return removedItems;
-    },
-    getUsers: function getUsers() {
-        return (0, _jquery2.default)('.user_content .badge', this.container).map(function () {
-            return (0, _jquery2.default)('input[name="id"]', (0, _jquery2.default)(this)).val();
-        });
-    }
-    // updateUsersHandler: function (method, item) {
-    //     if (method === 'remove') {
-    //         this.removeUserItemsArray.push(item);
-    //         this.removeUserMethod = method;
-    //     }
-    //     else if (method === 'add') {
-    //         this.addUserItemsArray.push(item);
-    //         this.addUserMethod = method;
-    //     }
-    // }
-};
-
-exports.default = ListManager;
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
@@ -5625,55 +4971,55 @@ var _toolbar = __webpack_require__(122);
 
 var _toolbar2 = _interopRequireDefault(_toolbar);
 
-var _mainMenu = __webpack_require__(80);
+var _mainMenu = __webpack_require__(79);
 
 var _mainMenu2 = _interopRequireDefault(_mainMenu);
 
-var _keyboard = __webpack_require__(226);
+var _keyboard = __webpack_require__(224);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
-var _cgu = __webpack_require__(227);
+var _cgu = __webpack_require__(225);
 
 var _cgu2 = _interopRequireDefault(_cgu);
 
-var _edit = __webpack_require__(67);
+var _edit = __webpack_require__(66);
 
 var _edit2 = _interopRequireDefault(_edit);
 
-var _export = __webpack_require__(77);
+var _export = __webpack_require__(76);
 
 var _export2 = _interopRequireDefault(_export);
 
-var _share = __webpack_require__(228);
+var _share = __webpack_require__(226);
 
 var _share2 = _interopRequireDefault(_share);
 
-var _index = __webpack_require__(79);
+var _index = __webpack_require__(78);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _addToBasket = __webpack_require__(229);
+var _addToBasket = __webpack_require__(227);
 
 var _addToBasket2 = _interopRequireDefault(_addToBasket);
 
-var _removeFromBasket = __webpack_require__(230);
+var _removeFromBasket = __webpack_require__(228);
 
 var _removeFromBasket2 = _interopRequireDefault(_removeFromBasket);
 
-var _print = __webpack_require__(78);
+var _print = __webpack_require__(77);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _preferences = __webpack_require__(231);
+var _preferences = __webpack_require__(229);
 
 var _preferences2 = _interopRequireDefault(_preferences);
 
-var _order = __webpack_require__(81);
+var _order = __webpack_require__(80);
 
 var _order2 = _interopRequireDefault(_order);
 
-var _recordPreview = __webpack_require__(235);
+var _recordPreview = __webpack_require__(233);
 
 var _recordPreview2 = _interopRequireDefault(_recordPreview);
 
@@ -5681,7 +5027,7 @@ var _alert = __webpack_require__(47);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _uploader = __webpack_require__(239);
+var _uploader = __webpack_require__(237);
 
 var _uploader2 = _interopRequireDefault(_uploader);
 
@@ -6107,7 +5453,7 @@ var ui = function ui(services) {
 exports.default = ui;
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6287,7 +5633,7 @@ var editRecord = function editRecord(services) {
 exports.default = editRecord;
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7746,7 +7092,7 @@ Flash.VERSION = version$1;
 
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7811,7 +7157,7 @@ module.exports = defineProperties;
 
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7831,13 +7177,13 @@ module.exports = function trim() {
 
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var implementation = __webpack_require__(70);
+var implementation = __webpack_require__(69);
 
 var zeroWidthSpace = '\u200b';
 
@@ -7850,7 +7196,7 @@ module.exports = function getPolyfill() {
 
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.11.0/LICENSE.txt */
@@ -7898,14 +7244,14 @@ return mapboxgl;
 
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var browser = __webpack_require__(168);
-var MapiClient = __webpack_require__(74);
+var MapiClient = __webpack_require__(73);
 
 function BrowserClient(options) {
   MapiClient.call(this, options);
@@ -7932,13 +7278,13 @@ module.exports = createBrowserClient;
 
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseToken = __webpack_require__(75);
+var parseToken = __webpack_require__(74);
 var MapiRequest = __webpack_require__(174);
 var constants = __webpack_require__(46);
 
@@ -7977,7 +7323,7 @@ module.exports = MapiClient;
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8033,7 +7379,7 @@ module.exports = parseToken;
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = function escape(url) {
@@ -8055,7 +7401,7 @@ module.exports = function escape(url) {
 
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8473,7 +7819,7 @@ var exportRecord = function exportRecord(services) {
 exports.default = exportRecord;
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8566,7 +7912,7 @@ var printRecord = function printRecord(services) {
 exports.default = printRecord;
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8584,15 +7930,15 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _videoScreenCapture = __webpack_require__(220);
+var _videoScreenCapture = __webpack_require__(218);
 
 var _videoScreenCapture2 = _interopRequireDefault(_videoScreenCapture);
 
-var _videoRangeCapture = __webpack_require__(223);
+var _videoRangeCapture = __webpack_require__(221);
 
 var _videoRangeCapture2 = _interopRequireDefault(_videoRangeCapture);
 
-var _videoSubtitleCapture = __webpack_require__(224);
+var _videoSubtitleCapture = __webpack_require__(222);
 
 var _videoSubtitleCapture2 = _interopRequireDefault(_videoSubtitleCapture);
 
@@ -8604,7 +7950,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(225);
+__webpack_require__(223);
 
 
 var humane = __webpack_require__(9);
@@ -8695,8 +8041,8 @@ var recordVideoEditorModal = function recordVideoEditorModal(services, datas) {
 exports.default = recordVideoEditorModal;
 
 /***/ }),
-/* 80 */,
-/* 81 */
+/* 79 */,
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8710,7 +8056,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _orderItem = __webpack_require__(234);
+var _orderItem = __webpack_require__(232);
 
 var _orderItem2 = _interopRequireDefault(_orderItem);
 
@@ -8955,7 +8301,7 @@ var order = function order(services) {
 exports.default = order;
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9064,7 +8410,7 @@ var resultInfos = function resultInfos(services) {
 exports.default = resultInfos;
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9116,7 +8462,7 @@ module.exports = {
 
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var html_sanitize = __webpack_require__(206);
@@ -9140,14 +8486,14 @@ function cleanId(id) { return id; }
 
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var config = __webpack_require__(87),
-    version = __webpack_require__(88).version;
+var config = __webpack_require__(86),
+    version = __webpack_require__(87).version;
 
 module.exports = function(path, accessToken) {
     accessToken = accessToken || L.mapbox.accessToken;
@@ -9207,15 +8553,15 @@ module.exports.style = function(styleURL, accessToken) {
 
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var format_url = __webpack_require__(85),
-    util = __webpack_require__(83),
-    sanitize = __webpack_require__(84);
+var format_url = __webpack_require__(84),
+    util = __webpack_require__(82),
+    sanitize = __webpack_require__(83);
 
 // mapbox-related markers functionality
 // provide an icon from mapbox's simple-style spec and hosted markers
@@ -9279,7 +8625,7 @@ module.exports = {
 
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9294,13 +8640,13 @@ module.exports = {
 
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var topLevel = typeof global !== 'undefined' ? global :
@@ -9324,7 +8670,7 @@ module.exports = doccy;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports) {
 
 function clean (s) {
@@ -9343,7 +8689,7 @@ module.exports = function tsml (sa) {
 }
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports = SafeParseTuple
@@ -9363,7 +8709,7 @@ function SafeParseTuple(obj, reviver) {
 
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9611,8 +8957,8 @@ function noop() {}
 
 
 /***/ }),
-/* 93 */,
-/* 94 */
+/* 92 */,
+/* 93 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -9920,8 +9266,8 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 95 */,
-/* 96 */
+/* 94 */,
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9935,7 +9281,7 @@ var _utils = __webpack_require__(42);
 
 var utils = _interopRequireWildcard(_utils);
 
-var _bootstrap = __webpack_require__(99);
+var _bootstrap = __webpack_require__(98);
 
 var _bootstrap2 = _interopRequireDefault(_bootstrap);
 
@@ -9943,14 +9289,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(248);
+__webpack_require__(246);
 
+__webpack_require__(247);
+__webpack_require__(248);
 __webpack_require__(249);
 __webpack_require__(250);
 __webpack_require__(251);
 __webpack_require__(252);
-__webpack_require__(253);
-__webpack_require__(254);
 
 _jquery2.default.widget.bridge('uitooltip', _jquery2.default.fn.tooltip);
 //window.btn = $.fn.button.noConflict(); // reverts $.fn.button to jqueryui btn
@@ -9967,7 +9313,7 @@ if (typeof window !== 'undefined') {
 module.exports = ProductionApplication;
 
 /***/ }),
-/* 97 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9983,7 +9329,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var cookie = __webpack_require__(98); // @TODO enable lints
+var cookie = __webpack_require__(97); // @TODO enable lints
 /* eslint-disable max-len*/
 /* eslint-disable object-shorthand*/
 /* eslint-disable dot-notation*/
@@ -10128,7 +9474,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 98 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10301,7 +9647,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 99 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10325,7 +9671,7 @@ var _publication = __webpack_require__(58);
 
 var _publication2 = _interopRequireDefault(_publication);
 
-var _workzone = __webpack_require__(100);
+var _workzone = __webpack_require__(99);
 
 var _workzone2 = _interopRequireDefault(_workzone);
 
@@ -10337,7 +9683,7 @@ var _locale = __webpack_require__(20);
 
 var _locale2 = _interopRequireDefault(_locale);
 
-var _ui = __webpack_require__(66);
+var _ui = __webpack_require__(65);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -10345,7 +9691,7 @@ var _configService = __webpack_require__(16);
 
 var _configService2 = _interopRequireDefault(_configService);
 
-var _config = __webpack_require__(240);
+var _config = __webpack_require__(238);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -10353,15 +9699,15 @@ var _emitter = __webpack_require__(15);
 
 var _emitter2 = _interopRequireDefault(_emitter);
 
-var _user = __webpack_require__(241);
+var _user = __webpack_require__(239);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _basket = __webpack_require__(242);
+var _basket = __webpack_require__(240);
 
 var _basket2 = _interopRequireDefault(_basket);
 
-var _search = __webpack_require__(243);
+var _search = __webpack_require__(241);
 
 var _search2 = _interopRequireDefault(_search);
 
@@ -10384,7 +9730,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var humane = __webpack_require__(9);
-__webpack_require__(247);
+__webpack_require__(245);
 
 var Bootstrap = function () {
     function Bootstrap(userConfig) {
@@ -10662,7 +10008,7 @@ var bootstrap = function bootstrap(userConfig) {
 exports.default = bootstrap;
 
 /***/ }),
-/* 100 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10682,7 +10028,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(101);
+var _index = __webpack_require__(100);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -10690,7 +10036,7 @@ var _index3 = __webpack_require__(60);
 
 var _index4 = _interopRequireDefault(_index3);
 
-var _index5 = __webpack_require__(106);
+var _index5 = __webpack_require__(105);
 
 var _index6 = _interopRequireDefault(_index5);
 
@@ -12257,7 +11603,7 @@ var workzone = function workzone(services) {
 exports.default = workzone;
 
 /***/ }),
-/* 101 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12271,13 +11617,13 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _index = __webpack_require__(102);
+var _index = __webpack_require__(101);
 
 var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(103);
+__webpack_require__(102);
 
 var workzoneThesaurus = function workzoneThesaurus(services) {
     var configService = services.configService,
@@ -12324,7 +11670,7 @@ var workzoneThesaurus = function workzoneThesaurus(services) {
 exports.default = workzoneThesaurus;
 
 /***/ }),
-/* 102 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13908,6 +13254,12 @@ var thesaurusService = function thesaurusService(services) {
 exports.default = thesaurusService;
 
 /***/ }),
+/* 102 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
 /* 103 */
 /***/ (function(module, exports) {
 
@@ -13915,12 +13267,6 @@ exports.default = thesaurusService;
 
 /***/ }),
 /* 104 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/*!
@@ -18267,7 +17613,7 @@ $.extend($.ui.fancytree,
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 106 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18281,15 +17627,15 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _delete = __webpack_require__(107);
+var _delete = __webpack_require__(106);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _quitshare = __webpack_require__(108);
+var _quitshare = __webpack_require__(107);
 
 var _quitshare2 = _interopRequireDefault(_quitshare);
 
-var _actions = __webpack_require__(109);
+var _actions = __webpack_require__(108);
 
 var _actions2 = _interopRequireDefault(_actions);
 
@@ -18399,7 +17745,7 @@ var workzoneBaskets = function workzoneBaskets(services) {
 exports.default = workzoneBaskets;
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18588,7 +17934,7 @@ var deleteBasket = function deleteBasket(services) {
 exports.default = deleteBasket;
 
 /***/ }),
-/* 108 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18698,7 +18044,7 @@ var quitshareBasket = function quitshareBasket(services) {
 exports.default = quitshareBasket;
 
 /***/ }),
-/* 109 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18755,7 +18101,7 @@ var shareBasket = function shareBasket(services) {
 exports.default = shareBasket;
 
 /***/ }),
-/* 110 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19093,9 +18439,14 @@ var pushOrShare = function pushOrShare(services, container) {
 
         var feedbackTitle = (0, _jquery2.default)('#feedbackTitle').val();
         var pushTitle = (0, _jquery2.default)('#pushTitle').val();
+        var sharedTitle = (0, _jquery2.default)('#sharedTitle').val();
 
-        if (options.isValidation) {
-            (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
+        if ($el.attr('data-context') == 'Sharebasket') {
+            if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() == '0') {
+                (0, _jquery2.default)('input[name="name"]').attr("placeholder", sharedTitle);
+            } else {
+                (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
+            }
         } else {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
         }
@@ -19485,6 +18836,660 @@ pushOrShare.prototype = {
 };
 
 exports.default = pushOrShare;
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _index = __webpack_require__(63);
+
+var _listEditor = __webpack_require__(111);
+
+var _listEditor2 = _interopRequireDefault(_listEditor);
+
+var _listShare = __webpack_require__(112);
+
+var _listShare2 = _interopRequireDefault(_listShare);
+
+var _dialog = __webpack_require__(1);
+
+var _dialog2 = _interopRequireDefault(_dialog);
+
+var _selectable = __webpack_require__(22);
+
+var _selectable2 = _interopRequireDefault(_selectable);
+
+var _addUser = __webpack_require__(64);
+
+var _addUser2 = _interopRequireDefault(_addUser);
+
+var _underscore = __webpack_require__(2);
+
+var _ = _interopRequireWildcard(_underscore);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var humane = __webpack_require__(9);
+
+var ListManager = function ListManager(services, options) {
+    var _this2 = this;
+
+    var configService = services.configService,
+        localeService = services.localeService,
+        appEvents = services.appEvents;
+    var containerId = options.containerId;
+
+    var url = configService.get('baseUrl');
+    var $container = void 0;
+    var _this = this;
+
+    this.list = null;
+    this.container = $container = (0, _jquery2.default)(containerId);
+    this.userList = new _index.Lists();
+
+    //    this.removeUserItemsArray = [];
+    //    this.addUserItemsArray = [];
+    //    this.removeUserMethod = '';
+    //    this.addUserMethod = '';
+
+
+    (0, _addUser2.default)(services).initialize({ $container: this.container });
+
+    // console.log("==== declare ListManager");
+    appEvents.listenAll({
+        // users lists (left) are async loaded
+        'usersLists.usersListsChanged': function usersListsUsersListsChanged(o) {
+            var nbadges = (0, _jquery2.default)('.badge', $container).length;
+            var ListCounter = (0, _jquery2.default)('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
+
+            ListCounter.each(function (i, el) {
+                (0, _jquery2.default)(el).text(nbadges);
+            });
+        }
+    });
+
+    $container.on('click', '.back_link', function () {
+        (0, _jquery2.default)('#PushBox').show();
+        (0, _jquery2.default)('#ListManager').hide();
+        return false;
+    }).on('click', '.push-list-share-action', function (event) {
+
+        event.preventDefault();
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        var listId = $el.data('list-id');
+
+        (0, _listShare2.default)(services).openModal({
+            listId: listId,
+            modalOptions: {
+                size: '288x500',
+                closeButton: true,
+                title: $el.attr('title')
+            },
+            modalLevel: 2
+        });
+        return false;
+    }).on('click', 'a.user_adder', function () {
+
+        var $this = (0, _jquery2.default)(this);
+
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: $this.attr('href'),
+            dataType: 'html',
+            beforeSend: function beforeSend() {
+                var options = {
+                    size: 'Medium',
+                    title: $this.html()
+                };
+                _dialog2.default.create(services, options, 2).getDomElement().addClass('loading');
+            },
+            success: function success(data) {
+                _dialog2.default.get(2).getDomElement().removeClass('loading').empty().append(data);
+            },
+            error: function error() {
+                _dialog2.default.get(2).close();
+            },
+            timeout: function timeout() {
+                _dialog2.default.get(2).close();
+            }
+        });
+
+        return false;
+    }).on('mouseenter', '.list-trash-btn', function (event) {
+
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        $el.find('.image-normal').hide();
+        $el.find('.image-hover').show();
+    }).on('mouseleave', '.list-trash-btn', function (event) {
+
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        $el.find('.image-normal').show();
+        $el.find('.image-hover').hide();
+    }).on('click', '.list-trash-btn', function (event) {
+
+        var $el = (0, _jquery2.default)(event.currentTarget);
+        var list_id = $el.parent().data('list-id');
+        appEvents.emit('push.removeList', {
+            list_id: list_id,
+            container: containerId
+        });
+    });
+
+    var initLeft = function initLeft() {
+        // console.log("==== declare initLeft");
+
+        $container.on('click', '.push-refresh-list-action', function (event) {
+            event.preventDefault();
+            //$('a.list_refresh', $container).bind('click', (event) => {
+            // /prod/lists/all/
+
+            var selectedList = (0, _jquery2.default)('.lists_manager_list.selected').data('list-id');
+
+            var callback = function callback(datas, selected) {
+                (0, _jquery2.default)('.all-lists', $container).removeClass('loading').append(datas);
+
+                if (typeof selected === 'number') {
+                    (0, _jquery2.default)('.all-lists').find('.lists_manager_list[data-list-id="' + selected + '"]').addClass('selected');
+                }
+                // initLeft();
+            };
+
+            (0, _jquery2.default)('.all-lists', $container).empty().addClass('loading');
+
+            _this2.userList.get(callback, 'html', selectedList);
+        });
+
+        $container.on('click', '.push-add-list-action', function (event) {
+            event.preventDefault();
+            var makeDialog = function makeDialog(box) {
+
+                var buttons = {};
+
+                buttons[localeService.t('valider')] = function () {
+
+                    var callbackOK = function callbackOK() {
+                        (0, _jquery2.default)('a.list_refresh', $container).trigger('click');
+                        _dialog2.default.get(2).close();
+                    };
+
+                    var name = (0, _jquery2.default)('input[name="name"]', _dialog2.default.get(2).getDomElement()).val();
+
+                    if (_jquery2.default.trim(name) === '') {
+                        alert((0, _jquery2.default)('#push-list-name-empty').val());
+                        return;
+                    }
+
+                    _this2.userList.create(name, callbackOK);
+                };
+                // /prod/lists/list/
+                var options = {
+                    cancelButton: true,
+                    buttons: buttons,
+                    title: (0, _jquery2.default)('#push-new-list-title').val(),
+                    size: '450x170'
+                };
+
+                var $dialog = _dialog2.default.create(services, options, 2);
+                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_add_list').find('.ui-dialog-buttonset button:first-child .ui-button-text').text((0, _jquery2.default)('#btn-add').val());
+                $dialog.setContent(box);
+            };
+
+            var html = _.template((0, _jquery2.default)('#list_editor_dialog_add_tpl').html());
+            makeDialog(html);
+
+            return false;
+        });
+
+        /**
+         * load a list by click on one list on the left
+         */
+        $container.on('click', '.list-edit-action', function (event) {
+            event.preventDefault();
+            //            _this.removeUserItemsArray = [];
+            //            _this.addUserItemsArray = [];
+            //            _this.removeUserMethod = '';
+            //            _this.addUserMethod = '';
+
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var listId = $el.data('list-id');
+            var el_url = $el.attr('href');
+
+            var callbackList = function callbackList(list) {
+                for (var i in list.entries) {
+                    this.selectUser(list.entries[i].User);
+                }
+                appEvents.emit('usersLists.usersListsChanged', {
+                    container: $container
+                });
+            };
+
+            $el.closest('.lists').find('.list').removeClass('selected');
+            $el.parent().addClass('selected');
+
+            _jquery2.default.ajax({
+                type: 'GET',
+                url: url + 'prod/push/edit-list/' + listId + '/',
+                dataType: 'html',
+                success: function success(data) {
+                    _this2.workOn(listId);
+                    (0, _jquery2.default)('.editor', $container).removeClass('loading').append(data);
+                    _this2.loadList(el_url, callbackList);
+                    initRight();
+                    (0, _listEditor2.default)(services, {
+                        $container: $container,
+                        listManagerInstance: _this
+                    });
+                },
+                beforeSend: function beforeSend() {
+                    (0, _jquery2.default)('.editor', $container).empty(); // .addClass('loading');
+                }
+            });
+        });
+
+        $container.on('click', '.listmanager-delete-list-user-action', function (event) {
+            event.preventDefault();
+            var $el = (0, _jquery2.default)(event.currentTarget);
+            var listId = $el.data('list-id');
+            var userId = $el.data('user-id');
+
+            var badge = (0, _jquery2.default)(_this2).closest('.badge');
+            // var usr_id = badge.find('input[name="id"]').val();
+            _this2.getList().removeUser(userId, function (list, data) {
+                badge.remove();
+            });
+        });
+    };
+
+    var initRight = function initRight() {
+        // console.log("==== declare initRight");
+
+        var $container = (0, _jquery2.default)('#ListManager .editor');
+        var selection = new _selectable2.default(services, (0, _jquery2.default)('.user_content .badges', _this.container), {
+            selector: '.badge'
+        });
+
+        (0, _jquery2.default)('form[name="list-editor-search"]', $container).bind('submit', function (event) {
+            event.preventDefault();
+            var $this = (0, _jquery2.default)(this);
+            var dest = (0, _jquery2.default)('.list-editor-results', $container);
+
+            _jquery2.default.ajax({
+                url: $this.attr('action'),
+                type: $this.attr('method'),
+                dataType: 'html',
+                data: $this.serializeArray(),
+                beforeSend: function beforeSend() {
+                    dest.empty().addClass('loading');
+                },
+                success: function success(datas) {
+                    dest.empty().removeClass('loading').append(datas);
+                    (0, _listEditor2.default)(services, {
+                        $container: $container,
+                        listManagerInstance: _this
+                    });
+                }
+            });
+        });
+
+        (0, _jquery2.default)('form[name="list-editor-search"] select, form[name="list-editor-search"] input[name="ListUser"]', $container).bind('change', function () {
+            (0, _jquery2.default)(this).closest('form').trigger('submit');
+        });
+
+        (0, _jquery2.default)('.EditToggle', $container).bind('click', function (event) {
+            event.preventDefault();
+            (0, _jquery2.default)('.content.readselect, .content.readwrite, .editor_header', (0, _jquery2.default)('#ListManager')).toggle();
+        });
+        (0, _jquery2.default)('.Refresher', $container).bind('click', function (event) {
+            event.preventDefault();
+            (0, _jquery2.default)('#ListManager ul.lists .list.selected a').trigger('click');
+        });
+
+        $container.off('submit', 'form[name="SaveName"]').on('submit', 'form[name="SaveName"]', function () {
+            // console.log("==== on submit form[name=\"SaveName\"]");
+            var $this = (0, _jquery2.default)(this);
+            _jquery2.default.ajax({
+                type: $this.attr('method'),
+                url: $this.attr('action'),
+                dataType: 'json',
+                data: $this.serializeArray(),
+                beforeSend: function beforeSend() {},
+                success: function success(data) {
+                    if (data.success) {
+                        humane.info(data.message);
+                        (0, _jquery2.default)('#ListManager .lists .list_refresh').trigger('click');
+                    } else {
+                        humane.error(data.message);
+                    }
+                },
+                error: function error() {},
+                timeout: function timeout() {}
+            });
+
+            return false;
+        });
+
+        // //button.deleter
+        // $('.listmanager-delete-list-action', $container).bind('click', function (event) {
+
+        //     var list_id = $(this).data('list-id');
+
+        //     var makeDialog = function (box) {
+
+        //         var buttons = {};
+
+        //         buttons[localeService.t('valider')] = function () {
+
+        //             var callbackOK = function () {
+        //                 $('#ListManager .all-lists a.list_refresh').trigger('click');
+        //                 dialog.get(2).close();
+        //             };
+
+        //             var List = new List(list_id);
+        //             List.remove(callbackOK);
+        //         };
+
+        //         var options = {
+        //             cancelButton: true,
+        //             buttons: buttons,
+        //             size: 'Alert'
+        //         };
+
+        //         dialog.create(services, options, 2).setContent(box);
+        //     };
+
+        //     var html = _.template($('#list_editor_dialog_delete_tpl').html());
+
+        //     makeDialog(html);
+
+        //     return false;
+        // });
+
+
+        // console.log("========== setting deleter");
+        $container.off('click', '.badges a.deleter').on('click', '.badges a.deleter', null, function (event) {
+            var badge = (0, _jquery2.default)(event.currentTarget).closest('.badge');
+            // console.log("======== badge ", badge);
+            var usr_id = badge.find('input[name="id"]').val();
+            var $editor = (0, _jquery2.default)('#list-editor-search-results');
+
+            badge.remove();
+
+            (0, _jquery2.default)('tbody tr', $editor).each(function (i, el) {
+                var $el = (0, _jquery2.default)(el);
+                var $elID = (0, _jquery2.default)('input[name="usr_id"]', $el).val();
+
+                if (usr_id === $elID) {
+                    $el.removeClass('selected');
+                }
+            });
+            _this.getList().removeUser(usr_id);
+
+            appEvents.emit('usersLists.usersListsChanged', {
+                container: $container
+            });
+
+            return false;
+        });
+
+        /**
+         * add a user from the completion of the search input
+         *
+         * @param ul
+         * @param item
+         * @returns {*}
+         * @private
+         */
+        (0, _jquery2.default)('input[name="users-search"]', $container).autocomplete({
+            minLength: 2,
+            source: function source(request, response) {
+                _jquery2.default.ajax({
+                    url: url + 'prod/push/search-user/',
+                    dataType: 'json',
+                    data: {
+                        query: request.term
+                    },
+                    success: function success(data) {
+                        response(data);
+                    }
+                });
+            },
+            focus: function focus(event, ui) {
+                // $('input[name="users-search"]').val(ui.item.label);
+            },
+            select: function select(event, ui) {
+                if (ui.item.type === 'USER') {
+                    _this.selectUser(ui.item);
+                    //_this.updateUsersHandler('add', ui.item.usr_id);
+                    _this.getList().addUser(ui.item.usr_id);
+                } else if (ui.item.type === 'LIST') {
+                    for (var e in ui.item.entries) {
+                        _this.selectUser(ui.item.entries[e].User);
+                        //_this.updateUsersHandler('add', ui.item.entries[e].User.usr_id);
+                        _this.getList().addUser(ui.item.entries[e].User.usr_id);
+                    }
+                }
+                appEvents.emit('usersLists.usersListsChanged', {
+                    container: $container
+                });
+
+                // the list has changed, show the save button
+                //                $('#saveListFooter').show();
+
+                return false;
+            }
+
+        }).data('ui-autocomplete')._renderItem = function (ul, item) {
+
+            var html = '';
+
+            if (item.type === 'USER') {
+                html = _.template((0, _jquery2.default)('#list_user_tpl').html())({
+
+                    item: item
+                });
+            } else if (item.type === 'LIST') {
+                html = _.template((0, _jquery2.default)('#list_list_tpl').html())({
+                    item: item
+                });
+            }
+
+            return (0, _jquery2.default)(html).data('ui-autocomplete-item', item).appendTo(ul);
+        };
+
+        (0, _jquery2.default)('.user_content .badges', _this.container).disableSelection();
+
+        $container.on('click', '.content .options .select-all', function () {
+            selection.selectAll();
+        });
+
+        $container.on('click', '.content .options .unselect-all', function () {
+            selection.empty();
+        });
+
+        $container.on('click', '.content .options .delete-selection', function () {
+            var $elems = (0, _jquery2.default)('#ListManager .badges.selectionnable .badge.selected');
+            _.each($elems, function (item) {
+                var $elem = (0, _jquery2.default)(item);
+                var $elemID = $elem.find('input[name=id]').val();
+                // if($elem.hasClass('selected')
+                //     && _this.removeUserItemsArray.indexOf($elemID) === -1) {
+                //     _this.updateUsersHandler('remove', $elemID);
+                // }
+                if ($elem.hasClass('selected')) {
+                    _this.getList().removeUser($elemID);
+                }
+            });
+
+            $elems.fadeOut(300, 'swing', function () {
+                (0, _jquery2.default)(this).remove();
+                //                $('#saveListFooter').show();
+                appEvents.emit('usersLists.usersListsChanged', {
+                    container: $container
+                });
+            });
+        });
+        /*
+                $container.off('submit', 'form.list_saver')
+                          .on('submit', 'form.list_saver', function (event) {
+                                console.log("==== on submit form.list_saver");
+                                event.preventDefault();
+                                var $form = $(event.currentTarget);
+                                var name = $('.header h2', $container).text();
+                                var users = _this.getUsers();
+                                 if (users.length === 0) {
+                                    humane.error('No users');
+                                    return false;
+                                }
+                                else {
+                                    if (_this.removeUserMethod === 'remove' && _this.removeUserItemsArray.length > 0) {
+                                        var $editor = $('#list-editor-search-results');
+                                         _.each(_this.removeUserItemsArray, function (item) {
+                                             $('tbody tr', $editor).each(function(i, el) {
+                                                var $el = $(el);
+                                                var $elID = $('input[name="usr_id"]', $el).val();
+                                                if(item == $elID)
+                                                    $el.removeClass('selected');
+                                            });
+                                             _this.getList().removeUser(item);
+                                        });
+                                         var ListCounter = $('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
+                                         ListCounter.each(function (i, el) {
+                                            var n = parseInt($(el).text(), 10);
+                                            if($(el).hasClass('current'))
+                                                $(el).text(n - _this.removeUserItemsArray.length + ' people');
+                                            else
+                                                $(el).text(n - _this.removeUserItemsArray.length);
+                                        });
+                                         // $('#saveListFooter').hide();
+                                        _this.removeUserItemsArray = [];
+                                        _this.removeUserMethod = '';
+                                    }
+                                    else if (_this.addUserMethod === 'add' && _this.addUserItemsArray.length > 0) {
+                                        var $editor = $('#list-editor-search-results');
+                                         _.each(_this.addUserItemsArray, function (item) {
+                                             $('tbody tr', $editor).each(function(i, el) {
+                                                 var $el = $(el);
+                                                var $elID = $('input[name="usr_id"]', $el).val();
+                                                 if(item == $elID)
+                                                    $el.addClass('selected');
+                                            });
+                                             _this.getList().addUser(item);
+                                        });
+                                         var ListCounter = $('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
+                                         ListCounter.each(function (i, el) {
+                                            var n = parseInt($(el).text(), 10);
+                                             if($(el).hasClass('current'))
+                                                $(el).text(n + _this.addUserItemsArray.length + ' people');
+                                            else
+                                                $(el).text(n + _this.addUserItemsArray.length);
+                                        });
+                                         // $('#saveListFooter').hide();
+                                        _this.addUserItemsArray = [];
+                                        _this.addUserMethod = '';
+                                    }
+                                }
+                          });
+        */
+    };
+
+    initLeft();
+
+    return this;
+};
+
+ListManager.prototype = {
+    selectUser: function selectUser(user) {
+        if ((typeof user === 'undefined' ? 'undefined' : _typeof(user)) !== 'object') {
+            if (window.console) {
+                console.log('trying to select a user with wrong datas');
+            }
+        }
+        if ((0, _jquery2.default)('.badge_' + user.usr_id, this.container).length > 0) {
+            humane.info('User already selected');
+            return;
+        } else {
+            var html = _.template((0, _jquery2.default)('#_badge_tpl').html())({
+                user: user,
+                context: 'ListManager'
+            });
+
+            // p4.Feedback.appendBadge(html);
+            // this.getList().addUser(user.usr_id);
+            this.appendBadge(html);
+        }
+    },
+    workOn: function workOn(list_id) {
+        this.list = new _index.List(list_id);
+    },
+    getList: function getList() {
+        return this.list;
+    },
+    appendBadge: function appendBadge(datas) {
+        (0, _jquery2.default)('#ListManager .badges').append(datas);
+    },
+    createList: function createList(options) {
+        var name = options.name,
+            collection = options.collection;
+
+
+        this.userList.create(name, function (list) {
+            list.addUsers(collection);
+        });
+    },
+    removeList: function removeList(list_id, callback) {
+        this.list = new _index.List(list_id);
+        this.list.remove(callback);
+    },
+    loadList: function loadList(url, callback) {
+        var $this = this;
+        _jquery2.default.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'json',
+            success: function success(data) {
+                if (typeof callback === 'function') {
+                    callback.call($this, data);
+                }
+            }
+        });
+    },
+    updateUsers: function updateUsers(action) {
+        if (action === 'remove') {}
+        return removedItems;
+    },
+    getUsers: function getUsers() {
+        return (0, _jquery2.default)('.user_content .badge', this.container).map(function () {
+            return (0, _jquery2.default)('input[name="id"]', (0, _jquery2.default)(this)).val();
+        });
+    }
+    // updateUsersHandler: function (method, item) {
+    //     if (method === 'remove') {
+    //         this.removeUserItemsArray.push(item);
+    //         this.removeUserMethod = method;
+    //     }
+    //     else if (method === 'add') {
+    //         this.addUserItemsArray.push(item);
+    //         this.addUserMethod = method;
+    //     }
+    // }
+};
+
+exports.default = ListManager;
 
 /***/ }),
 /* 111 */
@@ -21432,7 +21437,7 @@ var _move = __webpack_require__(123);
 
 var _move2 = _interopRequireDefault(_move);
 
-var _edit = __webpack_require__(67);
+var _edit = __webpack_require__(66);
 
 var _edit2 = _interopRequireDefault(_edit);
 
@@ -21440,7 +21445,7 @@ var _delete = __webpack_require__(210);
 
 var _delete2 = _interopRequireDefault(_delete);
 
-var _export = __webpack_require__(77);
+var _export = __webpack_require__(76);
 
 var _export2 = _interopRequireDefault(_export);
 
@@ -21456,29 +21461,25 @@ var _pushbasketModal = __webpack_require__(212);
 
 var _pushbasketModal2 = _interopRequireDefault(_pushbasketModal);
 
-var _index = __webpack_require__(213);
-
-var _index2 = _interopRequireDefault(_index);
-
-var _publish = __webpack_require__(215);
+var _publish = __webpack_require__(213);
 
 var _publish2 = _interopRequireDefault(_publish);
 
-var _index3 = __webpack_require__(216);
+var _index = __webpack_require__(214);
 
-var _index4 = _interopRequireDefault(_index3);
+var _index2 = _interopRequireDefault(_index);
 
-var _print = __webpack_require__(78);
+var _print = __webpack_require__(77);
 
 var _print2 = _interopRequireDefault(_print);
 
-var _bridge = __webpack_require__(218);
+var _bridge = __webpack_require__(216);
 
 var _bridge2 = _interopRequireDefault(_bridge);
 
-var _index5 = __webpack_require__(79);
+var _index3 = __webpack_require__(78);
 
-var _index6 = _interopRequireDefault(_index5);
+var _index4 = _interopRequireDefault(_index3);
 
 var _lodash = __webpack_require__(4);
 
@@ -21654,7 +21655,7 @@ var toolbar = function toolbar(services) {
          * tools > Edit > VideoEditor
          */
         $container.on('click', '.video-tools-record-action', function (event) {
-            _triggerModal(event, (0, _index6.default)(services).openModal, false);
+            _triggerModal(event, (0, _index4.default)(services).openModal, false);
         });
 
         /**
@@ -21684,12 +21685,13 @@ var toolbar = function toolbar(services) {
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
             _triggerModal(event, (0, _sharebasketModal2.default)(services).openModal);
         });
-        /**
-         * tools > Push > UsersLists
-         */
-        $container.on('click', '.TOOL_userslists_btn', function (event) {
-            _triggerModal(event, (0, _index2.default)(services).openModal, false); // false : allow opening without selection
-        });
+
+        //        /**
+        //         * tools > Push > UsersLists
+        //         */
+        //        $container.on('click', '.TOOL_userslists_btn', function (event) {
+        //            _triggerModal(event, usersListsModal(services).openModal, false);   // false : allow opening without selection
+        //        });
 
         /**
          * workzone (opened basket) > feedback
@@ -21708,7 +21710,7 @@ var toolbar = function toolbar(services) {
          * tools > Tools
          */
         $container.on('click', '.TOOL_imgtools_btn', function (event) {
-            _triggerModal(event, (0, _index4.default)(services).openModal);
+            _triggerModal(event, (0, _index2.default)(services).openModal);
         });
         /**
          * tools > Export
@@ -21857,7 +21859,7 @@ var toolbar = function toolbar(services) {
 
     return { initialize: initialize };
 };
-
+// import usersListsModal from '../../userslists/index';
 exports.default = toolbar;
 
 /***/ }),
@@ -24523,7 +24525,7 @@ var _jquery = __webpack_require__(0);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _videojsFlash = __webpack_require__(68);
+var _videojsFlash = __webpack_require__(67);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -24570,7 +24572,7 @@ var videoEditor = function videoEditor(services) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
 
             // load videoJs lib
-            rangeCapture = __webpack_require__(93).default;
+            rangeCapture = __webpack_require__(92).default;
             rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
 
@@ -24624,10 +24626,10 @@ exports.default = videoEditor;
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var window = _interopDefault(__webpack_require__(44));
-var document = _interopDefault(__webpack_require__(89));
-var tsml = _interopDefault(__webpack_require__(90));
-var safeParseTuple = _interopDefault(__webpack_require__(91));
-var xhr = _interopDefault(__webpack_require__(92));
+var document = _interopDefault(__webpack_require__(88));
+var tsml = _interopDefault(__webpack_require__(89));
+var safeParseTuple = _interopDefault(__webpack_require__(90));
+var xhr = _interopDefault(__webpack_require__(91));
 var vtt = _interopDefault(__webpack_require__(149));
 
 var version = "6.13.0";
@@ -50019,10 +50021,10 @@ module.exports = function (headers) {
 
 
 var bind = __webpack_require__(49);
-var define = __webpack_require__(69);
+var define = __webpack_require__(68);
 
-var implementation = __webpack_require__(70);
-var getPolyfill = __webpack_require__(71);
+var implementation = __webpack_require__(69);
+var getPolyfill = __webpack_require__(70);
 var shim = __webpack_require__(147);
 
 var boundTrim = bind.call(Function.call, getPolyfill());
@@ -50809,8 +50811,8 @@ module.exports = bind.call(Function.call, Object.prototype.hasOwnProperty);
 "use strict";
 
 
-var define = __webpack_require__(69);
-var getPolyfill = __webpack_require__(71);
+var define = __webpack_require__(68);
+var getPolyfill = __webpack_require__(70);
 
 module.exports = function shimStringTrim() {
 	var polyfill = getPolyfill();
@@ -52734,7 +52736,7 @@ module.exports = VTTRegion;
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 154 */
@@ -53417,7 +53419,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapboxgl = __webpack_require__(72);
+var mapboxgl = __webpack_require__(71);
 
 var markerGLCollection = function markerGLCollection(services) {
     var configService = services.configService,
@@ -53883,7 +53885,7 @@ exports.default = leafletLocaleFr;
 var Typeahead = __webpack_require__(161);
 var debounce = __webpack_require__(165);
 var extend = __webpack_require__(37);
-var EventEmitter = __webpack_require__(94).EventEmitter;
+var EventEmitter = __webpack_require__(93).EventEmitter;
 var exceptions = __webpack_require__(166);
 var MapboxClient = __webpack_require__(167);
 var mbxGeocoder = __webpack_require__(177);
@@ -55923,7 +55925,7 @@ module.exports = {
 "use strict";
 
 
-var client = __webpack_require__(73);
+var client = __webpack_require__(72);
 
 module.exports = client;
 
@@ -56508,7 +56510,7 @@ module.exports = parseHeaders;
 "use strict";
 
 
-var parseToken = __webpack_require__(75);
+var parseToken = __webpack_require__(74);
 var xtend = __webpack_require__(37);
 var EventEmitter = __webpack_require__(175);
 var urlUtils = __webpack_require__(176);
@@ -57989,9 +57991,9 @@ module.exports = objectMap;
 "use strict";
 
 
-var MapiClient = __webpack_require__(74);
+var MapiClient = __webpack_require__(73);
 // This will create the environment-appropriate client.
-var createClient = __webpack_require__(73);
+var createClient = __webpack_require__(72);
 
 function createServiceFactory(ServicePrototype) {
   return function(clientOrConfig) {
@@ -58662,7 +58664,7 @@ if(false) {
 /* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(76);
+var escape = __webpack_require__(75);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
@@ -58810,7 +58812,7 @@ if(false) {
 /* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var escape = __webpack_require__(76);
+var escape = __webpack_require__(75);
 exports = module.exports = __webpack_require__(40)(false);
 // imports
 
@@ -62547,184 +62549,6 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _userslistswindow = __webpack_require__(214);
-
-var _userslistswindow2 = _interopRequireDefault(_userslistswindow);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var userslists = function userslists(services, datas) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var url = configService.get('baseUrl');
-
-    var openModal = function openModal(datas) {
-        var $dialog = _dialog2.default.create(services, {
-            size: 'Full',
-            title: localeService.t('Users lists')
-        });
-
-        // add classes to the whoe dialog (including title)
-        $dialog.getDomElement().closest('.ui-dialog').addClass('whole_dialog_container')
-        //.addClass('dialog_container')
-        .addClass('userslists');
-
-        _jquery2.default.post(url + 'prod/push/sendform/', datas, function (data) {
-            $dialog.setContent(data);
-            _onDialogReady();
-            return;
-        });
-
-        return true;
-    };
-
-    var _onDialogReady = function _onDialogReady() {
-        (0, _userslistswindow2.default)(services).initialize({
-            context: '???',
-            containerId: '#ListManager'
-        });
-    };
-
-    return { openModal: openModal };
-};
-
-exports.default = userslists;
-
-/***/ }),
-/* 214 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _listManager = __webpack_require__(65);
-
-var _listManager2 = _interopRequireDefault(_listManager);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var recordslists = function recordslists(services) {
-    var configService = services.configService,
-        localeService = services.localeService,
-        appEvents = services.appEvents;
-
-    var listManagerInstance = null;
-
-    var initialize = function initialize(options) {
-        if ((0, _jquery2.default)('#userslistsBox').length > 0) {
-            listManagerInstance = new _listManager2.default(services, options);
-        } else {
-            (0, _jquery2.default)('.close-dialog-action').on('click', function () {
-                return _dialog2.default.close('1');
-            });
-        }
-    };
-
-    function reloadBridge(url) {
-        var options = (0, _jquery2.default)('#dialog_publicator form[name="current_datas"]').serializeArray();
-        var dialog = dialog.get(1);
-        dialog.load(url, 'POST', options);
-    }
-
-    function createList(listOptions) {
-        listManagerInstance.createList(listOptions);
-    }
-
-    function setActiveList() {}
-
-    function removeList(listObj) {
-        var makeDialog = function makeDialog(box) {
-
-            var buttons = {};
-
-            buttons[localeService.t('valider')] = function () {
-
-                var callbackOK = function callbackOK() {
-                    (0, _jquery2.default)('.list-container ul.list').children().each(function () {
-                        if ((0, _jquery2.default)(this).data('list-id') == listObj.list_id) {
-                            (0, _jquery2.default)(this).remove();
-                        }
-                    });
-                    _dialog2.default.get(2).close();
-                };
-
-                listManagerInstance.removeList(listObj.list_id, callbackOK);
-            };
-
-            var options = {
-                title: localeService.t('Delete the list'),
-                cancelButton: true,
-                buttons: buttons,
-                size: 'Alert'
-            };
-
-            var $dialog = _dialog2.default.create(services, options, 2);
-            if (listObj.container === '#ListManager') {
-                $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
-            }
-            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
-                var self = (0, _jquery2.default)(this).children();
-                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
-            });
-            $dialog.setContent(box);
-        };
-
-        var html = _.template((0, _jquery2.default)('#list_editor_dialog_delete_tpl').html());
-
-        makeDialog(html);
-    }
-
-    appEvents.listenAll({
-        // 'push.doInitialize': initialize,
-        'push.setActiveList': setActiveList,
-        'push.createList': createList,
-        'push.reload': reloadBridge,
-        'push.removeList': removeList
-    });
-
-    return {
-        initialize: initialize,
-        // Feedback: Feedback,
-        // ListManager: ListManager,
-        reloadBridge: reloadBridge
-    };
-};
-
-exports.default = recordslists;
-
-/***/ }),
-/* 215 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var _dialog = __webpack_require__(1);
-
-var _dialog2 = _interopRequireDefault(_dialog);
-
 var _publication = __webpack_require__(58);
 
 var _publication2 = _interopRequireDefault(_publication);
@@ -62754,7 +62578,7 @@ var recordPublishModal = function recordPublishModal(services, datas) {
 exports.default = recordPublishModal;
 
 /***/ }),
-/* 216 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62772,7 +62596,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _sharingManager = __webpack_require__(217);
+var _sharingManager = __webpack_require__(215);
 
 var _sharingManager2 = _interopRequireDefault(_sharingManager);
 
@@ -62892,7 +62716,7 @@ var recordToolsModal = function recordToolsModal(services, datas) {
 exports.default = recordToolsModal;
 
 /***/ }),
-/* 217 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62964,7 +62788,7 @@ var sharingManager = function sharingManager(services, datas) {
 exports.default = sharingManager;
 
 /***/ }),
-/* 218 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62982,7 +62806,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _index = __webpack_require__(219);
+var _index = __webpack_require__(217);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -63020,7 +62844,7 @@ var bridgeRecord = function bridgeRecord(services) {
 exports.default = bridgeRecord;
 
 /***/ }),
-/* 219 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63359,7 +63183,7 @@ var recordBridge = function recordBridge(services) {
 exports.default = recordBridge;
 
 /***/ }),
-/* 220 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63377,7 +63201,7 @@ var _dialog = __webpack_require__(1);
 
 var _dialog2 = _interopRequireDefault(_dialog);
 
-var _screenCapture = __webpack_require__(221);
+var _screenCapture = __webpack_require__(219);
 
 var _screenCapture2 = _interopRequireDefault(_screenCapture);
 
@@ -63699,7 +63523,7 @@ var videoScreenCapture = function videoScreenCapture(services, datas) {
 exports.default = videoScreenCapture;
 
 /***/ }),
-/* 221 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63709,7 +63533,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _canvaImage = __webpack_require__(222);
+var _canvaImage = __webpack_require__(220);
 
 var _canvaImage2 = _interopRequireDefault(_canvaImage);
 
@@ -63936,7 +63760,7 @@ var ScreenCapture = function ScreenCapture(videoId, canvaId, outputOptions) {
 exports.default = ScreenCapture;
 
 /***/ }),
-/* 222 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64035,7 +63859,7 @@ Canva.prototype = {
 exports.default = Canva;
 
 /***/ }),
-/* 223 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64045,7 +63869,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _videojsFlash = __webpack_require__(68);
+var _videojsFlash = __webpack_require__(67);
 
 var _videojsFlash2 = _interopRequireDefault(_videojsFlash);
 
@@ -64114,7 +63938,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
         __webpack_require__.e/* require.ensure */(1/* duplicate */).then((function () {
             // load videoJs lib
             //require('../../videoEditor/style/main.scss');
-            rangeCapture = __webpack_require__(93).default;
+            rangeCapture = __webpack_require__(92).default;
             var rangeCaptureInstance = rangeCapture(services);
             rangeCaptureInstance.initialize(params, options);
             //render(initData);
@@ -64127,7 +63951,7 @@ var videoRangeCapture = function videoRangeCapture(services, datas) {
 exports.default = videoRangeCapture;
 
 /***/ }),
-/* 224 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64568,13 +64392,13 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
 exports.default = videoSubtitleCapture;
 
 /***/ }),
-/* 225 */
+/* 223 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 226 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64652,7 +64476,7 @@ var keyboard = function keyboard(services) {
 exports.default = keyboard;
 
 /***/ }),
-/* 227 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64740,7 +64564,7 @@ var cgu = function cgu(services) {
 exports.default = cgu;
 
 /***/ }),
-/* 228 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64839,7 +64663,7 @@ var shareRecord = function shareRecord(services) {
 exports.default = shareRecord;
 
 /***/ }),
-/* 229 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64880,7 +64704,7 @@ var addToBasket = function addToBasket(services) {
 exports.default = addToBasket;
 
 /***/ }),
-/* 230 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64919,7 +64743,7 @@ var removeFromBasket = function removeFromBasket(services) {
 exports.default = removeFromBasket;
 
 /***/ }),
-/* 231 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64941,8 +64765,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var highlight = __webpack_require__(232);
-var colorpicker = __webpack_require__(233);
+var highlight = __webpack_require__(230);
+var colorpicker = __webpack_require__(231);
 var preferences = function preferences(services) {
     var configService = services.configService,
         localeService = services.localeService,
@@ -65251,7 +65075,7 @@ var preferences = function preferences(services) {
 exports.default = preferences;
 
 /***/ }),
-/* 232 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -65288,7 +65112,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 233 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -65774,7 +65598,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 234 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65796,7 +65620,7 @@ var _phraseanetCommon = __webpack_require__(11);
 
 var appCommons = _interopRequireWildcard(_phraseanetCommon);
 
-var _index = __webpack_require__(81);
+var _index = __webpack_require__(80);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -66561,7 +66385,7 @@ var orderItem = function orderItem(services) {
 exports.default = orderItem;
 
 /***/ }),
-/* 235 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66599,9 +66423,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(236);
+__webpack_require__(234);
 
-var image_enhancer = __webpack_require__(237);
+var image_enhancer = __webpack_require__(235);
 __webpack_require__(14);
 var previewRecordService = function previewRecordService(services) {
     var configService = services.configService,
@@ -66928,15 +66752,47 @@ var previewRecordService = function previewRecordService(services) {
                 }
 
                 var basketIcon = '';
+
                 if (data.containerType !== null) {
-                    if (data.containerType === 'feedback') {
-                        basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
-                    } else if (data.containerType === 'push') {
-                        basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
-                    } else if (data.containerType === 'regroup') {
-                        basketIcon = "<img src='/assets/common/images/icons/story.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
-                    } else {
-                        basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    switch (data.containerType) {
+                        case 'feedback_rec':
+                            basketIcon = '<i class="fa fa-comment vote_rec" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_rec':
+                            basketIcon = '<i class="fa fa-users share_rec" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'push_rec':
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+
+                            break;
+                        case 'feedback_sent':
+                            basketIcon = '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_sent':
+                            basketIcon = '<i class="fa fa-share share_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'feedback_push':
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+                            basketIcon += '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_push':
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+                            basketIcon += '<i class="fa fa-share share_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'regroup':
+                            basketIcon = '<i class="icomoon icon-stack story" style="margin-right: 5px;"></i>';
+
+                            break;
+                        default:
+                            basketIcon = '<i class="icomoon icon-stackoverflow basket" style="margin-right: 5px;"></i>';
+
+                            break;
                     }
                 }
 
@@ -67330,13 +67186,13 @@ var previewRecordService = function previewRecordService(services) {
 exports.default = previewRecordService;
 
 /***/ }),
-/* 236 */
+/* 234 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 237 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -67352,7 +67208,7 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-__webpack_require__(238);
+__webpack_require__(236);
 
 (function ($) {
 
@@ -67581,13 +67437,13 @@ __webpack_require__(238);
 
 
 /***/ }),
-/* 238 */
+/* 236 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 239 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67634,7 +67490,7 @@ var uploader = function uploader(services) {
 
             __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                 // load uploader manager dep
-                UploaderManager = __webpack_require__(95).default;
+                UploaderManager = __webpack_require__(94).default;
                 openModal($this, []);
             }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
         });
@@ -67649,7 +67505,7 @@ var uploader = function uploader(services) {
 
                     __webpack_require__.e/* require.ensure */(2/* duplicate */).then((function () {
                         // load uploader manager dep
-                        UploaderManager = __webpack_require__(95).default;
+                        UploaderManager = __webpack_require__(94).default;
                         openModal((0, _jquery2.default)('.uploader-open-action'), fileList);
                     }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 
@@ -68142,7 +67998,7 @@ var uploader = function uploader(services) {
 exports.default = uploader;
 
 /***/ }),
-/* 240 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68170,7 +68026,7 @@ var defaultConfig = {
 exports.default = defaultConfig;
 
 /***/ }),
-/* 241 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68180,7 +68036,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _ui = __webpack_require__(66);
+var _ui = __webpack_require__(65);
 
 var _ui2 = _interopRequireDefault(_ui);
 
@@ -68245,7 +68101,7 @@ var user = function user(services) {
 exports.default = user;
 
 /***/ }),
-/* 242 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68300,7 +68156,7 @@ var basket = function basket() {
 exports.default = basket;
 
 /***/ }),
-/* 243 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68326,7 +68182,7 @@ var _lodash = __webpack_require__(4);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _resultInfos = __webpack_require__(82);
+var _resultInfos = __webpack_require__(81);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
@@ -68338,7 +68194,7 @@ var _selectable = __webpack_require__(22);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchForm = __webpack_require__(244);
+var _searchForm = __webpack_require__(242);
 
 var _searchForm2 = _interopRequireDefault(_searchForm);
 
@@ -69015,7 +68871,7 @@ var search = function search(services) {
 exports.default = search;
 
 /***/ }),
-/* 244 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69037,7 +68893,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _resultInfos = __webpack_require__(82);
+var _resultInfos = __webpack_require__(81);
 
 var _resultInfos2 = _interopRequireDefault(_resultInfos);
 
@@ -69053,11 +68909,11 @@ var _selectable = __webpack_require__(22);
 
 var _selectable2 = _interopRequireDefault(_selectable);
 
-var _searchAdvancedForm = __webpack_require__(245);
+var _searchAdvancedForm = __webpack_require__(243);
 
 var _searchAdvancedForm2 = _interopRequireDefault(_searchAdvancedForm);
 
-var _searchGeoForm = __webpack_require__(246);
+var _searchGeoForm = __webpack_require__(244);
 
 var _searchGeoForm2 = _interopRequireDefault(_searchGeoForm);
 
@@ -69222,7 +69078,7 @@ var searchForm = function searchForm(services) {
 exports.default = searchForm;
 
 /***/ }),
-/* 245 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69875,7 +69731,7 @@ var searchAdvancedForm = function searchAdvancedForm(services) {
 exports.default = searchAdvancedForm;
 
 /***/ }),
-/* 246 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70100,7 +69956,7 @@ var searchGeoForm = function searchGeoForm(services) {
 exports.default = searchGeoForm;
 
 /***/ }),
-/* 247 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*** IMPORTS FROM imports-loader ***/
@@ -70242,13 +70098,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 
 /***/ }),
-/* 248 */
+/* 246 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 249 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Arabic Translation for jQuery UI date picker plugin. */
@@ -70278,7 +70134,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 250 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* German initialisation for the jQuery UI date picker plugin. */
@@ -70308,7 +70164,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 251 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Inicialización en español para la extensión 'UI date picker' para jQuery. */
@@ -70338,7 +70194,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 252 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* French initialisation for the jQuery UI date picker plugin. */
@@ -70370,7 +70226,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 253 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* Dutch (UTF-8) initialisation for the jQuery UI date picker plugin. */
@@ -70400,7 +70256,7 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 254 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {/* English/UK initialisation for the jQuery UI date picker plugin. */
@@ -70430,5 +70286,5 @@ jQuery(function($){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ })
-],[96]);
+],[95]);
 });

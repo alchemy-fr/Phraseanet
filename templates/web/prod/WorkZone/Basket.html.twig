@@ -41,14 +41,14 @@
 
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
             <button class="ui-corner-all TOOL_pushdoc_btn basket_window" data-selection-source="basket">
-                <img src="/assets/common/images/icons/push16.png"/>
+                <i class="fa fa-gift push_rec" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 15px;width:16px; height:16px"></i>
                 <span>{{ 'action : push' | trans }}</span>
             </button>
         {% endif %}
 
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
             <button class="ui-corner-all TOOL_feedback_btn basket_window" data-selection-source="basket">
-                <img src="/assets/common/images/icons/feedback16.png"/>
+                <i class="fa fa-bullhorn vote_sent" style="padding-left: 3px;padding-bottom: 1px;padding-top: 2px; font-size: 13px;width:16px; height:16px"></i>
                 <span>{{ 'Feedback' | trans }}</span>
             </button>
         {% endif %}

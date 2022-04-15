@@ -4432,6 +4432,90 @@ form.phrasea_query input.query {
   color: red;
 }
 
+#SPANTITLE I,
+#PREVIEWOTHERSINNER I,
+.TOOL_feedback_btn I,
+.TOOL_pushdoc_btn I,
+.TOOL_sharebasket_btn I {
+  font-size: 16px;
+  display: inline-block;
+  background-color: #222;
+  padding: 5px 0 0 5px;
+  border-radius: 14px;
+  line-height: normal;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  color: white;
+}
+
+#SPANTITLE I.push_rec,
+#PREVIEWOTHERSINNER I.push_rec,
+.TOOL_feedback_btn I.push_rec,
+.TOOL_pushdoc_btn I.push_rec,
+.TOOL_sharebasket_btn I.push_rec {
+  background-color: #2092ED;
+  font-size: 17px;
+  padding: 1px 0px 0px 1px;
+}
+
+#SPANTITLE I.vote_sent,
+#PREVIEWOTHERSINNER I.vote_sent,
+.TOOL_feedback_btn I.vote_sent,
+.TOOL_pushdoc_btn I.vote_sent,
+.TOOL_sharebasket_btn I.vote_sent {
+  background-color: #E0215D;
+}
+
+#SPANTITLE I.vote_rec,
+#PREVIEWOTHERSINNER I.vote_rec,
+.TOOL_feedback_btn I.vote_rec,
+.TOOL_pushdoc_btn I.vote_rec,
+.TOOL_sharebasket_btn I.vote_rec {
+  background-color: #E0215D;
+}
+
+#SPANTITLE I.share_rec,
+#PREVIEWOTHERSINNER I.share_rec,
+.TOOL_feedback_btn I.share_rec,
+.TOOL_pushdoc_btn I.share_rec,
+.TOOL_sharebasket_btn I.share_rec {
+  background-color: forestgreen;
+  font-size: 14px;
+}
+
+#SPANTITLE I.share_sent,
+#PREVIEWOTHERSINNER I.share_sent,
+.TOOL_feedback_btn I.share_sent,
+.TOOL_pushdoc_btn I.share_sent,
+.TOOL_sharebasket_btn I.share_sent {
+  background-color: forestgreen;
+}
+
+#SPANTITLE I.basket,
+#PREVIEWOTHERSINNER I.basket,
+.TOOL_feedback_btn I.basket,
+.TOOL_pushdoc_btn I.basket,
+.TOOL_sharebasket_btn I.basket {
+  background-color: #1EADD6;
+  font-size: 14px;
+}
+
+#SPANTITLE I.story,
+#PREVIEWOTHERSINNER I.story,
+.TOOL_feedback_btn I.story,
+.TOOL_pushdoc_btn I.story,
+.TOOL_sharebasket_btn I.story {
+  background-color: #6471BC;
+}
+
+.TOOL_sharebasket_btn .share_sent {
+  padding-left: 2px !important;
+  padding-top: 2px !important;
+  margin-right: 4px !important;
+}
+
 /******* idFrameT CSS *********************************************************/
 
 #idFrameT {
@@ -9356,7 +9440,7 @@ TABLE.explain3 TR TD {
   font-size: 25px;
   display: inline-block;
   border-radius: 30px;
-  padding: 8px;
+  padding: 6px 8px;
 }
 
 .whole_dialog_container .PushBox .push-add-user {
@@ -9387,6 +9471,11 @@ TABLE.explain3 TR TD {
 
 .whole_dialog_container #PushBox .general_togglers ul li {
   display: inline-block;
+  margin-right: 10px;
+}
+
+.whole_dialog_container #PushBox .general_togglers ul li i {
+  font-size: 20px;
 }
 
 .whole_dialog_container #PushBox .list_manager {

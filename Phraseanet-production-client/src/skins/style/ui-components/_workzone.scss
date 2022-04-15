@@ -340,4 +340,61 @@ $dividerBg: #6c6c6c !default;
     }
 }
 
+#SPANTITLE I,
+#PREVIEWOTHERSINNER I,
+.TOOL_feedback_btn I,
+.TOOL_pushdoc_btn I,
+.TOOL_sharebasket_btn I{
+    font-size: 16px;
+    display: inline-block;
+    background-color: #222;
+    padding: 5px 0 0 5px;
+    border-radius: 14px;
+    line-height: normal;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    color: white;
+    &.push_rec {
+        background-color: #2092ED;
+        font-size: 17px;
+        padding: 1px 0px 0px 1px;
+    }
+
+    &.vote_sent {
+        background-color: #E0215D;
+    }
+
+    &.vote_rec {
+        background-color: #E0215D;
+    }
+
+    &.share_rec {
+        background-color: forestgreen;
+        font-size: 14px;
+    }
+
+    &.share_sent {
+        background-color: forestgreen;
+    }
+
+    &.basket {
+        background-color: #1EADD6;
+        font-size:14px;
+    }
+
+    &.story {
+        background-color: #6471BC;
+    }
+
+}
+
+.TOOL_sharebasket_btn .share_sent {
+    padding-left: 2px !important;
+    padding-top: 2px !important;
+    margin-right: 4px !important;
+}
+
+
 // #basket-fiter INPUT;checked[value=feedback] ~

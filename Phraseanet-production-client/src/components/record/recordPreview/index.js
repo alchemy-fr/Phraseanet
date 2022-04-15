@@ -383,15 +383,48 @@ const previewRecordService = services => {
                 }
 
                 let basketIcon = '';
+
+
                 if (data.containerType !== null ) {
-                    if (data.containerType === 'feedback') {
-                        basketIcon = "<img src='/assets/common/images/icons/basket_validation.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
-                    } else if (data.containerType === 'push') {
-                        basketIcon = "<img src='/assets/common/images/icons/basket_push.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
-                    } else if (data.containerType === 'regroup') {
-                        basketIcon = "<img src='/assets/common/images/icons/story.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
-                    } else {
-                        basketIcon = "<img src='/assets/common/images/icons/basket.png' title='' width='24' class='btn-image' style='width:24px;height: 24px;'/>";
+                    switch (data.containerType) {
+                        case 'feedback_rec' :
+                            basketIcon = '<i class="fa fa-comment vote_rec" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_rec' :
+                            basketIcon = '<i class="fa fa-users share_rec" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'push_rec' :
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+
+                            break;
+                        case 'feedback_sent' :
+                            basketIcon = '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_sent' :
+                            basketIcon = '<i class="fa fa-share share_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'feedback_push' :
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+                            basketIcon += '<i class="fa fa-bullhorn vote_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'share_push' :
+                            basketIcon = '<i class="fa fa-gift push_rec" style="margin-right: 5px; padding-left: 6px; padding-top: 3px; padding-bottom: 2px;"></i>';
+                            basketIcon += '<i class="fa fa-share share_sent" style="margin-right: 5px;"></i>';
+
+                            break;
+                        case 'regroup' :
+                            basketIcon = '<i class="icomoon icon-stack story" style="margin-right: 5px;"></i>';
+
+                            break;
+                        default:
+                            basketIcon = '<i class="icomoon icon-stackoverflow basket" style="margin-right: 5px;"></i>';
+
+                            break;
                     }
                 }
 

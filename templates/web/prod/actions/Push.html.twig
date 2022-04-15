@@ -27,7 +27,7 @@
             <div class="PNB10 LeftColumn">
                 <div class="PNB" style="text-align:center;">
                     {% if context == "Push" %}
-                        <i class="main-icon fa fa-clone colored inverse"></i>
+                        <i class="main-icon fa fa-gift colored inverse"></i>
                     {% elseif context == "Sharebasket" %}
                         <i class="main-icon fa fa-share colored inverse feedback_only_false"></i>
                         <i class="main-icon fa fa-bullhorn colored inverse feedback_only_true"></i>
@@ -216,7 +216,7 @@
 
                     {# general togglers act on selection #}
 
-                    <div class="selected_partial selected_all general_togglers">
+                    <div class="selected_partial selected_all general_togglers" style="margin-top:20px;">
                         {#
                         <span class="main-title">
                             <i class="fa fa-hand-stop-o"></i>&nbsp;{{ 'Grant rights' | trans }}
@@ -224,11 +224,18 @@
                         #}
                         <ul>
                             {% if context == 'Sharebasket' %}
-                                <li>
+                                <li class="feedback_only_true">
                                     {% set msg = "Users contribute to the feedback" | trans %}
                                     <button type="button" class="general_toggler colored" feature="agree"
                                             title="{{ msg }}">
                                         <i class="fa fa-comment"></i>{# &nbsp;{{ 'Contributor' | trans }} #}
+                                    </button>
+                                </li>
+                                <li class="feedback_only_true">
+                                    {% set msg = "Users can see others choices" | trans %}
+                                    <button type="button" class="general_toggler colored " feature="see_others"
+                                            title="{{ msg }}">
+                                        <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
                                     </button>
                                 </li>
                                 <li>
@@ -236,13 +243,6 @@
                                     <button type="button" class="general_toggler colored" feature="modify"
                                             title="{{ msg }}">
                                         <i class="fa fa-pencil"></i>{# &nbsp;{{ 'Modify' | trans }} #}
-                                    </button>
-                                </li>
-                                <li>
-                                    {% set msg = "Users can see others choices" | trans %}
-                                    <button type="button" class="general_toggler colored " feature="see_others"
-                                            title="{{ msg }}">
-                                        <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
                                     </button>
                                 </li>
                             {% endif %}
@@ -299,37 +299,40 @@
                             <input name="ownerId" value="{{ owner.getId() }}" type="hidden"/>
                             <input name="initiatorId" value="{{ initiatorUserId }}" type="hidden"/>
                             <input type="hidden" name="participants[{{ owner.getId() }}][usr_id]" value="{{ owner.getId() }}"/>
-                            <table>
-                                <tr class="toggles">
-                                    <td class="colored inverse icon">
-                                        <i class="fa fa-user"></i>
-                                    </td>
-                                    <td>
-                                        {% set msg = 'You require feedback'|trans %}
-                                        <a href="#"
-                                           id="toggleFeedback"
-                                           class="colored toggle toggle_feedback {{ initiatorUserId ? 'status_on' : 'status_off' }}"
-                                           title="{{ msg }}">
-                                            <i class="fa fa-bullhorn"></i>
-                                        </a>
-                                        <input type="hidden"
-                                               name="isFeedback"
-                                               value="{{ initiatorUserId ? '1' : '0' }}"/>
-                                    </td>
-                                    <td>
-                                        {# owner can decide to be a voter #}
-                                        {% set msg = 'You contribute to the feedback'|trans %}
-                                        <a href="#"
-                                           class="colored toggle toggle_agree feedback_only_true {{ owner.getCanAgree() ? 'status_on' : 'status_off' }}"
-                                           title="{{ msg }}">
-                                            <i class="fa fa-comment"></i>
-                                        </a>
-                                        <input type="hidden"
-                                               name="participants[{{ owner.getId() }}][agree]"
-                                               value="{{ owner.getCanAgree() ? '1' : '0' }}"/>
-                                    </td>
-                                </tr>
-                            </table>
+
+                            {% if context != 'Push' %}
+                                <table>
+                                    <tr class="toggles">
+                                        <td class="colored inverse icon">
+                                            <i class="fa fa-user"></i>
+                                        </td>
+                                        <td>
+                                            {% set msg = 'You require feedback'|trans %}
+                                            <a href="#"
+                                               id="toggleFeedback"
+                                               class="colored toggle toggle_feedback {{ initiatorUserId ? 'status_on' : 'status_off' }}"
+                                               title="{{ msg }}">
+                                                <i class="fa fa-bullhorn"></i>
+                                            </a>
+                                            <input type="hidden"
+                                                   name="isFeedback"
+                                                   value="{{ initiatorUserId ? '1' : '0' }}"/>
+                                        </td>
+                                        <td>
+                                            {# owner can decide to be a voter #}
+                                            {% set msg = 'You contribute to the feedback'|trans %}
+                                            <a href="#"
+                                               class="colored toggle toggle_agree feedback_only_true {{ owner.getCanAgree() ? 'status_on' : 'status_off' }}"
+                                               title="{{ msg }}">
+                                                <i class="fa fa-comment"></i>
+                                            </a>
+                                            <input type="hidden"
+                                                   name="participants[{{ owner.getId() }}][agree]"
+                                                   value="{{ owner.getCanAgree() ? '1' : '0' }}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            {% endif %}
 
                             {# owner always see votes #}
                             {#
@@ -524,12 +527,12 @@
                             </span>
                         </form>
 
-                        {% if context=='Sharebasket' and basket %}
+                        {% if context == 'Sharebasket' and basket %}
                             {# only Sharebasket manage users and may have a "feedbackaction" #}
-                            <button class="colored inverse FeedbackSend"
+                            <button class="colored inverse FeedbackSend" data-context="{{ context }}"
                                     data-feedback-action={{ feedbackAction }}>{{ "Save" | trans }}</button>
                         {% else %}
-                            <button class="colored inverse FeedbackSend">{{ "Send" | trans }}</button>
+                            <button class="colored inverse FeedbackSend" data-context="{{ context }}">{{ "Send" | trans }}</button>
                         {% endif %}
                     </div>
                 </div>

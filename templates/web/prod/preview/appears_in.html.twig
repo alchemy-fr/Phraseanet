@@ -12,7 +12,7 @@
         {% if par.get_thumbnail().is_physically_present() %}
           <img src="{{par.get_thumbnail().get_url()}}" style="width:25px;height:25px;"/>
         {% else %}
-          <img src="/assets/common/images/icons/story.png" style="width:25px;height:25px;"/>
+            <i class="icomoon icon-stack story"></i>
         {% endif %}
 
       <span class="title" title="{{ par.get_title() }}"> {{ par.get_title() }} </span>
@@ -32,16 +32,26 @@
       class="otherBaskToolTip to-open-preview-action" title="{{basket.getDescription()}}">
     {#<img style="vertical-align:middle" src="/assets/common/images/icons/basket.png" width="16">#}
 
-    {% if basket.isVoteBasket() %}
-      <img src='/assets/common/images/icons/basket_validation.png' title='' width="24" class="btn-image"/>
-    {% elseif basket.getPusher() %}
-      {% if not basket.isRead() %}
-        <img src='/assets/common/images/icons/basket_push_unread.png' title='' width="24" class="btn-image"/>
+
+    {% if basket.getPusher() %}
+      <i class="fa fa-gift push_rec" style="padding-left: 6px; padding-top: 3px; padding-bottom: 2px; margin-right: 0px;"></i>
+    {% endif %}
+
+    {# check if a shared basket#}
+    {% if basket.getUser().getId() != app.getAuthenticatedUser().getId() and basket.isParticipant(app.getAuthenticatedUser()) %}
+      {% if basket.isVoteBasket() %}
+          <i class="fa fa-comment vote_rec"></i>
       {% else %}
-        <img src='/assets/common/images/icons/basket_push.png' title='' width="24" class="btn-image"/>
+          <i class="fa fa-users share_rec" style=""></i>
       {% endif %}
+    {% elseif basket.getUser().getId() == app.getAuthenticatedUser().getId() and basket.getParticipants | length > 0 %}
+        {% if basket.isVoteBasket() %}
+            <i class="fa fa-bullhorn vote_sent"></i>
+        {% else %}
+            <i class="fa fa-share share_sent"></i>
+        {% endif %}
     {% else %}
-      <img src='/assets/common/images/icons/basket.png' title='' width="24" class="btn-image"/>
+        <i class="icomoon icon-stackoverflow basket"></i>
     {% endif %}
 
     <span class="title">{{basket.getName()}}</span>
