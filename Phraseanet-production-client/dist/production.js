@@ -18344,6 +18344,13 @@ var pushOrShare = function pushOrShare(services, container) {
 
         if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
+
+            return;
+        }
+
+        if ((0, _jquery2.default)('input[name="voteExpires"]', $container).val() === '') {
+            alert(localeService.t('FeedBackNoExpires'));
+
             return;
         }
 

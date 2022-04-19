@@ -213,6 +213,13 @@ const pushOrShare = function (services, container) {
 
         if ($('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
+
+            return;
+        }
+
+        if ($('input[name="voteExpires"]', $container).val() === '') {
+            alert(localeService.t('FeedBackNoExpires'));
+
             return;
         }
 

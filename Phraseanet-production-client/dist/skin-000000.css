@@ -4501,6 +4501,13 @@ form.phrasea_query input.query {
   margin-right: 4px !important;
 }
 
+.TOOL_pushdoc_btn .push_rec {
+  padding-left: 4px !important;
+  padding-top: 2px !important;
+  width: 18px !important;
+  margin-right: 4px !important;
+}
+
 /******* idFrameT CSS *********************************************************/
 
 #idFrameT {
@@ -9463,6 +9470,10 @@ TABLE.explain3 TR TD {
   font-size: 20px;
 }
 
+.whole_dialog_container #PushBox .general_togglers ul li button {
+  padding: 7px 15px;
+}
+
 .whole_dialog_container #PushBox .list_manager {
   position: fixed;
   bottom: 31px;
@@ -9771,29 +9782,29 @@ TABLE.explain3 TR TD {
  ****************/
 
 .PushBox .user_content .owner_badge {
-  width: 140px;
   display: inline-block;
   margin: 10px;
   outline: 3px solid transparent;
-  background-color: #f7f7f7;
   border-radius: 10px;
 }
 
-.PushBox .user_content .owner_badge TABLE {
-  width: 100%;
-}
-
-.PushBox .user_content .owner_badge TD {
+.PushBox .user_content .owner_badge .owner_icon_wrapper {
+  width: 100px;
+  display: inline-block;
+  background-color: #f7f7f7;
   vertical-align: top;
   text-align: center;
   font-size: 200%;
+  border-radius: 7px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .PushBox .user_content .owner_badge .icon {
   background-color: #673AB7;
   color: white;
   width: 56px;
-  border-radius: 7px 0px 0px 7px;
+  border-radius: 7px;
 }
 
 .PushBox .user_content .badges {

@@ -103,6 +103,7 @@ class LanguageController
             'Recept'                  => $translator->trans('Accuse de reception'),
             'nFieldsChanged'          => $translator->trans('%d fields have been updated'),
             'FeedBackNoUsersSelected' => $translator->trans('No users selected'),
+            'FeedBackNoExpires'       => $translator->trans('prod:share:: No vote expires date'),
             'errorFileApi'            => $translator->trans('An error occurred reading this file'),
             'errorFileApiTooBig'      => $translator->trans('This file is too big'),
             'selectOneRecord'         => $translator->trans('Please select one record'),

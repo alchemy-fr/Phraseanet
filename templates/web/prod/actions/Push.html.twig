@@ -258,7 +258,7 @@
                                 {% set msg = "Remove users from list" | trans %}
                                 <button type="button" class="delete-selection selected_partial selected_all"
                                         title="{{ msg }}">
-                                    <i class="fa fa-times-circle"></i>{# &nbsp;{{ 'prod:push: delete selection' | trans }} #}
+                                    <i class="fa fa-trash"></i>{# &nbsp;{{ 'prod:push: delete selection' | trans }} #}
                                 </button>
                             </li>
 
@@ -301,12 +301,15 @@
                             <input type="hidden" name="participants[{{ owner.getId() }}][usr_id]" value="{{ owner.getId() }}"/>
 
                             {% if context != 'Push' %}
-                                <table>
-                                    <tr class="toggles">
-                                        <td class="colored inverse icon">
+                                <div>
+                                    <div class="toggles">
+                                        <div class="owner_icon_wrapper colored inverse icon" style="margin-right:15px;">
                                             <i class="fa fa-user"></i>
-                                        </td>
-                                        <td>
+                                        </div>
+                                        <div style="display:inline-block; margin-top:10px; width:156px;">
+                                            {{ 'prod::share: feedback-option' | trans }}:
+                                        </div>
+                                        <div class="owner_icon_wrapper" style="margin-right:20px;">
                                             {% set msg = 'You require feedback'|trans %}
                                             <a href="#"
                                                id="toggleFeedback"
@@ -317,8 +320,8 @@
                                             <input type="hidden"
                                                    name="isFeedback"
                                                    value="{{ initiatorUserId ? '1' : '0' }}"/>
-                                        </td>
-                                        <td>
+                                        </div>
+                                        <div class="owner_icon_wrapper">
                                             {# owner can decide to be a voter #}
                                             {% set msg = 'You contribute to the feedback'|trans %}
                                             <a href="#"
@@ -329,9 +332,9 @@
                                             <input type="hidden"
                                                    name="participants[{{ owner.getId() }}][agree]"
                                                    value="{{ owner.getCanAgree() ? '1' : '0' }}"/>
-                                        </td>
-                                    </tr>
-                                </table>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endif %}
 
                             {# owner always see votes #}
@@ -400,7 +403,6 @@
                                 {# the menu is common to both input #}
                                 <ul id="delta-menu"
                                     style="position:fixed; z-index: 999; width:80px; height:auto; display:block; top:-1000px;">
-                                    <li data-delta=""><a href="#">never</a></li>
                                     <li data-delta="+1"><a href="#">1 day</a></li>
                                     <li data-delta="+2"><a href="#">2 days</a></li>
                                     <li data-delta="+5"><a href="#">5 days</a></li>
