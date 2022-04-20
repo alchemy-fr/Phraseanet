@@ -6,9 +6,9 @@
     <div class="PNB">
         <div style="text-align:center;margin-top:150px;">
             {% if context == 'Push' %}
-                {% trans %}None of the selected records can be pushed.{% endtrans %}
+                {% trans %}prod::share: None of the selected records can be pushed.{% endtrans %}
             {% elseif context == 'Sharebasket' %}
-                {% trans %}None of the selected records can be shared.{% endtrans %}
+                {% trans %}prod::share: None of the selected records can be shared.{% endtrans %}
             {% else %}
                 {# should not happen, only 2 posssible contexts #}
             {% endif %}
@@ -156,9 +156,9 @@
                 <div id="info-box" style="display: none">
                     <p>
                         {% if context == 'Push' %}
-                            {{ 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' | trans }}
+                            {{ 'prod::share un push permet d\'envoyer un lot d\'image a des destinataires' | trans }}
                         {% elseif context == 'Sharebasket' %}
-                            {{ 'Push::a basket share allows participants to see/comment/act on a common basket' | trans }}
+                            {{ 'prod::share basket share allows participants to see/comment/act on a common basket' | trans }}
                         {% else %}
                             {# should not happen, only 2 posssible contexts #}
                         {% endif %}
@@ -180,15 +180,15 @@
                                         {% set nb_not_available = push.get_count_not_actionable() %}
                                         {% if context == 'Push' %}
                                             {% if nb_not_available == 0 %}
-                                                {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to push %nb_push_items% records.{% endtrans %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items} %}prod::share: You are about to push %nb_push_items% records.{% endtrans %}
                                             {% else %}
-                                                {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}prod::share: You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                             {% endif %}
                                         {% elseif context == 'Sharebasket' %}
                                             {% if nb_not_available == 0 %}
-                                                {% trans with {'%nb_push_items%' : nb_push_items} %}You are about to share a basket with %nb_push_items% records.{% endtrans %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items} %}prod::share: You are about to share a basket with %nb_push_items% records.{% endtrans %}
                                             {% else %}
-                                                {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
+                                                {% trans with {'%nb_push_items%' : nb_push_items, '%nb_not_available%' : nb_not_available} %}prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.{% endtrans %}
                                             {% endif %}
                                         {% else %}
                                             {# should not happen, only 2 posssible contexts #}
@@ -225,21 +225,21 @@
                         <ul>
                             {% if context == 'Sharebasket' %}
                                 <li class="feedback_only_true">
-                                    {% set msg = "Users contribute to the feedback" | trans %}
+                                    {% set msg = "prod::share: Users contribute to the feedback" | trans %}
                                     <button type="button" class="general_toggler colored" feature="agree"
                                             title="{{ msg }}">
                                         <i class="fa fa-comment"></i>{# &nbsp;{{ 'Contributor' | trans }} #}
                                     </button>
                                 </li>
                                 <li class="feedback_only_true">
-                                    {% set msg = "Users can see others choices" | trans %}
+                                    {% set msg = "prod::share: Users can see others choices" | trans %}
                                     <button type="button" class="general_toggler colored " feature="see_others"
                                             title="{{ msg }}">
                                         <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
                                     </button>
                                 </li>
                                 <li>
-                                    {% set msg = "Users can modify the basket" | trans %}
+                                    {% set msg = "prod::share: Users can modify the basket" | trans %}
                                     <button type="button" class="general_toggler colored" feature="modify"
                                             title="{{ msg }}">
                                         <i class="fa fa-pencil"></i>{# &nbsp;{{ 'Modify' | trans }} #}
@@ -247,7 +247,7 @@
                                 </li>
                             {% endif %}
                             <li>
-                                {% set msg = "Users can download HD" | trans %}
+                                {% set msg = "prod::share: Users can download HD" | trans %}
                                 <button type="button" class="general_toggler colored" feature="HD"
                                         title="{{ msg }}">
                                     <i class="fa fa-download"></i>{# &nbsp;{{ 'HD Download' | trans }} #}
@@ -255,7 +255,7 @@
                             </li>
 
                             <li>
-                                {% set msg = "Remove users from list" | trans %}
+                                {% set msg = "prod::share: Remove users from list" | trans %}
                                 <button type="button" class="delete-selection selected_partial selected_all"
                                         title="{{ msg }}">
                                     <i class="fa fa-trash"></i>{# &nbsp;{{ 'prod:push: delete selection' | trans }} #}
@@ -310,7 +310,7 @@
                                             {{ 'prod::share: feedback-option' | trans }}:
                                         </div>
                                         <div class="owner_icon_wrapper" style="margin-right:20px;">
-                                            {% set msg = 'You require feedback'|trans %}
+                                            {% set msg = 'prod::share You require feedback'|trans %}
                                             <a href="#"
                                                id="toggleFeedback"
                                                class="colored toggle toggle_feedback {{ initiatorUserId ? 'status_on' : 'status_off' }}"
@@ -323,7 +323,7 @@
                                         </div>
                                         <div class="owner_icon_wrapper">
                                             {# owner can decide to be a voter #}
-                                            {% set msg = 'You contribute to the feedback'|trans %}
+                                            {% set msg = 'prod::share You contribute to the feedback'|trans %}
                                             <a href="#"
                                                class="colored toggle toggle_agree feedback_only_true {{ owner.getCanAgree() ? 'status_on' : 'status_off' }}"
                                                title="{{ msg }}">
@@ -364,15 +364,6 @@
                                    name="participants[{{ owner.getId() }}][HD]"
                                    value="0"/>
                         <div>
-
-
-
-
-
-
-
-
-
 
                             </div>
                         </div>
@@ -450,7 +441,7 @@
                                                             </tr>
                                                             <tr class="toggles">
                                                                 <td>
-                                                                    {% set msg = 'User can download HD'|trans %}
+                                                                    {% set msg = 'prod::share User can download HD'|trans %}
                                                                     <a href="#"
                                                                        class="colored toggle toggle_HD status_off"
                                                                        title="{{ msg }}">
@@ -462,7 +453,7 @@
                                                                 </td>
 
                                                                 <td>
-                                                                    {% set msg = 'User can modify the basket'|trans %}
+                                                                    {% set msg = 'prod::share: User can modify the basket'|trans %}
                                                                     <a href="#"
                                                                        class="colored toggle toggle_modify {{ participant.canModify() ? 'status_on' : 'status_off' }}"
                                                                        title="{{ msg }}">
@@ -474,7 +465,7 @@
                                                                 </td>
 
                                                                 <td>
-                                                                    {% set msg = 'User contribute to the feedback'|trans %}
+                                                                    {% set msg = 'prod::share User contribute to the feedback'|trans %}
                                                                     <span class="feedback_only_true">
                                                                         <a href="#"
                                                                            class="colored toggle toggle_agree {{ participant.getCanAgree() ? 'status_on' : 'status_off' }}"
@@ -488,7 +479,7 @@
                                                                 </td>
 
                                                                 <td>
-                                                                    {% set msg = 'User can see others choices'|trans %}
+                                                                    {% set msg = 'prod::share: User can see others choices'|trans %}
                                                                     <span class="feedback_only_true">
                                                                         <a href="#"
                                                                            class="colored toggle toggle_see_others {{ participant.getCanSeeOthers() ? 'status_on' : 'status_off' }}"
