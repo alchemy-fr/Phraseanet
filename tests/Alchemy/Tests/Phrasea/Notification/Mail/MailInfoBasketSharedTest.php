@@ -14,7 +14,7 @@ class MailInfoBasketSharedTest extends MailWithLinkTestCase
 {
     public function testSetTitle()
     {
-        $this->assertEquals('Basket \'%title%\' shared from %user%', $this->getMail()->getSubject());
+        $this->assertEquals('mail::share: Basket \'%title%\' shared from %user%', $this->getMail()->getSubject());
     }
 
     public function getMail()
@@ -93,6 +93,6 @@ class MailInfoBasketSharedTest extends MailWithLinkTestCase
 
     public function testSetUser()
     {
-        $this->assertEquals('Basket \'%title%\' shared from %user%', $this->getMail()->getSubject());
+        $this->assertEquals('mail::share: Basket \'%title%\' shared from %user%', $this->getMail()->getSubject());
     }
 }

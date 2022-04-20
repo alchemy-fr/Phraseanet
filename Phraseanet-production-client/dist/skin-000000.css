@@ -4496,15 +4496,16 @@ form.phrasea_query input.query {
 }
 
 .TOOL_sharebasket_btn .share_sent {
-  padding-left: 2px !important;
-  padding-top: 2px !important;
+  padding-right: 2px !important;
+  padding-left: 3px !important;
+  padding-top: 4px !important;
+  padding-bottom: 1px !important;
   margin-right: 4px !important;
 }
 
 .TOOL_pushdoc_btn .push_rec {
-  padding-left: 4px !important;
-  padding-top: 2px !important;
-  width: 18px !important;
+  padding: 3px 0px 2px 6px !important;
+  width: 19px !important;
   margin-right: 4px !important;
 }
 
@@ -4599,7 +4600,7 @@ form.phrasea_query input.query {
 #idFrameT .tools .dropdownButton button.btn-inverse img {
   margin: 0 5px 0 2px;
   max-width: none;
-  width: 21px;
+  width: 25px;
 }
 
 #idFrameT .tools .dropdown-menu {
@@ -4635,7 +4636,7 @@ form.phrasea_query input.query {
 
 #idFrameT .tools .dropdown-menu img {
   margin-right: 5px;
-  width: 21px;
+  width: 25px;
   max-width: unset;
 }
 
