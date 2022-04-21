@@ -44,7 +44,7 @@
                             <i class="fa fa-users"></i>&nbsp;{{ 'Lists' | trans }}
                         </span>
                         <a href="{{ path('prod_lists_all') }}" title="Refresh list"
-                           class="list_refresh push-refresh-list-action btn pull-right colored"
+                           class="light_button list_refresh push-refresh-list-action btn pull-right colored"
                            style="margin-top: -2px;">
                             <i class="fa fa-refresh"></i>
                         </a>
@@ -140,7 +140,7 @@
                 {# --- add-user button will open a modal to create a new user on the fly --- #}
                 {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANADMIN')) %}
                     <div style="float: left;">
-                        <button type="button" class="colored push-add-user" data-context="{{ context }}">
+                        <button type="button" class="light_button colored push-add-user" data-context="{{ context }}">
                             <i class="fa fa-plus"></i>&nbsp;
                             {{ 'Add user' | trans }}
                         </button>
@@ -203,10 +203,10 @@
                                 </span>
                                 </td>
                                 <td class="options">
-                                    <button class="select-all colored selected_none selected_partial">
+                                    <button class="light_button select-all colored selected_none selected_partial">
                                         {{ 'Select all' | trans }}
                                     </button>
-                                    <button class="unselect-all colored selected_all">
+                                    <button class="light_button unselect-all colored selected_all">
                                         {{ 'Deselect all' | trans }}
                                     </button>
                                 </td>
@@ -226,21 +226,21 @@
                             {% if context == 'Sharebasket' %}
                                 <li class="feedback_only_true">
                                     {% set msg = "prod::share: Users contribute to the feedback" | trans %}
-                                    <button type="button" class="general_toggler colored" feature="agree"
+                                    <button type="button" class="light_button general_toggler colored" feature="agree"
                                             title="{{ msg }}">
                                         <i class="fa fa-comment"></i>{# &nbsp;{{ 'Contributor' | trans }} #}
                                     </button>
                                 </li>
                                 <li class="feedback_only_true">
                                     {% set msg = "prod::share: Users can see others choices" | trans %}
-                                    <button type="button" class="general_toggler colored " feature="see_others"
+                                    <button type="button" class="light_button general_toggler colored " feature="see_others"
                                             title="{{ msg }}">
                                         <i class="fa fa-users"></i>{# &nbsp;{{ 'See others' | trans }} #}
                                     </button>
                                 </li>
                                 <li>
                                     {% set msg = "prod::share: Users can modify the basket" | trans %}
-                                    <button type="button" class="general_toggler colored" feature="modify"
+                                    <button type="button" class="light_button general_toggler colored" feature="modify"
                                             title="{{ msg }}">
                                         <i class="fa fa-pencil"></i>{# &nbsp;{{ 'Modify' | trans }} #}
                                     </button>
@@ -248,7 +248,7 @@
                             {% endif %}
                             <li>
                                 {% set msg = "prod::share: Users can download HD" | trans %}
-                                <button type="button" class="general_toggler colored" feature="HD"
+                                <button type="button" class="light_button general_toggler colored" feature="HD"
                                         title="{{ msg }}">
                                     <i class="fa fa-download"></i>{# &nbsp;{{ 'HD Download' | trans }} #}
                                 </button>
@@ -387,7 +387,7 @@
                                         <input type="text" class="btn" name="voteExpires"
                                                                  style="width: 100px;"/>
                                         <button class="colored inverse delta-toggle" data-dest="voteExpires">
-                                            <i class="fa fa-ellipsis-h colored inverse"></i>
+                                            <i class="fa fa-ellipsis-h"></i>
                                         </button>
                                     </span>
                                 </span>

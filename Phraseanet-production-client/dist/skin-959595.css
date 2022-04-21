@@ -9707,61 +9707,61 @@ TABLE.explain3 TR TD {
 }
 
 .Feedback .colored {
-  color: #8bc34a;
+  color: #E0215D;
 }
 
 .Feedback .colored.inverse {
-  background-color: #8bc34a;
+  background-color: #E0215D;
 }
 
 .Feedback BUTTON.colored:hover,
 .Feedback A.colored:hover {
-  background-color: #8bc34a;
+  background-color: #E0215D;
 }
 
 .Feedback BUTTON.colored.inverse:hover,
 .Feedback A.colored.inverse:hover {
-  color: #8bc34a;
+  color: #E0215D;
   background-color: revert;
 }
 
 .Feedback BUTTON.colored.status_on,
 .Feedback A.colored.status_on {
-  color: #8bc34a;
+  color: #E0215D;
 }
 
 .Feedback BUTTON,
 .Feedback A.btn {
-  border-color: #8bc34a;
+  border-color: #E0215D;
 }
 
 .Sharebasket .colored {
-  color: #E0215D;
+  color: #228b22;
 }
 
 .Sharebasket .colored.inverse {
-  background-color: #E0215D;
+  background-color: #228b22;
 }
 
 .Sharebasket BUTTON.colored:hover,
 .Sharebasket A.colored:hover {
-  background-color: #E0215D;
+  background-color: #228b22;
 }
 
 .Sharebasket BUTTON.colored.inverse:hover,
 .Sharebasket A.colored.inverse:hover {
-  color: #E0215D;
+  color: #228b22;
   background-color: revert;
 }
 
 .Sharebasket BUTTON.colored.status_on,
 .Sharebasket A.colored.status_on {
-  color: #E0215D;
+  color: #228b22;
 }
 
 .Sharebasket BUTTON,
 .Sharebasket A.btn {
-  border-color: #E0215D;
+  border-color: #228b22;
 }
 
 .ListManager .colored {

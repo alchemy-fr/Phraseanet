@@ -31,6 +31,7 @@ class ValidationSubscriber extends AbstractNotificationSubscriber
             'to'      => $event->getParticipant()->getUser()->getId(),
             'message' => $event->getMessage(),
             'ssel_id' => $basket->getId(),
+            'isVoteBasket'  => $basket->isVoteBasket()
         ];
 
         $datas = json_encode($params);

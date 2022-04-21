@@ -18265,6 +18265,42 @@ var pushOrShare = function pushOrShare(services, container) {
         return false;
     });
 
+    (0, _jquery2.default)('.Sharebasket .light_button').hover(function () {
+        var that = (0, _jquery2.default)(this);
+        if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
+            // just a share
+            that.css({ 'background-color': '#228b22', 'color': '#fff' });
+        } else {
+            that.css({ 'background-color': '#E0215D', 'color': '#fff' });
+        }
+    }, function () {
+        var that = (0, _jquery2.default)(this);
+        if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
+            // just a share
+            that.css({ 'background-color': '#fff', 'color': '#228b22' });
+        } else {
+            that.css({ 'background-color': '#fff', 'color': '#E0215D' });
+        }
+    });
+
+    (0, _jquery2.default)('.Sharebasket BUTTON.colored.inverse').hover(function () {
+        var that = (0, _jquery2.default)(this);
+        if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
+            // just a share
+            that.css({ 'background-color': '#fff', 'color': '#228b22' });
+        } else {
+            that.css({ 'background-color': '#fff', 'color': '#E0215D' });
+        }
+    }, function () {
+        var that = (0, _jquery2.default)(this);
+        if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
+            // just a share
+            that.css({ 'background-color': '#228b22', 'color': '#fff' });
+        } else {
+            that.css({ 'background-color': '#E0215D', 'color': '#fff' });
+        }
+    });
+
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!! this is never called because the link is not shown ??? ( see templates/web/prod/actions/Push.html.twig
     this.container.on('click', '.recommended_users_list', function (event) {
 
@@ -18348,7 +18384,7 @@ var pushOrShare = function pushOrShare(services, container) {
             return;
         }
 
-        if ((0, _jquery2.default)('input[name="voteExpires"]', $container).val() === '') {
+        if ((0, _jquery2.default)('input[name="voteExpires"]', $container).is(":visible") && (0, _jquery2.default)('input[name="voteExpires"]', $container).val() === '') {
             alert(localeService.t('FeedBackNoExpires'));
 
             return;
@@ -18413,7 +18449,7 @@ var pushOrShare = function pushOrShare(services, container) {
         };
 
         var options = {
-            size: '558x352',
+            size: '600x415',
             buttons: buttons,
             loading: true,
             title: localeService.t('send'),
@@ -18422,7 +18458,7 @@ var pushOrShare = function pushOrShare(services, container) {
 
         if ($el.hasClass('validation')) {
             options.isValidation = true;
-            options.size = '558x415';
+            options.size = '600x455';
         }
 
         var $dialog = _dialog2.default.create(services, options, 2);
@@ -18664,6 +18700,16 @@ var pushOrShare = function pushOrShare(services, container) {
 
                 var input_value = $this.hasClass('status_on') ? '1' : '0';
                 $this.parent().find('input').val(input_value);
+                if (input_value == '1') {
+                    if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
+                        // just share
+                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#228b22');
+                    } else {
+                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#E0215D');
+                    }
+                } else {
+                    (0, _jquery2.default)('.Sharebasket A.colored.status_off').css('color', '#666');
+                }
 
                 if ((0, _jquery2.default)(event.currentTarget).attr('id') === 'toggleFeedback') {
                     appEvents.emit('sharebasket.toggleFeedbackChanged', { container: $container, context: o.context });
@@ -18688,10 +18734,26 @@ var pushOrShare = function pushOrShare(services, container) {
                 // simple share
                 (0, _jquery2.default)('.feedback_only_true', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_false', o.container).show();
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('background-color', '#228b22');
+                (0, _jquery2.default)('.Sharebasket BUTTON.colored').css({ 'border-color': '#228b22', 'color': '#228b22' });
+                (0, _jquery2.default)('.Sharebasket A.btn').css('border-color', '#228b22');
+                (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#228b22');
+                (0, _jquery2.default)('.Sharebasket .delete-selection').css('border-color', '#228b22');
+                (0, _jquery2.default)('.Sharebasket A.light_button').css('color', '#228b22');
+                (0, _jquery2.default)('.Sharebasket BUTTON.inverse').css('color', '#fff');
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('color', '#fff');
             } else {
                 // we want feedback from this share
                 (0, _jquery2.default)('.feedback_only_false', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_true', o.container).show();
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('background-color', '#E0215D');
+                (0, _jquery2.default)('.Sharebasket BUTTON.colored').css({ 'border-color': '#E0215D', 'color': '#E0215D' });
+                (0, _jquery2.default)('.Sharebasket A.btn').css('border-color', '#E0215D');
+                (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#E0215D');
+                (0, _jquery2.default)('.Sharebasket .delete-selection').css('border-color', '#E0215D');
+                (0, _jquery2.default)('.Sharebasket A.light_button').css('color', '#E0215D');
+                (0, _jquery2.default)('.Sharebasket BUTTON.inverse').css('color', '#fff');
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('color', '#fff');
             }
         },
         'sharebasket.participantsSelectionChanged': function sharebasketParticipantsSelectionChanged(o) {

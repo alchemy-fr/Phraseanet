@@ -221,8 +221,7 @@
 
                         {# ----- "reorder" is only for owners ----- #}
 
-                        {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')
-                           or context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS') %}
+                        {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')%}
                             <div title="" class="context-menu-item menu3-custom-item">
                                 <div class="context-menu-item-inner">
                                     <a class="story-reorder-content-action"
@@ -233,6 +232,17 @@
                                         <img src="/assets/common/images/icons/set-order.png"
                                              style="width: 26px; margin-left: -2px; margin-right: -2px;"
                                              alt="{{ 'Re-ordonner' | trans }}">
+                                        <span>{{ 'Re-ordonner' | trans }}</span>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS') %}
+                            <div title="" class="context-menu-item">
+                                <div class="context-menu-item-inner">
+                                    <a class="basket-reorder-content-action" data-basket-id="{{ basket.getId() }}" title="{{ 'Re-ordonner' | trans }}" href="#">
+                                        <img src="/assets/common/images/icons/set-order.png" style="width: 26px; margin-left: -2px; margin-right: -2px;" alt="{{ 'Re-ordonner' | trans }}">
                                         <span>{{ 'Re-ordonner' | trans }}</span>
                                     </a>
                                 </div>
