@@ -134,7 +134,7 @@ const pushOrShare = function (services, container) {
             var that = $(this);
             if($("INPUT[name=isFeedback]").val() === '0') {
                 // just a share
-                that.css({'background-color':'#228b22', 'color': '#fff'});
+                that.css({'background-color':'#4caf50', 'color': '#fff'});
             } else {
                 that.css({'background-color': '#E0215D', 'color': '#fff'});
             }
@@ -142,7 +142,7 @@ const pushOrShare = function (services, container) {
             var that = $(this);
             if($("INPUT[name=isFeedback]").val() === '0') {
                 // just a share
-                that.css({'background-color':'#fff', 'color': '#228b22'});
+                that.css({'background-color':'#fff', 'color': '#4caf50'});
             } else {
                 that.css({'background-color': '#fff', 'color': '#E0215D'});
             }
@@ -153,7 +153,7 @@ const pushOrShare = function (services, container) {
             var that = $(this);
             if($("INPUT[name=isFeedback]").val() === '0') {
                 // just a share
-                that.css({'background-color':'#fff', 'color': '#228b22'});
+                that.css({'background-color':'#fff', 'color': '#4caf50'});
             } else {
                 that.css({'background-color': '#fff', 'color': '#E0215D'});
             }
@@ -161,7 +161,7 @@ const pushOrShare = function (services, container) {
             var that = $(this);
             if($("INPUT[name=isFeedback]").val() === '0') {
                 // just a share
-                that.css({'background-color':'#228b22', 'color': '#fff'});
+                that.css({'background-color':'#4caf50', 'color': '#fff'});
             } else {
                 that.css({'background-color': '#E0215D', 'color': '#fff'});
             }
@@ -586,7 +586,7 @@ const pushOrShare = function (services, container) {
                 if (input_value == '1') {
                     if ($("INPUT[name=isFeedback]").val() === '0') {
                         // just share
-                        $('.Sharebasket A.colored.status_on').css('color', '#228b22');
+                        $('.Sharebasket A.colored.status_on').css('color', '#4caf50');
                     } else {
                         $('.Sharebasket A.colored.status_on').css('color', '#E0215D');
                     }
@@ -618,12 +618,12 @@ const pushOrShare = function (services, container) {
                 // simple share
                 $('.feedback_only_true', o.container).hide();
                 $('.feedback_only_false', o.container).show();
-                $('.Sharebasket .colored.inverse').css('background-color', '#228b22');
-                $('.Sharebasket BUTTON.colored').css({'border-color':'#228b22', 'color':'#228b22'});
-                $('.Sharebasket A.btn').css('border-color', '#228b22');
-                $('.Sharebasket A.colored.status_on').css('color', '#228b22');
-                $('.Sharebasket .delete-selection').css('border-color', '#228b22');
-                $('.Sharebasket A.light_button').css('color', '#228b22');
+                $('.Sharebasket .colored.inverse').css('background-color', '#4caf50');
+                $('.Sharebasket BUTTON.colored').css({'border-color':'#4caf50', 'color':'#4caf50'});
+                $('.Sharebasket A.btn').css('border-color', '#4caf50');
+                $('.Sharebasket A.colored.status_on').css('color', '#4caf50');
+                $('.Sharebasket .delete-selection').css('border-color', '#4caf50');
+                $('.Sharebasket A.light_button').css('color', '#4caf50');
                 $('.Sharebasket BUTTON.inverse').css('color','#fff');
                 $('.Sharebasket .colored.inverse').css('color','#fff');
             }

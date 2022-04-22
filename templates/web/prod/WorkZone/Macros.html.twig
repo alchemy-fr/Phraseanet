@@ -135,7 +135,6 @@
                                      id="SSTTREMOVER_{{ basket.getId() }}" data-context="SSTT">
                                     <a href="#" title="{{ 'basket : quitshare' | trans }}">
                                         <i class="fa fa-remove"></i>
-                                        &nbsp;
                                         <span>{{ 'basket : quitshare' | trans }}</span>
                                     </a>
                                 </div>
@@ -176,8 +175,7 @@
                                          data-id="{{ basket.getId() }}"
                                     >
                                         <a href="#" title="{{ 'action::share basket' | trans }}">
-                                            <i class="fa fa-share"></i>
-                                            &nbsp;
+                                            <i class="fa fa-share share_sent" style="width: 17px;padding-top: 3px;padding-bottom: 2px;height: 17px;"></i>
                                             <span>{{ 'action::share basket' | trans }}</span>
                                         </a>
                                     </div>
@@ -191,11 +189,10 @@
                                     >
                                         <a href="#" title="{{ 'action::modify share basket' | trans }}">
                                             {% if basket.isVoteBasket() %}
-                                                <i class="fa fa-bullhorn"></i>
+                                                <i class="fa fa-bullhorn vote_sent" style="width: 17px;padding-top: 3px;padding-bottom: 2px;height: 17px;"></i>
                                             {% else %}
-                                                <i class="fa fa-share"></i>
+                                                <i class="fa fa-share share_sent" style="width: 17px;padding-top: 3px;padding-bottom: 2px;height: 17px;"></i>
                                             {% endif%}
-                                            &nbsp;
                                             <span>{{ 'action::modify share basket' | trans }}</span>
                                         </a>
                                     </div>
@@ -297,6 +294,9 @@
                     <input type="checkbox" class="checkbox " id="basketFilter_story" value=".story-block" checked>
                     {{ 'Stories' | trans }}
                 </label>
+            </span>
+            <span>
+                <i class="fa fa-refresh refresh-basket" title="{{ 'basket:: refresh workzone' | trans }}"></i>
             </span>
         </div>
 
@@ -540,9 +540,9 @@
                 {{ record.getNumber() }}
             </div>
             {{ thumbnail.format(record.get_thumbnail,140,140, '', true, false) }}
-            <div class="bottom">
+            <div class="bottom" style="margin-bottom: 3px;">
                 {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_caption_display') == '1' %}
-                    <span class="icon-stack captionRolloverTips captionTips"
+                    <span class="captionRolloverTips captionTips"
                           tooltipsrc="{{ path('prod_tooltip_caption', { 'sbas_id' : record.get_sbas_id(), 'record_id' : record.get_record_id(), 'context' : 'basket', 'number' : record.getNumber() }) }}">
                        <i class="icomoon icon-round-list-24px white"></i>
                   </span>

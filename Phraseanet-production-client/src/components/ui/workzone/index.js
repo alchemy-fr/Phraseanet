@@ -94,6 +94,10 @@ const workzone = (services) => {
             feedbackReminder(services).openModal($el.data('basket-id'));
         });
 
+        $container.on('click', '#basket-filter .refresh-basket', function() {
+            appEvents.emit('workzone.refresh');
+        });
+
         $('#idFrameC .expose_li').on('click', function (event) {
             checkActiveBloc(dragBloc);
         });

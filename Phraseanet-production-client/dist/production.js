@@ -10144,6 +10144,10 @@ var workzone = function workzone(services) {
             (0, _reminder2.default)(services).openModal($el.data('basket-id'));
         });
 
+        $container.on('click', '#basket-filter .refresh-basket', function () {
+            appEvents.emit('workzone.refresh');
+        });
+
         (0, _jquery2.default)('#idFrameC .expose_li').on('click', function (event) {
             checkActiveBloc(dragBloc);
         });
@@ -18269,7 +18273,7 @@ var pushOrShare = function pushOrShare(services, container) {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#228b22', 'color': '#fff' });
+            that.css({ 'background-color': '#4caf50', 'color': '#fff' });
         } else {
             that.css({ 'background-color': '#E0215D', 'color': '#fff' });
         }
@@ -18277,7 +18281,7 @@ var pushOrShare = function pushOrShare(services, container) {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#fff', 'color': '#228b22' });
+            that.css({ 'background-color': '#fff', 'color': '#4caf50' });
         } else {
             that.css({ 'background-color': '#fff', 'color': '#E0215D' });
         }
@@ -18287,7 +18291,7 @@ var pushOrShare = function pushOrShare(services, container) {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#fff', 'color': '#228b22' });
+            that.css({ 'background-color': '#fff', 'color': '#4caf50' });
         } else {
             that.css({ 'background-color': '#fff', 'color': '#E0215D' });
         }
@@ -18295,7 +18299,7 @@ var pushOrShare = function pushOrShare(services, container) {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#228b22', 'color': '#fff' });
+            that.css({ 'background-color': '#4caf50', 'color': '#fff' });
         } else {
             that.css({ 'background-color': '#E0215D', 'color': '#fff' });
         }
@@ -18703,7 +18707,7 @@ var pushOrShare = function pushOrShare(services, container) {
                 if (input_value == '1') {
                     if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
                         // just share
-                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#228b22');
+                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#4caf50');
                     } else {
                         (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#E0215D');
                     }
@@ -18734,12 +18738,12 @@ var pushOrShare = function pushOrShare(services, container) {
                 // simple share
                 (0, _jquery2.default)('.feedback_only_true', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_false', o.container).show();
-                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('background-color', '#228b22');
-                (0, _jquery2.default)('.Sharebasket BUTTON.colored').css({ 'border-color': '#228b22', 'color': '#228b22' });
-                (0, _jquery2.default)('.Sharebasket A.btn').css('border-color', '#228b22');
-                (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#228b22');
-                (0, _jquery2.default)('.Sharebasket .delete-selection').css('border-color', '#228b22');
-                (0, _jquery2.default)('.Sharebasket A.light_button').css('color', '#228b22');
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('background-color', '#4caf50');
+                (0, _jquery2.default)('.Sharebasket BUTTON.colored').css({ 'border-color': '#4caf50', 'color': '#4caf50' });
+                (0, _jquery2.default)('.Sharebasket A.btn').css('border-color', '#4caf50');
+                (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#4caf50');
+                (0, _jquery2.default)('.Sharebasket .delete-selection').css('border-color', '#4caf50');
+                (0, _jquery2.default)('.Sharebasket A.light_button').css('color', '#4caf50');
                 (0, _jquery2.default)('.Sharebasket BUTTON.inverse').css('color', '#fff');
                 (0, _jquery2.default)('.Sharebasket .colored.inverse').css('color', '#fff');
             } else {
