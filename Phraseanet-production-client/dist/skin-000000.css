@@ -9786,6 +9786,38 @@ TABLE.explain3 TR TD {
   border-color: #4caf50;
 }
 
+.Sharebasket .share-background {
+  background-color: #4caf50 !important;
+}
+
+.Sharebasket .share-border {
+  border-color: #4caf50 !important;
+}
+
+.Sharebasket .share-color {
+  color: #4caf50 !important;
+}
+
+.Sharebasket .feedback-background {
+  background-color: #E0215D !important;
+}
+
+.Sharebasket .feedback-border {
+  border-color: #E0215D !important;
+}
+
+.Sharebasket .feedback-color {
+  color: #E0215D !important;
+}
+
+.Sharebasket .white-background {
+  background-color: #fff !important;
+}
+
+.Sharebasket .white-color {
+  color: #fff !important;
+}
+
 .ListManager .colored {
   color: #ff9400;
 }

@@ -18274,17 +18274,17 @@ var pushOrShare = function pushOrShare(services, container) {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#4caf50', 'color': '#fff' });
+            that.removeClass('white-background share-color').addClass('share-background white-color');
         } else {
-            that.css({ 'background-color': '#E0215D', 'color': '#fff' });
+            that.removeClass('white-background feedback-color').addClass('feedback-background white-color');
         }
     }, function () {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#fff', 'color': '#4caf50' });
+            that.removeClass('share-background white-color').addClass('white-background share-color');
         } else {
-            that.css({ 'background-color': '#fff', 'color': '#E0215D' });
+            that.removeClass('feedback-background white-color').addClass('white-background feedback-color');
         }
     });
 
@@ -18292,17 +18292,17 @@ var pushOrShare = function pushOrShare(services, container) {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#fff', 'color': '#4caf50' });
+            that.removeClass('share-background white-color').addClass('white-background share-color');
         } else {
-            that.css({ 'background-color': '#fff', 'color': '#E0215D' });
+            that.removeClass('feedback-background white-color').addClass('white-background feedback-color');
         }
     }, function () {
         var that = (0, _jquery2.default)(this);
         if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
             // just a share
-            that.css({ 'background-color': '#4caf50', 'color': '#fff' });
+            that.removeClass('white-background share-color').addClass('share-background white-color');
         } else {
-            that.css({ 'background-color': '#E0215D', 'color': '#fff' });
+            that.removeClass('white-background feedback-color').addClass('feedback-background white-color');
         }
     });
 
@@ -18708,12 +18708,12 @@ var pushOrShare = function pushOrShare(services, container) {
                 if (input_value == '1') {
                     if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
                         // just share
-                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#4caf50');
+                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').removeClass('feedback-color').addClass('share-color');
                     } else {
-                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#E0215D');
+                        (0, _jquery2.default)('.Sharebasket A.colored.status_on').removeClass('share-color').addClass('feedback-color');
                     }
                 } else {
-                    (0, _jquery2.default)('.Sharebasket A.colored.status_off').css('color', '#666');
+                    (0, _jquery2.default)('.Sharebasket A.colored.status_off').removeClass('share-color feedback-color');
                 }
 
                 if ((0, _jquery2.default)(event.currentTarget).attr('id') === 'toggleFeedback') {
@@ -18739,26 +18739,24 @@ var pushOrShare = function pushOrShare(services, container) {
                 // simple share
                 (0, _jquery2.default)('.feedback_only_true', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_false', o.container).show();
-                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('background-color', '#4caf50');
-                (0, _jquery2.default)('.Sharebasket BUTTON.colored').css({ 'border-color': '#4caf50', 'color': '#4caf50' });
-                (0, _jquery2.default)('.Sharebasket A.btn').css('border-color', '#4caf50');
-                (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#4caf50');
-                (0, _jquery2.default)('.Sharebasket .delete-selection').css('border-color', '#4caf50');
-                (0, _jquery2.default)('.Sharebasket A.light_button').css('color', '#4caf50');
-                (0, _jquery2.default)('.Sharebasket BUTTON.inverse').css('color', '#fff');
-                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('color', '#fff');
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').removeClass('feedback-background').addClass('share-background');
+                (0, _jquery2.default)('.Sharebasket BUTTON.colored').removeClass('feedback-border feedback-color').addClass('share-border share-color');
+                (0, _jquery2.default)('.Sharebasket A.btn').removeClass('feedback-border').addClass('share-border');
+                (0, _jquery2.default)('.Sharebasket A.colored.status_on').removeClass('feedback-color').addClass('share-color');
+                (0, _jquery2.default)('.Sharebasket .delete-selection').removeClass('feedback-border').addClass('share-border');
+                (0, _jquery2.default)('.Sharebasket A.light_button').removeClass('feedback-color').addClass('share-color');
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').removeClass('share-color').addClass('white-color');
             } else {
                 // we want feedback from this share
                 (0, _jquery2.default)('.feedback_only_false', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_true', o.container).show();
-                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('background-color', '#E0215D');
-                (0, _jquery2.default)('.Sharebasket BUTTON.colored').css({ 'border-color': '#E0215D', 'color': '#E0215D' });
-                (0, _jquery2.default)('.Sharebasket A.btn').css('border-color', '#E0215D');
-                (0, _jquery2.default)('.Sharebasket A.colored.status_on').css('color', '#E0215D');
-                (0, _jquery2.default)('.Sharebasket .delete-selection').css('border-color', '#E0215D');
-                (0, _jquery2.default)('.Sharebasket A.light_button').css('color', '#E0215D');
-                (0, _jquery2.default)('.Sharebasket BUTTON.inverse').css('color', '#fff');
-                (0, _jquery2.default)('.Sharebasket .colored.inverse').css('color', '#fff');
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').removeClass('share-background ').addClass('feedback-background');
+                (0, _jquery2.default)('.Sharebasket BUTTON.colored').removeClass('share-border share-color').addClass('feedback-border feedback-color');
+                (0, _jquery2.default)('.Sharebasket A.btn').removeClass('share-border').addClass('feedback-border');
+                (0, _jquery2.default)('.Sharebasket A.colored.status_on').removeClass('share-color').addClass('feedback-color');
+                (0, _jquery2.default)('.Sharebasket .delete-selection').removeClass('share-border').addClass('feedback-border');
+                (0, _jquery2.default)('.Sharebasket A.light_button').removeClass('share-color').addClass('feedback-color');
+                (0, _jquery2.default)('.Sharebasket .colored.inverse').removeClass('feedback-color').addClass('white-color');
             }
         },
         'sharebasket.participantsSelectionChanged': function sharebasketParticipantsSelectionChanged(o) {
