@@ -422,6 +422,13 @@ $sharebasketThemeColor: #4caf50;
     &:hover {
         background-color: #aaa;
     }
+    &.load {
+        animation: load 0.5s infinite;
+    }
+}
+
+@keyframes load {
+    50% {transform: rotate(180deg);}
 }
 
 // #basket-fiter INPUT;checked[value=feedback] ~

@@ -95,6 +95,7 @@ const workzone = (services) => {
         });
 
         $container.on('click', '#basket-filter .refresh-basket', function() {
+            $(this).addClass('load'); // that class is removed after the workzone is refreshed
             appEvents.emit('workzone.refresh');
         });
 

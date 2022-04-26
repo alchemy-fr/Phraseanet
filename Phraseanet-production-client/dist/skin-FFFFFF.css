@@ -4553,6 +4553,16 @@ form.phrasea_query input.query {
   background-color: #aaa;
 }
 
+#basket-filter I.refresh-basket.load {
+  animation: load 0.5s infinite;
+}
+
+@keyframes load {
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
 /******* idFrameT CSS *********************************************************/
 
 #idFrameT {
@@ -5944,7 +5954,7 @@ form.phrasea_query input.query {
 
 #BasketBrowser .archiver:hover,
 #BasketBrowser .archiver:focus {
-  background-image: url("/assets/prod/images/Basket/Browser/archived.png");
+  border: 1px solid #aba6a6;
 }
 
 #BasketBrowser .unarchiver {
@@ -5954,7 +5964,7 @@ form.phrasea_query input.query {
 
 #BasketBrowser .unarchiver:hover,
 #BasketBrowser .unarchiver:focus {
-  background-image: url("/assets/prod/images/Basket/Browser/archive.png");
+  border: 1px solid #aba6a6;
 }
 
 #BasketBrowser h1 {

@@ -10145,6 +10145,7 @@ var workzone = function workzone(services) {
         });
 
         $container.on('click', '#basket-filter .refresh-basket', function () {
+            (0, _jquery2.default)(this).addClass('load'); // that class is removed after the workzone is refreshed
             appEvents.emit('workzone.refresh');
         });
 
