@@ -18694,7 +18694,7 @@ var pushOrShare = function pushOrShare(services, container) {
                 (0, _jquery2.default)('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 (0, _jquery2.default)('.feedback_only_true', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_false', o.container).show();
-            } else {
+            } else if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
                 (0, _jquery2.default)('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 (0, _jquery2.default)('.feedback_only_false', o.container).hide();

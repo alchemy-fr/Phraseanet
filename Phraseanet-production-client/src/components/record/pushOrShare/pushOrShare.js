@@ -571,8 +571,7 @@ const pushOrShare = function (services, container) {
                 $('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 $('.feedback_only_true', o.container).hide();
                 $('.feedback_only_false', o.container).show();
-            }
-            else {
+            } else if($("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
                 $('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 $('.feedback_only_false', o.container).hide();
