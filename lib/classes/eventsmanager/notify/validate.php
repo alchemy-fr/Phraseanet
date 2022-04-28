@@ -39,6 +39,7 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
     {
         $from = $data['from'];
         $ssel_id = $data['ssel_id'];
+        $isVoteBasket = !empty($data['isVoteBasket']) ? $data['isVoteBasket'] : false;
 
         if (null === $user = $this->app['repo.users']->find($from)) {
             return [];
@@ -58,8 +59,10 @@ class eventsmanager_notify_validate extends eventsmanager_notifyAbstract
             . '" target="_blank">'
             . htmlentities($basket_name) . '</a>';
 
+        $text = $isVoteBasket ? '%user% vous demande de valider %title%' : "notification:: Basket '%title%' shared from %user%";
+
         $ret = [
-            'text'  => $this->app->trans('%user% vous demande de valider %title%', [
+            'text'  => $this->app->trans($text, [
                 '%user%' => htmlentities($sender),
                 '%title%' => $bask_link,
             ])

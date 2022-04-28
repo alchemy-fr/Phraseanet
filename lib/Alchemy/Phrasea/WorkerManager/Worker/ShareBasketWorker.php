@@ -68,7 +68,7 @@ class ShareBasketWorker implements WorkerInterface
             'eventsmanager_notify_basketwip',
             // 'eventsmanager_notify_push',
             json_encode([
-                'message' => $this->app->trans('Sharing basket "%name%"...', ['%name%' => htmlentities($basket->getName())]),
+                'message' => $this->app->trans('notification:: Sharing basket "%name%"...', ['%name%' => htmlentities($basket->getName())]),
             ]),
             false
         );
@@ -296,7 +296,7 @@ class ShareBasketWorker implements WorkerInterface
             'eventsmanager_notify_basketwip',
             // 'eventsmanager_notify_push',
             json_encode([
-                'message' => $this->app->trans('Basket %name% is shared', ['%name%' => htmlentities($basket->getName())]),
+                'message' => $this->app->trans('notification:: Basket %name% is shared', ['%name%' => htmlentities($basket->getName())]),
             ]),
             false
         );

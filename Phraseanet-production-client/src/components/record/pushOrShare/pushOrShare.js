@@ -213,6 +213,13 @@ const pushOrShare = function (services, container) {
 
         if ($('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
+
+            return;
+        }
+
+        if ($('input[name="voteExpires"]', $container).is(":visible") && $('input[name="voteExpires"]', $container).val() === '') {
+            alert(localeService.t('FeedBackNoExpires'));
+
             return;
         }
 
@@ -275,7 +282,7 @@ const pushOrShare = function (services, container) {
         };
 
         var options = {
-            size: '558x352',
+            size: '600x415',
             buttons: buttons,
             loading: true,
             title: localeService.t('send'),
@@ -284,7 +291,7 @@ const pushOrShare = function (services, container) {
 
         if($el.hasClass('validation')) {
             options.isValidation = true;
-            options.size = '558x415'
+            options.size = '600x455'
         }
 
         var $dialog = dialog.create(services, options, 2);
@@ -460,6 +467,8 @@ const pushOrShare = function (services, container) {
         return $(html).data('ui-autocomplete-item', item).appendTo(ul);
     };
 
+
+
     appEvents.listenAll({
         // users lists (left) are async loaded
         'sharebasket.usersListsChanged': function(o) {
@@ -559,11 +568,12 @@ const pushOrShare = function (services, container) {
 
             if($("INPUT[name=isFeedback]").val() === '0') {
                 // simple share
+                $('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 $('.feedback_only_true', o.container).hide();
                 $('.feedback_only_false', o.container).show();
-            }
-            else {
+            } else if($("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
+                $('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 $('.feedback_only_false', o.container).hide();
                 $('.feedback_only_true', o.container).show();
             }

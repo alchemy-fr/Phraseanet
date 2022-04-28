@@ -44,7 +44,7 @@ class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
      */
     public function get_name()
     {
-        return $this->app->trans('Basket WIP');
+        return $this->app->trans('notification:: Basket WIP');
     }
 
     /**
@@ -53,7 +53,7 @@ class eventsmanager_notify_basketwip extends eventsmanager_notifyAbstract
      */
     public function get_description()
     {
-        return $this->app->trans('Receive notification when a basket is WIP');
+        return $this->app->trans('notification:: Receive notification when a basket is WIP');
     }
 
     /**
