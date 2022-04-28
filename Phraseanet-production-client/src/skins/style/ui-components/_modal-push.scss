@@ -1,6 +1,6 @@
 $pushThemeColor: #2196f3;
-$feedbackThemeColor: #8bc34a;
-$sharebasketThemeColor: #E0215D;
+$feedbackThemeColor: #E0215D;
+$sharebasketThemeColor: #4caf50;
 $orangeThemeColor: #ff9400;
 $listManagerThemeColor: #ff9400;
 $textColor: #282828;
@@ -181,6 +181,9 @@ $toggledOff: #666;       // a toggle button IS off
                 margin-right: 10px;
                 i {
                     font-size: 20px;
+                }
+                button {
+                    padding: 7px 15px;
                 }
             }
         }
@@ -455,26 +458,27 @@ $toggledOff: #666;       // a toggle button IS off
  * badge(s)
  ****************/
 .PushBox .user_content .owner_badge {
-    width: 140px;
     display: inline-block;
     margin: 10px;
     outline: 3px solid transparent;
-    background-color: #f7f7f7;
     border-radius: 10px;
 
-    TABLE {
-        width: 100%;
-    }
-    TD {
+    .owner_icon_wrapper {
+        width:100px;
+        display: inline-block;
+        background-color: #f7f7f7;
         vertical-align: top;
         text-align: center;
         font-size:200%;
+        border-radius: 7px;
+        margin-top:5px;
+        margin-bottom:5px;
     }
     .icon {
         background-color: #673AB7;
         color: white;
         width: 56px;        // 7+42+7 (same size as badge)
-        border-radius: 7px 0px 0px 7px;
+        border-radius: 7px;
     }
 }
 

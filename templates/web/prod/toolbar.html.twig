@@ -94,15 +94,17 @@
     {% if acl.has_right(constant('\\ACL::CANPUSH')) %}
         {% set m = m|merge([
             {
-                'class':'TOOL_pushdoc_btn',
-                'fa_icon':'fa-gift',
-                'i_class': 'push_rec',
-                'label':'action : push' | trans },
-            {
                 'class':'TOOL_sharebasket_btn',
                 'fa_icon': 'fa-share',
                 'i_class': 'share_sent',
-                'label':'Share' | trans }
+                'label':'Share' | trans
+            },
+            {
+                'class':'TOOL_pushdoc_btn',
+                'fa_icon':'fa-gift',
+                'i_class': 'push_rec',
+                'label':'action : push' | trans
+            }
         ]) %}
     {% endif %}
     {% if acl.has_right(constant('\\ACL::BAS_CHUPUB')) %}

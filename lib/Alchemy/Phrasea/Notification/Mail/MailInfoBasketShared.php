@@ -83,7 +83,7 @@ class MailInfoBasketShared extends AbstractMailWithLink
             throw new LogicException('You must set a title before calling getSubject');
         }
 
-        return $this->app->trans("Basket '%title%' shared from %user%", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
+        return $this->app->trans("mail::share: Basket '%title%' shared from %user%", ['%user%' => $this->user->getDisplayName(), '%title%' => $this->title], 'messages', $this->getLocale());
     }
 
     /**
@@ -102,7 +102,7 @@ class MailInfoBasketShared extends AbstractMailWithLink
         */
         // todo: convert dates back to days ?
         if(!is_null($this->shareExpiresDate)) {
-            $this->message .= "\n\n" . $this->app->trans("Share will expire on %expire%", ['%expire%' => $this->shareExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
+            $this->message .= "\n\n" . $this->app->trans("mail::share Share will expire on %expire%", ['%expire%' => $this->shareExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
         }
 
         return $this->message;
@@ -113,7 +113,7 @@ class MailInfoBasketShared extends AbstractMailWithLink
      */
     public function getButtonText()
     {
-        return $this->app->trans('Open with Lightbox', [], 'messages', $this->getLocale());
+        return $this->app->trans('mail::share Open with Lightbox', [], 'messages', $this->getLocale());
     }
 
     /**

@@ -10144,6 +10144,11 @@ var workzone = function workzone(services) {
             (0, _reminder2.default)(services).openModal($el.data('basket-id'));
         });
 
+        $container.on('click', '#basket-filter .refresh-basket', function () {
+            (0, _jquery2.default)(this).addClass('load'); // that class is removed after the workzone is refreshed
+            appEvents.emit('workzone.refresh');
+        });
+
         (0, _jquery2.default)('#idFrameC .expose_li').on('click', function (event) {
             checkActiveBloc(dragBloc);
         });
@@ -18344,6 +18349,13 @@ var pushOrShare = function pushOrShare(services, container) {
 
         if ((0, _jquery2.default)('.badges .badge', $container).length === 0) {
             alert(localeService.t('FeedBackNoUsersSelected'));
+
+            return;
+        }
+
+        if ((0, _jquery2.default)('input[name="voteExpires"]', $container).is(":visible") && (0, _jquery2.default)('input[name="voteExpires"]', $container).val() === '') {
+            alert(localeService.t('FeedBackNoExpires'));
+
             return;
         }
 
@@ -18406,7 +18418,7 @@ var pushOrShare = function pushOrShare(services, container) {
         };
 
         var options = {
-            size: '558x352',
+            size: '600x415',
             buttons: buttons,
             loading: true,
             title: localeService.t('send'),
@@ -18415,7 +18427,7 @@ var pushOrShare = function pushOrShare(services, container) {
 
         if ($el.hasClass('validation')) {
             options.isValidation = true;
-            options.size = '558x415';
+            options.size = '600x455';
         }
 
         var $dialog = _dialog2.default.create(services, options, 2);
@@ -18679,10 +18691,12 @@ var pushOrShare = function pushOrShare(services, container) {
 
             if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '0') {
                 // simple share
+                (0, _jquery2.default)('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 (0, _jquery2.default)('.feedback_only_true', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_false', o.container).show();
-            } else {
+            } else if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
+                (0, _jquery2.default)('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 (0, _jquery2.default)('.feedback_only_false', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_true', o.container).show();
             }
