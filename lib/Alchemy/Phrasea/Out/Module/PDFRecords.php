@@ -61,6 +61,7 @@ class PDFRecords extends PDF
                 'print-high',
                 'owner'
             ],
+                $userPassword,
                 $userPassword
             );
         }
