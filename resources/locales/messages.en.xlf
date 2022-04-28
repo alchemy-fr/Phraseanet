@@ -8024,7 +8024,7 @@
       </trans-unit>
       <trans-unit id="02a5234c16e453e4ae9fe671b325a4332c134400" resname="action::modify share basket">
         <source>action::modify share basket</source>
-        <target state="new">action::modify share basket</target>
+        <target state="needs-translation">Modify shared basket</target>
         <jms:reference-file line="192">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="199">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -8999,37 +8999,37 @@
       </trans-unit>
       <trans-unit id="066e4bf19c914aa7b3dce70cb3ba25be17f9970d" resname="admin::userlist: user mail locked only">
         <source>admin::userlist: user mail locked only</source>
-        <target state="needs-translation">Display users "email Locked"</target>
+        <target state="translated">Display users "email Locked"</target>
         <jms:reference-file line="49">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="382c04ad6bd750ac249b38f17889d00baed79984" resname="admin::users: Api id">
         <source>admin::users: Api id</source>
-        <target state="needs-translation">Api id</target>
+        <target state="translated">Api id</target>
         <jms:reference-file line="628">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2cfa8b40f83359062cca1806e40e189c001b404" resname="admin::users: Api name">
         <source>admin::users: Api name</source>
-        <target state="needs-translation">Name</target>
+        <target state="translated">Name</target>
         <jms:reference-file line="629">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7c39510d9e25cf5af8c360cce029ffa1dc2ef88" resname="admin::users: Auth failure">
         <source>admin::users: Auth failure</source>
-        <target state="needs-translation">Auth failure</target>
+        <target state="translated">Auth failure</target>
         <jms:reference-file line="108">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1c3bbe023ec149af9ca57351a03532f25d9c475" resname="admin::users: api ID">
         <source>admin::users: api ID</source>
-        <target state="needs-translation">API ID</target>
+        <target state="translated">API ID</target>
         <jms:reference-file line="598">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e12b10eeccf3c4f722e66750eaa2886573a6b803" resname="admin::users: api list">
         <source>admin::users: api list</source>
-        <target state="needs-translation">API</target>
+        <target state="translated">API</target>
         <jms:reference-file line="105">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1f92b414f86ee855323c7d9ffba61c091ebea92f" resname="admin::users: api oauth code list">
         <source>admin::users: api oauth code list</source>
-        <target state="needs-translation">Oauth requests</target>
+        <target state="translated">Oauth requests</target>
         <jms:reference-file line="624">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fc7984833e39797984814936ab510cfd4080bc18" resname="admin::users: auth failure locked list">
@@ -9816,7 +9816,7 @@
       </trans-unit>
       <trans-unit id="29f33e8d4d64180a338f265475d823b986f0d50c" resname="basket : quitshare">
         <source>basket : quitshare</source>
-        <target state="new">basket : quitshare</target>
+        <target state="needs-translation">Quit share</target>
         <jms:reference-file line="136">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="139">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -9827,7 +9827,7 @@
       </trans-unit>
       <trans-unit id="dde632755801bb13f512fc50e5ffff6a6c42dd96" resname="basket:: Shared">
         <source>basket:: Shared</source>
-        <target state="new">basket:: Shared</target>
+        <target state="needs-translation">Shared Basket</target>
         <jms:reference-file line="280">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2c1d05cc230f0bd66de9600c3304eaf374ffa24" resname="basket:action:delete record form basket" approved="yes">
