@@ -49,19 +49,21 @@ class PDFRecords extends PDF
         $this->thumbnailName  = $printer->getThumbnailName();
         $this->previewName    = $printer->getPreviewName();
 
-        $this->pdf->SetProtection([
-            'print',
-            'modify',
-            'copy',
-            'annot-forms',
-            'fill-forms',
-            'extract',
-            'assemble',
-            'print-high',
-            'owner'
-        ],
-            $userPassword
-        );
+        if (!empty($userPassword)) {
+            $this->pdf->SetProtection([
+                'print',
+                'modify',
+                'copy',
+                'annot-forms',
+                'fill-forms',
+                'extract',
+                'assemble',
+                'print-high',
+                'owner'
+            ],
+                $userPassword
+            );
+        }
 
         $this->pdf->setPrintOwnerUser($app->getAuthenticatedUser());
 
