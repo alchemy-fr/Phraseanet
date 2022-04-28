@@ -22,7 +22,8 @@
         background: url("/assets/prod/images/Basket/Browser/archive.png") no-repeat 0 0 /contain;
         display: inline-block;
         &:hover, &:focus {
-            background-image: url("/assets/prod/images/Basket/Browser/archived.png");
+            border: 1px solid #aba6a6;
+            //background-image: url("/assets/prod/images/Basket/Browser/archived.png");
         }
     }
 
@@ -30,7 +31,8 @@
         background: url("/assets/prod/images/Basket/Browser/archived.png") no-repeat 0 0 /contain;
         display: inline-block;
         &:hover, &:focus {
-            background-image: url("/assets/prod/images/Basket/Browser/archive.png");
+            border: 1px solid #aba6a6;
+            //background-image: url("/assets/prod/images/Basket/Browser/archive.png");
         }
     }
 

@@ -93,7 +93,7 @@
                             <% if(context != 'ListManager') { %>
                             <tr class="toggles">
                                 <td>
-                                    <% msg = "{% trans %}User can download HD{% endtrans %}" %>
+                                    <% msg = "{% trans %}prod::share: User can download HD{% endtrans %}" %>
                                     <a href="#" class="colored toggle toggle_HD status_off" title="<%= msg %>">
                                         <i class="fa fa-download"></i>
                                     </a>
@@ -103,7 +103,7 @@
                                 </td>
                                 <td>
                                     <% if(context == 'Sharebasket') { %>
-                                    <% msg = "{% trans %}User can modify the basket{% endtrans %}" %>
+                                    <% msg = "{% trans %}prod::share: User can modify the basket{% endtrans %}" %>
                                     <a href="#" class="colored toggle toggle_modify status_off" title="<%= msg %>">
                                         <i class="fa fa-pencil"></i>
                                     </a>
@@ -114,7 +114,7 @@
                                 </td>
                                 <td>
                                     <% if(context == 'Sharebasket') { %>
-                                    <% msg = "{% trans %}User contribute to the feedback{% endtrans %}" %>
+                                    <% msg = "{% trans %}prod::share: User contribute to the feedback{% endtrans %}" %>
                                     <span class="feedback_only_true">
                                         <a href="#" class="colored toggle toggle_agree status_on" title="<%= msg %>">
                                             <i class="fa fa-comment"></i>
@@ -127,7 +127,7 @@
                                 </td>
                                 <td>
                                     <% if(context == 'Sharebasket') { %>
-                                    <% msg = "{% trans %}User can see others choices{% endtrans %}" %>
+                                    <% msg = "{% trans %}prod::share: User can see others choices{% endtrans %}" %>
                                     <span class="feedback_only_true">
                                         <a href="#" class="colored toggle toggle_see_others status_off" title="<%= msg %>">
                                             <i class="fa fa-users"></i>

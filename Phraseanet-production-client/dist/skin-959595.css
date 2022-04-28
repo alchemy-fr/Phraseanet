@@ -4398,11 +4398,11 @@ form.phrasea_query input.query {
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.share_rec {
-  background-color: forestgreen;
+  background-color: #4caf50;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.share_sent {
-  background-color: forestgreen;
+  background-color: #4caf50;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.push_rec {
@@ -4432,6 +4432,7 @@ form.phrasea_query input.query {
   color: red;
 }
 
+.context-menu-item a I,
 #SPANTITLE I,
 #PREVIEWOTHERSINNER I,
 .TOOL_feedback_btn I,
@@ -4450,6 +4451,7 @@ form.phrasea_query input.query {
   color: white;
 }
 
+.context-menu-item a I.push_rec,
 #SPANTITLE I.push_rec,
 #PREVIEWOTHERSINNER I.push_rec,
 .TOOL_feedback_btn I.push_rec,
@@ -4460,6 +4462,7 @@ form.phrasea_query input.query {
   padding: 1px 0px 0px 1px;
 }
 
+.context-menu-item a I.vote_sent,
 #SPANTITLE I.vote_sent,
 #PREVIEWOTHERSINNER I.vote_sent,
 .TOOL_feedback_btn I.vote_sent,
@@ -4468,6 +4471,7 @@ form.phrasea_query input.query {
   background-color: #E0215D;
 }
 
+.context-menu-item a I.vote_rec,
 #SPANTITLE I.vote_rec,
 #PREVIEWOTHERSINNER I.vote_rec,
 .TOOL_feedback_btn I.vote_rec,
@@ -4476,23 +4480,26 @@ form.phrasea_query input.query {
   background-color: #E0215D;
 }
 
+.context-menu-item a I.share_rec,
 #SPANTITLE I.share_rec,
 #PREVIEWOTHERSINNER I.share_rec,
 .TOOL_feedback_btn I.share_rec,
 .TOOL_pushdoc_btn I.share_rec,
 .TOOL_sharebasket_btn I.share_rec {
-  background-color: forestgreen;
+  background-color: #4caf50;
   font-size: 14px;
 }
 
+.context-menu-item a I.share_sent,
 #SPANTITLE I.share_sent,
 #PREVIEWOTHERSINNER I.share_sent,
 .TOOL_feedback_btn I.share_sent,
 .TOOL_pushdoc_btn I.share_sent,
 .TOOL_sharebasket_btn I.share_sent {
-  background-color: forestgreen;
+  background-color: #4caf50;
 }
 
+.context-menu-item a I.basket,
 #SPANTITLE I.basket,
 #PREVIEWOTHERSINNER I.basket,
 .TOOL_feedback_btn I.basket,
@@ -4502,6 +4509,7 @@ form.phrasea_query input.query {
   font-size: 14px;
 }
 
+.context-menu-item a I.story,
 #SPANTITLE I.story,
 #PREVIEWOTHERSINNER I.story,
 .TOOL_feedback_btn I.story,
@@ -4511,9 +4519,46 @@ form.phrasea_query input.query {
 }
 
 .TOOL_sharebasket_btn .share_sent {
-  padding-left: 2px !important;
-  padding-top: 2px !important;
+  padding-right: 2px !important;
+  padding-left: 3px !important;
+  padding-top: 4px !important;
+  padding-bottom: 1px !important;
   margin-right: 4px !important;
+}
+
+.TOOL_pushdoc_btn .push_rec {
+  padding: 3px 0px 2px 6px !important;
+  width: 19px !important;
+  margin-right: 4px !important;
+}
+
+#basket-filter I.refresh-basket {
+  font-size: 16px;
+  display: inline-block;
+  background-color: #666;
+  padding: 4px 0 1px 6px;
+  border-radius: 14px;
+  line-height: normal;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  color: white;
+  cursor: pointer;
+}
+
+#basket-filter I.refresh-basket:hover {
+  background-color: #aaa;
+}
+
+#basket-filter I.refresh-basket.load {
+  animation: load 0.5s infinite;
+}
+
+@keyframes load {
+  50% {
+    transform: rotate(180deg);
+  }
 }
 
 /******* idFrameT CSS *********************************************************/
@@ -4607,7 +4652,7 @@ form.phrasea_query input.query {
 #idFrameT .tools .dropdownButton button.btn-inverse img {
   margin: 0 5px 0 2px;
   max-width: none;
-  width: 21px;
+  width: 25px;
 }
 
 #idFrameT .tools .dropdown-menu {
@@ -4643,7 +4688,7 @@ form.phrasea_query input.query {
 
 #idFrameT .tools .dropdown-menu img {
   margin-right: 5px;
-  width: 21px;
+  width: 25px;
   max-width: unset;
 }
 
@@ -5907,7 +5952,7 @@ form.phrasea_query input.query {
 
 #BasketBrowser .archiver:hover,
 #BasketBrowser .archiver:focus {
-  background-image: url("/assets/prod/images/Basket/Browser/archived.png");
+  border: 1px solid #aba6a6;
 }
 
 #BasketBrowser .unarchiver {
@@ -5917,7 +5962,7 @@ form.phrasea_query input.query {
 
 #BasketBrowser .unarchiver:hover,
 #BasketBrowser .unarchiver:focus {
-  background-image: url("/assets/prod/images/Basket/Browser/archive.png");
+  border: 1px solid #aba6a6;
 }
 
 #BasketBrowser h1 {
@@ -8182,7 +8227,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   border-radius: 2px;
   padding: 0px 1px;
   line-height: 1;
-  margin: 0 4px 4px 4px;
+  margin: 0 4px;
 }
 
 .CHIM.diapo .bottom span,
@@ -8199,7 +8244,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 .basket-filter {
-  padding: 10px 20px;
+  padding: 10px 16px;
 }
 
 .basket-filter .filter-item {
@@ -9478,6 +9523,10 @@ TABLE.explain3 TR TD {
   font-size: 20px;
 }
 
+.whole_dialog_container #PushBox .general_togglers ul li button {
+  padding: 7px 15px;
+}
+
 .whole_dialog_container #PushBox .list_manager {
   position: fixed;
   bottom: 31px;
@@ -9695,61 +9744,61 @@ TABLE.explain3 TR TD {
 }
 
 .Feedback .colored {
-  color: #8bc34a;
+  color: #E0215D;
 }
 
 .Feedback .colored.inverse {
-  background-color: #8bc34a;
+  background-color: #E0215D;
 }
 
 .Feedback BUTTON.colored:hover,
 .Feedback A.colored:hover {
-  background-color: #8bc34a;
+  background-color: #E0215D;
 }
 
 .Feedback BUTTON.colored.inverse:hover,
 .Feedback A.colored.inverse:hover {
-  color: #8bc34a;
+  color: #E0215D;
   background-color: revert;
 }
 
 .Feedback BUTTON.colored.status_on,
 .Feedback A.colored.status_on {
-  color: #8bc34a;
+  color: #E0215D;
 }
 
 .Feedback BUTTON,
 .Feedback A.btn {
-  border-color: #8bc34a;
+  border-color: #E0215D;
 }
 
 .Sharebasket .colored {
-  color: #E0215D;
+  color: #4caf50;
 }
 
 .Sharebasket .colored.inverse {
-  background-color: #E0215D;
+  background-color: #4caf50;
 }
 
 .Sharebasket BUTTON.colored:hover,
 .Sharebasket A.colored:hover {
-  background-color: #E0215D;
+  background-color: #4caf50;
 }
 
 .Sharebasket BUTTON.colored.inverse:hover,
 .Sharebasket A.colored.inverse:hover {
-  color: #E0215D;
+  color: #4caf50;
   background-color: revert;
 }
 
 .Sharebasket BUTTON.colored.status_on,
 .Sharebasket A.colored.status_on {
-  color: #E0215D;
+  color: #4caf50;
 }
 
 .Sharebasket BUTTON,
 .Sharebasket A.btn {
-  border-color: #E0215D;
+  border-color: #4caf50;
 }
 
 .ListManager .colored {
@@ -9786,29 +9835,29 @@ TABLE.explain3 TR TD {
  ****************/
 
 .PushBox .user_content .owner_badge {
-  width: 140px;
   display: inline-block;
   margin: 10px;
   outline: 3px solid transparent;
-  background-color: #f7f7f7;
   border-radius: 10px;
 }
 
-.PushBox .user_content .owner_badge TABLE {
-  width: 100%;
-}
-
-.PushBox .user_content .owner_badge TD {
+.PushBox .user_content .owner_badge .owner_icon_wrapper {
+  width: 100px;
+  display: inline-block;
+  background-color: #f7f7f7;
   vertical-align: top;
   text-align: center;
   font-size: 200%;
+  border-radius: 7px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .PushBox .user_content .owner_badge .icon {
   background-color: #673AB7;
   color: white;
   width: 56px;
-  border-radius: 7px 0px 0px 7px;
+  border-radius: 7px;
 }
 
 .PushBox .user_content .badges {

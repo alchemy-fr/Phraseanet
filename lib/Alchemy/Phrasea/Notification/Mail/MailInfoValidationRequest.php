@@ -102,10 +102,10 @@ class MailInfoValidationRequest extends AbstractMailWithLink
         */
         // todo: convert dates back to days ?
         if(!is_null($this->shareExpiresDate)) {
-            $this->message .= "\n\n" . $this->app->trans("Share will expire on %expire%", ['%expire%' => $this->shareExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
+            $this->message .= "\n\n" . $this->app->trans("mail::validation: Share will expire on %expire%", ['%expire%' => $this->shareExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
         }
         if(!is_null($this->voteExpiresDate)) {
-            $this->message .= "\n\n" . $this->app->trans("Vote will expire on %expire%", ['%expire%' => $this->voteExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
+            $this->message .= "\n\n" . $this->app->trans("mail:: validation: Vote will expire on %expire%", ['%expire%' => $this->voteExpiresDate->format("Y-m-d")], 'messages', $this->getLocale());
         }
         return $this->message;
     }
