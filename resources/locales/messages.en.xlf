@@ -13913,9 +13913,9 @@ It is possible to place several search areas</target>
         <target state="translated">Thumbnails</target>
         <jms:reference-file line="867">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cf0636b6d894370de0b8a9d6f2dceb07ad46f800" resname="reponses:: partager" approved="yes">
+      <trans-unit id="cf0636b6d894370de0b8a9d6f2dceb07ad46f800" resname="reponses:: partager" approved="no">
         <source>reponses:: partager</source>
-        <target state="translated">Share</target>
+        <target state="needs-translation">Share</target>
         <jms:reference-file line="150">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="151">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="152">prod/results/record.html.twig</jms:reference-file>
