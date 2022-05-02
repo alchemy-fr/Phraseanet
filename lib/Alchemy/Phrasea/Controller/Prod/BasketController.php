@@ -12,6 +12,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application\Helper\NotifierAware;
 use Alchemy\Phrasea\Controller\Controller;
 use Alchemy\Phrasea\Controller\RecordsRequest;
+use Alchemy\Phrasea\Helper\WorkZone as WorkzoneHelper;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Manipulator\BasketManipulator;
@@ -22,6 +23,7 @@ use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Notification\Emitter;
 use Alchemy\Phrasea\Notification\Mail\MailInfoReminderFeedback;
 use Alchemy\Phrasea\Notification\Receiver;
+use Closure;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -41,35 +43,67 @@ class BasketController extends Controller
 
     public function displayBasket(Request $request, Basket $basket)
     {
-        if($basket->getWip() !== NULL) {
-            return $this->render('prod/WorkZone/BasketWip.html.twig', [
-                'basket' => $basket,
-            ]);
+        $me = $this->getAuthenticatedUser();
+        $ret = [
+            'html' => '',
+            'data' => null
+        ];
+
+        $workzoneHelper = new WorkzoneHelper($this->app, $request);
+        $wzContent = $workzoneHelper->getContent(null, $basket->getId());    // same infos as "workzone", but only for this basket
+        foreach ([WorkzoneHelper::BASKETS, WorkzoneHelper::VALIDATIONS] as $kBlock) {
+            foreach ($wzContent[$kBlock] as $wzBasketExt) {
+                /** @var Basket $wzBasket */
+                $wzBasket = $wzBasketExt['object'];
+                // only one should be found
+                if($wzBasket->getId() === $basket->getId()) {
+                    $ret['data'] = $wzBasketExt['data'];
+                }
+            }
         }
 
+        $ouputFormat = $request->getRequestFormat();
+
+        // if basket is wip, return now
+        if($basket->getWip() !== NULL) {
+            $ret['html'] = $this->render('prod/WorkZone/BasketWip.html.twig', [
+                'basket' => $basket,
+            ]);
+            return $ouputFormat === 'json' ? $this->app->json($ret) : $ret['html'];
+        }
+
+        // basket is not wip, update som infos
         if ($basket->isRead() === false) {
             $basket->markRead();
             $this->getEntityManager()->flush();
         }
 
-        if ($basket->isParticipant($this->getAuthenticatedUser())) {
-            if ($basket->getParticipant($this->getAuthenticatedUser())->getIsAware() === false) {
-                $basket->getParticipant($this->getAuthenticatedUser())->setIsAware(true);
+        if ($basket->isParticipant($me)) {
+            if ($basket->getParticipant($me)->getIsAware() === false) {
+                $basket->getParticipant($me)->setIsAware(true);
                 $this->getEntityManager()->flush();
             }
         }
 
-        /** @var \Closure $filter */
+        /** @var Closure $filter */
         $filter = $this->app['plugin.filter_by_authorization'];
 
-        return $this->render('prod/WorkZone/Basket.html.twig', [
-            'basket' => $basket,
-            // !!!!!!!!!!!!!!!!!!!!!!!! order is null when a "vote" (feedback) is deployed in wz
-            'ordre'  => $request->query->get('order') ?: Basket::ELEMENTSORDER_NAT,
-            'plugins' => [
-                'actionbar' => $filter('workzone.basket.actionbar'),
-            ],
-        ]);
+        $ret['html'] = $this->render('prod/WorkZone/Basket.html.twig', [
+                'basket'  => $basket,
+                // !!!!!!!!!!!!!!!!!!!!!!!! order is null when a "vote" (feedback) is deployed in wz
+                'ordre'   => $request->query->get('order') ?: Basket::ELEMENTSORDER_NAT,
+                'plugins' => [
+                    'actionbar' => $filter('workzone.basket.actionbar'),
+                ],
+            ]
+        );
+
+        if($ouputFormat === "json") {
+            // return advanced format containig share, feedback... infos and html
+            return $this->app->json($ret);
+        }
+        // default return html
+        return $ret['html'];
     }
 
     public function displayReminder(Request $request, Basket $basket)
