@@ -8021,7 +8021,7 @@
       </trans-unit>
       <trans-unit id="02a5234c16e453e4ae9fe671b325a4332c134400" resname="action::modify share basket">
         <source>action::modify share basket</source>
-        <target state="new">action::modify share basket</target>
+        <target state="needs-translation">Modifier le panier partagé</target>
         <jms:reference-file line="192">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="199">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
