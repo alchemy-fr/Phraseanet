@@ -786,6 +786,7 @@ const workzone = (services) => {
 
             m.contextMenu('#' + $(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
+                // appendTo: '#SSTT_'+$(this).attr('id'),
                 openEvt: 'my_click',
                 theme: 'vista',
                 dropDown: true,

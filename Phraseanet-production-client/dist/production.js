@@ -11154,7 +11154,7 @@ var workzone = function workzone(services) {
         if (typeof order !== 'undefined') {
             url += '?order=' + order;
         }
-        console.log("basket getContent() url=\"" + url + "\"");
+
         _jquery2.default.ajax({
             type: 'GET',
             url: url,
@@ -54373,7 +54373,7 @@ MapboxGeocoder.prototype = {
 
     request.catch(function(error){
       geocoderError = error;
-    }.bind(this)) 
+    }.bind(this))
       .then(
         function(response) {
           this._loadingEl.style.display = 'none';
@@ -55232,7 +55232,7 @@ Suggestions.prototype.getItemValue = function(item) {
 /**
  * For a given item in the data array, return a string of html that should be rendered in the dropdown
  * @param {Object|String} item an item from the data array
- * @param {String} sourceFormatting a string that has pre-formatted html that should be passed directly through the render function 
+ * @param {String} sourceFormatting a string that has pre-formatted html that should be passed directly through the render function
  * @return {String} html
  */
 Suggestions.prototype.render = function(item, sourceFormatting) {
@@ -58121,7 +58121,7 @@ MapboxEventManager.prototype = {
    * @private
    * @param {Object} keyEvent the keydown event to log
    * @param {Object} geocoder a mapbox-gl-geocoder instance
-   * 
+   *
    */
   keyevent: function(keyEvent, geocoder){
 
@@ -58419,7 +58419,7 @@ module.exports = function (size) {
 
 /**
  * Localized values for the placeholder string
- * 
+ *
  * @private
  */
 var placeholder = {
@@ -58433,7 +58433,7 @@ var placeholder = {
   'he': 'לחפש', //hebrew
   'ja': 'サーチ',  //japanese
   'lv': 'Meklēt', //latvian
-  'pt': 'Procurar', //portuguese 
+  'pt': 'Procurar', //portuguese
   'sr': 'Претрага', //serbian
   'zh': '搜索', //chinese-simplified
   'cs': 'Vyhledávání', //czech
@@ -59316,7 +59316,7 @@ URI.prototype.setPath = function (newPath) {
 URI.prototype.setRawPath = function (newPath) {
   if (newPath) {
     newPath = String(newPath);
-    this.path_ = 
+    this.path_ =
       // Paths must start with '/' unless this is a path-relative URL.
       (!this.domain_ || /^\//.test(newPath)) ? newPath : '/' + newPath;
   } else {
@@ -61802,7 +61802,7 @@ recordField.prototype = {
                     if (window.console) {
                         console.error('Unable to set a value to a readonly field');
                     }
-        
+
                     return this;
                 }*/
 
@@ -68844,16 +68844,16 @@ var search = function search(services) {
             /*
                         case "STRING-AGGREGATE":
                             return clause.field + ":\"" + clause.value + "\"";
-            
+
                         case "DATE-AGGREGATE":
                             return clause.field + ":\"" + clause.value + "\"";
-            
+
                         case "COLOR-AGGREGATE":
                             return clause.field + ":\"" + clause.value + "\"";
-            
+
                         case "NUMBER-AGGREGATE":
                             return clause.field + "=" + clause.value;
-            
+
                         case "BOOL-AGGREGATE":
                             return clause.field + "=" + (clause.value ? "1" : "0");
             */
