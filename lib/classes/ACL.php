@@ -223,9 +223,14 @@ class ACL implements cache_cacheableInterface
 
     public function grant_hd_on(RecordReferenceInterface $record, User $pusher, $action)
     {
-        $sql = "REPLACE INTO records_rights\n"
-            . " (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)\n"
-            . " VALUES (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+        static $stmt = null;
+        if(!$stmt) {
+            $sql = "REPLACE INTO records_rights\n"
+                . " (id, usr_id, sbas_id, record_id, document, `case`, pusher_usr_id)\n"
+                . " VALUES (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        }
 
         $params = [
             ':usr_id'    => $this->user->getId(),
@@ -234,8 +239,6 @@ class ACL implements cache_cacheableInterface
             ':case'      => $action,
             ':pusher'    => $pusher->getId()
         ];
-
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
@@ -246,10 +249,15 @@ class ACL implements cache_cacheableInterface
 
     public function grant_preview_on(RecordReferenceInterface $record, User $pusher, $action)
     {
-        $sql = "REPLACE INTO records_rights\n"
-            . " (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)\n"
-            . " VALUES\n"
-            . " (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+        static $stmt = null;
+        if(!$stmt) {
+            $sql = "REPLACE INTO records_rights\n"
+                . " (id, usr_id, sbas_id, record_id, preview, `case`, pusher_usr_id)\n"
+                . " VALUES\n"
+                . " (null, :usr_id, :sbas_id, :record_id, 1, :case, :pusher)";
+
+            $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
+        }
 
         $params = [
             ':usr_id'    => $this->user->getId(),
@@ -259,7 +267,6 @@ class ACL implements cache_cacheableInterface
             ':pusher'    => $pusher->getId()
         ];
 
-        $stmt = $this->app->getApplicationBox()->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
