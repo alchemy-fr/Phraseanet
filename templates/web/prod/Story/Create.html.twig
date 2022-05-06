@@ -1,9 +1,22 @@
 <form method="POST" action="{{ path('prod_stories_do_create') }}">
+    <input type="hidden" id="multiple_databox" value="{{ isMultipleDataboxes }}" />
 
     <label>{{ 'Collection' | trans }}</label>
     <select name="base_id">
         {% for collection in app.getAclForUser(app.getAuthenticatedUser()).get_granted_base([constant('\\ACL::CANADDRECORD')]) %}
-            <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}</option>
+            <option
+                    {% if not ismultipleDataboxes and databoxId != collection.get_databox().get_sbas_id() and databoxId != 0 %}
+                        class="not-selected-db"
+                    {% endif %}
+
+                    {% if not isMultipleCollections and collectionId ==  collection.get_base_id() %}
+                        selected
+                    {% endif %}
+
+                    value="{{ collection.get_base_id() }}">
+
+                {{ collection.get_databox().get_label(app['locale']) }} / {{ collection.get_label(app['locale']) }}
+            </option>
         {% endfor %}
     </select>
 

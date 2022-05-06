@@ -143,8 +143,7 @@
 
                         {# ----- "edit" is only for owners with right ----- #}
 
-                        {% if (context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')
-                            or context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS'))
+                        {% if (context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES'))
                             and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                             <div title="" class="context-menu-item menu3-custom-item">
                                 <div class="context-menu-item-inner edit-record-action"

@@ -169,6 +169,7 @@ class LanguageController
             'description notice'  => $translator->trans('prod:mapboxgl: description notice'),
             'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),
             'create new user'     => $translator->trans('prod:push: create new user'),
+            'warning-multiple-databoxes' => $translator->trans('prod::story: warning! use only documents from one databox!'),
             'mapboxjs title notice' => $translator->trans('prod:mapboxjs: title notice'),
             'mapboxjs description notice' => $translator->trans('prod:mapboxjs: description notice'),
             'mapboxjs title info' => $translator->trans('prod:mapboxjs: title info'),

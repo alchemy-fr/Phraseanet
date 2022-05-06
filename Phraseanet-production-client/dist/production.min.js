@@ -20023,10 +20023,18 @@ var storyCreate = function storyCreate(services) {
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
 
-        return _jquery2.default.get(url + 'prod/story/create/', function (data) {
-            $dialog.setContent(data);
-            _onDialogReady();
-            return;
+        return _jquery2.default.ajax({
+            type: 'GET',
+            url: url + 'prod/story/create/',
+            data: {
+                lst: searchSelectionSerialized
+            },
+            success: function success(data) {
+                $dialog.setContent(data);
+                _onDialogReady();
+
+                return;
+            }
         });
     };
 
@@ -20044,9 +20052,24 @@ var storyCreate = function storyCreate(services) {
 
         $dialog.setOption('buttons', buttons);
 
-        (0, _jquery2.default)('form', $dialogBox).bind('submit', function (event) {
+        (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
+            if ((0, _jquery2.default)(this).is(":checked")) {
+                (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
+            } else {
+                (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
+            }
+        });
 
+        (0, _jquery2.default)('form', $dialogBox).bind('submit', function (event) {
             var $form = (0, _jquery2.default)(this);
+
+            if ((0, _jquery2.default)('input[name="lst"]', $dialogBox).is(":checked") && (0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
+                alert(localeService.t('warning-multiple-databoxes'));
+                event.preventDefault();
+
+                return;
+            }
+
             var $dialog = $dialogBox.closest('.ui-dialog');
             var buttonPanel = $dialog.find('.ui-dialog-buttonpane');
 

@@ -3206,6 +3206,11 @@ h3.metadatas-title:after {
   background: #292929;
 }
 
+.story-filter-db .not-selected-db {
+  display: none;
+  visibility: hidden;
+}
+
 .ui-dialog .ui-dialog-content.loading,
 .loading {
   background-image: url("/assets/common/images/icons/loading.svg");

@@ -38,10 +38,18 @@ const storyCreate = (services) => {
         }, options);
         const $dialog = dialog.create(services, dialogOptions);
 
-        return $.get(`${url}prod/story/create/`, function (data) {
-            $dialog.setContent(data);
-            _onDialogReady();
-            return;
+        return $.ajax({
+            type: 'GET',
+            url: `${url}prod/story/create/`,
+            data: {
+                lst: searchSelectionSerialized
+            },
+            success: function (data) {
+                $dialog.setContent(data);
+                _onDialogReady();
+
+                return;
+            }
         });
     };
 
@@ -59,9 +67,24 @@ const storyCreate = (services) => {
 
         $dialog.setOption('buttons', buttons);
 
-        $('form', $dialogBox).bind('submit', function (event) {
+        $('input[name="lst"]', $dialogBox).change(function() {
+            if ($(this).is(":checked")) {
+                $('form', $dialogBox).addClass('story-filter-db');
+            } else {
+                $('form', $dialogBox).removeClass('story-filter-db');
+            }
+        });
 
+        $('form', $dialogBox).bind('submit', function (event) {
             var $form = $(this);
+
+            if ($('input[name="lst"]', $dialogBox).is(":checked") && $('form #multiple_databox', $dialogBox).val() === '1') {
+                alert(localeService.t('warning-multiple-databoxes'));
+                event.preventDefault();
+
+                return;
+            }
+
             var $dialog = $dialogBox.closest('.ui-dialog');
             var buttonPanel = $dialog.find('.ui-dialog-buttonpane');
 
