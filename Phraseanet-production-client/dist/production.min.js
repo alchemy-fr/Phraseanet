@@ -20055,6 +20055,8 @@ var storyCreate = function storyCreate(services) {
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
             if ((0, _jquery2.default)(this).is(":checked")) {
                 (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
+                // unselected if needed
+                (0, _jquery2.default)('.story-filter-db .not-selected-db').removeAttr('selected');
             } else {
                 (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
             }

@@ -70,6 +70,8 @@ const storyCreate = (services) => {
         $('input[name="lst"]', $dialogBox).change(function() {
             if ($(this).is(":checked")) {
                 $('form', $dialogBox).addClass('story-filter-db');
+                // unselected if needed
+                $('.story-filter-db .not-selected-db').removeAttr('selected');
             } else {
                 $('form', $dialogBox).removeClass('story-filter-db');
             }
