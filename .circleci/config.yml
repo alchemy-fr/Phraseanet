@@ -82,7 +82,7 @@ jobs:
         - run: sudo mysql -u root -e "CREATE USER 'phraseanet'@'localhost' IDENTIFIED WITH mysql_native_password BY 'phraseanet';GRANT ALL PRIVILEGES ON * . * TO 'phraseanet'@'localhost';CREATE DATABASE update39_test;CREATE DATABASE ab_test;CREATE DATABASE db_test;SET @@global.sql_mode=STRICT_ALL_TABLES;SET sql_mode=STRICT_ALL_TABLES;SET @@global.max_allowed_packet=33554432;SET @@global.wait_timeout=999999;"
         # This is based on your 1.0 configuration file or project settings
         - run: ./bin/developer system:uninstall -v
-        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=localhost --db-user=phraseanet --db-template=fr-simple --db-password=phraseanet --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
+        - run: ./bin/setup system:install -v --email=test@phraseanet.com --password=test --db-host=127.0.0.1 --db-user=phraseanet --db-template=fr-simple --db-password=phraseanet --databox=db_test --appbox=ab_test --server-name=http://127.0.0.1 -y;
         - run: ./bin/developer ini:setup-tests-dbs -v
         - run: ./bin/console searchengine:index:create -v
         - run: ./bin/developer phraseanet:regenerate-sqlite -v
