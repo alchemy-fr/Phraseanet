@@ -526,7 +526,7 @@ class PDFRecords extends PDF
 
     protected function print_preview($withtdm, $write_caption, $withfeedback)
     {
-        $basket = $validation = null;
+        $basket = null;
 
         $this->addUserInput();
 
@@ -535,8 +535,6 @@ class PDFRecords extends PDF
 
             if($withfeedback) {
                 // first page : validation informations
-                $validation = $basket->getValidation();
-
                 $this->pdf->AddPage();
 
                 $this->pdf->SetY(20);
@@ -556,29 +554,29 @@ class PDFRecords extends PDF
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated by : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->getDisplayName($validation->getInitiator()));
+                $this->pdf->Write(5, $this->getDisplayName($basket->getVoteInitiator()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback initiated on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->formatDate($validation->getCreated()));
+                $this->pdf->Write(5, $this->formatDate($basket->getVoteCreated()));
                 $this->pdf->Write(6, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expiring on : ") . " ");
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                $this->pdf->Write(5, $this->formatDate($validation->getExpires()));
+                $this->pdf->Write(5, $this->formatDate($basket->getVoteExpires()));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $validation->isFinished() ? $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expired")) : $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback active"));
+                $basket->isVoteFinished() ? $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback expired")) : $this->pdf->Write(5, $this->app->trans("print_feedback:: Feedback active"));
                 $this->pdf->Write(12, "\n");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: Participants : "));
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-                foreach ($validation->getParticipants() as $participant) {
+                foreach ($basket->getParticipants() as $participant) {
                     $this->pdf->Write(5, "\n - " . $this->getDisplayName($participant->getUser()));
                 }
             }
@@ -644,7 +642,7 @@ class PDFRecords extends PDF
             $this->pdf->SetX(105);
             $this->pdf->Cell(95, $h, $RIGHT_TEXT, "TBR", 1, "R", 1);
 
-            if($basket) {
+            if ($basket) {
                 $ord = $basket->getElementByRecord($this->app, $rec)->getOrd();
                 $this->pdf->SetY($y);
                 $this->pdf->SetX(10);
@@ -809,7 +807,7 @@ class PDFRecords extends PDF
             $this->pdf->Write(6, "\n");
 
             $nf = 0;
-            if($basket && $validation) {
+            if ($basket && $basket->isVoteBasket()) {
                 /** @var ValidationParticipant $participant */
 
                 if ($nf > 0) {
@@ -823,16 +821,16 @@ class PDFRecords extends PDF
                 $basketElement = $basket->getElementByRecord($this->app, $rec);
 
                 $iparticipant = 0;
-                foreach ($validation->getParticipants() as $participant) {
+                foreach ($basket->getParticipants() as $participant) {
                     $this->pdf->Write(6, "\n");
-                    if($iparticipant++ > 0) {
+//                    if ($iparticipant++ > 0) {
                         // $this->pdf->SetY($this->pdf->GetY()+1);
-                    }
-                    $validationData = $basketElement->getUserValidationDatas($participant->getUser());
+//                    }
+                    $basketElementVote = $basketElement->getUserVote($participant->getUser(), false);
 
                     $this->pdf->Write(5, '- ' . $this->getDisplayName($participant->getUser(), true). " : ");
 
-                    $r = $validationData->getAgreement();
+                    $r = $basketElementVote->getAgreement();
                     $this->pdf->SetX(100);
                     if ($r === null) {
                         $this->pdf->Write(0, $this->app->trans("print_feedback:: non voté"));
@@ -847,10 +845,10 @@ class PDFRecords extends PDF
                             $this->pdf->Write(0, $this->app->trans("print_feedback:: Non"));
                         }
                         $this->pdf->SetTextColor(0);
-                        $this->pdf->Write(0, "  (" . $this->formatDate($validationData->getUpdated()) . ")");
+                        $this->pdf->Write(0, "  (" . $this->formatDate($basketElementVote->getUpdated()) . ")");
                     }
 
-                    if (($note = (string)($validationData->getNote())) !== '') {
+                    if (($note = (string)($basketElementVote->getNote())) !== '') {
                         $this->pdf->SetFont(PhraseaPDF::FONT, 'I', 11);
                         $this->pdf->Write(5,"\n");
                         $this->pdf->SetX(100);
