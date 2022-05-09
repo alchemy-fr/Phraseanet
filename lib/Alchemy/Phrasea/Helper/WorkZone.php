@@ -173,6 +173,8 @@ class WorkZone extends Helper
                 'object' => $story,
                 'data' => [
                     // no special data for stories now
+                    'classes' => [],
+                    'removeClasses' => []
                 ]
             ];
         }
@@ -181,6 +183,7 @@ class WorkZone extends Helper
         $ret->set(self::BASKETS, $_baskets);
         $ret->set(self::VALIDATIONS, $_validations);
         $ret->set(self::STORIES, $_stories);
+        //$ret->set(self::STORIES, $stories);
 
         return $ret;
     }

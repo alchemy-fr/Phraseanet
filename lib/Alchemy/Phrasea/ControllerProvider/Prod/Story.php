@@ -12,9 +12,9 @@
 namespace Alchemy\Phrasea\ControllerProvider\Prod;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
-use Alchemy\Phrasea\Core\LazyLocator;
 use Alchemy\Phrasea\Controller\Prod\StoryController;
 use Alchemy\Phrasea\ControllerProvider\ControllerProviderTrait;
+use Alchemy\Phrasea\Core\LazyLocator;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
@@ -48,6 +48,7 @@ class Story implements ControllerProviderInterface, ServiceProviderInterface
         $controllers->post('/', 'controller.prod.story:postCreateFormAction')
             ->bind('prod_stories_do_create');
 
+        /** @uses \Alchemy\Phrasea\Controller\Prod\StoryController::showAction() */
         $controllers->get('/{sbas_id}/{record_id}/', 'controller.prod.story:showAction')
             ->bind('prod_stories_story')
             ->assert('sbas_id', '\d+')
