@@ -111,11 +111,6 @@ class WorkerInvoker implements LoggerAwareInterface
         try {
             $process->start([$this, 'logWorkerOutput']);
 
-            while ($process->isRunning()) {
-                usleep(1000);
-                // keep the channel alive
-                $channel->getConnection()->checkHeartBeat();
-            }
         } catch (ProcessRuntimeException $e) {
             $process->stop();
 
