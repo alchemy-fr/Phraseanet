@@ -279,7 +279,7 @@ class Basket
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getPusher()
     {
