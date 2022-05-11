@@ -4394,31 +4394,42 @@ form.phrasea_query input.query {
   color: white;
 }
 
+.ui-accordion .ui-accordion-header .workzone-menu-title I.basket_wip {
+  background-color: lightslategrey;
+  display: none;
+}
+
 .ui-accordion .ui-accordion-header .workzone-menu-title I.vote_rec {
   background-color: #E0215D;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.vote_sent {
   background-color: #E0215D;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.share_rec {
   background-color: #4caf50;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.share_sent {
   background-color: #4caf50;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.push_rec {
   background-color: #2092ED;
   font-size: 17px;
   padding: 4px 0px 3px 6px;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.basket {
   background-color: #1EADD6;
   font-size: 14px;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header .workzone-menu-title I.story {
@@ -4435,6 +4446,34 @@ form.phrasea_query input.query {
 
 .ui-accordion .ui-accordion-header.unread I.unread_flag {
   color: red;
+}
+
+.ui-accordion .ui-accordion-header.basket_wip I.basket_wip {
+  display: inline-block;
+}
+
+.ui-accordion .ui-accordion-header.vote_rec I.vote_rec {
+  display: inline-block;
+}
+
+.ui-accordion .ui-accordion-header.share_rec I.share_rec {
+  display: inline-block;
+}
+
+.ui-accordion .ui-accordion-header.push_rec I.push_rec {
+  display: inline-block;
+}
+
+.ui-accordion .ui-accordion-header.vote_sent I.vote_sent {
+  display: inline-block;
+}
+
+.ui-accordion .ui-accordion-header.share_sent I.share_sent {
+  display: inline-block;
+}
+
+.ui-accordion .ui-accordion-header.basket I.basket {
+  display: inline-block;
 }
 
 .context-menu-item a I,

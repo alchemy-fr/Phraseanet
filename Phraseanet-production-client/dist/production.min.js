@@ -10834,6 +10834,7 @@ var workzone = function workzone(services) {
 
             m.contextMenu('#' + (0, _jquery2.default)(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
+                // appendTo: '#SSTT_'+$(this).attr('id'),
                 openEvt: 'my_click',
                 theme: 'vista',
                 dropDown: true,
@@ -11158,13 +11159,19 @@ var workzone = function workzone(services) {
         _jquery2.default.ajax({
             type: 'GET',
             url: url,
-            dataType: 'html',
+            dataType: 'json',
             beforeSend: function beforeSend() {
                 (0, _jquery2.default)('#tooltip').hide();
                 header.next().addClass('loading');
             },
             success: function success(data) {
                 header.removeClass('unread');
+                for (var i in data['data']['removeClasses']) {
+                    header.removeClass(data['data']['removeClasses'][i]);
+                }
+                for (var _i in data['data']['classes']) {
+                    header.addClass(data['data']['classes'][_i]);
+                }
 
                 var dest = header.next();
                 if (dest.data('ui-droppable')) {
@@ -11172,7 +11179,7 @@ var workzone = function workzone(services) {
                 }
                 dest.empty().removeClass('loading');
 
-                dest.append(data);
+                dest.append(data['html']);
 
                 (0, _jquery2.default)('a.WorkZoneElementRemover', dest).bind('mousedown', function (event) {
                     return false;

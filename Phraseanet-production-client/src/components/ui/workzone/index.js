@@ -786,6 +786,7 @@ const workzone = (services) => {
 
             m.contextMenu('#' + $(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
+                // appendTo: '#SSTT_'+$(this).attr('id'),
                 openEvt: 'my_click',
                 theme: 'vista',
                 dropDown: true,
@@ -1126,21 +1127,27 @@ const workzone = (services) => {
         $.ajax({
             type: 'GET',
             url: url,
-            dataType: 'html',
+            dataType: 'json',
             beforeSend: function () {
                 $('#tooltip').hide();
                 header.next().addClass('loading');
             },
             success: function (data) {
                 header.removeClass('unread');
+                for(const i in data['data']['removeClasses']) {
+                    header.removeClass(data['data']['removeClasses'][i]);
+                }
+                for(const i in data['data']['classes']) {
+                    header.addClass(data['data']['classes'][i]);
+                }
 
-                var dest = header.next();
+                const dest = header.next();
                 if (dest.data('ui-droppable')) {
                     dest.droppable('destroy');
                 }
                 dest.empty().removeClass('loading');
 
-                dest.append(data);
+                dest.append(data['html']);
 
                 $('a.WorkZoneElementRemover', dest).bind('mousedown', function (event) {
                     return false;
@@ -1149,19 +1156,19 @@ const workzone = (services) => {
                 });
 
                 $("#baskets div.content select[name=valid_ord]").on('change', function () {
-                    var active = $('#baskets .SSTT.ui-state-active');
+                    const active = $('#baskets .SSTT.ui-state-active');
                     if (active.length === 0) {
                         return;
                     }
 
-                    var order = $(this).val();
+                    const order = $(this).val();
 
                     getContent(active, order);
                 });
 
                 $("#baskets .ui-accordion-content-active .update-feed-validation").on('submit', function (event) {
                     event.preventDefault();
-                    var formData = $(this).serializeArray();
+                    const formData = $(this).serializeArray();
 
                     $.ajax({
                         type: 'POST',

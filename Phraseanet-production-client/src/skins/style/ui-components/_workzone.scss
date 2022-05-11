@@ -288,20 +288,29 @@ $sharebasketThemeColor: #4caf50;
             height: 20px;
             margin: 0;
             color: white;
+            &.basket_wip {
+                background-color: lightslategrey;
+                display: none;
+            }
+
             &.vote_rec {
                 background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+                display: none;
             }
 
             &.vote_sent {
                 background-color: #E0215D; // $sharebasketThemeColor from _modal-push.scss
+                display: none;
             }
 
             &.share_rec {
                 background-color: $sharebasketThemeColor;
+                display: none;
             }
 
             &.share_sent {
                 background-color: $sharebasketThemeColor;
+                display: none;
             }
 
             &.push_rec {
@@ -309,11 +318,13 @@ $sharebasketThemeColor: #4caf50;
                 // fa-gift must be fixed
                 font-size: 17px;
                 padding: 4px 0px 3px 6px;
+                display: none;
             }
 
             &.basket {
                 background-color: #1EADD6;
-                font-size:14px;     // icomoon stsck-overflow looks too big
+                font-size:14px;     // icomoon stack-overflow looks too big
+                display: none;
             }
 
             &.story {
@@ -338,6 +349,28 @@ $sharebasketThemeColor: #4caf50;
         //    font-style: italic;
         //    font-weight: bold;
         //}
+    }
+
+    &.basket_wip I.basket_wip {
+        display: inline-block;
+    }
+    &.vote_rec I.vote_rec {
+        display: inline-block;
+    }
+    &.share_rec I.share_rec {
+        display: inline-block;
+    }
+    &.push_rec I.push_rec {
+        display: inline-block;
+    }
+    &.vote_sent I.vote_sent {
+        display: inline-block;
+    }
+    &.share_sent I.share_sent {
+        display: inline-block;
+    }
+    &.basket I.basket {
+        display: inline-block;
     }
 }
 

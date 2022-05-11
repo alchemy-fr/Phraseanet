@@ -12,17 +12,12 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Alchemy\Phrasea\Application\Helper\DispatcherAware;
 use Alchemy\Phrasea\Application\Helper\EntityManagerAware;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Controller\Exception as ControllerException;
-use Alchemy\Phrasea\Core\Event\Record\RecordEvents;
-use Alchemy\Phrasea\Core\Event\Record\SubdefinitionCreateEvent;
+use Alchemy\Phrasea\Controller\RecordsRequest;
 use Alchemy\Phrasea\Core\Event\RecordEdit;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\StoryWZ;
-use Alchemy\Phrasea\WorkerManager\Event\RecordsWriteMetaEvent;
-use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class StoryController extends Controller
@@ -112,11 +107,25 @@ class StoryController extends Controller
         ]);
     }
 
-    public function showAction($sbas_id, $record_id)
+    public function showAction(Request $request, $sbas_id, $record_id)
     {
+        $ouputFormat = $request->getRequestFormat();
         $story = new \record_adapter($this->app, $sbas_id, $record_id);
 
-        return $this->renderResponse('prod/WorkZone/Story.html.twig', ['Story' => $story]);
+        $ret = [
+            'html' => $this->render('prod/WorkZone/Story.html.twig', ['Story' => $story]),
+            'data' => [
+                'classes' => [],
+                'removeClasses' => []
+            ]
+        ];
+
+        if($ouputFormat === "json") {
+            // return advanced format containig share, feedback... infos and html
+            return $this->app->json($ret);
+        }
+        // default return html
+        return $ret['html'];
     }
 
     public function addElementsAction(Request $request, $sbas_id, $record_id)
