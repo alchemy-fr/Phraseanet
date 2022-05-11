@@ -68,10 +68,17 @@ const storyCreate = (services) => {
         $dialog.setOption('buttons', buttons);
 
         $('input[name="lst"]', $dialogBox).change(function() {
-            if ($(this).is(":checked")) {
+            let that = this;
+            if ($(that).is(":checked")) {
                 $('form', $dialogBox).addClass('story-filter-db');
                 // unselected if needed
                 $('.story-filter-db .not-selected-db').removeAttr('selected');
+
+                if ($('form #multiple_databox', $dialogBox).val() === '1') {
+                    alert(localeService.t('warning-multiple-databoxes'));
+
+                    $(that).prop( "checked", false );
+                }
             } else {
                 $('form', $dialogBox).removeClass('story-filter-db');
             }

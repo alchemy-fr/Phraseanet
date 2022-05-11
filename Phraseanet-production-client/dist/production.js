@@ -20060,10 +20060,17 @@ var storyCreate = function storyCreate(services) {
         $dialog.setOption('buttons', buttons);
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
-            if ((0, _jquery2.default)(this).is(":checked")) {
+            var that = this;
+            if ((0, _jquery2.default)(that).is(":checked")) {
                 (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
                 // unselected if needed
                 (0, _jquery2.default)('.story-filter-db .not-selected-db').removeAttr('selected');
+
+                if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
+                    alert(localeService.t('warning-multiple-databoxes'));
+
+                    (0, _jquery2.default)(that).prop("checked", false);
+                }
             } else {
                 (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
             }
