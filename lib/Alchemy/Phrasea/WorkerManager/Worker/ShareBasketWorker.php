@@ -182,7 +182,7 @@ class ShareBasketWorker implements WorkerInterface
                     $basketElementReference = &$be['ref'];
 
                     // this is slow... why ?
-                    $basketParticipantVote = $basketElement->createVote($basketParticipant);
+//                    $basketParticipantVote = $basketElement->createVote($basketParticipant);
                     //
 
                     if ($participant['HD']) {
