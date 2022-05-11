@@ -59,6 +59,12 @@ const storyCreate = (services) => {
 
         $('input[name="lst"]', $dialogBox).val(searchSelectionSerialized);
 
+        if ($('input[name="lst"]', $dialogBox).val() !== '') {
+            $('.new_story_add_sel', $dialogBox).removeClass('hidden');
+            $('input[name="lst"]', $dialogBox).prop('checked', true);
+            $('form', $dialogBox).addClass('story-filter-db');
+        }
+
         var buttons = $dialog.getOption('buttons');
 
         buttons[localeService.t('create')] = function () {
@@ -72,7 +78,7 @@ const storyCreate = (services) => {
             if ($(that).is(":checked")) {
                 $('form', $dialogBox).addClass('story-filter-db');
                 // unselected if needed
-                $('.story-filter-db .not-selected-db').removeAttr('selected');
+                $('.story-filter-db .not-selected-db').prop('selected', false);
 
                 if ($('form #multiple_databox', $dialogBox).val() === '1') {
                     alert(localeService.t('warning-multiple-databoxes'));
@@ -89,6 +95,13 @@ const storyCreate = (services) => {
 
             if ($('input[name="lst"]', $dialogBox).is(":checked") && $('form #multiple_databox', $dialogBox).val() === '1') {
                 alert(localeService.t('warning-multiple-databoxes'));
+                event.preventDefault();
+
+                return;
+            }
+
+            if ($('select[name="base_id"]', $dialogBox).val() == '') {
+                alert(localeService.t('choose-collection'));
                 event.preventDefault();
 
                 return;

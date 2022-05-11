@@ -20051,6 +20051,12 @@ var storyCreate = function storyCreate(services) {
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).val(searchSelectionSerialized);
 
+        if ((0, _jquery2.default)('input[name="lst"]', $dialogBox).val() !== '') {
+            (0, _jquery2.default)('.new_story_add_sel', $dialogBox).removeClass('hidden');
+            (0, _jquery2.default)('input[name="lst"]', $dialogBox).prop('checked', true);
+            (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
+        }
+
         var buttons = $dialog.getOption('buttons');
 
         buttons[localeService.t('create')] = function () {
@@ -20064,7 +20070,7 @@ var storyCreate = function storyCreate(services) {
             if ((0, _jquery2.default)(that).is(":checked")) {
                 (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
                 // unselected if needed
-                (0, _jquery2.default)('.story-filter-db .not-selected-db').removeAttr('selected');
+                (0, _jquery2.default)('.story-filter-db .not-selected-db').prop('selected', false);
 
                 if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
                     alert(localeService.t('warning-multiple-databoxes'));
@@ -20081,6 +20087,13 @@ var storyCreate = function storyCreate(services) {
 
             if ((0, _jquery2.default)('input[name="lst"]', $dialogBox).is(":checked") && (0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
                 alert(localeService.t('warning-multiple-databoxes'));
+                event.preventDefault();
+
+                return;
+            }
+
+            if ((0, _jquery2.default)('select[name="base_id"]', $dialogBox).val() == '') {
+                alert(localeService.t('choose-collection'));
                 event.preventDefault();
 
                 return;
