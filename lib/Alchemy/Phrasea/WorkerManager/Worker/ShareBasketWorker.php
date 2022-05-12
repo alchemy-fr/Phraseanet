@@ -9,7 +9,6 @@ use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Core\Event\BasketParticipantVoteEvent;
 use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
-use Alchemy\Phrasea\Model\Entities\BasketElement;
 use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\User;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
@@ -20,7 +19,6 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use record_adapter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ShareBasketWorker implements WorkerInterface
@@ -40,7 +38,8 @@ class ShareBasketWorker implements WorkerInterface
         $shareExpiresDate = $payload['shareExpires'];
         $voteExpiresDate = $payload['voteExpires'];
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; %d participants in payload\n", time(), count($participants)), FILE_APPEND);
+        $n_participants = 0;
+        file_put_contents("./tmp/phraseanet-log.txt", sprintf("CWD = %s\n\n%s; %d participants in payload\n", getcwd(), $_t0 = time(), count($participants)), FILE_APPEND);
 
         if (!empty($shareExpiresDate )) {
             $shareExpiresDate = new DateTime($shareExpiresDate);     // d: "Y-m-d"
@@ -95,15 +94,13 @@ class ShareBasketWorker implements WorkerInterface
  //               'record'  => $basketElement->getRecord($this->app)
             ];
         }
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; %d records in basket\n", time(), count($basketElements)), FILE_APPEND);
+        file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; %d records in basket\n", time(), count($basketElements)), FILE_APPEND);
 
-//        $manager->beginTransaction();
         $basketUserId = $basket->getUser()->getId();
         try {
-            $participantIndex = 0;
             foreach ($participants as $key => $participant) {
 
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("\n%s; participant n = %d\n", time(), $participantIndex++), FILE_APPEND);
+                file_put_contents("./tmp/phraseanet-log.txt", sprintf("\n%s; participant n = %d\n", time(), $n_participants++), FILE_APPEND);
 
                 if (!$isFeedback && $participant['usr_id'] == $basketUserId) {
                     // For simple "share" basket, the owner does not have to be in participants.
@@ -138,7 +135,7 @@ class ShareBasketWorker implements WorkerInterface
                 // end of sanity check
 
                 // if participant already exists, just update right AND CONTINUE WITH NEXT USER
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; searching participant\n", time()), FILE_APPEND);
+                // file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; searching participant\n", time()), FILE_APPEND);
                 try {
                     $basketParticipant = $basket->getParticipant($participantUser);
                     $basketParticipant->setCanAgree($participant['agree']);
@@ -147,14 +144,14 @@ class ShareBasketWorker implements WorkerInterface
                     $manager->persist($basketParticipant);
                     $manager->flush();
 
-                    // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; participant already exists -> next...\n", time()), FILE_APPEND);
+                    file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; participant already exists -> next...\n", time()), FILE_APPEND);
 
                     continue; // !!!
                 }
                 catch (Exception $e) {
                     // no-op
                 }
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; participant not found\n", time()), FILE_APPEND);
+                file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; participant not found\n", time()), FILE_APPEND);
 
                 // here the participant did not exist, create
                 $basketParticipant = $basket->addParticipant($participantUser);
@@ -164,22 +161,22 @@ class ShareBasketWorker implements WorkerInterface
                     ->setCanModify($participant['modify'])
                     ->setCanSeeOthers($participant['see_others']);
 
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; participant created\n", time()), FILE_APPEND);
+                file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; participant created\n", time()), FILE_APPEND);
 
                 $manager->persist($basketParticipant);
 
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; participant persisted\n", time()), FILE_APPEND);
+                file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; participant persisted\n", time()), FILE_APPEND);
 
                 $acl = $this->getAclForUser($participantUser);
 
                 $nVotes = 0;
                 foreach ($basketElements as $be) {
-                    /** @var BasketElement $basketElement */
-                    $basketElement = &$be['element'];
-                    /** @var record_adapter $basketElementRecord */
-                    $basketElementRecord = &$be['record'];
-                    /** @var RecordReference $basketElementReference */
-                    $basketElementReference = &$be['ref'];
+//                    /** @var BasketElement $basketElement * /
+//                    $basketElement = &$be['element'];
+//                    /** @var record_adapter $basketElementRecord * /
+//                    $basketElementRecord = &$be['record'];
+//                    / ** @var RecordReference $basketElementReference * /
+//                    $basketElementReference = &$be['ref'];
 
                     // this is slow... why ?
 //                    $basketParticipantVote = $basketElement->createVote($basketParticipant);
@@ -187,14 +184,16 @@ class ShareBasketWorker implements WorkerInterface
 
                     if ($participant['HD']) {
                         $acl->grant_hd_on(
-                            $basketElementReference,
+                            // $basketElementReference,
+                            $be['ref'],
                             $authenticatedUser,
                             ACL::GRANT_ACTION_VALIDATE
                         );
                     }
                     else {
                         $acl->grant_preview_on(
-                            $basketElementReference,
+                            // $basketElementReference,
+                            $be['ref'],
                             $authenticatedUser,
                             ACL::GRANT_ACTION_VALIDATE
                         );
@@ -213,8 +212,10 @@ class ShareBasketWorker implements WorkerInterface
                     $nVotes++;
                 }
 
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; %d votes created\n", time(), $nVotes), FILE_APPEND);
-
+//                file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; %d votes created\n", time(), $nVotes), FILE_APPEND);
+/*
+                file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; %d acl set\n", time(), $nVotes), FILE_APPEND);
+*/
                 /** @var BasketParticipant $basketParticipant */
                 $basketParticipant = $manager->merge($basketParticipant);
 
@@ -249,7 +250,7 @@ class ShareBasketWorker implements WorkerInterface
                             $arguments['LOG'] = $this->getTokenManipulator()->createBasketValidationToken($basket, $participantUser, $voteExpiresDate)->getValue();
                         }
 
-                        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; token generated\n", time()), FILE_APPEND);
+                        file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; token generated\n", time()), FILE_APPEND);
                     }
 
                     $url = $this->app->url('lightbox_validation', $arguments);
@@ -269,20 +270,20 @@ class ShareBasketWorker implements WorkerInterface
                         )
                     );
 
-                    // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; user notified\n", time()), FILE_APPEND);
+                    file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; user notified\n", time()), FILE_APPEND);
 
                 }
 
-                unset($participantUser, $participant, $participantUser);
+                unset($basketParticipant, $participantUser, $participant);
                 gc_collect_cycles();
 
-                // file_put_contents("/tmp/phraseanet-log.txt", sprintf("%s; gc_collect_cycles done\n", time()), FILE_APPEND);
+                file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; gc_collect_cycles done\n", time()), FILE_APPEND);
 
             }
 
 //   !!!!!!!!!!!!!!!!!!!!!         if ($feedbackAction == 'adduser') {
 
-            // file_put_contents("/tmp/phraseanet-log.txt", sprintf("\n%s; %d participants to remove\n", time(), count($remainingParticipantsUserId)), FILE_APPEND);
+            // file_put_contents("./tmp/phraseanet-log.txt", sprintf("\n%s; %d participants to remove\n", time(), count($remainingParticipantsUserId)), FILE_APPEND);
 
             foreach ($remainingParticipantsUserId as $userIdToRemove) {
                 try {
@@ -312,12 +313,12 @@ class ShareBasketWorker implements WorkerInterface
 //            $manager->commit();
         }
         catch (Exception $e) {
-            // file_put_contents("/tmp/phraseanet-log.txt", sprintf("\n%s; *** %s\n", time(), $e->getMessage()), FILE_APPEND);
+            file_put_contents("./tmp/phraseanet-log.txt", sprintf("\n%s; *** %s\n", time(), $e->getMessage()), FILE_APPEND);
 
 //            $manager->rollback();
         }
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("\n%s; end of participants loop\n", time()), FILE_APPEND);
+        file_put_contents("./tmp/phraseanet-log.txt", sprintf("\n%s; end of participants loop\n", time()), FILE_APPEND);
 
         $basket->setWip(NULL);
         $manager->persist($basket);
@@ -335,7 +336,7 @@ class ShareBasketWorker implements WorkerInterface
 
         $this->getLogger()->info("Basket with Id " . $basket->getId() . " successfully shared !");
 
-        // file_put_contents("/tmp/phraseanet-log.txt", sprintf("\n%s; ==== END ====\n\n", time()), FILE_APPEND);
+        file_put_contents("./tmp/phraseanet-log.txt", sprintf("\n%s; ==== END (N = %d ; dT = %d ==> %0.2f / sec) ====\n\n", time(), $n_participants, time()-$_t0, $n_participants/(max(time()-$_t0, 0.001))), FILE_APPEND);
 
     }
 
