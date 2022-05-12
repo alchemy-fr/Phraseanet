@@ -84,7 +84,7 @@
                         {% endif %}
                         #}
 
-                        {# ----- "rename", "archive" and "delete" is only for owners ----- #}
+                        {# ----- "rename", "archive" is only for owners ----- #}
 
                         {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')
                             or context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS') %}
@@ -113,6 +113,25 @@
                                 </div>
                             </div>
 
+
+                        {% endif %}
+
+                        {# ----- "delete" is only for owners ----- #}
+
+                        {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES') %}
+                            <div title="" class="context-menu-item menu3-custom-item">
+                                <div class="context-menu-item-inner">
+                                    <a class="story_unfix" href="{{ path('prod_workzone_detach_story', { 'sbas_id' : basket.getRecord(app).get_sbas_id(), 'record_id' : basket.getRecord(app).get_record_id()}) }}">
+                                        <img src="/assets/common/images/icons/delete.png"
+                                             style="width: 22px;"
+                                             alt="{{ 'action : supprimer' | trans }}">
+                                        <span>{{ 'action : supprimer' | trans }}</span>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS') %}
                             <div title="" class="context-menu-item">
                                 <div class="context-menu-item-inner basket-delete-action"
                                      id="SSTTREMOVER_{{ basket.getId() }}" data-context="SSTT">
@@ -143,8 +162,7 @@
 
                         {# ----- "edit" is only for owners with right ----- #}
 
-                        {% if (context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')
-                            or context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS'))
+                        {% if (context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES'))
                             and app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
                             <div title="" class="context-menu-item menu3-custom-item">
                                 <div class="context-menu-item-inner edit-record-action"

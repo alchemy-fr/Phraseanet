@@ -1312,6 +1312,15 @@ h3.metadatas-title {
     background: $feedback;
 }
 
+.story-filter-db .not-selected-db {
+    display:none;
+    visibility: hidden;
+}
+
+div.create-story div.ui-dialog-content{
+    overflow: hidden;
+}
+
 @import 'ui-components/jquery-ui';
 @import 'ui-components/context-menu';
 @import 'ui-components/forms';

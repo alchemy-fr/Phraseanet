@@ -25,9 +25,19 @@ class StoryController extends Controller
     use DispatcherAware;
     use EntityManagerAware;
 
-    public function displayCreateFormAction()
+    public function displayCreateFormAction(Request $request)
     {
-        return $this->render('prod/Story/Create.html.twig', []);
+        $records = RecordsRequest::fromRequest($this->app, $request, true);
+
+        $databoxes = $records->databoxes();
+        $collections = $records->collections();
+
+        return $this->render('prod/Story/Create.html.twig', [
+            'isMultipleDataboxes'   => count($databoxes) > 1 ? 1 : 0,
+            'isMultipleCollections' => count($collections) > 1 ? 1 : 0,
+            'databoxId'             => count($databoxes) == 1 ? current($databoxes)->get_sbas_id() : 0,
+            'collectionId'          => count($collections) == 1 ? current($collections)->get_base_id() : 0
+        ]);
     }
 
     public function postCreateFormAction(Request $request)

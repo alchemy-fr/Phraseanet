@@ -8643,7 +8643,7 @@ module.exports = {
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 88 */
@@ -10834,6 +10834,7 @@ var workzone = function workzone(services) {
 
             m.contextMenu('#' + (0, _jquery2.default)(this).attr('id') + ' .contextMenu', {
                 appendTo: '#basketcontextwrap',
+                // appendTo: '#SSTT_'+$(this).attr('id'),
                 openEvt: 'my_click',
                 theme: 'vista',
                 dropDown: true,
@@ -20028,11 +20029,20 @@ var storyCreate = function storyCreate(services) {
             loading: false
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
+        $dialog.getDomElement().closest('.ui-dialog').addClass('create-story');
 
-        return _jquery2.default.get(url + 'prod/story/create/', function (data) {
-            $dialog.setContent(data);
-            _onDialogReady();
-            return;
+        return _jquery2.default.ajax({
+            type: 'GET',
+            url: url + 'prod/story/create/',
+            data: {
+                lst: searchSelectionSerialized
+            },
+            success: function success(data) {
+                $dialog.setContent(data);
+                _onDialogReady();
+
+                return;
+            }
         });
     };
 
@@ -20042,6 +20052,18 @@ var storyCreate = function storyCreate(services) {
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).val(searchSelectionSerialized);
 
+        if ((0, _jquery2.default)('input[name="lst"]', $dialogBox).val() !== '') {
+            (0, _jquery2.default)('.new_story_add_sel', $dialogBox).removeClass('hidden');
+
+            (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
+
+            if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
+                (0, _jquery2.default)('input[name="lst"]', $dialogBox).prop('checked', false);
+            } else {
+                (0, _jquery2.default)('input[name="lst"]', $dialogBox).prop('checked', true);
+            }
+        }
+
         var buttons = $dialog.getOption('buttons');
 
         buttons[localeService.t('create')] = function () {
@@ -20050,9 +20072,40 @@ var storyCreate = function storyCreate(services) {
 
         $dialog.setOption('buttons', buttons);
 
-        (0, _jquery2.default)('form', $dialogBox).bind('submit', function (event) {
+        (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
+            var that = this;
+            if ((0, _jquery2.default)(that).is(":checked")) {
+                (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
+                // unselected if needed
+                (0, _jquery2.default)('.story-filter-db .not-selected-db').prop('selected', false);
 
+                if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
+                    alert(localeService.t('warning-multiple-databoxes'));
+
+                    (0, _jquery2.default)(that).prop("checked", false);
+                }
+            } else {
+                (0, _jquery2.default)('form', $dialogBox).removeClass('story-filter-db');
+            }
+        });
+
+        (0, _jquery2.default)('form', $dialogBox).bind('submit', function (event) {
             var $form = (0, _jquery2.default)(this);
+
+            if ((0, _jquery2.default)('input[name="lst"]', $dialogBox).is(":checked") && (0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
+                alert(localeService.t('warning-multiple-databoxes'));
+                event.preventDefault();
+
+                return;
+            }
+
+            if ((0, _jquery2.default)('select[name="base_id"]', $dialogBox).val() == '') {
+                alert(localeService.t('choose-collection'));
+                event.preventDefault();
+
+                return;
+            }
+
             var $dialog = $dialogBox.closest('.ui-dialog');
             var buttonPanel = $dialog.find('.ui-dialog-buttonpane');
 
@@ -52756,7 +52809,7 @@ module.exports = VTTRegion;
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 154 */
@@ -54373,7 +54426,7 @@ MapboxGeocoder.prototype = {
 
     request.catch(function(error){
       geocoderError = error;
-    }.bind(this))
+    }.bind(this)) 
       .then(
         function(response) {
           this._loadingEl.style.display = 'none';
@@ -55232,7 +55285,7 @@ Suggestions.prototype.getItemValue = function(item) {
 /**
  * For a given item in the data array, return a string of html that should be rendered in the dropdown
  * @param {Object|String} item an item from the data array
- * @param {String} sourceFormatting a string that has pre-formatted html that should be passed directly through the render function
+ * @param {String} sourceFormatting a string that has pre-formatted html that should be passed directly through the render function 
  * @return {String} html
  */
 Suggestions.prototype.render = function(item, sourceFormatting) {
@@ -58121,7 +58174,7 @@ MapboxEventManager.prototype = {
    * @private
    * @param {Object} keyEvent the keydown event to log
    * @param {Object} geocoder a mapbox-gl-geocoder instance
-   *
+   * 
    */
   keyevent: function(keyEvent, geocoder){
 
@@ -58419,7 +58472,7 @@ module.exports = function (size) {
 
 /**
  * Localized values for the placeholder string
- *
+ * 
  * @private
  */
 var placeholder = {
@@ -58433,7 +58486,7 @@ var placeholder = {
   'he': 'לחפש', //hebrew
   'ja': 'サーチ',  //japanese
   'lv': 'Meklēt', //latvian
-  'pt': 'Procurar', //portuguese
+  'pt': 'Procurar', //portuguese 
   'sr': 'Претрага', //serbian
   'zh': '搜索', //chinese-simplified
   'cs': 'Vyhledávání', //czech
@@ -59316,7 +59369,7 @@ URI.prototype.setPath = function (newPath) {
 URI.prototype.setRawPath = function (newPath) {
   if (newPath) {
     newPath = String(newPath);
-    this.path_ =
+    this.path_ = 
       // Paths must start with '/' unless this is a path-relative URL.
       (!this.domain_ || /^\//.test(newPath)) ? newPath : '/' + newPath;
   } else {
@@ -61802,7 +61855,7 @@ recordField.prototype = {
                     if (window.console) {
                         console.error('Unable to set a value to a readonly field');
                     }
-
+        
                     return this;
                 }*/
 
@@ -68844,16 +68897,16 @@ var search = function search(services) {
             /*
                         case "STRING-AGGREGATE":
                             return clause.field + ":\"" + clause.value + "\"";
-
+            
                         case "DATE-AGGREGATE":
                             return clause.field + ":\"" + clause.value + "\"";
-
+            
                         case "COLOR-AGGREGATE":
                             return clause.field + ":\"" + clause.value + "\"";
-
+            
                         case "NUMBER-AGGREGATE":
                             return clause.field + "=" + clause.value;
-
+            
                         case "BOOL-AGGREGATE":
                             return clause.field + "=" + (clause.value ? "1" : "0");
             */
