@@ -20057,13 +20057,16 @@ var storyCreate = function storyCreate(services) {
             (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
         }
 
-        var buttons = $dialog.getOption('buttons');
+        // can't create if multiple databox
+        if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() !== '1') {
+            var buttons = $dialog.getOption('buttons');
 
-        buttons[localeService.t('create')] = function () {
-            (0, _jquery2.default)('form', $dialogBox).trigger('submit');
-        };
+            buttons[localeService.t('create')] = function () {
+                (0, _jquery2.default)('form', $dialogBox).trigger('submit');
+            };
 
-        $dialog.setOption('buttons', buttons);
+            $dialog.setOption('buttons', buttons);
+        }
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
             var that = this;

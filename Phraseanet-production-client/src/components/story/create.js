@@ -65,13 +65,16 @@ const storyCreate = (services) => {
             $('form', $dialogBox).addClass('story-filter-db');
         }
 
-        var buttons = $dialog.getOption('buttons');
+        // can't create if multiple databox
+        if ($('form #multiple_databox', $dialogBox).val() !== '1') {
+            var buttons = $dialog.getOption('buttons');
 
-        buttons[localeService.t('create')] = function () {
-            $('form', $dialogBox).trigger('submit');
-        };
+            buttons[localeService.t('create')] = function () {
+                $('form', $dialogBox).trigger('submit');
+            };
 
-        $dialog.setOption('buttons', buttons);
+            $dialog.setOption('buttons', buttons);
+        }
 
         $('input[name="lst"]', $dialogBox).change(function() {
             let that = this;

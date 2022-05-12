@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-05-11T16:17:19Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2022-05-12T07:33:07Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -845,7 +845,7 @@
       <trans-unit id="6be348e8c91127640dc04e94dca7d5503ddb6c7d" resname="Ajouter ma selection courrante" approved="yes">
         <source>Ajouter ma selection courrante</source>
         <target state="translated">Voeg mijn huidige selectie toe</target>
-        <jms:reference-file line="29">prod/Story/Create.html.twig</jms:reference-file>
+        <jms:reference-file line="32">prod/Story/Create.html.twig</jms:reference-file>
         <jms:reference-file line="22">prod/orders/order_item.html.twig</jms:reference-file>
         <jms:reference-file line="10">prod/Baskets/Create.html.twig</jms:reference-file>
       </trans-unit>
@@ -13588,6 +13588,11 @@
         <source>prod:share:: No vote expires date</source>
         <target state="new">prod:share:: No vote expires date</target>
         <jms:reference-file line="106">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
+        <source>prod:story:selected elements are from different databox and cannot be added to the story</source>
+        <target state="new">prod:story:selected elements are from different databox and cannot be added to the story</target>
+        <jms:reference-file line="28">prod/Story/Create.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling">
         <source>prod:videoeditor:subtitleRequestTab:: Autosubtitling</source>
