@@ -37,6 +37,7 @@ const storyCreate = (services) => {
             loading: false
         }, options);
         const $dialog = dialog.create(services, dialogOptions);
+        $dialog.getDomElement().closest('.ui-dialog').addClass('create-story');
 
         return $.ajax({
             type: 'GET',
@@ -61,20 +62,23 @@ const storyCreate = (services) => {
 
         if ($('input[name="lst"]', $dialogBox).val() !== '') {
             $('.new_story_add_sel', $dialogBox).removeClass('hidden');
-            $('input[name="lst"]', $dialogBox).prop('checked', true);
+
             $('form', $dialogBox).addClass('story-filter-db');
+
+            if ($('form #multiple_databox', $dialogBox).val() === '1') {
+                $('input[name="lst"]', $dialogBox).prop('checked', false);
+            } else {
+                $('input[name="lst"]', $dialogBox).prop('checked', true);
+            }
         }
 
-        // can't create if multiple databox
-        if ($('form #multiple_databox', $dialogBox).val() !== '1') {
-            var buttons = $dialog.getOption('buttons');
+        var buttons = $dialog.getOption('buttons');
 
-            buttons[localeService.t('create')] = function () {
-                $('form', $dialogBox).trigger('submit');
-            };
+        buttons[localeService.t('create')] = function () {
+            $('form', $dialogBox).trigger('submit');
+        };
 
-            $dialog.setOption('buttons', buttons);
-        }
+        $dialog.setOption('buttons', buttons);
 
         $('input[name="lst"]', $dialogBox).change(function() {
             let that = this;

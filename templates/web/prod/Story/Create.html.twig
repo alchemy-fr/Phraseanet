@@ -25,12 +25,10 @@
     <input name="name" value="" type="text" style="width: 382px;"/>
 
     {% if isMultipleDataboxes %}
-        <span>{{ 'prod:story:selected elements are from different databox and cannot be added to the story' | trans }}</span>
-    {% else %}
-        <label for="new_story_add_sel" class="checkbox hidden new_story_add_sel">
-            <input type="checkbox" name="lst" value="" id="new_story_add_sel"/>
-            {{ 'Ajouter ma selection courrante' | trans }}
-        </label>
+        <div style="margin-top: 10px;margin-bottom: 5px;">{{ 'prod:story:selected elements are from different databox and cannot be added to the story' | trans }}</div>
     {% endif %}
-
+    <label for="new_story_add_sel" class="checkbox hidden new_story_add_sel">
+        <input {% if isMultipleDataboxes %} disabled {% endif %} type="checkbox" name="lst" value="" id="new_story_add_sel"/>
+        {{ 'Ajouter ma selection courrante' | trans }}
+    </label>
 </form>

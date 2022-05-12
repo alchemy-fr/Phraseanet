@@ -3226,6 +3226,10 @@ h3.metadatas-title:after {
   visibility: hidden;
 }
 
+div.create-story div.ui-dialog-content {
+  overflow: hidden;
+}
+
 .ui-dialog .ui-dialog-content.loading,
 .loading {
   background-image: url("/assets/common/images/icons/loading.svg");

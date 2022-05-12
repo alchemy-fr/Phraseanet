@@ -20029,6 +20029,7 @@ var storyCreate = function storyCreate(services) {
             loading: false
         }, options);
         var $dialog = _dialog2.default.create(services, dialogOptions);
+        $dialog.getDomElement().closest('.ui-dialog').addClass('create-story');
 
         return _jquery2.default.ajax({
             type: 'GET',
@@ -20053,20 +20054,23 @@ var storyCreate = function storyCreate(services) {
 
         if ((0, _jquery2.default)('input[name="lst"]', $dialogBox).val() !== '') {
             (0, _jquery2.default)('.new_story_add_sel', $dialogBox).removeClass('hidden');
-            (0, _jquery2.default)('input[name="lst"]', $dialogBox).prop('checked', true);
+
             (0, _jquery2.default)('form', $dialogBox).addClass('story-filter-db');
+
+            if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() === '1') {
+                (0, _jquery2.default)('input[name="lst"]', $dialogBox).prop('checked', false);
+            } else {
+                (0, _jquery2.default)('input[name="lst"]', $dialogBox).prop('checked', true);
+            }
         }
 
-        // can't create if multiple databox
-        if ((0, _jquery2.default)('form #multiple_databox', $dialogBox).val() !== '1') {
-            var buttons = $dialog.getOption('buttons');
+        var buttons = $dialog.getOption('buttons');
 
-            buttons[localeService.t('create')] = function () {
-                (0, _jquery2.default)('form', $dialogBox).trigger('submit');
-            };
+        buttons[localeService.t('create')] = function () {
+            (0, _jquery2.default)('form', $dialogBox).trigger('submit');
+        };
 
-            $dialog.setOption('buttons', buttons);
-        }
+        $dialog.setOption('buttons', buttons);
 
         (0, _jquery2.default)('input[name="lst"]', $dialogBox).change(function () {
             var that = this;
