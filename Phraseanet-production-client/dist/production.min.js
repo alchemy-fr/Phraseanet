@@ -66687,8 +66687,12 @@ var previewRecordService = function previewRecordService(services) {
             options.nCurrent = 5;
             (0, _jquery2.default)('#PREVIEWCURRENT, #PREVIEWOTHERSINNER, #SPANTITLE').empty();
             resizePreview();
+
             if (env === 'BASK') {
                 roll = 1;
+                if (source !== false && source.hasClass('CHIM')) {
+                    navigationContext = 'baskFromWorkzone';
+                }
             }
 
             // if comes from story and in workzone
@@ -66710,7 +66714,7 @@ var previewRecordService = function previewRecordService(services) {
 
         (0, _jquery2.default)('#PREVIEWIMGCONT').empty();
 
-        if (navigationContext === 'storyFromWorkzone') {
+        if (navigationContext === 'storyFromWorkzone' || navigationContext === 'baskFromWorkzone') {
             // if event comes from workzone, set to relative position (CHIM == chutier image)
             absolutePos = relativePos;
         } else if (navigationContext === 'storyFromResults') {

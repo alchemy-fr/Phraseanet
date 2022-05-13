@@ -209,8 +209,12 @@ const previewRecordService = services => {
             options.nCurrent = 5;
             $('#PREVIEWCURRENT, #PREVIEWOTHERSINNER, #SPANTITLE').empty();
             resizePreview();
+
             if (env === 'BASK') {
                 roll = 1;
+                if (source !== false && source.hasClass('CHIM')) {
+                    navigationContext = 'baskFromWorkzone';
+                }
             }
 
             // if comes from story and in workzone
@@ -232,7 +236,7 @@ const previewRecordService = services => {
 
         $('#PREVIEWIMGCONT').empty();
 
-        if (navigationContext === 'storyFromWorkzone') {
+        if (navigationContext === 'storyFromWorkzone' || navigationContext === 'baskFromWorkzone') {
             // if event comes from workzone, set to relative position (CHIM == chutier image)
             absolutePos = relativePos;
         } else if (navigationContext === 'storyFromResults') {
