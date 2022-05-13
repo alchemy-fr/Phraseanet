@@ -66647,13 +66647,13 @@ var previewRecordService = function previewRecordService(services) {
     };
 
     /**
-     *
+     * @param source
      * @param env
      * @param pos - relative position in current page
      * @param contId
      * @param reload
      */
-    function _openPreview(event, env, pos, contId, reload) {
+    function _openPreview(source, env, pos, contId, reload) {
         if (contId === undefined) {
             contId = '';
         }
@@ -66694,8 +66694,7 @@ var previewRecordService = function previewRecordService(services) {
             // if comes from story and in workzone
             if (env === 'REG') {
                 navigationContext = 'storyFromResults';
-                var $source = (0, _jquery2.default)(event);
-                if ($source.hasClass('CHIM')) {
+                if (source !== false && source.hasClass('CHIM')) {
                     navigationContext = 'storyFromWorkzone';
                 }
             }
@@ -66935,7 +66934,7 @@ var previewRecordService = function previewRecordService(services) {
     function openPreview($element) {
         var reload = $element.data('reload') === true ? true : false;
         // env, pos, contId, reload
-        _openPreview(event.currentTarget, $element.data('kind'), $element.data('position'), $element.data('id'), reload);
+        _openPreview($element, $element.data('kind'), $element.data('position'), $element.data('id'), reload);
     }
 
     function closePreview() {
@@ -67089,7 +67088,7 @@ var previewRecordService = function previewRecordService(services) {
                     var absolutePos = jsopt[1];
                     var relativePos = parseInt(absolutePos, 10) - parseInt(options.navigation.perPage, 10) * (parseInt(options.navigation.page, 10) - 1);
                     // keep relative position for answer train:
-                    _openPreview(this, jsopt[0], relativePos, jsopt[2], false);
+                    _openPreview((0, _jquery2.default)(this), jsopt[0], relativePos, jsopt[2], false);
                 });
             });
         }
