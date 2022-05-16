@@ -239,10 +239,11 @@ class BasketElement
 
     /**
      * Get votes
+     * @param false $includeUnVoted     true to include empty votes for all participants that haven't voted
      *
      * @return ArrayCollection|BasketElementVote[]
      */
-    public function getVotes()
+    public function getVotes($includeUnVoted = false)
     {
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // hack : a participant+element may have no matching "vote" row
@@ -264,7 +265,25 @@ class BasketElement
             }
         }
 
-        return $this->votes;
+        if(!$includeUnVoted) {
+            return $this->votes;
+        }
+
+        $votes = [];
+        foreach($this->getBasket()->getParticipants() as $participant) {
+            $participantId = $participant->getId();
+            $vote = null;
+            /** @var BasketElementVote $v */
+            foreach ($this->votes as $v) {
+                if($v->getParticipant()->getId() == $participantId) {
+                    $vote = $v;
+                    break;
+                }
+            }
+            $votes[] = $vote ?: new BasketElementVote($participant, $this);
+        }
+
+        return $votes;
     }
 
     /**
