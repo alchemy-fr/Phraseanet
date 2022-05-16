@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-05-12T07:33:07Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
+  <file date="2022-05-16T13:53:59Z" source-language="en" target-language="nl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1075,7 +1075,7 @@
       <trans-unit id="aae1263383b96270870516a4097020921912df74" resname="Aperture" approved="yes">
         <source>Aperture</source>
         <target state="translated">Diafragma</target>
-        <jms:reference-file line="104">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="106">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers" approved="yes">
         <source>Apparait aussi dans ces paniers</source>
@@ -1552,7 +1552,7 @@
       <trans-unit id="07d75a5073e3247c7ac54d3a797d3f777b421863" resname="Camera Model" approved="yes">
         <source>Camera Model</source>
         <target state="translated">Cameramodel</target>
-        <jms:reference-file line="56">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="58">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="77dfd2135f4db726c47299bb55be26f7f4525a46" resname="Cancel" approved="yes">
         <source>Cancel</source>
@@ -1716,7 +1716,7 @@
       <trans-unit id="18e03e2a37ba37df713f9665ef752fb8b40fc1e8" resname="Channels" approved="yes">
         <source>Channels</source>
         <target state="translated">Kanalen</target>
-        <jms:reference-file line="68">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="70">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c7ac0481e24696875efead10fd077a8425f1719e" resname="Chargement" approved="yes">
         <source>Chargement</source>
@@ -1797,13 +1797,13 @@
       <trans-unit id="397cd77cd56f7d480a93a17770e90f2d8a1ac032" resname="Codec Audio" approved="yes">
         <source>Codec Audio</source>
         <target state="translated">Audio Codec</target>
-        <jms:reference-file line="140">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="142">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="113">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="672e654e54323537399e2353680dd144c0b9af32" resname="Codec Video" approved="yes">
         <source>Codec Video</source>
         <target state="translated">Video Codec</target>
-        <jms:reference-file line="146">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="148">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="30c54a96f8011b39819ba18bcb53fcbb092d650d" resname="Collection" approved="yes">
         <source>Collection</source>
@@ -1831,12 +1831,12 @@
       <trans-unit id="f704cc39c26f37922029d5ff58c61b607d384521" resname="Color Depth" approved="yes">
         <source>Color Depth</source>
         <target state="translated">Kleurdiepte</target>
-        <jms:reference-file line="75">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="77">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3ad9b03646a37b8d3e0fdc31faa105179d708eb5" resname="Color space" approved="yes">
         <source>Color space</source>
         <target state="translated">Kleurruimte</target>
-        <jms:reference-file line="62">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="64">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="478443411674f0df06db3b28230d37625383f8c2" resname="Commande" approved="yes">
         <source>Commande</source>
@@ -2616,7 +2616,7 @@
       <trans-unit id="3a9c043f68c147a7c8d8c2fa14ddfaba6e05da62" resname="Duree" approved="yes">
         <source>Duree</source>
         <target state="translated">Duur</target>
-        <jms:reference-file line="128">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="130">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9eeffe4b7b6e5e1e997946906659420d101fba64" resname="E-Mail" approved="yes">
         <source>E-Mail</source>
@@ -3312,7 +3312,7 @@
       <trans-unit id="b62482236f533b5e0f245e716211965a8774a2f2" resname="Flash">
         <source>Flash</source>
         <target>Flash</target>
-        <jms:reference-file line="87">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="89">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="455">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="02893456d53323f0fdbbe9447fe5b3401f2102f7" resname="Flatten layers">
@@ -3324,7 +3324,7 @@
       <trans-unit id="9bd85a7d22f6cdee554e5b9e865d26dcbb4dafc9" resname="Focal length" approved="yes">
         <source>Focal length</source>
         <target state="translated">Brandpuntafstand</target>
-        <jms:reference-file line="110">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="112">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0267a34f43c33d216cc700ffcd521bf8a5ddcd0c" resname="Force authentication">
         <source>Force authentication</source>
@@ -3379,7 +3379,7 @@
       <trans-unit id="d4947df23a237794a9ff63353bd60ebe679c830c" resname="Frequence d'echantillonage" approved="yes">
         <source>Frequence d'echantillonage</source>
         <target state="translated">Samplefrequentie</target>
-        <jms:reference-file line="152">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="154">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a5ec616668f5ea6fa47eec00bbe6e31964599856" resname="GD">
         <source>GD</source>
@@ -3598,7 +3598,7 @@
       <trans-unit id="8e41286dd8a6f03ef89a5aa958b1dad86ba4211f" resname="Hyperfocal distance" approved="yes">
         <source>Hyperfocal distance</source>
         <target state="translated">Hyperbrandpuntsafstand</target>
-        <jms:reference-file line="116">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="118">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f39bf9043aaeea61e7a0ba3949d854bd3997cb2a" resname="I have read the terms of use" approved="yes">
         <source>I have read the terms of use</source>
@@ -3614,7 +3614,7 @@
       <trans-unit id="16a5173a6d384d155354f429d72834cd0bd6bc54" resname="ISO sensibility" approved="yes">
         <source>ISO sensibility</source>
         <target state="translated">ISO waarde</target>
-        <jms:reference-file line="81">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="83">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e195951cb1946935a88fdd9ee6735e0f6ddc120b" resname="Iconographe (description au rollover)" approved="yes">
         <source>Iconographe (description au rollover)</source>
@@ -3674,7 +3674,7 @@
       <trans-unit id="3e38a20c1629a473809ea6a14c9cdf4204d3ac3b" resname="Images par secondes" approved="yes">
         <source>Images par secondes</source>
         <target state="translated">Beelden per seconde</target>
-        <jms:reference-file line="134">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="136">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="108">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4d39de5885805135b502a3e8920ffb0b1921cb6f" resname="Imagette indisponible" approved="yes">
@@ -4060,7 +4060,7 @@
       <trans-unit id="83d5335897894b8ddd91c98ef5ba0e9cbc6a6db9" resname="Light Value" approved="yes">
         <source>Light Value</source>
         <target state="translated">Lichtwaarde</target>
-        <jms:reference-file line="122">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="124">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="99f6a030c5134d53253c7442cb05c1be14229565" resname="Lightbox">
         <source>Lightbox</source>
@@ -4308,7 +4308,7 @@
       <trans-unit id="1ddc24841ad8b79ba0515e2e40f7a6731bc3d6a3" resname="Mime type">
         <source>Mime type</source>
         <target state="new">Mime type</target>
-        <jms:reference-file line="14">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="16">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cb4f425374af2741715669ed8b541a666078b729" resname="Minimum number of letters before truncation" approved="yes">
         <source>Minimum number of letters before truncation</source>
@@ -4610,7 +4610,7 @@
       <trans-unit id="031a4a79e9f9d2f41b066bf1f9776120582bdc03" resname="Nom Original" approved="yes">
         <source>Nom Original</source>
         <target state="translated">Originele naam</target>
-        <jms:reference-file line="10">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="12">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="978c0865f6eafe1285d685b7b3b85ef5855c1996" resname="Nom des fichiers a l'export" approved="yes">
         <source>Nom des fichiers a l'export</source>
@@ -6122,7 +6122,7 @@
       <trans-unit id="32e50dd99f3b67dc93272aa6c904b83d37f4f48d" resname="Shutter speed" approved="yes">
         <source>Shutter speed</source>
         <target state="translated">Sluitersnelheid</target>
-        <jms:reference-file line="98">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="100">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e4538baf30d4eb324ec64e4b48c1ca424dd3b773" resname="Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur." approved="yes">
         <source>Si cet email contient des liens non cliquables, copiez/collez ces liens dans votre navigateur.</source>
@@ -6157,7 +6157,7 @@
       <trans-unit id="b7152342a267362add3c0d7f69f720f7a9c76c9e" resname="Size" approved="yes">
         <source>Size</source>
         <target state="translated">Grootte</target>
-        <jms:reference-file line="37">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="39">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="40">actions/Download/prepare.html.twig</jms:reference-file>
         <jms:reference-file line="116">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
@@ -11333,7 +11333,7 @@
       <trans-unit id="fd1286353570c5703799ba76999323b7c7447b06" resname="no" approved="yes">
         <source>no</source>
         <target state="translated">Nee</target>
-        <jms:reference-file line="91">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="93">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="598">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="14">user/import/view.html.twig</jms:reference-file>
         <jms:reference-file line="78">web/account/sessions.html.twig</jms:reference-file>
@@ -12997,6 +12997,11 @@
         <source>prod::story: warning! use only documents from one databox!</source>
         <target state="new">prod::story: warning! use only documents from one databox!</target>
         <jms:reference-file line="172">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="45e5796d4f618bc0f7e96945fdb7ffd903cd8673" resname="prod::tech_info: databox_name">
+        <source>prod::tech_info: databox_name</source>
+        <target state="new">prod::tech_info: databox_name</target>
+        <jms:reference-file line="8">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="df147d680e0fab108bc7a6a1c878c55428ecd3ea" resname="prod::thesaurusTab:candidats" approved="yes">
         <source>prod::thesaurusTab:candidats</source>
@@ -15740,7 +15745,7 @@
       <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes" approved="yes">
         <source>yes</source>
         <target state="translated">Ja</target>
-        <jms:reference-file line="89">web/common/technical_datas.html.twig</jms:reference-file>
+        <jms:reference-file line="91">web/common/technical_datas.html.twig</jms:reference-file>
         <jms:reference-file line="596">web/admin/subdefs.html.twig</jms:reference-file>
         <jms:reference-file line="79">web/account/sessions.html.twig</jms:reference-file>
       </trans-unit>
