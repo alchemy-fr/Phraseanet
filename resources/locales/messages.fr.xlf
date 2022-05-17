@@ -12972,7 +12972,7 @@ Un "Push" n'expire jamais.</target>
       </trans-unit>
       <trans-unit id="c96aa251bcc7bda1e6167db89a3d89bd4f17edd7" resname="prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.">
         <source>prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.</source>
-        <target state="needs-translation">Vous vous apprêtez à partagé avec %nb_push_items% records, %nb_not_available% ne sont pas disponibles pour ce partage.</target>
+        <target state="needs-translation">Vous vous apprêtez à partager avec %nb_push_items% records, %nb_not_available% ne sont pas disponibles pour ce partage.</target>
         <jms:reference-file line="191">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1af9e90ffa3534fd3555ecef51eaf0831427d4b1" resname="prod::share: You are about to share a basket with %nb_push_items% records.">
