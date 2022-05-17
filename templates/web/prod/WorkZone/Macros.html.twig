@@ -595,7 +595,7 @@
                   </td>
                   <td style="width:100%;">
                       <table style=width:100%>
-                          {% for vote in basket_element.getVotes() %}
+                          {% for vote in basket_element.getVotes(true) %}  {# true: include "un-voted" for all participants #}
                               {% if basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or vote.getParticipant().getUser() == app.getAuthenticatedUser() %}
                                   <tr>
                                   <td style="position: relative">

@@ -1,8 +1,9 @@
 {% if basket_element and basket_element.getBasket().isVoteBasket() %}
     <div class="agreement_selector" style="display:none;">
+        {% set userVote = basket_element.getUserVote(app.getAuthenticatedUser(), true) %}
         <img src="/assets/lightbox/images/agree-big.png"
-            class="{% if basket_element.getUserVote(app.getAuthenticatedUser(), true) != true %}not_decided{% endif %} agree_{{basket_element.getId()}}"/>
+            class="{% if userVote != true %}not_decided{% endif %} agree_{{basket_element.getId()}}"/>
         <img src="/assets/lightbox/images/disagree-big.png"
-            class="{% if basket_element.getUserVote(app.getAuthenticatedUser(), true) != false %}not_decided{% endif %} disagree_{{basket_element.getId()}}" />
+            class="{% if userVote != false %}not_decided{% endif %} disagree_{{basket_element.getId()}}" />
     </div>
 {% endif %}
