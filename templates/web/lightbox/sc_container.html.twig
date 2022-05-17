@@ -9,10 +9,11 @@
           <div class="display_id">{{record.getNumber()}}</div>
           {% if basket.isVoteBasket() %}
             <div class="agreement">
+                {% set userVote = element.getUserVote(app.getAuthenticatedUser(), true) %}
               <img src="/assets/lightbox/images/agree.png"
-                class="agree_button {%if element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == false or element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
+                class="agree_button {%if userVote.getAgreement() == false or userVote.getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
               <img src="/assets/lightbox/images/disagree.png"
-                class="disagree_button {%if element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == true or element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
+                class="disagree_button {%if userVote.getAgreement() == true or userVote.getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
             </div>
           {% endif %}
           {{thumbnail.format(element.getRecord(app).get_thumbnail,114,85, '', true, false)}}

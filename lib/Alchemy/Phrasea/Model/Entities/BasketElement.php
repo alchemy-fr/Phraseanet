@@ -239,32 +239,51 @@ class BasketElement
 
     /**
      * Get votes
+     * @param false $includeUnVoted     true to include empty votes for all participants that haven't voted
      *
      * @return ArrayCollection|BasketElementVote[]
      */
-    public function getVotes()
+    public function getVotes($includeUnVoted = false)
     {
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // hack : a participant+element may have no matching "vote" row
         // if the basket is a "vote", we fix this here
-        if($this->getBasket()->isVoteBasket()) {
-            /** @var BasketParticipant $participant */
-            foreach($this->getBasket()->getParticipants() as $participant) {
-                // don't call getUserVote() as it will call getVotes() ...
-                $found = false;
-                foreach ($this->votes as $vote) {
-                    if ($vote->getParticipant()->getId() == $participant->getId()) {
-                        $found = true;
-                        break;
-                    }
-                }
-                if(!$found) {
-                    $this->addVote($this->createVote($participant));
-                }
-            }
+//        if($this->getBasket()->isVoteBasket()) {
+//            /** @var BasketParticipant $participant */
+//            foreach($this->getBasket()->getParticipants() as $participant) {
+//                // don't call getUserVote() as it will call getVotes() ...
+//                $found = false;
+//                foreach ($this->votes as $vote) {
+//                    if ($vote->getParticipant()->getId() == $participant->getId()) {
+//                        $found = true;
+//                        break;
+//                    }
+//                }
+//                if(!$found) {
+//                    $this->addVote($this->createVote($participant));
+//                }
+//            }
+//        }
+
+        if(!$includeUnVoted) {
+            return $this->votes;
         }
 
-        return $this->votes;
+        $votes = [];
+        foreach($this->getBasket()->getParticipants() as $participant) {
+            $participantId = $participant->getId();
+            $vote = null;
+            /** @var BasketElementVote $v */
+            foreach ($this->votes as $v) {
+                if($v->getParticipant()->getId() == $participantId) {
+                    $vote = $v;
+                    break;
+                }
+            }
+            $votes[] = $vote ?: new BasketElementVote($participant, $this);
+        }
+
+        return $votes;
     }
 
     /**
@@ -313,10 +332,10 @@ class BasketElement
     public function getUserVote(User $user, bool $createIfMissing)
     {
         // ensure the user is a participant
-        $participant = $this->getBasket()->getParticipant($user);
+        $participantId = ($participant = $this->getBasket()->getParticipant($user))->getId();
 
         foreach ($this->getVotes() as $vote) {
-            if ($vote->getParticipant()->getId() == $participant->getId()) {
+            if ($vote->getParticipant()->getId() == $participantId) {
                 return $vote;
             }
         }
