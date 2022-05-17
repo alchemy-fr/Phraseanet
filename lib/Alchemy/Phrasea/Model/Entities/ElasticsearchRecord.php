@@ -28,6 +28,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
 
     // Phraseanet Record data
     private $databoxId;
+    private $databoxName;
     private $recordId;
     private $collectionId;
     private $baseId;
@@ -63,6 +64,7 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
             '_version'       => $this->_version,
             '_score'         => $this->_score,
             'databoxId'      => $this->databoxId,
+            'databoxName'    => $this->databoxName,
             'recordId'       => $this->recordId,
             'collectionId'   => $this->collectionId,
             'baseId'         => $this->baseId,
@@ -192,6 +194,16 @@ class ElasticsearchRecord implements RecordInterface, MutableRecordInterface
     public function setDataboxId($databoxId)
     {
         $this->databoxId = $databoxId;
+    }
+
+    public function getDataboxName()
+    {
+        return $this->databoxName;
+    }
+
+    public function setDataboxName($databoxName)
+    {
+        $this->databoxName = $databoxName;
     }
 
     /** {@inheritdoc} */

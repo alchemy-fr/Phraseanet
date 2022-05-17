@@ -5,7 +5,7 @@
   <dt>{{ 'Record_id' | trans }}</dt><dd>{{ record.recordId }}</dd>
 {% endif %}
 
-  <dt>{{ 'prod::tech_info: databox_name' | trans }}</dt><dd>{{ record.getDatabox.get_viewname }} ( {{ record.getDataboxId }} ) </dd>
+  <dt>{{ 'prod::tech_info: databox_name' | trans }}</dt><dd>{{ record.getDataboxName }} ( {{ record.getDataboxId }} ) </dd>
 
 {% if not record.story %}
     {% block td_original_name %}
