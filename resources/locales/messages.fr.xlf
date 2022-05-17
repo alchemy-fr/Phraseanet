@@ -13599,12 +13599,12 @@ Un "Push" n'expire jamais.</target>
       </trans-unit>
       <trans-unit id="0122357712e990a5a0461aa181f54d7b1f1e3e4c" resname="prod:share:: No vote expires date">
         <source>prod:share:: No vote expires date</source>
-        <target state="needs-translation">Une date de cloture pour la validation est obligatoire</target>
+        <target state="needs-translation">Une date de clôture pour la validation est obligatoire</target>
         <jms:reference-file line="106">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
         <source>prod:story:selected elements are from different databox and cannot be added to the story</source>
-        <target state="needs-translation">Les records sélectionnés appartiennent à des Databox différentes , l'ajout cette selection au reportage n'est pas possible</target>
+        <target state="needs-translation">Les records sélectionnés appartiennent à des Databox différentes , l'ajout de cette sélection au reportage n'est pas possible</target>
         <jms:reference-file line="28">prod/Story/Create.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling" approved="yes">
