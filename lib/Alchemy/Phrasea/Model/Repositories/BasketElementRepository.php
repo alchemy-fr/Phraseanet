@@ -31,16 +31,15 @@ class BasketElementRepository extends EntityRepository
 SELECT e
 FROM Phraseanet:BasketElement e
 JOIN e.basket b
-LEFT JOIN e.votes vd
-LEFT JOIN b.participants p
-WHERE (b.user = :usr_id OR p.user = :same_usr_id)
+LEFT JOIN b.participants p WITH p.user = :usr_id
+LEFT JOIN e.votes vd WITH vd.participant = :usr_id
+WHERE (b.user = :usr_id OR p.user = :usr_id)
     AND e.id = :element_id
 DQL;
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters([
             'usr_id' => $user->getId(),
-            'same_usr_id' => $user->getId(),
             'element_id' => $element_id,
         ]);
 

@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Model\Repositories;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\User;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use PDO;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -94,15 +95,15 @@ class BasketRepository extends EntityRepository
         $sql = "SELECT b.id\n"
             . "   FROM Baskets b\n"
             . "   WHERE b.archived = 0\n"
-            . "     AND b.user_id = :usr_id_owner\n"
+            . "     AND b.user_id = :usr_id\n"
             . "     AND b.is_read = 0\n"
             . " UNION\n"
             . "SELECT b.id\n"
             . " FROM Baskets b\n"
             . "  INNER JOIN BasketParticipants p ON (p.`basket_id` = b.`id`)\n"
             . " WHERE b.archived = 0\n"
-            . "   AND b.user_id != :usr_id_ownertwo\n"
-            . "   AND p.user_id = :usr_id_participant\n"
+            . "   AND b.user_id != :usr_id\n"
+            . "   AND p.user_id = :usr_id\n"
             . "   AND p.is_aware = 0\n"
             // see truth-table in findActiveValidationByUser()
             . "   AND (\n"
@@ -114,9 +115,7 @@ class BasketRepository extends EntityRepository
             . "   )";
 
         $params = [
-            'usr_id_owner'       => $user->getId(),
-            'usr_id_ownertwo'    => $user->getId(),
-            'usr_id_participant' => $user->getId()
+            ':usr_id'       => $user->getId()
         ];
 
         $stmt = $this->_em->getConnection()->executeQuery($sql, $params);
@@ -158,7 +157,7 @@ class BasketRepository extends EntityRepository
             FROM Phraseanet:Basket b
             JOIN b.elements e
             JOIN b.participants p
-            WHERE b.user != ?1 AND p.user = ?2
+            WHERE b.user != :usr_id AND p.user = :usr_id
              AND (
                b.share_expires IS NULL
                 OR 
@@ -174,7 +173,7 @@ class BasketRepository extends EntityRepository
         }
 
         $query = $this->_em->createQuery($dql);
-        $query->setParameters([1 => $user->getId(), 2 => $user->getId()]);
+        $query->setParameters([':usr_id' => $user->getId()]);
 
         return $query->getResult();
     }
@@ -187,7 +186,7 @@ class BasketRepository extends EntityRepository
      * @param $requireOwner // true: the user MUST be the owner ;
      *                      // false: IF THE BASKET IS A FEEDBACK the user can also be simple participant
      * @return Basket
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function findUserBasket($basket_id, User $user, $requireOwner)
     {
@@ -234,9 +233,9 @@ class BasketRepository extends EntityRepository
             LEFT JOIN b.participants p
             WHERE e.record_id = :record_id AND e.sbas_id = :databox_id
                 AND (
-                    b.user = :usr_id1
+                    b.user = :usr_id
                     OR (
-                        p.user = :usr_id2
+                        p.user = :usr_id
                         AND (
                             b.share_expires IS NULL
                             OR 
@@ -251,8 +250,7 @@ class BasketRepository extends EntityRepository
         $params = [
             'record_id' => $record->getRecordId(),
             'databox_id'=> $record->getDataboxId(),
-            'usr_id1'    => $user->getId(),
-            'usr_id2'    => $user->getId(),
+            'usr_id'    => $user->getId(),
         ];
 
         $query = $this->_em->createQuery($dql);
@@ -267,7 +265,7 @@ class BasketRepository extends EntityRepository
             case self::RECEIVED:
                 $dql = "SELECT b\n"
                     . "FROM Phraseanet:Basket b\n"
-                    . "  JOIN b.elements e\n"
+                //    . "  JOIN b.elements e\n"
                     . "WHERE b.user = :usr_id AND b.pusher IS NOT NULL";
                 $params = [
                     'usr_id' => $user->getId()
@@ -279,58 +277,55 @@ class BasketRepository extends EntityRepository
                     . "FROM Phraseanet:Basket b\n"
                     . "  JOIN b.elements e\n"
                     . "  JOIN b.participants p\n"
-                    . "WHERE b.user != ?1 AND p.user = ?2";
+                    . "WHERE b.user != :usr_id AND p.user = :usr_id";
                 $params = [
-                    1 => $user->getId(),
-                    2 => $user->getId()
+                    'usr_id' => $user->getId()
                 ];
                 break;
             case self::VALIDATION_SENT:         // we expect initiator = owner
-                $dql = 'SELECT b
-                FROM Phraseanet:Basket b
-                WHERE b.vote_initiator = :usr_id1 AND  b.user = :usr_id2';
+                $dql = "SELECT b\n"
+                . "FROM Phraseanet:Basket b\n"
+                . "WHERE b.vote_initiator = :usr_id AND  b.user = :usr_id";
                 $params = [
-                    'usr_id1' => $user->getId(),
-                    'usr_id2' => $user->getId()
+                    'usr_id' => $user->getId()
                 ];
                 break;
             case self::MYBASKETS:
-                $dql = 'SELECT b
-                FROM Phraseanet:Basket b
-                LEFT JOIN b.participants p
-                WHERE (b.user = :usr_id)';
+                $dql = "SELECT b\n"
+                . "FROM Phraseanet:Basket b\n"
+            //    . "LEFT JOIN b.participants p\n"
+                . "WHERE (b.user = :usr_id)";
                 $params = [
                     'usr_id' => $user->getId()
                 ];
                 break;
             default:
                 // todo : check when called, and if "LEFT JOIN b.elements e" is usefull
-                $dql = 'SELECT b
-                FROM Phraseanet:Basket b
-                LEFT JOIN b.elements e
-                LEFT JOIN b.participants p
-                WHERE (b.user = :usr_id OR b.vote_initiator = :validating_usr_id)';     // !!!!!!!!!!! always same user ?
+                $dql = "SELECT b\n"
+                . "FROM Phraseanet:Basket b\n"
+            //    . "LEFT JOIN b.elements e\n"
+            //    . "LEFT JOIN b.participants p\n"
+                . "WHERE (b.user = :usr_id OR b.vote_initiator = :usr_id)";     // !!!!!!!!!!! always same user ?
                 $params = [
-                    'usr_id'            => $user->getId(),
-                    'validating_usr_id' => $user->getId()
+                    'usr_id'            => $user->getId()
                 ];
         }
 
         if (ctype_digit($year) && strlen($year) == 4) {
-            $dql .= ' AND b.created >= :min_date AND b.created <= :max_date ';
+            $dql .= "\n AND b.created >= :min_date AND b.created <= :max_date";
 
             $params['min_date'] = sprintf('%d-01-01 00:00:00', $year);
             $params['max_date'] = sprintf('%d-12-31 23:59:59', $year);
         }
 
         if (trim($query) !== '') {
-            $dql .= ' AND (b.name LIKE :name OR b.description LIKE :description) ';
+            $dql .= "\n AND (b.name LIKE :name OR b.description LIKE :description)";
 
             $params['name'] = '%' . $query . '%';
             $params['description'] = '%' . $query . '%';
         }
 
-        $dql .= ' ORDER BY b.id DESC';
+        $dql .= "\n ORDER BY b.id DESC";
 
         $query = $this->_em->createQuery($dql);
         $query->setParameters($params)
@@ -350,9 +345,17 @@ class BasketRepository extends EntityRepository
     public function findActiveValidationAndBasketByUser(User $user, $sort = null)
     {
         // todo : check caller and if "LEFT JOIN b.elements e" is usefull
+//        $dql = 'SELECT b
+//            FROM Phraseanet:Basket b
+//            LEFT JOIN b.elements e
+//            LEFT JOIN b.participants p
+//            WHERE (b.user = :usr_id AND b.archived = false)
+//              OR (b.user != :usr_id AND p.user = :usr_id
+//                  AND (b.vote_expires IS NULL OR b.vote_expires > CURRENT_TIMESTAMP())
+//                  )';
+
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
-            LEFT JOIN b.elements e
             LEFT JOIN b.participants p
             WHERE (b.user = :usr_id AND b.archived = false)
               OR (b.user != :usr_id AND p.user = :usr_id
