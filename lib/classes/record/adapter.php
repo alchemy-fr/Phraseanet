@@ -508,6 +508,11 @@ class record_adapter implements RecordInterface, cache_cacheableInterface
         return $this->app->findDataboxById($this->reference->getDataboxId());
     }
 
+    public function getDataboxName()
+    {
+        return $this->getDatabox()->get_viewname();
+    }
+
     /**
      * @return media_subdef
      */
