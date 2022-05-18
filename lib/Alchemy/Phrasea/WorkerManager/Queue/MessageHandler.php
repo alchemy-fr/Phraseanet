@@ -22,16 +22,14 @@ class MessageHandler
     /**
      * called by WorkerExecuteCommand cli
      *
+     * @param AMQPChannel $channel
      * @param AMQPConnection $AMQPConnection
      * @param WorkerInvoker $workerInvoker
      * @param array|null $argQueueNames
      * @param $maxProcesses
      */
-    public function consume(AMQPConnection $AMQPConnection, WorkerInvoker $workerInvoker, $argQueueNames, $maxProcesses)
+    public function consume(AMQPChannel $channel, AMQPConnection $AMQPConnection, WorkerInvoker $workerInvoker, $argQueueNames, $maxProcesses)
     {
-
-        $channel = $AMQPConnection->getChannel();
-
         if ($channel == null) {
             // todo : if there is no channel, can we push ?
             $this->messagePublisher->pushLog("Can't connect to rabbit, check configuration!", "error");

@@ -68,7 +68,7 @@ class WorkerExecuteCommand extends Command
 
         /** @var MessageHandler $messageHandler */
         $messageHandler = $this->container['alchemy_worker.message.handler'];
-        $messageHandler->consume($serverConnection, $workerInvoker, $argQueueName, $maxProcesses);
+        $messageHandler->consume($channel, $serverConnection, $workerInvoker, $argQueueName, $maxProcesses);
 
         /** @var Connection $dbConnection */
         $dbConnection = $this->container['orm.em']->getConnection();
