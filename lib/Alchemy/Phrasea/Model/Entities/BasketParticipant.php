@@ -286,11 +286,9 @@ class BasketParticipant
             return false;
         }
 
-        foreach ($this->getVotes() as $basketElementVote) {
-            /* @var $basketElementVote BasketElementVote */
-            if ($basketElementVote->getAgreement() === null) {
-                return false;
-            }
+        // check if participant not yet vote for all elements
+        if (count($this->getBasket()->getElements()) !== count($this->getVotes())) {
+            return false;
         }
 
         return true;
