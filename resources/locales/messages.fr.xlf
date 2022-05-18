@@ -1076,14 +1076,14 @@
         <target state="translated">Ouverture</target>
         <jms:reference-file line="106">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers" approved="yes">
+      <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers" approved="no">
         <source>Apparait aussi dans ces paniers</source>
-        <target state="translated">Aussi dans les paniers suivants</target>
+        <target state="needs-translation">Dans les paniers</target>
         <jms:reference-file line="26">prod/preview/appears_in.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="244b484023b5b9473c3ff89cb6b956bc1985da43" resname="Apparait aussi dans ces reportages" approved="yes">
+      <trans-unit id="244b484023b5b9473c3ff89cb6b956bc1985da43" resname="Apparait aussi dans ces reportages" approved="no">
         <source>Apparait aussi dans ces reportages</source>
-        <target state="translated">Aussi dans les reportages suivants</target>
+        <target state="needs-translation">Dans les reportages</target>
         <jms:reference-file line="4">prod/preview/appears_in.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="022643ac43e94269443f7d30e114df8e13fe0f37" resname="Appbox is unreachable" approved="yes">
@@ -11271,7 +11271,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
         <source>mail::share Open with Lightbox</source>
-        <target state="needs-translation">Ouvrir</target>
+        <target state="needs-translation">Ouvrir avec Lightbox</target>
         <jms:reference-file line="116">Notification/Mail/MailInfoBasketShared.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f84eaaa09c29818a4ab276c8ad6cee98cbafb6a" resname="mail::share Share will expire on %expire%">
