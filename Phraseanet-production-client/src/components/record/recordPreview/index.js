@@ -167,13 +167,13 @@ const previewRecordService = services => {
     };
 
     /**
-     *
+     * @param source
      * @param env
      * @param pos - relative position in current page
      * @param contId
      * @param reload
      */
-    function _openPreview(event, env, pos, contId, reload) {
+    function _openPreview(source, env, pos, contId, reload) {
         if (contId === undefined) {
             contId = '';
         }
@@ -209,15 +209,18 @@ const previewRecordService = services => {
             options.nCurrent = 5;
             $('#PREVIEWCURRENT, #PREVIEWOTHERSINNER, #SPANTITLE').empty();
             resizePreview();
+
             if (env === 'BASK') {
                 roll = 1;
+                if (source !== false && source.hasClass('CHIM')) {
+                    navigationContext = 'baskFromWorkzone';
+                }
             }
 
             // if comes from story and in workzone
             if (env === 'REG') {
                 navigationContext = 'storyFromResults';
-                var $source = $(event);
-                if ($source.hasClass('CHIM')) {
+                if (source !== false && source.hasClass('CHIM')) {
                     navigationContext = 'storyFromWorkzone';
                 }
             }
@@ -233,7 +236,7 @@ const previewRecordService = services => {
 
         $('#PREVIEWIMGCONT').empty();
 
-        if (navigationContext === 'storyFromWorkzone') {
+        if (navigationContext === 'storyFromWorkzone' || navigationContext === 'baskFromWorkzone') {
             // if event comes from workzone, set to relative position (CHIM == chutier image)
             absolutePos = relativePos;
         } else if (navigationContext === 'storyFromResults') {
@@ -511,7 +514,7 @@ const previewRecordService = services => {
         let reload = $element.data('reload') === true ? true : false;
         // env, pos, contId, reload
         _openPreview(
-            event.currentTarget,
+            $element,
             $element.data('kind'),
             $element.data('position'),
             $element.data('id'),
@@ -690,7 +693,7 @@ const previewRecordService = services => {
                         parseInt(options.navigation.perPage, 10) *
                             (parseInt(options.navigation.page, 10) - 1);
                     // keep relative position for answer train:
-                    _openPreview(this, jsopt[0], relativePos, jsopt[2], false);
+                    _openPreview($(this), jsopt[0], relativePos, jsopt[2], false);
                 });
             });
         }

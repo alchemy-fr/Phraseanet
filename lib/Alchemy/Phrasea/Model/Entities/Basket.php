@@ -674,6 +674,16 @@ class Basket
      */
     public function getElements()
     {
+        $i = 1;
+        /** @var BasketElement $element */
+        foreach ($this->elements as $element) {
+            // display the right ord in screen
+            if ($element->getOrd() !== $i) {
+                $element->setOrd($i);
+            }
+            $i++;
+        }
+
         return $this->elements;
     }
 
