@@ -1076,14 +1076,14 @@
         <target state="translated">Blende</target>
         <jms:reference-file line="106">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers" approved="yes">
+      <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers" approved="no">
         <source>Apparait aussi dans ces paniers</source>
-        <target state="translated">auch in diesen Sammelkörben</target>
+        <target state="needs-translation">In Sammelkörben</target>
         <jms:reference-file line="26">prod/preview/appears_in.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="244b484023b5b9473c3ff89cb6b956bc1985da43" resname="Apparait aussi dans ces reportages" approved="yes">
+      <trans-unit id="244b484023b5b9473c3ff89cb6b956bc1985da43" resname="Apparait aussi dans ces reportages" approved="no">
         <source>Apparait aussi dans ces reportages</source>
-        <target state="translated">auch in diesen Berichten</target>
+        <target state="needs-translation">In Berichten</target>
         <jms:reference-file line="4">prod/preview/appears_in.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="022643ac43e94269443f7d30e114df8e13fe0f37" resname="Appbox is unreachable" approved="yes">
@@ -13941,9 +13941,9 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
         <target state="translated">Miniaturansichten</target>
         <jms:reference-file line="867">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="cf0636b6d894370de0b8a9d6f2dceb07ad46f800" resname="reponses:: partager" approved="yes">
+      <trans-unit id="cf0636b6d894370de0b8a9d6f2dceb07ad46f800" resname="reponses:: partager" approved="no">
         <source>reponses:: partager</source>
-        <target state="translated">Teilen</target>
+        <target state="needs-translation">Freigabe-Link</target>
         <jms:reference-file line="150">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="151">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="152">prod/results/record.html.twig</jms:reference-file>
