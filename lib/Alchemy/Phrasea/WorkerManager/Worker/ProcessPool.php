@@ -2,6 +2,7 @@
 
 namespace Alchemy\Phrasea\WorkerManager\Worker;
 
+use PhpAmqpLib\Channel\AMQPChannel;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -50,13 +51,14 @@ class ProcessPool implements LoggerAwareInterface
 
     /**
      * @param array $processArguments
+     * @param AMQPChannel $channel
      * @param string|null $workingDirectory
      * @return Process
      */
-    public function getWorkerProcess(array $processArguments, $workingDirectory = null)
+    public function getWorkerProcess(array $processArguments, AMQPChannel $channel, $workingDirectory = null)
     {
         $this->detachFinishedProcesses();
-        $this->waitForNextSlot();
+        $this->waitForNextSlot($channel);
 
         $builder = new ProcessBuilder($processArguments);
 
@@ -80,7 +82,7 @@ class ProcessPool implements LoggerAwareInterface
         $this->processes = $runningProcesses;
     }
 
-    private function waitForNextSlot()
+    private function waitForNextSlot(AMQPChannel $channel)
     {
         $this->logger->debug(
             sprintf('Checking for available process slot: %d processes found.', count($this->processes))
@@ -89,6 +91,7 @@ class ProcessPool implements LoggerAwareInterface
         $interval = 1;
 
         while (count($this->processes) >= $this->maxProcesses) {
+            $channel->getConnection()->checkHeartBeat();
             $this->logger->debug(sprintf('%d Max process count reached, will retry in %d second.', $this->maxProcesses, $interval));
 
             sleep($interval);

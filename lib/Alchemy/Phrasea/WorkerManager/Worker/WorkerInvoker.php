@@ -104,18 +104,12 @@ class WorkerInvoker implements LoggerAwareInterface
             $args[] = '--preserve-payload';
         }
 
-        $process = $this->processPool->getWorkerProcess($args, getcwd());
+        $process = $this->processPool->getWorkerProcess($args, $channel, getcwd());
 
         $this->logger->debug('Invoking shell command: ' . $process->getCommandLine());
 
         try {
             $process->start([$this, 'logWorkerOutput']);
-
-            while ($process->isRunning()) {
-                usleep(1000);
-                // keep the channel alive
-                $channel->getConnection()->checkHeartBeat();
-            }
         } catch (ProcessRuntimeException $e) {
             $process->stop();
 
