@@ -345,12 +345,12 @@ class BasketElement extends \Alchemy\Phrasea\Model\Entities\BasketElement implem
     /**
      * {@inheritDoc}
      */
-    public function getVotes()
+    public function getVotes($includeUnVoted = false)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVotes', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVotes', [$includeUnVoted]);
 
-        return parent::getVotes();
+        return parent::getVotes($includeUnVoted);
     }
 
     /**
