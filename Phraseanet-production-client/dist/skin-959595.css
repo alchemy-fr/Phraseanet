@@ -3384,6 +3384,10 @@ div.create-story div.ui-dialog-content {
   background-color: #a6a6a6;
 }
 
+.ui-accordion .ui-accordion-header.hidden {
+  border: none;
+}
+
 .ui-accordion .ui-accordion-header.header {
   padding-bottom: 0;
   padding-right: 0;

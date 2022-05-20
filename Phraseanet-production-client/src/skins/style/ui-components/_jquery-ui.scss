@@ -163,6 +163,9 @@ $basketBg: $darkBackgroundColor !default;
     &:hover {
         background-color: $accordionBgHeaderHover;
     }
+    &.hidden {
+        border: none;
+    }
 }
 
 .ui-accordion .ui-accordion-header.header {
