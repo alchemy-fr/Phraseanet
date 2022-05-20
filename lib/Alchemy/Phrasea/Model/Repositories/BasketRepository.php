@@ -155,7 +155,6 @@ class BasketRepository extends EntityRepository
     {
         $dql = 'SELECT b
             FROM Phraseanet:Basket b
-            JOIN b.elements e
             JOIN b.participants p
             WHERE b.user != :usr_id AND p.user = :usr_id
              AND (
