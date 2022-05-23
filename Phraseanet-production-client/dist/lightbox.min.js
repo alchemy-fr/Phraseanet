@@ -428,18 +428,26 @@ var lightbox = function lightbox(services) {
                         _slideshow(bool);
                         break;
                     case 38:
-                        el = (0, _jquery2.default)('#sc_container .basket_element.selected');
-                        if (el.length === 1) {
-                            id = el.attr('id').split('_').pop();
-                            _setAgreement(event, el, id, 1);
+                        // participants can vote
+                        if ((0, _jquery2.default)('#basket_infos .user_infos .choices').length === 1) {
+                            el = (0, _jquery2.default)('#sc_container .basket_element.selected');
+                            if (el.length === 1) {
+                                id = el.attr('id').split('_').pop();
+                                _setAgreement(event, el, id, 1);
+                            }
                         }
+
                         break;
                     case 40:
-                        el = (0, _jquery2.default)('#sc_container .basket_element.selected');
-                        if (el.length === 1) {
-                            id = el.attr('id').split('_').pop();
-                            _setAgreement(event, el, id, -1);
+                        // participants can vote
+                        if ((0, _jquery2.default)('#basket_infos .user_infos .choices').length === 1) {
+                            el = (0, _jquery2.default)('#sc_container .basket_element.selected');
+                            if (el.length === 1) {
+                                id = el.attr('id').split('_').pop();
+                                _setAgreement(event, el, id, -1);
+                            }
                         }
+
                         break;
                     default:
                         break;

@@ -53,7 +53,7 @@
                                                   </h2>
                                                   {% if basket.isVoteFinished() %}
                                                       {{ '(validation) session terminee' | trans }}
-                                                  {% elseif basket.getParticipant(app.getAuthenticatedUser()).getIsConfirmed() %}
+                                                  {% elseif basket.isParticipant(app.getAuthenticatedUser()) and basket.getParticipant(app.getAuthenticatedUser()).getIsConfirmed() %}
                                                       {{ '(validation) envoyee' | trans }}
                                                   {% else %}
                                                       {{ '(validation) a envoyer' | trans }}
