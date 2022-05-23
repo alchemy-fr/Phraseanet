@@ -67,7 +67,7 @@
        </div>
       <div class="center-image">{{ thumbnail.format100percent(record.get_preview()) }}</div>
         {% if basket_element.getBasket().isVoteBasket() %}
-          {% if basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+          {% if (basket_element.getBasket().isVoteFinished() != true) and basket_element.getBasket().getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
             <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
               <input {% if basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
                 <label class="agreement_radio" style="width:110px;text-align:center;"
