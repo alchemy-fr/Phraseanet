@@ -381,6 +381,9 @@ const pushOrShare = function (services, container) {
     this.container.on('click', '.list_manager', function (event) {
         $('#PushBox').hide();
         $('#ListManager').show();
+
+        dialog.get(1).setOption('title', localeService.t('listmanagerTitle'));
+
         return false;
     });
 
@@ -571,11 +574,15 @@ const pushOrShare = function (services, container) {
                 $('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 $('.feedback_only_true', o.container).hide();
                 $('.feedback_only_false', o.container).show();
+
+                dialog.get(1).setOption('title', localeService.t('shareTitle'));
             } else if($("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
                 $('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 $('.feedback_only_false', o.container).hide();
                 $('.feedback_only_true', o.container).show();
+
+                dialog.get(1).setOption('title', localeService.t('feedbackTitle'));
             }
         },
         'sharebasket.participantsSelectionChanged': function(o) {

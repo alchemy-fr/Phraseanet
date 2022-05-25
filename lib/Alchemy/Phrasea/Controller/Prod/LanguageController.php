@@ -170,7 +170,7 @@ class LanguageController
             'title-map-dialog'    => $translator->trans('prod:mapboxgl: title map dialog'),
             'create new user'     => $translator->trans('prod:push: create new user'),
             'warning-multiple-databoxes' => $translator->trans('prod::story: warning! use only documents from one databox!'),
-            'choose-collection'  =>  $translator->trans('prod::story: choose a collection to create a story!'),
+            'choose-collection'   =>  $translator->trans('prod::story: choose a collection to create a story!'),
             'mapboxjs title notice' => $translator->trans('prod:mapboxjs: title notice'),
             'mapboxjs description notice' => $translator->trans('prod:mapboxjs: description notice'),
             'mapboxjs title info' => $translator->trans('prod:mapboxjs: title info'),
@@ -179,10 +179,16 @@ class LanguageController
             'mapboxgl description info' => $translator->trans('prod:mapboxgl: description info : right click to add position'),
             'prod:videoeditor:subtitletab:message:: error'     => $translator->trans('prod:videoeditor:subtitletab:message:: error'),
             'prod:videoeditor:subtitletab:message:: success'     => $translator->trans('prod:videoeditor:subtitletab:message:: success'),
-            'Edit expose title'     => $translator->trans('prod:workzone:expose:modal:: title'),
-            'ExposeMapping'    => $translator->trans('expose:: Expose mapping'),
+            'Edit expose title'   => $translator->trans('prod:workzone:expose:modal:: title'),
+            'ExposeMapping'       => $translator->trans('expose:: Expose mapping'),
             'ExposeChooseProfile'   => $translator->trans('expose:: Choose a profile where to store mapping'),
             'ExposeDuplicateValue'  => $translator->trans('expose::setting duplicate mapping!'),
+            'DeleteList'          => $translator->trans('prod::listmanager Delete the list'),
+            'buttonYes'           => $translator->trans('button::yes'),
+            'buttonNo'            => $translator->trans('button::no'),
+            'shareTitle'          => $translator->trans('prod::dialog sharebasket title'),
+            'feedbackTitle'       => $translator->trans('prod::dialog feedback title'),
+            'listmanagerTitle'    => $translator->trans('prod::dialog listmanager title'),
         ]);
     }
 }

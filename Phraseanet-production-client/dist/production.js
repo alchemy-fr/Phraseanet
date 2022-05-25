@@ -4389,7 +4389,7 @@ var sharebasketModal = function sharebasketModal(services, datas) {
 
         var $dialog = _dialog2.default.create(services, {
             size: 'Full',
-            title: localeService.t('sharebasket')
+            title: localeService.t('shareTitle')
         });
 
         // add classes to the whoe dialog (including title)
@@ -4497,7 +4497,7 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
 
             var buttons = {};
 
-            buttons[localeService.t('valider')] = function () {
+            buttons[localeService.t('buttonYes')] = function () {
 
                 var callbackOK = function callbackOK() {
                     (0, _jquery2.default)('.list-container ul.list').children().each(function () {
@@ -4511,9 +4511,12 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
                 listManagerInstance.removeList(listObj.list_id, callbackOK);
             };
 
+            buttons[localeService.t('buttonNo')] = function () {
+                _dialog2.default.get(2).close();
+            };
+
             var options = {
-                title: localeService.t('Delete the list'),
-                cancelButton: true,
+                title: localeService.t('DeleteList'),
                 buttons: buttons,
                 size: 'Alert'
             };
@@ -4522,10 +4525,7 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
             if (listObj.container === '#ListManager') {
                 $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
             }
-            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list').find('.ui-dialog-buttonset button').each(function () {
-                var self = (0, _jquery2.default)(this).children();
-                if (self.text() === 'Validate') self.text('Yes');else self.text('No');
-            });
+
             $dialog.setContent(box);
         };
 
@@ -18523,6 +18523,9 @@ var pushOrShare = function pushOrShare(services, container) {
     this.container.on('click', '.list_manager', function (event) {
         (0, _jquery2.default)('#PushBox').hide();
         (0, _jquery2.default)('#ListManager').show();
+
+        _dialog2.default.get(1).setOption('title', localeService.t('listmanagerTitle'));
+
         return false;
     });
 
@@ -18701,11 +18704,15 @@ var pushOrShare = function pushOrShare(services, container) {
                 (0, _jquery2.default)('.whole_dialog_container').addClass('Sharebasket').removeClass('Feedback');
                 (0, _jquery2.default)('.feedback_only_true', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_false', o.container).show();
+
+                _dialog2.default.get(1).setOption('title', localeService.t('shareTitle'));
             } else if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() === '1') {
                 // we want feedback from this share
                 (0, _jquery2.default)('.whole_dialog_container').addClass('Feedback').removeClass('Sharebasket');
                 (0, _jquery2.default)('.feedback_only_false', o.container).hide();
                 (0, _jquery2.default)('.feedback_only_true', o.container).show();
+
+                _dialog2.default.get(1).setOption('title', localeService.t('feedbackTitle'));
             }
         },
         'sharebasket.participantsSelectionChanged': function sharebasketParticipantsSelectionChanged(o) {
@@ -18947,6 +18954,14 @@ var ListManager = function ListManager(services, options) {
     $container.on('click', '.back_link', function () {
         (0, _jquery2.default)('#PushBox').show();
         (0, _jquery2.default)('#ListManager').hide();
+        var $dialogEl = _dialog2.default.get(1).getDomElement().closest('.ui-dialog');
+
+        if ($dialogEl.hasClass('Sharebasket')) {
+            _dialog2.default.get(1).setOption('title', localeService.t('shareTitle'));
+        } else if ($dialogEl.hasClass('Feedback')) {
+            _dialog2.default.get(1).setOption('title', localeService.t('feedbackTitle'));
+        }
+
         return false;
     }).on('click', '.push-list-share-action', function (event) {
 

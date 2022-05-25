@@ -49,6 +49,14 @@ const ListManager = function (services, options) {
     $container.on('click', '.back_link', function () {
         $('#PushBox').show();
         $('#ListManager').hide();
+        let $dialogEl = dialog.get(1).getDomElement().closest('.ui-dialog');
+
+        if ($dialogEl.hasClass('Sharebasket')) {
+            dialog.get(1).setOption('title', localeService.t('shareTitle'));
+        } else if ($dialogEl.hasClass('Feedback')) {
+            dialog.get(1).setOption('title', localeService.t('feedbackTitle'));
+        }
+
         return false;
 
     }).on('click', '.push-list-share-action', (event) => {
