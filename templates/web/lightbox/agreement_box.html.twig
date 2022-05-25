@@ -32,7 +32,7 @@
     {% endif %}
 </div>
 <div class="PNB user_infos">
-{% if basket_element and basket_element.getBasket().isVoteBasket() and basket.getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
+{% if basket_element and basket_element.getBasket().isVoteBasket() and (basket.isVoteFinished() != true) and basket.getParticipant(app.getAuthenticatedUser()).getCanAgree() %}
     <div class="PNB choices">
         <div style="height:60px;">
           {% set agreement = basket_element.getUserVote(app.getAuthenticatedUser(), true).getAgreement() %}
