@@ -11,7 +11,7 @@ const sharebasketModal = (services, datas) => {
 
         let $dialog = dialog.create(services, {
             size: 'Full',
-            title: localeService.t('sharebasket')
+            title: localeService.t('shareTitle')
         });
 
         // add classes to the whoe dialog (including title)
