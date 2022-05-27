@@ -10226,7 +10226,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
         <source>button::no</source>
-        <target state="needs-translation">No</target>
+        <target state="needs-translation">Annuler</target>
         <jms:reference-file line="188">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dec336199ec8f3f37f192f52e7f719ad756f725" resname="button::supprimer" approved="yes">
@@ -10236,7 +10236,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="2367e7fbfff83a6019b9af459b23dabcb5461fd5" resname="button::yes">
         <source>button::yes</source>
-        <target state="needs-translation">Yes</target>
+        <target state="needs-translation">Supprimer</target>
         <jms:reference-file line="187">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fd0653c4f2aef3b19a3c145bbdc5f4740715a09" resname="cancel" approved="yes">
