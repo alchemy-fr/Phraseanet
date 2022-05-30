@@ -4526,6 +4526,8 @@ var pushOrShareIndex = function pushOrShareIndex(services) {
                 $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
             }
 
+            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list');
+
             $dialog.setContent(box);
         };
 
