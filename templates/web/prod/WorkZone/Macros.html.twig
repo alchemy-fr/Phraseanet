@@ -323,131 +323,144 @@
             {#  result of BasketRepository::findActiveValidationByUser(me) #}
             {#  = I am participant, but i'm NOT the author #}
             {#  nb : list feedbacks AND shared ! #}
+            {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) | length  > 0 %}
+                <div id="validations-block" class="validations-block">
+                    {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
+                        {% set basket = _basketEx['object'] %}
+                        {% set classes = _basketEx['data']['classes']|join(' ') %}
+                        {% set is_read = _basketEx['data']['isRead'] %}
 
-            <div id="validations-block" class="validations-block">
-                {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
-                    {% set basket = _basketEx['object'] %}
-                    {% set classes = _basketEx['data']['classes']|join(' ') %}
-                    {% set is_read = _basketEx['data']['isRead'] %}
+                        <div
+                             id="SSTT_{{ basket.getId() }}" data-basket_id="{{ basket.getId() }}"
+                             class="ui-accordion-header ui-state-default
+                             ui-corner-all header SSTT {% if not basket.getId() %}unread{% endif %}
+                             {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}
+                             {{ classes }}">
 
-                    <div
-                         id="SSTT_{{ basket.getId() }}" data-basket_id="{{ basket.getId() }}"
-                         class="ui-accordion-header ui-state-default
-                         ui-corner-all header SSTT {% if not basket.getId() %}unread{% endif %}
-                         {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}
-                         {{ classes }}">
+                            <a class="workzone-menu-title"
+                               href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
 
-                        <a class="workzone-menu-title"
-                           href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
+                                <span>
+                                    <i class="fa fa-circle unread_flag"></i>
 
-                            <span>
-                                <i class="fa fa-circle unread_flag"></i>
+                                    {# only relevant icon(s) will be css-displayed, depending on ["vote_rec", "share_rec"] upper classes #}
+                                    <i class="fa fa-spinner basket_wip" title="This basket is WIP"></i>
+                                    <i class="fa fa-comment vote_rec" title="please comment"></i>
+                                    <i class="fa fa-users share_rec" title="shared with you"></i>
+                                    {# i own this basket but it was pushed to me #}
+                                    {% set pusher = basket.getPusher().getDisplayName() | e %}
+                                    <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    {% set nparticipants = basket.getParticipants | length %}
+                                    {# i own this basket and there are participants (maybe me) #}
+                                    {# i am the owner / sender(?) of this "vote" (=feedback) basket #}
+                                    <i class="fa fa-bullhorn vote_sent" title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"></i>
+                                    {# simple share #}
+                                    <i class="fa fa-share share_sent" title="{% trans with {'%n%' : nparticipants} %}paniers:: you shared this basket with %n%{% endtrans %}"></i>
+                                    {# simple basket #}
+                                    <i class="icomoon icon-stackoverflow basket"></i>
+                                    &nbsp;
+                                    <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
+                                    {{ basket.getName()|e }}
+                                    </span>
 
-                                {# only relevant icon(s) will be css-displayed, depending on ["vote_rec", "share_rec"] upper classes #}
-                                <i class="fa fa-spinner basket_wip" title="This basket is WIP"></i>
-                                <i class="fa fa-comment vote_rec" title="please comment"></i>
-                                <i class="fa fa-users share_rec" title="shared with you"></i>
-                                {# i own this basket but it was pushed to me #}
-                                {% set pusher = basket.getPusher().getDisplayName() | e %}
-                                <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
-                                {% set nparticipants = basket.getParticipants | length %}
-                                {# i own this basket and there are participants (maybe me) #}
-                                {# i am the owner / sender(?) of this "vote" (=feedback) basket #}
-                                <i class="fa fa-bullhorn vote_sent" title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"></i>
-                                {# simple share #}
-                                <i class="fa fa-share share_sent" title="{% trans with {'%n%' : nparticipants} %}paniers:: you shared this basket with %n%{% endtrans %}"></i>
-                                {# simple basket #}
-                                <i class="icomoon icon-stackoverflow basket"></i>
-                                &nbsp;
-                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
-                                {{ basket.getName()|e }}
+    {#
+                                    <i class="fa fa-search basketTips"
+                                       tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
+                                    ></i>
+     #}
                                 </span>
+                            </a>
 
-{#
-                                <i class="fa fa-search basketTips"
-                                   tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}"
-                                ></i>
- #}
-                            </span>
-                        </a>
+                            {{ _self.basket_menu(
+                                app,
+                                basket,
+                                constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS'),
+                                false,
+                                path('prod_baskets_getwip',{ 'basket' : basket.getId() }),
+                                "SSTT_" ~ basket.getId()
+                            ) }}
 
-                        {{ _self.basket_menu(
-                            app,
-                            basket,
-                            constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS'),
-                            false,
-                            path('prod_baskets_getwip',{ 'basket' : basket.getId() }),
-                            "SSTT_" ~ basket.getId()
-                        ) }}
+                        </div>
+                        <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
+                    {% endfor %}
+                </div>
 
-                    </div>
-                    <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
-                {% endfor %}
-            </div>
+                {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) | length  > 0 %}
+                <hr/>
+                {% endif%}
 
+            {% endif %}
 
             {# ======================================== list baskets ========================================== #}
             {#  result of BasketRepository::findActiveByUser(me) #}
             {#  = im a the owner of (not archived) basket #}
 
-            <div id="all_baskets-block" class="all_baskets-block">
-                {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
-                    {% set basket = _basketEx['object'] %}
-                    {% set classes = _basketEx['data']['classes']|join(' ') %}
-                    {% set is_read = _basketEx['data']['isRead'] %}
+            {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) | length  > 0 %}
+                <div id="all_baskets-block" class="all_baskets-block">
+                    {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
+                        {% set basket = _basketEx['object'] %}
+                        {% set classes = _basketEx['data']['classes']|join(' ') %}
+                        {% set is_read = _basketEx['data']['isRead'] %}
 
-                    <div
-                         id="SSTT_{{ basket.getId() }}" data-basket_id="{{ basket.getId() }}"
-                         class="ui-accordion-header ui-state-default
-                         ui-corner-all header SSTT {% if not is_read %}unread{% endif %}
-                         {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
-                         {{ classes }} ">
+                        <div
+                             id="SSTT_{{ basket.getId() }}" data-basket_id="{{ basket.getId() }}"
+                             class="ui-accordion-header ui-state-default
+                             ui-corner-all header SSTT {% if not is_read %}unread{% endif %}
+                             {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
+                             {{ classes }} ">
 
-                        <a class="workzone-menu-title"
-                           href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
+                            <a class="workzone-menu-title"
+                               href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
 
-                            <span>
-                                <i class="fa fa-circle unread_flag"></i>
+                                <span>
+                                    <i class="fa fa-circle unread_flag"></i>
 
-                                {# only relevant icon(s) will be css-displayed, depending on ["push_rec", "vote_sent", "share_sent", "basket"] upper classes #}
+                                    {# only relevant icon(s) will be css-displayed, depending on ["push_rec", "vote_sent", "share_sent", "basket"] upper classes #}
 
-                                <i class="fa fa-spinner basket_wip" title="This basket is WIP"></i>
-                                <i class="fa fa-comment vote_rec" title="please comment"></i>
-                                <i class="fa fa-users share_rec" title="shared with you"></i>
-                                {# i own this basket but it was pushed to me #}
-                                {% set pusher = basket.getPusher().getDisplayName() | e %}
-                                <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
-                                {% set nparticipants = basket.getParticipants | length %}
-                                {# i own this basket and there are participants (maybe me) #}
-                                {# i am the owner / sender(?) of this "vote" (=feedback) basket #}
-                                <i class="fa fa-bullhorn vote_sent" title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"></i>
-                                {# simple share #}
-                                <i class="fa fa-share share_sent" title="{% trans with {'%n%' : nparticipants} %}paniers:: you shared this basket with %n%{% endtrans %}"></i>
-                                {# simple basket #}
-                                <i class="icomoon icon-stackoverflow basket"></i>
-                                &nbsp;
-                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
-                                {{ basket.getName()|e }}
+                                    <i class="fa fa-spinner basket_wip" title="This basket is WIP"></i>
+                                    <i class="fa fa-comment vote_rec" title="please comment"></i>
+                                    <i class="fa fa-users share_rec" title="shared with you"></i>
+                                    {# i own this basket but it was pushed to me #}
+                                    {% set pusher = basket.getPusher().getDisplayName() | e %}
+                                    <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    {% set nparticipants = basket.getParticipants | length %}
+                                    {# i own this basket and there are participants (maybe me) #}
+                                    {# i am the owner / sender(?) of this "vote" (=feedback) basket #}
+                                    <i class="fa fa-bullhorn vote_sent" title="{{ 'Vous avez envoye une demande de validation de document sur ce panier' | trans }}"></i>
+                                    {# simple share #}
+                                    <i class="fa fa-share share_sent" title="{% trans with {'%n%' : nparticipants} %}paniers:: you shared this basket with %n%{% endtrans %}"></i>
+                                    {# simple basket #}
+                                    <i class="icomoon icon-stackoverflow basket"></i>
+                                    &nbsp;
+                                    <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_basket', { 'basket' : basket.getId() }) }}">
+                                    {{ basket.getName()|e }}
+                                    </span>
+
                                 </span>
+                            </a>
 
-                            </span>
-                        </a>
+                            {{ _self.basket_menu(
+                                app,
+                                basket,
+                                constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS'),
+                                true,
+                                path('prod_baskets_getwip', { 'basket' : basket.getId() }),
+                                "SSTT_" ~ basket.getId()
+                            ) }}
 
-                        {{ _self.basket_menu(
-                            app,
-                            basket,
-                            constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS'),
-                            true,
-                            path('prod_baskets_getwip', { 'basket' : basket.getId() }),
-                            "SSTT_" ~ basket.getId()
-                        ) }}
+                        </div>
+                        <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
+                    {% endfor %}
+                </div>
 
-                    </div>
-                    <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
-                {% endfor %}
-            </div>
+                {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) | length > 0 %}
+                <hr/>
+                {% endif %}
+
+            {% endif %}
 
             {# ======================================== list stories ========================================== #}
+
 
             <div id="stories-block" class="stories-block">
                 {% for _storyEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
