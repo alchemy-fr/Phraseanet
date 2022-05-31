@@ -3360,8 +3360,10 @@ div.create-story div.ui-dialog-content {
   margin-bottom: 0;
   height: 44px;
   line-height: 44px;
-  background-color: #3b3b3b;
-  border-bottom: 1px solid #303030;
+  /*
+    background-color: $mediumBackgroundColor2;
+    border-bottom: 1px solid $mediumBorderColor; //$accordionBorderColor;
+    */
   border-radius: 0;
 }
 
@@ -4369,14 +4371,20 @@ form.phrasea_query input.query {
 }
 
 #idFrameC .wz-block_title {
-  border-top: white solid 1px;
+  border-top: 1px solid #ffffff;
+  position: relative;
+  top: 12px;
 }
 
 #idFrameC .wz-block_title SPAN {
-  background-color: white;
-  color: black;
-  padding-left: 3px;
-  padding-right: 3px;
+  background-color: #3b3b3b;
+  color: #ffffff;
+  padding-left: 5px;
+  padding-right: 5px;
+  position: relative;
+  top: -11px;
+  font-size: larger;
+  margin-left: 10px;
 }
 
 .alert_datas_changed a {

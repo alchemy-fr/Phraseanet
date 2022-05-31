@@ -3375,8 +3375,10 @@ div.create-story div.ui-dialog-content {
   margin-bottom: 0;
   height: 44px;
   line-height: 44px;
-  background-color: #b2b2b2;
-  border-bottom: 1px solid #9a9a9a;
+  /*
+    background-color: $mediumBackgroundColor2;
+    border-bottom: 1px solid $mediumBorderColor; //$accordionBorderColor;
+    */
   border-radius: 0;
 }
 
@@ -4384,14 +4386,20 @@ form.phrasea_query input.query {
 }
 
 #idFrameC .wz-block_title {
-  border-top: white solid 1px;
+  border-top: 1px solid #333333;
+  position: relative;
+  top: 12px;
 }
 
 #idFrameC .wz-block_title SPAN {
-  background-color: white;
-  color: black;
-  padding-left: 3px;
-  padding-right: 3px;
+  background-color: #b3b3b3;
+  color: #333333;
+  padding-left: 5px;
+  padding-right: 5px;
+  position: relative;
+  top: -11px;
+  font-size: larger;
+  margin-left: 10px;
 }
 
 .alert_datas_changed a {

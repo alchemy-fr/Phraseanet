@@ -157,8 +157,10 @@ $basketBg: $darkBackgroundColor !default;
     margin-bottom: 0;
     height: 44px;
     line-height: 44px;
+    /*
     background-color: $mediumBackgroundColor2;
     border-bottom: 1px solid $mediumBorderColor; //$accordionBorderColor;
+    */
     border-radius: 0;
     &:hover {
         background-color: $accordionBgHeaderHover;
