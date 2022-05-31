@@ -167,6 +167,7 @@ $basketBg: $darkBackgroundColor !default;
     }
     &.hidden {
         border: none;
+        display:none;
     }
 }
 

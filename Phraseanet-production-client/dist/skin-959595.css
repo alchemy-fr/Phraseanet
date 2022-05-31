@@ -3388,6 +3388,7 @@ div.create-story div.ui-dialog-content {
 
 .ui-accordion .ui-accordion-header.hidden {
   border: none;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header.header {
@@ -4132,9 +4133,11 @@ form.phrasea_query input.query {
  */
 
 #idFrameC {
-  top: 0 !important;
+  /*
+    top: 0 !important;
+    bottom: 0 !important;
+     */
   min-width: 300px;
-  bottom: 0 !important;
 }
 
 #idFrameC.closed {
@@ -4385,8 +4388,10 @@ form.phrasea_query input.query {
   color: #ececec;
 }
 
-#idFrameC .wz-block_title {
-  border-top: 1px solid #333333;
+#idFrameC .wz-block_title HR {
+  margin: 0px;
+  border-bottom: 0px;
+  border-top: 1px #333333 solid;
   position: relative;
   top: 12px;
 }
@@ -4394,10 +4399,9 @@ form.phrasea_query input.query {
 #idFrameC .wz-block_title SPAN {
   background-color: #b3b3b3;
   color: #333333;
+  position: relative;
   padding-left: 5px;
   padding-right: 5px;
-  position: relative;
-  top: -11px;
   font-size: larger;
   margin-left: 10px;
 }
@@ -7928,8 +7932,12 @@ dans l'onglet thesaurus : arbres, menus contextuels
   left: 0;
   right: 1px;
   bottom: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /*
+            overflow-y: auto;
+            overflow-x: hidden;
+             */
+  display: flex;
+  flex-direction: column;
 }
 
 #idFrameC #baskets .bloc.groupDrop {
@@ -7961,6 +7969,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #idFrameC #baskets .insidebloc {
   top: 0;
+  overflow-y: auto;
 }
 
 #idFrameC #baskets .top-scroller,
@@ -8316,6 +8325,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .basket-filter {
   padding: 10px 16px;
+  flex: 0 0 auto;
 }
 
 .basket-filter .filter-item {

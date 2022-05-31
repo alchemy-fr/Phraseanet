@@ -324,7 +324,7 @@
             {#  = I am participant, but i'm NOT the author #}
             {#  nb : list feedbacks AND shared ! #}
             {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) | length  > 0 %}
-                <div class="wz-block_title"><span>{{ 'wz:block_title:shared_with_me' | trans }}</span></div>
+                <div class="wz-block_title"><hr/><span>{{ 'wz:block_title:shared_with_me' | trans }}</span></div>
                 <div id="validations-block" class="validations-block">
                     {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
                         {% set basket = _basketEx['object'] %}
@@ -392,7 +392,7 @@
             {#  = im a the owner of (not archived) basket #}
 
             {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) | length  > 0 %}
-                <div class="wz-block_title"><span>{{ 'wz:block_title:my_baskets' | trans }}</span></div>
+                <div class="wz-block_title"><hr/><span>{{ 'wz:block_title:my_baskets' | trans }}</span></div>
                 <div id="all_baskets-block" class="all_baskets-block">
                     {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
                         {% set basket = _basketEx['object'] %}
@@ -454,7 +454,7 @@
             {# ======================================== list stories ========================================== #}
 
             {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) | length > 0 %}
-                <div class="wz-block_title"><span>{{ 'wz:block_title:stories' | trans }}</span></div>
+                <div class="wz-block_title"><hr/><span>{{ 'wz:block_title:stories' | trans }}</span></div>
                 <div id="stories-block" class="stories-block">
                     {% for _storyEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
                         {% set story = _storyEx['object'] %}
