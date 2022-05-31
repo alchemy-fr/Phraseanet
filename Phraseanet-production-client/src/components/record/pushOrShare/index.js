@@ -68,9 +68,11 @@ const pushOrShareIndex = (services) => {
             };
 
             const $dialog = dialog.create(services, options, 2);
-             if(listObj.container === '#ListManager') {
+            if(listObj.container === '#ListManager') {
                 $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_delete_list_listmanager');
             }
+
+            $dialog.getDomElement().closest('.ui-dialog').addClass('dialog_container dialog_delete_list');
 
             $dialog.setContent(box);
         };

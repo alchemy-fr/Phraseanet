@@ -86,8 +86,7 @@
 
                         {# ----- "rename", "archive" is only for owners ----- #}
 
-                        {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')
-                            or context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS') %}
+                        {% if context == constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS') %}
                             <div title="" class="context-menu-item">
                                 <div class="context-menu-item-inner">
                                     <a class="basket-update-action"
@@ -112,8 +111,6 @@
                                     </a>
                                 </div>
                             </div>
-
-
                         {% endif %}
 
                         {# ----- "delete" is only for owners ----- #}
