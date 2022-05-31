@@ -267,6 +267,16 @@ $sharebasketThemeColor: #4caf50;
             }
         }
     }
+
+    .wz-block_title {
+        border-top: white solid 1px;
+        SPAN {
+            background-color: white;
+            color:black;
+            padding-left:3px;
+            padding-right: 3px;
+        }
+    }
 }
 
 .alert_datas_changed a {

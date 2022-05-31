@@ -81,7 +81,8 @@ b.vote_expires=v.expires",
              *     we keep only the _most recent_ occurence ( max(p.id) )
              * nb: we let the participant id unchanged because it's easier when copying "validationdatas"
              */
-            "insert into BasketParticipants (id, user_id, basket_id, can_modify, is_aware, is_confirmed, can_agree, can_see_others, reminded)
+            "insert into BasketParticipants (id, user_id, basket_id, can_modify, 
+                                is_aware, is_confirmed, can_agree, can_see_others, reminded)
 select vp_id as id, user_id, basket_id, 0 as can_modify, is_aware, is_confirmed, can_agree, can_see_others, reminded from 
 (
  SELECT concat(user_id, '-', basket_id) as u, 

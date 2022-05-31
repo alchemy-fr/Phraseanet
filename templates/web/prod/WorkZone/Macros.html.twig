@@ -324,6 +324,7 @@
             {#  = I am participant, but i'm NOT the author #}
             {#  nb : list feedbacks AND shared ! #}
             {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) | length  > 0 %}
+                <div class="wz-block_title"><span>{{ 'wz:block_title:shared_with_me' | trans }}</span></div>
                 <div id="validations-block" class="validations-block">
                     {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::VALIDATIONS')) %}
                         {% set basket = _basketEx['object'] %}
@@ -384,11 +385,6 @@
                         <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
                     {% endfor %}
                 </div>
-
-                {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) | length  > 0 %}
-                <hr/>
-                {% endif%}
-
             {% endif %}
 
             {# ======================================== list baskets ========================================== #}
@@ -396,6 +392,7 @@
             {#  = im a the owner of (not archived) basket #}
 
             {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) | length  > 0 %}
+                <div class="wz-block_title"><span>{{ 'wz:block_title:my_baskets' | trans }}</span></div>
                 <div id="all_baskets-block" class="all_baskets-block">
                     {% for _basketEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
                         {% set basket = _basketEx['object'] %}
@@ -452,57 +449,54 @@
                         <div id="SSTT_content_{{ basket.getId() }}" class="content basket {{ classes }}" style="overflow:hidden;"></div>
                     {% endfor %}
                 </div>
-
-                {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) | length > 0 %}
-                <hr/>
-                {% endif %}
-
             {% endif %}
 
             {# ======================================== list stories ========================================== #}
 
+            {% if content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) | length > 0 %}
+                <div class="wz-block_title"><span>{{ 'wz:block_title:stories' | trans }}</span></div>
+                <div id="stories-block" class="stories-block">
+                    {% for _storyEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
+                        {% set story = _storyEx['object'] %}
 
-            <div id="stories-block" class="stories-block">
-                {% for _storyEx in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
-                    {% set story = _storyEx['object'] %}
+                        <div
+                             id="SSWZ_{{ story.getId() }}" sbas="{{ story.getSbasId() }}"
+                             class="STORY_{{ story.getRecord(app).get_serialize_key() }} ui-accordion-header ui-state-default
+                             ui-corner-all header SSTT grouping unread story-block
+                             {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
 
-                    <div
-                         id="SSWZ_{{ story.getId() }}" sbas="{{ story.getSbasId() }}"
-                         class="STORY_{{ story.getRecord(app).get_serialize_key() }} ui-accordion-header ui-state-default
-                         ui-corner-all header SSTT grouping unread story-block
-                         {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
+                            <a class="workzone-menu-title"
+                               href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
 
-                        <a class="workzone-menu-title"
-                           href="{{ path('prod_stories_story', { 'sbas_id' : story.getRecord(app).get_sbas_id, 'record_id' : story.getRecord(app).get_record_id() }) }}">
+                                <span>
+                                    {# insert an invisible "unread" disc to align other icons with basket ones #}
+                                    <i class="fa fa-circle unread_flag" style="color: transparent"></i>
+                                    <i class="icomoon icon-stack story"></i>
 
-                            <span>
-                                {# insert an invisible "unread" disc to align other icons with basket ones #}
-                                <i class="fa fa-circle unread_flag" style="color: transparent"></i>
-                                <i class="icomoon icon-stack story"></i>
+                                    &nbsp;
 
-                                &nbsp;
-
-                                <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}">
-                                {{ story.getRecord(app).get_title() }}
+                                    <span class="basketTips" tooltipsrc="{{ path('prod_tooltip_story', { 'sbas_id' : story.getRecord(app).get_sbas_id(), 'record_id' : story.getRecord(app).get_record_id() }) }}">
+                                    {{ story.getRecord(app).get_title() }}
+                                    </span>
                                 </span>
-                            </span>
-                        </a>
+                            </a>
 
-                        {# no need for a path or id because stories are not checked as "wip" #}
-                        {{ _self.basket_menu(
-                            app,
-                            story,
-                            constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES'),
-                            true,
-                            "",
-                            ""
-                        ) }}
+                            {# no need for a path or id because stories are not checked as "wip" #}
+                            {{ _self.basket_menu(
+                                app,
+                                story,
+                                constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES'),
+                                true,
+                                "",
+                                ""
+                            ) }}
 
-                    </div>
-                    <div sbas="{{ story.getSbasId() }}" id="SSTT_content_{{ story.getId() }}" class="content grouping story-block"
-                         style="overflow:hidden;"></div>
-                {% endfor %}
-            </div>
+                        </div>
+                        <div sbas="{{ story.getSbasId() }}" id="SSTT_content_{{ story.getId() }}" class="content grouping story-block"
+                             style="overflow:hidden;"></div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endmacro %}
