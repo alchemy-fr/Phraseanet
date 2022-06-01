@@ -3377,8 +3377,10 @@ div.create-story div.ui-dialog-content {
   margin-bottom: 0;
   height: 44px;
   line-height: 44px;
-  background-color: #f2f2f2;
-  border-bottom: 1px solid #fff;
+  /*
+    background-color: $mediumBackgroundColor2;
+    border-bottom: 1px solid $mediumBorderColor; //$accordionBorderColor;
+    */
   border-radius: 0;
 }
 
@@ -3388,6 +3390,7 @@ div.create-story div.ui-dialog-content {
 
 .ui-accordion .ui-accordion-header.hidden {
   border: none;
+  display: none;
 }
 
 .ui-accordion .ui-accordion-header.header {
@@ -4133,8 +4136,8 @@ form.phrasea_query input.query {
 
 #idFrameC {
   top: 0 !important;
-  min-width: 300px;
   bottom: 0 !important;
+  min-width: 300px;
 }
 
 #idFrameC.closed {
@@ -4383,6 +4386,24 @@ form.phrasea_query input.query {
 #idFrameC .tools-panel button:hover span {
   font-size: 12px;
   color: #000000;
+}
+
+#idFrameC .wz-block_title HR {
+  margin: 0px;
+  border-bottom: 0px;
+  border-top: 1px #333333 solid;
+  position: relative;
+  top: 12px;
+}
+
+#idFrameC .wz-block_title SPAN {
+  background-color: #f2f2f2;
+  color: #333333;
+  position: relative;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: larger;
+  margin-left: 10px;
 }
 
 .alert_datas_changed a {
@@ -7911,8 +7932,12 @@ dans l'onglet thesaurus : arbres, menus contextuels
   left: 0;
   right: 1px;
   bottom: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /*
+            overflow-y: auto;
+            overflow-x: hidden;
+             */
+  display: flex;
+  flex-direction: column;
 }
 
 #idFrameC #baskets .bloc.groupDrop {
@@ -7944,6 +7969,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #idFrameC #baskets .insidebloc {
   top: 0;
+  overflow-y: auto;
 }
 
 #idFrameC #baskets .top-scroller,
@@ -8299,6 +8325,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .basket-filter {
   padding: 10px 16px;
+  flex: 0 0 auto;
 }
 
 .basket-filter .filter-item {
