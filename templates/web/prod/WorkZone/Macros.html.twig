@@ -357,9 +357,6 @@
                              ui-corner-all header SSTT {% if not basket.getId() %}unread{% endif %}
                              {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}
                              {{ classes }}
-                             {# block defined in lib/Alchemy/Phrasea/Helper/WorkZone.php #}
-                             {% if feedbackBlockClass in classes and not feedbackBlockChecked %} hidden {% endif %}
-                             {% if shareBlockClass in classes and not shareBlockChecked %} hidden {% endif %}
                              ">
 
                             <a class="workzone-menu-title"
@@ -429,11 +426,6 @@
                              ui-corner-all header SSTT {% if not is_read %}unread{% endif %}
                              {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
                              {{ classes }}
-                             {# block defined in lib/Alchemy/Phrasea/Helper/WorkZone.php  #}
-                             {% if pushBlockClass in classes and not pushBlockChecked %} hidden {% endif %}
-                             {% if feedbackBlockClass in classes and not feedbackBlockChecked %} hidden {% endif %}
-                             {% if shareBlockClass in classes and not shareBlockChecked %} hidden {% endif %}
-                             {% if basketBlockClass in classes and not basketBlockChecked %} hidden {% endif %}
                              ">
 
                             <a class="workzone-menu-title"
@@ -493,7 +485,6 @@
                              id="SSWZ_{{ story.getId() }}" sbas="{{ story.getSbasId() }}"
                              class="STORY_{{ story.getRecord(app).get_serialize_key() }} ui-accordion-header ui-state-default
                              ui-corner-all header SSTT grouping unread story-block
-                             {% if not storyBlockChecked %} hidden {% endif %}
                              {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
 
                             <a class="workzone-menu-title"

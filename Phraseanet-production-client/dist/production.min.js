@@ -10529,9 +10529,13 @@ var workzone = function workzone(services) {
 
     /*left filter basket*/
     function filterBaskets() {
-        (0, _jquery2.default)('#basket-filter INPUT').change(function () {
-            var sel = (0, _jquery2.default)(this).val();
-            (0, _jquery2.default)(sel).toggleClass('hidden', !(0, _jquery2.default)(this).is(':checked'));
+        var inputFilter = (0, _jquery2.default)('#basket-filter INPUT');
+        inputFilter.each(function () {
+            applyBasketFilter((0, _jquery2.default)(this));
+        });
+
+        inputFilter.change(function () {
+            applyBasketFilter((0, _jquery2.default)(this));
             // save in user setting
             _jquery2.default.ajax({
                 type: 'POST',
@@ -10545,6 +10549,11 @@ var workzone = function workzone(services) {
                 }
             });
         });
+    }
+
+    function applyBasketFilter(inputElement) {
+        var sel = inputElement.val();
+        (0, _jquery2.default)(sel).toggleClass('hidden', !inputElement.is(':checked'));
     }
 
     function refreshBaskets(options) {

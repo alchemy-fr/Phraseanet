@@ -479,9 +479,13 @@ const workzone = (services) => {
 
     /*left filter basket*/
     function filterBaskets() {
-        $('#basket-filter INPUT').change(function () {
-            const sel = $(this).val();
-            $(sel).toggleClass('hidden', !$(this).is(':checked'));
+        const inputFilter = $('#basket-filter INPUT');
+        inputFilter.each(function() {
+            applyBasketFilter($(this));
+        });
+
+        inputFilter.change(function () {
+            applyBasketFilter($(this));
             // save in user setting
             $.ajax({
                 type: 'POST',
@@ -495,6 +499,11 @@ const workzone = (services) => {
                 }
             });
         });
+    }
+
+    function applyBasketFilter(inputElement) {
+        const sel = inputElement.val();
+        $(sel).toggleClass('hidden', !inputElement.is(':checked'));
     }
 
     function refreshBaskets(options) {
