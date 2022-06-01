@@ -4135,10 +4135,8 @@ form.phrasea_query input.query {
  */
 
 #idFrameC {
-  /*
-    top: 0 !important;
-    bottom: 0 !important;
-     */
+  top: 0 !important;
+  bottom: 0 !important;
   min-width: 300px;
 }
 
