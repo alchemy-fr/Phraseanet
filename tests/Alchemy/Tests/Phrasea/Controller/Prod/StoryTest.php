@@ -76,9 +76,6 @@ class StoryTest extends \PhraseanetAuthenticatedWebTestCase
         $filter = "form[action='/prod/story/']";
         $this->assertEquals(1, $crawler->filter($filter)->count());
 
-        $filter = "form[action='/prod/story/'] input[name='name']";
-        $this->assertEquals(1, $crawler->filter($filter)->count());
-
         $filter = "form[action='/prod/story/'] select[name='base_id']";
         $this->assertEquals(1, $crawler->filter($filter)->count());
     }

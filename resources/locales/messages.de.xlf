@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-05-25T13:52:37Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2492,7 +2492,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -10225,7 +10225,7 @@
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
         <source>button::no</source>
-        <target state="new">button::no</target>
+        <target state="needs-translation">Abbrechen</target>
         <jms:reference-file line="188">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dec336199ec8f3f37f192f52e7f719ad756f725" resname="button::supprimer" approved="yes">
@@ -10235,7 +10235,7 @@
       </trans-unit>
       <trans-unit id="2367e7fbfff83a6019b9af459b23dabcb5461fd5" resname="button::yes">
         <source>button::yes</source>
-        <target state="new">button::yes</target>
+        <target state="needs-translation">löschen</target>
         <jms:reference-file line="187">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fd0653c4f2aef3b19a3c145bbdc5f4740715a09" resname="cancel" approved="yes">
@@ -11989,7 +11989,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12601,17 +12601,17 @@
       </trans-unit>
       <trans-unit id="d0290556002259ddf657748fc256a1cec709e9f9" resname="prod::dialog feedback title">
         <source>prod::dialog feedback title</source>
-        <target state="new">prod::dialog feedback title</target>
+        <target state="needs-translation">Geteilter Sammelkorb mit Feedback</target>
         <jms:reference-file line="190">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9673eb292053fe80e79a1df28e941618965382ac" resname="prod::dialog listmanager title">
         <source>prod::dialog listmanager title</source>
-        <target state="new">prod::dialog listmanager title</target>
+        <target state="needs-translation">Benutzer Liste</target>
         <jms:reference-file line="191">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c5f3d8f6be8871509d3c9158d8d098679ec0919" resname="prod::dialog sharebasket title">
         <source>prod::dialog sharebasket title</source>
-        <target state="new">prod::dialog sharebasket title</target>
+        <target state="needs-translation">Geteilter Sammelkorb</target>
         <jms:reference-file line="189">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
@@ -12858,7 +12858,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="fd0959321b1848440ff9f5c13702156bba7e6a21" resname="prod::listmanager Delete the list">
         <source>prod::listmanager Delete the list</source>
-        <target state="new">prod::listmanager Delete the list</target>
+        <target state="needs-translation">Die Liste löschen</target>
         <jms:reference-file line="186">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="47f76b5a8ec06b165c0d83ed447999def6f368e4" resname="prod::notification: notification title" approved="yes">
@@ -13016,12 +13016,12 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       </trans-unit>
       <trans-unit id="fb3208aca269a2ccf25bf327f6cc468a8b5fd776" resname="prod::story: choose a collection to create a story!">
         <source>prod::story: choose a collection to create a story!</source>
-        <target state="new">prod::story: choose a collection to create a story!</target>
+        <target state="needs-translation">Eine Kollektion auswählen</target>
         <jms:reference-file line="173">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bbbcd53a63ba018c78a6a3f650868c1a6da45a6d" resname="prod::story: warning! use only documents from one databox!">
         <source>prod::story: warning! use only documents from one databox!</source>
-        <target state="new">prod::story: warning! use only documents from one databox!</target>
+        <target state="needs-translation">Achtung, die Dokumente müssen aus einer einzigen Databox stammen</target>
         <jms:reference-file line="172">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="45e5796d4f618bc0f7e96945fdb7ffd903cd8673" resname="prod::tech_info: databox_name">
@@ -14983,7 +14983,7 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
