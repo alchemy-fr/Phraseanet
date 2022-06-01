@@ -28,10 +28,8 @@ $sharebasketThemeColor: #4caf50;
  * Workzone
  */
 #idFrameC {
-    /*
     top: 0 !important;
     bottom: 0 !important;
-     */
     min-width: 300px;
     &.closed {
         min-width: 0;
