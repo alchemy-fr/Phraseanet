@@ -272,6 +272,26 @@
 
 
 {% macro make_bloc(app, WorkZone, selected_type, selected_id, srt) %}
+    {% set basketBlockChecked = user_setting('workzone_basket_display') %}
+    {% set basketBlockChecked = (basketBlockChecked is empty or basketBlockChecked == 1) ? true : false %}
+    {% set basketBlockClass = 'basket-block' %}
+
+    {% set shareBlockChecked = user_setting('workzone_share_display') %}
+    {% set shareBlockChecked = (shareBlockChecked is empty or shareBlockChecked == 1) ? true : false %}
+    {% set shareBlockClass = 'share-block' %}
+
+    {% set feedbackBlockChecked = user_setting('workzone_feedback_display') %}
+    {% set feedbackBlockChecked = (feedbackBlockChecked is empty or feedbackBlockChecked == 1) ? true : false %}
+    {% set feedbackBlockClass = 'feedback-block' %}
+
+    {% set pushBlockChecked = user_setting('workzone_push_display') %}
+    {% set pushBlockChecked = (pushBlockChecked is empty or pushBlockChecked == 1) ? true : false %}
+    {% set pushBlockClass = 'push-block' %}
+
+    {% set storyBlockChecked = user_setting('workzone_story_display') %}
+    {% set storyBlockChecked = (storyBlockChecked is empty or storyBlockChecked == 1) ? true : false %}
+    {% set storyBlockClass = 'story-block' %}
+
     <div class="alert_datas_changed ui-corner-all">
         <a title="{{ 'rafraichir' | trans }}" class="basket_refresher" href="#">
             {{ 'Vous avez recu un nouveau panier' | trans }}
@@ -282,31 +302,31 @@
             <span class="filter-title">{{ 'See' | trans }} : </span>
             <span class="filter-item">
                 <label id="basket-list" class="checkbox inline" for="basketFilter_basket">
-                    <input type="checkbox" class="checkbox " id="basketFilter_basket" value=".basket-block" checked>
+                    <input type="checkbox" class="checkbox " id="basketFilter_basket" data-prop="workzone_basket_display" value=".{{ basketBlockClass }}" {% if basketBlockChecked %} checked {% endif %}>
                     {{ 'Basket' | trans }}
                 </label>
             </span>
             <span class="filter-item">
                 <label id="share-list" class="checkbox inline" for="basketFilter_share">
-                    <input type="checkbox" class="checkbox " id="basketFilter_share" value=".share-block" checked>
+                    <input type="checkbox" class="checkbox " id="basketFilter_share" data-prop="workzone_share_display" value=".{{ shareBlockClass }}" {% if shareBlockChecked %} checked {% endif %}>
                     {{ 'basket:: Shared' | trans }}
                 </label>
             </span>
             <span class="filter-item">
                 <label id="feedback-list" class="checkbox inline" for="basketFilter_feedback">
-                    <input type="checkbox" class="checkbox " id="basketFilter_feedback" value=".feedback-block" checked>
+                    <input type="checkbox" class="checkbox " id="basketFilter_feedback" data-prop="workzone_feedback_display" value=".{{ feedbackBlockClass }}" {% if feedbackBlockChecked %} checked {% endif %}>
                     {{ 'Feedback' | trans }}
                 </label>
             </span>
             <span class="filter-item">
                 <label id="push-list" class="checkbox inline" for="basketFilter_push">
-                    <input type="checkbox" class="checkbox " id="basketFilter_push" value=".push-block" checked>
+                    <input type="checkbox" class="checkbox " id="basketFilter_push" data-prop="workzone_push_display" value=".{{ pushBlockClass }}" {% if pushBlockChecked %} checked {% endif %}>
                     {{ 'Push' | trans }}
                 </label>
             </span>
             <span class="filter-item">
                 <label id="story-list" class="checkbox inline" for="basketFilter_story">
-                    <input type="checkbox" class="checkbox " id="basketFilter_story" value=".story-block" checked>
+                    <input type="checkbox" class="checkbox " id="basketFilter_story" data-prop="workzone_story_display" value=".{{ storyBlockClass }}" {% if storyBlockChecked %} checked {% endif %}>
                     {{ 'Stories' | trans }}
                 </label>
             </span>
@@ -336,7 +356,11 @@
                              class="ui-accordion-header ui-state-default
                              ui-corner-all header SSTT {% if not basket.getId() %}unread{% endif %}
                              {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}
-                             {{ classes }}">
+                             {{ classes }}
+                             {# block defined in lib/Alchemy/Phrasea/Helper/WorkZone.php #}
+                             {% if feedbackBlockClass in classes and not feedbackBlockChecked %} hidden {% endif %}
+                             {% if shareBlockClass in classes and not shareBlockChecked %} hidden {% endif %}
+                             ">
 
                             <a class="workzone-menu-title"
                                href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}">
@@ -404,7 +428,13 @@
                              class="ui-accordion-header ui-state-default
                              ui-corner-all header SSTT {% if not is_read %}unread{% endif %}
                              {% if basket.getId() == selected_id and selected_type == 'basket' %} active {% endif %}
-                             {{ classes }} ">
+                             {{ classes }}
+                             {# block defined in lib/Alchemy/Phrasea/Helper/WorkZone.php  #}
+                             {% if pushBlockClass in classes and not pushBlockChecked %} hidden {% endif %}
+                             {% if feedbackBlockClass in classes and not feedbackBlockChecked %} hidden {% endif %}
+                             {% if shareBlockClass in classes and not shareBlockChecked %} hidden {% endif %}
+                             {% if basketBlockClass in classes and not basketBlockChecked %} hidden {% endif %}
+                             ">
 
                             <a class="workzone-menu-title"
                                href="{{ path('prod_baskets_basket', { 'basket' : basket.getId() }) }}" style="">
@@ -463,6 +493,7 @@
                              id="SSWZ_{{ story.getId() }}" sbas="{{ story.getSbasId() }}"
                              class="STORY_{{ story.getRecord(app).get_serialize_key() }} ui-accordion-header ui-state-default
                              ui-corner-all header SSTT grouping unread story-block
+                             {% if not storyBlockChecked %} hidden {% endif %}
                              {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
 
                             <a class="workzone-menu-title"

@@ -482,6 +482,18 @@ const workzone = (services) => {
         $('#basket-filter INPUT').change(function () {
             const sel = $(this).val();
             $(sel).toggleClass('hidden', !$(this).is(':checked'));
+            // save in user setting
+            $.ajax({
+                type: 'POST',
+                url: '/user/preferences/',
+                data: {
+                    prop: $(this).attr("data-prop"),
+                    value: $(this).is(':checked') ? 1 : 0
+                },
+                success: function (data) {
+                    return;
+                }
+            });
         });
     }
 
