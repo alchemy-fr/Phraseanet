@@ -174,6 +174,35 @@ border-manager:
             options:
                 mediatypes: [Audio, Document, Image, Video]
 
+user-settings:
+    view: thumbs
+    images_per_page: 20
+    images_size: 120
+    editing_images_size: 134
+    editing_top_box: 120px
+    editing_right_box: 400px
+    editing_left_box: 710px
+    basket_sort_field: name
+    basket_sort_order: ASC
+    warning_on_delete_story: true
+    client_basket_status: 1
+    css: 000000
+    start_page_query: ''
+    order_collection_by: self::ORDER_BY_ADMIN,
+    start_page: LAST_QUERY
+    last_jsonquery: ''
+    rollover_thumbnail: caption
+    technical_display: 1
+    doctype_display: 1
+    bask_val_order: nat
+    basket_caption_display: 0
+    basket_status_display: 0
+    basket_title_display: 0
+    basket_type_display: 0
+    order_facet: ORDER_BY_ADMIN
+    facet_values_order: ORDER_BY_HITS
+    show_unset_field_facet: 0
+
 registry:
     api-clients:
         api-subdef_service: false
