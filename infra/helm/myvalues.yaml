@@ -50,7 +50,7 @@ php:
 
 ingress:
   enabled: false
-  hostname: phraseanet
+  host: phraseanet
   tls: false
 
 app:
