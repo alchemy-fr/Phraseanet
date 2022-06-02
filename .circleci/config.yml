@@ -105,7 +105,7 @@ jobs:
 
     build_phraseanet-fpm:
         machine:
-          image: ubuntu-1604:201903-01
+          image: ubuntu-2004:202201-02
           docker_layer_caching: true
         working_directory: ~/alchemy-fr/Phraseanet
         steps:
@@ -120,7 +120,7 @@ jobs:
 
     build_phraseanet-worker:
         machine:
-          image: ubuntu-1604:201903-01
+          image: ubuntu-2004:202201-02
           docker_layer_caching: true
         working_directory: ~/alchemy-fr/Phraseanet
         steps:
@@ -135,7 +135,7 @@ jobs:
 
     build_phraseanet-nginx:
         machine:
-          image: ubuntu-1604:201903-01
+          image: ubuntu-2004:202201-02
           docker_layer_caching: true
         working_directory: ~/alchemy-fr/Phraseanet
         steps:
