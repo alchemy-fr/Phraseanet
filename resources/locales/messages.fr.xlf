@@ -9106,7 +9106,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="3c6e9df1925ca0ae9df114b4c17e7667ec66f5d7" resname="admin::users: provider">
         <source>admin::users: provider</source>
-        <target state="needs-translation">Auth provider</target>
+        <target state="translated">Auth provider</target>
         <jms:reference-file line="564">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6cfb4576a83ebc4343a74a84024777119fadbd25" resname="admin::users: redirect uri">
@@ -9136,7 +9136,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="54592d34674af3046462e72065524cdc0c7352a1" resname="admin::users: username">
         <source>admin::users: username</source>
-        <target state="needs-translation">Nom d'utilisateur</target>
+        <target state="translated">Nom d'utilisateur</target>
         <jms:reference-file line="659">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="686">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
@@ -13027,7 +13027,7 @@ Un "Push" n'expire jamais.</target>
       </trans-unit>
       <trans-unit id="45e5796d4f618bc0f7e96945fdb7ffd903cd8673" resname="prod::tech_info: databox_name">
         <source>prod::tech_info: databox_name</source>
-        <target state="needs-translation">Databox</target>
+        <target state="translated">Databox</target>
         <jms:reference-file line="8">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="df147d680e0fab108bc7a6a1c878c55428ecd3ea" resname="prod::thesaurusTab:candidats" approved="yes">
@@ -13624,7 +13624,7 @@ Un "Push" n'expire jamais.</target>
       </trans-unit>
       <trans-unit id="0122357712e990a5a0461aa181f54d7b1f1e3e4c" resname="prod:share:: No vote expires date">
         <source>prod:share:: No vote expires date</source>
-        <target state="needs-translation">Une date de clôture pour la validation est obligatoire</target>
+        <target state="translated">Une date de clôture pour la validation est obligatoire</target>
         <jms:reference-file line="106">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
