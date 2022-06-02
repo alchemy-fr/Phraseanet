@@ -1,6 +1,6 @@
 
 image:
-  registry:
+  registry: alchemyfr
   tag:
       phraseanet: 4.1.3
       database : 4.1.3
