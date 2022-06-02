@@ -9037,7 +9037,7 @@
       </trans-unit>
       <trans-unit id="a7cc508c7cb0f9b1d27e69e9a422670183236ec5" resname="admin::users: auth failure unlocked list">
         <source>admin::users: auth failure unlocked list</source>
-        <target state="needs-translation">Auth failure history (2 months retention )</target>
+        <target state="translated">Auth failure history (2 months retention )</target>
         <jms:reference-file line="682">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="333dc596de24529211ed2966582e8aae28b72238" resname="admin::users: creation date">
@@ -9093,7 +9093,7 @@
       </trans-unit>
       <trans-unit id="0a71173381c1c8b659c9f7ac05cd5dfed8d3b97e" resname="admin::users: no api defined for this user">
         <source>admin::users: no api defined for this user</source>
-        <target state="needs-translation">No API for this user</target>
+        <target state="translated">No API for this user</target>
         <jms:reference-file line="619">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="85d760f5a5e3b7c29f17485512d9225ccdd40811" resname="admin::users: password granted">
@@ -13029,7 +13029,7 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="45e5796d4f618bc0f7e96945fdb7ffd903cd8673" resname="prod::tech_info: databox_name">
         <source>prod::tech_info: databox_name</source>
-        <target state="needs-translation">Databox</target>
+        <target state="translated">Databox</target>
         <jms:reference-file line="8">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="df147d680e0fab108bc7a6a1c878c55428ecd3ea" resname="prod::thesaurusTab:candidats" approved="yes">
