@@ -40,12 +40,18 @@ class TwigServiceProvider implements ServiceProviderInterface
             }
 
             if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
+                if (!is_dir($app['root.path'] . '/config/templates/mobile')) {
+                    mkdir($app['root.path'] . '/config/templates/mobile', 0755, true);
+                }
                 $paths[] = $app['root.path'] . '/config/templates/mobile';
                 $paths[] = $app['root.path'] . '/templates/mobile';
                 $paths['phraseanet'] = $app['root.path'] . '/config/templates/mobile';
                 $paths['phraseanet'] = $app['root.path'] . '/templates/mobile';
             }
 
+            if (!is_dir($app['root.path'] . '/config/templates/web')) {
+                mkdir($app['root.path'] . '/config/templates/web', 0755, true);
+            }
             $paths[] = $app['root.path'] . '/config/templates/web';
             $paths[] = $app['root.path'] . '/templates/web';
             $paths['phraseanet'] = $app['root.path'] . '/config/templates/web';
