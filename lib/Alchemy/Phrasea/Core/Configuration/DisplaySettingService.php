@@ -51,7 +51,10 @@ class DisplaySettingService
         'basket_caption_display'  => '0',
         'basket_status_display'   => '0',
         'basket_title_display'    => '0',
-        'basket_type_display'     => '0'
+        'basket_type_display'     => '0',
+        'order_facet'             => 'ORDER_BY_ADMIN',
+        'facet_values_order'      => 'ORDER_BY_HITS',
+        'show_unset_field_facet'  => '0'
     ];
 
     /**
