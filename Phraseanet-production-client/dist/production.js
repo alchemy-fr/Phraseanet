@@ -5530,6 +5530,13 @@ var editRecord = function editRecord(services) {
             data: datas,
             success: function success(data) {
                 (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').empty().html(data);
+
+                if (window.recordEditorConfig.hasMultipleDatabases === true) {
+                    (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 // let recordEditor = recordEditorService(services);
                 recordEditor.initialize({
                     $container: (0, _jquery2.default)('#EDITWINDOW'),
@@ -22401,20 +22408,6 @@ var recordEditorService = function recordEditorService(services) {
             state = params.state;
 
 
-        if (hasMultipleDatabases === true) {
-            (0, _jquery2.default)('#EDITWINDOW').hide();
-            // editor can't be run
-            (0, _jquery2.default)('#dialog-edit-many-sbas', options.$container).dialog({
-                modal: true,
-                resizable: false,
-                buttons: {
-                    Ok: function Ok() {
-                        (0, _jquery2.default)(this).dialog('close');
-                    }
-                }
-            });
-            return;
-        }
         if (notActionable > 0) {
             alert(notActionableMsg);
         }
