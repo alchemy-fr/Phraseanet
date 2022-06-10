@@ -37,7 +37,7 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
     echo `date +"%Y-%m-%d %H:%M:%S"` " - $FILE exists, start setup ."
     
     if [[ $PHRASEANET_PROJECT_NAME && $ENV_SET_PHRASEANET_PROJECT_NAME == 1 ]]; then
-        bin/setup system:config set registry.general.title $PHRASEANET_PROJECT_NAME
+        bin/setup system:config set registry.general.title "$PHRASEANET_PROJECT_NAME"
     fi
 
     echo `date +"%Y-%m-%d %H:%M:%S"` " -  Phraseanet Setting available language in GUI and search"
@@ -124,7 +124,7 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
         bin/setup system:config set registry.email.smtp-user $PHRASEANET_SMTP_USER
         bin/setup system:config set registry.email.smtp-password $PHRASEANET_SMTP_PASSWORD
         bin/setup system:config set registry.email.emitter-email $PHRASEANET_EMITTER_EMAIL
-        bin/setup system:config set registry.email.prefix $PHRASEANET_MAIL_OBJECT_PREFIX
+        bin/setup system:config set registry.email.prefix "$PHRASEANET_MAIL_OBJECT_PREFIX"
     fi
     
     # TODO define mapbox setting
