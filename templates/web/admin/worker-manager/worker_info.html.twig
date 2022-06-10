@@ -8,28 +8,24 @@
         </button>
     </p>
 
-    <form action="{{ path("worker_admin_truncate") }}" method="POST">
-        <p>
-            <button class="btn btn-primary">
-                {{ 'admin::workermanager:tab:workerinfo: Erase all information' |trans }}
-            </button>
-            <span class="alert alert-danger">
-                {{ "admin::workermanager:tab:workerinfo: Warning! Erase all information" |trans }}
-            </span>
-            </p>
-    </form>
+    <p>
+        <button class="btn btn-primary erase-all">
+            {{ 'admin::workermanager:tab:workerinfo: Erase all information' |trans }}
+        </button>
+        <span class="alert alert-danger">
+            {{ "admin::workermanager:tab:workerinfo: Warning! Erase all information" |trans }}
+        </span>
+    </p>
 
-    <form action="{{ path("worker_admin_delete_finished") }}" method="POST">
-        <p>
-            <button class="btn btn-primary">
-                {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
-            </button>
-            <span class="alert alert-info">
-                {{ "admin::workermanager:tab:workerinfo: Warning! Erase all finished"|trans }}
-            </span>
+    <p>
+        <button class="btn btn-primary erase-finished">
+            {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
+        </button>
+        <span class="alert alert-info">
+            {{ "admin::workermanager:tab:workerinfo: Warning! Erase all finished"|trans }}
+        </span>
 
-        </p>
-    </form>
+    </p>
     <br><br>
     <button id="refresh-list" class="btn btn-success">
         {{ 'admin::workermanager:tab:workerinfo: Refresh list' |trans }}
@@ -226,6 +222,28 @@
                 }
             });
         }
+
+        $('.erase-all').on('click', function () {
+            if (confirm("{{ 'Are you sure you want to erase all job informations ?' | trans }}")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/worker-manager/truncate',
+                    success: function (data) {
+                    }
+                });
+            }
+        });
+
+        $('.erase-finished').on('click', function () {
+            if (confirm("{{ 'Are you sure you want to erase finished job informations ?' | trans }}")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/worker-manager/delete-finished',
+                    success: function (data) {
+                    }
+                });
+            }
+        });
 
     </script>
 {% endif %}
