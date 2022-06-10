@@ -51,6 +51,13 @@ const editRecord = (services) => {
             data: datas,
             success: (data) => {
                 $('#EDITWINDOW').removeClass('loading').empty().html(data);
+
+                if (window.recordEditorConfig.hasMultipleDatabases === true) {
+                    $('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 // let recordEditor = recordEditorService(services);
                 recordEditor.initialize({
                     $container: $('#EDITWINDOW'),

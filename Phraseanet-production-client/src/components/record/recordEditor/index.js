@@ -270,20 +270,6 @@ const recordEditorService = services => {
             state
         } = params;
 
-        if (hasMultipleDatabases === true) {
-            $('#EDITWINDOW').hide();
-            // editor can't be run
-            $('#dialog-edit-many-sbas', options.$container).dialog({
-                modal: true,
-                resizable: false,
-                buttons: {
-                    Ok: function () {
-                        $(this).dialog('close');
-                    }
-                }
-            });
-            return;
-        }
         if (notActionable > 0) {
             alert(notActionableMsg);
         }
