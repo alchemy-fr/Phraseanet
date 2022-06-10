@@ -199,18 +199,36 @@ If you are not interested in the development of Phraseanet, you can ignore every
 
 It may be easier to deal with a local file to manage our env variables.
 
-You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc`:
+You can add your `env.local` at the root of this project and define a command function in your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-# ~/.bashrc or ~/.zshrc
-function dc() {
-    if [ -f env.local ]; then
-        env $(cat env.local | grep -v '#' | tr '\n' ' ') docker-compose $@
-    else
-        docker-compose $@
+#######################################
+# Docker-compose helper:
+#   Locate first defined environment
+#   file and inject variables found in
+#   docker-compose command.
+# Arguments:
+#   command (string)
+# Usage example:
+#   dc up -d
+#######################################
+dc()
+{
+  local envFilesSearchList=(".env.local" "env.local")
+
+  for i in "${envFilesSearchList[@]}"; do
+    if [[ -f "$i" ]]; then
+      echo -e "\nEnvironment file: \e[107m\e[42m $i \e[0m\n"
+      eval env "$(cat < $i | grep -v '#' | sed -e 's/=\([^\x27"].*[^\x27"]\)/="\1"/g' | tr '\n' ' ' )" docker-compose "$@"
+      return 1
     fi
+  done
+
+  echo -e "\n\e[107m\e[41m No Environment file \e[0m\n"
+  docker-compose "$@"
 }
 ```
+> Note that helper function only works with `"docker-compose"` (and not `"docker compose"`).
 
 ### Phraseanet Docker Images
 
