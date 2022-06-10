@@ -37,6 +37,7 @@ class ShareBasketWorker implements WorkerInterface
         $feedbackAction = $payload['feedbackAction'];
         $shareExpiresDate = $payload['shareExpires'];
         $voteExpiresDate = $payload['voteExpires'];
+        $notSendReminder = empty($payload['send_reminder']) ? true : false ;
 
         $n_participants = 0;
         // file_put_contents("./tmp/phraseanet-log.txt", sprintf("CWD = %s\n\n%s; %d participants in payload\n", getcwd(), $_t0 = time(), count($participants)), FILE_APPEND);
@@ -160,6 +161,11 @@ class ShareBasketWorker implements WorkerInterface
                     ->setCanAgree($participant['agree'])
                     ->setCanModify($participant['modify'])
                     ->setCanSeeOthers($participant['see_others']);
+
+                if ($notSendReminder) {
+                    // column reminded to be not null
+                    $basketParticipant->setReminded(new DateTime());
+                }
 
                 // file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; participant created\n", time()), FILE_APPEND);
 
