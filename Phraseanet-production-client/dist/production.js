@@ -18398,6 +18398,7 @@ var pushOrShare = function pushOrShare(services, container) {
                 $dialog.close();
 
                 (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
@@ -18432,6 +18433,7 @@ var pushOrShare = function pushOrShare(services, container) {
             }
 
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+            (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');

@@ -232,6 +232,7 @@ const pushOrShare = function (services, container) {
                 $dialog.close();
 
                 $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+                $('input[name="send_reminder"]', $FeedBackForm).prop('checked', $('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
                 $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
                 $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
                 $('input[name="notify"]', $FeedBackForm).val('0');
@@ -266,6 +267,7 @@ const pushOrShare = function (services, container) {
             }
 
             $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+            $('input[name="send_reminder"]', $FeedBackForm).prop('checked', $('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="recept"]', $FeedBackForm).prop('checked', $('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="force_authentication"]', $FeedBackForm).prop('checked', $('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
             $('input[name="notify"]', $FeedBackForm).val('1');

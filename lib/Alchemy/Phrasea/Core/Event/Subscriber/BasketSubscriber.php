@@ -88,6 +88,7 @@ class BasketSubscriber extends AbstractNotificationSubscriber
                 'authenticatedUserId'   => $event->getAuthenticatedUser()->getId(),
                 'basketId'              => $event->getBasket()->getId(),
                 'force_authentication'  => $request->get('force_authentication'),
+                'send_reminder'         => $request->request->get('send_reminder'),
                 'recept'                => $request->request->get('recept'),
                 'notify'                => $request->request->get('notify'),
                 'message'               => $request->request->get('message'),
