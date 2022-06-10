@@ -5530,6 +5530,13 @@ var editRecord = function editRecord(services) {
             data: datas,
             success: function success(data) {
                 (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').empty().html(data);
+
+                if (window.recordEditorConfig.hasMultipleDatabases === true) {
+                    (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 // let recordEditor = recordEditorService(services);
                 recordEditor.initialize({
                     $container: (0, _jquery2.default)('#EDITWINDOW'),
@@ -18398,6 +18405,7 @@ var pushOrShare = function pushOrShare(services, container) {
                 $dialog.close();
 
                 (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
@@ -18432,6 +18440,7 @@ var pushOrShare = function pushOrShare(services, container) {
             }
 
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+            (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
@@ -22401,20 +22410,6 @@ var recordEditorService = function recordEditorService(services) {
             state = params.state;
 
 
-        if (hasMultipleDatabases === true) {
-            (0, _jquery2.default)('#EDITWINDOW').hide();
-            // editor can't be run
-            (0, _jquery2.default)('#dialog-edit-many-sbas', options.$container).dialog({
-                modal: true,
-                resizable: false,
-                buttons: {
-                    Ok: function Ok() {
-                        (0, _jquery2.default)(this).dialog('close');
-                    }
-                }
-            });
-            return;
-        }
         if (notActionable > 0) {
             alert(notActionableMsg);
         }

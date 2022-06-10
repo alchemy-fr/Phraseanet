@@ -441,78 +441,75 @@
                     }
                 }
             });
-            $('#dialog-edit-many-sbas').on('dialogclose', function(event) {
-                location.reload();
-            });
         });
-    {% else %}
-        {%  set notActionableMsg = '' %}
-        {% if not_actionable > 1 %}
-            {%  set notActionableMsg = 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) %}
-        {% elseif not_actionable == 1 %}
-            {%  set notActionableMsg = 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js')%}
-        {% endif %}
-
-        var recordEditorConfig = {
-            hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
-            databoxId: {{ databox.get_sbas_id }},
-            mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
-            notActionable: {{ not_actionable }},
-            notActionableMsg: '{{notActionableMsg}}',
-            diapoSize: {{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_images_size') }},
-            state: {
-                T_statbits: {{ JSonStatus|raw }},
-                T_fields: {{ JSonFields|raw }},
-                T_records: {{ JSonRecords|raw }},
-                T_sgval: {{ JSonSuggValues|raw }},
-                T_id: {{ JSonIds|raw }},
-                T_pos: {{ JSonIds|raw }},
-                T_mval: []
-            },
-            videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
-            records: [
-
-                {% for record in recordsRequest %}
-                {
-                    id: {{ record.get_record_id }},
-                    type: "{{ record.get_type() }}",
-                    {% set position = record.getPositionFromTechnicalInfos %}
-                    technicalInfo: {
-                        isCoordComplete: {{ position.isCoordComplete }},
-                        latitude: {{ position.latitude }},
-                        longitude: {{ position.longitude }}
-                    },
-                    {% if record.get_type() == 'video' %}
-                    {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
-                    {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
-                    {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
-                    {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
-
-                    {% set technical_info = record.get_technical_infos %}
-                    {% set width = technical_info[dataW].value %}
-                    {% set height = technical_info[dataH].value %}
-
-                    {% if width and height %}
-                    {% set ratio = (width / height)|number_format(2, '.') %}
-                    {% else %}
-                    {% set ratio = '' %}
-                    {% endif %}
-
-                    sources: [
-                        {% for subdef in previewHtml5 %}
-                        {
-                            ratio: '{{ ratio }}',
-                            framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
-                            type: "{{ subdef.get_mime() }}",
-                            src: "{{ subdef.get_url() }}"
-                        }{% if not loop.last %},{% endif %}
-                        {% endfor %}
-                    ]
-                    {% endif %}
-                }{% if not loop.last %},{% endif %}
-                {% endfor %}
-            ]
-        };
     {% endif %}
+
+    {%  set notActionableMsg = '' %}
+    {% if not_actionable > 1 %}
+        {%  set notActionableMsg = 'prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants' | trans({'%not_actionable%' : not_actionable}) %}
+    {% elseif not_actionable == 1 %}
+        {%  set notActionableMsg = 'prod::editing: 1 document ne peut etre edite car vos droits sont induffisants' | trans | e('js')%}
+    {% endif %}
+
+    var recordEditorConfig = {
+        hasMultipleDatabases: {% if multipleDataboxes or recordsRequest|length == 0 %}true{% else %}false{% endif %},
+        databoxId: {% if multipleDataboxes %}0{% else %}{{ databox.get_sbas_id }}{% endif %},
+        mode: {% if recordsRequest.isSingleStory() %}'GRP'{% else %}'LST'{% endif %},
+        notActionable: {{ not_actionable }},
+        notActionableMsg: '{{notActionableMsg}}',
+        diapoSize: {{ app['settings'].getUserSetting(app.getAuthenticatedUser(), 'editing_images_size') }},
+        state: {
+            T_statbits: {{ JSonStatus|raw }},
+            T_fields: {{ JSonFields|raw }},
+            T_records: {{ JSonRecords|raw }},
+            T_sgval: {{ JSonSuggValues|raw }},
+            T_id: {{ JSonIds|raw }},
+            T_pos: {{ JSonIds|raw }},
+            T_mval: []
+        },
+        videoEditorConfig: {% if videoEditorConfig is not null %}{{ videoEditorConfig|json_encode()|raw }}{% else %}{}{% endif %},
+        records: [
+
+            {% for record in recordsRequest %}
+            {
+                id: {{ record.get_record_id }},
+                type: "{{ record.get_type() }}",
+                {% set position = record.getPositionFromTechnicalInfos %}
+                technicalInfo: {
+                    isCoordComplete: {{ position.isCoordComplete }},
+                    latitude: {{ position.latitude }},
+                    longitude: {{ position.longitude }}
+                },
+                {% if record.get_type() == 'video' %}
+                {% set outputFormats = record.getSubdfefByDeviceAndMime(null, ['image/jpeg', 'image/png']) %}
+                {% set previewHtml5 = record.getSubdfefByDeviceAndMime(constant('\\databox_subdef::DEVICE_SCREEN'), ['video/ogg', 'video/mp4', 'video/webm']) %}
+                {% set dataW = constant('media_subdef::TC_DATA_WIDTH') %}
+                {% set dataH = constant('media_subdef::TC_DATA_HEIGHT') %}
+
+                {% set technical_info = record.get_technical_infos %}
+                {% set width = technical_info[dataW].value %}
+                {% set height = technical_info[dataH].value %}
+
+                {% if width and height %}
+                {% set ratio = (width / height)|number_format(2, '.') %}
+                {% else %}
+                {% set ratio = '' %}
+                {% endif %}
+
+                sources: [
+                    {% for subdef in previewHtml5 %}
+                    {
+                        ratio: '{{ ratio }}',
+                        framerate: {{ record.exif[constant('media_subdef::TC_DATA_FRAMERATE')] | round(2) }},
+                        type: "{{ subdef.get_mime() }}",
+                        src: "{{ subdef.get_url() }}"
+                    }{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ]
+                {% endif %}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]
+    };
 
 </script>
