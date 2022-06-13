@@ -106,7 +106,9 @@
             <p class="create-date">
                 {{ 'prod:workzone:basket:creation-date' | trans }} : {{ date }}
             </p>
-            <div class="record-number">  {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}</div>
+            <div class="record-number">
+                {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
+            </div>
 
             {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getVoteExpires()) %}
             <div class="expiredDate">
@@ -125,15 +127,32 @@
                 </form>
                 <p class="message text-right" style="opacity: 0;transition: all 0.2s; color: green; display: block; ">{{ 'prod:workzone:basket:updated-message' | trans }}</p>
             </div>
-
-            {% endif %}
         </div>
+    {% endif %}
+
+    {% set mailto_basket_user_name =  '<a href="mailto:' ~ basket.getUser().getEmail() ~ '" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">' ~
+        basket.getUser().displayName() ~'</a>' %}
+
+    {% if not basket.isVoteBasket() and basket.getUser().getId() != app.getAuthenticatedUser().getId()  %}
+        <p>
+            {% if basket.getShareExpires() is null %}
+                {% trans with {'%user_name%' : mailto_basket_user_name } %}Basket shared by %user_name% indefinitely{% endtrans %}
+            {% else %}
+                {% trans with {'%user_name%' : mailto_basket_user_name, '%expires%':  app['date-formatter'].getFormatedDate(basket.getShareExpires()) } %} Basket shared by %user_name% until %expires%{% endtrans %}
+            {% endif %}
+        </p>
+    {% elseif basket.isVoteBasket() and basket.getUser().getId() != app.getAuthenticatedUser().getId() %}
+        <p>
+            {% trans with {'%user_name%' : mailto_basket_user_name, '%vote_expires%':  app['date-formatter'].getFormatedDate(basket.getVoteExpires()) } %}Feedback order by %user_name% until %vote_expires%{% endtrans %}
+        </p>
+    {% endif %}
+
 </div>
     {% set basket_length = basket.getElements()|length %}
     <div class="alert_datas_changed ui-corner-all">{{ 'Certaines donnees du panier ont change' | trans }} <a class="basket_refresher" href="#">{{ 'rafraichir' | trans }}</a></div>
-{% if basket_length == 0 %}
-    <div style="height:120px;"></div>
-{% endif %}
+    {% if basket_length == 0 %}
+        <div style="height:120px;"></div>
+    {% endif %}
 
     {% set basket_scope = 'objects' %}
 
@@ -142,9 +161,9 @@
     {% if basket.isVoteBasket() %}
         {{ Macros.display_validation(app, basket, ordre) }}
 
-{% else %}
-    {{ Macros.display_basket(app, basket) }}
-{% endif %}
+    {% else %}
+        {{ Macros.display_basket(app, basket) }}
+    {% endif %}
 </div>
 
 {% if basket.isVoteBasket() and basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}

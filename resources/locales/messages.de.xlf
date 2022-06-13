@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-06-03T14:23:38Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2022-06-13T08:48:30Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -16,6 +16,11 @@
         <source>Add</source>
         <target state="translated">Hinzufügen</target>
         <jms:reference-file line="66">admin/fields/templates.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="b71e6ba696951198c4ac26a27ebf7427894e3f43" resname=" Basket shared by %user_name% until %expires%">
+        <source> Basket shared by %user_name% until %expires%</source>
+        <target state="new"> Basket shared by %user_name% until %expires%</target>
+        <jms:reference-file line="141">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
         <source>#3567c6</source>
@@ -178,7 +183,7 @@
         <target state="translated">%nb_records% Datensätze</target>
         <jms:reference-file line="29">prod/Tooltip/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="14">prod/Tooltip/Story.html.twig</jms:reference-file>
-        <jms:reference-file line="109">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="110">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e39dc3a90b0674916ef22f19912638564f33e518" resname="%nb_view% vue" approved="yes">
         <source>%nb_view% vue</source>
@@ -1473,6 +1478,11 @@
         <target state="translated">Sammelkorb wurde nicht gefunden</target>
         <jms:reference-file line="203">Model/Repositories/BasketRepository.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="7c2e4c3079aa1851644b3f0dc23192e0514cbb0f" resname="Basket shared by %user_name% indefinitely">
+        <source>Basket shared by %user_name% indefinitely</source>
+        <target state="new">Basket shared by %user_name% indefinitely</target>
+        <jms:reference-file line="139">prod/WorkZone/Basket.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="f149359beace4d242ac47578384e4cb7e001b9e7" resname="Basket updated" approved="yes">
         <source>Basket updated</source>
         <target state="translated">Sammelkorb wurde aktualisiert</target>
@@ -1674,7 +1684,7 @@
       <trans-unit id="3f2e437119fb80c64e6a9c7fff66c4160856dc40" resname="Certaines donnees du panier ont change" approved="yes">
         <source>Certaines donnees du panier ont change</source>
         <target state="translated">Einige Daten des Sammelkorbs wurden verändert</target>
-        <jms:reference-file line="133">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="152">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3062356beeb0f20cb9418d55769ea256059d611e" resname="Certaines donnees du reportage ont change" approved="yes">
         <source>Certaines donnees du reportage ont change</source>
@@ -3180,6 +3190,11 @@
         <jms:reference-file line="52">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="318">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="54">prod/WorkZone/Story.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="244662b563417337c02e9e41c6f0b2363d84e54f" resname="Feedback order by %user_name% until %vote_expires%">
+        <source>Feedback order by %user_name% until %vote_expires%</source>
+        <target state="new">Feedback order by %user_name% until %vote_expires%</target>
+        <jms:reference-file line="146">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%" approved="yes">
         <source>Feedback:: Requested by %initiator% on %createdDate%</source>
@@ -12658,12 +12673,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="b4647a860e97f9b173747e8736ae36630631fbb4" resname="prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants" approved="yes">
         <source>prod::editing: %not_actionable% documents ne peuvent etre edites car vos droits sont induffisants</source>
         <target state="translated">%not_actionable% Dokumente können nicht bearbeitet werden, da Sie keine Rechte darauf haben</target>
-        <jms:reference-file line="451">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="449">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e58fe53260dcb47548d687b0aac89a231f8fd349" resname="prod::editing: 1 document ne peut etre edite car vos droits sont induffisants" approved="yes">
         <source>prod::editing: 1 document ne peut etre edite car vos droits sont induffisants</source>
         <target state="translated">Keine Bearbeitung möglich. Sie haben keinen Zugriff auf die Dokumente</target>
-        <jms:reference-file line="453">prod/actions/edit_default.html.twig</jms:reference-file>
+        <jms:reference-file line="451">prod/actions/edit_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d06429358cfa7814d995cffec515505b4babbdf3" resname="prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants" approved="yes">
         <source>prod::editing: aucun documents ne peuvent etre edites car vos droits sont induffisants</source>
@@ -13735,7 +13750,7 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message" approved="yes">
         <source>prod:workzone:basket:updated-message</source>
         <target state="translated">Feedback Schlusstermin aktualisiert</target>
-        <jms:reference-file line="126">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="128">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e7a77a1df74d725737df947f6debe604070f0014" resname="prod:workzone:expose:modal:: title" approved="yes">
         <source>prod:workzone:expose:modal:: title</source>
@@ -13898,7 +13913,7 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
         <target state="translated">Aktualisieren</target>
         <jms:reference-file line="17">prod/results/feeds.html.twig</jms:reference-file>
         <jms:reference-file line="22">prod/results/feeds.html.twig</jms:reference-file>
-        <jms:reference-file line="133">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="152">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="296">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="88">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
@@ -15630,144 +15645,144 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
         <source>workzone:datepicker:april</source>
         <target state="translated">April</target>
         <jms:reference-file line="591">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="178">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="23ed9061fbf1a184658e05e57a121a72474b54eb" resname="workzone:datepicker:august" approved="yes">
         <source>workzone:datepicker:august</source>
         <target state="translated">August</target>
         <jms:reference-file line="595">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="179">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7e55bc758f272d38198385584d6f50c2dd0eae13" resname="workzone:datepicker:december" approved="yes">
         <source>workzone:datepicker:december</source>
         <target state="translated">Dezember</target>
         <jms:reference-file line="599">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="179">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="db178b383e47bbe58670afd6a67528a4712444d7" resname="workzone:datepicker:february" approved="yes">
         <source>workzone:datepicker:february</source>
         <target state="translated">Februar</target>
         <jms:reference-file line="589">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="178">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a4e3f12ef1defef487381a8339ea49840666414a" resname="workzone:datepicker:friday" approved="yes">
         <source>workzone:datepicker:friday</source>
         <target state="translated">Freitag</target>
         <jms:reference-file line="607">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="180">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="93f6bd6902114b73c225005188bce87569a3ac9c" resname="workzone:datepicker:january" approved="yes">
         <source>workzone:datepicker:january</source>
         <target state="translated">Januar</target>
         <jms:reference-file line="588">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="178">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0f1d297c3d3d9bc7cd800a9bd1a938904f4440ab" resname="workzone:datepicker:july" approved="yes">
         <source>workzone:datepicker:july</source>
         <target state="translated">Juli</target>
         <jms:reference-file line="594">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="179">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d860a667674628da86b76fb3be676370a61893c" resname="workzone:datepicker:june" approved="yes">
         <source>workzone:datepicker:june</source>
         <target state="translated">Juni</target>
         <jms:reference-file line="593">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="178">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2242d17f28dc262529688d688b5c2e128813ad8b" resname="workzone:datepicker:march" approved="yes">
         <source>workzone:datepicker:march</source>
         <target state="translated">März</target>
         <jms:reference-file line="590">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="178">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ce30e1185f0f46df340ca727d4d9d89f42b6f5b" resname="workzone:datepicker:may" approved="yes">
         <source>workzone:datepicker:may</source>
         <target state="translated">Mai</target>
         <jms:reference-file line="592">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="178">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a7199e82486037293a2cfb17003ed9a30e2cfb2" resname="workzone:datepicker:monday" approved="yes">
         <source>workzone:datepicker:monday</source>
         <target state="translated">Montag</target>
         <jms:reference-file line="603">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="180">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText">
         <source>workzone:datepicker:nextText</source>
         <target state="translated">nächste</target>
         <jms:reference-file line="585">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="157">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="176">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november" approved="yes">
         <source>workzone:datepicker:november</source>
         <target state="translated">November</target>
         <jms:reference-file line="598">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="179">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="46727c5b9b3455e2cec4fc761568262af710f119" resname="workzone:datepicker:october" approved="yes">
         <source>workzone:datepicker:october</source>
         <target state="translated">Oktober</target>
         <jms:reference-file line="597">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="179">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText" approved="yes">
         <source>workzone:datepicker:prevText</source>
         <target state="translated">vorherige</target>
         <jms:reference-file line="584">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="156">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="175">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday" approved="yes">
         <source>workzone:datepicker:saturday</source>
         <target state="translated">Samstag</target>
         <jms:reference-file line="608">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="180">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8aa1e4c6df39f7365a4fab8f3c70d3d8d4757ee" resname="workzone:datepicker:september" approved="yes">
         <source>workzone:datepicker:september</source>
         <target state="translated">September</target>
         <jms:reference-file line="596">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="179">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd48f23064201336fafcab46a34c085d5a886cb6" resname="workzone:datepicker:sunday" approved="yes">
         <source>workzone:datepicker:sunday</source>
         <target state="translated">Sonntag</target>
         <jms:reference-file line="602">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="180">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de522dc0285d55c95bb9af4aa39020ac35548353" resname="workzone:datepicker:thursday" approved="yes">
         <source>workzone:datepicker:thursday</source>
         <target state="translated">Donnerstag</target>
         <jms:reference-file line="606">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="180">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d274289f8c48bcb43c06efe9386967b7f8fb56df" resname="workzone:datepicker:tuesday" approved="yes">
         <source>workzone:datepicker:tuesday</source>
         <target state="translated">Dienstag</target>
         <jms:reference-file line="604">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="180">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="423742b6f616f9847ea24afec03e24b15f3ff10f" resname="workzone:datepicker:wednesday" approved="yes">
         <source>workzone:datepicker:wednesday</source>
         <target state="translated">Mittwoch</target>
         <jms:reference-file line="605">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="180">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed">
         <source>workzone:feedback:expiration-closed</source>
         <target state="translated">Feedback geschlossen am</target>
         <jms:reference-file line="15">prod/Tooltip/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open">
         <source>workzone:feedback:expiration-open</source>
         <target state="translated">Feedback offen bis</target>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="118">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update">
         <source>workzone:feedback:update</source>
         <target state="translated">Das neue Abschlussdatum bestätigen</target>
-        <jms:reference-file line="123">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="125">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
         <source>wz:block_title:my_baskets</source>
