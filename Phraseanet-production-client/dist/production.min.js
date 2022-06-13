@@ -18416,7 +18416,7 @@ var pushOrShare = function pushOrShare(services, container) {
 
         // normal "send button"
         //
-        buttons[localeService.t('send')] = function () {
+        buttons[localeService.t('feedbackSend')] = function () {
 
             // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {

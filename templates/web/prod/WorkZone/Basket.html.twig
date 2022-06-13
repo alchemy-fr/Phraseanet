@@ -90,9 +90,11 @@
         {% endif %}
     </div>
 
-    {% if basket.isVoteBasket() and basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
+    {% set nparticipants = basket.getParticipants | length %}
+
+    {% if nparticipants > 0 and basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
         {% set disabled = '' %}
-        {% if basket.isVoteFinished() %}
+        {% if (basket.isVoteBasket() and basket.isVoteFinished()) or (not basket.isVoteBasket() and basket.isShareExpires()) %}
             {% set disabled = 'disabled' %}
         {% endif %}
 
@@ -101,7 +103,7 @@
 
         <div class="feedback-info">
             {% set nb_records = basket.getElements()|length %}
-            {% set date = app['date-formatter'].getPrettyString(basket.getUpdated()) %}
+            {% set date = app['date-formatter'].getPrettyString(basket.getCreated()) %}
 
             <p class="create-date">
                 {{ 'prod:workzone:basket:creation-date' | trans }} : {{ date }}
@@ -110,12 +112,25 @@
                 {% trans with {'%nb_records%' : nb_records} %}%nb_records% records{% endtrans %}
             </div>
 
-            {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getVoteExpires()) %}
+            {% if basket.isVoteBasket() %}
+                {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getVoteExpires()) %}
+            {% else %}
+                {% set dateExpired = app['date-formatter'].getFormatedDate(basket.getShareExpires()) %}
+            {% endif %}
+
             <div class="expiredDate">
-                {% if basket.getVoteExpires() < date() %}
-                    <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
+                {% if basket.isVoteBasket() %}
+                    {% if basket.isVoteFinished() %}
+                        <span>{{ 'workzone:feedback:expiration-closed' | trans }} :</span>
+                    {% else %}
+                        <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>
+                    {% endif %}
                 {% else %}
-                    <span>{{ 'workzone:feedback:expiration-open' | trans }} :</span>
+                    {% if basket.isShareExpires() %}
+                        <span>{{ 'workzone:shared:expiration-closed' | trans }} :</span>
+                    {% else %}
+                        <span>{{ 'workzone:shared:expiration-open' | trans }} :</span>
+                    {% endif %}
                 {% endif %}
 
                 <form class="update-feed-validation">
@@ -166,7 +181,7 @@
     {% endif %}
 </div>
 
-{% if basket.isVoteBasket() and basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
+{% if basket.getUser().getId() == app.getAuthenticatedUser().getId()  %}
 
 <script type="text/javascript">
     $( function() {
