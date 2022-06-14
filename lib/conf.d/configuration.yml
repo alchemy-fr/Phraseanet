@@ -337,6 +337,7 @@ workers:
             port: 5672
             user: ''
             password: ''
+            ssl: false
             vhost: /
             heartbeat: 60
     webhook:
