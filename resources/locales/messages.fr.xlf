@@ -1475,12 +1475,12 @@
       </trans-unit>
       <trans-unit id="7c2e4c3079aa1851644b3f0dc23192e0514cbb0f" resname="Basket shared by %user_name% indefinitely">
         <source>Basket shared by %user_name% indefinitely</source>
-        <target state="needs-translation">Panier Partagé par %user_name%  , durée indéfinie</target>
+        <target state="needs-translation">Panier partagé par %user_name% , durée indéfinie</target>
         <jms:reference-file line="154">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ace9cf8a03291a18aa4a503088e740ef8ee10e6" resname="Basket shared by %user_name% until %expires%">
         <source>Basket shared by %user_name% until %expires%</source>
-        <target state="needs-translation">Panier partagé par %user_name% jusqu'au  %expires%</target>
+        <target state="needs-translation">Panier partagé par %user_name% jusqu'au %expires%</target>
         <jms:reference-file line="156">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f149359beace4d242ac47578384e4cb7e001b9e7" resname="Basket updated" approved="yes">
@@ -3194,7 +3194,7 @@
       </trans-unit>
       <trans-unit id="10634112797f7010f624d94d261c4c108ca9e40a" resname="Feedback request by %user_name% until %vote_expires%">
         <source>Feedback request by %user_name% until %vote_expires%</source>
-        <target state="needs-translation">Validation envoyé par %user_name% jusqu'au %vote_expires%</target>
+        <target state="needs-translation">Validation envoyée par %user_name% jusqu'au %vote_expires%</target>
         <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%" approved="yes">
