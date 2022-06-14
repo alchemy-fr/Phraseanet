@@ -145,7 +145,7 @@
         </div>
     {% endif %}
 
-    {% set mailto_basket_user_name =  '<a href="mailto:' ~ basket.getUser().getEmail() ~ '" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">' ~
+    {% set mailto_basket_user_name =  '<a href="mailto:' ~ basket.getUser().getEmail() ~ '?subject=' ~ basket.getName() ~ '" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">' ~
         basket.getUser().displayName() ~'</a>' %}
 
     {% if not basket.isVoteBasket() and basket.getUser().getId() != app.getAuthenticatedUser().getId()  %}
