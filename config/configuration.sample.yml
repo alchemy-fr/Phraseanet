@@ -333,6 +333,7 @@ workers:
           port: 5672
           user: guest
           password: guest
+          ssl: false
           vhost: /
           heartbeat: 60
     queues:
