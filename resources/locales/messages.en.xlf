@@ -13216,7 +13216,7 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
         <source>prod::workzone:manual feedback reminder button</source>
-        <target state="translated">Send a reminder by email</target>
+        <target state="needs-translation">Send an email</target>
         <jms:reference-file line="101">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="yes">
