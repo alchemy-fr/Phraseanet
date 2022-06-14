@@ -12983,13 +12983,13 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="1854fac4e11aa3f763dc533e2dfad6730b53560d" resname="prod::share: User can see others choices">
         <source>prod::share: User can see others choices</source>
-        <target state="needs-translation">User can see others choices</target>
+        <target state="needs-translation">User can see the others' users choices</target>
         <jms:reference-file line="483">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="130">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9566a3f46a42776781c54784e3aba3385b6e1714" resname="prod::share: User contribute to the feedback">
         <source>prod::share: User contribute to the feedback</source>
-        <target state="needs-translation">User contribute to the feedback</target>
+        <target state="needs-translation">User contributes to the feedback</target>
         <jms:reference-file line="117">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5ccb348802600f55b5bdb36807d0803a55d75e93" resname="prod::share: Users can download HD">
