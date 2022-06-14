@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-06-13T15:30:03Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
+  <file date="2022-06-14T13:10:49Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -16,11 +16,6 @@
         <source>Add</source>
         <target state="translated">Ajouter</target>
         <jms:reference-file line="66">admin/fields/templates.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="b71e6ba696951198c4ac26a27ebf7427894e3f43" resname=" Basket shared by %user_name% until %expires%">
-        <source> Basket shared by %user_name% until %expires%</source>
-        <target state="new"> Basket shared by %user_name% until %expires%</target>
-        <jms:reference-file line="156">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17b36ba11b9598e1ca72638a17637c71db031f8b" resname="#3567c6" approved="yes">
         <source>#3567c6</source>
@@ -1482,6 +1477,11 @@
         <source>Basket shared by %user_name% indefinitely</source>
         <target state="new">Basket shared by %user_name% indefinitely</target>
         <jms:reference-file line="154">prod/WorkZone/Basket.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6ace9cf8a03291a18aa4a503088e740ef8ee10e6" resname="Basket shared by %user_name% until %expires%">
+        <source>Basket shared by %user_name% until %expires%</source>
+        <target state="new">Basket shared by %user_name% until %expires%</target>
+        <jms:reference-file line="156">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f149359beace4d242ac47578384e4cb7e001b9e7" resname="Basket updated" approved="yes">
         <source>Basket updated</source>
@@ -3192,9 +3192,9 @@
         <jms:reference-file line="318">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="54">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="244662b563417337c02e9e41c6f0b2363d84e54f" resname="Feedback order by %user_name% until %vote_expires%">
-        <source>Feedback order by %user_name% until %vote_expires%</source>
-        <target state="new">Feedback order by %user_name% until %vote_expires%</target>
+      <trans-unit id="10634112797f7010f624d94d261c4c108ca9e40a" resname="Feedback request by %user_name% until %vote_expires%">
+        <source>Feedback request by %user_name% until %vote_expires%</source>
+        <target state="new">Feedback request by %user_name% until %vote_expires%</target>
         <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%" approved="yes">

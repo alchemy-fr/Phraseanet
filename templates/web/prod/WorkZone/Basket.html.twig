@@ -153,12 +153,12 @@
             {% if basket.getShareExpires() is null %}
                 {% trans with {'%user_name%' : mailto_basket_user_name } %}Basket shared by %user_name% indefinitely{% endtrans %}
             {% else %}
-                {% trans with {'%user_name%' : mailto_basket_user_name, '%expires%':  app['date-formatter'].getFormatedDate(basket.getShareExpires()) } %} Basket shared by %user_name% until %expires%{% endtrans %}
+                {% trans with {'%user_name%' : mailto_basket_user_name, '%expires%':  app['date-formatter'].getFormatedDate(basket.getShareExpires()) } %}Basket shared by %user_name% until %expires%{% endtrans %}
             {% endif %}
         </p>
     {% elseif basket.isVoteBasket() and basket.getUser().getId() != app.getAuthenticatedUser().getId() %}
         <p>
-            {% trans with {'%user_name%' : mailto_basket_user_name, '%vote_expires%':  app['date-formatter'].getFormatedDate(basket.getVoteExpires()) } %}Feedback order by %user_name% until %vote_expires%{% endtrans %}
+            {% trans with {'%user_name%' : mailto_basket_user_name, '%vote_expires%':  app['date-formatter'].getFormatedDate(basket.getVoteExpires()) } %}Feedback request by %user_name% until %vote_expires%{% endtrans %}
         </p>
     {% endif %}
 
