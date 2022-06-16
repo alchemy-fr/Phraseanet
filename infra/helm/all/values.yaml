@@ -45,8 +45,13 @@ elasticsearch:
     size: 1Gi
 
 rabbitmq:
+  host: rabbitmq
+  port: 5672
   default_user: rabbit
-  default_pass: rabbit 
+  default_pass: rabbit
+  default_vhost: /
+  ssl: false
+  heartbeat: 60
   resources:
     requests:
       cpu: "50m"
