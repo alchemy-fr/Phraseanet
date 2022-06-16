@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-06-14T13:10:32Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2022-06-16T08:12:32Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -290,12 +290,12 @@
         <target state="translated">%user% has made an %opening_link% order %end_link%</target>
         <jms:reference-file line="43">eventsmanager/notify/order.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="179cacdd23d50ababbd48df5e82f33c1412a2424" resname="%user% a refuse %quantity% elements de votre commande" approved="no">
+      <trans-unit id="179cacdd23d50ababbd48df5e82f33c1412a2424" resname="%user% a refuse %quantity% elements de votre commande">
         <source>%user% a refuse %quantity% elements de votre commande</source>
         <target state="translated">%user% has refused to deliver %quantity% document(s) from your order</target>
         <jms:reference-file line="64">Notification/Mail/MailInfoOrderCancelled.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ecd25f76fa79d24b2f90e55b85063814df15fe2f" resname="%user% a refuse la livraison de %quantity% document(s) pour votre commande" approved="no">
+      <trans-unit id="ecd25f76fa79d24b2f90e55b85063814df15fe2f" resname="%user% a refuse la livraison de %quantity% document(s) pour votre commande">
         <source>%user% a refuse la livraison de %quantity% document(s) pour votre commande</source>
         <target state="translated">%user% has refused to deliver %quantity% document(s) from your order</target>
         <jms:reference-file line="42">eventsmanager/notify/ordernotdelivered.php</jms:reference-file>
@@ -335,7 +335,7 @@
         <target state="translated">%user% has delivered %quantity% document(s) from your order %title%</target>
         <jms:reference-file line="66">eventsmanager/notify/orderdeliver.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="991c3d22c945eab4d10ee5974ff3d12e0c165185" resname="%user% vous a delivre votre commande, consultez la en ligne a l'adresse suivante" approved="no">
+      <trans-unit id="991c3d22c945eab4d10ee5974ff3d12e0c165185" resname="%user% vous a delivre votre commande, consultez la en ligne a l'adresse suivante">
         <source>%user% vous a delivre votre commande, consultez la en ligne a l'adresse suivante</source>
         <target state="translated">%user% has delivered your order. Retrieve it online at the following address</target>
         <jms:reference-file line="66">Notification/Mail/MailInfoOrderDelivered.php</jms:reference-file>
@@ -1181,6 +1181,16 @@
         <target state="translated">Are you sure you want to delete this list?</target>
         <jms:reference-file line="96">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="160">prod/templates/push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="30f09ea38857b13637c9f20f2a17e7bfc3ac3b3a" resname="Are you sure you want to erase all job informations ?">
+        <source>Are you sure you want to erase all job informations ?</source>
+        <target state="new">Are you sure you want to erase all job informations ?</target>
+        <jms:reference-file line="227">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="aec19ed81928870d688862753f3d3e55db655daf" resname="Are you sure you want to erase finished job informations ?">
+        <source>Are you sure you want to erase finished job informations ?</source>
+        <target state="new">Are you sure you want to erase finished job informations ?</target>
+        <jms:reference-file line="238">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ad86fda5d367a9ff74a9c278344f3bb8f75c223" resname="Are you sure you want to rebuild the sub-definitions of selected records?" approved="yes">
         <source>Are you sure you want to rebuild the sub-definitions of selected records?</source>
@@ -2505,7 +2515,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -7843,7 +7853,7 @@
         <target state="translated">Your account on %application%</target>
         <jms:reference-file line="36">Notification/Mail/MailRequestPasswordSetup.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5c14bebd581f8b3f2c8fb4e5e3c2b83c8affaa03" resname="Your account with the login %login% as been created" approved="no">
+      <trans-unit id="5c14bebd581f8b3f2c8fb4e5e3c2b83c8affaa03" resname="Your account with the login %login% as been created">
         <source>Your account with the login %login% as been created</source>
         <target state="translated">Your account with the login %login% has been created</target>
         <jms:reference-file line="48">Notification/Mail/MailRequestPasswordSetup.php</jms:reference-file>
@@ -9499,62 +9509,67 @@
       <trans-unit id="9148347be151bf870812d27383e3023050cdc547" resname="admin::workermanager:tab:workerinfo: Display error work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display error work</source>
         <target state="translated">Job in error</target>
-        <jms:reference-file line="40">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="42">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a4f3faf8ed4ef945305d5be714e3962fc1afc0fc" resname="admin::workermanager:tab:workerinfo: Display finished work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display finished work</source>
         <target state="translated">Display Finished Job(s)</target>
-        <jms:reference-file line="37">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="39">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b1c4bb50723e3e2c6d602930a398cd9514d9c7b" resname="admin::workermanager:tab:workerinfo: Display manually interrupt work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display manually interrupt work</source>
         <target state="translated">interrupted job</target>
-        <jms:reference-file line="43">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="45">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f256bef318dba5647c9d5609bf1312ef1cadf0e" resname="admin::workermanager:tab:workerinfo: Display running work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Display running work</source>
         <target state="translated">Running Job(s)</target>
-        <jms:reference-file line="34">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="36">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e837e79a25d040f7f4a9f1f3fbdc3ff0b121b40e" resname="admin::workermanager:tab:workerinfo: Erase all finished" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Erase all finished</source>
         <target state="translated">Clear Finished Job(s)</target>
-        <jms:reference-file line="19">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="22">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8ffab13b85fb74cc4091eaeb7d5e21b31034b21a" resname="admin::workermanager:tab:workerinfo: Erase all information" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Erase all information</source>
         <target state="translated">Clear all job(s)</target>
-        <jms:reference-file line="8">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="13">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a0c668e153f9c0cde1b7ca66e99fb066ddaae58" resname="admin::workermanager:tab:workerinfo: Manually interrupt" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Manually interrupt</source>
         <target state="translated">Manually Acknowledge</target>
-        <jms:reference-file line="100">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="102">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2d2e6290472f0162503ac91820f811cade2ce64" resname="admin::workermanager:tab:workerinfo: Refresh list" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Refresh list</source>
         <target state="translated">Refresh list</target>
-        <jms:reference-file line="29">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="31">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4b11f0cdb860a576117268180cfc6900a9d533e3" resname="admin::workermanager:tab:workerinfo: Warning! Erase all finished" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all finished</source>
         <target state="translated">Erase line about finished Job(s)</target>
-        <jms:reference-file line="22">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="25">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9f27ba960967b509af00a86a0758e8091806d0f6" resname="admin::workermanager:tab:workerinfo: Warning! Erase all information" approved="yes">
         <source>admin::workermanager:tab:workerinfo: Warning! Erase all information</source>
         <target state="translated">Warning! This will delete all jobs logs, including running job(s)</target>
-        <jms:reference-file line="11">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="16">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled">
+        <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
+        <target state="new">admin::workermanager:tab:workerinfo: change status to canceled</target>
+        <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
         <source>admin::workermanager:tab:workerinfo: created</source>
         <target state="translated">Started</target>
-        <jms:reference-file line="57">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="59">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="910100edbd14eded37487190272ca50d5497af60" resname="admin::workermanager:tab:workerinfo: databox_name" approved="yes">
         <source>admin::workermanager:tab:workerinfo: databox_name</source>
         <target state="translated">Databox</target>
-        <jms:reference-file line="51">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="53">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="462620d0bd43581cec9d88b9bc09565219cc5261" resname="admin::workermanager:tab:workerinfo: description" approved="yes">
         <source>admin::workermanager:tab:workerinfo: description</source>
@@ -9564,27 +9579,42 @@
       <trans-unit id="23cbc34865b1b4777a5c169cc935c74b67bcf006" resname="admin::workermanager:tab:workerinfo: duration" approved="yes">
         <source>admin::workermanager:tab:workerinfo: duration</source>
         <target state="translated">Duration</target>
-        <jms:reference-file line="59">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="61">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7a47a4872345c5f33d3fa94838e52e8e3da538ad" resname="admin::workermanager:tab:workerinfo: finished" approved="yes">
         <source>admin::workermanager:tab:workerinfo: finished</source>
         <target state="translated">Finished</target>
-        <jms:reference-file line="58">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="60">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d6ecf648e4dbb36172c9f3cacd96a8c4cb9b94e5" resname="admin::workermanager:tab:workerinfo: manually mark as canceled job running">
+        <source>admin::workermanager:tab:workerinfo: manually mark as canceled job running</source>
+        <target state="new">admin::workermanager:tab:workerinfo: manually mark as canceled job running</target>
+        <jms:reference-file line="2">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published" approved="yes">
         <source>admin::workermanager:tab:workerinfo: published</source>
         <target state="translated">Created</target>
-        <jms:reference-file line="56">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="58">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="feed33fba251da5c0451124020d85250982721d7" resname="admin::workermanager:tab:workerinfo: record_id" approved="yes">
         <source>admin::workermanager:tab:workerinfo: record_id</source>
         <target state="translated">Record ID</target>
-        <jms:reference-file line="52">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="54">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8ff3cefe308c32748dd2a2586c3291b70cbf2507" resname="admin::workermanager:tab:workerinfo: refresh job count">
+        <source>admin::workermanager:tab:workerinfo: refresh job count</source>
+        <target state="new">admin::workermanager:tab:workerinfo: refresh job count</target>
+        <jms:reference-file line="11">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="0eb2b0ae31b046292c5cd3132715c7cbb8bd8afc" resname="admin::workermanager:tab:workerinfo: running job find">
+        <source>admin::workermanager:tab:workerinfo: running job find</source>
+        <target state="new">admin::workermanager:tab:workerinfo: running job find</target>
+        <jms:reference-file line="9">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status" approved="yes">
         <source>admin::workermanager:tab:workerinfo: status</source>
         <target state="translated">Status</target>
-        <jms:reference-file line="60">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="62">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="38edf478e9ed693cdb2ab5ec786ab92e670a44c9" resname="admin::workermanager:tab:workerinfo: title" approved="yes">
         <source>admin::workermanager:tab:workerinfo: title</source>
@@ -9594,12 +9624,12 @@
       <trans-unit id="d3595bcfd426abf2818b25aadd474d823f36c957" resname="admin::workermanager:tab:workerinfo: work" approved="yes">
         <source>admin::workermanager:tab:workerinfo: work</source>
         <target state="translated">Job</target>
-        <jms:reference-file line="53">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="55">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2764b360bd443b91d7b611bc181e33c30bbdce07" resname="admin::workermanager:tab:workerinfo: work_on" approved="yes">
         <source>admin::workermanager:tab:workerinfo: work_on</source>
         <target state="translated">Work On</target>
-        <jms:reference-file line="54">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="56">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f153abd48aaee38d404f7d6007433850b63c631b" resname="admin:databases:database:file-size-detail-warning-message">
         <source>admin:databases:database:file-size-detail-warning-message</source>
@@ -11017,6 +11047,11 @@
         <target state="translated">Sorry, your search doesn't return any results.</target>
         <jms:reference-file line="15">prod/results/help.html.twig</jms:reference-file>
       </trans-unit>
+      <trans-unit id="52ab86a87214a453d9f82538264f190854915247" resname="hour">
+        <source>hour</source>
+        <target state="new">hour</target>
+        <jms:reference-file line="5">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
         <source>image</source>
         <target state="translated">Image</target>
@@ -12008,7 +12043,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15014,7 +15049,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
