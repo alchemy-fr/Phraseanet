@@ -290,14 +290,14 @@
         <target state="translated">%user% has made an %opening_link% order %end_link%</target>
         <jms:reference-file line="43">eventsmanager/notify/order.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="179cacdd23d50ababbd48df5e82f33c1412a2424" resname="%user% a refuse %quantity% elements de votre commande" approved="yes">
+      <trans-unit id="179cacdd23d50ababbd48df5e82f33c1412a2424" resname="%user% a refuse %quantity% elements de votre commande" approved="no">
         <source>%user% a refuse %quantity% elements de votre commande</source>
-        <target state="translated">%user% has refused to deliver %quantity% document(s) from you order</target>
+        <target state="translated">%user% has refused to deliver %quantity% document(s) from your order</target>
         <jms:reference-file line="64">Notification/Mail/MailInfoOrderCancelled.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ecd25f76fa79d24b2f90e55b85063814df15fe2f" resname="%user% a refuse la livraison de %quantity% document(s) pour votre commande" approved="yes">
+      <trans-unit id="ecd25f76fa79d24b2f90e55b85063814df15fe2f" resname="%user% a refuse la livraison de %quantity% document(s) pour votre commande" approved="no">
         <source>%user% a refuse la livraison de %quantity% document(s) pour votre commande</source>
-        <target state="translated">%user% has refused to deliver %quantity% document(s) from you order</target>
+        <target state="translated">%user% has refused to deliver %quantity% document(s) from your order</target>
         <jms:reference-file line="42">eventsmanager/notify/ordernotdelivered.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3f8716f2ddf746310c97fdc0499c53d8cc884c3d" resname="%user% demande votre approbation sur une ou plusieurs %before_link% collections %after_link%" approved="yes">
