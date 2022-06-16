@@ -335,9 +335,9 @@
         <target state="translated">%user% has delivered %quantity% document(s) from your order %title%</target>
         <jms:reference-file line="66">eventsmanager/notify/orderdeliver.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="991c3d22c945eab4d10ee5974ff3d12e0c165185" resname="%user% vous a delivre votre commande, consultez la en ligne a l'adresse suivante" approved="yes">
+      <trans-unit id="991c3d22c945eab4d10ee5974ff3d12e0c165185" resname="%user% vous a delivre votre commande, consultez la en ligne a l'adresse suivante" approved="no">
         <source>%user% vous a delivre votre commande, consultez la en ligne a l'adresse suivante</source>
-        <target state="translated">%user% has delivered your order. Retreive it online at the following address</target>
+        <target state="translated">%user% has delivered your order. Retrieve it online at the following address</target>
         <jms:reference-file line="66">Notification/Mail/MailInfoOrderDelivered.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aa149bb3a3caf790b2bf97881b62c04048298f20" resname="%user% vous a envoye un %before_link% panier %after_link%" approved="yes">
@@ -7843,9 +7843,9 @@
         <target state="translated">Your account on %application%</target>
         <jms:reference-file line="36">Notification/Mail/MailRequestPasswordSetup.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5c14bebd581f8b3f2c8fb4e5e3c2b83c8affaa03" resname="Your account with the login %login% as been created" approved="yes">
+      <trans-unit id="5c14bebd581f8b3f2c8fb4e5e3c2b83c8affaa03" resname="Your account with the login %login% as been created" approved="no">
         <source>Your account with the login %login% as been created</source>
-        <target state="translated">Your account with the login %login% as been created</target>
+        <target state="translated">Your account with the login %login% has been created</target>
         <jms:reference-file line="48">Notification/Mail/MailRequestPasswordSetup.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a91a7196d1c156970a7edda9d3c7e57bc6888d4a" resname="Your configuration has been successfuly saved." approved="yes">
