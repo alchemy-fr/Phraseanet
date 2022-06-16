@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-06-10T15:30:35Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2022-06-16T08:12:17Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -124,7 +124,7 @@
       <trans-unit id="ca5f190bf18ece3d706b1d9a15222be94259943d" resname="%d fields have been updated" approved="yes">
         <source>%d fields have been updated</source>
         <target state="translated">%d Felder wurden aktualisiert</target>
-        <jms:reference-file line="104">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="105">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="326e63c362bd04df2f787cb42ef3dbbeecc769dc" resname="%docs_not_orderable% documents ne peuvent pas etre commandes" approved="yes">
         <source>%docs_not_orderable% documents ne peuvent pas etre commandes</source>
@@ -178,7 +178,7 @@
         <target state="translated">%nb_records% Datensätze</target>
         <jms:reference-file line="29">prod/Tooltip/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="14">prod/Tooltip/Story.html.twig</jms:reference-file>
-        <jms:reference-file line="109">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="112">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e39dc3a90b0674916ef22f19912638564f33e518" resname="%nb_view% vue" approved="yes">
         <source>%nb_view% vue</source>
@@ -602,7 +602,7 @@
       <trans-unit id="6cf21b7ad1455722ba402e63dac8741146f2c050" resname="Accuse de reception" approved="yes">
         <source>Accuse de reception</source>
         <target state="translated">Empfangsbestätigung</target>
-        <jms:reference-file line="103">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="104">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="185">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="242">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -685,7 +685,7 @@
       <trans-unit id="b70680b4c250c9244d3f2caf9e57f001e0f19657" resname="Add a position" approved="yes">
         <source>Add a position</source>
         <target state="translated">Ort hinzufügen</target>
-        <jms:reference-file line="130">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="131">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="18a7d7025f09d8fd494b56d81e5208ec96510c99" resname="Add an admin" approved="yes">
         <source>Add an admin</source>
@@ -695,17 +695,17 @@
       <trans-unit id="c67e5003ccafc3da11bb6a633844ddac62f79fed" resname="Add an end point" approved="yes">
         <source>Add an end point</source>
         <target state="translated">Fügen Sie einen Endpunkt hinzu</target>
-        <jms:reference-file line="142">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="143">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="66de101c29885e5b369a8226a553bec652fd85fc" resname="Add an entry point" approved="yes">
         <source>Add an entry point</source>
         <target state="translated">Fügen Sie einen Einstiegspunkt hinzu</target>
-        <jms:reference-file line="141">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="142">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f52464728021813d9d68069201d0ee44c284b890" resname="Add new range" approved="yes">
         <source>Add new range</source>
         <target state="translated">Fügen Sie ein neues Kapitel hinzu</target>
-        <jms:reference-file line="152">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="153">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b27740ce4d6bea2dd21cee1c12fa73206c1444a" resname="Add this url" approved="yes">
         <source>Add this url</source>
@@ -1021,7 +1021,7 @@
       <trans-unit id="d30caa7b7d0efe99300f9e4b63baaf31f4e39a25" resname="An error occured, please retry" approved="yes">
         <source>An error occured, please retry</source>
         <target state="translated">Ein Fehler ist aufgetreten, bitte versuchen Sie nochmal</target>
-        <jms:reference-file line="111">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="112">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0d790ccf67298550e7580362892f1f2d9905faca" resname="An error occured, please retry or contact an admin if problem persist" approved="yes">
         <source>An error occured, please retry or contact an admin if problem persist</source>
@@ -1049,7 +1049,7 @@
       <trans-unit id="7e861f79c8744b5cb0b59ce4f0100603952751b1" resname="An error occurred reading this file" approved="yes">
         <source>An error occurred reading this file</source>
         <target state="translated">Ein Fehler ist beim Lesen dieser Datei aufgetreten</target>
-        <jms:reference-file line="107">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="108">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a45ff91e0c1ebb94d62f5daaad1e708278ba484e" resname="An unexpected error occurred during authentication process, please contact an admin" approved="yes">
         <source>An unexpected error occurred during authentication process, please contact an admin</source>
@@ -1078,12 +1078,12 @@
       </trans-unit>
       <trans-unit id="013cf62916a339608ae3c498d34b9e55afa46dc1" resname="Apparait aussi dans ces paniers">
         <source>Apparait aussi dans ces paniers</source>
-        <target state="needs-translation">In Sammelkörben</target>
+        <target state="translated">In Sammelkörben</target>
         <jms:reference-file line="26">prod/preview/appears_in.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="244b484023b5b9473c3ff89cb6b956bc1985da43" resname="Apparait aussi dans ces reportages">
         <source>Apparait aussi dans ces reportages</source>
-        <target state="needs-translation">In Berichten</target>
+        <target state="translated">In Berichten</target>
         <jms:reference-file line="4">prod/preview/appears_in.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="022643ac43e94269443f7d30e114df8e13fe0f37" resname="Appbox is unreachable" approved="yes">
@@ -1178,7 +1178,7 @@
       <trans-unit id="792237ade8b0576929abb7dd5dc24b2848b696d3" resname="Are you sure you want to delete this list ?" approved="yes">
         <source>Are you sure you want to delete this list ?</source>
         <target state="translated">Wollen Sie diese Liste sicher löschen?</target>
-        <jms:reference-file line="95">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="96">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="160">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="30f09ea38857b13637c9f20f2a17e7bfc3ac3b3a" resname="Are you sure you want to erase all job informations ?">
@@ -1204,13 +1204,13 @@
       <trans-unit id="74e0b9c80dca267a78a89ad68a2f6c73241b5973" resname="Attention" approved="yes">
         <source>Attention</source>
         <target state="translated">Vorsicht</target>
-        <jms:reference-file line="113">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="114">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="50">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e90e84223fc3bab6b936ce4506b3924b21f3d0be" resname="Attention !" approved="yes">
         <source>Attention !</source>
         <target state="translated">Achtung !</target>
-        <jms:reference-file line="128">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="129">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0328b7d39137eaa443590c8c1d693a1611354951" resname="Attention, certain documents ont des sous-definitions substituees" approved="yes">
         <source>Attention, certain documents ont des sous-definitions substituees</source>
@@ -1220,7 +1220,7 @@
       <trans-unit id="ecf45b9b95089bd007360bb41c66c08d257ee0ac" resname="Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci" approved="yes">
         <source>Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci</source>
         <target state="translated">Achtung: Wenn Sie diese Voreinstellung löschen, können Sie Veröffentlichungen die mit diesen Voreinstellungen ausgeführt wurden weder verändern noch löschen</target>
-        <jms:reference-file line="92">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="93">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b2ed82f1bf1c30916cde300ded82176c2ff0300a" resname="Aucun" approved="yes">
         <source>Aucun</source>
@@ -1235,7 +1235,7 @@
       <trans-unit id="c1f891614ef0359cd670f6940a2b9f095b8691d9" resname="Aucun document selectionne" approved="yes">
         <source>Aucun document selectionne</source>
         <target state="translated">kein ausgewähltes Dokument</target>
-        <jms:reference-file line="94">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="95">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="5c4eb810a8d51375a0e76c76d183446905d39d3a" resname="Aucun statut editable" approved="yes">
         <source>Aucun statut editable</source>
@@ -1276,7 +1276,7 @@
       <trans-unit id="4d942f0f54264545f06664749182db5f08b9aa5c" resname="Aucune publication effectuee, verifiez vos parametres" approved="yes">
         <source>Aucune publication effectuee, verifiez vos parametres</source>
         <target state="translated">keine Veröffentlichung ausgeführt, überprüfen Sie Ihre Parameter</target>
-        <jms:reference-file line="91">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="92">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="acdac205f5e24cb75113c4b281a2c13f08b75159" resname="Audio" approved="yes">
         <source>Audio</source>
@@ -1483,6 +1483,16 @@
         <target state="translated">Sammelkorb wurde nicht gefunden</target>
         <jms:reference-file line="203">Model/Repositories/BasketRepository.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="7c2e4c3079aa1851644b3f0dc23192e0514cbb0f" resname="Basket shared by %user_name% indefinitely">
+        <source>Basket shared by %user_name% indefinitely</source>
+        <target state="needs-translation">Sammelkorb geteilt von %user_name%, auf unbestimmte Zeit</target>
+        <jms:reference-file line="154">prod/WorkZone/Basket.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="6ace9cf8a03291a18aa4a503088e740ef8ee10e6" resname="Basket shared by %user_name% until %expires%">
+        <source>Basket shared by %user_name% until %expires%</source>
+        <target state="needs-translation">Sammelkorb geteilt von %user_name% bis %expires%</target>
+        <jms:reference-file line="156">prod/WorkZone/Basket.html.twig</jms:reference-file>
+      </trans-unit>
       <trans-unit id="f149359beace4d242ac47578384e4cb7e001b9e7" resname="Basket updated" approved="yes">
         <source>Basket updated</source>
         <target state="translated">Sammelkorb wurde aktualisiert</target>
@@ -1566,7 +1576,7 @@
       <trans-unit id="77dfd2135f4db726c47299bb55be26f7f4525a46" resname="Cancel" approved="yes">
         <source>Cancel</source>
         <target state="translated">Abbrechen</target>
-        <jms:reference-file line="133">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="134">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="29">prod/User/Add.html.twig</jms:reference-file>
         <jms:reference-file line="34">prod/actions/delete_records_confirm_form.html.twig</jms:reference-file>
         <jms:reference-file line="50">actions/Property/type.html.twig</jms:reference-file>
@@ -1684,7 +1694,7 @@
       <trans-unit id="3f2e437119fb80c64e6a9c7fff66c4160856dc40" resname="Certaines donnees du panier ont change" approved="yes">
         <source>Certaines donnees du panier ont change</source>
         <target state="translated">Einige Daten des Sammelkorbs wurden verändert</target>
-        <jms:reference-file line="133">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="3062356beeb0f20cb9418d55769ea256059d611e" resname="Certaines donnees du reportage ont change" approved="yes">
         <source>Certaines donnees du reportage ont change</source>
@@ -1694,7 +1704,7 @@
       <trans-unit id="fadf8a55b41e9d1dd6b5007d5e846e689df6b2f6" resname="Certaines publications n'ont pu etre effectuees, verifiez vos parametres" approved="yes">
         <source>Certaines publications n'ont pu etre effectuees, verifiez vos parametres</source>
         <target state="translated">einige Veröffentlichung wurden nicht ausgeführt, überprüfen Sie Ihre Parameter</target>
-        <jms:reference-file line="90">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="91">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fbd263a9cb76ca87df7a4c3035299d087da5fc3" resname="Certains champs sont obligatoires, veuillez les remplir" approved="yes">
         <source>Certains champs sont obligatoires, veuillez les remplir</source>
@@ -1714,7 +1724,7 @@
       <trans-unit id="da5cdfc5d8d0d17fa600980eeab2a255bfdf816b" resname="Change play speed" approved="yes">
         <source>Change play speed</source>
         <target state="translated">Wiedergabegeschwindigkeit ändern</target>
-        <jms:reference-file line="137">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="138">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1e2723748c7df231e7381d554add9bbd1f30b445" resname="Changes for rotation will be applied only on&#10;          the sub-definitions of &quot;image&quot; type." approved="yes">
         <source>Changes for rotation will be applied only on the sub-definitions of "image" type.</source>
@@ -2100,7 +2110,7 @@
       <trans-unit id="dd6a02a553da4cb247f914011dd67c37487ec082" resname="Ctrl" approved="yes">
         <source>Ctrl</source>
         <target state="translated">Strg</target>
-        <jms:reference-file line="148">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="149">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="416664d8d18fa9ff561c5c0e5c8b6c7b1e644449" resname="Cumulative total" approved="yes">
         <source>Cumulative total</source>
@@ -2373,7 +2383,7 @@
       <trans-unit id="dba1d3851f7f3efec8a1956e040bae0328da98d0" resname="Delete current" approved="yes">
         <source>Delete current</source>
         <target state="translated">Aktuelles löschen</target>
-        <jms:reference-file line="145">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="146">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1635174e702895e9ee5d2723b89707eca38da582" resname="Delete records" approved="yes">
         <source>Delete records</source>
@@ -2608,7 +2618,7 @@
       <trans-unit id="7cec77b277c557a0d7c6f62b73691b0079b37639" resname="Drag and drop the pin to move position" approved="yes">
         <source>Drag and drop the pin to move position</source>
         <target state="translated">Ziehen Sie das Pin-Symbol und legen Sie es ab, um den Standort zu verschieben</target>
-        <jms:reference-file line="132">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="133">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e9069dbb48837c11e9c74fe440ccfd5d1cd6b0b" resname="Droits" approved="yes">
         <source>Droits</source>
@@ -2674,7 +2684,7 @@
       <trans-unit id="c989a5c3729db7aa928f90f4d56e107adbee954c" resname="Edit position" approved="yes">
         <source>Edit position</source>
         <target state="translated">Standort bearbeiten</target>
-        <jms:reference-file line="129">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="130">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d70cb368bda9b31e0c6894792a9ee58865d01d4" resname="Editer" approved="yes">
         <source>Editer</source>
@@ -2946,7 +2956,7 @@
       <trans-unit id="61983e17f966924dc25febd5756e710e2102d38f" resname="End Range" approved="yes">
         <source>End Range</source>
         <target state="translated">Kapitel beenden</target>
-        <jms:reference-file line="156">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="157">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b5d90b80b452e4c8e3f1840c23372475d8861803" resname="End session activity" approved="yes">
         <source>End session activity</source>
@@ -2997,7 +3007,7 @@
       <trans-unit id="90aa6d11f451da9eab381da74e349cb9d7f53647" resname="Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas" approved="yes">
         <source>Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas</source>
         <target state="translated">Falsche Parameter oder entfernter Server antwortet nicht</target>
-        <jms:reference-file line="88">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="89">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f2622fb6aa1e7cbd0eef2a99aa01f8c67d893c8b" resname="Erreur YouTube a rencontré une erreur lors du traitement de la requête." approved="yes">
         <source>Erreur YouTube a rencontré une erreur lors du traitement de la requête.</source>
@@ -3139,19 +3149,20 @@
       <trans-unit id="7e4ab5feaafcefe0d6fa300a11dfc921f12b5a40" resname="Expiration date successfully updated!" approved="yes">
         <source>Expiration date successfully updated!</source>
         <target state="translated">Ablaufdatum erfolgreich aktualisiert!</target>
-        <jms:reference-file line="664">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="667">Controller/Prod/PushController.php</jms:reference-file>
+        <jms:reference-file line="677">Controller/Prod/PushController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f3e4fadb9e370a1e2c0c622c01fc8c77daf93a2c" resname="Export" approved="yes">
         <source>Export</source>
         <target state="translated">Exportieren</target>
         <jms:reference-file line="75">Controller/Prod/DoDownloadController.php</jms:reference-file>
         <jms:reference-file line="76">Controller/Prod/DoDownloadController.php</jms:reference-file>
-        <jms:reference-file line="120">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="121">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9c26d273867dffc55d40f46e6a163067c75969f5" resname="Export ranges" approved="yes">
         <source>Export ranges</source>
         <target state="translated">Kapitel exportieren</target>
-        <jms:reference-file line="154">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="155">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7b5aee5f7481692dc91d979390b3f446641f553a" resname="Export saved in the waiting queue" approved="yes">
         <source>Export saved in the waiting queue</source>
@@ -3186,10 +3197,15 @@
       <trans-unit id="c8d7677e19495f21da984fe4e2829b7ca91b27c7" resname="Feedback" approved="yes">
         <source>Feedback</source>
         <target state="translated">Feedback</target>
-        <jms:reference-file line="124">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="125">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="52">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="318">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="54">prod/WorkZone/Story.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="10634112797f7010f624d94d261c4c108ca9e40a" resname="Feedback request by %user_name% until %vote_expires%">
+        <source>Feedback request by %user_name% until %vote_expires%</source>
+        <target state="needs-translation">Feedback-Anfrage von %user_name% bis %vote_expires%</target>
+        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%" approved="yes">
         <source>Feedback:: Requested by %initiator% on %createdDate%</source>
@@ -3345,7 +3361,7 @@
       <trans-unit id="c7dbc1bf5eabb170eb6a0597a076723db79ec064" resname="Force sending of the document ?" approved="yes">
         <source>Force sending of the document ?</source>
         <target state="translated">Senden von dem Dokument zwingen?</target>
-        <jms:reference-file line="119">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="120">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="468ef7ce63cd6094b225f4a11ec4ab90903a9b90" resname="Forcer l'envoi du document" approved="yes">
         <source>Forcer l'envoi du document</source>
@@ -3474,22 +3490,22 @@
       <trans-unit id="f9b0c22e143c938fbb3b27bcb023c4b1b7fcaa85" resname="Go 1 frame backward" approved="yes">
         <source>Go 1 frame backward</source>
         <target state="translated">Gehen Sie ein Einzelbild zurück</target>
-        <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="160">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4e2b39ab7844862245671d700262cd2796065995" resname="Go 1 frame forward" approved="yes">
         <source>Go 1 frame forward</source>
         <target state="translated">Gehen Sie ein Einzelbild vorwärts</target>
-        <jms:reference-file line="160">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="161">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="33e74229ea973f6b2cbcad4ed51164c57dbf90f5" resname="Go to end point" approved="yes">
         <source>Go to end point</source>
         <target state="translated">Gehen Sie zum Endpunkt</target>
-        <jms:reference-file line="161">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="162">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9a0e9534e78014aa447ad4d3d075a6c2192a63b7" resname="Go to start point" approved="yes">
         <source>Go to start point</source>
         <target state="translated">Gehen Sie zum Startpunkt</target>
-        <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="159">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="61dedcf053ff33692baacbf7789c5d7195d9acbe" resname="Good" approved="yes">
         <source>Good</source>
@@ -3841,7 +3857,7 @@
       <trans-unit id="266695479a949eec44dea9db4e15fba00163f04e" resname="Keyboard shortcuts" approved="yes">
         <source>Keyboard shortcuts</source>
         <target state="translated">Tastenkombinationen</target>
-        <jms:reference-file line="135">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="136">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="aa288d5bdc9be4c044885fa43c6f3758a1087d5a" resname="Keywords used for indexing purposes by search engines robots" approved="yes">
         <source>Keywords used for indexing purposes by search engines robots</source>
@@ -4044,7 +4060,7 @@
       <trans-unit id="3fcc61b94e3708e28b77e5af93b72a95dfff6ec0" resname="Les parametres sont corrects, le serveur distant est operationnel" approved="yes">
         <source>Les parametres sont corrects, le serveur distant est operationnel</source>
         <target state="translated">die Parameter sind korrekt, entfernter Server ist betriebsfähig</target>
-        <jms:reference-file line="89">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="90">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="01a2d0aa51659266a513add42e582eff234bc34b" resname="Les paramétres oauth de votre application." approved="yes">
         <source>Les paramétres oauth de votre application.</source>
@@ -4111,7 +4127,7 @@
       <trans-unit id="5b82d44848f6cf1ac3f94d2f4f2561abc3ea696f" resname="List name can not be empty" approved="yes">
         <source>List name can not be empty</source>
         <target state="translated">Name der Liste muss nicht leer sein</target>
-        <jms:reference-file line="97">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="98">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c71f346caa957a95842d36ba22889074fcdea6f4" resname="List name is required" approved="yes">
         <source>List name is required</source>
@@ -4294,7 +4310,7 @@
       <trans-unit id="68f4145fee7dde76afceb910165924ad14cf0d00" resname="Message" approved="yes">
         <source>Message</source>
         <target state="translated">Nachricht</target>
-        <jms:reference-file line="99">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="100">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="34">prod/WorkZone/Reminder.html.twig</jms:reference-file>
         <jms:reference-file line="171">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="228">prod/templates/push.html.twig</jms:reference-file>
@@ -4390,7 +4406,7 @@
       <trans-unit id="76cdb950721642b6b8596d36d5a39f7705028b99" resname="Move" approved="yes">
         <source>Move</source>
         <target state="translated">Verschieben</target>
-        <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="123">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f086c31414ab40b5518fa22b55de4953dbecab55" resname="Move %countable% records to the chosen collection in the list." approved="yes">
         <source>Move %countable% records to the chosen collection in the list.</source>
@@ -4400,7 +4416,7 @@
       <trans-unit id="578802532119842451cf2f32501f8960c08b5a83" resname="Move down range" approved="yes">
         <source>Move down range</source>
         <target state="translated">Kapitel herunterziehen</target>
-        <jms:reference-file line="163">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="164">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a23e846598d5b848ec45e7cd72b01968931df4e0" resname="Move one record to the chosen collection in the list." approved="yes">
         <source>Move one record to the chosen collection in the list.</source>
@@ -4410,7 +4426,7 @@
       <trans-unit id="ac241824e51036d5d5e4776dff6bea366e965428" resname="Move up range" approved="yes">
         <source>Move up range</source>
         <target state="translated">Kapitel aufrücken</target>
-        <jms:reference-file line="162">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="163">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="912e8c55972e49b4ced938c1073b4f04179d6170" resname="Moves records" approved="yes">
         <source>Moves records</source>
@@ -4441,7 +4457,7 @@
       <trans-unit id="709a23220f2c3d64d1e1d6d18c4d5280f8d82fca" resname="Name" approved="yes">
         <source>Name</source>
         <target state="translated">Name</target>
-        <jms:reference-file line="98">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="99">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="13">Bridge/Dailymotion/playlist_createcontainer.html.twig</jms:reference-file>
         <jms:reference-file line="38">actions/Download/prepare.html.twig</jms:reference-file>
         <jms:reference-file line="221">prod/templates/push.html.twig</jms:reference-file>
@@ -4455,12 +4471,12 @@
       <trans-unit id="c32866abd2e56a7907abc6f3e140d9d27eff8c24" resname="Navigate to end point" approved="yes">
         <source>Navigate to end point</source>
         <target state="translated">Navigieren Sie zum Endpunkt</target>
-        <jms:reference-file line="144">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="145">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="88c17a83e03b3c1aeb617879a51bddeb39ede0e1" resname="Navigate to entry point" approved="yes">
         <source>Navigate to entry point</source>
         <target state="translated">Navigieren Sie zum Startpunkt</target>
-        <jms:reference-file line="143">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="144">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="611ce61a8afa84c06dd4ae06d9405b50d7cadc70" resname="Ne pas autoriser" approved="yes">
         <source>Ne pas autoriser</source>
@@ -4476,7 +4492,7 @@
       <trans-unit id="af8588647ddc46aed8fbe8d8095f77e9a8163b02" resname="New list name ?" approved="yes">
         <source>New list name ?</source>
         <target state="translated">Neuer Name der Liste?</target>
-        <jms:reference-file line="96">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="97">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="153">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d850ee188c7c55b64bc3624534de5c5051a57dc6" resname="New password" approved="yes">
@@ -4522,7 +4538,7 @@
       <trans-unit id="c838abb8adc702bb2b5790ccfa26384fb2ebf2ba" resname="No active basket" approved="yes">
         <source>No active basket</source>
         <target state="translated">Kein aktiver Sammekorb</target>
-        <jms:reference-file line="115">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="116">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c07457a17729ceb5667795b9ba5bdbdd520297e7" resname="No application for registration has been recorded" approved="yes">
         <source>No application for registration has been recorded</source>
@@ -4604,7 +4620,7 @@
       <trans-unit id="6866c8b666718aff85382e93b25ef50cd321669b" resname="No users selected" approved="yes">
         <source>No users selected</source>
         <target state="translated">Kein Benutzer ausgewählt</target>
-        <jms:reference-file line="105">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="106">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ff20370c8e04428109a1801a67963668dd6d1d0" resname="Nom" approved="yes">
         <source>Nom</source>
@@ -4760,12 +4776,12 @@
       <trans-unit id="380c40df62790a02a41c15dce1ad9c4296bf30ee" resname="One frame backward" approved="yes">
         <source>One frame backward</source>
         <target state="translated">Ein Einzelbild zurück</target>
-        <jms:reference-file line="140">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="141">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d08d68344cbb5ee29b2303d9c70398f87ac9a6f1" resname="One frame forward" approved="yes">
         <source>One frame forward</source>
         <target state="translated">Ein Einzelbild vorwärts</target>
-        <jms:reference-file line="139">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="140">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c15c49205663ceff94e31db82030bb5da10df870" resname="One of these conditions" approved="yes">
         <source>One of these conditions</source>
@@ -4914,7 +4930,7 @@
       <trans-unit id="781961bc81c25697841ecce5d4d9dad9f6b261c6" resname="Pause" approved="yes">
         <source>Pause</source>
         <target state="translated">Pause</target>
-        <jms:reference-file line="138">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="139">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="102bbf0d1fb0a23cb8d8fb6eb03685b4509176c0" resname="Percent of the time left before the end of the validation to send a reminder email" approved="yes">
         <source>Percent of the time left before the end of the validation to send a reminder email</source>
@@ -4980,7 +4996,7 @@
       <trans-unit id="5d12bd53552cafc41ca6146c04870df2e1574e13" resname="Play" approved="yes">
         <source>Play</source>
         <target state="translated">Play</target>
-        <jms:reference-file line="136">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="137">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd95b41f85ddc0922e3fce8844279c55e9e3cdd9" resname="Playlist" approved="yes">
         <source>Playlist</source>
@@ -5037,7 +5053,7 @@
       <trans-unit id="2cae406488922733ecc9c7714719701ccd509717" resname="Please provide a name for this selection." approved="yes">
         <source>Please provide a name for this selection.</source>
         <target state="translated">Bitte benennen Sie diese Kollektion</target>
-        <jms:reference-file line="101">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="102">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae9ef8ef63f2c23026e64c0489bb30a2e6af7a86" resname="Please provide a valid IP address." approved="yes">
         <source>Please provide a valid IP address.</source>
@@ -5077,7 +5093,7 @@
       <trans-unit id="81a0bf72ecfa23182a082d96bd8ec50b846cfcb7" resname="Please select one record" approved="yes">
         <source>Please select one record</source>
         <target state="translated">Bitte wählen Sie einen Datensatz aus</target>
-        <jms:reference-file line="109">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="110">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="89c685e99f6d700ecbe6a9ca72f11c44dc6976e2" resname="Please wait while your files are being gathered for the download, this operation may take a few minutes." approved="yes">
         <source>Please wait while your files are being gathered for the download, this operation may take a few minutes.</source>
@@ -5148,7 +5164,7 @@
       <trans-unit id="5b221e9c2a451799d8f37e2b9874409d5e03ab05" resname="Print" approved="yes">
         <source>Print</source>
         <target state="translated">Drucken</target>
-        <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="128">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e6ad53898d609dbabefb5da33ee1b4cc04fba023" resname="Problemes de connexion ?">
         <source>Problemes de connexion ?</source>
@@ -5165,13 +5181,13 @@
         <source>Processus de validation recu de %user%</source>
         <target state="translated">Feedback bekommen von %user%</target>
         <jms:reference-file line="261">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="847">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="864">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a28669d9391b214077076cbf4f1d662bc2167704" resname="Processus de validation recu de %user% et concernant %n% utilisateurs" approved="yes">
         <source>Processus de validation recu de %user% et concernant %n% utilisateurs</source>
         <target state="translated">Feedback bekommen von %user% über %n% Benutzer</target>
         <jms:reference-file line="258">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="844">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="861">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="644c8d02cf4d365edfeb12f28afdc32c8b1f6b14" resname="Propositions de modifications des tables" approved="yes">
         <source>Propositions de modifications des tables</source>
@@ -5210,7 +5226,7 @@
       <trans-unit id="8f7f57b519fc9bc5683b4808641d3b33f53b6f9d" resname="Push" approved="yes">
         <source>Push</source>
         <target state="translated">Push</target>
-        <jms:reference-file line="123">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="124">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="59">eventsmanager/notify/push.php</jms:reference-file>
         <jms:reference-file line="324">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -5603,7 +5619,7 @@
       <trans-unit id="db7741b4a5e42acd8d4e758ae50075157a0c08b7" resname="Remove current Range" approved="yes">
         <source>Remove current Range</source>
         <target state="translated">Aktuelles Kapitel entfernen</target>
-        <jms:reference-file line="157">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="158">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dc3585af6b531a557832fda9338e178f5c1012d8" resname="Remove from basket" approved="yes">
         <source>Remove from basket</source>
@@ -5883,7 +5899,7 @@
       <trans-unit id="8148d85dc4958b57bfb39ee2c0fef2654c448c1c" resname="Save as VTT" approved="yes">
         <source>Save as VTT</source>
         <target state="translated">Kapitel speichern</target>
-        <jms:reference-file line="153">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="154">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e5c05c39658269a025f4dc37b50af1bb5ab946ca" resname="Save this list" approved="yes">
         <source>Save this list</source>
@@ -6002,7 +6018,7 @@
       <trans-unit id="9bc2575c3930437e80555f78757b783c842e8e66" resname="Send" approved="yes">
         <source>Send</source>
         <target state="translated">Senden</target>
-        <jms:reference-file line="102">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="103">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="46">web/login/forgot-password.html.twig</jms:reference-file>
         <jms:reference-file line="529">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="115">prod/upload/upload.html.twig</jms:reference-file>
@@ -6099,7 +6115,7 @@
       <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share" approved="yes">
         <source>Share</source>
         <target state="translated">Verteilen</target>
-        <jms:reference-file line="121">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="100">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ce896454ee1650a73169d33b97a59cb8f90d6e6b" resname="Share my list" approved="yes">
@@ -6115,7 +6131,7 @@
       <trans-unit id="469d5b183fdc0d59e41a51e61529cdd95274ba7c" resname="Shift" approved="yes">
         <source>Shift</source>
         <target state="translated">Umschalt</target>
-        <jms:reference-file line="147">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="148">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="396c2137a0b503759e5d4930af8a16aa28ce3ee7" resname="Short description" approved="yes">
         <source>Short description</source>
@@ -6173,7 +6189,7 @@
       <trans-unit id="e6412f8f76fca194e1e7e1c3b13556497ac125db" resname="Some files are being downloaded" approved="yes">
         <source>Some files are being downloaded</source>
         <target state="translated">Einige Dateien werden heruntergeladen</target>
-        <jms:reference-file line="112">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="113">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6599c54679d13f5cece60b815fb43177c405340c" resname="Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files." approved="yes">
         <source>Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files.</source>
@@ -6226,7 +6242,7 @@
       <trans-unit id="970f057325af27424f32675051fea5366873b007" resname="Space bar" approved="yes">
         <source>Space bar</source>
         <target state="translated">Space-Taste</target>
-        <jms:reference-file line="149">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="150">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="65b0c8a364240958c67c41a02d93ad751f5e3796" resname="Stamp logo" approved="yes">
         <source>Stamp logo</source>
@@ -6245,7 +6261,7 @@
       <trans-unit id="f853d8fe64173cbf0e624c47d3f7d064f379a676" resname="Start Range" approved="yes">
         <source>Start Range</source>
         <target state="translated">Kapitel starten</target>
-        <jms:reference-file line="155">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="156">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2e5dd1202b7de8194a1498340953992c32738494" resname="Start by creating one by using the &quot;add&quot; button on the left !" approved="yes">
         <source>Start by creating one by using the "add" button on the left !</source>
@@ -6354,7 +6370,7 @@
       <trans-unit id="2dacf65959849884a011f36f76a04eebea94c5ea" resname="Submit" approved="yes">
         <source>Submit</source>
         <target state="translated">Einreichen</target>
-        <jms:reference-file line="134">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="135">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8017bd7de9961cf42f59abc587d0495a9d25c2a9" resname="Substitute" approved="yes">
         <source>Substitute</source>
@@ -6421,7 +6437,7 @@
       <trans-unit id="f3d90e9ec2261693719cc0b687ac97828c2a7ad0" resname="Suppr" approved="yes">
         <source>Suppr</source>
         <target state="translated">Entf</target>
-        <jms:reference-file line="151">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="152">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab20e35a13280389c63af4e9b441e42e14db532f" resname="Suppression de %n_element% photos" approved="yes">
         <source>Suppression de %n_element% photos</source>
@@ -6730,7 +6746,7 @@
       <trans-unit id="f8b171c9e2a0d83e977e22dee6f766f1f41d4733" resname="This feature is not supported by your browser" approved="yes">
         <source>This feature is not supported by your browser</source>
         <target state="translated">Diese Funktion wird nicht von Ihrem Webbrowser unterhalten</target>
-        <jms:reference-file line="114">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="115">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="19a0de998e454fffb6e0636256a5bdcdccbb9033" resname="This feed is public" approved="yes">
         <source>This feed is public</source>
@@ -6751,7 +6767,7 @@
       <trans-unit id="75d6e5ead0d9e66c94d47efbe953d2e73d6b8523" resname="This file is too big" approved="yes">
         <source>This file is too big</source>
         <target state="translated">Datei ist zu gross</target>
-        <jms:reference-file line="108">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="109">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="48">web/admin/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af03c24cd583cf93843e1876b15222bb3a60ba5a" resname="This is a template" approved="yes">
@@ -6802,7 +6818,7 @@
       <trans-unit id="7d1d268d994128f0d2296b405c2846fc744036a5" resname="Time for feedback (days)" approved="yes">
         <source>Time for feedback (days)</source>
         <target state="translated">Zeit für Feedback (Tage)</target>
-        <jms:reference-file line="100">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="101">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="209">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb97899aedcd5609782b5ccb4ffa390e0e66a3eb" resname="Titre" approved="yes">
@@ -6825,7 +6841,7 @@
       <trans-unit id="01594f4dad04782844c8175778fdf66deabf580d" resname="Toggle loop" approved="yes">
         <source>Toggle loop</source>
         <target state="translated">Wiederholung aktivieren</target>
-        <jms:reference-file line="146">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="147">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a1141eb96836ed960ae0be11b9889597388b5df0" resname="Token" approved="yes">
         <source>Token</source>
@@ -6840,7 +6856,7 @@
       <trans-unit id="f97edaa0ce78a61e01095cae4169cada477d52dc" resname="Tool box" approved="yes">
         <source>Tool box</source>
         <target state="translated">Werkzeuge</target>
-        <jms:reference-file line="125">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="126">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b25928c69902557b0ef0a628490a3a1768d7b82f" resname="Total" approved="yes">
         <source>Total</source>
@@ -7197,19 +7213,19 @@
       <trans-unit id="9546419cc7444e01dd83274b24608fa8cd4dc778" resname="User can download HD" approved="yes">
         <source>User can download HD</source>
         <target state="translated">Benutzer darf HD herunterladen</target>
-        <jms:reference-file line="116">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="117">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="290">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="292">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae005b1ce814398e203551a75eeeb5da09f80204" resname="User can see others choices" approved="yes">
         <source>User can see others choices</source>
         <target state="translated">Benutzer darf die andere Auswahlen sehen</target>
-        <jms:reference-file line="118">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="119">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9e982c7ce4a8cb5f48743cd0ca79a82ca30f7dc1" resname="User contribute to the feedback" approved="yes">
         <source>User contribute to the feedback</source>
         <target state="translated">Benutzer darf Feedback geben</target>
-        <jms:reference-file line="117">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="118">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="981305c0c2dad92d70b1afd4757a274596de6ec7" resname="User successfully created" approved="yes">
         <source>User successfully created</source>
@@ -7387,7 +7403,7 @@
         <source>Vous avez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">Sie haben diese Anfrage zu %n% Benutzer gesendet</target>
         <jms:reference-file line="255">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="840">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="857">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="026481a9062eacd74b454487256e11a12286ad35" resname="Vous avez envoye une demande de validation de document sur ce panier">
         <source>Vous avez envoye une demande de validation de document sur ce panier</source>
@@ -7409,7 +7425,7 @@
         <source>Vous aviez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">Sie hatten diese Anfrage zu %n% Benutzer gesendet</target>
         <jms:reference-file line="252">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="837">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="854">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7654bd1b49c9d4df25f0b7a1fca600e69587286" resname="Vous devez donner un titre" approved="yes">
         <source>Vous devez donner un titre</source>
@@ -7498,7 +7514,7 @@
       <trans-unit id="212c12fa3fdd42db47e646fe8d7d393fb0f29393" resname="Vous ne pouvez pas selectionner plus de 800 enregistrements" approved="yes">
         <source>Vous ne pouvez pas selectionner plus de 800 enregistrements</source>
         <target state="translated">Sie können nicht mehr als 800 Datensätze auswählen</target>
-        <jms:reference-file line="86">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="87">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="863af02c653094e193840d8c5324bc61bb5b7121" resname="Vous ne pouvez uploader des elements sur Dailymotion qu'un par un" approved="yes">
         <source>Vous ne pouvez uploader des elements sur Dailymotion qu'un par un</source>
@@ -7680,7 +7696,7 @@
       <trans-unit id="fdfd850039f15d0459cfe507bcdea013d71a4142" resname="You can choose only one record" approved="yes">
         <source>You can choose only one record</source>
         <target state="translated">Sie dürfen nur einen Datensatz auswählen</target>
-        <jms:reference-file line="110">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="111">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="410a0b2423fcf3451811320ad61839bcca5afde6" resname="You can download the documentation here" approved="yes">
         <source>You can download the documentation here</source>
@@ -8029,7 +8045,7 @@
       </trans-unit>
       <trans-unit id="02a5234c16e453e4ae9fe671b325a4332c134400" resname="action::modify share basket">
         <source>action::modify share basket</source>
-        <target state="needs-translation">Geteilter Sammelkorb ändern</target>
+        <target state="translated">Geteilter Sammelkorb ändern</target>
         <jms:reference-file line="205">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="211">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -8042,7 +8058,7 @@
       </trans-unit>
       <trans-unit id="89e4b70a791813f805ac492f48945a1006aa7dc3" resname="action::share basket">
         <source>action::share basket</source>
-        <target state="needs-translation">Sammelkorb teilen</target>
+        <target state="translated">Sammelkorb teilen</target>
         <jms:reference-file line="192">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="194">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -9004,7 +9020,7 @@
       </trans-unit>
       <trans-unit id="066e4bf19c914aa7b3dce70cb3ba25be17f9970d" resname="admin::userlist: user mail locked only">
         <source>admin::userlist: user mail locked only</source>
-        <target state="needs-translation">Benutzer mit geblockter E-Mail anzeigen</target>
+        <target state="translated">Benutzer mit geblockter E-Mail anzeigen</target>
         <jms:reference-file line="49">web/admin/users.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="382c04ad6bd750ac249b38f17889d00baed79984" resname="admin::users: Api id">
@@ -9039,12 +9055,12 @@
       </trans-unit>
       <trans-unit id="fc7984833e39797984814936ab510cfd4080bc18" resname="admin::users: auth failure locked list">
         <source>admin::users: auth failure locked list</source>
-        <target state="needs-translation">Authentifizierungsfehler</target>
+        <target state="translated">Authentifizierungsfehler</target>
         <jms:reference-file line="655">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a7cc508c7cb0f9b1d27e69e9a422670183236ec5" resname="admin::users: auth failure unlocked list">
         <source>admin::users: auth failure unlocked list</source>
-        <target state="needs-translation">Verlauf der fehlgeschlagenen Authentifizierungen (letzte 2 Monate)</target>
+        <target state="translated">Verlauf der fehlgeschlagenen Authentifizierungen (letzte 2 Monate)</target>
         <jms:reference-file line="682">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="333dc596de24529211ed2966582e8aae28b72238" resname="admin::users: creation date">
@@ -9068,7 +9084,7 @@
       </trans-unit>
       <trans-unit id="3fc5e0916ce91a50c260f25b88bcc5e36b089210" resname="admin::users: ip">
         <source>admin::users: ip</source>
-        <target state="needs-translation">IP-Adresse</target>
+        <target state="translated">IP-Adresse</target>
         <jms:reference-file line="660">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="687">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
@@ -9084,12 +9100,12 @@
       </trans-unit>
       <trans-unit id="0c4ddf670cb0b90a2fb0e79c6cd6ccd9e86e863b" resname="admin::users: mail is locked">
         <source>admin::users: mail is locked</source>
-        <target state="needs-translation">E-Mail ist gesperrt</target>
+        <target state="translated">E-Mail ist gesperrt</target>
         <jms:reference-file line="553">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb2db901ce615efc2afb8c61e1340952e3eaf930" resname="admin::users: mail is unlocked">
         <source>admin::users: mail is unlocked</source>
-        <target state="needs-translation">E-Mail ist entsperrt</target>
+        <target state="translated">E-Mail ist entsperrt</target>
         <jms:reference-file line="554">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e76893b673dcca93abf91a13f24e586b7f399823" resname="admin::users: modification date">
@@ -9115,7 +9131,7 @@
       </trans-unit>
       <trans-unit id="3c6e9df1925ca0ae9df114b4c17e7667ec66f5d7" resname="admin::users: provider">
         <source>admin::users: provider</source>
-        <target state="needs-translation">Autorisierungsanbieter</target>
+        <target state="translated">Autorisierungsanbieter</target>
         <jms:reference-file line="564">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6cfb4576a83ebc4343a74a84024777119fadbd25" resname="admin::users: redirect uri">
@@ -9125,12 +9141,12 @@
       </trans-unit>
       <trans-unit id="af5cd4f04496cdfefe14ae0737a3a9ea175203a9" resname="admin::users: reset auth failure">
         <source>admin::users: reset auth failure</source>
-        <target state="needs-translation">Zurücksetzen des Fehlerzählers</target>
+        <target state="translated">Zurücksetzen des Fehlerzählers</target>
         <jms:reference-file line="675">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4bba269c4ff3ce66aed91e3da5d9ecc27eb46de1" resname="admin::users: scope">
         <source>admin::users: scope</source>
-        <target state="needs-translation">Scope</target>
+        <target state="translated">Scope</target>
         <jms:reference-file line="631">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e6ca0a61942f216df1672e612b4e27fdbf498ca2" resname="admin::users: type info">
@@ -9140,12 +9156,12 @@
       </trans-unit>
       <trans-unit id="fe2cdf3da09f988f7531c1a794f9754fdcfaa00e" resname="admin::users: user api use">
         <source>admin::users: user api use</source>
-        <target state="needs-translation">Benutzt</target>
+        <target state="translated">Benutzt</target>
         <jms:reference-file line="595">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="54592d34674af3046462e72065524cdc0c7352a1" resname="admin::users: username">
         <source>admin::users: username</source>
-        <target state="needs-translation">Benutzername</target>
+        <target state="translated">Benutzername</target>
         <jms:reference-file line="659">web/admin/editusers.html.twig</jms:reference-file>
         <jms:reference-file line="686">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
@@ -9841,23 +9857,23 @@
       </trans-unit>
       <trans-unit id="29f33e8d4d64180a338f265475d823b986f0d50c" resname="basket : quitshare">
         <source>basket : quitshare</source>
-        <target state="needs-translation">Teilen verlassen</target>
+        <target state="translated">Teilen verlassen</target>
         <jms:reference-file line="152">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="154">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb622a9da2b6f2e91ea532b094fd1ad3756ae1c2" resname="basket:: Items are being to moved !" approved="yes">
         <source>basket:: Items are being to moved !</source>
         <target state="translated">Elemente im Korb wurden verschoben !</target>
-        <jms:reference-file line="73">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="74">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dde632755801bb13f512fc50e5ffff6a6c42dd96" resname="basket:: Shared">
         <source>basket:: Shared</source>
-        <target state="needs-translation">Geteilter Sammelkorb</target>
+        <target state="translated">Geteilter Sammelkorb</target>
         <jms:reference-file line="312">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f89fb316769f870206b98c16e9e68ad04aea54be" resname="basket:: refresh workzone">
         <source>basket:: refresh workzone</source>
-        <target state="needs-translation">Workzone aktualisieren</target>
+        <target state="translated">Workzone aktualisieren</target>
         <jms:reference-file line="334">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e2c1d05cc230f0bd66de9600c3304eaf374ffa24" resname="basket:action:delete record form basket" approved="yes">
@@ -9880,7 +9896,7 @@
       <trans-unit id="f60523efd4368590eda2cf999db8e64773935127" resname="basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action" approved="yes">
         <source>basket:feedback Warning!You are about to delete one record from a feedback, please confirm your action</source>
         <target state="translated">Warnung! Sie sind im Begriff, einen Datensatz von einem Feedback zu löschen. Sie werden alle Abstimmungen verlieren. Bitte bestätigen Sie diese Aktion.</target>
-        <jms:reference-file line="72">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="73">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="05661ba3e118de7262e3acc7b6ffe75be8b98cdd" resname="be notified when a document is placed in quarantine" approved="yes">
         <source>be notified when a document is placed in quarantine</source>
@@ -10250,8 +10266,8 @@
       </trans-unit>
       <trans-unit id="1dd4da0afbec8df77d3124368070a28fa3fc8960" resname="button::no">
         <source>button::no</source>
-        <target state="needs-translation">Abbrechen</target>
-        <jms:reference-file line="188">Controller/Prod/LanguageController.php</jms:reference-file>
+        <target state="translated">Abbrechen</target>
+        <jms:reference-file line="189">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9dec336199ec8f3f37f192f52e7f719ad756f725" resname="button::supprimer" approved="yes">
         <source>button::supprimer</source>
@@ -10260,8 +10276,8 @@
       </trans-unit>
       <trans-unit id="2367e7fbfff83a6019b9af459b23dabcb5461fd5" resname="button::yes">
         <source>button::yes</source>
-        <target state="needs-translation">löschen</target>
-        <jms:reference-file line="187">Controller/Prod/LanguageController.php</jms:reference-file>
+        <target state="translated">löschen</target>
+        <jms:reference-file line="188">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4fd0653c4f2aef3b19a3c145bbdc5f4740715a09" resname="cancel" approved="yes">
         <source>cancel</source>
@@ -10284,12 +10300,12 @@
       <trans-unit id="c071dc277993ce1e921c0330a4ee8d358c12c792" resname="cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces" approved="yes">
         <source>cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces</source>
         <target state="translated">Achtung: Wenn Sie die ANB ablehnen können Sie sich nicht in die Datenbank einloggen</target>
-        <jms:reference-file line="78">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="79">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1cf56fbac12ddf6b6257a1517e04361bf68068c6" resname="cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en compte.">
         <source>cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en compte.</source>
         <target state="translated">Die Änderungen werden bei der nächsten Anmeldung wirksam.</target>
-        <jms:reference-file line="79">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="80">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f998fa0f9f1368967940f541701c3b46abf83bc2" resname="cgus :: accepter" approved="yes">
         <source>cgus :: accepter</source>
@@ -10596,22 +10612,22 @@
       <trans-unit id="fd5786ec1ef6e4cbb83f7b0f567f010a5a631af7" resname="edit:: Ajouter %s au champ courrant" approved="yes">
         <source>edit:: Ajouter %s au champ courrant</source>
         <target state="translated">%s zum ausgewählten Dokument hinzufügen</target>
-        <jms:reference-file line="83">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="84">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e967bdcdafc5d1f68601b54ab2e389b4730b0f45" resname="edit:: Ajouter %s au champ courrant pour les records selectionnes" approved="yes">
         <source>edit:: Ajouter %s au champ courrant pour les records selectionnes</source>
         <target state="translated">%s an allen ausgewählte Dokumente hinzufügen</target>
-        <jms:reference-file line="81">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="82">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4c7741890a63f34bb33c88ab736d585d16ae6d4" resname="edit:: Supprimer %s du champ courrant" approved="yes">
         <source>edit:: Supprimer %s du champ courrant</source>
         <target state="translated">%s von ausgewähltem Dokument löschen</target>
-        <jms:reference-file line="82">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="83">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a25049e54f103904ddb8b2520abca77d8cbb84c7" resname="edit:: Supprimer %s du champ dans les records selectionnes" approved="yes">
         <source>edit:: Supprimer %s du champ dans les records selectionnes</source>
         <target state="translated">%s von allen ausgewählten Dokumente löschen</target>
-        <jms:reference-file line="80">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="81">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6eeccaf3d926c638e5bf5cc7440368b4106fde1f" resname="edit::Certains champs doivent etre remplis pour valider cet editing" approved="yes">
         <source>edit::Certains champs doivent etre remplis pour valider cet editing</source>
@@ -10621,7 +10637,7 @@
       <trans-unit id="8a2e30e9e3e5d258b08293cadc6d2667cbad52aa" resname="edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing" approved="yes">
         <source>edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing</source>
         <target state="translated">Bei einigen Dokumenten wurden erforderliche Felder nicht ausgefüllt. Bitte füllen Sie diese vor der Bestätigung aus.</target>
-        <jms:reference-file line="93">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="94">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="8abba1c9ff44c3fcc4d30726337bc02847d67235" resname="edit::preset:: titre" approved="yes">
         <source>edit::preset:: titre</source>
@@ -10720,17 +10736,17 @@
       <trans-unit id="9cc8a0492f9019e1953e9115a51f12c7f3a168df" resname="expose:: Choose a profile where to store mapping">
         <source>expose:: Choose a profile where to store mapping</source>
         <target state="translated">Profil auswählen</target>
-        <jms:reference-file line="184">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="185">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f115e28db92ccc8057993ab7d5d852c5d2647bd1" resname="expose:: Expose mapping">
         <source>expose:: Expose mapping</source>
         <target state="translated">Expose Mapping</target>
-        <jms:reference-file line="183">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="184">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c4df7967ec486605a9f7b9a0ce933ae6cf3618f7" resname="expose:: Logged in">
         <source>expose:: Logged in</source>
         <target state="translated">Eingeloggt:</target>
-        <jms:reference-file line="70">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="71">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="35dab1865c5d0cb6fd39e866b2a5d5ec9b8315a4" resname="expose:: More setting">
         <source>expose:: More setting</source>
@@ -10770,12 +10786,12 @@
       <trans-unit id="9124db61ef2b18f239e7eba3cae3358bf0bf1806" resname="expose::Your are about to delete a publication from expose, please confirm your action !" approved="yes">
         <source>expose::Your are about to delete a publication from expose, please confirm your action !</source>
         <target state="translated">Sie sind im Begriff, eine Veröffentlichung von Expose zu löschen. Bitte bestätigen Sie diese Aktion.</target>
-        <jms:reference-file line="68">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="69">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="03a4d48c22a0b04bd387e6dbfe06989714a0a966" resname="expose::Your are about to delete an asset from a publication, please confirm your action !" approved="yes">
         <source>expose::Your are about to delete an asset from a publication, please confirm your action !</source>
         <target state="translated">Sie sind im Begriff, einen Datensatz von einer Veröffentlichung zu löschen. Bitte bestätigen Sie diese Aktion !</target>
-        <jms:reference-file line="69">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="70">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="506b4459d0c8a2c2a7645fe1d591935e91eb3794" resname="expose::setting Cancel">
         <source>expose::setting Cancel</source>
@@ -10821,7 +10837,7 @@
       <trans-unit id="67c618b3545eed0caac4352a96df0ccc17d877dd" resname="expose::setting duplicate mapping!">
         <source>expose::setting duplicate mapping!</source>
         <target state="translated">Fehler in Mapping der Unterauflösungen, zwei Unterauflösungen haben gleichen Namen</target>
-        <jms:reference-file line="185">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="186">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a0f24c4767ae8e6091b0600be99f54669a4d5bfb" resname="expose::setting send geolocalisation">
         <source>expose::setting send geolocalisation</source>
@@ -10869,6 +10885,11 @@
         <source>feedback:: save users and users rights</source>
         <target state="translated">Speichern</target>
         <jms:reference-file line="64">Controller/Prod/LanguageController.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="9a57ddfac6519db30370912528f1b0183c03970a" resname="feedback:: send">
+        <source>feedback:: send</source>
+        <target state="needs-translation">Speichern und senden</target>
+        <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
         <source>feedback::users to notify</source>
@@ -11093,7 +11114,7 @@
       <trans-unit id="830af6e37576114c7943a0e190f35ad2f0302b4d" resname="invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez" approved="yes">
         <source>invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez</source>
         <target state="translated">Umleitung auf die Anmelde-Seite. Mit OK kommen Sie zur Anmeldeseite und mit klick auf Abbrechen können Sieauf dieser Seite fortfahren</target>
-        <jms:reference-file line="87">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="88">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2d1cc489cefda5ac18669a7d0f0f75fd47a6e2d3" resname="janvier" approved="yes">
         <source>janvier</source>
@@ -11305,27 +11326,27 @@
       </trans-unit>
       <trans-unit id="c1cd96a63c0756a0cdfdf6ef5c3d167b04e3d92f" resname="mail:: validation: Vote will expire on %expire%">
         <source>mail:: validation: Vote will expire on %expire%</source>
-        <target state="needs-translation">Das Feedback läuft am ab %expire%</target>
+        <target state="translated">Das Feedback läuft am ab %expire%</target>
         <jms:reference-file line="108">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b36bafaf28ce6a4b603bc5169e4459c854e83569" resname="mail::share Open with Lightbox">
         <source>mail::share Open with Lightbox</source>
-        <target state="needs-translation">Mit Lightbox öffnen</target>
+        <target state="translated">Mit Lightbox öffnen</target>
         <jms:reference-file line="116">Notification/Mail/MailInfoBasketShared.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6f84eaaa09c29818a4ab276c8ad6cee98cbafb6a" resname="mail::share Share will expire on %expire%">
         <source>mail::share Share will expire on %expire%</source>
-        <target state="needs-translation">Die Teilung läuft ab am %expire%</target>
+        <target state="translated">Die Teilung läuft ab am %expire%</target>
         <jms:reference-file line="105">Notification/Mail/MailInfoBasketShared.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cdd667d2c32d16cb283d68f7835b243167042feb" resname="mail::share: Basket '%title%' shared from %user%">
         <source>mail::share: Basket '%title%' shared from %user%</source>
-        <target state="needs-translation">Sammelkorb '%title%' geteilt von %user%</target>
+        <target state="translated">Sammelkorb '%title%' geteilt von %user%</target>
         <jms:reference-file line="86">Notification/Mail/MailInfoBasketShared.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="74a0d3080e9129b20b131485aa0fb119a41ef659" resname="mail::validation: Share will expire on %expire%">
         <source>mail::validation: Share will expire on %expire%</source>
-        <target state="needs-translation">Sammelkorb wird geteilt bis zum %expire%</target>
+        <target state="translated">Sammelkorb wird geteilt bis zum %expire%</target>
         <jms:reference-file line="105">Notification/Mail/MailInfoValidationRequest.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="44a07a1c8cc71de0e980dba3aca732b752fa1df5" resname="mars" approved="yes">
@@ -11394,7 +11415,7 @@
       </trans-unit>
       <trans-unit id="3088d4b496cba452af114c52c359b374152d89f4" resname="notification:: Basket %name% is shared">
         <source>notification:: Basket %name% is shared</source>
-        <target state="needs-translation">Sammelkorb %name% wurde geteilt</target>
+        <target state="translated">Sammelkorb %name% wurde geteilt</target>
         <jms:reference-file line="338">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ae23063401f4cdd998c70797419885a0835fe5eb" resname="notification:: Basket WIP">
@@ -11409,7 +11430,7 @@
       </trans-unit>
       <trans-unit id="fa77df0b440665c48bc80e73081df4124014aa72" resname="notification:: Sharing basket &quot;%name%&quot;...">
         <source>notification:: Sharing basket "%name%"...</source>
-        <target state="needs-translation">Teilung des Sammelkorbs "%name%"...</target>
+        <target state="translated">Teilung des Sammelkorbs "%name%"...</target>
         <jms:reference-file line="73">WorkerManager/Worker/ShareBasketWorker.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a688627f4dd71b157e89c24314fd077ce0e44571" resname="notification:: mark all notification as read">
@@ -11445,7 +11466,7 @@
       <trans-unit id="1758356db21759f7c5a0da9b4dd1db8fd6feab3f" resname="or" approved="yes">
         <source>or</source>
         <target state="translated">Oder</target>
-        <jms:reference-file line="150">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="151">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c63be34306e4a9f792a8ee15b97659affe4ad97e" resname="order-manager::mail: your-order-of" approved="yes">
         <source>order-manager::mail: your-order-of</source>
@@ -11712,8 +11733,8 @@
       <trans-unit id="3d1af7e03f0dbeec721b0d8bb67274bb1ebd1704" resname="panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre" approved="yes">
         <source>panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre</source>
         <target state="translated">Ein Bericht darf nur Elemente enthalten die aus der selben Datenbank kommen</target>
-        <jms:reference-file line="76">Controller/Prod/LanguageController.php</jms:reference-file>
-        <jms:reference-file line="85">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="77">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="86">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="87abdf58f425e9dc7d11328a7ef7666bb457f9e9" resname="panier:: description" approved="yes">
         <source>panier:: description</source>
@@ -11743,17 +11764,17 @@
       <trans-unit id="255b0c1fa53afa654ef27c6cfed00c535b904679" resname="panier:: renommer le panier" approved="yes">
         <source>panier:: renommer le panier</source>
         <target state="translated">umbenennen</target>
-        <jms:reference-file line="75">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="76">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f4eeca3ac7bb46c0283667fe02cc3460f56e2543" resname="panier:: vous ne pouvez pas supprimer un panier public" approved="yes">
         <source>panier:: vous ne pouvez pas supprimer un panier public</source>
         <target state="translated">Sie können keinen leeren öffentlichen Sammelkorb löschen</target>
-        <jms:reference-file line="84">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="85">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c8ec6648f8dee9ecb9c1afac0cc45fab4eb6d77c" resname="panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action." approved="yes">
         <source>panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action.</source>
         <target state="translated">Achtung : Sie sind dabei ein Element des Berichtes zu löschen. Bitte bestätigen Sie Ihre Handlung.</target>
-        <jms:reference-file line="71">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="72">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6042f1b603786999372cc2e1cf8bae7f12b2c65b" resname="panier::Supression d'un element d'un reportage" approved="yes">
         <source>panier::Supression d'un element d'un reportage</source>
@@ -11768,7 +11789,7 @@
       </trans-unit>
       <trans-unit id="206e2792fc76f1011ae6146b474e305f9468404c" resname="paniers:: you shared this basket with %n%">
         <source>paniers:: you shared this basket with %n%</source>
-        <target state="needs-translation">Sie teilen einen Sammelkorb mit %n%</target>
+        <target state="translated">Sie teilen einen Sammelkorb mit %n%</target>
         <jms:reference-file line="380">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="450">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
@@ -11821,7 +11842,7 @@
       <trans-unit id="a2d4e08940975754224325903fc90671983951fa" resname="phraseanet:: Erreur" approved="yes">
         <source>phraseanet:: Erreur</source>
         <target state="translated">Fehler</target>
-        <jms:reference-file line="77">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="78">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="69204da91613130860ac155f5ee357c4b5487a7c" resname="phraseanet:: Modele de donnees" approved="yes">
         <source>phraseanet:: Modele de donnees</source>
@@ -12135,7 +12156,7 @@
       <trans-unit id="38783405f012e41018df326ddfad04f139e692a1" resname="phraseanet::recherche avancee" approved="yes">
         <source>phraseanet::recherche avancee</source>
         <target state="translated">Erweiterte Suche</target>
-        <jms:reference-file line="74">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="75">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="34de91e314f93b81beda0cdbbc4f93f60c6c9581" resname="phraseanet::status bit" approved="yes">
         <source>phraseanet::status bit</source>
@@ -12631,18 +12652,18 @@
       </trans-unit>
       <trans-unit id="d0290556002259ddf657748fc256a1cec709e9f9" resname="prod::dialog feedback title">
         <source>prod::dialog feedback title</source>
-        <target state="needs-translation">Geteilter Sammelkorb mit Feedback</target>
-        <jms:reference-file line="190">Controller/Prod/LanguageController.php</jms:reference-file>
+        <target state="translated">Geteilter Sammelkorb mit Feedback</target>
+        <jms:reference-file line="191">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9673eb292053fe80e79a1df28e941618965382ac" resname="prod::dialog listmanager title">
         <source>prod::dialog listmanager title</source>
-        <target state="needs-translation">Benutzer Liste</target>
-        <jms:reference-file line="191">Controller/Prod/LanguageController.php</jms:reference-file>
+        <target state="translated">Benutzer Liste</target>
+        <jms:reference-file line="192">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3c5f3d8f6be8871509d3c9158d8d098679ec0919" resname="prod::dialog sharebasket title">
         <source>prod::dialog sharebasket title</source>
-        <target state="needs-translation">Geteilter Sammelkorb</target>
-        <jms:reference-file line="189">Controller/Prod/LanguageController.php</jms:reference-file>
+        <target state="translated">Geteilter Sammelkorb</target>
+        <jms:reference-file line="190">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f987eae12ec277343efeb90258ee01e25ca6385" resname="prod::download: delete-marking-stamp">
         <source>prod::download: delete-marking-stamp</source>
@@ -12883,13 +12904,13 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="f2d4706a43458cdce6ec7569d51beecbe88a05fe" resname="prod::feedback:shared_set_title">
         <source>prod::feedback:shared_set_title</source>
-        <target state="needs-translation">Sammelkorbtitel</target>
+        <target state="translated">Sammelkorbtitel</target>
         <jms:reference-file line="224">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fd0959321b1848440ff9f5c13702156bba7e6a21" resname="prod::listmanager Delete the list">
         <source>prod::listmanager Delete the list</source>
-        <target state="needs-translation">Die Liste löschen</target>
-        <jms:reference-file line="186">Controller/Prod/LanguageController.php</jms:reference-file>
+        <target state="translated">Die Liste löschen</target>
+        <jms:reference-file line="187">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="47f76b5a8ec06b165c0d83ed447999def6f368e4" resname="prod::notification: notification title" approved="yes">
         <source>prod::notification: notification title</source>
@@ -12918,7 +12939,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="1cc196dd03104d49bbc1c15e3c05cca44ca9bec2" resname="prod::push: automatically send user reminder">
         <source>prod::push: automatically send user reminder</source>
-        <target state="new">prod::push: automatically send user reminder</target>
+        <target state="needs-translation">Die Benutzer, die ihre Abstimmungen nicht abgeschlossen haben, automatisch zurückwerfen</target>
         <jms:reference-file line="178">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="235">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -12934,135 +12955,134 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="9f765e3bb2016c623002533795a294816cf96945" resname="prod::share User can download HD">
         <source>prod::share User can download HD</source>
-        <target state="needs-translation">Der Benutzer darf HD herunterladen</target>
+        <target state="translated">Der Benutzer darf HD herunterladen</target>
         <jms:reference-file line="445">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="61db49e56035badf1eff0eb5be1f1467d26beafd" resname="prod::share User contribute to the feedback">
         <source>prod::share User contribute to the feedback</source>
-        <target state="needs-translation">Der Benutzer darf am Feedback teilnehmen</target>
+        <target state="translated">Der Benutzer darf am Feedback teilnehmen</target>
         <jms:reference-file line="469">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bc70874cd8dab1abd90ff88bc9494492d66f2734" resname="prod::share You contribute to the feedback">
         <source>prod::share You contribute to the feedback</source>
-        <target state="needs-translation">Sie nehmen am Feedback teil</target>
+        <target state="translated">Sie nehmen am Feedback teil</target>
         <jms:reference-file line="327">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b586ee2521b172b1a54ee3fee29bff72810be81e" resname="prod::share You require feedback">
         <source>prod::share You require feedback</source>
-        <target state="needs-translation">Sie haben um ein Feedback gebeten</target>
+        <target state="translated">Sie haben um ein Feedback gebeten</target>
         <jms:reference-file line="314">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="18cf3e5d191fc3d8d67cf269ec1d6baeb86838eb" resname="prod::share basket share allows participants to see/comment/act on a common basket">
         <source>prod::share basket share allows participants to see/comment/act on a common basket</source>
-        <target state="needs-translation">Ein geteilter Sammelkorb ermöglicht es, dass mehrere Benutzer gemeinsam an seinem Inhalt arbeiten.
-Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung hinzugefügt werden.</target>
+        <target state="translated">Ein geteilter Sammelkorb ermöglicht es, dass mehrere Benutzer gemeinsam an seinem Inhalt arbeiten. Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung hinzugefügt werden.</target>
         <jms:reference-file line="161">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d7e519198d4ee03df505df5832481ee5298a7a9a" resname="prod::share un push permet d'envoyer un lot d'image a des destinataires">
         <source>prod::share un push permet d'envoyer un lot d'image a des destinataires</source>
-        <target state="needs-translation">Ein "Push" ermöglicht es, eine Auswahl an Datensätze an Benutzer zu senden. Die Empfänger des "Push" finden diese Auswahl als einen Sammelkorb, der ihnen gehört. Ein "Push" läuft nie ab.</target>
+        <target state="translated">Ein "Push" ermöglicht es, eine Auswahl an Datensätze an Benutzer zu senden. Die Empfänger des "Push" finden diese Auswahl als einen Sammelkorb, der ihnen gehört. Ein "Push" läuft nie ab.</target>
         <jms:reference-file line="159">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b607f0893dbd1c5e6e8b9c435969677f7fe2f30e" resname="prod::share: None of the selected records can be pushed.">
         <source>prod::share: None of the selected records can be pushed.</source>
-        <target state="needs-translation">Keiner der ausgewählten Datensätze kann gesendet werden.</target>
+        <target state="translated">Keiner der ausgewählten Datensätze kann gesendet werden.</target>
         <jms:reference-file line="9">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40bb59a7896b5c77d24bc51ba50e363e0a520734" resname="prod::share: None of the selected records can be shared.">
         <source>prod::share: None of the selected records can be shared.</source>
-        <target state="needs-translation">Keiner der ausgewählten Datensätze kann geteilt werden.</target>
+        <target state="translated">Keiner der ausgewählten Datensätze kann geteilt werden.</target>
         <jms:reference-file line="11">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4e22eab52e478d802a92cb2abf79c8ee576c41fc" resname="prod::share: Remove users from list">
         <source>prod::share: Remove users from list</source>
-        <target state="needs-translation">Benutzer aus der Liste entfernen</target>
+        <target state="translated">Benutzer aus der Liste entfernen</target>
         <jms:reference-file line="258">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6b4f3add6556fdec8975fd72f2d22e4264dcdeb8" resname="prod::share: User can download HD">
         <source>prod::share: User can download HD</source>
-        <target state="needs-translation">Der Benutzer darf die HD herunterladen</target>
+        <target state="translated">Der Benutzer darf die HD herunterladen</target>
         <jms:reference-file line="96">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0dea3e52300eef892edcc95c569f71889d6ecd31" resname="prod::share: User can modify the basket">
         <source>prod::share: User can modify the basket</source>
-        <target state="needs-translation">Der Benutzer darf den Inhalt des Sammelkorbs ändern</target>
+        <target state="translated">Der Benutzer darf den Inhalt des Sammelkorbs ändern</target>
         <jms:reference-file line="457">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="106">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1854fac4e11aa3f763dc533e2dfad6730b53560d" resname="prod::share: User can see others choices">
         <source>prod::share: User can see others choices</source>
-        <target state="needs-translation">Der Benutzer darf die Wahl der anderen sehen</target>
+        <target state="needs-translation">Der Benutzer darf die Wahl der anderen Benutzern sehen</target>
         <jms:reference-file line="483">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="130">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9566a3f46a42776781c54784e3aba3385b6e1714" resname="prod::share: User contribute to the feedback">
         <source>prod::share: User contribute to the feedback</source>
-        <target state="needs-translation">Der Benutzer darf am Feedback teilnehmen</target>
+        <target state="translated">Der Benutzer darf am Feedback teilnehmen</target>
         <jms:reference-file line="117">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5ccb348802600f55b5bdb36807d0803a55d75e93" resname="prod::share: Users can download HD">
         <source>prod::share: Users can download HD</source>
-        <target state="needs-translation">Der Benutzer darf die HD herunterladen</target>
+        <target state="translated">Der Benutzer darf die HD herunterladen</target>
         <jms:reference-file line="250">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ca04a1180ecd500a3185f2db6fa701aa62ec097" resname="prod::share: Users can modify the basket">
         <source>prod::share: Users can modify the basket</source>
-        <target state="needs-translation">Der Benutzer darf den Inhalt des Sammelkorbs ändern</target>
+        <target state="translated">Der Benutzer darf den Inhalt des Sammelkorbs ändern</target>
         <jms:reference-file line="242">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8b603b55c4cd36e33b32b6bff0bcbde435fb0118" resname="prod::share: Users can see others choices">
         <source>prod::share: Users can see others choices</source>
-        <target state="needs-translation">Der Benutzer darf die Wahl der anderen sehen</target>
+        <target state="translated">Der Benutzer darf die Wahl der anderen sehen</target>
         <jms:reference-file line="235">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0d1ba00cdeea8b6244ad62ec2d78753dea059168" resname="prod::share: Users contribute to the feedback">
         <source>prod::share: Users contribute to the feedback</source>
-        <target state="needs-translation">Der Benutzer darf am Feedback teilnehmen</target>
+        <target state="translated">Der Benutzer darf am Feedback teilnehmen</target>
         <jms:reference-file line="228">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9324365f3521e7b0bcfa90fd02fb30df3eb25785" resname="prod::share: You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.">
         <source>prod::share: You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.</source>
-        <target state="needs-translation">Sie bereiten sich darauf vor, %nb_push_items% Datensätze zu senden, %nb_not_available% stehen nicht für den Versand zur Verfügung.</target>
+        <target state="translated">Sie bereiten sich darauf vor, %nb_push_items% Datensätze zu senden, %nb_not_available% stehen nicht für den Versand zur Verfügung.</target>
         <jms:reference-file line="185">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ebe0d44705f4df859bc89f616b3fd8919d47f296" resname="prod::share: You are about to push %nb_push_items% records.">
         <source>prod::share: You are about to push %nb_push_items% records.</source>
-        <target state="needs-translation">Sie bereiten sich darauf vor, %nb_push_items% Datensätze zu senden.</target>
+        <target state="translated">Sie bereiten sich darauf vor, %nb_push_items% Datensätze zu senden.</target>
         <jms:reference-file line="183">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c96aa251bcc7bda1e6167db89a3d89bd4f17edd7" resname="prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.">
         <source>prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.</source>
-        <target state="needs-translation">Sie bereiten sich darauf vor, einen Sammelkorb zu teilen, mit %nb_push_items% Datensätze, %nb_not_available% Datensätze können nicht verarbeitet werden.</target>
+        <target state="translated">Sie bereiten sich darauf vor, einen Sammelkorb zu teilen, mit %nb_push_items% Datensätze, %nb_not_available% Datensätze können nicht verarbeitet werden.</target>
         <jms:reference-file line="191">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1af9e90ffa3534fd3555ecef51eaf0831427d4b1" resname="prod::share: You are about to share a basket with %nb_push_items% records.">
         <source>prod::share: You are about to share a basket with %nb_push_items% records.</source>
-        <target state="needs-translation">Sie bereiten sich darauf vor, einen Sammelkorb zu teilen, mit %nb_push_items% Datensätze.</target>
+        <target state="translated">Sie bereiten sich darauf vor, einen Sammelkorb zu teilen, mit %nb_push_items% Datensätze.</target>
         <jms:reference-file line="189">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="85c8ae3c46fa22b989d6f426821f7dafff24ebb8" resname="prod::share: feedback-option">
         <source>prod::share: feedback-option</source>
-        <target state="needs-translation">Eine Feedbacksitzung hinzufügen</target>
+        <target state="translated">Eine Feedbacksitzung hinzufügen</target>
         <jms:reference-file line="311">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2391ce555d081b02f6112a764a8d2adb085bb66d" resname="prod::story select collection ...">
         <source>prod::story select collection ...</source>
-        <target state="needs-translation">Eine Kollektion auswählen</target>
+        <target state="translated">Eine Kollektion auswählen</target>
         <jms:reference-file line="6">prod/Story/Create.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fb3208aca269a2ccf25bf327f6cc468a8b5fd776" resname="prod::story: choose a collection to create a story!">
         <source>prod::story: choose a collection to create a story!</source>
         <target state="needs-translation">Eine Kollektion auswählen</target>
-        <jms:reference-file line="173">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="174">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bbbcd53a63ba018c78a6a3f650868c1a6da45a6d" resname="prod::story: warning! use only documents from one databox!">
         <source>prod::story: warning! use only documents from one databox!</source>
         <target state="needs-translation">Achtung, die Dokumente müssen aus einer einzigen Databox stammen</target>
-        <jms:reference-file line="172">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="173">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="45e5796d4f618bc0f7e96945fdb7ffd903cd8673" resname="prod::tech_info: databox_name">
         <source>prod::tech_info: databox_name</source>
-        <target state="needs-translation">Databox</target>
+        <target state="translated">Databox</target>
         <jms:reference-file line="8">web/common/technical_datas.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="df147d680e0fab108bc7a6a1c878c55428ecd3ea" resname="prod::thesaurusTab:candidats" approved="yes">
@@ -13214,28 +13234,28 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       </trans-unit>
       <trans-unit id="95154d90f5b958765081a41fac8a3cf82a3ecbd4" resname="prod::workzone:Basket is WIP">
         <source>prod::workzone:Basket is WIP</source>
-        <target state="needs-translation">Aktuellen Sammelkorb Teilen</target>
+        <target state="translated">Aktuellen Sammelkorb Teilen</target>
         <jms:reference-file line="231">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="6140f86d00814c5627728413d43421ce867c11db" resname="prod::workzone:feedback add user">
         <source>prod::workzone:feedback add user</source>
         <target state="translated">Benutzer verwalten</target>
-        <jms:reference-file line="100">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="102">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button" approved="yes">
+      <trans-unit id="488cb6bedda87a95b27f7eb75ad63885a0ac05de" resname="prod::workzone:manual feedback reminder button">
         <source>prod::workzone:manual feedback reminder button</source>
-        <target state="translated">Eine Erinnerungsmail senden</target>
-        <jms:reference-file line="99">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <target state="needs-translation">Ein Email senden</target>
+        <jms:reference-file line="101">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="51ed058fdf724ba313c93c704acee2d2c2a09e43" resname="prod::workzone:manual feedback reminder provide a message!" approved="yes">
         <source>prod::workzone:manual feedback reminder provide a message!</source>
         <target state="translated">Bitte geben Sie eine Nachricht !</target>
-        <jms:reference-file line="66">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="67">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0398ddbf5b4e472e5cb1501d403d89209e948ed7" resname="prod::workzone:manual feedback reminder select a participant!" approved="yes">
         <source>prod::workzone:manual feedback reminder select a participant!</source>
         <target state="translated">Wählen Sie ein Teilnehmer aus!</target>
-        <jms:reference-file line="67">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="68">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6a1af5af2bf87b75a6905417af3fd237fa4f9463" resname="prod::workzone:manual feedback reminder select all participant" approved="yes">
         <source>prod::workzone:manual feedback reminder select all participant</source>
@@ -13250,7 +13270,7 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       <trans-unit id="8986f5acbe673165e81038c4ae90fa14c8098b49" resname="prod::workzone:manual feedback reminder title" approved="yes">
         <source>prod::workzone:manual feedback reminder title</source>
         <target state="translated">Eine Feedback Erinnerung senden</target>
-        <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="66">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2797e4b3170032c531ab18d91ce329eb546d4c6f" resname="prod::workzone:manual feedback report send" approved="yes">
         <source>prod::workzone:manual feedback report send</source>
@@ -13275,27 +13295,27 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       <trans-unit id="d75ccc6722ace63fbdb430baa7a12dc93d13ff74" resname="prod:edit: chapters" approved="yes">
         <source>prod:edit: chapters</source>
         <target state="translated">Kapitel Bearbeitung</target>
-        <jms:reference-file line="165">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="166">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="64aaae25f317d90d602b6bc668b39e28f21078fb" resname="prod:edit: no overlaps for chapters" approved="yes">
         <source>prod:edit: no overlaps for chapters</source>
         <target state="translated">Keine Überschneidung für die Kapitel</target>
-        <jms:reference-file line="166">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="167">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e3f9c15df842b1cafaa7a08b3b2d3b1ff1173559" resname="prod:edit: only a media of type video can be edited" approved="yes">
         <source>prod:edit: only a media of type video can be edited</source>
         <target state="translated">Nur eine Video kann bearbeitet werden</target>
-        <jms:reference-file line="164">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="165">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="d2e761bd6f1cd95c2ea787f5eb206f6457c20d4b" resname="prod:edit: suggested_values" approved="yes">
         <source>prod:edit: suggested_values</source>
         <target state="translated">Vorgeschlagene Werte</target>
-        <jms:reference-file line="167">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="168">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="253244f8f2642b58bb079abe2088b2461a3dd7b1" resname="prod:edit: video-editor" approved="yes">
         <source>prod:edit: video-editor</source>
         <target state="translated">Video Tools</target>
-        <jms:reference-file line="126">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="127">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="eb4d030ce3d5ca2e158607a6a3cf58063c52ead8" resname="prod:expose field mapping">
         <source>prod:expose field mapping</source>
@@ -13599,62 +13619,62 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       <trans-unit id="1e6f012d49cfe36080713edf24ad202a1d4de16d" resname="prod:mapbox Change position" approved="yes">
         <source>prod:mapbox Change position</source>
         <target state="translated">Lokalisierung verändern</target>
-        <jms:reference-file line="131">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="132">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9b591771eaaea126c4fc9c3a97f9c95674c4179d" resname="prod:mapboxgl: description info : right click to add position" approved="yes">
         <source>prod:mapboxgl: description info : right click to add position</source>
         <target state="translated">Rechtsklick, um die Position von ausgewählte Datensatz (¨e) zu verändern oder Rechtsklick auf die Positionssymbol, um die Position eines Datensatzes zu verändern</target>
-        <jms:reference-file line="179">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="180">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6781f8b299dca61817a9d331c5f8716ec498c298" resname="prod:mapboxgl: description notice" approved="yes">
         <source>prod:mapboxgl: description notice</source>
         <target state="translated">Machen Sie einen Rechtsklick, um einen Suchbereich zu hinzufügen. Klicken Sie auf den Bereich zu entfernen. Benutzen Sie den Griff, um die Grösse zu ändern oder den Bereich zu verschieben. Es ist auch möglich, mehrere Suchbereiche auszuwählen.</target>
-        <jms:reference-file line="169">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="170">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="178eecce991e4efb2a13ad496a3fac410593efdd" resname="prod:mapboxgl: title info" approved="yes">
         <source>prod:mapboxgl: title info</source>
         <target state="translated">Hilfe</target>
-        <jms:reference-file line="178">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="179">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a98f467977cb73bc309f3afa984388ab1facf905" resname="prod:mapboxgl: title map dialog" approved="yes">
         <source>prod:mapboxgl: title map dialog</source>
         <target state="translated">Lokalisierung Suche</target>
-        <jms:reference-file line="170">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="171">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3d7f5939616105e9e12962cca5eacff5064eb711" resname="prod:mapboxgl: title notice" approved="yes">
         <source>prod:mapboxgl: title notice</source>
         <target state="translated">Suchbereiche Funktionen</target>
-        <jms:reference-file line="168">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="169">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="58c99910c7e56b82e9b7ef4d9029a472585cd423" resname="prod:mapboxjs: description info : right click to add position" approved="yes">
         <source>prod:mapboxjs: description info : right click to add position</source>
         <target state="translated">Rechtsklick, um die Position von ausgewählte Datensatz (¨e) zu verändern oder Rechtsklick auf die Positionssymbol, um die Position eines Datensatzes zu verändern</target>
-        <jms:reference-file line="177">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="178">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="db26b26f3033b25e4bbee3d5d901bb2c1a4720bf" resname="prod:mapboxjs: description notice" approved="yes">
         <source>prod:mapboxjs: description notice</source>
         <target state="translated">Beschreibung</target>
-        <jms:reference-file line="175">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="176">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c614bef0cbd5f3a86d388a3e274390bc6db1dced" resname="prod:mapboxjs: title info" approved="yes">
         <source>prod:mapboxjs: title info</source>
         <target state="translated">Hilfe</target>
-        <jms:reference-file line="176">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="177">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="2940ac57aa6946d818f42204a8751d9b3fa97692" resname="prod:mapboxjs: title notice" approved="yes">
         <source>prod:mapboxjs: title notice</source>
         <target state="translated">Titel</target>
-        <jms:reference-file line="174">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="175">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6ce4044e1fce74fb5f716f7d67f3a538f4d12d26" resname="prod:push: create new user" approved="yes">
         <source>prod:push: create new user</source>
         <target state="translated">Neuer Benutzer</target>
-        <jms:reference-file line="171">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="172">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0122357712e990a5a0461aa181f54d7b1f1e3e4c" resname="prod:share:: No vote expires date">
         <source>prod:share:: No vote expires date</source>
-        <target state="needs-translation">Ein Abschlussdatum für das Feedback ist erforderlich</target>
-        <jms:reference-file line="106">Controller/Prod/LanguageController.php</jms:reference-file>
+        <target state="translated">Ein Abschlussdatum für das Feedback ist erforderlich</target>
+        <jms:reference-file line="107">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
         <source>prod:story:selected elements are from different databox and cannot be added to the story</source>
@@ -13754,28 +13774,28 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       <trans-unit id="e40baf2bd857111f0c98b2a213e552f8fa7718be" resname="prod:videoeditor:subtitletab:message:: error" approved="yes">
         <source>prod:videoeditor:subtitletab:message:: error</source>
         <target state="translated">Fehler beim speichern des Untertitels</target>
-        <jms:reference-file line="180">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="181">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="405fcc0a908874a4a88050de924556de3ca4beb2" resname="prod:videoeditor:subtitletab:message:: success" approved="yes">
         <source>prod:videoeditor:subtitletab:message:: success</source>
         <target state="translated">Erfolg</target>
-        <jms:reference-file line="181">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="182">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6024f9d9ecbc9b6e3b531d630df53f92235a8497" resname="prod:workzone:basket:creation-date" approved="yes">
         <source>prod:workzone:basket:creation-date</source>
         <target state="translated">Erstellungsdatum</target>
         <jms:reference-file line="30">prod/Tooltip/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="107">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="109">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5f352a91ba9ba55245e244f3834ec906c27b1378" resname="prod:workzone:basket:updated-message" approved="yes">
         <source>prod:workzone:basket:updated-message</source>
         <target state="translated">Feedback Schlusstermin aktualisiert</target>
-        <jms:reference-file line="126">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="143">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="e7a77a1df74d725737df947f6debe604070f0014" resname="prod:workzone:expose:modal:: title" approved="yes">
         <source>prod:workzone:expose:modal:: title</source>
         <target state="translated">Veröffentlichung Einstellungen</target>
-        <jms:reference-file line="182">Controller/Prod/LanguageController.php</jms:reference-file>
+        <jms:reference-file line="183">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="052118f44df2bb35620741b7efe68fd84f77e2ef" resname="prod:workzone:facetstab:search_and_facets_sort_options">
         <source>prod:workzone:facetstab:search_and_facets_sort_options</source>
@@ -13933,7 +13953,7 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
         <target state="translated">Aktualisieren</target>
         <jms:reference-file line="17">prod/results/feeds.html.twig</jms:reference-file>
         <jms:reference-file line="22">prod/results/feeds.html.twig</jms:reference-file>
-        <jms:reference-file line="133">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="167">prod/WorkZone/Basket.html.twig</jms:reference-file>
         <jms:reference-file line="296">prod/WorkZone/Macros.html.twig</jms:reference-file>
         <jms:reference-file line="88">prod/WorkZone/Story.html.twig</jms:reference-file>
       </trans-unit>
@@ -14009,7 +14029,7 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
       </trans-unit>
       <trans-unit id="cf0636b6d894370de0b8a9d6f2dceb07ad46f800" resname="reponses:: partager">
         <source>reponses:: partager</source>
-        <target state="needs-translation">Freigabe-Link</target>
+        <target state="translated">Freigabe-Link</target>
         <jms:reference-file line="150">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="151">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="152">prod/results/record.html.twig</jms:reference-file>
@@ -15665,158 +15685,168 @@ Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung
         <source>workzone:datepicker:april</source>
         <target state="translated">April</target>
         <jms:reference-file line="591">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="193">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="23ed9061fbf1a184658e05e57a121a72474b54eb" resname="workzone:datepicker:august" approved="yes">
         <source>workzone:datepicker:august</source>
         <target state="translated">August</target>
         <jms:reference-file line="595">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="194">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7e55bc758f272d38198385584d6f50c2dd0eae13" resname="workzone:datepicker:december" approved="yes">
         <source>workzone:datepicker:december</source>
         <target state="translated">Dezember</target>
         <jms:reference-file line="599">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="194">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="db178b383e47bbe58670afd6a67528a4712444d7" resname="workzone:datepicker:february" approved="yes">
         <source>workzone:datepicker:february</source>
         <target state="translated">Februar</target>
         <jms:reference-file line="589">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="193">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a4e3f12ef1defef487381a8339ea49840666414a" resname="workzone:datepicker:friday" approved="yes">
         <source>workzone:datepicker:friday</source>
         <target state="translated">Freitag</target>
         <jms:reference-file line="607">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="195">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="93f6bd6902114b73c225005188bce87569a3ac9c" resname="workzone:datepicker:january" approved="yes">
         <source>workzone:datepicker:january</source>
         <target state="translated">Januar</target>
         <jms:reference-file line="588">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="193">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0f1d297c3d3d9bc7cd800a9bd1a938904f4440ab" resname="workzone:datepicker:july" approved="yes">
         <source>workzone:datepicker:july</source>
         <target state="translated">Juli</target>
         <jms:reference-file line="594">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="194">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8d860a667674628da86b76fb3be676370a61893c" resname="workzone:datepicker:june" approved="yes">
         <source>workzone:datepicker:june</source>
         <target state="translated">Juni</target>
         <jms:reference-file line="593">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="193">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2242d17f28dc262529688d688b5c2e128813ad8b" resname="workzone:datepicker:march" approved="yes">
         <source>workzone:datepicker:march</source>
         <target state="translated">März</target>
         <jms:reference-file line="590">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="193">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2ce30e1185f0f46df340ca727d4d9d89f42b6f5b" resname="workzone:datepicker:may" approved="yes">
         <source>workzone:datepicker:may</source>
         <target state="translated">Mai</target>
         <jms:reference-file line="592">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="159">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="193">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8a7199e82486037293a2cfb17003ed9a30e2cfb2" resname="workzone:datepicker:monday" approved="yes">
         <source>workzone:datepicker:monday</source>
         <target state="translated">Montag</target>
         <jms:reference-file line="603">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="195">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0bbaf1d4dbaa3b5eb27154fcc9579f89c848b091" resname="workzone:datepicker:nextText">
         <source>workzone:datepicker:nextText</source>
         <target state="translated">nächste</target>
         <jms:reference-file line="585">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="157">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="191">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ba391713621e89b5ecec7bc867e949e386332732" resname="workzone:datepicker:november" approved="yes">
         <source>workzone:datepicker:november</source>
         <target state="translated">November</target>
         <jms:reference-file line="598">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="194">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="46727c5b9b3455e2cec4fc761568262af710f119" resname="workzone:datepicker:october" approved="yes">
         <source>workzone:datepicker:october</source>
         <target state="translated">Oktober</target>
         <jms:reference-file line="597">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="194">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7eef21d25b8fa0b6940fe6c87640f82612d0393f" resname="workzone:datepicker:prevText" approved="yes">
         <source>workzone:datepicker:prevText</source>
         <target state="translated">vorherige</target>
         <jms:reference-file line="584">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="156">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="190">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9d4fa7c1a1d4486201a760bcfb2f342ec8329f00" resname="workzone:datepicker:saturday" approved="yes">
         <source>workzone:datepicker:saturday</source>
         <target state="translated">Samstag</target>
         <jms:reference-file line="608">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="195">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a8aa1e4c6df39f7365a4fab8f3c70d3d8d4757ee" resname="workzone:datepicker:september" approved="yes">
         <source>workzone:datepicker:september</source>
         <target state="translated">September</target>
         <jms:reference-file line="596">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="160">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="194">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cd48f23064201336fafcab46a34c085d5a886cb6" resname="workzone:datepicker:sunday" approved="yes">
         <source>workzone:datepicker:sunday</source>
         <target state="translated">Sonntag</target>
         <jms:reference-file line="602">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="195">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de522dc0285d55c95bb9af4aa39020ac35548353" resname="workzone:datepicker:thursday" approved="yes">
         <source>workzone:datepicker:thursday</source>
         <target state="translated">Donnerstag</target>
         <jms:reference-file line="606">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="195">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d274289f8c48bcb43c06efe9386967b7f8fb56df" resname="workzone:datepicker:tuesday" approved="yes">
         <source>workzone:datepicker:tuesday</source>
         <target state="translated">Dienstag</target>
         <jms:reference-file line="604">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="195">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="423742b6f616f9847ea24afec03e24b15f3ff10f" resname="workzone:datepicker:wednesday" approved="yes">
         <source>workzone:datepicker:wednesday</source>
         <target state="translated">Mittwoch</target>
         <jms:reference-file line="605">prod/actions/Push.html.twig</jms:reference-file>
-        <jms:reference-file line="161">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="195">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="cbfb58c29147c5881e828d18a477f922211873a0" resname="workzone:feedback:expiration-closed">
         <source>workzone:feedback:expiration-closed</source>
         <target state="translated">Feedback geschlossen am</target>
         <jms:reference-file line="15">prod/Tooltip/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="114">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="124">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="32285b1e113decb0a3fdf090b0698c5508a2bd09" resname="workzone:feedback:expiration-open">
         <source>workzone:feedback:expiration-open</source>
         <target state="translated">Feedback offen bis</target>
         <jms:reference-file line="17">prod/Tooltip/Basket.html.twig</jms:reference-file>
-        <jms:reference-file line="116">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="126">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="2f0e2fbacaf98478f0a46f828495e0dac8772a32" resname="workzone:feedback:update">
         <source>workzone:feedback:update</source>
         <target state="translated">Das neue Abschlussdatum bestätigen</target>
-        <jms:reference-file line="123">prod/WorkZone/Basket.html.twig</jms:reference-file>
+        <jms:reference-file line="140">prod/WorkZone/Basket.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="af6fdd55858b2b6e908352af06a2d9f5556cf4e8" resname="workzone:shared:expiration-closed">
+        <source>workzone:shared:expiration-closed</source>
+        <target state="new">workzone:shared:expiration-closed</target>
+        <jms:reference-file line="130">prod/WorkZone/Basket.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="f5139c4f644f11ad81fbe93d889e0e3e9fa08f1c" resname="workzone:shared:expiration-open">
+        <source>workzone:shared:expiration-open</source>
+        <target state="new">workzone:shared:expiration-open</target>
+        <jms:reference-file line="132">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
         <source>wz:block_title:my_baskets</source>
-        <target state="needs-translation">Meine Körbe</target>
+        <target state="translated">Meine Sammelkörbe</target>
         <jms:reference-file line="416">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="05c2d54c107deefe5072ee8ae64e7e8911f0a8d0" resname="wz:block_title:shared_with_me">
         <source>wz:block_title:shared_with_me</source>
-        <target state="needs-translation">Mit mir geteilt</target>
+        <target state="translated">Mit mir geteilt</target>
         <jms:reference-file line="347">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a2eb513c5c888a2a5cfeccba3895fec6466acb70" resname="wz:block_title:stories">
         <source>wz:block_title:stories</source>
-        <target state="needs-translation">Stories</target>
+        <target state="translated">Berichte</target>
         <jms:reference-file line="479">prod/WorkZone/Macros.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fb360f9c09ac8c5edb2f18be5de4e80ea4c430d0" resname="yes" approved="yes">

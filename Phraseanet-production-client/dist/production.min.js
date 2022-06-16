@@ -18416,7 +18416,7 @@ var pushOrShare = function pushOrShare(services, container) {
 
         // normal "send button"
         //
-        buttons[localeService.t('send')] = function () {
+        buttons[localeService.t('feedbackSend')] = function () {
 
             // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {
@@ -64356,7 +64356,7 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
                     console.log(captionValue);
-                    for (var i = 0; i < captionLength - 1; i++) {
+                    for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
                         var ResValueItem = captionValue[i].replace(/\n\r/g, "\n").replace(/\r/g, "\n").split(/\n{2,}/g);

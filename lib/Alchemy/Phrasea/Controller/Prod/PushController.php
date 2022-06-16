@@ -618,6 +618,11 @@ class PushController extends Controller
      */
     public function updateExpirationAction(Request $request)
     {
+        $ret = [
+            'success' => false,
+            'message' => 'Expiration date not updated!'
+        ];
+
         // sanity check
         if (is_null($request->request->get('date'))) {
             throw new Exception('The provided date is null!');
@@ -629,40 +634,49 @@ class PushController extends Controller
             $basket = $this->getBasketRepository()->findUserBasket($request->request->get('basket_id'), $this->app->getAuthenticatedUser(), true);
             $expirationDate = new DateTime($request->request->get('date') . " 23:59:59");
 
-            if (!$basket->isVoteBasket()) {
-                throw new Exception('Unable to find the validation session');
-            }
-
-            // update validation tokens expiration
-            //
-            /** @var BasketParticipant $participant */
-            foreach($basket->getParticipants() as $participant) {
-                try {
-                    if(!is_null($token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser()))) {
-                        if($participant->getUser()->getId() === $basket->getVoteInitiator()->getId()) {
-                            // the initiator keeps a no-expiration token
-                            $token->setExpiration(null);    // shoud already be null, but who knows...
-                        }
-                        else {
-                            // the "normal" user token is fixed
-                            $token->setExpiration($expirationDate);
+            if ($basket->isVoteBasket()) {
+                // update validation tokens expiration
+                //
+                /** @var BasketParticipant $participant */
+                foreach($basket->getParticipants() as $participant) {
+                    try {
+                        if(!is_null($token = $this->getTokenRepository()->findValidationToken($basket, $participant->getUser()))) {
+                            if($participant->getUser()->getId() === $basket->getVoteInitiator()->getId()) {
+                                // the initiator keeps a no-expiration token
+                                $token->setExpiration(null);    // shoud already be null, but who knows...
+                            }
+                            else {
+                                // the "normal" user token is fixed
+                                $token->setExpiration($expirationDate);
+                            }
                         }
                     }
+                    catch (Exception $e) {
+                        // not unique token ? should not happen.
+                        // no-op
+                    }
                 }
-                catch (Exception $e) {
-                    // not unique token ? should not happen.
-                    // no-op
-                }
-            }
 
-            $basket->setVoteExpires($expirationDate);
-            $manager->persist($basket);
-            $manager->flush();
-            $manager->commit();
-            $ret = [
-                'success' => true,
-                'message' => $this->app->trans('Expiration date successfully updated!')
-            ];
+                $basket->setVoteExpires($expirationDate);
+                $manager->persist($basket);
+                $manager->flush();
+                $manager->commit();
+
+                $ret = [
+                    'success' => true,
+                    'message' => $this->app->trans('Expiration date successfully updated!')
+                ];
+            } elseif ($basket->getParticipants()->count() > 0 && !$basket->isVoteBasket()) {
+                $basket->setShareExpires($expirationDate);
+                $manager->persist($basket);
+                $manager->flush();
+                $manager->commit();
+
+                $ret = [
+                    'success' => true,
+                    'message' => $this->app->trans('Expiration date successfully updated!')
+                ];
+            }
         }
         catch (Exception $e) {
             $ret = [
