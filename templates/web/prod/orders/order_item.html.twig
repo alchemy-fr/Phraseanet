@@ -133,7 +133,8 @@
                     <table class="table-order">
                         <tbody>
                         {% for element in order.getElements() %}
-                            <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
+                            {% if element.getBaseId() in grantedBaseIds %}
+                                <tr id="element_{{ loop.index }}" class="order_row {% if element.getOrderMaster() is none %}selectable{% else %}{% if element.getDeny() == true %}selectable denied{% else %}selectable validated{% endif %}{% endif %}" elementids="{{element.getSbasId(app)}}_{{element.getRecordId()}}">
                                 <td width="10%" align="center">
                                     {% if element.getOrderMaster() %}
                                         {% set name = element.getOrderMaster().getDisplayName() | e %}
@@ -169,6 +170,7 @@
                                     <span>{{element.getRecord(app).getOriginalName() }}</span>
                                 </td>
                             </tr>
+                            {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>

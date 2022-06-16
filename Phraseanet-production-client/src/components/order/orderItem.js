@@ -880,7 +880,7 @@ const orderItem = services => {
                 //$('#order-action button.send').prop('disabled', true);
             } else if (_.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
                 $('#order-action button.deny, #order-action button.reset').hide();
-                $('#order-action span.action-text').html('window.orderItemData.translatedText.refusedPreviously');
+                $('#order-action span.action-text').html(window.orderItemData.translatedText.refusedPreviously);
                 //$('#order-action button.send').prop('disabled', false);
                 $('#order-action button.send, #order-action span.action-text').show();
             } else {
