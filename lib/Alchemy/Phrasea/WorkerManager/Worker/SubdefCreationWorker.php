@@ -65,8 +65,14 @@ class SubdefCreationWorker implements WorkerInterface
         $databoxId      = $payload['databoxId'];
         $subdefName     = $payload['subdefName'];
 
-        $databox = $this->findDataboxById($databoxId);
-        $record = $databox->get_record($recordId);
+        try {
+            $databox = $this->findDataboxById($databoxId);
+            $record = $databox->get_record($recordId);
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf("%s (%s) : record not found %s", __FILE__, __LINE__, $e->getMessage()));
+
+            return;
+        }
 
         if ($record->isStory()) {
             return;

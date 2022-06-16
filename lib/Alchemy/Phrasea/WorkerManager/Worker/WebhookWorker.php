@@ -114,7 +114,15 @@ class WebhookWorker implements WorkerInterface
 
                 $this->messagePublisher->pushLog(sprintf('Processing event "%s" with id %d', $webhookevent->getName(), $webhookevent->getId()));
                 // send requests
-                $this->deliverEvent($httpClient, $thirdPartyApplications, $webhookevent, $payload);
+                try {
+                    $this->deliverEvent($httpClient, $thirdPartyApplications, $webhookevent, $payload);
+                } catch (\Exception $e) {
+                    if ($workerRunningJob != null) {
+                        $workerRunningJob->setInfo('error ' . $e->getMessage());
+                        $em->persist($workerRunningJob);
+                    }
+                }
+
             }
 
             if ($workerRunningJob != null) {

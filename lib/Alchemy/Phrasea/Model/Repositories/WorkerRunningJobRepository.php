@@ -7,6 +7,7 @@ use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DateTime;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Exception;
 use PDO;
 
@@ -389,6 +390,44 @@ class WorkerRunningJobRepository extends EntityRepository
         ;
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function updateStatusRunningToCanceledSinceCreated($hour = 0)
+    {
+        $sql = '
+            UPDATE WorkerRunningJob w
+            SET w.status = :canceled
+            WHERE w.status = :running
+            AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
+        ;
+
+        $this->_em->getConnection()->executeUpdate($sql, [
+            'second'    => $hour * 3600,
+            'running'   => 'running',
+            'canceled'  => 'canceled'
+        ]);
+    }
+
+    public function getRunningSinceCreated($hour = 0)
+    {
+        $rsm = new ResultSetMappingBuilder($this->_em);
+        $rsm->addRootEntityFromClassMetadata('Alchemy\Phrasea\Model\Entities\WorkerRunningJob', 'w');
+        $selectClause = $rsm->generateSelectClause();
+
+        $sql = '
+            SELECT ' . $selectClause . '
+            FROM WorkerRunningJob w
+            WHERE w.status = :running
+            AND (TO_SECONDS(CURRENT_TIMESTAMP()) - TO_SECONDS(w.created)) > :second'
+        ;
+
+        $q = $this->_em->createNativeQuery($sql, $rsm);
+        $q->setParameters([
+            'second'    => $hour * 3600,
+            'running'   => 'running'
+        ]);
+
+        return $q->getResult();
     }
 
     /**
