@@ -82,6 +82,10 @@ spec:
           value: {{ .Values.php.opcache_enabled | quote }}
         - name: PHP_LOG_LEVEL
           value: {{ .Values.php.log_level | quote }}
+        - name: PHRASEANET_INSTALL
+          value: {{ .Values.app.phraseanet_install | quote }}
+        - name: PHRASEANET_SETUP
+          value: {{ .Values.app.phraseanet_setup | quote }}
         - name: PHRASEANET_ADMIN_ACCOUNT_EMAIL
           value: {{ .Values.app.phraseanet_admin_account_email | quote }}
         - name: PHRASEANET_ADMIN_ACCOUNT_PASSWORD

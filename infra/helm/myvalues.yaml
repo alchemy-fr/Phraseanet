@@ -55,6 +55,8 @@ ingress:
 
 app:
   hostname: localhost
+  phraseanet_install: 1
+  phraseanet_setup: 1
   phraseanet_admin_account_email: admin@alchemy.fr
   phraseanet_admin_account_password: phraseanet
   phraseanet_db_host: db
