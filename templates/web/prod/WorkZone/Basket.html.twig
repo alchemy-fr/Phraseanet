@@ -98,10 +98,10 @@
             {% set disabled = 'disabled' %}
         {% endif %}
 
-        <button class="btn feedback-reminder" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 5px;" {{ disabled }}>{{ 'prod::workzone:manual feedback reminder button' | trans }}</button>
-        <button class="btn feedback-user" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 5px;" {{ disabled }}>{{ 'prod::workzone:feedback add user' | trans }}</button>
-
         <div class="feedback-info">
+            <button class="btn feedback-reminder" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 15px;" {{ disabled }}>{{ 'prod::workzone:manual feedback reminder button' | trans }}</button>
+            <button class="btn feedback-user" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 15px;" {{ disabled }}>{{ 'prod::workzone:feedback add user' | trans }}</button>
+
             {% set nb_records = basket.getElements()|length %}
             {% set date = app['date-formatter'].getPrettyString(basket.getCreated()) %}
 
