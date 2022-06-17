@@ -67,6 +67,7 @@ class PrinterController extends Controller
         $description = $request->request->get('print-pdf-description') ? : '';
         $userPassword = $request->request->get('print-pdf-password') ? : '';
         $canDownload = $request->request->get('can-download-subdef') == 1 ? true : false ;
+        $showRecordInfo = $request->request->get('show-record-information') == 1 ? true : false ;
 
         $downloadSubdef = '';
         $urlTtl = null;
@@ -82,7 +83,7 @@ class PrinterController extends Controller
             $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
 
-        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload, $downloadSubdef);
+        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload, $downloadSubdef, $showRecordInfo);
 
         $pdfName = '';
 

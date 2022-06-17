@@ -33,11 +33,12 @@ class PDFRecords extends PDF
     private $isUserInputPrinted = false;
     private $canDownload;
     private $downloadSubdef;
+    private $showRecordInfo;
 
     private $thumbnailName  = 'thumbnail';
     private $previewName    = 'preview;';
 
-    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '')
+    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '', $showRecordInfo = true)
     {
         parent::__construct($app);
         $this->urlGenerator = $app['media_accessor.subdef_url_generator'];
@@ -45,6 +46,7 @@ class PDFRecords extends PDF
         $this->pdfTitle = $pdfTitle;
         $this->pdfDescription = $pdfDescription;
         $this->canDownload    = $canDownload;
+        $this->showRecordInfo = $showRecordInfo;
         $this->downloadSubdef = $downloadSubdef;
         $this->thumbnailName  = $printer->getThumbnailName();
         $this->previewName    = $printer->getPreviewName();
@@ -776,35 +778,37 @@ class PDFRecords extends PDF
                 }
             }
 
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->get_title());
-            $this->pdf->Write(6, "\n");
+            if ($this->showRecordInfo) {
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $this->pdf->Write(5, $rec->get_title());
+                $this->pdf->Write(6, "\n");
 
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->getRecordId());
-            $this->pdf->Write(6, "\n");
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $this->pdf->Write(5, $rec->getRecordId());
+                $this->pdf->Write(6, "\n");
 
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
-            $this->pdf->Write(6, "\n");
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
+                $this->pdf->Write(6, "\n");
 
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->get_original_name());
-            $this->pdf->Write(6, "\n");
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $this->pdf->Write(5, $rec->get_original_name());
+                $this->pdf->Write(6, "\n");
 
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->getUUID());
-            $this->pdf->Write(6, "\n");
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $this->pdf->Write(5, $rec->getUUID());
+                $this->pdf->Write(6, "\n");
+            }
 
             $nf = 0;
             if ($basket && $basket->isVoteBasket()) {
@@ -870,9 +874,11 @@ class PDFRecords extends PDF
                             $this->pdf->Write(6, "\n");
                         }
 
+                        $this->pdf->SetTextColor(24, 57, 98);
                         $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                         $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
 
+                        $this->pdf->SetTextColor(0);
                         $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
                         $t = str_replace(

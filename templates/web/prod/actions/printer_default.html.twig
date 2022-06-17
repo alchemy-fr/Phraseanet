@@ -66,6 +66,12 @@
 
                 <h3 style="margin-left: 5px;">{{ 'print:: some options' | trans }}</h3>
                 <div style="margin: 20px 5px;">
+                    <label class="checkbox" for="show-record-information" style="margin-top: 5px;height: 21px;padding-top: 2px;padding-bottom: 2px;">
+                        <input type="checkbox" id="show-record-information" name="show-record-information" value="1" checked />
+                        {{ 'print:: show record information on preview' | trans }}
+                    </label>
+                </div>
+                <div style="margin: 20px 5px;">
                     <h4 style="margin-left: 0px;">{{ 'print:: add and remember password to protect the pdf' | trans }}</h4>
                     <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
                 </div>
