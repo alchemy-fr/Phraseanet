@@ -431,7 +431,7 @@ class PDFRecords extends PDF
                 /* @var $field caption_field */
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $field->get_name() . " : ");
+                $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
 
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $field->get_serialized_values());
@@ -506,7 +506,7 @@ class PDFRecords extends PDF
             foreach ($rec->get_caption()->get_fields() as $field) {
                 if ($field->get_databox_field()->get_gui_visible()) {
                     $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                    $this->pdf->Write(5, $field->get_name() . " : ");
+                    $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
 
                     $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                     $t = str_replace(
@@ -871,7 +871,7 @@ class PDFRecords extends PDF
                         }
 
                         $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                        $this->pdf->Write(5, $field->get_name() . " : ");
+                        $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
 
                         $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
