@@ -98,9 +98,6 @@
             {% set disabled = 'disabled' %}
         {% endif %}
 
-        <button class="btn feedback-reminder" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 5px;" {{ disabled }}>{{ 'prod::workzone:manual feedback reminder button' | trans }}</button>
-        <button class="btn feedback-user" data-basket-id="{{ basket.getId() }}" style="margin-bottom: 5px;" {{ disabled }}>{{ 'prod::workzone:feedback add user' | trans }}</button>
-
         <div class="feedback-info">
             {% set nb_records = basket.getElements()|length %}
             {% set date = app['date-formatter'].getPrettyString(basket.getCreated()) %}
@@ -142,7 +139,11 @@
                 </form>
                 <p class="message text-right" style="opacity: 0;transition: all 0.2s; color: green; display: block; ">{{ 'prod:workzone:basket:updated-message' | trans }}</p>
             </div>
-        </div>
+            <div>
+                <button class="btn feedback-reminder" data-basket-id="{{ basket.getId() }}"  {{ disabled }}>{{ 'prod::workzone:manual feedback reminder button' | trans }}</button>
+                <button class="btn feedback-user" data-basket-id="{{ basket.getId() }}" style="margin-left: 10px;" {{ disabled }}>{{ 'prod::workzone:feedback add user' | trans }}</button>
+            </div>
+            </div>
     {% endif %}
 
     {% set mailto_basket_user_name =  '<a href="mailto:' ~ basket.getUser().getEmail() ~ '?subject=' ~ basket.getName() ~ '" target="_blank" style="color:#FFA500; color:#FFA500 !important; text-decoration:underline; cursor:pointer;">' ~
