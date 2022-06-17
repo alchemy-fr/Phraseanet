@@ -174,6 +174,38 @@ class AdminConfigurationController extends Controller
         return $this->app->json(['success' => true]);
     }
 
+    public function changeStatusCanceledAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+
+        $result = $repoWorker->getRunningSinceCreated($request->get('hour'));
+        return $this->render('admin/worker-manager/worker_info_change_status.html.twig', [
+            'jobCount' => count($result)
+        ]);
+    }
+
+    public function doChangeStatusToCanceledAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+        $repoWorker->updateStatusRunningToCanceledSinceCreated($request->request->get('hour'));
+
+        return $this->app->json(['success' => true]);
+    }
+
+    public function getRunningAction(PhraseaApplication $app, Request $request)
+    {
+        /** @var WorkerRunningJobRepository $repoWorker */
+        $repoWorker = $this->app['repo.worker-running-job'];
+        $result = $repoWorker->getRunningSinceCreated($request->get('hour'));
+
+        return $this->app->json([
+            'success'   => true,
+            'count'     => count($result)
+        ]);
+    }
+
     public function queueMonitorAction(PhraseaApplication $app, Request $request)
     {
         $reload = ($request->query->get('reload') == 1);

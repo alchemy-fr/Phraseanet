@@ -2,20 +2,23 @@
 
 <h1>{{ 'admin::workermanager:tab:workerinfo: description' |trans }}</h1>
 <div class="worker-info-block">
-<form action="{{ path("worker_admin_truncate") }}" method="POST">
+    <p style="margin-bottom: 20px;">
+        <button class="change-status-jobs btn btn-primary">
+            {{ 'admin::workermanager:tab:workerinfo: change status to canceled' |trans }}
+        </button>
+    </p>
+
     <p>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary erase-all">
             {{ 'admin::workermanager:tab:workerinfo: Erase all information' |trans }}
         </button>
         <span class="alert alert-danger">
             {{ "admin::workermanager:tab:workerinfo: Warning! Erase all information" |trans }}
         </span>
-        </p>
-</form>
+    </p>
 
-<form action="{{ path("worker_admin_delete_finished") }}" method="POST">
     <p>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary erase-finished">
             {{ 'admin::workermanager:tab:workerinfo: Erase all finished' | trans }}
         </button>
         <span class="alert alert-info">
@@ -23,8 +26,7 @@
         </span>
 
     </p>
-</form>
-<br><br>
+    <br><br>
     <button id="refresh-list" class="btn btn-success">
         {{ 'admin::workermanager:tab:workerinfo: Refresh list' |trans }}
     </button>
@@ -162,6 +164,85 @@
                 }
             });
 
+        });
+
+        var buttons = {
+            'Apply': function () {
+                save_status_canceled();
+            },
+            'Cancel': function () {
+                $('#change_status_job_dialog').dialog('close');
+            }
+        };
+
+        $('#change_status_job_dialog').dialog({
+            resizable: false,
+            autoOpen: false,
+            draggable: false,
+            buttons: buttons,
+            width: 600,
+            height: 300,
+            modal: true
+        });
+
+        $('.change-status-jobs').on('click', function () {
+            $.ajax({
+                type: "GET",
+                url: "/admin/worker-manager/change-status/canceled",
+                success: function (data) {
+                    let $dialog = $('#change_status_job_dialog');
+                    $dialog.html(data).dialog('open');
+                    $dialog.on('click', '.refresh-job-count', function() {
+                        let hour = $dialog.find('input[name="hour"]').val();
+                        $.ajax({
+                            type: "GET",
+                            url: "/admin/worker-manager/running",
+                            data: {
+                                hour: hour ? hour : 0
+                            },
+                            success: function (data) {
+                                $dialog.find('#job-count').empty().html(data.count);
+                            }
+                        });
+                    })
+                }
+            });
+        });
+
+        function save_status_canceled() {
+            let hour = $('input[name="hour"]').val();
+            $.ajax({
+                type: 'POST',
+                url: '/admin/worker-manager/change-status/canceled',
+                data: {
+                    hour: hour ? hour : 0
+                },
+                success: function (data) {
+                    $('#change_status_job_dialog').dialog('close');
+                }
+            });
+        }
+
+        $('.erase-all').on('click', function () {
+            if (confirm("{{ 'Are you sure you want to erase all job informations ?' | trans }}")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/worker-manager/truncate',
+                    success: function (data) {
+                    }
+                });
+            }
+        });
+
+        $('.erase-finished').on('click', function () {
+            if (confirm("{{ 'Are you sure you want to erase finished job informations ?' | trans }}")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/worker-manager/delete-finished',
+                    success: function (data) {
+                    }
+                });
+            }
         });
 
     </script>

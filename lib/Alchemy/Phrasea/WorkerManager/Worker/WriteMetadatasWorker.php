@@ -89,7 +89,13 @@ class WriteMetadatasWorker implements WorkerInterface
 
         // here we can work
 
-        $record  = $databox->get_record($recordId);
+        try {
+            $record  = $databox->get_record($recordId);
+        } catch (\Exception $e) {
+            $this->repoWorker->markFinished($workerRunningJobId, "error " . $e->getMessage());
+
+            return;
+        }
 
         if ($record->getMimeType() == 'image/svg+xml') {
 
