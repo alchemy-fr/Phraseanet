@@ -34,11 +34,12 @@ class PDFRecords extends PDF
     private $canDownload;
     private $downloadSubdef;
     private $showRecordInfo;
+    private $descriptionFontSize;
 
     private $thumbnailName  = 'thumbnail';
     private $previewName    = 'preview;';
 
-    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '', $showRecordInfo = true)
+    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '', $showRecordInfo = true, $descriptionFontSize = 12)
     {
         parent::__construct($app);
         $this->urlGenerator = $app['media_accessor.subdef_url_generator'];
@@ -47,6 +48,7 @@ class PDFRecords extends PDF
         $this->pdfDescription = $pdfDescription;
         $this->canDownload    = $canDownload;
         $this->showRecordInfo = $showRecordInfo;
+        $this->descriptionFontSize = $descriptionFontSize;
         $this->downloadSubdef = $downloadSubdef;
         $this->thumbnailName  = $printer->getThumbnailName();
         $this->previewName    = $printer->getPreviewName();
@@ -506,11 +508,11 @@ class PDFRecords extends PDF
 
             $this->pdf->SetY($this->pdf->GetY() + 2);
             foreach ($rec->get_caption()->get_fields() as $field) {
-                if ($field->get_databox_field()->get_gui_visible()) {
-                    $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                if ($field->get_databox_field()->get_printable()) {
+                    $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
                     $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
 
-                    $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                    $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
                     $t = str_replace(
                         ["&lt;", "&gt;", "&amp;"]
                         , ["<", ">", "&"]
@@ -869,17 +871,17 @@ class PDFRecords extends PDF
                 foreach ($rec->get_caption()->get_fields() as $field) {
                     /* @var $field caption_field */
 
-                    if ($field->get_databox_field()->get_gui_visible()) {
+                    if ($field->get_databox_field()->get_printable()) {
                         if ($nf > 0) {
                             $this->pdf->Write(6, "\n");
                         }
 
                         $this->pdf->SetTextColor(24, 57, 98);
-                        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
                         $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
 
                         $this->pdf->SetTextColor(0);
-                        $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
 
                         $t = str_replace(
                             ["&lt;", "&gt;", "&amp;"]
