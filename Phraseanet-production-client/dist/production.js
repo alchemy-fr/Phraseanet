@@ -66435,7 +66435,7 @@ var orderItem = function orderItem(services) {
                 //$('#order-action button.send').prop('disabled', true);
             } else if (_underscore2.default.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.reset').hide();
-                (0, _jquery2.default)('#order-action span.action-text').html('window.orderItemData.translatedText.refusedPreviously');
+                (0, _jquery2.default)('#order-action span.action-text').html(window.orderItemData.translatedText.refusedPreviously);
                 //$('#order-action button.send').prop('disabled', false);
                 (0, _jquery2.default)('#order-action button.send, #order-action span.action-text').show();
             } else {
