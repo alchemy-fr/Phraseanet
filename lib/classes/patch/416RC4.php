@@ -2,10 +2,10 @@
 
 use Alchemy\Phrasea\Application;
 
-class patch_416 implements patchInterface
+class patch_416RC4 implements patchInterface
 {
     /** @var string */
-    private $release = '4.1.6';
+    private $release = '4.1.6-rc4';
 
     /** @var array */
     private $concern = [base::DATA_BOX];
