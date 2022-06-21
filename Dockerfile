@@ -94,7 +94,7 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && make \
     && make install \
     && mkdir /tmp/ImageMagick \
-    && curl https://download.imagemagick.org/ImageMagick/download/ImageMagick.tar.gz| tar zx -C /tmp/ImageMagick --strip-components 1 \
+    && curl https://imagemagick.org/archive/ImageMagick.tar.gz| tar zx -C /tmp/ImageMagick --strip-components 1 \
     && cd /tmp/ImageMagick \
     && ./configure \
     && make \
