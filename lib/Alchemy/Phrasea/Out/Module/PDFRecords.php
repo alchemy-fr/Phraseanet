@@ -433,14 +433,28 @@ class PDFRecords extends PDF
             }
 
             $this->pdf->SetY($this->pdf->GetY() + 2);
+            if ($this->showRecordInfo) {
+                $this->showRecordInfoBloc($rec);
+                $this->pdf->Write(6, "\n");
+            }
+
+            $r = $g = $b = 0;
+            if (!empty($this->fieldTitleColor)) {
+                list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
+            }
 
             foreach ($rec->get_caption()->get_fields() as $field) {
                 /* @var $field caption_field */
 
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
+                if (!empty($this->fieldTitleColor)) {
+                    $this->pdf->SetTextColor($r, $g, $b);
+                }
+
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
                 $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
 
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $this->pdf->SetTextColor(0);
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
                 $this->pdf->Write(5, $field->get_serialized_values());
 
                 $this->pdf->Write(6, "\n");
@@ -510,6 +524,11 @@ class PDFRecords extends PDF
             }
 
             $this->pdf->SetY($this->pdf->GetY() + 2);
+            if ($this->showRecordInfo) {
+                $this->showRecordInfoBloc($rec);
+                $this->pdf->Write(6, "\n");
+            }
+
             foreach ($rec->get_caption()->get_fields() as $field) {
                 if ($field->get_databox_field()->get_printable()) {
                     if (!empty($this->fieldTitleColor)) {
@@ -789,57 +808,7 @@ class PDFRecords extends PDF
             }
 
             if ($this->showRecordInfo) {
-                $r = $g = $b = 0;
-                if (!empty($this->fieldTitleColor)) {
-                    list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
-                    $this->pdf->SetTextColor($r, $g, $b);
-                }
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
-                $this->pdf->SetTextColor(0);
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
-                $this->pdf->Write(5, $rec->get_title());
-                $this->pdf->Write(6, "\n");
-
-                if (!empty($this->fieldTitleColor)) {
-                    $this->pdf->SetTextColor($r, $g, $b);
-                }
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
-                $this->pdf->SetTextColor(0);
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
-                $this->pdf->Write(5, $rec->getRecordId());
-                $this->pdf->Write(6, "\n");
-
-                if (!empty($this->fieldTitleColor)) {
-                    $this->pdf->SetTextColor($r, $g, $b);
-                }
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
-                $this->pdf->SetTextColor(0);
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
-                $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
-                $this->pdf->Write(6, "\n");
-
-                if (!empty($this->fieldTitleColor)) {
-                    $this->pdf->SetTextColor($r, $g, $b);
-                }
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
-                $this->pdf->SetTextColor(0);
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
-                $this->pdf->Write(5, $rec->get_original_name());
-                $this->pdf->Write(6, "\n");
-
-                if (!empty($this->fieldTitleColor)) {
-                    $this->pdf->SetTextColor($r, $g, $b);
-                }
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
-                $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
-                $this->pdf->SetTextColor(0);
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
-                $this->pdf->Write(5, $rec->getUUID());
-                $this->pdf->Write(6, "\n");
+                $this->showRecordInfoBloc($rec);
             }
 
             $nf = 0;
@@ -897,7 +866,7 @@ class PDFRecords extends PDF
             }
 
             if ($write_caption) {
-                $this->pdf->Write(12, "\n");
+                $this->pdf->Write(6, "\n");
                 foreach ($rec->get_caption()->get_fields() as $field) {
                     /* @var $field caption_field */
 
@@ -932,6 +901,61 @@ class PDFRecords extends PDF
         }
 
         return;
+    }
+
+    private function showRecordInfoBloc(\record_adapter $rec)
+    {
+        $r = $g = $b = 0;
+        if (!empty($this->fieldTitleColor)) {
+            list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->get_title());
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->getRecordId());
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->get_original_name());
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->getUUID());
+        $this->pdf->Write(6, "\n");
     }
 
     private function formatDate(\DateTime $date)
@@ -1037,14 +1061,14 @@ class PDFRecords extends PDF
         $infos = pathinfo($subdef->getRealPath());
 
         if ($this->printer->getTitleAsDownloadName()) {
-            $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(), 0, self::$maxFilenameLength));
+            $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(['removeExtension' => true]), 0, self::$maxFilenameLength), 'UTF-8');
         } else {
             $originalName = $subdef->get_record()->get_original_name(true);
             $originalName = empty($originalName) ? $subdef->get_record()->getId() : $originalName;
             $filename = $subdef->get_name() == 'document' ? $originalName : $originalName . '_' . $subdef->get_name() ;
         }
 
-        $url = $url . "&filename=" . $filename . '.' . $infos['extension'];
+        $url = $url . "&filename=" . urlencode($filename) . '.' . $infos['extension'];
 
         return $url;
     }
