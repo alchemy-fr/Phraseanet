@@ -69,6 +69,7 @@ class PrinterController extends Controller
         $canDownload = $request->request->get('can-download-subdef') == 1 ? true : false ;
         $showRecordInfo = $request->request->get('show-record-information') == 1 ? true : false ;
         $descriptionFontSize = $request->request->get('description-font-size') ? : 12;
+        $fieldTitleColor= $request->request->get('field-title-color') ? : '';
 
         $downloadSubdef = '';
         $urlTtl = null;
@@ -84,7 +85,19 @@ class PrinterController extends Controller
             $this->getDataboxLogger($record->getDatabox())->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
         }
 
-        $PDF = new PDFRecords($this->app, $printer, $layout, $title, $description, $userPassword, $canDownload, $downloadSubdef, $showRecordInfo, $descriptionFontSize);
+        $PDF = new PDFRecords(
+            $this->app,
+            $printer,
+            $layout,
+            $title,
+            $description,
+            $userPassword,
+            $canDownload,
+            $downloadSubdef,
+            $showRecordInfo,
+            $descriptionFontSize,
+            $fieldTitleColor
+        );
 
         $pdfName = '';
 
