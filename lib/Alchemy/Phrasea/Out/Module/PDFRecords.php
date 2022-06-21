@@ -789,32 +789,54 @@ class PDFRecords extends PDF
             }
 
             if ($this->showRecordInfo) {
+                $r = $g = $b = 0;
+                if (!empty($this->fieldTitleColor)) {
+                    list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
+                    $this->pdf->SetTextColor($r, $g, $b);
+                }
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
+                $this->pdf->SetTextColor(0);
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $rec->get_title());
                 $this->pdf->Write(6, "\n");
 
+                if (!empty($this->fieldTitleColor)) {
+                    $this->pdf->SetTextColor($r, $g, $b);
+                }
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
+                $this->pdf->SetTextColor(0);
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $rec->getRecordId());
                 $this->pdf->Write(6, "\n");
 
+                if (!empty($this->fieldTitleColor)) {
+                    $this->pdf->SetTextColor($r, $g, $b);
+                }
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
+                $this->pdf->SetTextColor(0);
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
                 $this->pdf->Write(6, "\n");
 
+                if (!empty($this->fieldTitleColor)) {
+                    $this->pdf->SetTextColor($r, $g, $b);
+                }
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
+                $this->pdf->SetTextColor(0);
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $rec->get_original_name());
                 $this->pdf->Write(6, "\n");
 
+                if (!empty($this->fieldTitleColor)) {
+                    $this->pdf->SetTextColor($r, $g, $b);
+                }
                 $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
                 $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
+                $this->pdf->SetTextColor(0);
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
                 $this->pdf->Write(5, $rec->getUUID());
                 $this->pdf->Write(6, "\n");
