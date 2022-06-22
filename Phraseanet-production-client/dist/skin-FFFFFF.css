@@ -2214,7 +2214,7 @@ span.ww_winTitle {
 }
 
 #ui-datepicker-div {
-  z-index: 2000;
+  z-index: 2000 !important;
   background-color: #ffffff;
   position: absolute;
 }
