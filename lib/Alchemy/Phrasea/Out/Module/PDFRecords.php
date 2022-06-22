@@ -219,6 +219,10 @@ class PDFRecords extends PDF
                 $subdef = $rec->get_subdef($this->thumbnailName);
             }
 
+            if ($subdef == null || ($subdef != null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()) && $rec->has_subdef('thumbnail'))) {
+                $subdef = $rec->get_subdef('thumbnail');
+            }
+
             if ($subdef == null ||
                 ($subdef !== null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()))) {
                 $fimg = sprintf('%s/assets/common/images/icons/substitution/%s.png',
@@ -333,6 +337,10 @@ class PDFRecords extends PDF
 
             if ($rec->has_subdef($this->thumbnailName)) {
                 $subdef = $rec->get_subdef($this->thumbnailName);
+            }
+
+            if ($subdef == null || ($subdef != null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()) && $rec->has_subdef('thumbnail'))) {
+                $subdef = $rec->get_subdef('thumbnail');
             }
 
             $wimg = $himg = 50;
@@ -743,6 +751,10 @@ class PDFRecords extends PDF
             if ($rec->has_subdef($this->previewName)) {
                 /* @var \record_adapter $rec */
                 $subdef = $rec->get_subdef($this->previewName);
+            }
+
+            if ($subdef == null || ($subdef != null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()) && $rec->has_subdef('thumbnail'))) {
+                $subdef = $rec->get_subdef('thumbnail');
             }
 
             // original height / original width x new width = new height
