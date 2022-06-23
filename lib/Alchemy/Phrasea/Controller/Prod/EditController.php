@@ -77,9 +77,10 @@ class EditController extends Controller
                     'format'               => '',
                     'explain'              => '',
                     'tbranch'              => $meta->get_tbranch(),
-                    'generate_cterms'       => $meta->get_generate_cterms(),
+                    'generate_cterms'      => $meta->get_generate_cterms(),
                     'gui_editable'         => $meta->get_gui_editable(),
-                    'gui_visible'         => $meta->get_gui_visible(),
+                    'gui_visible'          => $meta->get_gui_visible(),
+                    'printable'            => $meta->get_printable(),
                     'maxLength'            => $meta->get_tag()
                         ->getMaxLength(),
                     'minLength'            => $meta->get_tag()

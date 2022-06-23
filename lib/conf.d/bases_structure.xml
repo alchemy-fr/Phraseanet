@@ -2057,6 +2057,14 @@
             <default>1</default>
             <comment></comment>
           </field>
+          <field>
+            <name>printable</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
