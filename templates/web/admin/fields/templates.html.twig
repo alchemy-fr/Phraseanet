@@ -206,6 +206,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>
+                        <label for="printable" class="checkbox">
+                            <input id="printable" type="checkbox" <%= field.printable ? "checked='checked'" : "" %> />
+                            {% trans %}field-printable{% endtrans %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
                     <td colspan="2">
                         <label for="business" class="checkbox">
                             <input id="business" type="checkbox" <%= field.business ? "checked='checked'" : "" %> />

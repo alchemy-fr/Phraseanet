@@ -33,11 +33,14 @@ class PDFRecords extends PDF
     private $isUserInputPrinted = false;
     private $canDownload;
     private $downloadSubdef;
+    private $showRecordInfo;
+    private $descriptionFontSize;
+    private $fieldTitleColor;
 
     private $thumbnailName  = 'thumbnail';
     private $previewName    = 'preview;';
 
-    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '')
+    public function __construct(Application $app, Printer $printer, $layout, $pdfTitle = '', $pdfDescription = '', $userPassword = '', $canDownload = false, $downloadSubdef = '', $showRecordInfo = true, $descriptionFontSize = 12, $fieldTitleColor = '')
     {
         parent::__construct($app);
         $this->urlGenerator = $app['media_accessor.subdef_url_generator'];
@@ -45,6 +48,10 @@ class PDFRecords extends PDF
         $this->pdfTitle = $pdfTitle;
         $this->pdfDescription = $pdfDescription;
         $this->canDownload    = $canDownload;
+        $this->showRecordInfo = $showRecordInfo;
+        $this->descriptionFontSize = $descriptionFontSize;
+        $this->fieldTitleColor = $fieldTitleColor;
+
         $this->downloadSubdef = $downloadSubdef;
         $this->thumbnailName  = $printer->getThumbnailName();
         $this->previewName    = $printer->getPreviewName();
@@ -212,6 +219,10 @@ class PDFRecords extends PDF
                 $subdef = $rec->get_subdef($this->thumbnailName);
             }
 
+            if ($subdef == null || ($subdef != null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()) && $rec->has_subdef('thumbnail'))) {
+                $subdef = $rec->get_subdef('thumbnail');
+            }
+
             if ($subdef == null ||
                 ($subdef !== null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()))) {
                 $fimg = sprintf('%s/assets/common/images/icons/substitution/%s.png',
@@ -328,6 +339,10 @@ class PDFRecords extends PDF
                 $subdef = $rec->get_subdef($this->thumbnailName);
             }
 
+            if ($subdef == null || ($subdef != null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()) && $rec->has_subdef('thumbnail'))) {
+                $subdef = $rec->get_subdef('thumbnail');
+            }
+
             $wimg = $himg = 50;
 
             $fimg = null;
@@ -426,14 +441,28 @@ class PDFRecords extends PDF
             }
 
             $this->pdf->SetY($this->pdf->GetY() + 2);
+            if ($this->showRecordInfo) {
+                $this->showRecordInfoBloc($rec);
+                $this->pdf->Write(6, "\n");
+            }
+
+            $r = $g = $b = 0;
+            if (!empty($this->fieldTitleColor)) {
+                list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
+            }
 
             foreach ($rec->get_caption()->get_fields() as $field) {
                 /* @var $field caption_field */
 
-                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                $this->pdf->Write(5, $field->get_name() . " : ");
+                if (!empty($this->fieldTitleColor)) {
+                    $this->pdf->SetTextColor($r, $g, $b);
+                }
 
-                $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+                $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
+
+                $this->pdf->SetTextColor(0);
+                $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
                 $this->pdf->Write(5, $field->get_serialized_values());
 
                 $this->pdf->Write(6, "\n");
@@ -503,12 +532,22 @@ class PDFRecords extends PDF
             }
 
             $this->pdf->SetY($this->pdf->GetY() + 2);
-            foreach ($rec->get_caption()->get_fields() as $field) {
-                if ($field->get_databox_field()->get_gui_visible()) {
-                    $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                    $this->pdf->Write(5, $field->get_name() . " : ");
+            if ($this->showRecordInfo) {
+                $this->showRecordInfoBloc($rec);
+                $this->pdf->Write(6, "\n");
+            }
 
-                    $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+            foreach ($rec->get_caption()->get_fields() as $field) {
+                if ($field->get_databox_field()->get_printable()) {
+                    if (!empty($this->fieldTitleColor)) {
+                        list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
+                        $this->pdf->SetTextColor($r, $g, $b);
+                    }
+                    $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+                    $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
+
+                    $this->pdf->SetTextColor(0);
+                    $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
                     $t = str_replace(
                         ["&lt;", "&gt;", "&amp;"]
                         , ["<", ">", "&"]
@@ -714,6 +753,10 @@ class PDFRecords extends PDF
                 $subdef = $rec->get_subdef($this->previewName);
             }
 
+            if ($subdef == null || ($subdef != null && ($subdef->get_type() !== \media_subdef::TYPE_IMAGE || !$subdef->is_physically_present()) && $rec->has_subdef('thumbnail'))) {
+                $subdef = $rec->get_subdef('thumbnail');
+            }
+
             // original height / original width x new width = new height
             $wimg = $himg = 150; // preview dans un carre de 150 mm
 
@@ -776,35 +819,9 @@ class PDFRecords extends PDF
                 }
             }
 
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->get_title());
-            $this->pdf->Write(6, "\n");
-
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->getRecordId());
-            $this->pdf->Write(6, "\n");
-
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
-            $this->pdf->Write(6, "\n");
-
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->get_original_name());
-            $this->pdf->Write(6, "\n");
-
-            $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-            $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
-            $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-            $this->pdf->Write(5, $rec->getUUID());
-            $this->pdf->Write(6, "\n");
+            if ($this->showRecordInfo) {
+                $this->showRecordInfoBloc($rec);
+            }
 
             $nf = 0;
             if ($basket && $basket->isVoteBasket()) {
@@ -861,19 +878,25 @@ class PDFRecords extends PDF
             }
 
             if ($write_caption) {
-                $this->pdf->Write(12, "\n");
+                $this->pdf->Write(6, "\n");
                 foreach ($rec->get_caption()->get_fields() as $field) {
                     /* @var $field caption_field */
 
-                    if ($field->get_databox_field()->get_gui_visible()) {
+                    if ($field->get_databox_field()->get_printable()) {
                         if ($nf > 0) {
                             $this->pdf->Write(6, "\n");
                         }
 
-                        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', 12);
-                        $this->pdf->Write(5, $field->get_name() . " : ");
+                        if (!empty($this->fieldTitleColor)) {
+                            list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
+                            $this->pdf->SetTextColor($r, $g, $b);
+                        }
 
-                        $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
+                        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+                        $this->pdf->Write(5, $field->get_databox_field()->get_label($this->app['locale']) . " : ");
+
+                        $this->pdf->SetTextColor(0);
+                        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
 
                         $t = str_replace(
                             ["&lt;", "&gt;", "&amp;"]
@@ -890,6 +913,61 @@ class PDFRecords extends PDF
         }
 
         return;
+    }
+
+    private function showRecordInfoBloc(\record_adapter $rec)
+    {
+        $r = $g = $b = 0;
+        if (!empty($this->fieldTitleColor)) {
+            list($r, $g, $b) = sscanf($this->fieldTitleColor, "#%02x%02x%02x");
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: record title: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->get_title());
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: record id: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->getRecordId());
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: base name: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->getDatabox()->get_label($this->app['locale']));
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: originale filename: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->get_original_name());
+        $this->pdf->Write(6, "\n");
+
+        if (!empty($this->fieldTitleColor)) {
+            $this->pdf->SetTextColor($r, $g, $b);
+        }
+        $this->pdf->SetFont(PhraseaPDF::FONT, 'B', $this->descriptionFontSize);
+        $this->pdf->Write(5, $this->app->trans("print_feedback:: document Uuid: ") . " ");
+        $this->pdf->SetTextColor(0);
+        $this->pdf->SetFont(PhraseaPDF::FONT, '', $this->descriptionFontSize);
+        $this->pdf->Write(5, $rec->getUUID());
+        $this->pdf->Write(6, "\n");
     }
 
     private function formatDate(\DateTime $date)
@@ -995,14 +1073,14 @@ class PDFRecords extends PDF
         $infos = pathinfo($subdef->getRealPath());
 
         if ($this->printer->getTitleAsDownloadName()) {
-            $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(), 0, self::$maxFilenameLength));
+            $filename = mb_strtolower(mb_substr($subdef->get_record()->get_title(['removeExtension' => true]), 0, self::$maxFilenameLength), 'UTF-8');
         } else {
             $originalName = $subdef->get_record()->get_original_name(true);
             $originalName = empty($originalName) ? $subdef->get_record()->getId() : $originalName;
             $filename = $subdef->get_name() == 'document' ? $originalName : $originalName . '_' . $subdef->get_name() ;
         }
 
-        $url = $url . "&filename=" . $filename . '.' . $infos['extension'];
+        $url = $url . "&filename=" . urlencode($filename) . '.' . $infos['extension'];
 
         return $url;
     }

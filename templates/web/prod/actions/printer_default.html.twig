@@ -30,6 +30,13 @@
 
             {% if total_count > 0 %}
                 {% if printer.get_count_preview() > 0 %}
+                    <div style="margin: 20px 5px;">
+                        <label class="checkbox" for="show-record-information" style="margin-top: 5px;height: 21px;padding-top: 2px;padding-bottom: 2px;">
+                            <input type="checkbox" id="show-record-information" name="show-record-information" value="1" checked />
+                            {{ 'print:: print records informations' | trans }}
+                        </label>
+                    </div>
+
                     <h4>{{ 'phraseanet:: preview' | trans }}</h4>
                     <div style="margin: 10px 0 20px 0; padding: 0 10px;">
                         <label for="RADI_PRE_LAB" class="radio">
@@ -65,6 +72,17 @@
                 {% endif %}
 
                 <h3 style="margin-left: 5px;">{{ 'print:: some options' | trans }}</h3>
+                <div style="margin: 20px 5px;">
+                    <h4 style="margin-left: 0px;">{{ 'print:: description font size' | trans }}</h4>
+                    <input type="number" value="12" name="description-font-size" min="3" max="29" style="margin-left: 0px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
+                </div>
+
+                <div style="margin: 20px 5px;">
+                    <h4 style="margin-left: 0px;">{{ 'print:: description field title color' | trans }}</h4>
+                    <input type="color" value="#000000" name="field-title-color" style="height: 30px;padding : 0px; width: 52px;" />
+                </div>
+
+
                 <div style="margin: 20px 5px;">
                     <h4 style="margin-left: 0px;">{{ 'print:: add and remember password to protect the pdf' | trans }}</h4>
                     <input type="text" value="" name="print-pdf-password" style="margin-left: 0px;width: 530px;padding-left: 0px;padding-right: 0px;margin-right: 0px;"/>
