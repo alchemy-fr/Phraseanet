@@ -9555,7 +9555,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled">
         <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
-        <target state="needs-translation">"Annuler" les travaux en cours</target>
+        <target state="needs-translation">Marquer "Annuler" les travaux en cours</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
@@ -9585,7 +9585,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="d6ecf648e4dbb36172c9f3cacd96a8c4cb9b94e5" resname="admin::workermanager:tab:workerinfo: manually mark as canceled job running">
         <source>admin::workermanager:tab:workerinfo: manually mark as canceled job running</source>
-        <target state="needs-translation">"Annuler" les travaux démarrés depuis</target>
+        <target state="needs-translation">Marquer "Annuler" les travaux démarrés depuis</target>
         <jms:reference-file line="2">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published" approved="yes">
@@ -9600,12 +9600,12 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="8ff3cefe308c32748dd2a2586c3291b70cbf2507" resname="admin::workermanager:tab:workerinfo: refresh job count">
         <source>admin::workermanager:tab:workerinfo: refresh job count</source>
-        <target state="needs-translation">Compter le nombre de travaux "annulés"</target>
+        <target state="needs-translation">Rafraîchir</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0eb2b0ae31b046292c5cd3132715c7cbb8bd8afc" resname="admin::workermanager:tab:workerinfo: running job find">
         <source>admin::workermanager:tab:workerinfo: running job find</source>
-        <target state="needs-translation">Travaux seront "Annuler"</target>
+        <target state="needs-translation">travaux</target>
         <jms:reference-file line="9">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status" approved="yes">
