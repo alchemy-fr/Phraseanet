@@ -9604,7 +9604,7 @@
       </trans-unit>
       <trans-unit id="0eb2b0ae31b046292c5cd3132715c7cbb8bd8afc" resname="admin::workermanager:tab:workerinfo: running job find">
         <source>admin::workermanager:tab:workerinfo: running job find</source>
-        <target state="needs-translation">Jobs</target>
+        <target state="needs-translation">Jobs werden "Abbrechen"</target>
         <jms:reference-file line="9">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status" approved="yes">
