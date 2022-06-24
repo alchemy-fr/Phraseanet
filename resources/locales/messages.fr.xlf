@@ -8025,7 +8025,7 @@
       </trans-unit>
       <trans-unit id="a1750389f4eb83def7118c916d93effda8798545" resname="action:: video tools" approved="no">
         <source>action:: video tools</source>
-        <target state="needs-translation">Outils vidéo</target>
+        <target state="translated">Outils vidéo</target>
         <jms:reference-file line="163">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="164">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="165">prod/results/record.html.twig</jms:reference-file>
