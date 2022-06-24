@@ -1183,7 +1183,7 @@
       </trans-unit>
       <trans-unit id="30f09ea38857b13637c9f20f2a17e7bfc3ac3b3a" resname="Are you sure you want to erase all job informations ?">
         <source>Are you sure you want to erase all job informations ?</source>
-        <target state="needs-translation">Confirmer l'effacement des informations de Job?</target>
+        <target state="needs-translation">Confirmer l'effacement des informations des travaux?</target>
         <jms:reference-file line="227">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aec19ed81928870d688862753f3d3e55db655daf" resname="Are you sure you want to erase finished job informations ?">
