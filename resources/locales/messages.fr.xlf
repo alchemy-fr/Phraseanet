@@ -1188,7 +1188,7 @@
       </trans-unit>
       <trans-unit id="aec19ed81928870d688862753f3d3e55db655daf" resname="Are you sure you want to erase finished job informations ?">
         <source>Are you sure you want to erase finished job informations ?</source>
-        <target state="needs-translation">Confirmer l'effacement des travaux finis?</target>
+        <target state="needs-translation">Confirmer l'effacement des travaux terminés?</target>
         <jms:reference-file line="238">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ad86fda5d367a9ff74a9c278344f3bb8f75c223" resname="Are you sure you want to rebuild the sub-definitions of selected records?" approved="yes">
