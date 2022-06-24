@@ -8023,9 +8023,9 @@
         <jms:reference-file line="358">web/prod/index.html.twig</jms:reference-file>
         <jms:reference-file line="359">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a1750389f4eb83def7118c916d93effda8798545" resname="action:: video tools" approved="yes">
+      <trans-unit id="a1750389f4eb83def7118c916d93effda8798545" resname="action:: video tools" approved="no">
         <source>action:: video tools</source>
-        <target state="translated">Video tools</target>
+        <target state="needs-translation">Outils vidéo</target>
         <jms:reference-file line="163">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="164">prod/results/record.html.twig</jms:reference-file>
         <jms:reference-file line="165">prod/results/record.html.twig</jms:reference-file>
@@ -12914,9 +12914,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Collections</target>
         <jms:reference-file line="328">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label" approved="yes">
+      <trans-unit id="12988153991e94fd6fc58934903504b0bf03c30a" resname="prod::facet:doctype_label" approved="no">
         <source>prod::facet:doctype_label</source>
-        <target state="translated">Types de documents</target>
+        <target state="translated">Type de documents</target>
         <jms:reference-file line="335">SearchEngine/Elastic/ElasticsearchOptions.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a146a90e6a97ac82ffa4ab5d4dc7cf4955a1e305" resname="prod::feedback:feedback_set_title" approved="yes">
@@ -14462,9 +14462,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Validation(s) envoyée(s) à %n_user% utilisateur(s)</target>
         <jms:reference-file line="16">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bc8fc6702f9d21db51a5cad24125d58e5d19e869" resname="report::Edition des meta-donnees" approved="yes">
+      <trans-unit id="bc8fc6702f9d21db51a5cad24125d58e5d19e869" resname="report::Edition des meta-donnees" approved="no">
         <source>report::Edition des meta-donnees</source>
-        <target state="translated">Editions des metadonnées</target>
+        <target state="needs-translation">Edition des métadonnées</target>
         <jms:reference-file line="18">prod/preview/short_history.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d434e4036fb749511dda31bf76a2212102062c07" resname="report::Edition des status" approved="yes">
@@ -15704,9 +15704,9 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <target state="translated">Chapitrage</target>
         <jms:reference-file line="28">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="5f579f302357e60409bbfb73a4caa4700c4d8be5" resname="video tool" approved="yes">
+      <trans-unit id="5f579f302357e60409bbfb73a4caa4700c4d8be5" resname="video tool" approved="no">
         <source>video tool</source>
-        <target state="translated">Outils vidéos</target>
+        <target state="translated">Outils vidéo</target>
         <jms:reference-file line="23">actions/Tools/videoEditor.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ecbe1590a62c751a6bafe631fc5d05158d0962b4" resname="workzone:datepicker:april" approved="yes">
