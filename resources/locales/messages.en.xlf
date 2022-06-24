@@ -1559,9 +1559,9 @@
         <target state="translated">By default it is available for admins.</target>
         <jms:reference-file line="38">Form/Configuration/FtpExportFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0a914720aec0221a6fddee9e3a7ef36f633295bc" resname="CGU::PDF CGU generated on %updated_on% and printed on %printed_on%" approved="yes">
+      <trans-unit id="0a914720aec0221a6fddee9e3a7ef36f633295bc" resname="CGU::PDF CGU generated on %updated_on% and printed on %printed_on%" approved="no">
         <source>CGU::PDF CGU generated on %updated_on% and printed on %printed_on%</source>
-        <target state="translated">Terms of use generated on %updated_on% and printed on %printed_on%</target>
+        <target state="needs-translation">Terms of use generated on %updated_on% and printed on %printed_on%</target>
         <jms:reference-file line="73">Out/Module/PDFCgu.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="48bf97f55c15fa2acb0a283e3a7e3f4f738b781d" resname="CHAMPS" approved="yes">
