@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-06-22T12:33:26Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -1184,12 +1184,12 @@
       </trans-unit>
       <trans-unit id="30f09ea38857b13637c9f20f2a17e7bfc3ac3b3a" resname="Are you sure you want to erase all job informations ?">
         <source>Are you sure you want to erase all job informations ?</source>
-        <target state="new">Are you sure you want to erase all job informations ?</target>
+        <target state="needs-translation">Confirm jobs informations deletion?</target>
         <jms:reference-file line="227">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aec19ed81928870d688862753f3d3e55db655daf" resname="Are you sure you want to erase finished job informations ?">
         <source>Are you sure you want to erase finished job informations ?</source>
-        <target state="new">Are you sure you want to erase finished job informations ?</target>
+        <target state="needs-translation">Confirm deletion of finished jobs?</target>
         <jms:reference-file line="238">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ad86fda5d367a9ff74a9c278344f3bb8f75c223" resname="Are you sure you want to rebuild the sub-definitions of selected records?" approved="yes">
@@ -1559,9 +1559,9 @@
         <target state="translated">By default it is available for admins.</target>
         <jms:reference-file line="38">Form/Configuration/FtpExportFormType.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0a914720aec0221a6fddee9e3a7ef36f633295bc" resname="CGU::PDF CGU generated on %updated_on% and printed on %printed_on%" approved="yes">
+      <trans-unit id="0a914720aec0221a6fddee9e3a7ef36f633295bc" resname="CGU::PDF CGU generated on %updated_on% and printed on %printed_on%" approved="no">
         <source>CGU::PDF CGU generated on %updated_on% and printed on %printed_on%</source>
-        <target state="translated">Terms of use generated on %updated_on% and printed on %printed_on%</target>
+        <target state="needs-translation">Terms of use generated on %updated_on% and printed on %printed_on%</target>
         <jms:reference-file line="73">Out/Module/PDFCgu.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="48bf97f55c15fa2acb0a283e3a7e3f4f738b781d" resname="CHAMPS" approved="yes">
@@ -2515,7 +2515,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -9557,7 +9557,7 @@
       </trans-unit>
       <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled">
         <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
-        <target state="new">admin::workermanager:tab:workerinfo: change status to canceled</target>
+        <target state="needs-translation">Mark as "Cancel" running jobs</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
@@ -9587,7 +9587,7 @@
       </trans-unit>
       <trans-unit id="d6ecf648e4dbb36172c9f3cacd96a8c4cb9b94e5" resname="admin::workermanager:tab:workerinfo: manually mark as canceled job running">
         <source>admin::workermanager:tab:workerinfo: manually mark as canceled job running</source>
-        <target state="new">admin::workermanager:tab:workerinfo: manually mark as canceled job running</target>
+        <target state="needs-translation">Mark as "Cancel" started jobs since</target>
         <jms:reference-file line="2">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published" approved="yes">
@@ -9602,12 +9602,12 @@
       </trans-unit>
       <trans-unit id="8ff3cefe308c32748dd2a2586c3291b70cbf2507" resname="admin::workermanager:tab:workerinfo: refresh job count">
         <source>admin::workermanager:tab:workerinfo: refresh job count</source>
-        <target state="new">admin::workermanager:tab:workerinfo: refresh job count</target>
+        <target state="needs-translation">Refresh</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0eb2b0ae31b046292c5cd3132715c7cbb8bd8afc" resname="admin::workermanager:tab:workerinfo: running job find">
         <source>admin::workermanager:tab:workerinfo: running job find</source>
-        <target state="new">admin::workermanager:tab:workerinfo: running job find</target>
+        <target state="needs-translation">jobs</target>
         <jms:reference-file line="9">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status" approved="yes">
@@ -10890,7 +10890,7 @@
       </trans-unit>
       <trans-unit id="9a57ddfac6519db30370912528f1b0183c03970a" resname="feedback:: send">
         <source>feedback:: send</source>
-        <target state="needs-translation">Save and Send</target>
+        <target state="needs-translation">Save and notify immediately</target>
         <jms:reference-file line="65">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="421821a2969b522a05589922597017229f3faead" resname="feedback::users to notify">
@@ -10905,7 +10905,7 @@
       </trans-unit>
       <trans-unit id="3bc8be33182b2d44d34bade7fa62397eb719dd29" resname="field-printable">
         <source>field-printable</source>
-        <target state="new">field-printable</target>
+        <target state="needs-translation">Printed field</target>
         <jms:reference-file line="212">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a64e848c2600a26fdf2c6b8cfafda22229016983" resname="file is not valid" approved="yes">
@@ -11053,7 +11053,7 @@
       </trans-unit>
       <trans-unit id="52ab86a87214a453d9f82538264f190854915247" resname="hour">
         <source>hour</source>
-        <target state="new">hour</target>
+        <target state="needs-translation">Hour(s)</target>
         <jms:reference-file line="5">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0e76292794888d4f1fa75fb3aff4ca27c58f56a6" resname="image" approved="yes">
@@ -12047,7 +12047,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12403,12 +12403,12 @@
       </trans-unit>
       <trans-unit id="4a996fb8b2c1949e78c3245993e121757bfeb1ea" resname="print:: description field title color">
         <source>print:: description field title color</source>
-        <target state="new">print:: description field title color</target>
+        <target state="needs-translation">Colour of field label</target>
         <jms:reference-file line="81">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="21f745075d3330ad8f521c48485c187b5042aff4" resname="print:: description font size">
         <source>print:: description font size</source>
-        <target state="new">print:: description font size</target>
+        <target state="needs-translation">Font size</target>
         <jms:reference-file line="76">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e7fd7ad380fbbffb814c1bf6dcc60fbbc57ec39" resname="print:: download">
@@ -12490,7 +12490,7 @@
       </trans-unit>
       <trans-unit id="531a66e4caa61521b869c01306e1cf73b846c03c" resname="print:: print records informations">
         <source>print:: print records informations</source>
-        <target state="new">print:: print records informations</target>
+        <target state="needs-translation">Add informations section</target>
         <jms:reference-file line="36">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
@@ -12963,7 +12963,7 @@ Warning: The current values will be overwritten by these new values</target>
       </trans-unit>
       <trans-unit id="1cc196dd03104d49bbc1c15e3c05cca44ca9bec2" resname="prod::push: automatically send user reminder">
         <source>prod::push: automatically send user reminder</source>
-        <target state="needs-translation">Send automatically a reminder to users who didn't send their feedback</target>
+        <target state="needs-translation">Schedule an automatic reminder to users who didn't send their feedback</target>
         <jms:reference-file line="178">prod/templates/push.html.twig</jms:reference-file>
         <jms:reference-file line="235">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
@@ -15068,7 +15068,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -15855,12 +15855,12 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="af6fdd55858b2b6e908352af06a2d9f5556cf4e8" resname="workzone:shared:expiration-closed">
         <source>workzone:shared:expiration-closed</source>
-        <target state="new">workzone:shared:expiration-closed</target>
+        <target state="needs-translation">Sharing expired on</target>
         <jms:reference-file line="127">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f5139c4f644f11ad81fbe93d889e0e3e9fa08f1c" resname="workzone:shared:expiration-open">
         <source>workzone:shared:expiration-open</source>
-        <target state="new">workzone:shared:expiration-open</target>
+        <target state="needs-translation">Sharing valid until</target>
         <jms:reference-file line="129">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
