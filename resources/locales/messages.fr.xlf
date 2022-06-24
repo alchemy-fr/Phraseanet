@@ -1188,7 +1188,7 @@
       </trans-unit>
       <trans-unit id="aec19ed81928870d688862753f3d3e55db655daf" resname="Are you sure you want to erase finished job informations ?">
         <source>Are you sure you want to erase finished job informations ?</source>
-        <target state="needs-translation">Confirmer l'effacement des travaux finit ?</target>
+        <target state="needs-translation">Confirmer l'effacement des travaux finis?</target>
         <jms:reference-file line="238">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ad86fda5d367a9ff74a9c278344f3bb8f75c223" resname="Are you sure you want to rebuild the sub-definitions of selected records?" approved="yes">
@@ -9600,7 +9600,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="8ff3cefe308c32748dd2a2586c3291b70cbf2507" resname="admin::workermanager:tab:workerinfo: refresh job count">
         <source>admin::workermanager:tab:workerinfo: refresh job count</source>
-        <target state="needs-translation">Compté le nombre de travaux "annulé"</target>
+        <target state="needs-translation">Compter le nombre de travaux "annulés"</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0eb2b0ae31b046292c5cd3132715c7cbb8bd8afc" resname="admin::workermanager:tab:workerinfo: running job find">
@@ -12488,7 +12488,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="531a66e4caa61521b869c01306e1cf73b846c03c" resname="print:: print records informations">
         <source>print:: print records informations</source>
-        <target state="new">print:: print records informations</target>
+        <target state="needs-translation">Imprimer les informations de bloc</target>
         <jms:reference-file line="36">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
