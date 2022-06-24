@@ -15854,12 +15854,12 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="af6fdd55858b2b6e908352af06a2d9f5556cf4e8" resname="workzone:shared:expiration-closed">
         <source>workzone:shared:expiration-closed</source>
-        <target state="needs-translation">Partage expiré le :</target>
+        <target state="needs-translation">Partage expiré le</target>
         <jms:reference-file line="127">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f5139c4f644f11ad81fbe93d889e0e3e9fa08f1c" resname="workzone:shared:expiration-open">
         <source>workzone:shared:expiration-open</source>
-        <target state="needs-translation">Partage valide jusqu'au :</target>
+        <target state="needs-translation">Partage valide jusqu'au</target>
         <jms:reference-file line="129">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
