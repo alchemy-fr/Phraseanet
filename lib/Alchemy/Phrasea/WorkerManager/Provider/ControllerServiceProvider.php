@@ -135,6 +135,21 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
             ->assert('workerId', '\d+')
             ->bind('worker_admin_change_status');
 
+        /** @uses AdminConfigurationController::changeStatusCanceledAction */
+        $controllers->match('/change-status/canceled',  'controller.worker.admin.configuration:changeStatusCanceledAction')
+            ->method('GET')
+            ->bind('worker_admin_change_status_canceled');
+
+        /** @uses AdminConfigurationController::doChangeStatusToCanceledAction */
+        $controllers->match('/change-status/canceled',  'controller.worker.admin.configuration:doChangeStatusToCanceledAction')
+            ->method('POST')
+            ->bind('worker_admin_do_change_status_canceled');
+
+        /** @uses AdminConfigurationController::getRunningAction */
+        $controllers->match('/running',  'controller.worker.admin.configuration:getRunningAction')
+            ->method('GET')
+            ->bind('worker_admin_get_running');
+
         return $controllers;
     }
 

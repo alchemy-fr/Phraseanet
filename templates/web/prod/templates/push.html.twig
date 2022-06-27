@@ -171,6 +171,14 @@
             <textarea id="PushSendFormMessage" placeholder="{% trans %}Message{% endtrans %}" name="message"
                   class="input-block-level" rows="7"></textarea>
         </div>
+
+        <div class="control-group" style="margin-bottom: 0;">
+            <label for="PushSendReminder" class="checkbox">
+                <input id="PushSendReminder" type="checkbox" name="send_reminder" value="1" checked/>
+                {% trans %}prod::push: automatically send user reminder{% endtrans %}
+            </label>
+        </div>
+
         <div class="control-group" style="margin-bottom: 0;">
             <label for="PushSendFormRecept" class="checkbox">
                 <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>
@@ -220,6 +228,14 @@
         <textarea id="PushSendFormMessage" placeholder="{% trans %}Message{% endtrans %}" name="message"
                   class="input-block-level" rows="7"></textarea>
     </div>
+
+    <div class="control-group" style="margin-bottom: 0;">
+        <label for="PushSendReminder" class="checkbox">
+            <input id="PushSendReminder" type="checkbox" name="send_reminder" value="1" checked/>
+            {% trans %}prod::push: automatically send user reminder{% endtrans %}
+        </label>
+    </div>
+
     <div class="control-group" style="margin-bottom: 0;">
         <label for="PushSendFormRecept" class="checkbox">
             <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>

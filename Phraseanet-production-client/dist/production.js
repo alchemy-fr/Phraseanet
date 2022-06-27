@@ -5530,6 +5530,13 @@ var editRecord = function editRecord(services) {
             data: datas,
             success: function success(data) {
                 (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').empty().html(data);
+
+                if (window.recordEditorConfig.hasMultipleDatabases === true) {
+                    (0, _jquery2.default)('#EDITWINDOW').removeClass('loading').hide();
+
+                    return;
+                }
+
                 // let recordEditor = recordEditorService(services);
                 recordEditor.initialize({
                     $container: (0, _jquery2.default)('#EDITWINDOW'),
@@ -8645,7 +8652,7 @@ module.exports = {
 /* 87 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["mapbox.js@2.4.0","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
+module.exports = {"_args":[["mapbox.js@2.4.0","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"mapbox.js@2.4.0","_id":"mapbox.js@2.4.0","_inBundle":false,"_integrity":"sha1-xDsISl3XEzTIPuHfKPpnRD1zwpw=","_location":"/mapbox.js","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"mapbox.js@2.4.0","name":"mapbox.js","escapedName":"mapbox.js","rawSpec":"2.4.0","saveSpec":null,"fetchSpec":"2.4.0"},"_requiredBy":["/"],"_resolved":"https://registry.npmjs.org/mapbox.js/-/mapbox.js-2.4.0.tgz","_spec":"2.4.0","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Mapbox"},"bugs":{"url":"https://github.com/mapbox/mapbox.js/issues"},"dependencies":{"corslite":"0.0.6","isarray":"0.0.1","leaflet":"0.7.7","mustache":"2.2.1","sanitize-caja":"0.1.3"},"description":"mapbox javascript api","devDependencies":{"browserify":"^13.0.0","clean-css":"~2.0.7","eslint":"^0.23.0","expect.js":"0.3.1","happen":"0.1.3","leaflet-fullscreen":"0.0.4","leaflet-hash":"0.2.1","marked":"~0.3.0","minifyify":"^6.1.0","minimist":"0.0.5","mocha":"2.4.5","mocha-phantomjs":"4.0.2","sinon":"1.10.2"},"engines":{"node":"*"},"homepage":"http://mapbox.com/","license":"BSD-3-Clause","main":"src/index.js","name":"mapbox.js","optionalDependencies":{},"repository":{"type":"git","url":"git://github.com/mapbox/mapbox.js.git"},"scripts":{"test":"eslint --no-eslintrc -c .eslintrc src && mocha-phantomjs test/index.html"},"version":"2.4.0"}
 
 /***/ }),
 /* 88 */
@@ -10529,10 +10536,31 @@ var workzone = function workzone(services) {
 
     /*left filter basket*/
     function filterBaskets() {
-        (0, _jquery2.default)('#basket-filter INPUT').change(function () {
-            var sel = (0, _jquery2.default)(this).val();
-            (0, _jquery2.default)(sel).toggleClass('hidden', !(0, _jquery2.default)(this).is(':checked'));
+        var inputFilter = (0, _jquery2.default)('#basket-filter INPUT');
+        inputFilter.each(function () {
+            applyBasketFilter((0, _jquery2.default)(this));
         });
+
+        inputFilter.change(function () {
+            applyBasketFilter((0, _jquery2.default)(this));
+            // save in user setting
+            _jquery2.default.ajax({
+                type: 'POST',
+                url: '/user/preferences/',
+                data: {
+                    prop: (0, _jquery2.default)(this).attr("data-prop"),
+                    value: (0, _jquery2.default)(this).is(':checked') ? 1 : 0
+                },
+                success: function success(data) {
+                    return;
+                }
+            });
+        });
+    }
+
+    function applyBasketFilter(inputElement) {
+        var sel = inputElement.val();
+        (0, _jquery2.default)(sel).toggleClass('hidden', !inputElement.is(':checked'));
     }
 
     function refreshBaskets(options) {
@@ -18377,6 +18405,7 @@ var pushOrShare = function pushOrShare(services, container) {
                 $dialog.close();
 
                 (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+                (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
                 (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('0');
@@ -18387,7 +18416,7 @@ var pushOrShare = function pushOrShare(services, container) {
 
         // normal "send button"
         //
-        buttons[localeService.t('send')] = function () {
+        buttons[localeService.t('feedbackSend')] = function () {
 
             // if we must create a new basket, we must get a name for it
             if ($el.data('feedback-action') !== 'adduser') {
@@ -18411,6 +18440,7 @@ var pushOrShare = function pushOrShare(services, container) {
             }
 
             (0, _jquery2.default)('textarea[name="message"]', $FeedBackForm).val((0, _jquery2.default)('textarea[name="message"]', $dialog.getDomElement()).val());
+            (0, _jquery2.default)('input[name="send_reminder"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="send_reminder"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="recept"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="recept"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="force_authentication"]', $FeedBackForm).prop('checked', (0, _jquery2.default)('input[name="force_authentication"]', $dialog.getDomElement()).prop('checked'));
             (0, _jquery2.default)('input[name="notify"]', $FeedBackForm).val('1');
@@ -22380,20 +22410,6 @@ var recordEditorService = function recordEditorService(services) {
             state = params.state;
 
 
-        if (hasMultipleDatabases === true) {
-            (0, _jquery2.default)('#EDITWINDOW').hide();
-            // editor can't be run
-            (0, _jquery2.default)('#dialog-edit-many-sbas', options.$container).dialog({
-                modal: true,
-                resizable: false,
-                buttons: {
-                    Ok: function Ok() {
-                        (0, _jquery2.default)(this).dialog('close');
-                    }
-                }
-            });
-            return;
-        }
         if (notActionable > 0) {
             alert(notActionableMsg);
         }
@@ -52826,7 +52842,7 @@ module.exports = VTTRegion;
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = {"_args":[["videojs-swf@5.4.1","/var/alchemy/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/var/alchemy/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
+module.exports = {"_args":[["videojs-swf@5.4.1","/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client"]],"_from":"videojs-swf@5.4.1","_id":"videojs-swf@5.4.1","_inBundle":false,"_integrity":"sha1-IHfvccdJ8seCPvSbq65N0qywj4c=","_location":"/videojs-swf","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"videojs-swf@5.4.1","name":"videojs-swf","escapedName":"videojs-swf","rawSpec":"5.4.1","saveSpec":null,"fetchSpec":"5.4.1"},"_requiredBy":["/videojs-flash"],"_resolved":"https://registry.npmjs.org/videojs-swf/-/videojs-swf-5.4.1.tgz","_spec":"5.4.1","_where":"/home/esokia-6/work/work41/Phraseanet/Phraseanet-production-client","author":{"name":"Brightcove"},"bugs":{"url":"https://github.com/videojs/video-js-swf/issues"},"copyright":"Copyright 2014 Brightcove, Inc. https://github.com/videojs/video-js-swf/blob/master/LICENSE","description":"The Flash-fallback video player for video.js (http://videojs.com)","devDependencies":{"async":"~0.2.9","chg":"^0.3.2","flex-sdk":"4.6.0-0","grunt":"~0.4.0","grunt-bumpup":"~0.5.0","grunt-cli":"~0.1.0","grunt-connect":"~0.2.0","grunt-contrib-jshint":"~0.4.3","grunt-contrib-qunit":"~0.2.1","grunt-contrib-watch":"~0.1.4","grunt-npm":"~0.0.2","grunt-prompt":"~0.1.2","grunt-shell":"~0.6.1","grunt-tagrelease":"~0.3.1","qunitjs":"~1.12.0","video.js":"^5.9.2"},"homepage":"http://videojs.com","keywords":["flash","video","player"],"name":"videojs-swf","repository":{"type":"git","url":"git+https://github.com/videojs/video-js-swf.git"},"scripts":{"version":"chg release -y && grunt dist && git add -f dist/ && git add CHANGELOG.md"},"version":"5.4.1"}
 
 /***/ }),
 /* 154 */
@@ -64340,7 +64356,7 @@ var videoSubtitleCapture = function videoSubtitleCapture(services, datas) {
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
                     console.log(captionValue);
-                    for (var i = 0; i < captionLength - 1; i++) {
+                    for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
                         var ResValueItem = captionValue[i].replace(/\n\r/g, "\n").replace(/\r/g, "\n").split(/\n{2,}/g);
@@ -66419,7 +66435,7 @@ var orderItem = function orderItem(services) {
                 //$('#order-action button.send').prop('disabled', true);
             } else if (_underscore2.default.contains(elementArrayType, ELEMENT_TYPE.DENIED)) {
                 (0, _jquery2.default)('#order-action button.deny, #order-action button.reset').hide();
-                (0, _jquery2.default)('#order-action span.action-text').html('window.orderItemData.translatedText.refusedPreviously');
+                (0, _jquery2.default)('#order-action span.action-text').html(window.orderItemData.translatedText.refusedPreviously);
                 //$('#order-action button.send').prop('disabled', false);
                 (0, _jquery2.default)('#order-action button.send, #order-action span.action-text').show();
             } else {

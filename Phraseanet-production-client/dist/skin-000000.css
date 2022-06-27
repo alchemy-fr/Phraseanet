@@ -2197,7 +2197,7 @@ span.ww_winTitle {
 }
 
 #ui-datepicker-div {
-  z-index: 2000;
+  z-index: 2000 !important;
   background-color: #1a1a1a;
   position: absolute;
 }
@@ -8123,7 +8123,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 .feedback-info .expiredDate {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 10px;
   display: inline-block;
   width: 100%;
 }

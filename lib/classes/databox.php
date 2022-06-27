@@ -465,6 +465,7 @@ class databox extends base implements ThumbnailedElement
                 ->set_generate_cterms((isset($field['generate_cterms']) && (string) $field['generate_cterms'] == 1))
                 ->set_gui_editable((!isset($field['gui_editable']) || (isset($field['gui_editable']) && (string) $field['gui_editable'] == 1)))
                 ->set_gui_visible((!isset($field['gui_visible']) || (isset($field['gui_visible']) && (string) $field['gui_visible'] == 1)))
+                ->set_printable((!isset($field['printable']) || (isset($field['printable']) && (string) $field['printable'] == 1)))
                 ->set_thumbtitle(isset($field['thumbtitle']) ? (string) $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
                 ->set_report(isset($field['report']) ? (string) $field['report'] : '1')
                 ->save();

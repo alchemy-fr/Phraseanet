@@ -104,17 +104,19 @@ class MailNotifier implements ValidationNotifier
         $sender = Emitter::fromUser($delivery->getAdmin());
         $recipient = Receiver::fromUser($delivery->getOrder()->getUser());
 
-        $mail = MailInfoOrderCancelled::create($this->application, $recipient, $sender);
+        // DO not send email PHRAS-1545
 
-        $mail->setQuantity($delivery->getQuantity());
-        $mail->setDeliverer($delivery->getAdmin());
-
-        if (($locale = $delivery->getOrder()->getUser()->getLocale()) != null) {
-            $mail->setLocale($locale);
-        } elseif (($locale1 = $delivery->getAdmin()->getLocale()) != null) {
-            $mail->setLocale($locale1);
-        }
-
-        $this->getDeliverer()->deliver($mail);
+//        $mail = MailInfoOrderCancelled::create($this->application, $recipient, $sender);
+//
+//        $mail->setQuantity($delivery->getQuantity());
+//        $mail->setDeliverer($delivery->getAdmin());
+//
+//        if (($locale = $delivery->getOrder()->getUser()->getLocale()) != null) {
+//            $mail->setLocale($locale);
+//        } elseif (($locale1 = $delivery->getAdmin()->getLocale()) != null) {
+//            $mail->setLocale($locale1);
+//        }
+//
+//        $this->getDeliverer()->deliver($mail);
     }
 }

@@ -287,7 +287,7 @@ const videoSubtitleCapture = (services, datas, activeTab = false) => {
                     captionValue = ResValue[1].split("\n\n");
                     captionLength = captionValue.length;
                     console.log(captionValue);
-                    for (var i = 0; i < captionLength - 1; i++) {
+                    for (var i = 0; i <= captionLength - 1; i++) {
 
                         // Regex blank line
                         var ResValueItem = captionValue[i].replace(/\n\r/g, "\n")

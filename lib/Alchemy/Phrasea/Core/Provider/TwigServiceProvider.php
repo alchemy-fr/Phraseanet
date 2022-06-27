@@ -40,13 +40,13 @@ class TwigServiceProvider implements ServiceProviderInterface
             }
 
             if ($app['browser']->isTablet() || $app['browser']->isMobile()) {
-                $paths[] = $app['root.path'] . '/config/templates/mobile';
+//                $paths[] = $app['root.path'] . '/config/templates/mobile';
                 $paths[] = $app['root.path'] . '/templates/mobile';
                 $paths['phraseanet'] = $app['root.path'] . '/config/templates/mobile';
                 $paths['phraseanet'] = $app['root.path'] . '/templates/mobile';
             }
 
-            $paths[] = $app['root.path'] . '/config/templates/web';
+//            $paths[] = $app['root.path'] . '/config/templates/web';
             $paths[] = $app['root.path'] . '/templates/web';
             $paths['phraseanet'] = $app['root.path'] . '/config/templates/web';
             $paths['phraseanet'] = $app['root.path'] . '/templates/web';
@@ -120,7 +120,7 @@ class TwigServiceProvider implements ServiceProviderInterface
 
         $twig->addFilter(new \Twig_SimpleFilter('linkify', function (\Twig_Environment $twig, $string) use ($app) {
             return preg_replace(
-                "/(\\W|^)(https?:\/{2,4}[\\w:#%\/;$()~_?\/\-=\\\.&]+)/m"
+                "/(\\W|^)(https?:\/{2,4}[\\w:#!%\/;$()~_?\/\-=\\\.&]+)/m"
                 ,
                 '$1$2 <a title="' . $app['translator']->trans('Open the URL in a new window') . '" class=" fa fa-external-link" href="$2" style="font-size:1.2em;display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
                 , $string
