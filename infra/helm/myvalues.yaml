@@ -29,8 +29,13 @@ elasticsearch:
       memory: "4096Mi"
 
 rabbitmq:
+  host: rabbitmq
+  port: 5672
   default_user: rabbit
   default_pass: rabbit
+  default_vhost: /
+  ssl: false
+  heartbeat: 60
   resources:
     requests:
       cpu: "50m"
@@ -50,11 +55,13 @@ php:
 
 ingress:
   enabled: false
-  hostname: phraseanet
+  host: phraseanet
   tls: false
 
 app:
   hostname: localhost
+  phraseanet_install: 1
+  phraseanet_setup: 1
   phraseanet_admin_account_email: admin@alchemy.fr
   phraseanet_admin_account_password: phraseanet
   phraseanet_db_host: db
