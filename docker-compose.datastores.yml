@@ -39,6 +39,13 @@ services:
     networks:
       - internal
 
+  redissession:
+    image: redis
+    profiles: ["redis-session"]
+    restart: on-failure
+    networks:
+      - internal
+
   elasticsearch:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-elasticsearch:$PHRASEANET_DOCKER_TAG
     profiles: ["elasticsearch"]
