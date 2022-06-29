@@ -239,6 +239,19 @@ ENTRYPOINT ["/bootstrap/entrypoint.sh"]
 CMD []
 
 #########################################################################
+# Phraseanet install and setup application image
+#########################################################################
+
+FROM phraseanet-system as phraseanet-setup
+
+COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
+ADD ./docker/phraseanet/root /
+WORKDIR /var/alchemy/Phraseanet
+ENTRYPOINT ["docker/phraseanet/setup/entrypoint.sh"]
+CMD []
+
+
+#########################################################################
 # Phraseanet web application image
 #########################################################################
 
@@ -247,7 +260,7 @@ FROM phraseanet-system as phraseanet-fpm
 COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
 ADD ./docker/phraseanet/root /
 WORKDIR /var/alchemy/Phraseanet
-ENTRYPOINT ["docker/phraseanet/entrypoint.sh"]
+ENTRYPOINT ["docker/phraseanet/fpm/entrypoint.sh"]
 CMD ["php-fpm", "-F"]
 
 #########################################################################
