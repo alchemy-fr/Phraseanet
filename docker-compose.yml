@@ -66,13 +66,13 @@ services:
   setup:
     build:
       context: .
-      target: phraseanet-fpm
+      target: phraseanet-setup
       args:
         - SSH_PRIVATE_KEY=${PHRASEANET_SSH_PRIVATE_KEY}
         - PHRASEANET_PLUGINS=${PHRASEANET_PLUGINS}
-    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-fpm:$PHRASEANET_DOCKER_TAG
+    image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-setup:$PHRASEANET_DOCKER_TAG
     profiles: ["setup"]
-    command: [ "/bin/sh", "-c", "exit" ]
+    #command: [ "/bin/sh", "-c", "exit" ]
     restart: "no"
     depends_on:
     - redis
