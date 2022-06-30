@@ -18,7 +18,7 @@ if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then
         www \
         datas
 
-    runuser app -c docker/phraseanet/auto-install.sh
+    runuser app -c docker/phraseanet/setup/auto-install.sh
     chmod 600 config/configuration.yml
    echo `date +"%Y-%m-%d %H:%M:%S"` " - End of Phraseanet Installation"
 
