@@ -39,7 +39,7 @@ services:
     networks:
       - internal
 
-  redissession:
+  redis-session:
     image: redis
     profiles: ["redis-session"]
     restart: on-failure
