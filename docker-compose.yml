@@ -151,6 +151,8 @@ services:
     - BLACKFIRE_ENABLED
     - BLACKFIRE_SERVER_ID
     - BLACKFIRE_SERVER_TOKEN
+    - SESSION_SAVE_HANDLER
+    - SESSION_SAVE_PATH
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
@@ -251,6 +253,8 @@ services:
     - BLACKFIRE_ENABLED
     - BLACKFIRE_SERVER_ID
     - BLACKFIRE_SERVER_TOKEN
+    - SESSION_SAVE_HANDLER
+    - SESSION_SAVE_PATH
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
