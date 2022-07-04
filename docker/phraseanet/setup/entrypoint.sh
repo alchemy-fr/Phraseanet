@@ -88,6 +88,17 @@ if [[ -f "$FILE" && $PHRASEANET_SETUP = 1 ]]; then
             done
     fi
 
+    echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting session type"
+
+    if [[ $SESSION_SAVE_HANDLER == file ]]; then
+        bin/setup system:config set main.session.type "$SESSION_SAVE_HANDLER"
+
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is $SESSION_SAVE_HANDLER"
+    else
+        bin/setup system:config set main.session.type "native"
+        echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet PHP session manager is Native by redis"
+    fi
+
     echo `date +"%Y-%m-%d %H:%M:%S"` " - Phraseanet setting external Binaries timeout "
     bin/setup system:config set main.binaries.ffmpeg_timeout $PHRASEANET_FFMPEG_TIMEOUT
     bin/setup system:config set main.binaries.ffprobe_timeout $PHRASEANET_FFPROBE_TIMEOUT
