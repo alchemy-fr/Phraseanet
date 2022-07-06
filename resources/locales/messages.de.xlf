@@ -6124,7 +6124,7 @@
       </trans-unit>
       <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share" approved="no">
         <source>Share</source>
-        <target state="needs-translation">Verteilen</target>
+        <target state="needs-translation">Geteilter Sammelkorb</target>
         <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="100">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
