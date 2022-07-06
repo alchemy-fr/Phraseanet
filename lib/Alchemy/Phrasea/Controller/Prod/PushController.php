@@ -667,7 +667,11 @@ class PushController extends Controller
                     'message' => $this->app->trans('Expiration date successfully updated!')
                 ];
             } elseif ($basket->getParticipants()->count() > 0 && !$basket->isVoteBasket()) {
-                $basket->setShareExpires($expirationDate);
+                if (empty($request->request->get('date'))) {
+                    $basket->setShareExpires(null);
+                } else {
+                    $basket->setShareExpires($expirationDate);
+                }
                 $manager->persist($basket);
                 $manager->flush();
                 $manager->commit();
