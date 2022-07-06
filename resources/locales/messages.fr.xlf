@@ -4830,7 +4830,7 @@
       </trans-unit>
       <trans-unit id="a32c9e9a29f1f401792dddd91b4e6f493a3ab084" resname="Order has been sent" approved="no">
         <source>Order has been sent</source>
-        <target state="needs-translation">L'enregistrement a été envoyé.</target>
+        <target state="translated">L'enregistrement a été envoyé.</target>
         <jms:reference-file line="175">Order/Controller/ProdOrderController.php</jms:reference-file>
         <jms:reference-file line="11">prod/orders/order_box.html.twig</jms:reference-file>
         <jms:reference-file line="43">prod/orders/order_item.html.twig</jms:reference-file>
@@ -13023,12 +13023,12 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="b607f0893dbd1c5e6e8b9c435969677f7fe2f30e" resname="prod::share: None of the selected records can be pushed.">
         <source>prod::share: None of the selected records can be pushed.</source>
-        <target state="needs-translation">Aucun des enregistrements sélectionnés ne peut être envoyé.</target>
+        <target state="translated">Aucun des enregistrements sélectionnés ne peut être envoyé.</target>
         <jms:reference-file line="9">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="40bb59a7896b5c77d24bc51ba50e363e0a520734" resname="prod::share: None of the selected records can be shared.">
         <source>prod::share: None of the selected records can be shared.</source>
-        <target state="needs-translation">Aucun des enregistrements sélectionnés ne peut être partagé.</target>
+        <target state="translated">Aucun des enregistrements sélectionnés ne peut être partagé.</target>
         <jms:reference-file line="11">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4e22eab52e478d802a92cb2abf79c8ee576c41fc" resname="prod::share: Remove users from list">
