@@ -6122,9 +6122,9 @@
         <target state="translated">Choisir mon mot de passe</target>
         <jms:reference-file line="58">Notification/Mail/MailRequestPasswordSetup.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share" approved="yes">
+      <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share" approved="no">
         <source>Share</source>
-        <target state="translated">Partager</target>
+        <target state="needs-translation">Panier Partagé</target>
         <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="100">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
