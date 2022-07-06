@@ -133,7 +133,11 @@
                     {% if basket.isShareExpires() %}
                         <span>{{ 'workzone:shared:expiration-closed' | trans }} :</span>
                     {% else %}
-                        <span>{{ 'workzone:shared:expiration-open' | trans }} :</span>
+                        {% if dateExpired is empty %}
+                            <span>{{ 'workzone:shared: permanent sharing' | trans }}</span>
+                        {% else %}
+                            <span>{{ 'workzone:shared:expiration-open' | trans }} :</span>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
 
