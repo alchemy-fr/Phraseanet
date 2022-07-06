@@ -34,6 +34,7 @@ class PDF
         $this->app = $app;
 
         $pdf = new PhraseaPDF("P", "mm", "A4", true, 'UTF-8', false);
+        $pdf->setApp($app);
 
         $pdf->SetAuthor("Phraseanet");
         $pdf->SetTitle("Phraseanet Print");

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-07-04T14:03:56Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2022-07-06T10:34:46Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -5166,6 +5166,17 @@
         <target state="translated">Drucken</target>
         <jms:reference-file line="128">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
+      <trans-unit id="b2addf5f65fa45f53c7f941a4c9986400763182d" resname="Printed by">
+        <source>Printed by</source>
+        <target state="new">Printed by</target>
+        <jms:reference-file line="50">Out/Tool/PhraseaPDF.php</jms:reference-file>
+        <jms:reference-file line="58">Out/Tool/PhraseaPDF.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7b7008afede0bdda9feb2da9ec1a048bdbd9e122" resname="Printed with Phraseanet by %name% on %date%">
+        <source>Printed with Phraseanet by %name% on %date%</source>
+        <target state="new">Printed with Phraseanet by %name% on %date%</target>
+        <jms:reference-file line="35">Out/Tool/PhraseaPDF.php</jms:reference-file>
+      </trans-unit>
       <trans-unit id="e6ad53898d609dbabefb5da33ee1b4cc04fba023" resname="Problemes de connexion ?">
         <source>Problemes de connexion ?</source>
         <target state="translated">Verbindungsprobleme ?</target>
@@ -5181,13 +5192,13 @@
         <source>Processus de validation recu de %user%</source>
         <target state="translated">Feedback bekommen von %user%</target>
         <jms:reference-file line="261">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="864">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="865">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a28669d9391b214077076cbf4f1d662bc2167704" resname="Processus de validation recu de %user% et concernant %n% utilisateurs" approved="yes">
         <source>Processus de validation recu de %user% et concernant %n% utilisateurs</source>
         <target state="translated">Feedback bekommen von %user% über %n% Benutzer</target>
         <jms:reference-file line="258">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="861">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="862">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="644c8d02cf4d365edfeb12f28afdc32c8b1f6b14" resname="Propositions de modifications des tables" approved="yes">
         <source>Propositions de modifications des tables</source>
@@ -7402,7 +7413,7 @@
         <source>Vous avez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">Sie haben diese Anfrage zu %n% Benutzer gesendet</target>
         <jms:reference-file line="255">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="857">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="858">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="026481a9062eacd74b454487256e11a12286ad35" resname="Vous avez envoye une demande de validation de document sur ce panier">
         <source>Vous avez envoye une demande de validation de document sur ce panier</source>
@@ -7424,7 +7435,7 @@
         <source>Vous aviez envoye cette demande a %n% utilisateurs</source>
         <target state="translated">Sie hatten diese Anfrage zu %n% Benutzer gesendet</target>
         <jms:reference-file line="252">Model/Entities/ValidationSession.php</jms:reference-file>
-        <jms:reference-file line="854">Model/Entities/Basket.php</jms:reference-file>
+        <jms:reference-file line="855">Model/Entities/Basket.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b7654bd1b49c9d4df25f0b7a1fca600e69587286" resname="Vous devez donner un titre" approved="yes">
         <source>Vous devez donner un titre</source>
@@ -9600,12 +9611,12 @@
       <trans-unit id="8ff3cefe308c32748dd2a2586c3291b70cbf2507" resname="admin::workermanager:tab:workerinfo: refresh job count">
         <source>admin::workermanager:tab:workerinfo: refresh job count</source>
         <target state="needs-translation">Aktualisieren</target>
-        <jms:reference-file line="11">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
+        <jms:reference-file line="7">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0eb2b0ae31b046292c5cd3132715c7cbb8bd8afc" resname="admin::workermanager:tab:workerinfo: running job find">
         <source>admin::workermanager:tab:workerinfo: running job find</source>
         <target state="needs-translation">jobs</target>
-        <jms:reference-file line="9">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
+        <jms:reference-file line="11">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status" approved="yes">
         <source>admin::workermanager:tab:workerinfo: status</source>
@@ -10342,6 +10353,11 @@
         <target state="translated">Mehr Veröffentlichungen hochladen</target>
         <jms:reference-file line="86">prod/results/feeds.html.twig</jms:reference-file>
         <jms:reference-file line="90">prod/results/feeds.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="fcded915223dd1cb8581b86ea9baeade7f55c02b" resname="charger d'avantages de notifications">
+        <source>charger d'avantages de notifications</source>
+        <target state="new">charger d'avantages de notifications</target>
+        <jms:reference-file line="9">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aa593702faaee1da7f577eb3fbd5964703051696" resname="choisir" approved="yes">
         <source>choisir</source>
@@ -12411,9 +12427,9 @@
       <trans-unit id="8e7fd7ad380fbbffb814c1bf6dcc60fbbc57ec39" resname="print:: download">
         <source>print:: download</source>
         <target state="translated">Download-Link</target>
-        <jms:reference-file line="437">Out/Module/PDFRecords.php</jms:reference-file>
-        <jms:reference-file line="528">Out/Module/PDFRecords.php</jms:reference-file>
-        <jms:reference-file line="816">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="438">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="529">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="817">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="502dbd857425df79d57c72240847110224a79aa6" resname="print:: element downloadable">
         <source>print:: element downloadable</source>
@@ -12528,87 +12544,87 @@
       <trans-unit id="55f21f807565b041654d25f1167637cfdb1b272c" resname="print_feedback:: Document generated on : " approved="yes">
         <source>print_feedback:: Document generated on :</source>
         <target state="translated">Drucken erzeugt am</target>
-        <jms:reference-file line="588">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="589">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cc26097dfc5a781b1ed04e28740f7e404ff3465a" resname="print_feedback:: Feedback active" approved="yes">
         <source>print_feedback:: Feedback active</source>
         <target state="translated">Feedback ist aktiviert</target>
-        <jms:reference-file line="612">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="613">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="9370d2c34af12b41dce1cbe99bd38869dfdb6dc0" resname="print_feedback:: Feedback expired" approved="yes">
         <source>print_feedback:: Feedback expired</source>
         <target state="translated">Feedback ist abgelaufen</target>
-        <jms:reference-file line="612">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="613">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="c5ed38188b58f5550c4e95b2e435f13a24fc0085" resname="print_feedback:: Feedback expiring on : " approved="yes">
         <source>print_feedback:: Feedback expiring on :</source>
         <target state="translated">Erlischt am</target>
-        <jms:reference-file line="606">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="607">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="ab0fd755a204e2da76f99dfd4d492d24e8474edb" resname="print_feedback:: Feedback initiated by : " approved="yes">
         <source>print_feedback:: Feedback initiated by :</source>
         <target state="translated">Feedback gesendet von</target>
-        <jms:reference-file line="594">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="595">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="da5dba0c0f395815ac7dded599792c02606aefe2" resname="print_feedback:: Feedback initiated on : " approved="yes">
         <source>print_feedback:: Feedback initiated on :</source>
         <target state="translated">Feedback Beginn am</target>
-        <jms:reference-file line="600">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="601">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bd80725e7265da3a6fc6077dcf79d4a62494bc75" resname="print_feedback:: Feedback on basket %name%" approved="yes">
         <source>print_feedback:: Feedback on basket %name%</source>
         <target state="translated">Feedback auf Sammelkorb %name%</target>
-        <jms:reference-file line="582">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="583">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="95bf4b6ed5c087d43370ca73319e3c372b78395b" resname="print_feedback:: Non" approved="yes">
         <source>print_feedback:: Non</source>
         <target state="translated">Nein</target>
-        <jms:reference-file line="862">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="863">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="743fdc892edcf83c25a977c424ea05afe89b40ad" resname="print_feedback:: Oui" approved="yes">
         <source>print_feedback:: Oui</source>
         <target state="translated">Ja</target>
-        <jms:reference-file line="858">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="859">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f1aacdb79740120055b87b56ddbe0267e94c32f3" resname="print_feedback:: Participants : " approved="yes">
         <source>print_feedback:: Participants :</source>
         <target state="translated">Teilnehmer :</target>
-        <jms:reference-file line="616">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="617">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="3a3e145dc17ac2a1acc06b06d23061ba58bce648" resname="print_feedback:: Votes :" approved="yes">
         <source>print_feedback:: Votes :</source>
         <target state="translated">Zustimmung :</target>
-        <jms:reference-file line="835">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="836">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="0dc0c6dfc1460e9e50804a6b42b27d3ae8a2f332" resname="print_feedback:: base name: " approved="yes">
         <source>print_feedback:: base name:</source>
         <target state="translated">Datenbank</target>
-        <jms:reference-file line="946">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="947">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="797d8c23b603bbff2f1e4d0e699897232fc07001" resname="print_feedback:: document Uuid: " approved="yes">
         <source>print_feedback:: document Uuid:</source>
         <target state="translated">Uuid Dokument</target>
-        <jms:reference-file line="966">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="967">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté" approved="yes">
         <source>print_feedback:: non voté</source>
         <target state="translated">unausgedrückt</target>
-        <jms:reference-file line="853">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="854">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="a780f008dff8f4a46e3c3c79d73d1e297f0e183c" resname="print_feedback:: originale filename: " approved="yes">
         <source>print_feedback:: originale filename:</source>
         <target state="translated">Originale Dateiname</target>
-        <jms:reference-file line="956">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="957">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: " approved="yes">
         <source>print_feedback:: record id:</source>
         <target state="translated">Record id</target>
-        <jms:reference-file line="936">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="937">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="yes">
         <source>print_feedback:: record title:</source>
         <target state="translated">Titel</target>
-        <jms:reference-file line="926">Out/Module/PDFRecords.php</jms:reference-file>
+        <jms:reference-file line="927">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive" approved="yes">
         <source>prive</source>

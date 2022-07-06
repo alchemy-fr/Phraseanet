@@ -61,6 +61,7 @@ class PDFRecords extends PDF
         }
 
         $this->pdf->setPrintOwnerUser($app->getAuthenticatedUser());
+        $this->pdf->setApp($app);
 
         $records = $printer->get_elements();
         $aclUser = $this->app->getAclForUser($this->app->getAuthenticatedUser());

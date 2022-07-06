@@ -139,7 +139,8 @@ class Basket
      */
     public function __construct()
     {
-        $this->elements = new ArrayCollection();
+        $this->elements     = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     /**
