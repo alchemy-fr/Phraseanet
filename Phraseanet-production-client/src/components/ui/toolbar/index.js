@@ -201,7 +201,7 @@ const toolbar = (services) => {
         $container.on('click', '.TOOL_sharebasket_btn', function (event) {
             _triggerModal(event, sharebasketModal(services).openModal);
         });
-        
+
 //        /**
 //         * tools > Push > UsersLists
 //         */
@@ -281,9 +281,13 @@ const toolbar = (services) => {
         $container.on('click', '.tools-accordion', function (event) {
             $('.rotate').toggleClass("down");
             this.classList.toggle("active");
+            const r = this.getBoundingClientRect();
+            const p = r.top + r.height;
 
             /* Toggle between hiding and showing the active panel */
-            var panel = this.nextElementSibling;
+            const panel = this.nextElementSibling;
+            panel.style.position = "fixed";  // todo: set this once for all in html, twig or css
+            panel.style.top = p + "px";
             if (panel.style.maxHeight){
                 panel.style.maxHeight = null;
             } else {
