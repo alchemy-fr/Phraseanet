@@ -73,7 +73,7 @@ services:
     image: $PHRASEANET_DOCKER_REGISTRY/phraseanet-setup:$PHRASEANET_DOCKER_TAG
     profiles: ["setup"]
     #command: [ "/bin/sh", "-c", "exit" ]
-    restart: "no"
+    restart: "on-failure"
     depends_on:
     - redis
     - rabbitmq
