@@ -12612,19 +12612,19 @@
         <target state="translated">unausgedrückt</target>
         <jms:reference-file line="854">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a780f008dff8f4a46e3c3c79d73d1e297f0e183c" resname="print_feedback:: originale filename: " approved="yes">
+      <trans-unit id="a780f008dff8f4a46e3c3c79d73d1e297f0e183c" resname="print_feedback:: originale filename: " approved="no">
         <source>print_feedback:: originale filename:</source>
-        <target state="translated">Originale Dateiname</target>
+        <target state="translated">Originale Dateiname :</target>
         <jms:reference-file line="957">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: " approved="yes">
+      <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: " approved="no">
         <source>print_feedback:: record id:</source>
-        <target state="translated">Record id</target>
+        <target state="translated">Record id :</target>
         <jms:reference-file line="937">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="yes">
+      <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="no">
         <source>print_feedback:: record title:</source>
-        <target state="translated">Titel</target>
+        <target state="translated">Titel :</target>
         <jms:reference-file line="927">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive" approved="yes">
