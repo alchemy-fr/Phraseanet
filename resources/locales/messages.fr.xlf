@@ -10358,7 +10358,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="fcded915223dd1cb8581b86ea9baeade7f55c02b" resname="charger d'avantages de notifications">
         <source>charger d'avantages de notifications</source>
-        <target state="needs-translation">Afficher plus de notifications</target>
+        <target state="translated">Afficher plus de notifications</target>
         <jms:reference-file line="9">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aa593702faaee1da7f577eb3fbd5964703051696" resname="choisir" approved="yes">
@@ -12423,7 +12423,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="21f745075d3330ad8f521c48485c187b5042aff4" resname="print:: description font size">
         <source>print:: description font size</source>
-        <target state="needs-translation">Taille de la police</target>
+        <target state="translated">Taille de la police</target>
         <jms:reference-file line="76">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e7fd7ad380fbbffb814c1bf6dcc60fbbc57ec39" resname="print:: download">
@@ -12620,7 +12620,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: ">
         <source>print_feedback:: record id:</source>
-        <target state="needs-translation">Record Id:</target>
+        <target state="needs-translation">Record Id :</target>
         <jms:reference-file line="937">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="yes">
