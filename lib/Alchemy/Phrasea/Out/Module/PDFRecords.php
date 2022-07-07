@@ -846,12 +846,13 @@ class PDFRecords extends PDF
                         // $this->pdf->SetY($this->pdf->GetY()+1);
 //                    }
 
-                    // basket owner have not a vote
-                    if ($participant->getUser()->getId() == $basketOwnerId ) {
+                    try {
+                        $basketElementVote = $basketElement->getUserVote($participant->getUser(), false);
+                    } catch (\Exception $e) {
+                        // maybe participant ( like owner ) cannot/havenot a vote
                         continue;
                     }
 
-                    $basketElementVote = $basketElement->getUserVote($participant->getUser(), false);
                     $this->pdf->Write(5, '- ' . $this->getDisplayName($participant->getUser(), true). " : ");
 
                     $r = $basketElementVote->getAgreement();
