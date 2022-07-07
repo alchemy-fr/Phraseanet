@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-07-06T10:34:46Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2022-07-07T11:39:17Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -1545,7 +1545,7 @@
         <target state="translated">Geschäftsfelder</target>
         <jms:reference-file line="220">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7985544ae054430f8b4416a883fa9d0b084ee0cf" resname="By checking this box, you accept %beginning_link% Terms of Use %end_link%" approved="no">
+      <trans-unit id="7985544ae054430f8b4416a883fa9d0b084ee0cf" resname="By checking this box, you accept %beginning_link% Terms of Use %end_link%">
         <source>By checking this box, you accept %beginning_link% Terms of Use %end_link%</source>
         <target state="translated">Wenn Sie dieses Kästchen anwählen, akzeptieren Sie die %beginning_link% Nutzungsbedingungen %end_link%</target>
         <jms:reference-file line="155">web/common/dialog_export.html.twig</jms:reference-file>
@@ -1797,7 +1797,7 @@
         <target state="translated">Client Anwendungen</target>
         <jms:reference-file line="4">web/developers/applications.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="bbfa773e5a63a5ea58c9b6207e608ca0120e592a" resname="Close" approved="no">
+      <trans-unit id="bbfa773e5a63a5ea58c9b6207e608ca0120e592a" resname="Close">
         <source>Close</source>
         <target state="translated">Schliessen</target>
         <jms:reference-file line="17">admin/fields/templates.html.twig</jms:reference-file>
@@ -2496,7 +2496,7 @@
         <jms:reference-file line="32">Media/Subdef/Unknown.php</jms:reference-file>
         <jms:reference-file line="34">Media/Subdef/Image.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing" approved="no">
+      <trans-unit id="8b6613d50c2d8718fd7cab023e1530ce11650736" resname="Disable document type sharing">
         <source>Disable document type sharing</source>
         <target state="translated">Sharing-Link deaktivieren</target>
         <jms:reference-file line="227">actions/Tools/index.html.twig</jms:reference-file>
@@ -4207,7 +4207,7 @@
         <jms:reference-file line="30">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="65">admin/task-manager/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="9769982c266077f46f2c0a0290183511ec5536fb" resname="Ma derniere question" approved="no">
+      <trans-unit id="9769982c266077f46f2c0a0290183511ec5536fb" resname="Ma derniere question">
         <source>Ma derniere question</source>
         <target state="translated">Meine letzte Suchabfrage</target>
         <jms:reference-file line="949">web/prod/index.html.twig</jms:reference-file>
@@ -4846,7 +4846,7 @@
         <target state="translated">Einfach</target>
         <jms:reference-file line="151">Controller/Root/LoginController.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="77561f3d48cb738cc40f376dec4616a77da54ee1" resname="Original name" approved="no">
+      <trans-unit id="77561f3d48cb738cc40f376dec4616a77da54ee1" resname="Original name">
         <source>Original name</source>
         <target state="translated">Ursprünglicher Dateiname</target>
         <jms:reference-file line="57">Form/Configuration/ActionsFormType.php</jms:reference-file>
@@ -4869,6 +4869,7 @@
       <trans-unit id="fb06270f7c212baabc8749ffc36e49dc8f321548" resname="Page" approved="yes">
         <source>Page</source>
         <target state="translated">Seite</target>
+        <jms:reference-file line="46">Out/Tool/PhraseaPDF.php</jms:reference-file>
         <jms:reference-file line="2">actions/Bridge/paginator.html.twig</jms:reference-file>
         <jms:reference-file line="19">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="20">prod/upload/lazaret.html.twig</jms:reference-file>
@@ -6122,7 +6123,7 @@
         <target state="translated">Mein Passwort einrichten</target>
         <jms:reference-file line="58">Notification/Mail/MailRequestPasswordSetup.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share" approved="no">
+      <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share">
         <source>Share</source>
         <target state="needs-translation">Geteilter Sammelkorb</target>
         <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -6879,7 +6880,7 @@
         <target state="translated">Alle</target>
         <jms:reference-file line="236">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6a5df111083f0da274d3b57d9b32183a19d33616" resname="Tout type" approved="no">
+      <trans-unit id="6a5df111083f0da274d3b57d9b32183a19d33616" resname="Tout type">
         <source>Tout type</source>
         <target state="translated">Alle Typen</target>
         <jms:reference-file line="450">web/prod/index.html.twig</jms:reference-file>
@@ -7055,7 +7056,7 @@
         <target state="translated">Nachdem Sie die Veröffentlichung gelöscht haben, gehen die veröffentlichen Daten eingültig verloren. Fortsetzen?</target>
         <jms:reference-file line="107">admin/publications/list.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="c091c74374b8ad7b7018e849fd89bf14c1fe3f02" resname="Une question personnelle" approved="no">
+      <trans-unit id="c091c74374b8ad7b7018e849fd89bf14c1fe3f02" resname="Une question personnelle">
         <source>Une question personnelle</source>
         <target state="translated">Eine persönliche Frage</target>
         <jms:reference-file line="952">web/prod/index.html.twig</jms:reference-file>
@@ -8703,7 +8704,7 @@
         <target state="translated">Directory erstellen</target>
         <jms:reference-file line="43">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ecb2f8622b82381a2644ebc58188783f0775d83a" resname="admin::compte-utilisateur:ftp: ecrire un fichier de log" approved="no">
+      <trans-unit id="ecb2f8622b82381a2644ebc58188783f0775d83a" resname="admin::compte-utilisateur:ftp: ecrire un fichier de log">
         <source>admin::compte-utilisateur:ftp: ecrire un fichier de log</source>
         <target state="translated">Eine Log Datei schreiben</target>
         <jms:reference-file line="50">web/common/dialog_export.html.twig</jms:reference-file>
@@ -9930,7 +9931,7 @@
         <jms:reference-file line="359">prod/actions/edit_default.html.twig</jms:reference-file>
         <jms:reference-file line="111">admin/collection/suggested_value.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8641f76c3f062372dc5509faad531672cf3558a5" resname="boutton::annuler" approved="no">
+      <trans-unit id="8641f76c3f062372dc5509faad531672cf3558a5" resname="boutton::annuler">
         <source>boutton::annuler</source>
         <target state="translated">Abbrechen</target>
         <jms:reference-file line="42">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -9989,7 +9990,7 @@
         <jms:reference-file line="110">web/admin/users.html.twig</jms:reference-file>
         <jms:reference-file line="138">web/admin/editusers.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="17a9219fec93feeffdf8c320e3be79a9f0daf9b1" resname="boutton::commander" approved="no">
+      <trans-unit id="17a9219fec93feeffdf8c320e3be79a9f0daf9b1" resname="boutton::commander">
         <source>boutton::commander</source>
         <target state="translated">Bestellen</target>
         <jms:reference-file line="410">web/common/dialog_export.html.twig</jms:reference-file>
@@ -10028,7 +10029,7 @@
         <target state="translated">probieren</target>
         <jms:reference-file line="491">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="d682f21b49eed79f33bdae605a07181d323efca3" resname="boutton::fermer" approved="no">
+      <trans-unit id="d682f21b49eed79f33bdae605a07181d323efca3" resname="boutton::fermer">
         <source>boutton::fermer</source>
         <target state="translated">Schliessen</target>
         <jms:reference-file line="59">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -10680,9 +10681,9 @@
         <jms:reference-file line="104">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="420">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="06d528a625d247cc215fc56f858c21b813799856" resname="export:: commande" approved="yes">
+      <trans-unit id="06d528a625d247cc215fc56f858c21b813799856" resname="export:: commande" approved="no">
         <source>export:: commande</source>
-        <target state="translated">bestellen</target>
+        <target state="translated">Bestellen</target>
         <jms:reference-file line="101">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d84ee35dd66b8c72fc2aa12949f5795e945c0e7" resname="export:: envoi par mail" approved="yes">
@@ -12596,14 +12597,14 @@
         <target state="translated">Zustimmung :</target>
         <jms:reference-file line="836">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0dc0c6dfc1460e9e50804a6b42b27d3ae8a2f332" resname="print_feedback:: base name: " approved="yes">
+      <trans-unit id="0dc0c6dfc1460e9e50804a6b42b27d3ae8a2f332" resname="print_feedback:: base name: " approved="no">
         <source>print_feedback:: base name:</source>
-        <target state="translated">Datenbank</target>
+        <target state="translated">Datenbank :</target>
         <jms:reference-file line="947">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="797d8c23b603bbff2f1e4d0e699897232fc07001" resname="print_feedback:: document Uuid: " approved="yes">
+      <trans-unit id="797d8c23b603bbff2f1e4d0e699897232fc07001" resname="print_feedback:: document Uuid: " approved="no">
         <source>print_feedback:: document Uuid:</source>
-        <target state="translated">Uuid Dokument</target>
+        <target state="translated">Uuid Dokument :</target>
         <jms:reference-file line="967">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté" approved="yes">
@@ -12611,19 +12612,19 @@
         <target state="translated">unausgedrückt</target>
         <jms:reference-file line="854">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a780f008dff8f4a46e3c3c79d73d1e297f0e183c" resname="print_feedback:: originale filename: " approved="yes">
+      <trans-unit id="a780f008dff8f4a46e3c3c79d73d1e297f0e183c" resname="print_feedback:: originale filename: " approved="no">
         <source>print_feedback:: originale filename:</source>
-        <target state="translated">Originale Dateiname</target>
+        <target state="translated">Originale Dateiname :</target>
         <jms:reference-file line="957">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: " approved="yes">
+      <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: " approved="no">
         <source>print_feedback:: record id:</source>
-        <target state="translated">Record id</target>
+        <target state="translated">Record id :</target>
         <jms:reference-file line="937">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="yes">
+      <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="no">
         <source>print_feedback:: record title:</source>
-        <target state="translated">Titel</target>
+        <target state="translated">Titel :</target>
         <jms:reference-file line="927">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive" approved="yes">
@@ -13012,6 +13013,16 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <source>prod::share basket share allows participants to see/comment/act on a common basket</source>
         <target state="translated">Ein geteilter Sammelkorb ermöglicht es, dass mehrere Benutzer gemeinsam an seinem Inhalt arbeiten. Ein Ablaufdatum kann festgelegt werden. Dem Sammelkorb kann eine Feedbacksitzung hinzugefügt werden.</target>
         <jms:reference-file line="161">prod/actions/Push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8acffca186630d9321fbcf93e366de12708f1fd2" resname="prod::share feedback expires">
+        <source>prod::share feedback expires</source>
+        <target state="needs-translation">Ablauf des Feedbacks</target>
+        <jms:reference-file line="386">prod/actions/Push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d3f224f47b18bf413cc720b3beac3b02806aeac7" resname="prod::share share expires">
+        <source>prod::share share expires</source>
+        <target state="needs-translation">Ablauf der Teilung</target>
+        <jms:reference-file line="376">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d7e519198d4ee03df505df5832481ee5298a7a9a" resname="prod::share un push permet d'envoyer un lot d'image a des destinataires">
         <source>prod::share un push permet d'envoyer un lot d'image a des destinataires</source>
@@ -13842,7 +13853,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">In die Ergebnisse aufnehmen</target>
         <jms:reference-file line="244">web/prod/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="478f9aa3e280342bf01383c40a27a930cb593d9d" resname="prod:workzone:facetstab:tooltips:facet_except_filter" approved="no">
+      <trans-unit id="478f9aa3e280342bf01383c40a27a930cb593d9d" resname="prod:workzone:facetstab:tooltips:facet_except_filter">
         <source>prod:workzone:facetstab:tooltips:facet_except_filter</source>
         <target state="translated">Ergebnisse auschliessen</target>
         <jms:reference-file line="243">web/prod/index.html.twig</jms:reference-file>
@@ -14778,12 +14789,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <target state="translated">Ersetzung</target>
         <jms:reference-file line="40">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="8ed24aec401c37911187702f5b0ec840b51a203f" resname="substitution HD" approved="no">
+      <trans-unit id="8ed24aec401c37911187702f5b0ec840b51a203f" resname="substitution HD">
         <source>substitution HD</source>
         <target state="translated">Dokument Ersetzung</target>
         <jms:reference-file line="145">actions/Tools/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="6f837e2e3b8c53206637f4f3145a04cd01e694b8" resname="substitution SD" approved="no">
+      <trans-unit id="6f837e2e3b8c53206637f4f3145a04cd01e694b8" resname="substitution SD">
         <source>substitution SD</source>
         <target state="translated">Miniaturansicht Ersetzung</target>
         <jms:reference-file line="177">actions/Tools/index.html.twig</jms:reference-file>

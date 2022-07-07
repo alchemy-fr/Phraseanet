@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-07-06T10:35:01Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2022-07-07T11:39:33Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -4872,6 +4872,7 @@
       <trans-unit id="fb06270f7c212baabc8749ffc36e49dc8f321548" resname="Page" approved="yes">
         <source>Page</source>
         <target state="translated">Page</target>
+        <jms:reference-file line="46">Out/Tool/PhraseaPDF.php</jms:reference-file>
         <jms:reference-file line="2">actions/Bridge/paginator.html.twig</jms:reference-file>
         <jms:reference-file line="19">prod/upload/lazaret.html.twig</jms:reference-file>
         <jms:reference-file line="20">prod/upload/lazaret.html.twig</jms:reference-file>
@@ -6125,7 +6126,7 @@
         <target state="translated">Set my password</target>
         <jms:reference-file line="58">Notification/Mail/MailRequestPasswordSetup.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share" approved="no">
+      <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share">
         <source>Share</source>
         <target state="needs-translation">Shared Basket</target>
         <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
@@ -13017,6 +13018,16 @@ Warning: The current values will be overwritten by these new values</target>
         <source>prod::share basket share allows participants to see/comment/act on a common basket</source>
         <target state="needs-translation">A shared Basket allows selected users to access the basket content. An expiration date can be set on the basket. A "Feedback session" can be added on this Basket.</target>
         <jms:reference-file line="161">prod/actions/Push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="8acffca186630d9321fbcf93e366de12708f1fd2" resname="prod::share feedback expires">
+        <source>prod::share feedback expires</source>
+        <target state="needs-translation">Feedback expiration</target>
+        <jms:reference-file line="386">prod/actions/Push.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="d3f224f47b18bf413cc720b3beac3b02806aeac7" resname="prod::share share expires">
+        <source>prod::share share expires</source>
+        <target state="needs-translation">Sharing expiration</target>
+        <jms:reference-file line="376">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d7e519198d4ee03df505df5832481ee5298a7a9a" resname="prod::share un push permet d'envoyer un lot d'image a des destinataires">
         <source>prod::share un push permet d'envoyer un lot d'image a des destinataires</source>
