@@ -326,13 +326,13 @@
                                             {# owner can decide to be a voter #}
                                             {% set msg = 'prod::share You contribute to the feedback'|trans %}
                                             <a href="#"
-                                               class="colored toggle toggle_agree feedback_only_true {{ basket.getParticipant(owner).getCanAgree() ? 'status_on' : 'status_off' }}"
+                                               class="colored toggle toggle_agree feedback_only_true {{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? 'status_on' : 'status_off' }}"
                                                title="{{ msg }}">
                                                 <i class="fa fa-comment"></i>
                                             </a>
                                             <input type="hidden"
                                                    name="participants[{{ owner.getId() }}][agree]"
-                                                   value="{{ basket.getParticipant(owner).getCanAgree() ? '1' : '0' }}"/>
+                                                   value="{{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? '1' : '0' }}"/>
                                         </div>
                                     </div>
                                 </div>
