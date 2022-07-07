@@ -444,13 +444,13 @@
                                                                 <td>
                                                                     {% set msg = 'prod::share User can download HD'|trans %}
                                                                     <a href="#"
-                                                                       class="colored toggle toggle_HD status_off"
+                                                                       class="colored toggle toggle_HD {{ participantsHDRight[participant.getUser().getId()] ? 'status_on' : 'status_off' }}"
                                                                        title="{{ msg }}">
                                                                         <i class="fa fa-download"></i>
                                                                     </a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][HD]"
-                                                                           value="0"/>
+                                                                           value="{{ participantsHDRight[participant.getUser().getId()] ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
@@ -462,7 +462,7 @@
                                                                     </a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][modify]"
-                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
+                                                                           value="{{ participant.canModify() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
