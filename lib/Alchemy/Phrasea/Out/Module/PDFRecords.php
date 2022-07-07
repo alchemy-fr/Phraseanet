@@ -837,6 +837,7 @@ class PDFRecords extends PDF
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
                 $basketElement = $basket->getElementByRecord($this->app, $rec);
+                $basketOwnerId = $basket->getUser()->getId();
 
                 $iparticipant = 0;
                 foreach ($basket->getParticipants() as $participant) {
@@ -844,8 +845,13 @@ class PDFRecords extends PDF
 //                    if ($iparticipant++ > 0) {
                         // $this->pdf->SetY($this->pdf->GetY()+1);
 //                    }
-                    $basketElementVote = $basketElement->getUserVote($participant->getUser(), false);
 
+                    // basket owner have not a vote
+                    if ($participant->getUser()->getId() == $basketOwnerId ) {
+                        continue;
+                    }
+
+                    $basketElementVote = $basketElement->getUserVote($participant->getUser(), false);
                     $this->pdf->Write(5, '- ' . $this->getDisplayName($participant->getUser(), true). " : ");
 
                     $r = $basketElementVote->getAgreement();
