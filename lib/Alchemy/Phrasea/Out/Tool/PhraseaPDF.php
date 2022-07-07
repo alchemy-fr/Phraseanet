@@ -43,7 +43,7 @@ class PhraseaPDF extends \TCPDF
         $this->SetY(-15);
 
         $this->SetFont(self::FONT, 'I', 8);
-        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, $this->app->trans('Page'). ' ' . $this->PageNo(), 0, 0, 'C');
 
         if (empty($this->printOwnerUser)) {
             $this->SetFont(self::FONT, '', 8);
