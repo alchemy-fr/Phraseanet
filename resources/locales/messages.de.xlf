@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-07-07T11:39:17Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2512,7 +2512,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -10681,9 +10681,9 @@
         <jms:reference-file line="104">web/common/dialog_export.html.twig</jms:reference-file>
         <jms:reference-file line="420">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="06d528a625d247cc215fc56f858c21b813799856" resname="export:: commande" approved="yes">
+      <trans-unit id="06d528a625d247cc215fc56f858c21b813799856" resname="export:: commande" approved="no">
         <source>export:: commande</source>
-        <target state="translated">bestellen</target>
+        <target state="translated">Bestellen</target>
         <jms:reference-file line="101">web/common/dialog_export.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7d84ee35dd66b8c72fc2aa12949f5795e945c0e7" resname="export:: envoi par mail" approved="yes">
@@ -12061,7 +12061,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12597,14 +12597,14 @@
         <target state="translated">Zustimmung :</target>
         <jms:reference-file line="836">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="0dc0c6dfc1460e9e50804a6b42b27d3ae8a2f332" resname="print_feedback:: base name: " approved="yes">
+      <trans-unit id="0dc0c6dfc1460e9e50804a6b42b27d3ae8a2f332" resname="print_feedback:: base name: " approved="no">
         <source>print_feedback:: base name:</source>
-        <target state="translated">Datenbank</target>
+        <target state="translated">Datenbank :</target>
         <jms:reference-file line="947">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="797d8c23b603bbff2f1e4d0e699897232fc07001" resname="print_feedback:: document Uuid: " approved="yes">
+      <trans-unit id="797d8c23b603bbff2f1e4d0e699897232fc07001" resname="print_feedback:: document Uuid: " approved="no">
         <source>print_feedback:: document Uuid:</source>
-        <target state="translated">Uuid Dokument</target>
+        <target state="translated">Uuid Dokument :</target>
         <jms:reference-file line="967">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="4752d52a950eba875e7e508dc1eea3f7ad4a7b07" resname="print_feedback:: non voté" approved="yes">
@@ -12612,19 +12612,19 @@
         <target state="translated">unausgedrückt</target>
         <jms:reference-file line="854">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="a780f008dff8f4a46e3c3c79d73d1e297f0e183c" resname="print_feedback:: originale filename: " approved="yes">
+      <trans-unit id="a780f008dff8f4a46e3c3c79d73d1e297f0e183c" resname="print_feedback:: originale filename: " approved="no">
         <source>print_feedback:: originale filename:</source>
-        <target state="translated">Originale Dateiname</target>
+        <target state="translated">Originale Dateiname :</target>
         <jms:reference-file line="957">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: " approved="yes">
+      <trans-unit id="dd1cd24683430c20fba9eb26cb61dbaaab589371" resname="print_feedback:: record id: " approved="no">
         <source>print_feedback:: record id:</source>
-        <target state="translated">Record id</target>
+        <target state="translated">Record id :</target>
         <jms:reference-file line="937">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
-      <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="yes">
+      <trans-unit id="7ccefaa7635a56b807dc95281c6e92cf301b9b67" resname="print_feedback:: record title: " approved="no">
         <source>print_feedback:: record title:</source>
-        <target state="translated">Titel</target>
+        <target state="translated">Titel :</target>
         <jms:reference-file line="927">Out/Module/PDFRecords.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="98ab0e2a8cf4a7c9f6952361e6c750a8009b70a5" resname="prive" approved="yes">
@@ -13016,12 +13016,12 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="8acffca186630d9321fbcf93e366de12708f1fd2" resname="prod::share feedback expires">
         <source>prod::share feedback expires</source>
-        <target state="new">prod::share feedback expires</target>
+        <target state="needs-translation">Ablauf des Feedbacks</target>
         <jms:reference-file line="386">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d3f224f47b18bf413cc720b3beac3b02806aeac7" resname="prod::share share expires">
         <source>prod::share share expires</source>
-        <target state="new">prod::share share expires</target>
+        <target state="needs-translation">Ablauf der Teilung</target>
         <jms:reference-file line="376">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d7e519198d4ee03df505df5832481ee5298a7a9a" resname="prod::share un push permet d'envoyer un lot d'image a des destinataires">
@@ -15085,7 +15085,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
