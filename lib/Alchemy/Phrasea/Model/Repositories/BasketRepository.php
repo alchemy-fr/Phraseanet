@@ -207,7 +207,7 @@ class BasketRepository extends EntityRepository
         if ($basket->getUser()->getId() != $user->getId()) {
             $participant = false;
 
-            if ($basket->isVoteBasket() && !$requireOwner) {
+            if (($basket->isVoteBasket() || $basket->getParticipants()->count() > 0) && !$requireOwner) {
                 try {
                     $basket->getParticipant($user);
                     $participant = true;
