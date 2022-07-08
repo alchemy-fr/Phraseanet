@@ -151,6 +151,27 @@ class ShareBasketWorker implements WorkerInterface
                     $manager->persist($basketParticipant);
                     $manager->flush();
 
+                    $acl = $this->getAclForUser($participantUser);
+
+                    // update right on records_rights
+                    foreach ($basketElements as $be) {
+                        if ($participant['HD']) {
+                            $acl->grant_hd_on(
+                            // $basketElementReference,
+                                $be['ref'],
+                                $authenticatedUser,
+                                ACL::GRANT_ACTION_VALIDATE
+                            );
+                        } else {
+                            $acl->grant_preview_on(
+                            // $basketElementReference,
+                                $be['ref'],
+                                $authenticatedUser,
+                                ACL::GRANT_ACTION_VALIDATE
+                            );
+                        }
+                    }
+
                     // file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; participant already exists -> next...\n", time()), FILE_APPEND);
 
                     continue; // !!!
