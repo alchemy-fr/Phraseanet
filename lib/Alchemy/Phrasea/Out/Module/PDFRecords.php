@@ -837,7 +837,6 @@ class PDFRecords extends PDF
                 $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
 
                 $basketElement = $basket->getElementByRecord($this->app, $rec);
-                $basketOwnerId = $basket->getUser()->getId();
 
                 $iparticipant = 0;
                 foreach ($basket->getParticipants() as $participant) {
