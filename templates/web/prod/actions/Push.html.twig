@@ -326,13 +326,13 @@
                                             {# owner can decide to be a voter #}
                                             {% set msg = 'prod::share You contribute to the feedback'|trans %}
                                             <a href="#"
-                                               class="colored toggle toggle_agree feedback_only_true {{ owner.getCanAgree() ? 'status_on' : 'status_off' }}"
+                                               class="colored toggle toggle_agree feedback_only_true {{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? 'status_on' : 'status_off' }}"
                                                title="{{ msg }}">
                                                 <i class="fa fa-comment"></i>
                                             </a>
                                             <input type="hidden"
                                                    name="participants[{{ owner.getId() }}][agree]"
-                                                   value="{{ owner.getCanAgree() ? '1' : '0' }}"/>
+                                                   value="{{ basket.isParticipant(owner) and basket.getParticipant(owner).getCanAgree() ? '1' : '0' }}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -444,13 +444,13 @@
                                                                 <td>
                                                                     {% set msg = 'prod::share User can download HD'|trans %}
                                                                     <a href="#"
-                                                                       class="colored toggle toggle_HD status_off"
+                                                                       class="colored toggle toggle_HD {{ participantsHDRight[participant.getUser().getId()] ? 'status_on' : 'status_off' }}"
                                                                        title="{{ msg }}">
                                                                         <i class="fa fa-download"></i>
                                                                     </a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][HD]"
-                                                                           value="0"/>
+                                                                           value="{{ participantsHDRight[participant.getUser().getId()] ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
@@ -462,7 +462,7 @@
                                                                     </a>
                                                                     <input type="hidden"
                                                                            name="participants[{{ userId }}][modify]"
-                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
+                                                                           value="{{ participant.canModify() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
@@ -473,10 +473,10 @@
                                                                            title="{{ msg }}">
                                                                             <i class="fa fa-comment"></i>
                                                                         </a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][agree]"
+                                                                               value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
                                                                     </span>
-                                                                    <input type="hidden"
-                                                                           name="participants[{{ userId }}][agree]"
-                                                                           value="{{ participant.getCanAgree() ? '1' : '0' }}"/>
                                                                 </td>
 
                                                                 <td>
@@ -487,10 +487,11 @@
                                                                            title="{{ msg }}">
                                                                             <i class="fa fa-users"></i>
                                                                         </a>
+                                                                        <input type="hidden"
+                                                                               name="participants[{{ userId }}][see_others]"
+                                                                               value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
                                                                     </span>
-                                                                    <input type="hidden"
-                                                                           name="participants[{{ userId }}][see_others]"
-                                                                           value="{{ participant.getCanSeeOthers() ? '1' : '0' }}"/>
+
                                                                 </td>
 
                                                            </tr>
