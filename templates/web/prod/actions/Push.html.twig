@@ -372,7 +372,7 @@
                         {# dates of end-of-vote and end-of-share #}
                         {% if context == 'Sharebasket' %}
                             <div style="flex: 0 0 auto;">
-                                <span class="inputWithButton feedback_only_true">
+                                <span class="inputWithButton feedback_only_true" style="margin-right:30px;">
                                     <span>{{ 'prod::share feedback expires' | trans }}:</span>
                                     <span class="btn-toolbar">
                                         <input type="text" class="btn" name="voteExpires"
@@ -382,7 +382,7 @@
                                         </button>
                                     </span>
                                 </span>
-                                <span class="inputWithButton" style="margin-left:30px;">
+                                <span class="inputWithButton">
                                     <span>{{ 'prod::share share expires' | trans }}:</span>
                                     <span class="btn-toolbar">
                                         <input type="text" class="btn" name="shareExpires"
