@@ -372,22 +372,22 @@
                         {# dates of end-of-vote and end-of-share #}
                         {% if context == 'Sharebasket' %}
                             <div style="flex: 0 0 auto;">
-                                <span class="inputWithButton">
+                                <span class="inputWithButton feedback_only_true">
+                                    <span>{{ 'prod::share feedback expires' | trans }}:</span>
+                                    <span class="btn-toolbar">
+                                        <input type="text" class="btn" name="voteExpires"
+                                               style="width: 100px;"/>
+                                        <button class="colored inverse delta-toggle" data-dest="voteExpires">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </button>
+                                    </span>
+                                </span>
+                                <span class="inputWithButton" style="margin-left:30px;">
                                     <span>{{ 'prod::share share expires' | trans }}:</span>
                                     <span class="btn-toolbar">
                                         <input type="text" class="btn" name="shareExpires"
                                                               style="width: 100px;"/>
                                         <button class="colored inverse delta-toggle" data-dest="shareExpires">
-                                            <i class="fa fa-ellipsis-h"></i>
-                                        </button>
-                                    </span>
-                                </span>
-                                <span class="inputWithButton feedback_only_true" style="margin-left:30px;">
-                                    <span>{{ 'prod::share feedback expires' | trans }}:</span>
-                                    <span class="btn-toolbar">
-                                        <input type="text" class="btn" name="voteExpires"
-                                                                 style="width: 100px;"/>
-                                        <button class="colored inverse delta-toggle" data-dest="voteExpires">
                                             <i class="fa fa-ellipsis-h"></i>
                                         </button>
                                     </span>
@@ -619,22 +619,26 @@
 
         let $container = $('#PushBox');
 
-        $("INPUT[name=voteExpires]", $container)
+        const $voteExpires = $("INPUT[name=voteExpires]", $container);
+            $voteExpires
             .datepicker($.datepicker.regional['default'])
             .datepicker("setDate", "{{ basket.getVoteExpires().format('Y-m-d') }}")
             .change(function () {
                 console.log("==== vote date changed ====");
                 //$('.submit-validation').removeClass('btn-not-shown');
                 //$('.cancel-date').removeClass('btn-not-shown');
+                checkDate($shareExpires, $voteExpires);
             });
 
-        const $shareExpires = $("INPUT[name=shareExpires]", $container)
+        const $shareExpires = $("INPUT[name=shareExpires]", $container);
+            $shareExpires
             .datepicker($.datepicker.regional['default'])
             .datepicker("setDate", "{{ basket.getShareExpires().format('Y-m-d') }}")
             .change(function () {
                 console.log("==== share date changed ====");
                 //$('.submit-validation').removeClass('btn-not-shown');
                 //$('.cancel-date').removeClass('btn-not-shown');
+                checkDate($shareExpires, $voteExpires);
             });
 
         // prepare delta dropdown
@@ -656,6 +660,7 @@
                         const dd = (d.getDate() < 10 ? '0' : '') + d.getDate();
 
                         $input.val(d.getFullYear() + '-' + mm + '-' + dd);
+                        checkDate($shareExpires, $voteExpires);
                     }
                     $(this).hide();
                 }
@@ -679,6 +684,23 @@
                 return false;
             }
         );
-    })
+    });
+
+    function checkDate(shareElement, voteElement) {
+        let dShareEnd = shareElement.val();
+        let dVoteEnd = voteElement.val();
+
+        if (dShareEnd != '' && dVoteEnd != '') {
+            let dateShare = new Date(dShareEnd);
+            let dateVote = new Date(dVoteEnd);
+            if (dateVote > dateShare) {
+                // extend the shareExpires date to the voteExpires date
+                shareElement.val(dVoteEnd);
+                if (voteElement.is(':visible')) {
+                    alert('{{ "Share has been extended" | trans }}');
+                }
+            }
+        }
+    }
 
 </script>
