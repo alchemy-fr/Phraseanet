@@ -306,12 +306,27 @@ const pushOrShare = function (services, container) {
 
         var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
+        var context = '';
+        if ($el.attr('data-context') == 'Sharebasket') {
+            if ($("INPUT[name=isFeedback]").val() == '0') {
+                context = "sharebasket";
+            } else {
+                context = "feedback";
+            }
+        } else {
+            context = "push";
+        }
+
         var html = '';
         // if the window is just for adding/removing user
         if ($el.data('feedback-action') === 'adduser') {
-            html = _.template($('#feedback_adduser_sendform_tpl').html());
+            html = _.template($('#feedback_adduser_sendform_tpl').html())({
+                context: context
+            });
         } else {
-            html = _.template($('#feedback_sendform_tpl').html());
+            html = _.template($('#feedback_sendform_tpl').html())({
+                context: context
+            });
         }
 
         $dialog.setContent(html);
@@ -320,13 +335,11 @@ const pushOrShare = function (services, container) {
         var pushTitle =  $('#pushTitle').val();
         var sharedTitle = $('#sharedTitle').val();
 
-        if ($el.attr('data-context') == 'Sharebasket') {
-            if ($("INPUT[name=isFeedback]").val() == '0') {
-                $('input[name="name"]').attr("placeholder", sharedTitle);
-            } else {
-                $('input[name="name"]').attr("placeholder", feedbackTitle);
-            }
-        }else {
+        if (context == 'feedback') {
+            $('input[name="name"]').attr("placeholder", feedbackTitle);
+        } else if(context == 'sharebasket') {
+            $('input[name="name"]').attr("placeholder", sharedTitle);
+        } else {
             $('input[name="name"]').attr("placeholder", pushTitle);
         }
 

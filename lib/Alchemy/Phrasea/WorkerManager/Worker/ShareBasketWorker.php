@@ -142,6 +142,12 @@ class ShareBasketWorker implements WorkerInterface
                     $basketParticipant->setCanAgree($participant['agree']);
                     $basketParticipant->setCanModify($participant['modify']);
                     $basketParticipant->setCanSeeOthers($participant['see_others']);
+
+                    if ($notSendReminder) {
+                        // column reminded to be not null
+                        $basketParticipant->setReminded(new DateTime());
+                    }
+
                     $manager->persist($basketParticipant);
                     $manager->flush();
 
