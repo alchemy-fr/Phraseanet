@@ -342,6 +342,7 @@ workers:
             heartbeat: 60
     webhook:
         timeout: 30
+        verify_ssl: true
 externalservice:
     ginger:
         AutoSubtitling:
