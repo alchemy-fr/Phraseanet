@@ -6134,7 +6134,7 @@
       </trans-unit>
       <trans-unit id="69241dfd6bf147571c070ba18905ba0578034006" resname="Share has been extended">
         <source>Share has been extended</source>
-        <target state="new">Share has been extended</target>
+        <target state="needs-translation">Sharing expiration date has been extended</target>
         <jms:reference-file line="699">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ce896454ee1650a73169d33b97a59cb8f90d6e6b" resname="Share my list" approved="yes">
@@ -11454,7 +11454,7 @@
       </trans-unit>
       <trans-unit id="7a44dfc1b52ebdcd83e5fbf6efa7f230c0a67288" resname="notification:: Receive notification when a basket is WIP">
         <source>notification:: Receive notification when a basket is WIP</source>
-        <target state="new">notification:: Receive notification when a basket is WIP</target>
+        <target state="needs-translation">Receive notifications for shared baskets</target>
         <jms:reference-file line="56">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa77df0b440665c48bc80e73081df4124014aa72" resname="notification:: Sharing basket &quot;%name%&quot;...">
