@@ -844,7 +844,12 @@ class PDFRecords extends PDF
 //                    if ($iparticipant++ > 0) {
                         // $this->pdf->SetY($this->pdf->GetY()+1);
 //                    }
-                    $basketElementVote = $basketElement->getUserVote($participant->getUser(), false);
+
+                    try {
+                        $basketElementVote = $basketElement->getUserVote($participant->getUser(), true);
+                    } catch (\Exception $e) {
+                        continue;
+                    }
 
                     $this->pdf->Write(5, '- ' . $this->getDisplayName($participant->getUser(), true). " : ");
 
