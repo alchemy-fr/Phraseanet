@@ -97,7 +97,8 @@ class WebhookWorker implements WorkerInterface
                 'connect_timeout' => 50, // should be less than default rabbit timeout 60 to avoid to block Q
                 'headers' => [
                     'User-Agent' => sprintf('Phraseanet/%s (%s)', $version->getNumber(), $version->getName())
-                ]
+                ],
+                'verify' => $this->app['conf']->get(['workers', 'webhook', 'verify_ssl'], true),
             ];
 
             // use proxy if http-proxy defined in configuration.yml
