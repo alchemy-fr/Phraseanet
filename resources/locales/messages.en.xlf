@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-07-11T08:48:46Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>selected]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -1184,12 +1184,12 @@
       </trans-unit>
       <trans-unit id="30f09ea38857b13637c9f20f2a17e7bfc3ac3b3a" resname="Are you sure you want to erase all job informations ?">
         <source>Are you sure you want to erase all job informations ?</source>
-        <target state="needs-translation">Confirm jobs informations deletion?</target>
+        <target state="translated">Confirm jobs informations deletion?</target>
         <jms:reference-file line="227">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aec19ed81928870d688862753f3d3e55db655daf" resname="Are you sure you want to erase finished job informations ?">
         <source>Are you sure you want to erase finished job informations ?</source>
-        <target state="needs-translation">Confirm deletion of finished jobs?</target>
+        <target state="translated">Confirm deletion of finished jobs?</target>
         <jms:reference-file line="238">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ad86fda5d367a9ff74a9c278344f3bb8f75c223" resname="Are you sure you want to rebuild the sub-definitions of selected records?" approved="yes">
@@ -1491,7 +1491,7 @@
       </trans-unit>
       <trans-unit id="6ace9cf8a03291a18aa4a503088e740ef8ee10e6" resname="Basket shared by %user_name% until %expires%">
         <source>Basket shared by %user_name% until %expires%</source>
-        <target state="new">Basket shared by %user_name% until %expires%</target>
+        <target state="translated">Basket shared by %user_name% until %expires%</target>
         <jms:reference-file line="168">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f149359beace4d242ac47578384e4cb7e001b9e7" resname="Basket updated" approved="yes">
@@ -2515,7 +2515,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Display and action settings</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -3207,7 +3207,7 @@
       </trans-unit>
       <trans-unit id="10634112797f7010f624d94d261c4c108ca9e40a" resname="Feedback request by %user_name% until %vote_expires%">
         <source>Feedback request by %user_name% until %vote_expires%</source>
-        <target state="new">Feedback request by %user_name% until %vote_expires%</target>
+        <target state="translated">Feedback request by %user_name% until %vote_expires%</target>
         <jms:reference-file line="173">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="90d95d818c456d269d000b3d82579506f6e34c5f" resname="Feedback:: Requested by %initiator% on %createdDate%" approved="yes">
@@ -5172,13 +5172,13 @@
       </trans-unit>
       <trans-unit id="b2addf5f65fa45f53c7f941a4c9986400763182d" resname="Printed by">
         <source>Printed by</source>
-        <target state="new">Printed by</target>
+        <target state="translated">Printed by</target>
         <jms:reference-file line="50">Out/Tool/PhraseaPDF.php</jms:reference-file>
         <jms:reference-file line="58">Out/Tool/PhraseaPDF.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="7b7008afede0bdda9feb2da9ec1a048bdbd9e122" resname="Printed with Phraseanet by %name% on %date%">
         <source>Printed with Phraseanet by %name% on %date%</source>
-        <target state="new">Printed with Phraseanet by %name% on %date%</target>
+        <target state="translated">Printed with Phraseanet by %name% on %date%</target>
         <jms:reference-file line="35">Out/Tool/PhraseaPDF.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e6ad53898d609dbabefb5da33ee1b4cc04fba023" resname="Problemes de connexion ?" approved="yes">
@@ -6134,7 +6134,7 @@
       </trans-unit>
       <trans-unit id="69241dfd6bf147571c070ba18905ba0578034006" resname="Share has been extended">
         <source>Share has been extended</source>
-        <target state="new">Share has been extended</target>
+        <target state="needs-translation">Sharing expiration date has been extended</target>
         <jms:reference-file line="699">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ce896454ee1650a73169d33b97a59cb8f90d6e6b" resname="Share my list" approved="yes">
@@ -9574,7 +9574,7 @@
       </trans-unit>
       <trans-unit id="2564f949b4f742e02863e1fcc205df91774c51f9" resname="admin::workermanager:tab:workerinfo: change status to canceled">
         <source>admin::workermanager:tab:workerinfo: change status to canceled</source>
-        <target state="needs-translation">Mark as "Cancel" running jobs</target>
+        <target state="translated">Mark as "Cancel" running jobs</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="224add9949a95aa2f40517f6f74ad86e4a76e376" resname="admin::workermanager:tab:workerinfo: created" approved="yes">
@@ -9604,7 +9604,7 @@
       </trans-unit>
       <trans-unit id="d6ecf648e4dbb36172c9f3cacd96a8c4cb9b94e5" resname="admin::workermanager:tab:workerinfo: manually mark as canceled job running">
         <source>admin::workermanager:tab:workerinfo: manually mark as canceled job running</source>
-        <target state="needs-translation">Mark as "Cancel" started jobs since</target>
+        <target state="translated">Mark as "Cancel" started jobs since</target>
         <jms:reference-file line="2">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4cf799c9714b4d16ca82cfac3fc68b2918b46430" resname="admin::workermanager:tab:workerinfo: published" approved="yes">
@@ -9619,12 +9619,12 @@
       </trans-unit>
       <trans-unit id="8ff3cefe308c32748dd2a2586c3291b70cbf2507" resname="admin::workermanager:tab:workerinfo: refresh job count">
         <source>admin::workermanager:tab:workerinfo: refresh job count</source>
-        <target state="needs-translation">Refresh</target>
+        <target state="translated">Refresh</target>
         <jms:reference-file line="7">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0eb2b0ae31b046292c5cd3132715c7cbb8bd8afc" resname="admin::workermanager:tab:workerinfo: running job find">
         <source>admin::workermanager:tab:workerinfo: running job find</source>
-        <target state="needs-translation">jobs</target>
+        <target state="translated">jobs</target>
         <jms:reference-file line="11">admin/worker-manager/worker_info_change_status.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5695c41f76dc3aa0174d22160fe0ae8368c89881" resname="admin::workermanager:tab:workerinfo: status" approved="yes">
@@ -10365,7 +10365,7 @@
       </trans-unit>
       <trans-unit id="fcded915223dd1cb8581b86ea9baeade7f55c02b" resname="charger d'avantages de notifications">
         <source>charger d'avantages de notifications</source>
-        <target state="needs-translation">Display more notifications</target>
+        <target state="translated">Display more notifications</target>
         <jms:reference-file line="9">web/prod/notifications_dialog.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aa593702faaee1da7f577eb3fbd5964703051696" resname="choisir" approved="yes">
@@ -11454,7 +11454,7 @@
       </trans-unit>
       <trans-unit id="7a44dfc1b52ebdcd83e5fbf6efa7f230c0a67288" resname="notification:: Receive notification when a basket is WIP">
         <source>notification:: Receive notification when a basket is WIP</source>
-        <target state="new">notification:: Receive notification when a basket is WIP</target>
+        <target state="translated">Receive notifications for shared baskets</target>
         <jms:reference-file line="56">eventsmanager/notify/basketwip.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa77df0b440665c48bc80e73081df4124014aa72" resname="notification:: Sharing basket &quot;%name%&quot;...">
@@ -12069,7 +12069,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Your rights do not allow to perform this action. Your account can only be deleted via the Administration interface.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -12425,12 +12425,12 @@
       </trans-unit>
       <trans-unit id="4a996fb8b2c1949e78c3245993e121757bfeb1ea" resname="print:: description field title color">
         <source>print:: description field title color</source>
-        <target state="needs-translation">Colour of field label</target>
+        <target state="translated">Colour of field label</target>
         <jms:reference-file line="81">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="21f745075d3330ad8f521c48485c187b5042aff4" resname="print:: description font size">
         <source>print:: description font size</source>
-        <target state="needs-translation">Font size</target>
+        <target state="translated">Font size</target>
         <jms:reference-file line="76">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="8e7fd7ad380fbbffb814c1bf6dcc60fbbc57ec39" resname="print:: download">
@@ -12512,7 +12512,7 @@
       </trans-unit>
       <trans-unit id="531a66e4caa61521b869c01306e1cf73b846c03c" resname="print:: print records informations">
         <source>print:: print records informations</source>
-        <target state="needs-translation">Add informations section of the record</target>
+        <target state="translated">Add informations section of the record</target>
         <jms:reference-file line="36">prod/actions/printer_default.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a37895cb1cf6b1e86a9a4e1581d5b682568b44fa" resname="print:: some options">
@@ -13069,13 +13069,13 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="1854fac4e11aa3f763dc533e2dfad6730b53560d" resname="prod::share: User can see others choices">
         <source>prod::share: User can see others choices</source>
-        <target state="needs-translation">User can see the others' users choices</target>
+        <target state="translated">User can see the others' users choices</target>
         <jms:reference-file line="483">prod/actions/Push.html.twig</jms:reference-file>
         <jms:reference-file line="130">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9566a3f46a42776781c54784e3aba3385b6e1714" resname="prod::share: User contribute to the feedback">
         <source>prod::share: User contribute to the feedback</source>
-        <target state="needs-translation">User can contribute to the feedback</target>
+        <target state="translated">User can contribute to the feedback</target>
         <jms:reference-file line="117">prod/templates/push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="5ccb348802600f55b5bdb36807d0803a55d75e93" resname="prod::share: Users can download HD">
@@ -13095,27 +13095,27 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="0d1ba00cdeea8b6244ad62ec2d78753dea059168" resname="prod::share: Users contribute to the feedback">
         <source>prod::share: Users contribute to the feedback</source>
-        <target state="needs-translation">User can contribute to the feedback</target>
+        <target state="translated">User can contribute to the feedback</target>
         <jms:reference-file line="228">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="9324365f3521e7b0bcfa90fd02fb30df3eb25785" resname="prod::share: You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.">
         <source>prod::share: You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.</source>
-        <target state="needs-translation">You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.</target>
+        <target state="translated">You are about to push %nb_push_items% records, %nb_not_available% records can not be processed.</target>
         <jms:reference-file line="185">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ebe0d44705f4df859bc89f616b3fd8919d47f296" resname="prod::share: You are about to push %nb_push_items% records.">
         <source>prod::share: You are about to push %nb_push_items% records.</source>
-        <target state="needs-translation">You are about to Push %nb_push_items% records.</target>
+        <target state="translated">You are about to Push %nb_push_items% records.</target>
         <jms:reference-file line="183">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="c96aa251bcc7bda1e6167db89a3d89bd4f17edd7" resname="prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.">
         <source>prod::share: You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.</source>
-        <target state="needs-translation">You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.</target>
+        <target state="translated">You are about to share a basket with %nb_push_items% records, %nb_not_available% records can not be processed.</target>
         <jms:reference-file line="191">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1af9e90ffa3534fd3555ecef51eaf0831427d4b1" resname="prod::share: You are about to share a basket with %nb_push_items% records.">
         <source>prod::share: You are about to share a basket with %nb_push_items% records.</source>
-        <target state="needs-translation">You are about to share a basket with %nb_push_items% records.</target>
+        <target state="translated">You are about to share a basket with %nb_push_items% records.</target>
         <jms:reference-file line="189">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="85c8ae3c46fa22b989d6f426821f7dafff24ebb8" resname="prod::share: feedback-option">
@@ -13135,7 +13135,7 @@ A ” Push” will never expire.</target>
       </trans-unit>
       <trans-unit id="bbbcd53a63ba018c78a6a3f650868c1a6da45a6d" resname="prod::story: warning! use only documents from one databox!">
         <source>prod::story: warning! use only documents from one databox!</source>
-        <target state="needs-translation">Warning! Records must come from one databox only.</target>
+        <target state="translated">Warning! Records must come from one databox only.</target>
         <jms:reference-file line="173">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="45e5796d4f618bc0f7e96945fdb7ffd903cd8673" resname="prod::tech_info: databox_name">
@@ -13739,7 +13739,7 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
         <source>prod:story:selected elements are from different databox and cannot be added to the story</source>
-        <target state="needs-translation">Selected records belong to different databox and cannot be added to the story</target>
+        <target state="translated">Selected records belong to different databox and cannot be added to the story</target>
         <jms:reference-file line="25">prod/Story/Create.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="b307f0594b48cbb3440eb6a38c7fb90858617791" resname="prod:videoeditor:subtitleRequestTab:: Autosubtitling" approved="yes">
@@ -15100,7 +15100,7 @@ It is possible to place several search areas</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Delete branch : &#10 (concerned terms will be displayed as candidates on future indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -15887,17 +15887,17 @@ It is possible to place several search areas</target>
       </trans-unit>
       <trans-unit id="b94906f7d976dd265ed31acc792396fb9ffa958a" resname="workzone:shared: permanent sharing">
         <source>workzone:shared: permanent sharing</source>
-        <target state="needs-translation">Shared indefinitely</target>
+        <target state="translated">Shared indefinitely</target>
         <jms:reference-file line="137">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="af6fdd55858b2b6e908352af06a2d9f5556cf4e8" resname="workzone:shared:expiration-closed">
         <source>workzone:shared:expiration-closed</source>
-        <target state="needs-translation">Sharing expired on</target>
+        <target state="translated">Sharing expired on</target>
         <jms:reference-file line="134">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f5139c4f644f11ad81fbe93d889e0e3e9fa08f1c" resname="workzone:shared:expiration-open">
         <source>workzone:shared:expiration-open</source>
-        <target state="needs-translation">Sharing valid until</target>
+        <target state="translated">Sharing valid until</target>
         <jms:reference-file line="139">prod/WorkZone/Basket.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
