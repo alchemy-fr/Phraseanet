@@ -39,13 +39,16 @@ class AssetsIngestWorker implements WorkerInterface
         $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $payload['base_url']];
+        $clientOptions = [
+            'base_uri' => $payload['base_url'],
+            'verify' => false,
+        ];
 
         $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get first asset informations to check if it's a story
         try {
-            $body = $uploaderClient->get('/assets/'.$assets[0], [
+            $body = $uploaderClient->get('assets/'.$assets[0], [
                 'headers' => [
                     'Authorization' => 'AssetToken '.$payload['token']
                 ]

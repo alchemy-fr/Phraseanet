@@ -30,12 +30,18 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
     {
         $record = $this->convertToRecordAdapter($event->getRecord());
 
+        $subdef = $record->get_subdef($event->getSubDefinitionName());
+
         $eventData = [
             'databox_id'    => $record->getDataboxId(),
             'record_id'     => $record->getRecordId(),
             'collection_name'   => $record->getCollection()->get_name(),
             'base_id'           => $record->getBaseId(),
-            'subdef_name'   => $event->getSubDefinitionName()
+            'subdef_name'   => $event->getSubDefinitionName(),
+            'permalink' => (string) $subdef->get_permalink()->get_url(),
+            'original_name' => $record->getOriginalName(),
+            'size' => $subdef->get_size(),
+            'type' => $subdef->get_type(),
         ];
 
         $this->app['manipulator.webhook-event']->create(
