@@ -15,7 +15,7 @@
     {% if basket.isVoteBasket() %}
         <div>{{ basket.getVoteString(app, app.getAuthenticatedUser()) }}</div>
         <ul>
-            {% for choice in basket_element.getVotes() %}
+            {% for choice in basket_element.getVotes(true) %}
               {% if basket.getParticipant(app.getAuthenticatedUser()).getCanSeeOthers() or choice.getParticipant().getUser() == app.getAuthenticatedUser() %}
                 {% if choice.getAgreement() == true %}
                     {% set classuser = 'agree' %}
@@ -25,7 +25,10 @@
                     {% set classuser = 'disagree' %}
                 {% endif %}
                 {% set participant = choice.getParticipant().getUser() %}
-                <li class="{% if participant.getId() == app.getAuthenticatedUser().getId() %}me{% endif %} {{classuser}} userchoice">{{participant.getDisplayName()}}</li>
+
+                {% if choice.getParticipant().getCanAgree() %}
+                    <li class="{% if participant.getId() == app.getAuthenticatedUser().getId() %}me{% endif %} {{classuser}} userchoice">{{participant.getDisplayName()}}</li>
+                {% endif %}
               {% endif %}
             {% endfor %}
         </ul>
