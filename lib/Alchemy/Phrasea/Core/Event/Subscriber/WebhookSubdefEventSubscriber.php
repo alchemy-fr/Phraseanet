@@ -36,6 +36,8 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
             $url = $subdef->get_permalink()->get_url()->__toString();
         } catch (\Exception $e) {
             $url = '';
+        } catch (\Throwable $e) {
+            $url = '';
         }
 
         $eventData = [
