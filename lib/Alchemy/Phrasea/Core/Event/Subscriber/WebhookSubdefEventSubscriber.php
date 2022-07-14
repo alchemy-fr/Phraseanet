@@ -30,14 +30,23 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
     {
         $record = $this->convertToRecordAdapter($event->getRecord());
 
-        $subdef = $record->get_subdef($event->getSubDefinitionName());
+        if ($record->has_subdef($event->getSubDefinitionName())) {
+            $subdef = $record->get_subdef($event->getSubDefinitionName());
 
-        try {
-            $url = $subdef->get_permalink()->get_url()->__toString();
-        } catch (\Exception $e) {
-            $url = '';
-        } catch (\Throwable $e) {
-            $url = '';
+            try {
+                $url = $subdef->get_permalink()->get_url()->__toString();
+            } catch (\Exception $e) {
+                $url = '';
+            } catch (\Throwable $e) {
+                $url = '';
+            }
+
+            $size = $subdef->get_size();
+            $type = $subdef->get_type();
+        } else {
+            $url  = '';
+            $size = 0;
+            $type = '';
         }
 
         $eventData = [
@@ -48,8 +57,8 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
             'subdef_name'   => $event->getSubDefinitionName(),
             'permalink'     => $url,
             'original_name' => $record->getOriginalName(),
-            'size'          => $subdef->get_size(),
-            'type'          => $subdef->get_type(),
+            'size'          => $size,
+            'type'          => $type,
         ];
 
         $this->app['manipulator.webhook-event']->create(
