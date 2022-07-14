@@ -92,10 +92,5 @@ class PhraseanetServiceProvider implements ServiceProviderInterface
 
     public function boot(SilexApplication $app)
     {
-        if ($app['configuration.store']->isSetup()) {
-            if (php_sapi_name() == 'cli') {
-                $app['url_generator']->getContext()->setHost($app['conf']->get('servername'));
-            }
-        }
     }
 }

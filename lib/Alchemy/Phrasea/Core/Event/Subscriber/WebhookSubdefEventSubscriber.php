@@ -34,7 +34,11 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
             $subdef = $record->get_subdef($event->getSubDefinitionName());
 
             try {
-                $url = $subdef->get_permalink()->get_url()->__toString();
+                $url = $subdef->get_permalink()->get_url();
+                if (php_sapi_name() == 'cli') {
+                    $url->setHost($this->app['conf']->get('servername'));
+                }
+                $url = $url->__toString();
             } catch (\Exception $e) {
                 $url = '';
             } catch (\Throwable $e) {
