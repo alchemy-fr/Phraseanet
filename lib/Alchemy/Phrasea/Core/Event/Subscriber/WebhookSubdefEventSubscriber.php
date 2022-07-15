@@ -35,9 +35,18 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
 
             try {
                 $url = $subdef->get_permalink()->get_url();
-                if (php_sapi_name() == 'cli') {
-                    $url->setHost($this->app['conf']->get('servername'));
-                }
+//                if (php_sapi_name() == 'cli') {
+//                    $servername = $this->app['conf']->get('servername');
+//                    if (preg_match('#^http(s)?://#', $servername)) {
+//                        $t = explode('://', $servername);
+//                        if (count($t) == 2) {
+//                            $url->setHost($t[1]);
+//                            $url->setScheme($t[0]);
+//                        }
+//                    } else {
+//                        $url->setHost($servername);
+//                    }
+//                }
                 $url = $url->__toString();
             } catch (\Exception $e) {
                 $url = '';
@@ -46,7 +55,7 @@ class WebhookSubdefEventSubscriber implements EventSubscriberInterface
             }
 
             $size = $subdef->get_size();
-            $type = $subdef->get_type();
+            $type = $subdef->get_mime();
         } else {
             $url  = '';
             $size = 0;
