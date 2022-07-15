@@ -3,6 +3,7 @@
 namespace Alchemy\Phrasea\WorkerManager\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,10 +37,15 @@ class WorkerPullAssetsType extends AbstractType
             ])
             ->add('pullInterval', TextType::class, [
                 'label' => 'admin::workermanager:tab:pullassets: Fetching interval in second'
-            ]);
+            ])
+            ->add('verify_ssl', CheckboxType::class, [
+                'label'    => 'admin::workermanager:tab:pullassets: verify ssl',
+                'required' => false
+            ])
+        ;
 
         $builder
-            ->add("boutton::appliquer", SubmitType::class, [
+            ->add("apply", SubmitType::class, [
                 'label' => "boutton::appliquer",
                 'attr' => ['value' => 'save']
             ]);

@@ -60,13 +60,16 @@ class CreateRecordWorker implements WorkerInterface
         $em = $this->repoWorkerJob->getEntityManager();
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $payload['base_url']];
+        $clientOptions = [
+            'base_uri'  => $payload['base_url'],
+            'verify'    => $payload['verify_ssl']
+        ];
 
         // add proxy in each request if defined in configuration
         $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get asset informations
-        $body = $uploaderClient->get('/assets/'.$payload['asset'], [
+        $body = $uploaderClient->get('assets/'.$payload['asset'], [
             'headers' => [
                 'Authorization' => 'AssetToken '.$payload['assetToken']
             ]
@@ -90,7 +93,7 @@ class CreateRecordWorker implements WorkerInterface
         $em->flush();
 
         //download the asset
-        $client = $proxyConfig->getClientWithOptions();
+        $client = $proxyConfig->getClientWithOptions(['verify' => $payload['verify_ssl']]);
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
 
         try {
@@ -154,7 +157,7 @@ class CreateRecordWorker implements WorkerInterface
         //  if all assets in the commit are downloaded , send ack to the uploader
         if ($canAck) {
             //  post ack to the uploader
-            $uploaderClient->post('/commits/' . $payload['commit_id'] . '/ack', [
+            $uploaderClient->post('commits/' . $payload['commit_id'] . '/ack', [
                     'headers' => [
                         'Authorization' => 'AssetToken '.$payload['assetToken']
                     ],
