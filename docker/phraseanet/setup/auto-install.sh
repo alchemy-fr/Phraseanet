@@ -12,6 +12,11 @@ if [ -z "$PHRASEANET_ADMIN_ACCOUNT_PASSWORD " ]; then
     exit 1
 fi
 
+FILE=config/configuration.yml
+
+while [[ ! -e "$FILE" ]]
+do 
+sleep 10
 /var/alchemy/Phraseanet/bin/setup system:install \
     --email=$PHRASEANET_ADMIN_ACCOUNT_EMAIL \
     --password=$PHRASEANET_ADMIN_ACCOUNT_PASSWORD \
@@ -28,6 +33,7 @@ fi
     --caption-path=$PHRASEANET_CAPTION_DIR \
     --worker-tmp-files=$PHRASEANET_WORKER_TMP \
     --data-path=/var/alchemy/Phraseanet/datas -y
+done
 
  # Bus configuration for scheduler & worker
 bin/setup system:config set workers.queue.worker-queue.registry alchemy_worker.queue_registry 
