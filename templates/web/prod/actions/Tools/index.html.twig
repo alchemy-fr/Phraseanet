@@ -353,5 +353,9 @@
         if (allsubdef) {
             $(".subdefTodo[value!=0]").prop('checked', true);
         }
+
+        if ($(this).val() === '0' && !allsubdef) {
+            $(".subdefTodo[value!=0]").prop('checked', false);
+        }
     });
 </script>
