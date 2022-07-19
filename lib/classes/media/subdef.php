@@ -684,6 +684,9 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $symlinker->symlink($subdef->getRealPath());
         }
 
+        // delete from cache the list of available subdef for the record to taken account the new subdef
+        $subdef->get_record()->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
+
         return $subdef;
     }
 

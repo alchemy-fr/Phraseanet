@@ -38,14 +38,19 @@ class AssetsIngestWorker implements WorkerInterface
 
         $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
+        $verifySsl = isset($payload['verify_ssl']) ? $payload['verify_ssl'] : true ;
+
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $payload['base_url']];
+        $clientOptions = [
+            'base_uri'  => $payload['base_url'],
+            'verify'    => $verifySsl
+        ];
 
         $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         //get first asset informations to check if it's a story
         try {
-            $body = $uploaderClient->get('/assets/'.$assets[0], [
+            $body = $uploaderClient->get('assets/'.$assets[0], [
                 'headers' => [
                     'Authorization' => 'AssetToken '.$payload['token']
                 ]
@@ -80,7 +85,8 @@ class AssetsIngestWorker implements WorkerInterface
                 'assetToken' => $payload['token'],
                 'storyId'    => $storyId,
                 'base_url'   => $payload['base_url'],
-                'commit_id'  => $payload['commit_id']
+                'commit_id'  => $payload['commit_id'],
+                'verify_ssl' => $verifySsl
             ];
 
             $this->messagePublisher->publishMessage($createRecordMessage, MessagePublisher::CREATE_RECORD_TYPE);

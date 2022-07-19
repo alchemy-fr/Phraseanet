@@ -35,7 +35,11 @@ class PSExposeController extends Controller
         }
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $exposeConfiguration['auth_base_uri'], 'http_errors' => false];
+        $clientOptions = [
+            'base_uri'      => $exposeConfiguration['auth_base_uri'],
+            'http_errors'   => false,
+            'verify'        => $exposeConfiguration['verify_ssl']
+        ];
 
         $oauthClient = $proxyConfig->getClientWithOptions($clientOptions);
 
@@ -199,7 +203,11 @@ class PSExposeController extends Controller
         }
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $clientOptions = [
+            'base_uri'      => $exposeConfiguration['expose_base_uri'],
+            'http_errors'   => false,
+            'verify'        => $exposeConfiguration['verify_ssl']
+        ];
 
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
@@ -259,7 +267,11 @@ class PSExposeController extends Controller
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $clientOptions = [
+            'base_uri'      => $exposeConfiguration['expose_base_uri'],
+            'http_errors'   => false,
+            'verify'        => $exposeConfiguration['verify_ssl']
+        ];
 
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
@@ -356,7 +368,12 @@ class PSExposeController extends Controller
         $exposeConfiguration = $exposeConfiguration[$request->get('exposeName')];
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $clientOptions = [
+            'base_uri'      => $exposeConfiguration['expose_base_uri'],
+            'http_errors'   => false,
+            'verify'        => $exposeConfiguration['verify_ssl']
+        ];
+
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
         $accessToken = $this->getAndSaveToken($request->get('exposeName'));
@@ -500,7 +517,11 @@ class PSExposeController extends Controller
         $exposeConfiguration = $exposeConfiguration[$exposeName];
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $clientOptions = [
+            'base_uri'      => $exposeConfiguration['expose_base_uri'],
+            'http_errors'   => false,
+            'verify'        => $exposeConfiguration['verify_ssl']
+        ];
 
         $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
 
@@ -1230,7 +1251,11 @@ class PSExposeController extends Controller
         }
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-        $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+        $clientOptions = [
+            'base_uri'      => $exposeConfiguration['expose_base_uri'],
+            'http_errors'   => false,
+            'verify'        => $exposeConfiguration['verify_ssl']
+        ];
 
         return $proxyConfig->getClientWithOptions($clientOptions);
     }

@@ -88,7 +88,11 @@ class ExposeUploadWorker implements WorkerInterface
             $exposeConfiguration = $exposeConfiguration[$payload['exposeName']];
 
             $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
-            $clientOptions = ['base_uri' => $exposeConfiguration['expose_base_uri'], 'http_errors' => false];
+            $clientOptions = [
+                'base_uri'      => $exposeConfiguration['expose_base_uri'],
+                'http_errors'   => false,
+                'verify'        => $exposeConfiguration['verify_ssl']
+            ];
 
             // add proxy in each request if defined in configuration
             $exposeClient = $proxyConfig->getClientWithOptions($clientOptions);
@@ -252,7 +256,7 @@ class ExposeUploadWorker implements WorkerInterface
 
             $assetsResponse = json_decode($response->getBody(),true);
 
-            $uploadUrl = $proxyConfig->getClientWithOptions();
+            $uploadUrl = $proxyConfig->getClientWithOptions(['verify' => $exposeConfiguration['verify_ssl']]);
             $uploadUrl->put($assetsResponse['uploadURL'], [
                 'headers' => [
                     'Content-Type' => 'application/binary'
@@ -391,7 +395,8 @@ class ExposeUploadWorker implements WorkerInterface
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
 
-        $uploadUrl = $proxyConfig->getClientWithOptions();
+        $verifySsl = $exposeClient->getConfig('verify') ? true : false;
+        $uploadUrl = $proxyConfig->getClientWithOptions(['verify' => $verifySsl]);
 
         $res = $uploadUrl->put($subDefResponse['uploadURL'], [
             'headers' => [

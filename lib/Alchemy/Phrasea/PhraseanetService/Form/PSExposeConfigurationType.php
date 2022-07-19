@@ -48,12 +48,15 @@ class PSExposeConfigurationType extends AbstractType implements DataMapperInterf
         /** @var FormInterface[] $forms */
         $forms = iterator_to_array($forms);
 
-        foreach ($data['exposes'] as $key => $config) {
-            $data['exposes'][$key]['expose_name'] = $key;
+        if (isset($data['exposes'] )) {
+            foreach ($data['exposes'] as $key => $config) {
+                $data['exposes'][$key]['expose_name'] = $key;
+            }
+
+            $forms['exposes']->setData(array_values($data['exposes']));
         }
 
         $forms['activated']->setData($data['activated']);
-        $forms['exposes']->setData(array_values($data['exposes']));
     }
 
     /**
