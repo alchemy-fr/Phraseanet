@@ -16,12 +16,14 @@ use Alchemy\Phrasea\Model\RecordInterface;
 class SubdefinitionCreateEvent extends RecordEvent
 {
     private $isNewRecord;
+    private $subdefsTodo;
 
-    public function __construct(RecordInterface $record, $isNewRecord = false)
+    public function __construct(RecordInterface $record, $isNewRecord = false, $subdefsTodo = array())
     {
         parent::__construct($record);
 
         $this->isNewRecord = $isNewRecord;
+        $this->subdefsTodo = $subdefsTodo;
     }
 
     /**
@@ -30,5 +32,13 @@ class SubdefinitionCreateEvent extends RecordEvent
     public function isNewRecord()
     {
         return $this->isNewRecord;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubdefsTodo()
+    {
+        return $this->subdefsTodo;
     }
 }
