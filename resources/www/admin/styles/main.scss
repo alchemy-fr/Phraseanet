@@ -1128,6 +1128,14 @@ span.simplecolorpicker.picker {
   }
 }
 
+/***Uploader tab***/
+#worker-pull-assets {
+  input[type=checkbox] {
+    float: left;
+    margin-right: 10px;
+  }
+}
+
 @import './databases';
 @import './fields';
 @import './tables';

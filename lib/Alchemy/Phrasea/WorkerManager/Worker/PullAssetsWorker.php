@@ -34,8 +34,14 @@ class PullAssetsWorker implements WorkerInterface
             return;
         }
 
+        $verifySsl = isset($config['verify_ssl']) ? $config['verify_ssl'] : true ;
+
         $proxyConfig = new NetworkProxiesConfiguration($this->conf);
-        $clientOptions = ['base_uri' => $config['UploaderApiBaseUri'], 'http_errors' => false];
+        $clientOptions = [
+            'base_uri'      => $config['UploaderApiBaseUri'],
+            'http_errors'   => false,
+            'verify'        => $verifySsl
+        ];
 
         // add proxy in each request if defined in configuration
         $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
@@ -83,7 +89,8 @@ class PullAssetsWorker implements WorkerInterface
                         'commit_id' => $commit['id'],
                         'token'     => $commit['token'],
                         'base_url'  => $config['UploaderApiBaseUri'],
-                        'type'      => WorkerRunningJob::TYPE_PULL
+                        'type'      => WorkerRunningJob::TYPE_PULL,
+                        'verify_ssl'=> $verifySsl
                     ]
                 ];
 

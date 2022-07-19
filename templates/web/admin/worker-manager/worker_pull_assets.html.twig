@@ -1,7 +1,32 @@
 <h1>{{ 'admin::workermanager:tab:pullassets: description' |trans }}</h1>
 
 {{ form_start(form, {'action': path('worker_admin_pullAssets')}) }}
-{{ form_widget(form) }}
+
+<div class="control-group">
+    {{ form_row(form.UploaderApiBaseUri) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.clientSecret) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.clientId) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.pullInterval) }}
+</div>
+
+<div class="control-group" style="margin-bottom: 20px;">
+    {{ form_widget(form.verify_ssl) }}
+    {{ form_label(form.verify_ssl) }}
+</div>
+
+<div class="control-group">
+    {{ form_row(form.apply) }}
+</div>
+
 <br/>
 <br/>
 <br/>

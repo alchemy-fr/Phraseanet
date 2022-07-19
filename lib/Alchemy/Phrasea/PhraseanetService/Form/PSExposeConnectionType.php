@@ -21,6 +21,10 @@ class PSExposeConnectionType extends AbstractType
                 'label'    => 'admin:phrasea-service-setting:tab:expose:: Activate this expose',
                 'required' => false
             ])
+            ->add('verify_ssl', CheckboxType::class, [
+                'label'    => 'admin:phrasea-service-setting:tab:expose:: verify ssl',
+                'required' => false
+            ])
             ->add('connection_kind', ChoiceType::class, [
                 'label'    => 'admin:phrasea-service-setting:tab:expose:: Connection Kind',
                 'required' => true,
