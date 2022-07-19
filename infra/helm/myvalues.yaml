@@ -5,7 +5,7 @@ image:
       phraseanet: 4.1.3
       database : 4.1.3
       elasticsearch : 4.1.3
-  imagepullsecrets: "true"
+  imagepullsecrets: "false"
   secretename: "awsecr-cred"
 mysql:
   root_password: phraseanet
