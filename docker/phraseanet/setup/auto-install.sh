@@ -16,7 +16,7 @@ FILE=config/configuration.yml
 
 while [[ ! -e "$FILE" ]]
 do 
-sleep 50
+sleep 10
 /var/alchemy/Phraseanet/bin/setup system:install \
     --email=$PHRASEANET_ADMIN_ACCOUNT_EMAIL \
     --password=$PHRASEANET_ADMIN_ACCOUNT_PASSWORD \

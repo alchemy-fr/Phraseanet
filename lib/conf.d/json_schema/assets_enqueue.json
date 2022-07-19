@@ -18,6 +18,10 @@
     },
     "commit_id": {
       "type": "string"
+    },
+    "verify_ssl": {
+      "type": "boolean",
+      "default": true
     }
   },
   "required": [

@@ -142,8 +142,35 @@ class ShareBasketWorker implements WorkerInterface
                     $basketParticipant->setCanAgree($participant['agree']);
                     $basketParticipant->setCanModify($participant['modify']);
                     $basketParticipant->setCanSeeOthers($participant['see_others']);
+
+                    if ($notSendReminder) {
+                        // column reminded to be not null
+                        $basketParticipant->setReminded(new DateTime());
+                    }
+
                     $manager->persist($basketParticipant);
                     $manager->flush();
+
+                    $acl = $this->getAclForUser($participantUser);
+
+                    // update right on records_rights
+                    foreach ($basketElements as $be) {
+                        if ($participant['HD']) {
+                            $acl->grant_hd_on(
+                            // $basketElementReference,
+                                $be['ref'],
+                                $authenticatedUser,
+                                ACL::GRANT_ACTION_VALIDATE
+                            );
+                        } else {
+                            $acl->grant_preview_on(
+                            // $basketElementReference,
+                                $be['ref'],
+                                $authenticatedUser,
+                                ACL::GRANT_ACTION_VALIDATE
+                            );
+                        }
+                    }
 
                     // file_put_contents("./tmp/phraseanet-log.txt", sprintf("%s; participant already exists -> next...\n", time()), FILE_APPEND);
 

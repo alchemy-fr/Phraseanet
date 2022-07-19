@@ -667,7 +667,11 @@ class PushController extends Controller
                     'message' => $this->app->trans('Expiration date successfully updated!')
                 ];
             } elseif ($basket->getParticipants()->count() > 0 && !$basket->isVoteBasket()) {
-                $basket->setShareExpires($expirationDate);
+                if (empty($request->request->get('date'))) {
+                    $basket->setShareExpires(null);
+                } else {
+                    $basket->setShareExpires($expirationDate);
+                }
                 $manager->persist($basket);
                 $manager->flush();
                 $manager->commit();
@@ -780,6 +784,7 @@ class PushController extends Controller
 
         $feedbackaction = $request->request->get('feedbackaction');
         $participants = [];
+        $participantsHDRight = [];
         $participantUserIds = '';
         $initiatorUserId = null;
 
@@ -794,6 +799,20 @@ class PushController extends Controller
 //                    ? $basket->getVoteInitiator()->getId()
 //                    : $this->getAuthenticatedUser()->getId();
                 $initiatorUserId = $basket->getVoteInitiator() ? $basket->getVoteInitiator()->getId() : null;
+
+                foreach ($participants as $participant) {
+                   $userAcl = $this->getAclForUser($participant->getUser());
+                   if (count($basket->getElements()) > 0) {
+                       $participantsHDRight[$participant->getUser()->getId()] = true;
+                   }
+
+                   foreach ($basket->getElements() as $bElement) {
+                       if(!$userAcl->has_hd_grant($bElement->getRecord($this->app))) {
+                           $participantsHDRight[$participant->getUser()->getId()] = false;
+                           break 1;
+                       }
+                   }
+               }
             }
             else {
                 // initiate a share from a list of records
@@ -825,7 +844,8 @@ class PushController extends Controller
                 'participantUserIds' => $participantUserIds,
                 'feedbackAction'   => $feedbackaction,
                 'owner'            => $this->getAuthenticatedUser(),
-                'initiatorUserId'  => $initiatorUserId
+                'initiatorUserId'  => $initiatorUserId,
+                'participantsHDRight' => $participantsHDRight
             ]
         );
     }

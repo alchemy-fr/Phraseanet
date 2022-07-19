@@ -18478,12 +18478,27 @@ var pushOrShare = function pushOrShare(services, container) {
 
         var $FeedBackForm = (0, _jquery2.default)('form[name="FeedBackForm"]', $container);
 
+        var context = '';
+        if ($el.attr('data-context') == 'Sharebasket') {
+            if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() == '0') {
+                context = "sharebasket";
+            } else {
+                context = "feedback";
+            }
+        } else {
+            context = "push";
+        }
+
         var html = '';
         // if the window is just for adding/removing user
         if ($el.data('feedback-action') === 'adduser') {
-            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html());
+            html = _.template((0, _jquery2.default)('#feedback_adduser_sendform_tpl').html())({
+                context: context
+            });
         } else {
-            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html());
+            html = _.template((0, _jquery2.default)('#feedback_sendform_tpl').html())({
+                context: context
+            });
         }
 
         $dialog.setContent(html);
@@ -18492,12 +18507,10 @@ var pushOrShare = function pushOrShare(services, container) {
         var pushTitle = (0, _jquery2.default)('#pushTitle').val();
         var sharedTitle = (0, _jquery2.default)('#sharedTitle').val();
 
-        if ($el.attr('data-context') == 'Sharebasket') {
-            if ((0, _jquery2.default)("INPUT[name=isFeedback]").val() == '0') {
-                (0, _jquery2.default)('input[name="name"]').attr("placeholder", sharedTitle);
-            } else {
-                (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
-            }
+        if (context == 'feedback') {
+            (0, _jquery2.default)('input[name="name"]').attr("placeholder", feedbackTitle);
+        } else if (context == 'sharebasket') {
+            (0, _jquery2.default)('input[name="name"]').attr("placeholder", sharedTitle);
         } else {
             (0, _jquery2.default)('input[name="name"]').attr("placeholder", pushTitle);
         }
@@ -21885,9 +21898,13 @@ var toolbar = function toolbar(services) {
         $container.on('click', '.tools-accordion', function (event) {
             (0, _jquery2.default)('.rotate').toggleClass("down");
             this.classList.toggle("active");
+            var r = this.getBoundingClientRect();
+            var p = r.top + r.height;
 
             /* Toggle between hiding and showing the active panel */
             var panel = this.nextElementSibling;
+            panel.style.position = "fixed"; // todo: set this once for all in html, twig or css
+            panel.style.top = p + "px";
             if (panel.style.maxHeight) {
                 panel.style.maxHeight = null;
             } else {

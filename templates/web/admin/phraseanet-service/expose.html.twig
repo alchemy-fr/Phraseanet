@@ -22,6 +22,11 @@
             {{ form_row(form.expose_name) }}
         </div>
 
+        <div class="control-group" style="margin-bottom: 20px;">
+            {{ form_widget(form.verify_ssl) }}
+            {{ form_label(form.verify_ssl) }}
+        </div>
+
         <div class="control-group">
             {{ form_row(form.expose_front_uri) }}
         </div>
@@ -84,7 +89,7 @@
 
     <div class="control-group text-center">
         <div><input id="add-new-expose" type="button" class="btn btn-primary " data-list="#expose-list"
-                    value="admin:phrasea-service-setting:tab:expose:: New expose interconnection name">
+                    value="{{ 'admin:phrasea-service-setting:tab:expose:: New expose interconnection name' | trans }}">
         </div>
         <div>
             <input type="submit" class="btn btn-primary btn-green save-expose"

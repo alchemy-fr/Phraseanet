@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-
+envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 

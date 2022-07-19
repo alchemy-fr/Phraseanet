@@ -347,6 +347,7 @@ workers:
             max_retry : 5
     webhook:
         timeout: 30
+        verify_ssl: true
 
 externalservice:
     ginger:

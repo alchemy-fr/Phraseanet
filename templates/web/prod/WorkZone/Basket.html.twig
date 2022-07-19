@@ -37,7 +37,13 @@
             </button>
         {% endif %}
 
-        <div class="divider"></div>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH'))
+            or app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH'))
+            or app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::BAS_CHUPUB'))
+            or app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::IMGTOOLS'))
+        %}
+            <div class="divider"></div>
+        {% endif %}
 
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANPUSH')) %}
             <button class="ui-corner-all TOOL_pushdoc_btn basket_window" data-selection-source="basket">
@@ -69,12 +75,13 @@
             </button>
         {% endif %}
 
-        <div class="divider"></div>
-
-        <button class="ui-corner-all TOOL_trash_btn basket_window" data-selection-source="basket">
-            <img src="/assets/common/images/icons/delete.png"/>
-            <span>{{ 'basket:action:delete record form database' | trans }}</span>
-        </button>
+        {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANDELETERECORD')) %}
+            <div class="divider"></div>
+            <button class="ui-corner-all TOOL_trash_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/delete.png"/>
+                <span>{{ 'basket:action:delete record form database' | trans }}</span>
+            </button>
+        {% endif %}
 
         {% if plugins['actionbar'] is not empty %}
             {% for plugin in plugins['actionbar'] %}
@@ -126,7 +133,11 @@
                     {% if basket.isShareExpires() %}
                         <span>{{ 'workzone:shared:expiration-closed' | trans }} :</span>
                     {% else %}
-                        <span>{{ 'workzone:shared:expiration-open' | trans }} :</span>
+                        {% if dateExpired is empty %}
+                            <span>{{ 'workzone:shared: permanent sharing' | trans }}</span>
+                        {% else %}
+                            <span>{{ 'workzone:shared:expiration-open' | trans }} :</span>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
 

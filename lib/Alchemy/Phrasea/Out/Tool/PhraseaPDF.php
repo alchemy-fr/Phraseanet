@@ -20,6 +20,8 @@ class PhraseaPDF extends \TCPDF
     /** @var User */
     private $printOwnerUser;
 
+    private $app;
+
     public function Header()
     {
 
@@ -30,7 +32,8 @@ class PhraseaPDF extends \TCPDF
         $owner = ' Phraseanet';
         $unNeededTextLength = '';
         if (!empty($this->printOwnerUser)) {
-            $owner = sprintf('Printed with Phraseanet by <a href="mailto:%s">%s</a> on %s', $this->printOwnerUser->getEmail(), $this->printOwnerUser->getDisplayName(), (new \DateTime())->format("Y/m/d"));
+            $owner = $this->app->trans('Printed with Phraseanet by %name% on %date%', ['%name%' => '<a href="mailto:' . $this->printOwnerUser->getEmail() .'">' . $this->printOwnerUser->getDisplayName() .'</a>', '%date%' => (new \DateTime())->format("Y/m/d")]);
+
             $unNeededTextLength = sprintf('<a href="%s"></a>', $this->printOwnerUser->getEmail());
         }
 
@@ -40,11 +43,11 @@ class PhraseaPDF extends \TCPDF
         $this->SetY(-15);
 
         $this->SetFont(self::FONT, 'I', 8);
-        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
+        $this->Cell(0, 10, $this->app->trans('Page'). ' ' . $this->PageNo(), 0, 0, 'C');
 
         if (empty($this->printOwnerUser)) {
             $this->SetFont(self::FONT, '', 8);
-            $w = $this->GetStringWidth('Printed by');
+            $w = $this->GetStringWidth($this->app->trans('Printed by'));
 
             $this->SetFont(self::FONT, 'B', 8);
             $w += $this->GetStringWidth($owner);
@@ -52,7 +55,7 @@ class PhraseaPDF extends \TCPDF
             $this->SetXY(-$w - $mr - 5, -15);
 
             $this->SetFont(self::FONT, '', 8);
-            $this->Write(8, 'Printed by');
+            $this->Write(8, $this->app->trans('Printed by'));
 
             $this->SetFont(self::FONT, 'B', 8);
             $this->Write(8, ' Phraseanet');
@@ -70,5 +73,10 @@ class PhraseaPDF extends \TCPDF
     public function setPrintOwnerUser($user)
     {
         $this->printOwnerUser = $user;
+    }
+
+    public function setApp($app)
+    {
+        $this->app = $app;
     }
 }
