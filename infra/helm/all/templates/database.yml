@@ -21,6 +21,10 @@ spec:
       - name: database
         persistentVolumeClaim:
           claimName: {{ .Values.mysql.pvc_name }}
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
       containers:
       - name: db
         image: {{ .Values.image.registry }}/phraseanet-db:{{ .Values.image.tag.phraseanet }}
