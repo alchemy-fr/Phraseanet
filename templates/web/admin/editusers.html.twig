@@ -1289,33 +1289,34 @@
       });
     });
 
-    $('#reset-auth-failure').on('click', function() {
-      let $this = $(this);
-      $.ajax({
-        type: 'POST',
-        url: '/admin/users/auth-failure/reset/',
-        dataType: 'json',
-        data: {
-          username: $this.attr('data-username')
-        },
-        success: function (data) {
-          if (data.success == true) {
-            var list =  '';
-            $('#auth_failure_locked').empty();
-            for (var i=0; i < data.authFailureUnlocked.length; i++ ) {
-               list += '<tr><td>' +
-                       data.authFailureUnlocked[i]['username'] + '</td><td>' +
-                       data.authFailureUnlocked[i]['ip'] + '</td><td>' +
-                       data.authFailureUnlocked[i]['created'] + '</td></tr>';
+    {% if main_user is not empty and main_user.isTemplate is empty and main_user.isSpecial is empty %}
+      $('#reset-auth-failure').on('click', function() {
+        let $this = $(this);
+        $.ajax({
+          type: 'POST',
+          url: '/admin/users/auth-failure/reset/',
+          dataType: 'json',
+          data: {
+            username: $this.attr('data-username')
+          },
+          success: function (data) {
+            if (data.success == true) {
+              var list =  '';
+              $('#auth_failure_locked').empty();
+              for (var i=0; i < data.authFailureUnlocked.length; i++ ) {
+                 list += '<tr><td>' +
+                         data.authFailureUnlocked[i]['username'] + '</td><td>' +
+                         data.authFailureUnlocked[i]['ip'] + '</td><td>' +
+                         data.authFailureUnlocked[i]['created'] + '</td></tr>';
+              }
+
+                $('#auth_failure_unlocked_list').empty().append(list);
             }
-
-              $('#auth_failure_unlocked_list').empty().append(list);
           }
-        }
+        });
       });
-    });
 
-    $('#mail_locked_activation').on('click', function() {
+      $('#mail_locked_activation').on('click', function() {
       let $this = $(this);
       $.ajax({
         type: 'POST',
@@ -1338,6 +1339,7 @@
         }
       });
     });
+    {% endif %}
   });
 
   require([
