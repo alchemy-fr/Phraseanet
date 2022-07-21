@@ -405,6 +405,12 @@ class BuildSubdefs extends Command
                     if($name == "document") {
                         continue;
                     }
+
+                    if (!$subdef->getDataboxSubdef()->isTobuild()) {
+                        unset($subdefNamesToDo[$name]);
+                        continue;
+                    }
+
                     if(!in_array($name, $this->subdefsByType[$type])) {
                         // this existing subdef is unknown in structure
                         if($this->prune) {

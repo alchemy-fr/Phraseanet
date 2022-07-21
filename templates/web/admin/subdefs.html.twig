@@ -278,7 +278,7 @@
 
                         allFields.removeClass("ui-state-error");
 
-                        bValid = bValid && checkLength(name, "subdef name", 3, 16);
+                        bValid = bValid && checkLength(name, "subdef name", 3, 64);
                         bValid = bValid && isOptionChosen(subviewType);
                         bValid = bValid && isOptionChosen(mediaType);
                         bValid = bValid && checkSpecialChar(name);
@@ -427,6 +427,14 @@
                                    style="display:inline-block;">
                                 <tbody>
                                 <tr>
+                                    <td style="width:100px;line-height: 0.9rem;">{{ 'To build by phraseanet' | trans }}</td>
+                                    <td style="width:300px;"><input type="checkbox"
+                                                                    name="{{ subdefgroup }}_{{ subdefname }}_tobuild"
+                                                                    {% if subdef.isTobuild() %}checked="checked"{% endif %}
+                                                                    value="1"/></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td style="width:100px;line-height: 0.9rem;">{{ 'Telechargeable' | trans }}</td>
                                     <td style="width:300px;"><input type="checkbox"
                                                                     name="{{ subdefgroup }}_{{ subdefname }}_downloadable"
@@ -439,14 +447,6 @@
                                     <td><input type="checkbox" name="{{ subdefgroup }}_{{ subdefname }}_orderable"
                                                {% if subdef.isOrderable() %}checked="checked"{% endif %} value="1"/>
                                     </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td style="width:100px;line-height: 0.9rem;">{{ 'phraseanet builded' | trans }}</td>
-                                    <td style="width:300px;"><input type="checkbox"
-                                        name="{{ subdefgroup }}_{{ subdefname }}_builded"
-                                        {% if subdef.isBuildedByPhraseanet() %}checked="checked"{% endif %}
-                                        value="1"/></td>
                                     <td></td>
                                 </tr>
                                 <tr>

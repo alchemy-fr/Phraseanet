@@ -239,11 +239,11 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
      * @param array $labels
      * @param boolean $orderable
      * @param string $preset
-     * @param boolean $builded
+     * @param boolean $toBuild
      * @return databox_subdefsStructure
      * @throws Exception
      */
-    public function set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable = true, $preset = "Custom", $builded = true)
+    public function set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable = true, $preset = "Custom", $toBuild = true)
     {
         $dom_struct = $this->databox->get_dom_structure();
 
@@ -252,7 +252,7 @@ class databox_subdefsStructure implements IteratorAggregate, Countable
         $subdef->setAttribute('name', mb_strtolower($name));
         $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
         $subdef->setAttribute('orderable', ($orderable ? 'true' : 'false'));
-        $subdef->setAttribute('builded', ($builded ? 'true' : 'false'));
+        $subdef->setAttribute('tobuild', ($toBuild ? 'true' : 'false'));
         $subdef->setAttribute('presets', $preset);
 
         foreach ($labels as $code => $label) {

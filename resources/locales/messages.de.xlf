@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-07-21T10:10:35Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2022-07-21T15:47:19Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -969,7 +969,7 @@
         <jms:reference-file line="164">Controller/Prod/MoveCollectionController.php</jms:reference-file>
         <jms:reference-file line="257">Controller/Prod/LazaretController.php</jms:reference-file>
         <jms:reference-file line="315">Controller/Prod/BasketController.php</jms:reference-file>
-        <jms:reference-file line="199">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="200">Controller/Prod/ToolsController.php</jms:reference-file>
         <jms:reference-file line="219">Controller/Prod/StoryController.php</jms:reference-file>
         <jms:reference-file line="71">Controller/Admin/DataboxesController.php</jms:reference-file>
         <jms:reference-file line="86">Controller/Admin/DataboxController.php</jms:reference-file>
@@ -2576,7 +2576,7 @@
       <trans-unit id="9a15cbc825b5979bd5c5fce02ddc283737928496" resname="Document has been successfully substitued" approved="yes">
         <source>Document has been successfully substitued</source>
         <target state="translated">Dokument wurde erfolgreich ersetzt</target>
-        <jms:reference-file line="237">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="238">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="cf25d8937160da72080fc8842d6b68764fe829ab" resname="Document refuse par %name%" approved="yes">
         <source>Document refuse par %name%</source>
@@ -6548,7 +6548,7 @@
       <trans-unit id="ec4e670686b423ccb3b0976660cc70f9c5a22782" resname="Telechargeable" approved="yes">
         <source>Telechargeable</source>
         <target state="translated">Herunterladbar</target>
-        <jms:reference-file line="430">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="438">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="d32cbb0b2df6ec0df4b80910498d4ef9ce5f0bb3" resname="Terms Of Use" approved="yes">
         <source>Terms Of Use</source>
@@ -6825,7 +6825,7 @@
       <trans-unit id="34c6d5d40f46508994dd884386a0ea63970f2e34" resname="Thumbnail has been successfully substitued" approved="yes">
         <source>Thumbnail has been successfully substitued</source>
         <target state="translated">Vorschau wurde erfolgreich ersetzt</target>
-        <jms:reference-file line="291">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="292">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="56972a74c8bd7510e5ca07b4d56bf31fdc495aa5" resname="Thumbnails directory is mounted to be accessible via HTTP, while other files are not." approved="yes">
         <source>Thumbnails directory is mounted to be accessible via HTTP, while other files are not.</source>
@@ -6854,6 +6854,11 @@
         <jms:reference-file line="93">admin/publications/fiche.html.twig</jms:reference-file>
         <jms:reference-file line="9">admin/publications/list.html.twig</jms:reference-file>
         <jms:reference-file line="54">admin/publications/list.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="2f1c87144b31bc529396cc9a50e3d6482623f275" resname="To build by phraseanet">
+        <source>To build by phraseanet</source>
+        <target state="new">To build by phraseanet</target>
+        <jms:reference-file line="430">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="01594f4dad04782844c8175778fdf66deabf580d" resname="Toggle loop" approved="yes">
         <source>Toggle loop</source>
@@ -9838,7 +9843,7 @@
       <trans-unit id="afaee7bf6eca9099dc9356fbc46fb4f1716b8916" resname="an error occured" approved="yes">
         <source>an error occured</source>
         <target state="translated">Ein Fehler ist aufgetreten</target>
-        <jms:reference-file line="320">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="321">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="feab893253be204583342aa21a1c6e355f805969" resname="an error occured : %message%" approved="yes">
         <source>an error occured : %message%</source>
@@ -10946,10 +10951,10 @@
       <trans-unit id="a64e848c2600a26fdf2c6b8cfafda22229016983" resname="file is not valid" approved="yes">
         <source>file is not valid</source>
         <target state="translated">Datei ist nicht gültig</target>
-        <jms:reference-file line="239">Controller/Prod/ToolsController.php</jms:reference-file>
-        <jms:reference-file line="242">Controller/Prod/ToolsController.php</jms:reference-file>
-        <jms:reference-file line="265">Controller/Prod/ToolsController.php</jms:reference-file>
-        <jms:reference-file line="294">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="240">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="243">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="266">Controller/Prod/ToolsController.php</jms:reference-file>
+        <jms:reference-file line="295">Controller/Prod/ToolsController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6117e45ab57f8660d866a21ca5e9d2c31dbc1945" resname="flash" approved="yes">
         <source>flash</source>
@@ -11875,11 +11880,6 @@
         <source>php.ini path</source>
         <target state="translated">php.ini Pfad</target>
         <jms:reference-file line="50">Form/Configuration/ExecutablesFormType.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="eb5b00a0dc0d9bbfc321bff3d5965956c68e3e39" resname="phraseanet builded">
-        <source>phraseanet builded</source>
-        <target state="new">phraseanet builded</target>
-        <jms:reference-file line="445">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="4827b7c0fd9fb14fc29a808b020353c744b83978" resname="phraseanet:: Creer une base sur un serveur different de l'application box" approved="yes">
         <source>phraseanet:: Creer une base sur un serveur different de l'application box</source>
@@ -14808,7 +14808,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       <trans-unit id="6218b3cbe8659f67aeba3409516795e7982039b1" resname="subdef.orderable" approved="yes">
         <source>subdef.orderable</source>
         <target state="translated">Kann bestellt werden</target>
-        <jms:reference-file line="438">web/admin/subdefs.html.twig</jms:reference-file>
+        <jms:reference-file line="446">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a6288710b74b759d2d67d9e644b586815610f65b" resname="substitution" approved="yes">
         <source>substitution</source>
