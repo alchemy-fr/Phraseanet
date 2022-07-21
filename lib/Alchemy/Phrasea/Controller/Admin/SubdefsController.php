@@ -171,6 +171,7 @@ class SubdefsController extends Controller
                 $class = $request->request->get($post_sub . '_class');
                 $downloadable = $request->request->get($post_sub . '_downloadable');
                 $orderable = $request->request->get($post_sub . '_orderable');
+                $builded = $request->request->get($post_sub . '_builded');
 
                 $defaults = ['path', 'meta', 'mediatype'];
 
@@ -196,7 +197,7 @@ class SubdefsController extends Controller
                 }
 
                 $labels = $request->request->get($post_sub . '_label', []);
-                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset);
+                $subdefs->set_subdef($group, $name, $class, $downloadable, $options, $labels, $orderable, $preset, $builded);
             }
         }
 

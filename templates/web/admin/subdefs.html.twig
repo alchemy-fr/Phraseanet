@@ -442,6 +442,14 @@
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td style="width:100px;line-height: 0.9rem;">{{ 'phraseanet builded' | trans }}</td>
+                                    <td style="width:300px;"><input type="checkbox"
+                                        name="{{ subdefgroup }}_{{ subdefname }}_builded"
+                                        {% if subdef.isBuildedByPhraseanet() %}checked="checked"{% endif %}
+                                        value="1"/></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td>
                                         {{ 'classe' | trans }}
                                     </td>
