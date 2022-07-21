@@ -4,7 +4,20 @@ set -e
 envsubst < "docker/phraseanet/php.ini.sample" > /usr/local/etc/php/php.ini
 cat docker/phraseanet/root/usr/local/etc/php-fpm.d/zz-docker.conf  | sed "s/\$REQUEST_TERMINATE_TIMEOUT/$REQUEST_TERMINATE_TIMEOUT/g" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
+echo "creating config subderectories overwritten by the config pvc"
 
+mkdir -p config/plugins
+mkdir -p config/wm
+mkdir -p config/status
+mkdir -p config/minilogos
+mkdir -p config/templates/web
+mkdir -p config/templates/mobile
+mkdir -p config/stamp
+mkdir -p config/custom_files
+mkdir -p config/presentation
+mkdir -p config/topics
+
+echo "Ended creating config subderectories overwritten by the config pvc"
 
 FILE=config/configuration.yml
 
