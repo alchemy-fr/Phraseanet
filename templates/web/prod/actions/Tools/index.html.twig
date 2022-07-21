@@ -63,7 +63,7 @@
         <div id="subdefs" class="tabBox">
             <form id="new-img-form" action="{{ path('prod_tools_image') }}" method="post">
                 <fieldset style='border:1px solid #999; padding:20px;'>
-                    <legend>&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
+                    <legend style="margin-bottom: 0px;">&nbsp;<b>{{ "Reconstruire les sous definitions" | trans }}</b>&nbsp;</legend>
                     {% if nbSubdefSubstitute > 0 %}
                         <div style="color:#A00;">
                             {{ "Attention, certain documents ont des sous-definitions substituees" | trans }}
@@ -76,7 +76,23 @@
                     {% else %}
                         <input type="hidden" name="force_substitution" value="1">
                     {% endif %}
-                    <div>
+
+                    <div class="well-small">
+                        <label for="recreate_all" class="checkbox">
+                            <input class="subdefTodo" id="recreate_all" type="checkbox"  value="0"> {{ 'All' | trans }}
+                        </label>
+                    </div>
+
+                    {% for subdefName in availableSubdefName %}
+                        <div class="well-small">
+                            <label for="recreate_{{ subdefName }}" class="checkbox">
+                                <input class="subdefTodo" type="checkbox" id="recreate_{{ subdefName }}" name="subdefs[]" value="{{ subdefName }}" />
+                                {{ subdefName }} {{ countSubdefTodo[subdefName] }} / {{ nbRecords }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    <div style="margin-top: 20px;">
                         <p>
                             {{ 'Are you sure you want to rebuild the sub-definitions of selected records?' | trans }}
                         </p>
@@ -331,4 +347,15 @@
             });
         });
     {% endif %}
+
+    $(".subdefTodo").change(function (e) {
+        var allsubdef = $(".subdefTodo[value=0]").prop('checked');
+        if (allsubdef) {
+            $(".subdefTodo[value!=0]").prop('checked', true);
+        }
+
+        if ($(this).val() === '0' && !allsubdef) {
+            $(".subdefTodo[value!=0]").prop('checked', false);
+        }
+    });
 </script>
