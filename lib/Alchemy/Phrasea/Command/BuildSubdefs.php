@@ -309,7 +309,7 @@ class BuildSubdefs extends Command
                     /** @var databox_subdef $sd */
                     foreach ($sg as $sd) {
                         $all[] = $sd->get_name();
-                        if (empty($names) || in_array($sd->get_name(), $names)) {
+                        if ((empty($names) || in_array($sd->get_name(), $names)) && $sd->isTobuild()) {
                             $todo[] = $sd->get_name();
                         }
                     }
