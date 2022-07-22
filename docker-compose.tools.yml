@@ -105,10 +105,8 @@ services:
     restart: on-failure
     volumes:
     - ${SAML_IDP_METADATA_LOCAL_CONFIG_DIR}:/var/www/simplesamlphp-1.10.0/metadata:rw
-    - ${PHRASEANET_DATA_DIR}:/var/alchemy/Phraseanet/datas:rw
-    - ${PHRASEANET_THUMBNAILS_DIR}:/var/alchemy/Phraseanet/www/thumbnails:rw
-    - ${PHRASEANET_CUSTOM_DIR}:/var/alchemy/Phraseanet/www/custom:rw
-    - ${PHRASEANET_PLUGINS_DIR}:/var/alchemy/Phraseanet/www/plugins:rw
+    - ${SAML_SP_CONFIG_DIR}:/var/www/simplesamlphp-1.10.0/config:rw
+    - ${SAML_SP_CERT_DIR}:/var/www/simplesamlphp-1.10.0/cert:rw
     depends_on:
     - phraseanet
     environment:
@@ -119,6 +117,7 @@ services:
     - SESSION_SAVE_HANDLER
     - SESSION_SAVE_PATH
     - SAML_PHRASEANET_HOST
+    - SAML_SP_AUTHSOURCES  
     - SAML_IDP_METADATA_CONFIG
     - SAML_IDP_METADATA_LOCAL_CONFIG_DIR
 
