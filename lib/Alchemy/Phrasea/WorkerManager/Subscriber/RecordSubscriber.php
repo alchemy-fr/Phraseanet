@@ -163,8 +163,12 @@ class RecordSubscriber implements EventSubscriberInterface
             $record  = $databox->get_record($recordId);
             $type    = $record->getType();
 
-            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
-            $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            try {
+                $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            } catch(\Exception $e) {
+                $toWritemetaOriginalDocument = true;
+            }
 
             foreach ($mediaSubdefs as $subdef) {
                 // check subdefmetadatarequired  from the subview setup in admin
@@ -276,8 +280,13 @@ class RecordSubscriber implements EventSubscriberInterface
             $type    = $record->getType();
 
             $subdef = $record->get_subdef($event->getSubdefName());
-            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
-            $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+
+            try {
+                $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            } catch (\Exception $e) {
+                $toWritemetaOriginalDocument = true;
+            }
 
             //  only the required writemetadata from admin > subview setup is to be writing
             if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
