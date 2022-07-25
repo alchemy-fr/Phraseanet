@@ -163,10 +163,11 @@ class RecordSubscriber implements EventSubscriberInterface
             $record  = $databox->get_record($recordId);
             $type    = $record->getType();
 
-            try {
-                $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+
+            if ($subdefGroupe !== null) {
                 $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
-            } catch(\Exception $e) {
+            } else {
                 $toWritemetaOriginalDocument = true;
             }
 
@@ -281,10 +282,11 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $subdef = $record->get_subdef($event->getSubdefName());
 
-            try {
-                $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            if ($subdefGroupe !== null) {
                 $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
-            } catch (\Exception $e) {
+            } else {
+                // default write meta on document
                 $toWritemetaOriginalDocument = true;
             }
 
