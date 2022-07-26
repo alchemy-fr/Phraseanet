@@ -416,6 +416,14 @@
                     class="btn btn-primary subviews-submit">{{ 'boutton::valider' | trans }}</button>
             {% for subdefgroup, subdeflist in subdefs %}
                 <div id="{{ subdefgroup }}">
+                    <div>
+                        <label class="checkbox inline">
+                            <input type="checkbox" name="document_meta[{{ subdefgroup }}]"
+                                   value="1"
+                                   {% if  subdeflist.toWritemetaOriginalDocument() %}checked="checked"{% endif %}/>{{ 'write metadata in original document' | trans }}
+                        </label>
+                    </div>
+
                     {% for subdefname , subdef in subdeflist %}
                         <div>
                             <input type="hidden" name="subdefs[]" value="{{ subdefgroup }}_{{ subdefname }}"/>

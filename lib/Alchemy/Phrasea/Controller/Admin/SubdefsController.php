@@ -49,9 +49,20 @@ class SubdefsController extends Controller
     function changeSubdefsAction(Request $request, $sbas_id) {
         $delete_subdef = $request->request->get('delete_subdef');
         $toadd_subdef = $request->request->get('add_subdef');
-        $Parmsubdefs = $request->request->get('subdefs', []);
+        $Paramsubdefs = $request->request->get('subdefs', []);
+        $ParamDocumentMeta = $request->request->get('document_meta', []);
 
         $databox = $this->findDataboxById((int) $sbas_id);
+        $subdefs = $databox->get_subdef_structure();
+
+        foreach (array_keys($this->getSubviewsMapping()) as $groupeName) {
+            $atributeValue = 'false';
+            if (isset($ParamDocumentMeta[$groupeName])) {
+                $atributeValue = $ParamDocumentMeta[$groupeName] ? 'true' : 'false' ;
+            }
+
+            $subdefs->setGroupAttribute($groupeName, 'writemetaoriginaldocument', $atributeValue);
+        }
 
         $add_subdef = ['class' => null, 'name' => null, 'group' => null, 'mediaType' => null, 'presets' => null, 'path' => null];
         foreach ($add_subdef as $k => $v) {
@@ -159,7 +170,7 @@ class SubdefsController extends Controller
 
             $subdefs = $databox->get_subdef_structure();
 
-            foreach ($Parmsubdefs as $post_sub) {
+            foreach ($Paramsubdefs as $post_sub) {
                 $options = [];
 
                 $post_sub_ex = explode('_', $post_sub, 2);
