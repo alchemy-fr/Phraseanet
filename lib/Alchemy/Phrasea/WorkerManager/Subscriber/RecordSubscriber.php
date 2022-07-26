@@ -163,9 +163,17 @@ class RecordSubscriber implements EventSubscriberInterface
             $record  = $databox->get_record($recordId);
             $type    = $record->getType();
 
+            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+
+            if ($subdefGroupe !== null) {
+                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            } else {
+                $toWritemetaOriginalDocument = true;
+            }
+
             foreach ($mediaSubdefs as $subdef) {
                 // check subdefmetadatarequired  from the subview setup in admin
-                if ( $subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+                if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
                     $payload = [
                         'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                         'payload' => [
@@ -274,8 +282,16 @@ class RecordSubscriber implements EventSubscriberInterface
 
             $subdef = $record->get_subdef($event->getSubdefName());
 
+            $subdefGroupe = $record->getDatabox()->get_subdef_structure()->getSubdefGroup($record->getType());
+            if ($subdefGroupe !== null) {
+                $toWritemetaOriginalDocument = $subdefGroupe->toWritemetaOriginalDocument();
+            } else {
+                // default write meta on document
+                $toWritemetaOriginalDocument = true;
+            }
+
             //  only the required writemetadata from admin > subview setup is to be writing
-            if ($subdef->get_name() == 'document' || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
+            if (($subdef->get_name() == 'document' && $toWritemetaOriginalDocument) || $this->isSubdefMetadataUpdateRequired($databox, $type, $subdef->get_name())) {
                 $payload = [
                     'message_type' => MessagePublisher::WRITE_METADATAS_TYPE,
                     'payload' => [
