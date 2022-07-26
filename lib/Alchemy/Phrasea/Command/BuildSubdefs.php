@@ -406,7 +406,7 @@ class BuildSubdefs extends Command
                         continue;
                     }
 
-                    if(!in_array($name, $this->subdefsByType[$type])) {
+                    if(!in_array($name, $this->subdefsByType[$type]) || !$subdef->getDataboxSubdef()->isTobuild()) {
                         // this existing subdef is unknown in structure
                         if($this->prune) {
                             if(!$this->dry) {
@@ -416,6 +416,7 @@ class BuildSubdefs extends Command
                             $subdefsDeleted[] = $name;
                             $msg[] = sprintf(" \"%s\" pruned", $name);
                         }
+                        unset($subdefNamesToDo[$name]);
                         continue;
                     }
                     if($this->missing_only) {
@@ -433,11 +434,6 @@ class BuildSubdefs extends Command
                             unset($subdefNamesToDo[$name]);
                             continue;
                         }
-                    }
-
-                    if (!$subdef->getDataboxSubdef()->isTobuild()) {
-                        unset($subdefNamesToDo[$name]);
-                        continue;
                     }
 
                     // here an existing subdef must be (re)done
