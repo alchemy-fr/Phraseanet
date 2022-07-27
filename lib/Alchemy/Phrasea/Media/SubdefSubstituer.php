@@ -120,6 +120,7 @@ class SubdefSubstituer
                 return;
             }
         } else {
+            $path_file_dest = $this->fs->generateSubdefSubstitutionPathname($record, $databox_subdef, pathinfo($media->getFile()->getRealPath(), PATHINFO_EXTENSION));
             $this->fs->copy($media->getFile()->getRealPath(), $path_file_dest);
         }
 
