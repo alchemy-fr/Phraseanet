@@ -58,8 +58,8 @@ class RecordSubscriber implements EventSubscriberInterface
 
             if ($subdefs !== null) {
                 foreach ($subdefs as $subdef) {
-                    // if subdefsTodo = null , so make all subdefs
-                    if ($event->getSubdefsTodo() === null || (!empty($event->getSubdefsTodo()) && in_array($subdef->get_name(), $event->getSubdefsTodo()))) {
+                    // if subdefsTodo = null , so make all subdefs if phraseanet can build it
+                    if ($subdef->isTobuild() && ($event->getSubdefsTodo() === null || (!empty($event->getSubdefsTodo()) && in_array($subdef->get_name(), $event->getSubdefsTodo())))) {
                         $payload = [
                             'message_type' => MessagePublisher::SUBDEF_CREATION_TYPE,
                             'payload' => [

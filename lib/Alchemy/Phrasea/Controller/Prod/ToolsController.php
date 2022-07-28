@@ -99,13 +99,14 @@ class ToolsController extends Controller
             $databoxSubdefs = $rec->getDatabox()->get_subdef_structure()->getSubdefGroup($rec->getType());
             if ($databoxSubdefs !== null) {
                 foreach ($databoxSubdefs as $sub) {
-                    $availableSubdefName[] = $sub->get_name();
-                    if (isset($countSubdefTodo[$sub->get_name()])) {
-                        $countSubdefTodo[$sub->get_name()] ++;
-                    } else {
-                        $countSubdefTodo[$sub->get_name()] = 1;
+                    if ($sub->isTobuild()) {
+                        $availableSubdefName[] = $sub->get_name();
+                        if (isset($countSubdefTodo[$sub->get_name()])) {
+                            $countSubdefTodo[$sub->get_name()] ++;
+                        } else {
+                            $countSubdefTodo[$sub->get_name()] = 1;
+                        }
                     }
-
                 }
             }
         }
