@@ -102,15 +102,13 @@ class SubdefSubstituer
         $databox_subdef = $record->getDatabox()->get_subdef_structure()->get_subdef($type, $name);
 
         if ($this->isOldSubdefPresent($record, $name)) {
-            $path_file_dest = $record->get_subdef($name)->getRealPath();
             $record->get_subdef($name)->remove_file();
             $record->clearSubdefCache($name);
-        } else {
-            $path_file_dest = $this->fs->generateSubdefSubstitutionPathname($record, $databox_subdef);
         }
 
         if($adapt) {
             try {
+                $path_file_dest = $this->fs->generateSubdefSubstitutionPathname($record, $databox_subdef);
                 $this->alchemyst->turnInto(
                     $media->getFile()->getRealPath(),
                     $path_file_dest,
