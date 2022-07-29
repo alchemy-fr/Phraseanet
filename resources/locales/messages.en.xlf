@@ -6860,7 +6860,7 @@
       </trans-unit>
       <trans-unit id="2f1c87144b31bc529396cc9a50e3d6482623f275" resname="To build by phraseanet">
         <source>To build by phraseanet</source>
-        <target state="needs-translation">Built by phraseanet</target>
+        <target state="needs-translation">Built by Phraseanet</target>
         <jms:reference-file line="438">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="01594f4dad04782844c8175778fdf66deabf580d" resname="Toggle loop" approved="yes">
