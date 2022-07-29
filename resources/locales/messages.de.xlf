@@ -8099,9 +8099,9 @@
         <target state="translated">Kollektion wurde nicht erstellt: sie müssen einen Namen eingeben</target>
         <jms:reference-file line="8">admin/collection/create.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="ec54407a03c3b0693732fbfaa4fc8b38cc76acc8" resname="admin:: Phraseanet service setting (beta)" approved="yes">
+      <trans-unit id="ec54407a03c3b0693732fbfaa4fc8b38cc76acc8" resname="admin:: Phraseanet service setting (beta)" approved="no">
         <source>admin:: Phraseanet service setting (beta)</source>
-        <target state="translated">Phraseanet-Service Einstellungen (beta)</target>
+        <target state="needs-translation">Phrasea Services Einstellungen (beta)</target>
         <jms:reference-file line="28">web/admin/tree.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="21a0648a0d5db7740c7ed2ff84041aeb87c8224a" resname="admin:: appliquer le modele" approved="yes">
@@ -9673,9 +9673,9 @@
         <jms:reference-file line="60">admin/phraseanet-service/index.html.twig</jms:reference-file>
         <jms:reference-file line="80">admin/phraseanet-service/index.html.twig</jms:reference-file>
       </trans-unit>
-      <trans-unit id="aad9c7bfbd4ec6c06db323888012969d0c2d7497" resname="admin:phrasea-service-setting:tab-title:: Page title" approved="yes">
+      <trans-unit id="aad9c7bfbd4ec6c06db323888012969d0c2d7497" resname="admin:phrasea-service-setting:tab-title:: Page title" approved="no">
         <source>admin:phrasea-service-setting:tab-title:: Page title</source>
-        <target state="translated">Phraseanet-Service Einstellungen</target>
+        <target state="needs-translation">Phrasea Services Einstellungen</target>
         <jms:reference-file line="1">admin/phraseanet-service/index.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="a985de2a62972487e307b2e0d4a41daea2f472ee" resname="admin:phrasea-service-setting:tab:: Auth" approved="yes">
