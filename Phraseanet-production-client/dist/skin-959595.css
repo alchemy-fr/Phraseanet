@@ -4783,7 +4783,8 @@ form.phrasea_query input.query {
 }
 
 @media screen and (max-width: 1200px) {
-  #idFrameT .tools button.btn-inverse img {
+  #idFrameT .tools button.btn-inverse img,
+  #idFrameT .tools button.btn-inverse i {
     display: none;
   }
 
