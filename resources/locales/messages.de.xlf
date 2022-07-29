@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-07-26T15:09:17Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2513,7 +2513,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -6126,13 +6126,13 @@
       </trans-unit>
       <trans-unit id="09ca55ca52d207f2cc1d9339e0226a88e9e96e2f" resname="Share">
         <source>Share</source>
-        <target state="needs-translation">Geteilter Sammelkorb</target>
+        <target state="translated">Geteilter Sammelkorb</target>
         <jms:reference-file line="122">Controller/Prod/LanguageController.php</jms:reference-file>
         <jms:reference-file line="100">web/prod/toolbar.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="69241dfd6bf147571c070ba18905ba0578034006" resname="Share has been extended">
         <source>Share has been extended</source>
-        <target state="needs-translation">Die Dauer der Teilung wurde verlängert</target>
+        <target state="translated">Die Dauer der Teilung wurde verlängert</target>
         <jms:reference-file line="700">prod/actions/Push.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="ce896454ee1650a73169d33b97a59cb8f90d6e6b" resname="Share my list" approved="yes">
@@ -6857,7 +6857,7 @@
       </trans-unit>
       <trans-unit id="2f1c87144b31bc529396cc9a50e3d6482623f275" resname="To build by phraseanet">
         <source>To build by phraseanet</source>
-        <target state="new">To build by phraseanet</target>
+        <target state="needs-translation">Built by Phraseanet</target>
         <jms:reference-file line="438">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="01594f4dad04782844c8175778fdf66deabf580d" resname="Toggle loop" approved="yes">
@@ -9397,7 +9397,7 @@
       </trans-unit>
       <trans-unit id="9362854d540d4f475c54f9a0df0f721359afbe9c" resname="admin::workermanager:tab:pullassets: verify ssl">
         <source>admin::workermanager:tab:pullassets: verify ssl</source>
-        <target state="new">admin::workermanager:tab:pullassets: verify ssl</target>
+        <target state="needs-translation">Gültigkeit des SSL-Zertifikats prüfen</target>
         <jms:reference-file line="42">WorkerManager/Form/WorkerPullAssetsType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="e501382ff4b247d04274f999cbda329467881e51" resname="admin::workermanager:tab:queueMonitor: Consumer count" approved="yes">
@@ -9780,7 +9780,7 @@
       </trans-unit>
       <trans-unit id="f0633a54eab6c8082c0c6831c719d8743afe7e28" resname="admin:phrasea-service-setting:tab:expose:: New expose interconnection name">
         <source>admin:phrasea-service-setting:tab:expose:: New expose interconnection name</source>
-        <target state="new">admin:phrasea-service-setting:tab:expose:: New expose interconnection name</target>
+        <target state="needs-translation">Ein neues Phrasea Expose hinzufügen</target>
         <jms:reference-file line="92">admin/phraseanet-service/expose.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b0770ac3eca00f796ae6a1bfd073c9a5b15c585" resname="admin:phrasea-service-setting:tab:expose:: Save" approved="yes">
@@ -9810,7 +9810,7 @@
       </trans-unit>
       <trans-unit id="efcf63b34a4b02de67804c139282d1c5d3d05b0b" resname="admin:phrasea-service-setting:tab:expose:: verify ssl">
         <source>admin:phrasea-service-setting:tab:expose:: verify ssl</source>
-        <target state="new">admin:phrasea-service-setting:tab:expose:: verify ssl</target>
+        <target state="needs-translation">Gültigkeit des SSL-Zertifikats prüfen</target>
         <jms:reference-file line="25">PhraseanetService/Form/PSExposeConnectionType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6d3478b79db541608a0ba8e3877cba7c52256add" resname="admin:searchengine:aggregates:New field, please confirm setting.">
@@ -12087,7 +12087,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15111,7 +15111,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -15913,7 +15913,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
       </trans-unit>
       <trans-unit id="b3f449a50943886b461d9c6db8c59262a66d25f7" resname="write metadata in original document">
         <source>write metadata in original document</source>
-        <target state="new">write metadata in original document</target>
+        <target state="needs-translation">Die Metadaten in das Originaldokument schreiben</target>
         <jms:reference-file line="423">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
