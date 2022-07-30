@@ -126,8 +126,10 @@
 }
 
 @media screen and (max-width: 1200px) {
-    #idFrameT .tools button.btn-inverse img {
-        display: none;
+    #idFrameT .tools button.btn-inverse {
+        img , i {
+            display: none;
+        }
     }
     #idFrameT .tools #settings {
         text-indent: -9000px;
