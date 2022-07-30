@@ -416,23 +416,6 @@ You can also download a testing pre installed Virtual Machine in OVA format here
 https://www.phraseanet.com/download/
 
 
-# With Vagrant (deprecated)
-
-## Development :
-
-For development purpose Phraseanet is shipped with ready to use development environments using vagrant.
-You can easily choose betweeen a complete build or a prebuild box, with a specific PHP version.
-
-    git clone
-    vagrant up --provision
-
-then, a prompt allow you to choose PHP version, and another one to choose a complete build or an Alchemy prebuilt boxes.
-
-Ex:
-- vagrant up --provision  //// 5.6 ///// 1  >> Build an ubuntu/xenial box with php5.6
-- vagrant up --provision  //// 7.0 ///// 1  >> Build an ubuntu/xenial with php7.0
-- vagrant up --provision  //// 7.2 ///// 2  >> Build the alchemy/phraseanet-php-7.2 box
-- vagrant up --provision  //// 5.6 ///// 1  >> Build the alchemy/phraseanet-php-5.6 box
 
 
 
