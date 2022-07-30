@@ -172,7 +172,9 @@ By default ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` is set for deploying a 
     
 
 At first launch of the stack, the `Setup` container plays install.
-it will restart until it can do this installation: waiting for readiness of all other containers.
+It will restart until it can do this installation: waiting for readiness of all other containers.
+At each container starting , `setup` container reaplying also some ```PHRASEANET_*``` environement variable into 
+Phraseanet ```configuration.yml``` file.
 
 default configuration is 
 
