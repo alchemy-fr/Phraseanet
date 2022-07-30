@@ -4,71 +4,101 @@
 
 ### Update instructions
 
- - docker docker-compose : add profile "setup and "redis-session" to your ```COMPOSE_PROFILES```
- - Migration instructions: just run upgrade for bump version ```bin/setup system:upgrade```
+ - docker docker-compose : add profile "setup" and "redis-session" to your ```COMPOSE_PROFILES```
+    - "setup" profile launch the setup container for performing an app installation 
+       or report ```PHRASEANET_*``` env var values to Phraseanet ```configuration.yml``` file
+
+    - "redis-session" profile launch a  ```redis session``` container for storing the user's php session
+       and permit the scaling of Phraseanet container 
+      - when you migrate, it can be useful to empty the application cache by ```rm -Rf cache/*```
+
+ - Migration instructions: After a backup of all dabases and file ```config/configuation.yml```
+   Run upgrade for bump version ```bin/setup system:upgrade```
+   The "shared basket" feature introduces a major change in the database schema.
+
  - Elasticsearch index action : Requires a drop, create, populate if you come from 4.1.6-rc1 or lower, 
    not required if you update from 4.1.6-rc2.
 
 ### Version summary :
  
-  - Shared Baskets : the Phraseanet basket can now be shared between several users and the feedback becomes now an option on this shared basket
-  - Completing options in printed PDF that we introduced in 4.1.6-rc2, font size and color and also an option to not print the record block info 
-  - Phraseanet installation process with docker-compose and with HELM for K8S deployment
-  - It is now possible to not write metadatas on an original document
-  - It is now possible to set a subdefinition not built by Phraseanet, a file can be added using API  
+  - Shared Baskets : 
+    - the Phraseanet basket can now be shared between several users and the feedback becomes now an option on this shared basket.
+
+      - keys features : 
+        - It's possible to define an expiration date for a shared basket.
+        - It's possible to set a contributor right for basket's participants.
+        - A feedback request can be added to the shared basket.
+
+  - Printed PDF 
+    - Completing options in printed PDF that we introduced in 4.1.6-rc2. 
+        
+        - Font size can be set for record indexation and record's information block.
+
+        - Color for field Label can be defined.
+
+        - Print record's information block under preview is now an option.
+
+  - Refactoring Phraseanet installation and setup process in docker-compose and HELM.
+
+  - It is now possible to not write the databox field on file's metadatas for the record's original document.
+  
+  - It is now possible to set a subdefinition not built by Phraseanet.
+    
+    - A file can be added using API on this subdefinition  
 
 ### New Features
 
 ```
 PHRAS-3380 Shared Basket features
-PHRAS-3564 Phraseanet - subdef service API for generate Phrasea renditions
-PHRAS-3215 Prod - facets -  use image orientation from subdefinition and make a facet of it
+PHRAS-3712 Admin - Sudefinition - building a subdefinition becomes an option
+PHRAS-3713 Admin - Writing metadatas into record's original document becomes an option
+PHRAS-3564 Phraseanet - subdefinition service - API for building a subdefinition file from a source file (alpha)
+PHRAS-3704 worker - Build Phrasea rendition with the subdefinition worker (beta)
 ```
 
 ### Improvements
 
 ```
-PHRAS-3700 apdapt to change made in office 365 SMTP authentication
-PHRAS-3712 Admin - Sudefinition - Don't make some subdefinition - property on subdefinition to set rule
-PHRAS-3704 worker - Build Phrasea rendition with the subdefinition worker
-PHRAS-3697 Printed PDF user choice improvement, print option improvement
+PHRAS-3700 Bump switfmailer version - Microsoft dropped support for TLS 1.0 und 1.1
+PHRAS-3697 Printed PDF user choice improvement, font size, color , block information.
 PHRAS-3695 Prod - basket and feedback displayed informations improvement
-PHRAS-3692 PROD - Default user's setting - in configuration.yml :  add face order display settings
+PHRAS-3692 Prod - Default user's setting - in configuration.yml :  add face order display settings
 PHRAS-3686 Prod - caption : characters \(#,!\) into a clickable url link can lead to cut the link
-PHRAS-3684 visually separate 3 blocks in workzone
-PHRAS-3678 LightBox - general improvement for Basket Share
-PHRAS-3675 worker -  fix heartbeat send to RabbitMQ channel by worker
+PHRAS-3684 Prod - Workzone - basket tab - visually separate basket/stories in 3 blocks. "Shared with me" , " My baskets" , "Stories" 
+PHRAS-3678 LightBox - Improvements for Basket Share
+PHRAS-3675 Worker -  fix heartbeat sent to RabbitMQ channel by worker
 PHRAS-3674 Prod - Record Information - Add Databox name in information
-PHRAS-3666 PROD - PRINT - PDF - Generated pdf can't be printed even if no password is defined
 PHRAS-3665 Check - Prod : Validation reminder can be disabled on feedback
 PHRAS-3663 Prod - workzone - basket tab - filter refactoring - css issue
 PHRAS-3662 Prod - shared basket - fix design  - icon in detailed view and action bar etc
-PHRAS-3657 Docker | helm - add setup container - ready for scale the fpm container
+PHRAS-3657 Docker | helm - ready for scale the fpm container - refactoring install and setup and php session store.
 PHRAS-3525 Admin - worker service - job tab - add purge on all running job - warn user with js alert
 PHRAS-3121 Prod - Tools - Tab subdefinition rebuild -  option for choosing which subdefintion  will be rebuilt \(thumbnail, preview etc ...\)
-PHRAS-1545 Prod - order manager  - several fix and improvements AKA add "close" or cancel  status to an order
+PHRAS-1545 Prod - order manager  - several fix and improvements back and front
+PHRAS-3720 Webhooks - option for SSL validity and webhook "record.subdef.created " add permalink, size and mime in json
 ```
 
 ### Bug fix
 
 ```
-PHRAS-3717 Wrong extension on subdef upload/substitute with parameters adapt=0
+PHRAS-3717 API - Wrong extension on subdefinition upload/substitute with parameter adapt=0
 PHRAS-3711 Admin - Users - Modify, edit multiple users rights
-PHRAS-3685 Don't propose to set a name for a story
+PHRAS-3685 Prod - create story - don't propose to set a name for a story
 PHRAS-3679 Prod reload when editing multi-databox records
 PHRAS-3672 Prod - Wording issue - share overlay - deleting a list of users
 PHRAS-3664 Prod - record moving between collections action : no retry on indexation failure.
-PHRAS-3650 Worker - broken Pipe on rabbitmq  connection due to "consumer\_timeout"
-PHRAS-3649 prod-share : loading 1000 users list fails in share
-PHRAS-3645 Candidates are not generated for fields with special character
+PHRAS-3650 Worker - broken Pipe on RabbitMQ  connection due to "consumer\_timeout"
+PHRAS-3649 Prod - sharing a basket : loading 1000 users list fails in share
+PHRAS-3645 Thesaurus - Candidates are not generated for fields with special character
 PHRAS-3639 Prod - Video tools - Subtitle editing - error when try to edit the last item
 PHRAS-3612 Prod - thesaurus used for classement - Gui string html missmatch
 PHRAS-3591 Admin - Databases - Subdefinition setting - lenght of subdef name is limit to 16 characters but 64 in database column
 PHRAS-3698 Docker - Dockerfiles - FPM images - Fix the Imagemagick download path
 PHRAS-2646 Error in 4.1 a feedback with null or empty in Name
+PHRAS-3666 Prod - Print - PDF - Generated pdf can't be printed even if no password is defined
  ```
 
- 
+
 ## 4.1.6-rc2
 
 ### Update instructions
