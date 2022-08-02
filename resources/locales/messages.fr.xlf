@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file date="2022-08-01T09:54:14Z" source-language="en" target-language="fr" datatype="plaintext" original="not.available">
     <header>
@@ -7,8 +7,8 @@
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source></source>
-        <target state="new"></target>
+        <source/>
+        <target state="new"/>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
+        <source>%number% documents&lt;br/&gt;selectionnes</source>
         <target state="translated"><![CDATA[%number% documents<br/>sélectionnés]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -2513,7 +2513,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source><![CDATA[Display & action settings]]></source>
+        <source>Display &amp; action settings</source>
         <target state="translated">Paramétrage d'affichage et d'action</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -6857,7 +6857,7 @@
       </trans-unit>
       <trans-unit id="2f1c87144b31bc529396cc9a50e3d6482623f275" resname="To build by phraseanet">
         <source>To build by phraseanet</source>
-        <target state="needs-translation">Built by Phraseanet</target>
+        <target state="translated">Built by Phraseanet</target>
         <jms:reference-file line="438">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="01594f4dad04782844c8175778fdf66deabf580d" resname="Toggle loop" approved="yes">
@@ -12088,7 +12088,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
+        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
         <target state="translated">Vos droits ne vous permettent pas de réaliser cette action, votre compte ne peut être supprimé que via l'interface d'Administration.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -13759,12 +13759,12 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="3c2c9fb51f7dd50df1629c8f4c3b1e947b74550b" resname="prod:share:: quit share">
         <source>prod:share:: quit share</source>
-        <target state="new">prod:share:: quit share</target>
+        <target state="needs-translation">Quitter le partage</target>
         <jms:reference-file line="108">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="b2299530024db353434b65e6fd2d83fa5e6ce226" resname="prod:share:: you are about to quit a share basket!">
         <source>prod:share:: you are about to quit a share basket!</source>
-        <target state="new">prod:share:: you are about to quit a share basket!</target>
+        <target state="needs-translation">Quitter le Paniers Partagé ?</target>
         <jms:reference-file line="109">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
@@ -15130,7 +15130,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
+        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
         <target state="translated"><![CDATA[Supprimer cette branche ? &#10; (les termes concernés remonteront en candidats à la prochaine indexation)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
@@ -15932,7 +15932,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="b3f449a50943886b461d9c6db8c59262a66d25f7" resname="write metadata in original document">
         <source>write metadata in original document</source>
-        <target state="needs-translation">Ecrire les métadonnées dans le document original</target>
+        <target state="translated">Ecrire les métadonnées dans le document original</target>
         <jms:reference-file line="423">web/admin/subdefs.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="37aeded3229b6c7dc091efa1fbe76d5d52729d7f" resname="wz:block_title:my_baskets">
