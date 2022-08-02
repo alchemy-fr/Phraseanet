@@ -13764,7 +13764,7 @@ Attention: les valeurs actuellement en place seront écrasées par ces nouvelles
       </trans-unit>
       <trans-unit id="b2299530024db353434b65e6fd2d83fa5e6ce226" resname="prod:share:: you are about to quit a share basket!">
         <source>prod:share:: you are about to quit a share basket!</source>
-        <target state="needs-translation">Quitter le Paniers Partagé ?</target>
+        <target state="needs-translation">Quitter le Panier Partagé?</target>
         <jms:reference-file line="109">Controller/Prod/LanguageController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="524c31b472b5c2069aa11c4a9912645ec1030b02" resname="prod:story:selected elements are from different databox and cannot be added to the story">
