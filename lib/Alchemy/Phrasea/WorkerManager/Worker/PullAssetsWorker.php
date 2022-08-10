@@ -34,6 +34,7 @@ class PullAssetsWorker implements WorkerInterface
             return;
         }
 
+        // TODO get from global config (or uploader config)
         $verifySsl = isset($config['verify_ssl']) ? $config['verify_ssl'] : true ;
 
         $proxyConfig = new NetworkProxiesConfiguration($this->conf);

@@ -62,6 +62,7 @@ class CreateRecordWorker implements WorkerInterface
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
         $clientOptions = [
             'base_uri'  => $payload['base_url'],
+            // TODO get from global config (or uploader config)
             'verify'    => $payload['verify_ssl']
         ];
 
@@ -93,6 +94,7 @@ class CreateRecordWorker implements WorkerInterface
         $em->flush();
 
         //download the asset
+        // TODO get from global config (or uploader config)
         $client = $proxyConfig->getClientWithOptions(['verify' => $payload['verify_ssl']]);
         $tempfile = $this->getTemporaryFilesystem()->createTemporaryFile('download_', null, pathinfo($body['originalName'], PATHINFO_EXTENSION));
 

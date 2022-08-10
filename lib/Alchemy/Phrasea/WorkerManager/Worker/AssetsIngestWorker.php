@@ -38,6 +38,7 @@ class AssetsIngestWorker implements WorkerInterface
 
         $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
+        // TODO get from global config (or uploader config)
         $verifySsl = isset($payload['verify_ssl']) ? $payload['verify_ssl'] : true ;
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
