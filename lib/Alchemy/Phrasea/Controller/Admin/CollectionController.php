@@ -143,6 +143,7 @@ class CollectionController extends Controller
 
             $this->getMessagePublisher()->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
 
+            $success = true;
             $msg = $this->app->trans('Empty collection will be do by the worker');
         } catch(\Exception $e) {
 

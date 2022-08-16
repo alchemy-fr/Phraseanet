@@ -535,22 +535,25 @@ class DataboxController extends Controller
         try {
             $databox = $this->findDataboxById($databox_id);
 
-            foreach ($databox->get_collections() as $collection) {
-                if ($collection->get_record_amount() <= 500) {
-                    $collection->empty_collection(500);
-                } else {
-                    /** @var TaskManipulator $taskManipulator */
-                    $taskManipulator = $this->app['manipulator.task'];
-                    $taskManipulator->createEmptyCollectionJob($collection);
-                }
-            }
+            // collection is now emptying by worker
+            // what about the databox ??
 
-            $msg = $this->app->trans('Base empty successful');
-            $success = true;
-
-            if ($taskCreated) {
-                $msg = $this->app->trans('A task has been created, please run it to complete empty collection');
-            }
+//            foreach ($databox->get_collections() as $collection) {
+//                if ($collection->get_record_amount() <= 500) {
+//                    $collection->empty_collection(500);
+//                } else {
+//                    /** @var TaskManipulator $taskManipulator */
+//                    $taskManipulator = $this->app['manipulator.task'];
+//                    $taskManipulator->createEmptyCollectionJob($collection);
+//                }
+//            }
+//
+//            $msg = $this->app->trans('Base empty successful');
+//            $success = true;
+//
+//            if ($taskCreated) {
+//                $msg = $this->app->trans('A task has been created, please run it to complete empty collection');
+//            }
         } catch (\Exception $e) {
 
         }
