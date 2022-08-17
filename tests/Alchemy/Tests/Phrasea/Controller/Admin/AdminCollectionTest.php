@@ -484,52 +484,52 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $collection->delete();
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
-    public function testPostEmptyCollectionNotJson()
-    {
-        $this->setAdmin(true);
+//    /**
+//     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
+//     */
+//    public function testPostEmptyCollectionNotJson()
+//    {
+//        $this->setAdmin(true);
+//
+//        $collection = $this->createOneCollection();
+//
+//        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/empty/');
+//
+//        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
+//    }
 
-        $collection = $this->createOneCollection();
+//    /**
+//     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
+//     */
+//    public function testPostEmptyCollectionUnauthorizedException()
+//    {
+//        $this->setAdmin(false);
+//
+//        $response = $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/empty/');
+//        $this->assertXMLHTTPBadJsonResponse($response);
+//    }
 
-        self::$DI['client']->request('POST', '/admin/collection/' . $collection->get_base_id() . '/empty/');
-
-        $this->assertTrue(self::$DI['client']->getResponse()->isRedirect());
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
-    public function testPostEmptyCollectionUnauthorizedException()
-    {
-        $this->setAdmin(false);
-
-        $response = $this->XMLHTTPRequest('POST', '/admin/collection/' . self::$DI['collection']->get_base_id() . '/empty/');
-        $this->assertXMLHTTPBadJsonResponse($response);
-    }
-
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
-    public function testPostEmptyCollection()
-    {
-        $this->setAdmin(true);
-
-        $collection = $this->createOneCollection();
-
-        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg'), $collection);
-        \record_adapter::createFromFile($file, self::$DI['app']);
-
-        if ($collection->get_record_amount() === 0) {
-            $this->markTestSkipped('No record were added');
-        }
-
-        $response = $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/empty/');
-
-        $json = $this->getJson($response);
-        $this->assertTrue($json->success);
-    }
+//    /**
+//     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
+//     */
+//    public function testPostEmptyCollection()
+//    {
+//        $this->setAdmin(true);
+//
+//        $collection = $this->createOneCollection();
+//
+//        $file = new File(self::$DI['app'], self::$DI['app']['mediavorus']->guess(__DIR__ . '/../../../../../files/test001.jpg'), $collection);
+//        \record_adapter::createFromFile($file, self::$DI['app']);
+//
+//        if ($collection->get_record_amount() === 0) {
+//            $this->markTestSkipped('No record were added');
+//        }
+//
+//        $response = $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/empty/');
+//
+//        $json = $this->getJson($response);
+//        $this->assertTrue($json->success);
+//    }
 
 //    /**
 //     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
