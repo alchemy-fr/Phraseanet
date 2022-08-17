@@ -535,9 +535,6 @@ class DataboxController extends Controller
         try {
             $databox = $this->findDataboxById($databox_id);
 
-            ∕∕ collection is now emptying by worker
-            ∕∕ what about the databox ??
-
             foreach ($databox->get_collections() as $collection) {
                 if ($collection->get_record_amount() <= 500) {
                     $collection->empty_collection(500);
