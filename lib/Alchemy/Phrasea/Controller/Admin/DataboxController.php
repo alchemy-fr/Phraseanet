@@ -535,7 +535,6 @@ class DataboxController extends Controller
         try {
             $databox = $this->findDataboxById($databox_id);
 
-            // to do by the worker ?
 //            foreach ($databox->get_collections() as $collection) {
 //                if ($collection->get_record_amount() <= 500) {
 //                    $collection->empty_collection(500);
@@ -545,11 +544,11 @@ class DataboxController extends Controller
 //                    $taskManipulator->createEmptyCollectionJob($collection);
 //                }
 //            }
-
-//            $msg = $this->app->trans('Base empty successful');
-//            $success = true;
-
 //
+//            $msg = $this->app->trans('Base empty successful');
+            $success = true;
+
+
 //            if ($taskCreated) {
 //                $msg = $this->app->trans('A task has been created, please run it to complete empty collection');
 //            }
