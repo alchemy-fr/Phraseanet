@@ -129,19 +129,19 @@ class CollectionController extends Controller
         $collection = \collection::getByBaseId($this->app, $bas_id);
 
         try {
-//            $recordIdsList = $collection->getCollectionRecordIdList();
-//
-//            //  publish payload to mainQ to split message per record
-//            $payload = [
-//                'message_type' => MessagePublisher::MAIN_QUEUE_TYPE,
-//                'payload' => [
-//                    'type'           => MessagePublisher::DELETE_RECORD_TYPE, // used to specify the final Q to publish message
-//                    'databoxId'      => $collection->get_sbas_id(),
-//                    'recordIdsList'  => implode(',', $recordIdsList)     // list of record_id
-//                ]
-//            ];
-//
-//            $this->getMessagePublisher()->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
+            $recordIdsList = $collection->getCollectionRecordIdList();
+
+            //  publish payload to mainQ to split message per record
+            $payload = [
+                'message_type' => MessagePublisher::MAIN_QUEUE_TYPE,
+                'payload' => [
+                    'type'           => MessagePublisher::DELETE_RECORD_TYPE, // used to specify the final Q to publish message
+                    'databoxId'      => $collection->get_sbas_id(),
+                    'recordIdsList'  => implode(',', $recordIdsList)     // list of record_id
+                ]
+            ];
+
+            $this->getMessagePublisher()->publishMessage($payload, MessagePublisher::MAIN_QUEUE_TYPE);
 
             $success = true;
 
