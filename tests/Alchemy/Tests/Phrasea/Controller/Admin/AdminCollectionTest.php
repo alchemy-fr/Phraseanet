@@ -531,57 +531,57 @@ class AdminCollectionTest extends \PhraseanetAuthenticatedWebTestCase
         $this->assertTrue($json->success);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
-     */
-    public function testPostEmptyCollectionWithHighRecordAmount()
-    {
-        $this->markTestSkipped('This tests lasts for 40 sec.');
-
-        $this->setAdmin(true);
-
-        $collection = $this->createOneCollection();
-
-        $databox = self::$DI['app']->findDataboxById($collection->get_sbas_id());
-        $sql = '
-            INSERT INTO record
-              (coll_id, record_id, parent_record_id, moddate, credate
-                , type, sha256, uuid, originalname, mime)
-            VALUES
-              (:coll_id, null, :parent_record_id, NOW(), NOW()
-              , :type, :sha256, :uuid
-              , :originalname, :mime)';
-
-        $stmt = $databox->get_connection()->prepare($sql);
-        $i = 0;
-        while ($i < 502) {
-            $stmt->execute([
-                ':coll_id'          => $collection->get_coll_id(),
-                ':parent_record_id' => 0,
-                ':type'             => 'unknown',
-                ':sha256'           => null,
-                ':uuid'             => Uuid::uuid4(),
-                ':originalname'     => null,
-                ':mime'             => null,
-            ]);
-            $i ++;
-        }
-
-        $stmt->closeCursor();
-
-        if ($collection->get_record_amount() < 500) {
-            $this->markTestSkipped('No enough records added');
-        }
-
-        $response = $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/empty/');
-
-        $json = $this->getJson($response);
-        $this->assertTrue($json->success);
-
-        if (count(self::$DI['app']['orm.em']->getRepository('Phraseanet:Task')->findAll()) === 0) {
-            $this->fail('Task for empty collection has not been created');
-        }
-    }
+//    /**
+//     * @covers Alchemy\Phrasea\Controller\Admin\Bas::emptyCollection
+//     */
+//    public function testPostEmptyCollectionWithHighRecordAmount()
+//    {
+//        $this->markTestSkipped('This tests lasts for 40 sec.');
+//
+//        $this->setAdmin(true);
+//
+//        $collection = $this->createOneCollection();
+//
+//        $databox = self::$DI['app']->findDataboxById($collection->get_sbas_id());
+//        $sql = '
+//            INSERT INTO record
+//              (coll_id, record_id, parent_record_id, moddate, credate
+//                , type, sha256, uuid, originalname, mime)
+//            VALUES
+//              (:coll_id, null, :parent_record_id, NOW(), NOW()
+//              , :type, :sha256, :uuid
+//              , :originalname, :mime)';
+//
+//        $stmt = $databox->get_connection()->prepare($sql);
+//        $i = 0;
+//        while ($i < 502) {
+//            $stmt->execute([
+//                ':coll_id'          => $collection->get_coll_id(),
+//                ':parent_record_id' => 0,
+//                ':type'             => 'unknown',
+//                ':sha256'           => null,
+//                ':uuid'             => Uuid::uuid4(),
+//                ':originalname'     => null,
+//                ':mime'             => null,
+//            ]);
+//            $i ++;
+//        }
+//
+//        $stmt->closeCursor();
+//
+//        if ($collection->get_record_amount() < 500) {
+//            $this->markTestSkipped('No enough records added');
+//        }
+//
+//        $response = $this->XMLHTTPRequest('POST', '/admin/collection/' . $collection->get_base_id() . '/empty/');
+//
+//        $json = $this->getJson($response);
+//        $this->assertTrue($json->success);
+//
+//        if (count(self::$DI['app']['orm.em']->getRepository('Phraseanet:Task')->findAll()) === 0) {
+//            $this->fail('Task for empty collection has not been created');
+//        }
+//    }
 
     /**
      *  @covers Alchemy\Phrasea\Controller\Admin\Bas::setMiniLogo
