@@ -2,15 +2,15 @@
 
 <div class="phraseanet-service-setting-tabs">
     <ul class="nav nav-tabs">
-        <li role="presentation"><a aria-controls="auth" href="#auth" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/auth">{{ 'admin:phrasea-service-setting:tab:: Auth' | trans }}</a></li>
-        <li class="active" role="presentation">
+        <li role="presentation" class="auth"><a aria-controls="auth" href="#auth" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/auth">{{ 'admin:phrasea-service-setting:tab:: Auth' | trans }}</a></li>
+        <li class="expose" role="presentation">
             <a aria-controls="expose" href="#expose" data-url="/admin/phraseanet-service/expose" role="tab" data-toggle="tab">
                 {{ 'admin:phrasea-service-setting:tab:: Expose' | trans }}
             </a>
         </li>
-        <li role="presentation"><a aria-controls="uploader" href="#uploader" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/uploader">{{ 'admin:phrasea-service-setting:tab:: Uploader' | trans }}</a></li>
-        <li role="presentation"><a aria-controls="notify" href="#notify" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/notify">{{ 'admin:phrasea-service-setting:tab:: Notify' | trans }}</a></li>
-        <li role="presentation"><a aria-controls="report" href="#report" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/report">{{ 'admin:phrasea-service-setting:tab:: Report' | trans }}</a></li>
+        <li role="presentation" class="uploader"><a aria-controls="uploader" href="#uploader" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/uploader">{{ 'admin:phrasea-service-setting:tab:: Uploader' | trans }}</a></li>
+        <li role="presentation" class="notify"><a aria-controls="notify" href="#notify" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/notify">{{ 'admin:phrasea-service-setting:tab:: Notify' | trans }}</a></li>
+        <li role="presentation" class="report"><a aria-controls="report" href="#report" role="tab" data-toggle="tab" data-url="/admin/phraseanet-service/report">{{ 'admin:phrasea-service-setting:tab:: Report' | trans }}</a></li>
     </ul>
 
     <div class="top-bar-shadow"></div>
@@ -18,7 +18,7 @@
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade" id="auth">
         </div>
-        <div role="tabpanel" class="tab-pane fade in active" id="expose">
+        <div role="tabpanel" class="tab-pane fade" id="expose">
         </div>
         <div role="tabpanel" class="tab-pane fade" id="uploader">
         </div>
@@ -61,6 +61,9 @@
             });
         }
     });
+
+    var sel = '.phraseanet-service-setting-tabs li.{{ _fragment }} a';
+    $(sel).click();
 
     $(document).ready(function () {
         remoteContent("/admin/phraseanet-service/expose").then(function(response) {

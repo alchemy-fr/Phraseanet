@@ -430,29 +430,6 @@ class WorkerRunningJobRepository extends EntityRepository
         return $q->getResult();
     }
 
-    /**
-     * @param $commitId
-     * @return bool
-     */
-    public function canAckUploader($commitId)
-    {
-        $qb = $this->createQueryBuilder('w');
-        $res = $qb
-            ->where('w.commitId = :commitId')
-            ->andWhere('w.work = :work')
-            ->andWhere('w.status != :status')
-            ->setParameters([
-                'commitId' => $commitId,
-                'work'     => MessagePublisher::ASSETS_INGEST_TYPE,
-                'status'   => WorkerRunningJob::FINISHED
-            ])
-            ->getQuery()
-            ->getResult()
-        ;
-
-        return count($res) == 0;
-    }
-
     public function truncateWorkerTable()
     {
         $connection = $this->_em->getConnection();

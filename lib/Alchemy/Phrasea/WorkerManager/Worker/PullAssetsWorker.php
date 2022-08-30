@@ -26,75 +26,79 @@ class PullAssetsWorker implements WorkerInterface
 
     public function process(array $payload)
     {
-        $config = $this->conf->get(['workers']);
+        $configs = $this->conf->get(['phraseanet-service', 'uploader-service']);
 
-        if (isset($config['pull_assets'])) {
-            $config = $config['pull_assets'];
+        if (isset($configs['pulled_target'])) {
+            $configs = $configs['pulled_target'];
         } else {
+            $this->messagePublisher->pushLog("No pull target defined in configuration!");
+
             return;
         }
 
-        $verifySsl = isset($config['verify_ssl']) ? $config['verify_ssl'] : true ;
+        foreach ($configs as $targetName => $config) {
+            $verifySsl = isset($config['verify_ssl']) ? $config['verify_ssl'] : true ;
 
-        $proxyConfig = new NetworkProxiesConfiguration($this->conf);
-        $clientOptions = [
-            'base_uri'      => $config['UploaderApiBaseUri'],
-            'http_errors'   => false,
-            'verify'        => $verifySsl
-        ];
+            $proxyConfig = new NetworkProxiesConfiguration($this->conf);
+            $clientOptions = [
+                'http_errors'   => false,
+                'verify'        => $verifySsl
+            ];
 
-        // add proxy in each request if defined in configuration
-        $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
+            // add proxy in each request if defined in configuration
+            $uploaderClient = $proxyConfig->getClientWithOptions($clientOptions);
 
-        // if a token exist , use it
-        if (isset($config['assetToken'])) {
-            $res = $this->getCommits($uploaderClient, $config);
-            if ($res == null) {
-                return;
-            }
+            // if a token exist , use it
+            if (isset($config['assetToken'])) {
+                $res = $this->getCommits($uploaderClient, $config);
+                if ($res == null) {
 
-            // if Unauthorized get a new token first
-            if ($res->getStatusCode() == 401) {
-                if (($config = $this->generateToken($uploaderClient, $config)) === null) {
+                    return;
+                }
+
+                // if Unauthorized get a new token first
+                if ($res->getStatusCode() == 401) {
+                    if (($config = $this->generateToken($uploaderClient, $config, $targetName)) === null) {
+                        return;
+                    };
+                    $res = $this->getCommits($uploaderClient, $config);
+                }
+            } else { // if there is not a token , get one from the uploader service
+                if (($config = $this->generateToken($uploaderClient, $config, $targetName)) === null) {
                     return;
                 };
-                $res = $this->getCommits($uploaderClient, $config);
+                if (($res = $this->getCommits($uploaderClient, $config)) === null) {
+                    return;
+                }
             }
-        } else { // if there is not a token , get one from the uploader service
-            if (($config = $this->generateToken($uploaderClient, $config)) === null) {
-                return;
-            };
-            if (($res = $this->getCommits($uploaderClient, $config)) === null) {
-                return;
-            }
-        }
 
-        $body = $res->getBody()->getContents();
-        $body = json_decode($body,true);
-        $commits = $body['hydra:member'];
+            $body = $res->getBody()->getContents();
+            $body = json_decode($body,true);
+            $commits = $body['hydra:member'];
 
-        foreach ($commits as $commit) {
-            //  send only payload in ingest-queue if the commit is ack false and it is not being creating
-            if (!$commit['acknowledged'] && !$this->isCommitToBeCreating($commit['id'])) {
-                $this->messagePublisher->pushLog("A new commit found in the uploader ! commit_ID : ".$commit['id']);
+            foreach ($commits as $commit) {
+                //  send only payload in ingest-queue if the commit is ack false and it is not being creating
+                if (!$commit['acknowledged'] && !$this->isCommitToBeCreating($commit['id'])) {
+                    $this->messagePublisher->pushLog("A new commit found in the uploader ! commit_ID : ".$commit['id']);
 
-                // this is an uploader PULL mode
-                $payload = [
-                    'message_type'  => MessagePublisher::ASSETS_INGEST_TYPE,
-                    'payload'       => [
-                        'assets'    => array_map(function($asset) {
-                            return str_replace('/assets/', '', $asset);
-                        }, $commit['assets']),
-                        'publisher' => $commit['userId'],
-                        'commit_id' => $commit['id'],
-                        'token'     => $commit['token'],
-                        'base_url'  => $config['UploaderApiBaseUri'],
-                        'type'      => WorkerRunningJob::TYPE_PULL,
-                        'verify_ssl'=> $verifySsl
-                    ]
-                ];
+                    // this is an uploader PULL mode
+                    $payload = [
+                        'message_type'  => MessagePublisher::ASSETS_INGEST_TYPE,
+                        'payload'       => [
+                            'assets'    => array_map(function($asset) {
+                                return str_replace('/assets/', '', $asset);
+                            }, $commit['assets']),
+                            'publisher' => $commit['userId'],
+                            'commit_id' => $commit['id'],
+                            'token'     => $commit['token'],
+                            'base_url'  => $this->getBaseUriFromPullmodeUri($config['pullmodeUri']),
+                            'type'      => WorkerRunningJob::TYPE_PULL,
+                            'verify_ssl'=> $verifySsl  // to be used for AssetsIngestWorker and the createRecordWorker
+                        ]
+                    ];
 
-                $this->messagePublisher->publishMessage($payload, MessagePublisher::ASSETS_INGEST_TYPE);
+                    $this->messagePublisher->publishMessage($payload, MessagePublisher::ASSETS_INGEST_TYPE);
+                }
             }
         }
 
@@ -109,13 +113,13 @@ class PullAssetsWorker implements WorkerInterface
     {
         // get only unacknowledged
         try {
-            $res = $uploaderClient->get('/commits?acknowledged=false', [
+            $res = $uploaderClient->get($config['pullmodeUri'] . '&acknowledged=false', [
                 'headers' => [
-                    'Authorization' => 'Bearer '.$config['assetToken']
+                    'Authorization' => 'Bearer '. $config['assetToken']
                 ]
             ]);
         } catch(\Exception $e) {
-            $this->messagePublisher->pushLog("An error occurred when fetching endpointCommit : " . $e->getMessage());
+            $this->messagePublisher->pushLog("An error occurred when fetching endpoint pullmode uri : " . $e->getMessage());
 
             return null;
         }
@@ -128,10 +132,12 @@ class PullAssetsWorker implements WorkerInterface
      * @param array $config
      * @return array|null
      */
-    private function generateToken(Client $uploaderClient, array $config)
+    private function generateToken(Client $uploaderClient, array $config, $targetName)
     {
+        $baseUri = $this->getBaseUriFromPullmodeUri($config['pullmodeUri']);
+
         try {
-            $tokenBody = $uploaderClient->post('/oauth/v2/token', [
+            $tokenBody = $uploaderClient->post($baseUri. '/oauth/v2/token', [
                 'json' => [
                     'client_id'     => $config['clientId'],
                     'client_secret' => $config['clientSecret'],
@@ -142,14 +148,14 @@ class PullAssetsWorker implements WorkerInterface
 
             $tokenBody = json_decode($tokenBody,true);
         } catch (\Exception $e) {
-            $this->messagePublisher->pushLog("An error occurred when fetching endpointToken : " . $e->getMessage());
+            $this->messagePublisher->pushLog("An error occurred when fetching endpoint Token : " . $e->getMessage());
 
             return null;
         }
 
-        $this->conf->set(['workers', 'pull_assets', 'assetToken'], $tokenBody['access_token']);
+        $this->conf->set(['phraseanet-service', 'uploader-service', 'pulled_target', $targetName, 'assetToken'], $tokenBody['access_token']);
 
-        return $this->conf->get(['workers', 'pull_assets']);
+        return $this->conf->get(['phraseanet-service', 'uploader-service', 'pulled_target', $targetName]);
     }
 
     /**
@@ -161,5 +167,12 @@ class PullAssetsWorker implements WorkerInterface
         $res = $this->repoWorkerJob->findBy(['commitId' => $commitId, 'status'   => WorkerRunningJob::RUNNING]);
 
         return count($res) != 0;
+    }
+
+    private function getBaseUriFromPullmodeUri($pullmodeUri)
+    {
+        $result = parse_url($pullmodeUri);
+
+        return $result['scheme']."://".$result['host'];
     }
 }
