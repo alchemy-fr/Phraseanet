@@ -37,6 +37,11 @@ class PullAssetsWorker implements WorkerInterface
         }
 
         foreach ($configs as $targetName => $config) {
+            if (empty($config['pullmodeUri'])) {
+                $this->messagePublisher->pushLog("No pull mode uri given in this target : " . $targetName);
+                continue;
+            }
+
             $verifySsl = isset($config['verify_ssl']) ? $config['verify_ssl'] : true ;
 
             $proxyConfig = new NetworkProxiesConfiguration($this->conf);

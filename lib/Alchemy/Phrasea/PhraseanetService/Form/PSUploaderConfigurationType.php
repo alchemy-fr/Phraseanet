@@ -70,8 +70,13 @@ class PSUploaderConfigurationType extends AbstractType implements DataMapperInte
             $forms['pulled_target']->setData(array_values($data['pulled_target']));
         }
 
-        $forms['push_verify_ssl']->setData($data['push_verify_ssl']);
-        $forms['pullInterval']->setData($data['pullInterval']);
+        if (isset($data['push_verify_ssl'])) {
+            $forms['push_verify_ssl']->setData($data['push_verify_ssl']);
+        }
+
+        if (isset($data['pullInterval'])) {
+            $forms['pullInterval']->setData($data['pullInterval']);
+        }
     }
 
     /**
