@@ -639,6 +639,11 @@ class collection implements ThumbnailedElement, cache_cacheableInterface
         return $this;
     }
 
+    public function getCollectionRecordIdList()
+    {
+        return $this->collectionService->getCollectionRecordIdList($this->collectionVO);
+    }
+
     /**
      * @param string $thumbnailType
      * @param File $file
