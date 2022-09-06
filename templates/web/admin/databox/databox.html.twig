@@ -130,12 +130,13 @@
             </button>
         </form>
 
-        <form style="display:inline;" method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">
-            <button type="button" class="btn submiter confirm reload" data-confirm-msg="{{ 'admin::base: Confirmer le vidage complet de la base' | trans }}">
-                <img src="/assets/common/images/icons/trash.png" />
-                {{ "admin::base: vider la base" | trans }}
-            </button>
-        </form>
+{#         hide in PHRAS-3235#}
+{#        <form style="display:inline;" method="post" action="{{ path('admin_database_empty', {'databox_id': databox.get_sbas_id()}) }}">#}
+{#            <button type="button" class="btn submiter confirm reload" data-confirm-msg="{{ 'admin::base: Confirmer le vidage complet de la base' | trans }}">#}
+{#                <img src="/assets/common/images/icons/trash.png" />#}
+{#                {{ "admin::base: vider la base" | trans }}#}
+{#            </button>#}
+{#        </form>#}
 
          <form style="display:inline;" method="post" action="{{ path('admin_database_delete', {'databox_id': databox.get_sbas_id()}) }}">
             <button type="button" class="btn submiter confirm reload-tree" data-confirm-msg="{{ 'admin::base: Confirmer la suppression de la base' | trans }}">

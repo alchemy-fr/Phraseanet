@@ -14,6 +14,21 @@ if [[ $PHRASEANET_MAINTENANCE = 1 || $PHRASEANET_MAINTENANCE = 2 ]];then
         cp -Rf /usr/local/etc/maintenance.html /var/alchemy/Phraseanet/datas/nginx/maintenance.html
 fi
 
+echo "creating config subderectories overwritten by the config pvc"
+
+mkdir -p config/plugins
+mkdir -p config/wm
+mkdir -p config/status
+mkdir -p config/minilogos
+mkdir -p config/templates/web
+mkdir -p config/templates/mobile
+mkdir -p config/stamp
+mkdir -p config/custom_files
+mkdir -p config/presentation
+mkdir -p config/topics
+
+echo "Ended creating config subderectories overwritten by the config pvc"
+
 FILE=config/configuration.yml
 
 if [[ ! -f "$FILE"  && $PHRASEANET_INSTALL = 1 ]];then

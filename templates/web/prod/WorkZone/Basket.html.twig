@@ -10,11 +10,15 @@
             <img src="/assets/common/images/icons/print_history.png"/>
             <span>{{ 'action : print' | trans }}</span>
         </button>
-        <div class="divider"></div>
-        <button class="ui-corner-all TOOL_delete_selection_btn basket_window" data-selection-source="basket">
-            <img src="/assets/common/images/icons/delete-selection.png"/>
-            <span>{{ 'basket:action:delete record form basket' | trans }}</span>
-        </button>
+
+        {% if app.getAuthenticatedUser().getId() == basket.getUser().getId() or (basket.isParticipant(app.getAuthenticatedUser()) and basket.getParticipant(app.getAuthenticatedUser()).canModify()) %}
+            <div class="divider"></div>
+            <button class="ui-corner-all TOOL_delete_selection_btn basket_window" data-selection-source="basket">
+                <img src="/assets/common/images/icons/delete-selection.png"/>
+                <span>{{ 'basket:action:delete record form basket' | trans }}</span>
+            </button>
+        {% endif %}
+
         <div class="divider"></div>
         {% if app.getAclForUser(app.getAuthenticatedUser()).has_right(constant('\\ACL::CANMODIFRECORD')) %}
             <button class="ui-corner-all TOOL_ppen_btn basket_window" data-selection-source="basket">

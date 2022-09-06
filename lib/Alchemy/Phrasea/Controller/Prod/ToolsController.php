@@ -91,12 +91,35 @@ class ToolsController extends Controller
             }
         }
 
+        $availableSubdefName = [];
+        $countSubdefTodo = [];
+
+        /** @var \record_adapter $rec */
+        foreach ($records as $rec) {
+            $databoxSubdefs = $rec->getDatabox()->get_subdef_structure()->getSubdefGroup($rec->getType());
+            if ($databoxSubdefs !== null) {
+                foreach ($databoxSubdefs as $sub) {
+                    if ($sub->isTobuild()) {
+                        $availableSubdefName[] = $sub->get_name();
+                        if (isset($countSubdefTodo[$sub->get_name()])) {
+                            $countSubdefTodo[$sub->get_name()] ++;
+                        } else {
+                            $countSubdefTodo[$sub->get_name()] = 1;
+                        }
+                    }
+                }
+            }
+        }
+
         return $this->render('prod/actions/Tools/index.html.twig', [
             'records'           => $records,
             'record'            => $record,
             'recordSubdefs'     => $recordAccessibleSubdefs,
             'metadatas'         => $metadatas,
-            'listsubdef'        => $listsubdef
+            'listsubdef'        => $listsubdef,
+            'availableSubdefName' => array_unique($availableSubdefName),
+            'nbRecords'         => count($records),
+            'countSubdefTodo'   => $countSubdefTodo
         ]);
     }
 
@@ -143,6 +166,7 @@ class ToolsController extends Controller
         $return = ['success' => true];
 
         $force = $request->request->get('force_substitution') == '1';
+        $subdefsName = $request->request->get('subdefs', []);
 
         $selection = RecordsRequest::fromRequest($this->app, $request, false, [\ACL::CANMODIFRECORD]);
 
@@ -162,7 +186,7 @@ class ToolsController extends Controller
             }
 
             if (!$substituted || $force) {
-                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record));
+                $this->dispatch(RecordEvents::SUBDEFINITION_CREATE, new SubdefinitionCreateEvent($record, false, $subdefsName));
             }
         }
 

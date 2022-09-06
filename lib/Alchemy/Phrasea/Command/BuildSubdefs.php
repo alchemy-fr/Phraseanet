@@ -309,7 +309,7 @@ class BuildSubdefs extends Command
                     /** @var databox_subdef $sd */
                     foreach ($sg as $sd) {
                         $all[] = $sd->get_name();
-                        if (empty($names) || in_array($sd->get_name(), $names)) {
+                        if ((empty($names) || in_array($sd->get_name(), $names)) && $sd->isTobuild()) {
                             $todo[] = $sd->get_name();
                         }
                     }
@@ -405,6 +405,7 @@ class BuildSubdefs extends Command
                     if($name == "document") {
                         continue;
                     }
+
                     if(!in_array($name, $this->subdefsByType[$type])) {
                         // this existing subdef is unknown in structure
                         if($this->prune) {
@@ -415,6 +416,7 @@ class BuildSubdefs extends Command
                             $subdefsDeleted[] = $name;
                             $msg[] = sprintf(" \"%s\" pruned", $name);
                         }
+                        unset($subdefNamesToDo[$name]);
                         continue;
                     }
                     if($this->missing_only) {
@@ -432,6 +434,11 @@ class BuildSubdefs extends Command
                             unset($subdefNamesToDo[$name]);
                             continue;
                         }
+                    }
+
+                    if (!$subdef->getDataboxSubdef()->isTobuild()) {
+                        unset($subdefNamesToDo[$name]);
+                        continue;
                     }
 
                     // here an existing subdef must be (re)done

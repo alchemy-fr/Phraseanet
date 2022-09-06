@@ -28,6 +28,10 @@ spec:
       - name: phraseanet-wwwplugins
         persistentVolumeClaim:
           claimName: {{ .Values.app.pvc.wwwplugins.name }}
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
       containers:
       - name: gateway
         image: {{ .Values.image.registry }}/phraseanet-nginx:{{ .Values.image.tag.phraseanet }}

@@ -86,10 +86,28 @@ class MainQueueWorker implements WorkerInterface
                 $childMessageCount = count($payloadData);
 
                 break;
+
             case MessagePublisher::SUBTITLE_TYPE:
                 $queue = MessagePublisher::SUBTITLE_TYPE;
                 $payloadData[0] = $payload;
                 $childMessageCount = 1;
+
+                break;
+
+            case MessagePublisher::DELETE_RECORD_TYPE:
+                $queue = MessagePublisher::DELETE_RECORD_TYPE;
+
+                if (isset($payload['recordIdsList']) && isset($payload['databoxId'])) {
+                    $recordIds = explode(',', $payload['recordIdsList']);
+                    foreach ($recordIds as $recId) {
+                        $payloadData[] = [
+                            'recordId'  => $recId,
+                            'databoxId' => $payload['databoxId']
+                        ];
+                    }
+                }
+
+                $childMessageCount = count($payloadData);
 
                 break;
         }

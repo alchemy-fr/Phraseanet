@@ -171,14 +171,14 @@ By default ```COMPOSE_FILE``` and ```COMPOSE_PROFILES``` is set for deploying a 
     phraseanet_worker_1 
     
 
-At first launch of the stack, Phraseanet container plays install.
-it will restart until it can do this installation: waiting for readiness of all other containers
+At first launch of the stack, the `Setup` container plays install.
+it will restart until it can do this installation: waiting for readiness of all other containers.
 
 default configuration is 
 
 ````
 COMPOSE_FILE=docker-compose.yml:docker-compose.datastores.yml:docker-compose.tools.yml
-COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,rabbitmq,workers,mailhog
+COMPOSE_PROFILES=app,gateway-classic,db,pma,elasticsearch,redis,redis-session,rabbitmq,workers,mailhog,setup
 ````
 
 
