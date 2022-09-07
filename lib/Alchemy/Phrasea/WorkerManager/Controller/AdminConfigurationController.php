@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\WorkerManager\Controller;
 
 use Alchemy\Phrasea\Application as PhraseaApplication;
 use Alchemy\Phrasea\Controller\Controller;
-use Alchemy\Phrasea\Core\Configuration\PropertyAccess;
 use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Repositories\WorkerRunningJobRepository;
 use Alchemy\Phrasea\SearchEngine\Elastic\ElasticsearchOptions;
@@ -32,22 +31,8 @@ class AdminConfigurationController extends Controller
 {
     public function indexAction(PhraseaApplication $app, Request $request)
     {
-        /** @var WorkerRunningJobRepository $repoWorker */
-        $repoWorker = $app['repo.worker-running-job'];
-
-        $filterStatus = [
-            WorkerRunningJob::RUNNING,
-            WorkerRunningJob::FINISHED,
-            WorkerRunningJob::ERROR,
-            WorkerRunningJob::INTERRUPT
-        ];
-
-        $workerRunningJob = $repoWorker->findByStatus($filterStatus);
-
         return $this->render('admin/worker-manager/index.html.twig', [
             'isConnected'       => $this->getAMQPConnection()->getChannel() != null,
-            'workerRunningJob'  => $workerRunningJob,
-            'reload'            => false,
             '_fragment' => $request->get('_fragment') ?? 'worker-configuration',
         ]);
     }
@@ -120,9 +105,10 @@ class AdminConfigurationController extends Controller
         $repoWorker = $app['repo.worker-running-job'];
 
         $reload = ($request->query->get('reload') == 1);
+        $jobType = $request->query->get('jobType');
 
-        $workerRunningJob = [];
         $filterStatus = [];
+
         if ($request->query->get('running') == 1) {
             $filterStatus[] = WorkerRunningJob::RUNNING;
         }
@@ -136,13 +122,19 @@ class AdminConfigurationController extends Controller
             $filterStatus[] = WorkerRunningJob::INTERRUPT;
         }
 
-        if (count($filterStatus) > 0) {
-            $workerRunningJob = $repoWorker->findByStatus($filterStatus);
-        }
+        $workerRunningJob = $repoWorker->findByStatusAndJob($filterStatus, $jobType);
+
+        $types = AMQPConnection::MESSAGES;
+
+        // these types are not included in workerRunningJob
+        unset($types['mainQueue'], $types['createRecord'], $types['pullAssets'], $types['validationReminder']);
+
+        $jobTypes = array_keys($types);
 
         return $this->render('admin/worker-manager/worker_info.html.twig', [
             'workerRunningJob' => $workerRunningJob,
-            'reload'           => $reload
+            'reload'           => $reload,
+            'jobTypes'         => $jobTypes
         ]);
     }
 
