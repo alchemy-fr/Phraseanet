@@ -145,7 +145,10 @@
 
             $.ajax({
                 type: "GET",
-                url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished+"&error="+error+"&interrupt="+interrupt+"&jobType="+jobType,
+                url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished+"&error="+error+"&interrupt="+interrupt,
+                data: {
+                    jobType: jobType
+                },
                 success: function (data) {
                     $(".work-list").empty().html(data);
                 }
