@@ -11,10 +11,12 @@ use Alchemy\Phrasea\Core\PhraseaEvents;
 use Alchemy\Phrasea\Model\Entities\Basket;
 use Alchemy\Phrasea\Model\Entities\BasketParticipant;
 use Alchemy\Phrasea\Model\Entities\User;
+use Alchemy\Phrasea\Model\Entities\WorkerRunningJob;
 use Alchemy\Phrasea\Model\Manipulator\TokenManipulator;
 use Alchemy\Phrasea\Model\Repositories\BasketRepository;
 use Alchemy\Phrasea\Model\Repositories\UserRepository;
 use Alchemy\Phrasea\Record\RecordReference;
+use Alchemy\Phrasea\WorkerManager\Queue\MessagePublisher;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -32,6 +34,33 @@ class ShareBasketWorker implements WorkerInterface
 
     public function process(array $payload)
     {
+        $manager = $this->getEntityManager();
+        $manager->beginTransaction();
+        $date = new \DateTime();
+
+        $message = [
+            'message_type'  => MessagePublisher::SHARE_BASKET_TYPE,
+            'payload'       => $payload
+        ];
+
+        try {
+            $workerRunningJob = new WorkerRunningJob();
+            $workerRunningJob
+                ->setWork(MessagePublisher::SHARE_BASKET_TYPE)
+                ->setPayload($message)
+                ->setPublished($date->setTimestamp($payload['published']))
+                ->setStatus(WorkerRunningJob::RUNNING)
+            ;
+
+            $manager->persist($workerRunningJob);
+
+            $manager->flush();
+
+            $manager->commit();
+        } catch (\Exception $e) {
+            $manager->rollback();
+        }
+
         $isFeedback = $payload['isFeedback'];
         $participants = $payload['participants'];
         $feedbackAction = $payload['feedbackAction'];
@@ -368,6 +397,17 @@ class ShareBasketWorker implements WorkerInterface
         );
 
         $this->getLogger()->info("Basket with Id " . $basket->getId() . " successfully shared !");
+
+        if ($workerRunningJob != null) {
+            $workerRunningJob
+                ->setStatus(WorkerRunningJob::FINISHED)
+                ->setFinished(new \DateTime('now'))
+            ;
+
+            $manager->persist($workerRunningJob);
+
+            $manager->flush();
+        }
 
         // file_put_contents("./tmp/phraseanet-log.txt", sprintf("\n%s; ==== END (N = %d ; dT = %d ==> %0.2f / sec) ====\n\n", time(), $n_participants, time()-$_t0, $n_participants/(max(time()-$_t0, 0.001))), FILE_APPEND);
 

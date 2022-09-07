@@ -94,11 +94,6 @@ class ControllerServiceProvider implements ControllerProviderInterface, ServiceP
         $controllers->get('/populate-status',  'controller.worker.admin.configuration:populateStatusAction')
             ->bind('worker_admin_populate_status');
 
-        /** @uses AdminConfigurationController::pullAssetsAction */
-        $controllers->match('/pull-assets',  'controller.worker.admin.configuration:pullAssetsAction')
-            ->method('GET|POST')
-            ->bind('worker_admin_pullAssets');
-
         /** @uses AdminConfigurationController::validationReminderAction */
         $controllers->match('/validation-reminder',  'controller.worker.admin.configuration:validationReminderAction')
             ->method('GET|POST')
