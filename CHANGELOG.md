@@ -21,6 +21,8 @@
 
 ### Version summary :
  
+  This changelog include also 4.1.6-rc3, 4.1.6-rc4 and 4.1.6-rc5
+
   - Shared Baskets : 
     - the Phraseanet basket can now be shared between several users and the feedback becomes now an option on this shared basket.
 
@@ -76,6 +78,9 @@ PHRAS-3525 Admin - worker service - job tab - add purge on all running job - war
 PHRAS-3121 Prod - Tools - Tab subdefinition rebuild -  option for choosing which subdefintion  will be rebuilt \(thumbnail, preview etc ...\)
 PHRAS-1545 Prod - order manager  - several fix and improvements back and front
 PHRAS-3720 Webhooks - option for SSL validity and webhook "record.subdef.created " add permalink, size and mime in json
+PHRAS-3729 Uploader PUll mode now compatible with multi destination
+PHRAS-3719 Admin - Worker - Job tab - Adding filter on job kind
+PHRAS-3235 Admin - Collection - Emptying a collection is now made by "delete worker" 
 ```
 
 ### Bug fix
