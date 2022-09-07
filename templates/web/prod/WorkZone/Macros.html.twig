@@ -440,8 +440,10 @@
                                     <i class="fa fa-comment vote_rec" title="please comment"></i>
                                     <i class="fa fa-users share_rec" title="shared with you"></i>
                                     {# i own this basket but it was pushed to me #}
-                                    {% set pusher = basket.getPusher().getDisplayName() | e %}
-                                    <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    {% if  basket.getPusher() is not null %}
+                                        {% set pusher = basket.getPusher().getDisplayName() | e %}
+                                        <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    {% endif %}
                                     {% set nparticipants = basket.getParticipants | length %}
                                     {# i own this basket and there are participants (maybe me) #}
                                     {# i am the owner / sender(?) of this "vote" (=feedback) basket #}
@@ -570,21 +572,22 @@
                 {% if app['settings'].getUserSetting(app.getAuthenticatedUser(), 'basket_type_display') == '1' %}
                     <div class="basket_type"> {{ record_doctype_icon(record) }}</div>
                 {% endif %}
-                <a
-                        {% if wz_scope == 'groupings' %}
-                            id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-                            href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
-                        {% elseif wz_scope == 'basket' %}
-                            id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-                            href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
-                        {% elseif wz_scope == 'basket' %}
-                            href="#"
-                        {% endif %}
-                        class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}">
-                    <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
-                    <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
-                </a>
-
+                {% if wz_scope != 'basket'  or (app.getAuthenticatedUser().getId() == container.getUser().getId() or (container.isParticipant(app.getAuthenticatedUser()) and container.getParticipant(app.getAuthenticatedUser()).canModify())) %}
+                    <a
+                            {% if wz_scope == 'groupings' %}
+                                id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+                                href="{{ path('prod_stories_story_remove_element', { 'sbas_id' : container.get_sbas_id(), 'record_id' : container.get_record_id(), 'child_sbas_id' : record.get_sbas_id(), 'child_record_id' : record.get_record_id() }) }}"
+                            {% elseif wz_scope == 'basket' %}
+                                id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+                                href="{{ path('prod_baskets_basket_element_remove', { 'basket' : container.getId(), 'basket_element_id' : contained.getId()}) }}"
+                            {% elseif wz_scope == 'basket' %}
+                                href="#"
+                            {% endif %}
+                            class="WorkZoneElementRemover {{ wz_scope }}" title="{{ 'delete' | trans }}">
+                        <i class="icomoon icon-circle  fa-stack-2x" aria-hidden="true"></i>
+                        <i class="icomoon icon-round-close-24px   fa-stack-1x " aria-hidden="true"></i>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>

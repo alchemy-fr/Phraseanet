@@ -21,6 +21,10 @@ spec:
       - name: elastic-data
         persistentVolumeClaim:
           claimName: {{ .Values.elasticsearch.pvc_name }}
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
       containers:
       - name: elasticsearch
         image: {{ .Values.image.registry }}/phraseanet-elasticsearch:{{ .Values.image.tag.phraseanet }}

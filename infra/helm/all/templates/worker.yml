@@ -35,7 +35,10 @@ spec:
         emptyDir:
       - name: phraseanet-cache
         emptyDir:
-
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
       containers:
       - name: phraseanet-worker
         image: {{ .Values.image.registry }}/phraseanet-worker:{{ .Values.image.tag.phraseanet }}
@@ -69,6 +72,10 @@ spec:
           value: {{ .Values.php.log_level | quote }}
         - name: SESSION_CACHE_LIMITER
           value: {{ .Values.php.session_cache_limiter | quote }}
+        - name: SESSION_SAVE_HANDLER
+          value: {{ .Values.php.session_save_handler | quote }}
+        - name: SESSION_SAVE_PATH
+          value: {{ .Values.php.session_save_path | quote }}
         - name: XDEBUG
           value: "0"
         - name: LC_MESSAGES

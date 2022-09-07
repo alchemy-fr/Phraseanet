@@ -38,7 +38,14 @@ class AssetsIngestWorker implements WorkerInterface
 
         $this->saveAssetsList($payload['commit_id'], $assets, $payload['published'], $payload['type']);
 
-        $verifySsl = isset($payload['verify_ssl']) ? $payload['verify_ssl'] : true ;
+        if ($payload['type'] === WorkerRunningJob::TYPE_PUSH) {
+            // get verify_ssl from config
+            $verifySsl = $this->app['conf']->get(['phraseanet-service', 'uploader-service', 'push_verify_ssl'], true);
+        } elseif ($payload['type'] === WorkerRunningJob::TYPE_PULL) {
+            // the verify_ssl  in payload when pull is also from the config in a specific target name
+            // it is injected from the PullAssetsWorker
+            $verifySsl = isset($payload['verify_ssl']) ? $payload['verify_ssl'] : true ;
+        }
 
         $proxyConfig = new NetworkProxiesConfiguration($this->app['conf']);
         $clientOptions = [

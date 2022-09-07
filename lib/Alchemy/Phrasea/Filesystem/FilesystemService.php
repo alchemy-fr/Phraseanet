@@ -99,18 +99,20 @@ class FilesystemService
      * @param \record_adapter $record
      * @param \databox_subdef $subdef
      * @param string $marker
+     * @param string $extension  if not set,get from subdef spec
      * @return string
      */
-    public function generateSubdefFilename(\record_adapter $record, \databox_subdef $subdef, $marker = '')
+    public function generateSubdefFilename(\record_adapter $record, \databox_subdef $subdef, $marker = '', $extension = null)
     {
-        return $record->getRecordId() . '_' . $marker . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
+        $extension = empty($extension) ? $this->getExtensionFromSpec($subdef->getSpecs()) : $extension;
+        return $record->getRecordId() . '_' . $marker . $subdef->get_name() . '.' . $extension;
     }
 
-    public function generateSubdefSubstitutionPathname(\record_adapter $record, \databox_subdef $subdef)
+    public function generateSubdefSubstitutionPathname(\record_adapter $record, \databox_subdef $subdef, $extension = null)
     {
         $pathdest = $this->directorySpread($subdef->get_path());
 
-        return $pathdest . $this->generateSubdefFilename($record, $subdef, '0_');
+        return $pathdest . $this->generateSubdefFilename($record, $subdef, '0_', $extension);
     }
 
     /**

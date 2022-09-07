@@ -379,11 +379,20 @@ class WorkerRunningJobRepository extends EntityRepository
         return count($qb->getQuery()->getResult());
     }
 
-    public function findByStatus(array $status, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
+    public function findByStatusAndJob(array $status, $jobType, $start = 0, $limit = WorkerRunningJob::MAX_RESULT)
     {
         $qb = $this->createQueryBuilder('w');
+
+        if (!empty($status)) {
+            $qb->where($qb->expr()->in('w.status', $status));
+        }
+
+        if (!empty($jobType)) {
+            $qb->andWhere('w.work = :work')
+                ->setParameter('work', $jobType);
+        }
+
         $qb
-            ->where($qb->expr()->in('w.status', $status))
             ->setFirstResult($start)
             ->setMaxResults($limit)
             ->orderBy('w.id', 'DESC')
@@ -428,29 +437,6 @@ class WorkerRunningJobRepository extends EntityRepository
         ]);
 
         return $q->getResult();
-    }
-
-    /**
-     * @param $commitId
-     * @return bool
-     */
-    public function canAckUploader($commitId)
-    {
-        $qb = $this->createQueryBuilder('w');
-        $res = $qb
-            ->where('w.commitId = :commitId')
-            ->andWhere('w.work = :work')
-            ->andWhere('w.status != :status')
-            ->setParameters([
-                'commitId' => $commitId,
-                'work'     => MessagePublisher::ASSETS_INGEST_TYPE,
-                'status'   => WorkerRunningJob::FINISHED
-            ])
-            ->getQuery()
-            ->getResult()
-        ;
-
-        return count($res) == 0;
     }
 
     public function truncateWorkerTable()

@@ -1,19 +1,15 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: phraseanet-fpm
+  name: phraseanet-setup
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: phraseanet
-      tier: fpm
   template:
-    metadata:
-      labels:
-        app: phraseanet
-        tier: fpm
     spec:
+      {{ if eq .Values.image.imagepullsecrets "true" }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secretename }}
+      {{ end }}
+      restartPolicy: OnFailure
       volumes:
       - name: phraseanet-config
         persistentVolumeClaim:
@@ -37,14 +33,10 @@ spec:
         emptyDir:
       - name: phraseanet-cache
         emptyDir:
-        
-      {{ if eq .Values.image.imagepullsecrets "true" }}
-      imagePullSecrets:
-      - name: {{ .Values.image.secretename }}
-      {{ end }}
+
       containers:
-      - name: phraseanet-fpm
-        image: {{ .Values.image.registry }}/phraseanet-fpm:{{ .Values.image.tag.phraseanet }}
+      - name: phraseanet-setup
+        image: {{ .Values.image.registry }}/phraseanet-setup:{{ .Values.image.tag.phraseanet }}
         imagePullPolicy: Always
         terminationMessagePolicy: FallbackToLogsOnError
         resources:
@@ -90,6 +82,8 @@ spec:
           value: {{ .Values.app.phraseanet_install | quote }}
         - name: PHRASEANET_SETUP
           value: {{ .Values.app.phraseanet_setup | quote }}
+        - name: PHRASEANET_UPGRADE
+          value: {{ .Values.app.phraseanet_upgrade | quote }}
         - name: PHRASEANET_ADMIN_ACCOUNT_EMAIL
           value: {{ .Values.app.phraseanet_admin_account_email | quote }}
         - name: PHRASEANET_ADMIN_ACCOUNT_PASSWORD

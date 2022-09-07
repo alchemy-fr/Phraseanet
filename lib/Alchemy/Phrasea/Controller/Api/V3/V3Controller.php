@@ -51,6 +51,7 @@ class V3Controller extends Controller
                         'class'            => $sub->get_class(),
                         'preset'           => $sub->get_preset(),
                         'downloadable'     => $sub->isDownloadable(),
+                        'tobuild'          => $sub->isTobuild(),
                         'devices'          => $sub->getDevices(),
                         'labels'           => [
                             'fr' => $sub->get_label('fr'),

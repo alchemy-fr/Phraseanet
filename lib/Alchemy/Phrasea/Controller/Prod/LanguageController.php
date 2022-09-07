@@ -105,6 +105,8 @@ class LanguageController
             'nFieldsChanged'          => $translator->trans('%d fields have been updated'),
             'FeedBackNoUsersSelected' => $translator->trans('No users selected'),
             'FeedBackNoExpires'       => $translator->trans('prod:share:: No vote expires date'),
+            'quitshareTitle'       => $translator->trans('prod:share:: quit share'),
+            'confirmQuitshare'        => $translator->trans('prod:share:: you are about to quit a share basket!'),
             'errorFileApi'            => $translator->trans('An error occurred reading this file'),
             'errorFileApiTooBig'      => $translator->trans('This file is too big'),
             'selectOneRecord'         => $translator->trans('Please select one record'),
