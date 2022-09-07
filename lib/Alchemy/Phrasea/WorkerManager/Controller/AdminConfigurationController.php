@@ -12,7 +12,6 @@ use Alchemy\Phrasea\WorkerManager\Event\PopulateIndexEvent;
 use Alchemy\Phrasea\WorkerManager\Event\WorkerEvents;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerConfigurationType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerFtpType;
-use Alchemy\Phrasea\WorkerManager\Form\WorkerPullAssetsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerRecordsActionsType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerSearchengineType;
 use Alchemy\Phrasea\WorkerManager\Form\WorkerValidationReminderType;
@@ -476,66 +475,6 @@ class AdminConfigurationController extends Controller
         $repoWorkerJob = $app['repo.worker-running-job'];
 
         return $repoWorkerJob->checkPopulateStatusByDataboxIds($databoxIds);
-    }
-
-    public function pullAssetsAction(PhraseaApplication $app, Request $request)
-    {
-        $config = $this->getConf()->get(['workers', 'pull_assets'], []);
-        // the "pullInterval" comes from the ttl_retry
-        $ttl_retry = $this->getConf()->get(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], null);
-        if(!is_null($ttl_retry)) {
-            $ttl_retry /= 1000;     // form is in sec
-        }
-        $config['pullInterval'] = $ttl_retry;
-
-        $form = $app->form(new WorkerPullAssetsType(), $config);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-            switch($data['act']) {
-                case 'save' :   // save the form content (settings) in 2 places
-                    $ttl_retry = $data['pullInterval'];
-                    unset($data['act'], $data['pullInterval'], $config['pullInterval']);
-                    // save most data under workers/pull_assets
-                    $app['conf']->set(['workers', 'pull_assets'], array_merge($config, $data));
-                    // save ttl in the q settings
-                    if(!is_null($ttl_retry)) {
-                        $this->getConf()->set(['workers','queues', MessagePublisher::PULL_ASSETS_TYPE, 'ttl_retry'], 1000 * (int)$ttl_retry);
-                    }
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    break;
-                case 'start':
-                    // reinitialize the validation reminder queues
-                    $this->getAMQPConnection()->setQueue(MessagePublisher::PULL_ASSETS_TYPE);
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    $this->getMessagePublisher()->initializeLoopQueue(MessagePublisher::PULL_ASSETS_TYPE);
-                    break;
-                case 'stop':
-                    $this->getAMQPConnection()->reinitializeQueue([MessagePublisher::PULL_ASSETS_TYPE]);
-                    break;
-            }
-
-            // too bad : _fragment does not work with our old url generator... it will be passed as plain url parameter
-            return $app->redirectPath('worker_admin', ['_fragment'=>'worker-pull-assets']);
-        }
-
-        // guess if the q is "running" = check if there are pending message on Q or loop-Q
-        $running = false;
-        $qStatuses = $this->getAMQPConnection()->getQueuesStatus();
-        foreach([
-                    MessagePublisher::PULL_ASSETS_TYPE,
-                    $this->getAMQPConnection()->getLoopQueueName(MessagePublisher::PULL_ASSETS_TYPE)
-                ] as $qName) {
-            if(isset($qStatuses[$qName]) && $qStatuses[$qName]['messageCount'] > 0) {
-                $running = true;
-            }
-        }
-        return $this->render('admin/worker-manager/worker_pull_assets.html.twig', [
-            'form' => $form->createView(),
-            'running' => $running
-        ]);
     }
 
     private function getDefaultRecordsActionsSettings()
