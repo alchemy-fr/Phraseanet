@@ -1,0 +1,7 @@
+        'phrasea-sp' => array(
+                'saml:SP',
+                'entityID' => 'phrasea-sp',
+                'privatekey' => 'phrasea.pem',
+                'certificate' => 'phrasea.crt',
+                'idp' => NULL,
+        ),
