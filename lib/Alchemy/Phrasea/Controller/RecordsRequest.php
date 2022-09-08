@@ -227,11 +227,16 @@ class RecordsRequest extends ArrayCollection
     /**
      * Return a serialized list of elements
      *
+     * this param to true when wanting to include
+     * elements on FLATTEN_YES or FLATTEN_YES_PRESERVE_STORIES on a singleStory case
+     *
+     * @param  $canIncludeSingleStoryElements
+     *
      * @return string
      */
-    public function serializedList()
+    public function serializedList($canIncludeSingleStoryElements = false)
     {
-        if ($this->isSingleStory()) {
+        if ($this->isSingleStory() && !$canIncludeSingleStoryElements) {
             return $this->singleStory()->getId();
         }
 
