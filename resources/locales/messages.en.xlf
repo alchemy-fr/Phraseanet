@@ -9787,22 +9787,22 @@
       </trans-unit>
       <trans-unit id="201402344d0443bfbf463d36c35b4c78a6ab3128" resname="admin:phrasea-service-setting:tab:uploader:: New uploader target">
         <source>admin:phrasea-service-setting:tab:uploader:: New uploader target</source>
-        <target state="new">admin:phrasea-service-setting:tab:uploader:: New uploader target</target>
+        <target state="needs-translation">New Phrasea Uploader target</target>
         <jms:reference-file line="2">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="989d738e041d8d4c17b54b4c0f306047a1e90db8" resname="admin:phrasea-service-setting:tab:uploader:: Save">
         <source>admin:phrasea-service-setting:tab:uploader:: Save</source>
-        <target state="new">admin:phrasea-service-setting:tab:uploader:: Save</target>
+        <target state="needs-translation">Save configurations</target>
         <jms:reference-file line="59">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bb58ab0314ddb434544fd24efb9ecc5a4544479c" resname="admin:phrasea-service-setting:tab:uploader:: pull mode uri">
         <source>admin:phrasea-service-setting:tab:uploader:: pull mode uri</source>
-        <target state="new">admin:phrasea-service-setting:tab:uploader:: pull mode uri</target>
+        <target state="needs-translation">Uploader Uri (Url + target)</target>
         <jms:reference-file line="18">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="591a534afd5beace85a6e4beedf1200510649b76" resname="admin:phrasea-service-setting:tab:uploader:: push verify_ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: push verify_ssl</source>
-        <target state="new">admin:phrasea-service-setting:tab:uploader:: push verify_ssl</target>
+        <target state="needs-translation">Verify ssl for Phrasea Uploader in "Push" Mode</target>
         <jms:reference-file line="29">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="1b45a2067434925bd5f5887a0fb4e9e954b46e23" resname="admin:phrasea-service-setting:tab:uploader:: target Name">
