@@ -52,7 +52,7 @@ const quitshareBasket = (services) => {
         var k = $(item).attr('id').split('_').slice(1, 2).pop();
         $.ajax({
             type: 'POST',
-            url: `${url}prod/push/quitshare/${k}/`,
+            url: `${url}prod/share/quitshare/${k}/`,
             dataType: 'json',
             success: function (data) {
                 if (data.success) {
