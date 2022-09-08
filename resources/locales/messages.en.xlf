@@ -10029,7 +10029,7 @@
       </trans-unit>
       <trans-unit id="a75fefeb07393a108b8189736d7bcf827f7f0dfe" resname="boutton::choose job type">
         <source>boutton::choose job type</source>
-        <target state="needs-translation">All jobs Kinds</target>
+        <target state="needs-translation">All jobs types</target>
         <jms:reference-file line="36">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17a9219fec93feeffdf8c320e3be79a9f0daf9b1" resname="boutton::commander" approved="yes">
