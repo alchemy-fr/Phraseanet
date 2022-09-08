@@ -28,15 +28,9 @@ class PSUploaderConfigurationType extends AbstractType implements DataMapperInte
             ->add('push_verify_ssl', CheckboxType::class, [
                 'label'    => 'admin:phrasea-service-setting:tab:uploader:: push verify_ssl',
                 'required' => false,
-                'attr'      => [
-                    'class' => '',
-                ]
             ])
             ->add('pullInterval', IntegerType::class, [
                 'label' => 'admin:phrasea-service-setting:tab:uploader:: Fetching interval in second',
-                 'attr'      => [
-                    'placeholder' => 60,
-                ]
             ])
             ->add('pulled_target', CollectionType::class, [
                 'label'         => false,

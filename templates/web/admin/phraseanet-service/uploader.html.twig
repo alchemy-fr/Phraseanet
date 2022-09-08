@@ -30,20 +30,27 @@
     </div>
 {% endmacro %}
 
-<h2>{{ 'admin:phrasea-service-setting:tab:uploader:: uploader setting' | trans }}</h2>
-
 {{ form_start(form, {'action': path('ps_admin_uploader')}) }}
 <div class="uploader-header" style="margin-top: 30px;">
-    <div class="control-group">
+    <div style="margin-bottom: 20px;">
+        <button type="submit" value="save" class="btn btn-success">{{ 'admin:phrasea-service-setting:tab:uploader:: Save' | trans }}</button>
+    </div>
+
+    <h2 style="margin-top: 30px;">{{ 'admin:phrasea-service-setting:tab:uploader:: uploader setting' | trans }}</h2>
+
+    <div class="control-group" style="margin-top: 20px;">
         {{ form_widget(form.push_verify_ssl) }}
         {{ form_label(form.push_verify_ssl) }}
     </div>
-    <div class="control-group" style="margin-top: 40px;">
+
+    <h2 style="margin-top: 30px;">{{ 'admin:phrasea-service-setting:tab:uploader:: pull setting' | trans }}</h2>
+
+    <div class="control-group" style="margin-top: 20px;">
         {{ form_label(form.pullInterval) }}
-        {{ form_widget(form.pullInterval) }}
+        {{ form_widget(form.pullInterval, {'attr': {'placeholder': '60'}}) }}
     </div>
 
-    <div class="control-group" style="margin-top: 40px;">
+    <div class="control-group" style="margin-top: 20px;">
         {% if(running) %}
             <button type="submit" value="stop" class="btn btn-danger stop-pull-assets">{{ 'Stop' | trans }}</button>
         {% else %}
@@ -55,10 +62,6 @@
         <div><input id="add-new-target" type="button" class="btn btn-primary " data-list="#target-list"
                     value="{{ 'admin:phrasea-service-setting:tab:uploader:: New target pull name' | trans }}">
         </div>
-        <div>
-            <button type="submit" value="save" class="btn btn-success save-uploader">{{ 'admin:phrasea-service-setting:tab:uploader:: Save' | trans }}</button>
-        </div>
-
     </div>
 </div>
 

@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2022-09-07T13:54:18Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
+  <file date="2022-09-08T11:32:03Z" source-language="en" target-language="de" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="da39a3ee5e6b4b0d3255bfef95601890afd80709" resname="">
-        <source/>
-        <target state="new"/>
+        <source></source>
+        <target state="new"></target>
         <jms:reference-file line="51">Form/Configuration/EmailFormType.php</jms:reference-file>
         <jms:reference-file line="64">Form/Login/PhraseaAuthenticationForm.php</jms:reference-file>
       </trans-unit>
@@ -195,7 +195,7 @@
         <jms:reference-file line="7">Bridge/Dailymotion/element_informations.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="de0804eb70c10b14d71df74292e45c6daa13d672" resname="%number% documents&lt;br/&gt;selectionnes" approved="yes">
-        <source>%number% documents&lt;br/&gt;selectionnes</source>
+        <source><![CDATA[%number% documents<br/>selectionnes]]></source>
         <target state="translated"><![CDATA[%number% Dokumente<br/> ausgewählt]]></target>
         <jms:reference-file line="264">Controller/Prod/QueryController.php</jms:reference-file>
       </trans-unit>
@@ -435,11 +435,6 @@
         <source>500 caracteres maximum</source>
         <target state="translated">500 Zeichen max.</target>
         <jms:reference-file line="74">Bridge/Youtube/upload.html.twig</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="e6c3dd630428fd54834172b8fd2735fed9416da4" resname="60">
-        <source>60</source>
-        <target state="new">60</target>
-        <jms:reference-file line="38">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="6dcd4ce23d88e2ee9568ba546c007c63d9131c1b" resname="A" approved="yes">
         <source>A</source>
@@ -1180,12 +1175,12 @@
       <trans-unit id="30f09ea38857b13637c9f20f2a17e7bfc3ac3b3a" resname="Are you sure you want to erase all job informations ?">
         <source>Are you sure you want to erase all job informations ?</source>
         <target state="translated">Das Löschen der Jobinformationen bestätigen?</target>
-        <jms:reference-file line="243">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="246">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="aec19ed81928870d688862753f3d3e55db655daf" resname="Are you sure you want to erase finished job informations ?">
         <source>Are you sure you want to erase finished job informations ?</source>
         <target state="translated">Das Löschen der abgeschlossene Jobs bestätigen?</target>
-        <jms:reference-file line="254">admin/worker-manager/worker_info.html.twig</jms:reference-file>
+        <jms:reference-file line="257">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="0ad86fda5d367a9ff74a9c278344f3bb8f75c223" resname="Are you sure you want to rebuild the sub-definitions of selected records?" approved="yes">
         <source>Are you sure you want to rebuild the sub-definitions of selected records?</source>
@@ -2498,7 +2493,7 @@
         <jms:reference-file line="68">Form/Configuration/ActionsFormType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="fa9fd169cd55f0433c6e7a4b5d758f90d0847411" resname="Display &amp; action settings" approved="yes">
-        <source>Display &amp; action settings</source>
+        <source><![CDATA[Display & action settings]]></source>
         <target state="translated">Anzeige und Handlung-Einstellungen</target>
         <jms:reference-file line="152">admin/fields/templates.html.twig</jms:reference-file>
       </trans-unit>
@@ -2808,11 +2803,6 @@
         <source>Empty a collection</source>
         <target state="translated">eine Kollektion leeren</target>
         <jms:reference-file line="41">TaskManager/Job/EmptyCollectionJob.php</jms:reference-file>
-      </trans-unit>
-      <trans-unit id="c47fda4656ae932ae2cee6239202bfae8f03cb6c" resname="Empty collection will be do by the worker">
-        <source>Empty collection will be do by the worker</source>
-        <target state="new">Empty collection will be do by the worker</target>
-        <jms:reference-file line="148">Controller/Admin/CollectionController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="16edbca430dbc855d01b65c634474ae1648e1890" resname="Empty if not used" approved="yes">
         <source>Empty if not used</source>
@@ -6263,7 +6253,7 @@
         <jms:reference-file line="12">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
         <jms:reference-file line="15">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="54">admin/task-manager/templates.html.twig</jms:reference-file>
-        <jms:reference-file line="50">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
+        <jms:reference-file line="57">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="f853d8fe64173cbf0e624c47d3f7d064f379a676" resname="Start Range" approved="yes">
         <source>Start Range</source>
@@ -6316,7 +6306,7 @@
         <jms:reference-file line="10">admin/worker-manager/worker_validation_reminder.html.twig</jms:reference-file>
         <jms:reference-file line="20">admin/task-manager/templates.html.twig</jms:reference-file>
         <jms:reference-file line="59">admin/task-manager/templates.html.twig</jms:reference-file>
-        <jms:reference-file line="48">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
+        <jms:reference-file line="55">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="51e9111b87116e60566740d13ba1c1eddb042333" resname="Stopped" approved="yes">
         <source>Stopped</source>
@@ -9775,12 +9765,12 @@
       <trans-unit id="fc0ad7943304d0693d01998d9fa13eb616f04b0f" resname="admin:phrasea-service-setting:tab:uploader:: Fetching interval in second">
         <source>admin:phrasea-service-setting:tab:uploader:: Fetching interval in second</source>
         <target state="needs-translation">Wiederherstellungsintervall</target>
-        <jms:reference-file line="36">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
+        <jms:reference-file line="33">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9ac2e6a82fcb91bb6bc133268e09b9bbdd8ba43" resname="admin:phrasea-service-setting:tab:uploader:: New target pull name">
         <source>admin:phrasea-service-setting:tab:uploader:: New target pull name</source>
         <target state="needs-translation">Eine neue Uploader Konfiguration in "Pulled" Modus</target>
-        <jms:reference-file line="56">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
+        <jms:reference-file line="63">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="201402344d0443bfbf463d36c35b4c78a6ab3128" resname="admin:phrasea-service-setting:tab:uploader:: New uploader target">
         <source>admin:phrasea-service-setting:tab:uploader:: New uploader target</source>
@@ -9790,12 +9780,17 @@
       <trans-unit id="989d738e041d8d4c17b54b4c0f306047a1e90db8" resname="admin:phrasea-service-setting:tab:uploader:: Save">
         <source>admin:phrasea-service-setting:tab:uploader:: Save</source>
         <target state="needs-translation">Konfigurationen speichern</target>
-        <jms:reference-file line="59">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
+        <jms:reference-file line="36">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="bb58ab0314ddb434544fd24efb9ecc5a4544479c" resname="admin:phrasea-service-setting:tab:uploader:: pull mode uri">
         <source>admin:phrasea-service-setting:tab:uploader:: pull mode uri</source>
         <target state="needs-translation">Uploader Uri (Uploader Url + Ziel)</target>
         <jms:reference-file line="18">PhraseanetService/Form/PSUploaderPullType.php</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="008a1d3c1468de8675c5b0f7df16b5b396ead936" resname="admin:phrasea-service-setting:tab:uploader:: pull setting">
+        <source>admin:phrasea-service-setting:tab:uploader:: pull setting</source>
+        <target state="new">admin:phrasea-service-setting:tab:uploader:: pull setting</target>
+        <jms:reference-file line="46">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="591a534afd5beace85a6e4beedf1200510649b76" resname="admin:phrasea-service-setting:tab:uploader:: push verify_ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: push verify_ssl</source>
@@ -9810,7 +9805,7 @@
       <trans-unit id="6efb17b28a7c4c31417801ad91a6ff638888a553" resname="admin:phrasea-service-setting:tab:uploader:: uploader setting">
         <source>admin:phrasea-service-setting:tab:uploader:: uploader setting</source>
         <target state="needs-translation">Uploader "Push" Modus Einstellungen</target>
-        <jms:reference-file line="33">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
+        <jms:reference-file line="39">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7f81d6e1b4e8a501480420b44d8f69a9ebad3d60" resname="admin:phrasea-service-setting:tab:uploader:: verify ssl">
         <source>admin:phrasea-service-setting:tab:uploader:: verify ssl</source>
@@ -12110,7 +12105,7 @@
         <jms:reference-file line="563">Controller/Root/AccountController.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="bf7028b694aea3fc9ede5014a9f8b5d617b83b6f" resname="phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt; " approved="yes">
-        <source>phraseanet::account: &lt;&lt; your account can be deleted via admin interface &gt;&gt;</source>
+        <source><![CDATA[phraseanet::account: << your account can be deleted via admin interface >>]]></source>
         <target state="translated">Ihr Benutzerkonto kann nur durch die Administration Anwendung gelöscht werden.</target>
         <jms:reference-file line="289">web/account/account.html.twig</jms:reference-file>
       </trans-unit>
@@ -15149,7 +15144,7 @@ Vorsicht: die aktuelle Werte werden durch die neue Werte überschrieben</target>
         <jms:reference-file line="1327">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="33df70d7fa528a31071e11d1b987b49dc947ce16" resname="thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)" approved="yes">
-        <source>thesaurus:: Supprimer cette branche ?&amp;#10;(les termes concernes remonteront en candidats a la prochaine indexation)</source>
+        <source><![CDATA[thesaurus:: Supprimer cette branche ?&#10;(les termes concernes remonteront en candidats a la prochaine indexation)]]></source>
         <target state="translated"><![CDATA[Diese Verzweigung löschen?&#10; (die betroffenende Begriffe werden als mögliche Begriffe beim nächsten Indexierung erscheinen)]]></target>
         <jms:reference-file line="536">web/thesaurus/thesaurus.html.twig</jms:reference-file>
       </trans-unit>
