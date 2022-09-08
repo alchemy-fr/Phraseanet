@@ -9777,7 +9777,7 @@
       </trans-unit>
       <trans-unit id="fc0ad7943304d0693d01998d9fa13eb616f04b0f" resname="admin:phrasea-service-setting:tab:uploader:: Fetching interval in second">
         <source>admin:phrasea-service-setting:tab:uploader:: Fetching interval in second</source>
-        <target state="needs-translation">Fetching interval in second</target>
+        <target state="needs-translation">Fetching interval in seconds</target>
         <jms:reference-file line="36">PhraseanetService/Form/PSUploaderConfigurationType.php</jms:reference-file>
       </trans-unit>
       <trans-unit id="f9ac2e6a82fcb91bb6bc133268e09b9bbdd8ba43" resname="admin:phrasea-service-setting:tab:uploader:: New target pull name">
