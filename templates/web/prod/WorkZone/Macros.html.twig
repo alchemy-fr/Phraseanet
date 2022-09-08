@@ -440,8 +440,10 @@
                                     <i class="fa fa-comment vote_rec" title="please comment"></i>
                                     <i class="fa fa-users share_rec" title="shared with you"></i>
                                     {# i own this basket but it was pushed to me #}
-                                    {% set pusher = basket.getPusher().getDisplayName() | e %}
-                                    <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    {% if  basket.getPusher() is not null %}
+                                        {% set pusher = basket.getPusher().getDisplayName() | e %}
+                                        <i class="fa fa-gift push_rec" title="{% trans with {'%pusher%' : pusher} %}paniers:: panier recu de %pusher%{% endtrans %}"></i>
+                                    {% endif %}
                                     {% set nparticipants = basket.getParticipants | length %}
                                     {# i own this basket and there are participants (maybe me) #}
                                     {# i am the owner / sender(?) of this "vote" (=feedback) basket #}

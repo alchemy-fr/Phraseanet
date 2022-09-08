@@ -1129,10 +1129,33 @@ span.simplecolorpicker.picker {
 }
 
 /***Uploader tab***/
-#worker-pull-assets {
-  input[type=checkbox] {
-    float: left;
-    margin-right: 10px;
+#uploader {
+  max-width: 992px;
+  .uploader-header {
+    position: relative;
+  }
+  .target-block {
+    border: 2px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+    position: relative;
+  }
+  .upload-delete-btn {
+    float: right;
+    display: inline-block;
+  }
+  .target-title {
+    &.ui-accordion-header-active {
+      background: #3b99fc;
+      color: #fff;
+    }
+  }
+  #add-new-target {
+    margin: 20px auto 0;
   }
 }
 

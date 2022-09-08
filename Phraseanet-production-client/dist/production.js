@@ -18050,7 +18050,7 @@ var quitshareBasket = function quitshareBasket(services) {
         var k = (0, _jquery2.default)(item).attr('id').split('_').slice(1, 2).pop();
         _jquery2.default.ajax({
             type: 'POST',
-            url: url + 'prod/push/quitshare/' + k + '/',
+            url: url + 'prod/share/quitshare/' + k + '/',
             dataType: 'json',
             success: function success(data) {
                 if (data.success) {

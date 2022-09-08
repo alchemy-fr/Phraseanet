@@ -31,18 +31,27 @@
         {{ 'admin::workermanager:tab:workerinfo: Refresh list' |trans }}
     </button>
 
+    <div style="margin-top: 10px;margin-bottom: 10px;">
+        <select id="job-type-filter">
+            <option value="">{{ 'boutton::choose job type' | trans }}</option>
+            {% for jobType in jobTypes %}
+                <option value="{{ jobType }}">{{ jobType }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
     <div class="controls">
         <label class="checkbox inline">
             <input class="running-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display running work' | trans }}
         </label>
         <label class="checkbox inline">
-            <input class="finished-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display finished work' | trans }}
+            <input class="finished-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display finished work' | trans }}
         </label>
         <label class="checkbox inline">
-            <input class="error-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display error work' | trans }}
+            <input class="error-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display error work' | trans }}
         </label>
         <label class="checkbox inline">
-            <input class="interrupt-work refresh-list-checkbox" type="checkbox"  value="1" checked> {{ 'admin::workermanager:tab:workerinfo: Display manually interrupt work' | trans }}
+            <input class="interrupt-work refresh-list-checkbox" type="checkbox"  value="1" > {{ 'admin::workermanager:tab:workerinfo: Display manually interrupt work' | trans }}
         </label>
     </div>
 
@@ -115,6 +124,7 @@
             var finished = 1;
             var error = 1;
             var interrupt = 1;
+            var jobType = $("#job-type-filter").val();
 
             if (!$(".running-work").is(":checked"))
             {
@@ -136,15 +146,24 @@
             $.ajax({
                 type: "GET",
                 url: "/admin/worker-manager/info?reload=1&running="+running+"&finished="+finished+"&error="+error+"&interrupt="+interrupt,
+                data: {
+                    jobType: jobType
+                },
                 success: function (data) {
                     $(".work-list").empty().html(data);
                 }
             });
         }
+
         $("#refresh-list").on('click', function () {
             refreshJobList();
         });
+
         $(".refresh-list-checkbox").on('change', function () {
+            refreshJobList();
+        });
+
+        $("#job-type-filter").on('change', function () {
             refreshJobList();
         });
 

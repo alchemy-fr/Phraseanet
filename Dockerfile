@@ -82,8 +82,9 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
         libgsm1-dev \
         libfreetype6-dev \
         libldap2-dev \ 
-        # End FFmpeg
+        # End FFmpeg \
         nano \
+        libjq-dev \
     && update-locale "LANG=fr_FR.UTF-8 UTF-8" \
     && dpkg-reconfigure --frontend noninteractive locales \
     && mkdir /tmp/libheif \
@@ -105,6 +106,11 @@ RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sou
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install -j$(nproc) ldap \
     && docker-php-ext-install zip exif iconv mbstring pcntl sockets xsl intl pdo_mysql gettext bcmath mcrypt \
+    # --- extension jq - sources _must_ be in /usr/src/php/ext/ for the docker-php-ext-install script to find it \
+    && mkdir -p /usr/src/php/ext/ \
+    && git clone --depth=1 https://github.com/kjdev/php-ext-jq.git /usr/src/php/ext/php-ext-jq \
+    && docker-php-ext-install php-ext-jq \
+    # --- end of extension jq \
     && pecl install \
         redis \
         amqp-1.9.3 \
@@ -293,4 +299,42 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]
 HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
+
+#########################################################################
+# phrasaseanet adapted simplesaml service provider 
+#########################################################################
+
+FROM php:7.0-fpm-stretch as phraseanet-saml-sp
+RUN adduser --uid 1000 --disabled-password app
+RUN echo "deb http://deb.debian.org/debian stretch main non-free" > /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        gnupg2 \
+        wget \
+        nginx \
+        zlib1g-dev \
+        automake \
+        git \
+        libmcrypt-dev \
+        libzmq3-dev \
+        libtool \
+        locales \
+        gettext \
+        mcrypt \
+        libldap2-dev \
+    && curl -Ls https://github.com/simplesamlphp/simplesamlphp/releases/download/simplesamlphp-1.10.0/simplesamlphp-1.10.0.tar.gz | tar xzvf - -C /var/www/ \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-install -j$(nproc) ldap \
+    && docker-php-ext-install zip mbstring pdo_mysql gettext mcrypt \
+    && pecl install \
+        redis \
+    && docker-php-ext-enable redis \
+    && pecl clear-cache \
+    && docker-php-source delete
+ADD ./docker/phraseanet/saml-sp/root /
+ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+CMD ["/bootstrap/bin/start-servers.sh"]
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 
 
