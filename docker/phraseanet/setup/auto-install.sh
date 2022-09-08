@@ -50,13 +50,6 @@ bin/setup system:config set workers.queue.worker-queue.vhost /
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._doctype.limit 10
 /var/alchemy/Phraseanet/bin/setup system:config set main.search-engine.options.facets._thumbnail_orientation.limit 10
 
-## Redis
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.host redis
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.port 6379
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.options.namespace $PHRASEANET_SERVER_NAME
-/var/alchemy/Phraseanet/bin/setup system:config set main.cache.type redis
-
-
 /var/alchemy/Phraseanet/bin/console compile:configuration
 
 # Create elasticsearch index

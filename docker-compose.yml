@@ -153,6 +153,9 @@ services:
     - BLACKFIRE_SERVER_TOKEN
     - SESSION_SAVE_HANDLER
     - SESSION_SAVE_PATH
+    - PHRASEANET_CACHE_TYPE
+    - PHRASEANET_CACHE_HOST
+    - PHRASEANET_CACHE_PORT
     volumes:
     - ${PHRASEANET_CONFIG_DIR}:/var/alchemy/Phraseanet/config:rw
     - ${PHRASEANET_LOGS_DIR}:/var/alchemy/Phraseanet/logs:rw
