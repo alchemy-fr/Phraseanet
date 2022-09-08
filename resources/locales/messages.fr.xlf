@@ -9760,7 +9760,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="cbeff0c69c9bcf516c31a7de786b67a21a17ce5c" resname="admin:phrasea-service-setting:tab:uploader:: Delete">
         <source>admin:phrasea-service-setting:tab:uploader:: Delete</source>
-        <target state="needs-translation">Supprimer</target>
+        <target state="translated">Supprimer</target>
         <jms:reference-file line="5">admin/phraseanet-service/uploader.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="fc0ad7943304d0693d01998d9fa13eb616f04b0f" resname="admin:phrasea-service-setting:tab:uploader:: Fetching interval in second">
@@ -10022,7 +10022,7 @@ Si vous recevez cet e-mail sans l'avoir sollicité, merci de l'ignorer ou de le 
       </trans-unit>
       <trans-unit id="a75fefeb07393a108b8189736d7bcf827f7f0dfe" resname="boutton::choose job type">
         <source>boutton::choose job type</source>
-        <target state="needs-translation">Tous les types de Jobs</target>
+        <target state="translated">Tous les types de Jobs</target>
         <jms:reference-file line="36">admin/worker-manager/worker_info.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="17a9219fec93feeffdf8c320e3be79a9f0daf9b1" resname="boutton::commander" approved="yes">
